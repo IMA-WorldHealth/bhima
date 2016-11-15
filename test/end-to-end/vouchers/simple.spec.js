@@ -39,8 +39,8 @@ describe('Simple Vouchers', function () {
     // submit the form
     FU.buttons.submit();
 
-    // is the modal is openned
-    FU.exists(by.css('[data-modal-box]'), true);
+    // make sure a receipt is displayed
+    FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
     FU.modal.close();

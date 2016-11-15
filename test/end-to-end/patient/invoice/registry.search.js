@@ -89,13 +89,13 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it('filters by <select> should return five results', () => {
+  it('filters by <select> should return two results', () => {
     FU.buttons.search();
     FU.select('ModalCtrl.params.service_id', 'Test Service');
     FU.select('ModalCtrl.params.user_id', 'Super User');
     FU.modal.submit();
 
-    expectNumberOfGridRows(5);
+    expectNumberOfGridRows(2);
     expectNumberOfFilters(2);
 
     // make sure to clear the filters for the next test

@@ -122,12 +122,12 @@
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue",
         "SELECTED"        : "Selected cash"
       },
-        "DEBTOR_INVOICES" : "Debtor Invoices",
-        "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-        "REPORT"          : "Report",
-        "SLIP"            : "Cash Voucher",
-        "TITLE"           : "Cash Window",
-        "SELECTED" : "Selected Invoices"
+      "DEBTOR_INVOICES" : "Debtor Invoices",
+      "RECEIPTS_TITLE"  : "Cash Payment Receipt",
+      "REPORT"          : "Report",
+      "SLIP"            : "Cash Voucher",
+      "TITLE"           : "Cash Window",
+      "SELECTED" : "Selected Invoices"
     }
   },
   "CASHBOX": {
@@ -1406,7 +1406,10 @@
       "TITLE"  : "Voucher",
       "TOOLS"  : "Toolkit",
       "TRANSFER_TYPE_INFO"    : "Transaction Type in case we have either incomes or expenses",
-      "USE_FINANCIAL_ACCOUNT" : "Use of cashes or banks accounts in this transaction"
+      "USE_FINANCIAL_ACCOUNT" : "Use of cashes or banks accounts in this transaction",
+      "RECEIPT" :  {
+        "SUCCESS" : "Voucher Payment recorded successfully."
+      }
     },
     "SIMPLE": {
       "CASH_PAYMENT"       : "Client Payment",

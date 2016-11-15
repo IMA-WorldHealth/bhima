@@ -106,6 +106,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
       { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
+      { field: 'patientNames', displayName : 'FORM.LABELS.PATIENT_NAME'},
     ];
 
     // returns columns from filters

@@ -64,7 +64,7 @@ describe('(/debtors) The /debtors API', function () {
       .then(function (res) {
         expect(res.body).to.contain.all.keys(debtorKeys);
         expect(res.body.uuid).to.be.equal(debtorUuid);
-        expect(res.body.group_uuid).to.be.equal('4de0fe47-177f-4d30-b95f-cff8166400b4');
+        expect(res.body.group_uuid).to.be.equal('66f03607-bfbc-4b23-aa92-9321ca0ff586');
         expect(res.body.text).to.be.equal('Patient/2/Patient');
       })
       .catch(helpers.handler);

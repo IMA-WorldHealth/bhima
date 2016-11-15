@@ -66,13 +66,16 @@ describe('Complex Vouchers', function () {
      * (e.g. cash payment Id is 1)
      * @see client/src/js/services/VoucherService.js
      */
-    page.transferType(1)
+    page.transferType(1);
 
     // submit the page
     page.submit();
 
-    // expect a successful notification
-    components.notification.hasSuccess();
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
   });
 
   it('forbid submit when there is no transfer type for financial account', function () {
@@ -120,10 +123,10 @@ describe('Complex Vouchers', function () {
 
     // expect a danger notification
     components.notification.hasDanger();
-
   });
 
   it('Convention import invoices and payment via the tool', () => {
+
     let detail = {
       tool: 'Convention - Paiement factures',
       cashbox: '$',
@@ -150,8 +153,11 @@ describe('Complex Vouchers', function () {
     // submit voucher
     FU.buttons.submit();
 
-    // expect a successful notification
-    components.notification.hasSuccess();
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
   });
 
 });

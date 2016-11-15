@@ -1,22 +1,20 @@
 angular.module('bhima.controllers')
-.controller('VoucherController', VoucherController);
+  .controller('VoucherController', VoucherController);
 
 // dependencies injection
 VoucherController.$inject = [
-  'VoucherService', '$translate', 'NotifyService',
-  'GridFilteringService', 'uiGridGroupingConstants',
-  'uiGridConstants', 'ModalService', 'DateService',
-  'LanguageService', 'bhConstants'
+  'VoucherService', '$translate', 'NotifyService', 'GridFilteringService',
+  'uiGridGroupingConstants', 'uiGridConstants', 'ModalService', 'DateService',
+  'bhConstants', 'ReceiptModal'
 ];
 
 /**
- * Vouchers Records Controllers
+ * Vouchers Registry Controller
  *
  * @description
- * This controller is responsible for display all vouchers which are in the
- * voucher table.
+ * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages, bhConstants) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts) {
   var vm = this;
 
   /* global variables */
@@ -151,53 +149,66 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // search voucher
   function search() {
+    vm.hasError = false;
+
     Modal.openDateInterval()
-    .then(function (dateInterval) {
-      vm.dateInterval = dateInterval;
-      return Vouchers.read(null, vm.dateInterval);
-    })
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    })
-    .catch(Notify.errorHandler);
+      .then(function (dateInterval) {
+        vm.dateInterval = dateInterval;
+
+        toggleLoadingIndicator();
+        return Vouchers.read(null, vm.dateInterval);
+      })
+      .then(function (list) {
+        vm.gridOptions.data = list;
+      })
+      .catch(Notify.errorHandler)
+      .finally(toggleLoadingIndicator);
   }
 
   // showReceipt
   function showReceipt(uuid) {
-    var url = '/reports/finance/vouchers/' + uuid;
-    var params = { renderer: 'pdf', lang: Languages.key };
-    Modal.openReports({ url: url, params: params });
+    Receipts.voucher(uuid);
+  }
+
+  /**
+   * @function errorHandler
+   *
+   * @description
+   * Uses Notify to show an error in case the server sends back an information.
+   * Triggers the error state on the grid.
+   */
+  function errorHandler(error) {
+    vm.hasError = true;
+    Notify.errorHandler(error);
+  }
+
+  /**
+   * @function toggleLoadingIndicator
+   *
+   * @description
+   * Toggles the grid's loading indicator to eliminate the flash when rendering
+   * transactions and allow a better UX for slow loads.
+   */
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // initialize module
   function startup() {
+    vm.hasError = false;
+    toggleLoadingIndicator();
+
     Vouchers.transactionType()
     .then(function (result) {
       vm.transactionTypes = result;
     })
     .catch(Notify.errorHandler);
 
-    vm.loading = true;
     Vouchers.read()
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    })
-    .catch(function (error) {
-      vm.hasError = true;
-      Notify.errorHandler(error);
-    })
-    .finally(toggleLoadingIndicator);
-
-    /**
-     * @function toggleLoadingIndicator
-     *
-     * @description
-     * Toggles the grid's loading indicator to eliminate the flash when rendering
-     * transactions and allow a better UX for slow loads.
-     */
-    function toggleLoadingIndicator() {
-      vm.loading = !vm.loading;
-    }
-
+      .then(function (list) {
+        vm.gridOptions.data = list;
+      })
+      .catch(errorHandler)
+      .finally(toggleLoadingIndicator);
   }
 }
