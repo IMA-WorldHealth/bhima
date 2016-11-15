@@ -192,6 +192,7 @@ function find(options) {
   // remove the limit first thing, if it exists
   let limit = Number(options.limit);
   delete options.limit;
+  delete options.patientNames;
 
   // support flexible queries by keeping a growing list of conditions and
   // statements
@@ -240,6 +241,20 @@ function find(options) {
     conditions.parameters.push(options.billingDateTo);
     delete options.billingDateTo;
   }
+
+  if (options.patientUuid) {
+    options.patientUuid = db.bid(options.patientUuid);
+    conditions.statements.push('patient.uuid = ?');
+    conditions.parameters.push(options.patientUuid);
+    delete options.patientUuid;
+  }
+
+  if (options.user_id) {
+    conditions.statements.push('invoice.user_id = ?');
+    conditions.parameters.push(options.user_id);
+    delete options.user_id;
+  }
+
 
   sql += conditions.statements.join(' AND ');
   if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }

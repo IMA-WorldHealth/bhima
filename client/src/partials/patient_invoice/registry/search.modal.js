@@ -28,6 +28,8 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
   vm.clear = clear;
   vm.cancel = function () { ModalInstance.close(); };
   vm.setDateRange = setDateRange;
+  vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
+  vm.setPatient = setPatient;
 
   Projects.read()
     .then(function (projects) {
@@ -93,4 +95,15 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
       delete vm.params[value];
     }
   }
+
+  // register the patient search api
+  function onPatientSearchApiCallback(api) {
+    vm.patientSearchApi = api;
+  }
+
+  function setPatient(patient) {
+    vm.params.patientUuid = patient.uuid;
+    vm.params.patientNames = patient.display_name;
+  }
+
 }
