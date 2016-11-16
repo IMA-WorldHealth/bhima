@@ -54,6 +54,7 @@ INSERT INTO unit VALUES
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payment', '/finance/reports/cash_payment'),
   (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense'),
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
+  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts');
 
 -- Reserved system account type
@@ -265,6 +266,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Balance report
 (150, 1),
 
+-- Report Customer Debts
+(151, 1),
+
 -- The Report accounts
 (152,1);
 
@@ -460,12 +464,9 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,'D',NULL,'Sample voucher data three',1,2,1,NULL),
-
   (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-
-  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'description x',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@third_invoice, 'Cash Payment',3631,0.0000,30.0000,0.0000,30.0000,2,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'D',NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@third_invoice, 'Cash Payment',3627,30.0000,0.0000,30.0000,0.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@cash_payment2, 'Cash Payment',3631,0.0000,30.0000,0.0000,30.0000,2,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@cash_payment2, 'Cash Payment',3627,30.0000,0.0000,30.0000,0.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Billing',3626,0.0000,20.0000,0.0000,20.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Billing',3626,0.0000,40.0000,0.0000,40.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Subsidy',3626,130.0000,0.0000,130.0000,0.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
@@ -522,5 +523,6 @@ INSERT INTO `purchase_item` VALUES
   (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
   (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
   (4, 'balance', 'REPORT.BALANCE'),
+  (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS');
 

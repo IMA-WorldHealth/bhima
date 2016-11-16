@@ -16,7 +16,7 @@ describe('Invoice Registry', () => {
 
   const path = '#/invoices';
   const page = new InvoiceRegistryPage();
-  const numInvoices = 5;
+  const numInvoices = 6;
 
   // This will be run before every single test ('it') - navigating the browser to the correct page.
   before(() => helpers.navigate(path));
