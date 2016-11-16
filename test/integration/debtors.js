@@ -9,7 +9,7 @@ describe('(/debtors) The /debtors API', function () {
 
   const debtorKeys = ['uuid', 'group_uuid', 'text'];
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
-  const emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const emptyDebtorUuid = 'be0096dd-2929-41d2-912e-fb2259356fb5';
 
   let newDebtor = {
     uuid : uuid.v4(),
