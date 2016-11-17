@@ -18,6 +18,7 @@ const util = require('../../../../lib/util');
 const ReportManager = require('../../../../lib/ReportManager');
 const Invoices      = require('../../patientInvoice');
 const Patients      = require('../../../medical/patients');
+const Exchange      = require('../../exchange');
 
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.handlebars';
 const REPORT_TEMPLATE  = './server/controllers/finance/reports/invoices/report.handlebars';
@@ -61,8 +62,11 @@ function receipt(req, res, next) {
     user: req.session.user
   };
 
+  console.log('INVOICE RECEIPT GOT', options);
+
   let invoiceUuid = req.params.uuid;
   let enterpriseId = req.session.enterprise.id;
+  let currencyId = options.currency || req.session.enterprise.currency_id;
   let invoiceResponse = {};
 
   let report;
@@ -87,6 +91,12 @@ function receipt(req, res, next) {
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
 
+      return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
+    })
+    .then(exchangeResult => {
+      invoiceResponse.exchange = exchangeResult;
+
+      console.log('EXCHANGE RESULT', exchangeResult);
       return report.render(invoiceResponse);
     })
     .then(result => {

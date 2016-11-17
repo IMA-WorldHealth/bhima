@@ -65,7 +65,7 @@
       <tr>
         <td>{{this.code}}</td>
         <td>{{this.text}}</td>
-        <td class="text-right">{{currency this.transaction_price ../metadata.enterprise.currency_id}}</td>
+        <td class="text-right">{{this.transaction_price}}</td>
         <td class="text-right">{{quantity}}</td>
         <td class="text-right">{{currency (multiply this.transaction_price quantity) ../metadata.enterprise.currency_id}}</td>
       </tr>
@@ -129,6 +129,13 @@
             <h1><b>{{currency cost metadata.enterprise.currency_id}}</b></h1>
           </td>
         </tr>
+
+        <!-- Bill exchange -->
+        <!-- <tr -->
+          <!-- td class="text-right">Exchange</td -->
+          <!-- td>Value</td -->
+        <!-- /tr -->
+
       </table>
 
     </div>

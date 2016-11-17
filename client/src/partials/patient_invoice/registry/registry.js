@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants'
+  'uiGridConstants', 'CurrencyService'
 ];
 
 /**
@@ -12,13 +12,14 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, Currencies) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
+  vm.setCurrency = setCurrency;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.creditNote = creditNote;
@@ -57,6 +58,21 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
 
+  // receipt options
+  vm.selectedCurrency = {
+    id : vm.enterprise.currency_id,
+    symbol : vm.enterprise.currencySymbol
+  };
+
+  vm.receiptOptions = {
+    currency : vm.selectedCurrency.id
+  };
+
+  function setCurrency(currency) {
+    vm.selectedCurrency = currency;
+    vm.receiptOptions.currency = vm.selectedCurrency.id;
+  }
+
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
@@ -65,6 +81,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
+
+  Currencies.read()
+    .then(function (currencies) {
+      console.log('got currencies', currencies);
+      vm.currencies = currencies;
+    });
 
   // this function loads invoices from the database with search parameters
   // if passed in.
@@ -79,7 +101,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     }
 
     // if we have search parameters, use search.  Otherwise, just read all
-    // invoices.    
+    // invoices.
     var request = angular.isDefined(parameters) ?
       Invoices.search(parameters) :
       Invoices.read();
