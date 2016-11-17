@@ -76,6 +76,9 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
 
   function setDateComponent() {
     var currentOptions = vm.fullDateEnabled ? dayOptions : yearOptions;
+
+    // set the database flag to track if a date is set to JAN 01 or if the date is unknown
+    vm.medical.dob_unknown_date = !vm.fullDateEnabled;
     angular.merge(vm.datepickerOptions, currentOptions);
   }
 
