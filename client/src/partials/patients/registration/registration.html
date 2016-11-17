@@ -38,6 +38,7 @@
                         ng-maxlength="PatientRegCtrl.length150"
                         name="display_name"
                         ng-model="PatientRegCtrl.medical.display_name"
+                        autocomplete="off"
                         required>
                       <div class="help-block" ng-messages="DetailForm.display_name.$error" ng-show="PatientRegistrationForm.$submitted">
                         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -58,6 +59,7 @@
                         ng-model="PatientRegCtrl.medical.hospital_no"
                         bh-unique="/patients/hospital_number"
                         ng-maxlength="PatientRegCtrl.length150"
+                        autocomplete="off"
                         required>
 
                       <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
@@ -85,6 +87,7 @@
                         is-open="PatientRegCtrl.datePopupIsOpen"
                         show-button-bar="false"
                         bh-date-validator="PatientRegCtrl.datepickerOptions"
+                        autocomplete="off"
                         required>
                         <span class="input-group-btn">
                           <button type="button" class="btn btn-default" ng-click="PatientRegCtrl.datePopupIsOpen = !PatientRegCtrl.datePopupIsOpen">
