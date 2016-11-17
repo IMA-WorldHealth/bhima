@@ -69,26 +69,10 @@
                     </div>
                   </div>
 
-                  <!-- Year of Birth -->
-                  <div class="form-group"
-                    ng-if="!PatientRegCtrl.fullDateEnabled"
-                    ng-class="{'has-error' : DetailForm.dob.$invalid && PatientRegistrationForm.$submitted}">
-
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.YOB" | translate }}</label>
-                    <div class="col-md-9">
-                      <div class="input-group">
-                        <input name="yob" type="text" class="form-control" ng-model="PatientRegCtrl.yob" ng-change="PatientRegCtrl.calculateYOB(DetailForm.yob.$modelValue)" required>
-                        <span class="input-group-btn">
-                          <button class="btn btn-default" type="button" ng-click="PatientRegCtrl.enableFullDate()">{{ "FORM.BUTTONS.ENTER_FULL_DATE" | translate }}</button>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Full date of birth -->
+                  <!-- Date of birth -->
                   <div class="form-group"
                     ng-class="{'has-error' : DetailForm.dob.$invalid && PatientRegistrationForm.$submitted}">
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
+                    <label class="col-md-3 control-label">{{ PatientRegCtrl.fullDateEnabled ? "FORM.LABELS.DOB" : "FORM.LABELS.YOB" | translate }}</label>
                     <div class="col-md-9">
                       <div class="input-group">
                         <input
@@ -96,18 +80,21 @@
                         type="text"
                         class="form-control"
                         ng-model="PatientRegCtrl.medical.dob"
-                        uib-datepicker-popup="dd-MM-yyyy"
+                        uib-datepicker-popup="{{PatientRegCtrl.datepickerOptions.format}}"
                         datepicker-options="PatientRegCtrl.datepickerOptions"
                         is-open="PatientRegCtrl.datePopupIsOpen"
                         show-button-bar="false"
-                        ng-disabled="!PatientRegCtrl.fullDateEnabled"
                         bh-date-validator="PatientRegCtrl.datepickerOptions"
                         required>
                         <span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-click="PatientRegCtrl.datePopupIsOpen = !PatientRegCtrl.datePopupIsOpen">
+                          <button type="button" class="btn btn-default" ng-click="PatientRegCtrl.datePopupIsOpen = !PatientRegCtrl.datePopupIsOpen">
                             <i class="fa fa-calendar-plus-o"></i>
                           </button>
                         </span>
+                      </div>
+
+                      <div class="help-block text-right">
+                        <p><a ng-click="PatientRegCtrl.toggleFullDate()" href><i class="fa fa-calendar-o"></i> {{ PatientRegCtrl.fullDateEnabled ? "FORM.LABELS.ENTER_BIRTH_YEAR" : "FORM.LABELS.ENTER_BIRTH_DAY" | translate }}</a></p>
                       </div>
 
                       <div class="help-block" ng-messages="DetailForm.dob.$error" data-date-error ng-if="PatientRegistrationForm.$submitted && DetailForm.dob.$invalid">
