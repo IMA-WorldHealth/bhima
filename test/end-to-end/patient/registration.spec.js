@@ -16,7 +16,7 @@ describe('Patient Registration', function () {
 
   const mockPatient = {
     display_name : 'Mock Patient First',
-    yob : '1993',
+    dob : '01-01-1993',
     sex : 'M',
     project_id : 1,
     hospital_no : 120
@@ -31,7 +31,7 @@ describe('Patient Registration', function () {
 
     // hospital number, etc
     FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
-    FU.input('PatientRegCtrl.yob', mockPatient.yob);
+    FU.input('PatientRegCtrl.medical.dob', mockPatient.dob);
 
     // set the gender of the patient
     element(by.id('male')).click();
@@ -47,15 +47,6 @@ describe('Patient Registration', function () {
     FU.buttons.submit();
     FU.exists(by.id('receipt-confirm-created'), true);
     done();
-  });
-
-  it('correctly updates date of birth given a valid year of birth', function () {
-    const validYear = '2000';
-    FU.input('PatientRegCtrl.yob', validYear);
-
-    const calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
-    expect(calculatedDOB).to.be.defined;
-    expect(calculatedDOB).to.not.be.empty;
   });
 
   // This test group assumes the previous mock patient has been successfully registered
@@ -85,18 +76,18 @@ describe('Patient Registration', function () {
     });
 
     it('alerts for minimum and maximum dates', function () {
-      const testMaxYear = '9000';
-      const validYear = '2000';
-      const testMinYear = '1000';
+      const testMaxYear = '01-01-9000';
+      const validYear = '01-01-2000';
+      const testMinYear = '01-01-1000';
 
 
-      FU.input('PatientRegCtrl.yob', testMaxYear);
+      FU.input('PatientRegCtrl.medical.dob', testMaxYear);
       FU.exists(by.css('[data-date-error]'), true);
 
-      FU.input('PatientRegCtrl.yob', validYear);
+      FU.input('PatientRegCtrl.medical.dob', validYear);
       FU.exists(by.css('[data-date-error]'), false);
 
-      FU.input('PatientRegCtrl.yob', testMinYear);
+      FU.input('PatientRegCtrl.medical.dob', testMinYear);
       FU.exists(by.css('[data-date-error]'), true);
     });
   });

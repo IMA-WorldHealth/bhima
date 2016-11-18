@@ -510,7 +510,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
     return Vouchers.create(voucher)
       .then(function (result) {
-        Notify.success('VOUCHERS.COMPLEX.CREATE_SUCCESS');
         form.$setPristine();
         startup();
         refreshState();
