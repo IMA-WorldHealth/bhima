@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ ToolCtrl.tool.label | translate }}</li>
+    <li class="title">{{ "VOUCHERS.GLOBAL.IMPORT_TRANSACTION" | translate }}</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" bh-form-defaults novalidate>
+  <div class="modal-body">
+
+    <!-- select the cashbox  -->
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.cashbox.$invalid }">
+      <label class="control-label">
+        {{ "FORM.LABELS.CASHBOX" | translate }}
+      </label>
+
+      <ui-select
+        name="cashbox"
+        ng-model="ToolCtrl.cashbox"
+        theme="bootstrap"
+        required>
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CASHBOX' | translate }}">
+          <span>{{$select.selected.label}} ({{$select.selected.symbol}})</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="cashbox in ToolCtrl.cashboxList | filter:$select.search">
+          <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+          (<span ng-bind-html="cashbox.symbol | highlight:$select.search"></span>)
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="ToolForm.cashbox.$error" ng-show="ToolForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- select the convention  -->
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.convention.$invalid }">
+      <label class="control-label">
+        {{ "FORM.LABELS.CONVENTION" | translate }}
+      </label>
+
+      <ui-select
+        name="convention"
+        ng-model="ToolCtrl.convention"
+        theme="bootstrap"
+        on-select="ToolCtrl.selectGroupInvoices($item)"
+        required>
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.DEBTOR_GROUP' | translate }}">
+          <span>{{$select.selected.name}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="convention in ToolCtrl.conventionGroupList | filter:$select.search">
+          <span ng-bind-html="convention.name | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="ToolForm.convention.$error" ng-show="ToolForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- select invoices  -->
+    <div ng-show="ToolCtrl.convention">
+      <div
+        id="invoiceGrid"
+        style="height: 40vh; margin-bottom: 20px;"
+        ui-grid="ToolCtrl.gridOptions"
+        ui-grid-filtering
+        ui-grid-auto-resize
+        ui-grid-resize-columns
+        ui-grid-selection>
+      </div>
+    </div>
+
+    <div ng-show="ToolCtrl.convention" class="form-group">
+      <span>{{ 'FORM.LABELS.TOTAL_BILLED' | translate }}: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span><br>
+      <span>{{ 'FORM.LABELS.TOTAL_SELECTED_INVOICES' | translate }}: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+
+    <bh-loading-button loading-state="ToolCtrl.$loading"
+      disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+      {{ "FORM.BUTTONS.GENERATE" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

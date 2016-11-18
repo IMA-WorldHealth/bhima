@@ -260,7 +260,7 @@ function financialPatient(debtorUuid) {
       FROM posting_journal
       LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
-      WHERE posting_journal.entity_uuid = ? 
+      WHERE posting_journal.entity_uuid = ?
       UNION
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
       general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr

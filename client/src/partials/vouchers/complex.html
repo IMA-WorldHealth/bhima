@@ -1,6 +1,7 @@
 <!-- breadcrumb header -->
 <bh-breadcrumb
-  path="ComplexVoucherCtrl.paths">
+  path="ComplexVoucherCtrl.paths"
+  dropdown="ComplexVoucherCtrl.dropdown">
 </bh-breadcrumb>
 
 <div class="flex-content">
@@ -70,7 +71,7 @@
 
                     <!-- incomes  -->
                     <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
-                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.incomes">{{ item.text | translate }}</option>
+                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.incomes" ng-selected="item.id === ComplexVoucherCtrl.defaultIncomeTypeId">{{ item.text | translate }}</option>
                     </optgroup>
 
                     <!-- expenses  -->

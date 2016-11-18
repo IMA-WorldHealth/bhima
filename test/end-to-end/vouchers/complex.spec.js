@@ -5,6 +5,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const ComplexVoucherPage = require('./complex.page');
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 
 describe('Complex Vouchers', function () {
 
@@ -122,6 +123,40 @@ describe('Complex Vouchers', function () {
 
     // expect a danger notification
     components.notification.hasDanger();
+  });
+
+  it('Convention import invoices and payment via the tool', () => {
+
+    let detail = {
+      tool: 'Convention - Paiement factures',
+      cashbox: '$',
+      convention: 'Second Test',
+      invoices: [0, 1]
+    };
+
+    // click on the convention tool
+    FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    // select the cashbox
+    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+
+    // select the convention
+    FU.uiSelect('ToolCtrl.convention', detail.convention);
+
+    // select invoices
+    GU.selectRow('invoiceGrid', detail.invoices[0]);
+
+    // validate selection
+    FU.buttons.submit();
+
+    // submit voucher
+    FU.buttons.submit();
+
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
   });
 
 });

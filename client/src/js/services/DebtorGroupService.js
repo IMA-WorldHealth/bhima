@@ -18,9 +18,11 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   service.update = update;
   service.updateBillingServices = updateBillingServices;
   service.updateSubsidies = updateSubsidies;
+  service.invoices = invoices;
 
   service.manageBillingServices = manageBillingServices;
   service.manageSubsidies = manageSubsidies;
+
   /**
   * @method read
   * @param {string} uuid The debtor group uuid
@@ -119,6 +121,18 @@ function DebtorGroupService($http, Modal, util, SessionService) {
         }
       }
     });
+  }
+
+  /**
+   * @method invoices
+   * @param {string} uuid The debtor group uuid
+   * @param {object} parameters The query string object
+   * @description This function is responsible for getting debtor groups
+   */
+  function invoices(uuid, parameters) {
+    var url = baseUrl.concat(uuid, '/invoices');
+    return $http.get(url, { params : parameters })
+    .then(util.unwrapHttpResponse);
   }
 
   return service;

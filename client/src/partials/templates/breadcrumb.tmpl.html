@@ -13,9 +13,9 @@
     <div class="toolbar">
       <!-- dropdown buttons -->
       <div class="toolbar-item" ng-if="vm.bcDropdowns.length">
-        <span ng-repeat="d in vm.bcDropdowns" uib-dropdown>
+        <span ng-repeat="d in vm.bcDropdowns" uib-dropdown toolbar-dropdown>
           <button class="btn btn-sm" ng-class="d.color" id="{{ vm.prefix + d.id }}" data-method="{{ d.dataMethod }}" uib-dropdown-toggle>
-            {{ d.selected | translate }} <span class="caret"></span>
+            <i class="fa" ng-class="'{{d.icon}}'"></i> {{ d.selected | translate }} <span class="caret"></span>
           </button>
           <ul class="pull-right" uib-dropdown-menu>
             <li ng-repeat="opt in d.option">
