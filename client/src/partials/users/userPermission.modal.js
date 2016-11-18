@@ -117,7 +117,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
         return u.id;
       });
 
-    Users.updatePermissions(vm.user.id, permissions)
+    return Users.updatePermissions(vm.user.id, permissions)
       .then(function () {
         Notify.success('USERS.UPDATED');
         $state.go('users.list', null, {reload : true});
@@ -126,7 +126,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
   }
 
   function closeModal (){
-    $state.go('users.list', null, {reload : false});
+    $state.go('users.list');
   }
 
   Users.read($state.params.id)
