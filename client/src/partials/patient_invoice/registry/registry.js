@@ -84,7 +84,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   Currencies.read()
     .then(function (currencies) {
-      console.log('got currencies', currencies);
       vm.currencies = currencies;
     });
 

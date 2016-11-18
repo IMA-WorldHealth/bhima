@@ -131,11 +131,20 @@
         </tr>
 
         <!-- Bill exchange -->
-        <!-- <tr -->
-          <!-- td class="text-right">Exchange</td -->
-          <!-- td>Value</td -->
-        <!-- /tr -->
-
+        {{#if exchange}}
+          <tr>
+            <td colspan="2">{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</td>
+          </tr>
+          <tr>
+            <td colspan="2">{{{translate 'EXCHANGE.SET_AS'}}} 1:{{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="text-right">
+              <h1><b>{{{currency exchangedTotal receiptCurrency}}}</b></h1>
+            </td>
+          </tr>
+        {{/if}}
       </table>
 
     </div>

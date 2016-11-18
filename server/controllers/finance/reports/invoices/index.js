@@ -14,6 +14,7 @@
 const q  = require('q');
 const _  = require('lodash');
 const util = require('../../../../lib/util');
+const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const Invoices      = require('../../patientInvoice');
@@ -62,8 +63,6 @@ function receipt(req, res, next) {
     user: req.session.user
   };
 
-  console.log('INVOICE RECEIPT GOT', options);
-
   let invoiceUuid = req.params.uuid;
   let enterpriseId = req.session.enterprise.id;
   let currencyId = options.currency || req.session.enterprise.currency_id;
@@ -94,9 +93,13 @@ function receipt(req, res, next) {
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
-      invoiceResponse.exchange = exchangeResult;
 
-      console.log('EXCHANGE RESULT', exchangeResult);
+      invoiceResponse.receiptCurrency = currencyId;
+      invoiceResponse.exchange = exchangeResult.rate;
+      invoiceResponse.dateFormat = (new moment()).format('L');
+      if (invoiceResponse.exchange) {
+        invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
+      }
       return report.render(invoiceResponse);
     })
     .then(result => {
