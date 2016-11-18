@@ -1283,7 +1283,10 @@
     "SINCE"            : "Depuis",
     "VIEW_RECEIPT"     : "Voir le document",
     "VIEW_CREDIT_NOTE" : "Voir la note de credit",
-    "CLIENTS_REPORT"   : "Rapport Clients"
+    "CLIENTS_REPORT"   : {
+      "TITLE" : "Rapport Clients",
+      "ANNUAL_MVT" : "Mouvement Annuel"
+    }
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",

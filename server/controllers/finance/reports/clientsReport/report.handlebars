@@ -1,5 +1,42 @@
-{{> head title="REPORT.CLIENTS_REPORT" }}
+{{> head title="REPORT.CLIENTS_REPORT.TITLE" }}
 
 <div class="container-fluid">
-  <div> we are there!</div>
+
+  {{> header }}
+
+  <!-- title  -->
+  <h1 class="text-center text-uppercase">
+    {{translate 'REPORT.CLIENTS_REPORT.TITLE'}}
+  </h1>
+
+  <br>
+  <table class="table table-condensed table-striped table-bordered">
+    <thead>
+      <tr class="text-uppercase">
+        <th rowspan="2">{{ translate 'ACCOUNT.NUMBER' }}</th>
+        <th rowspan="2">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>
+        <th rowspan="2">{{ translate 'FORM.LABELS.BALANCE' }}<br /> openning date</th>
+        <th colspan="2">{{ translate 'REPORT.CLIENTS_REPORT.ANNUAL_MVT' }}</th>
+        <th rowspan="2">{{ translate 'FORM.LABELS.BALANCE' }}<br /> stop date</th>
+      </tr>
+      <tr class="text-uppercase">
+        <th>{{ translate 'FORM.LABELS.DEBIT' }}</th>
+        <th>{{ translate 'FORM.LABELS.CREDIT' }}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#annualLine lines enterprise.currency_id}}
+      {{/annualLine}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</td>
+        <td class="text-right">{{currency totalBalance enterprise.currency_id}}</td>
+        <td class="text-right">{{currency totalDebit enterprise.currency_id}}</td>
+        <td class="text-right">{{currency totalCredit enterprise.currency_id}}</td>
+        <td class="text-right">{{currency totalFinalBalance enterprise.currency_id}}</td>
+      </tr>
+    </tfoot>
+  </table>
 </div>

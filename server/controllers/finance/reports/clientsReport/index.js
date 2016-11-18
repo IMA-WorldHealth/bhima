@@ -41,6 +41,7 @@ function document(req, res, next) {
   session.dateTo = params.dateTo;
   session.detailPrevious = params.detailPrevious;
   session.ignoredClients = params.ignoredClients;
+  session.enterprise = req.session.enterprise;
 
   _.defaults(params, {user : req.session.user });
 
@@ -71,6 +72,9 @@ function fetchClientsData(session) {
   var clientsData = {};
   var ignoredClients, ignoredToken = '';
 
+  //attaching the enterprise to the context (good ???)
+  clientsData.enterprise = session.enterprise;
+
   if(session.ignoredClients){
     ignoredClients = (Array.isArray(session.ignoredClients))? session.ignoredClients : [session.ignoredClients];
     ignoredToken = ` AND dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
@@ -92,6 +96,9 @@ function fetchClientsData(session) {
       return db.exec(request, [clientsData.fy.previous_fiscal_year_id]);
     })
     .then(function (data){
+      //init totals of previous fiscal year
+      clientsData.totalInitialCredit = 0; clientsData.totalInitialDebit = 0; clientsData.totalBalance = 0;
+
       //from previous fiscal year data, building the object containing all previous info to print
       clientsData.lines = data.reduce(function (obj, clientInfo) {
         var id = clientInfo.ID;
@@ -101,6 +108,9 @@ function fetchClientsData(session) {
         obj[id].balance = (clientInfo.debit - clientInfo.credit);
         obj[id].name = clientInfo.name;
         obj[id].accountNumber = clientInfo.number;
+        clientsData.totalInitialCredit += clientInfo.credit;
+        clientsData.totalInitialDebit += clientInfo.debit;
+        clientsData.totalBalance += obj[id].balance;
         return obj;
       }, {});
 
@@ -116,6 +126,9 @@ function fetchClientsData(session) {
       return db.exec(request, [session.dateFrom, session.dateTo]);
     })
     .then(function (data) {
+      //init total
+      clientsData.totalCredit = 0; clientsData.totalDebit = 0; clientsData.totalFinalBalance = 0;
+
       //completing the object {clientsData} by adding current info
       data.forEach(function (dt) {
 
@@ -135,6 +148,11 @@ function fetchClientsData(session) {
 
         //adding the final balance of the client
         clientsData.lines[dt.ID].finalBalance = (clientsData.lines[dt.ID].balance + dt.debit) - dt.credit;
+
+        //total of credit, debit, and finalBalance
+        clientsData.totalCredit += dt.credit;
+        clientsData.totalDebit += dt.debit;
+        clientsData.totalFinalBalance += clientsData.lines[dt.ID].finalBalance;
       });
 
       //processing totals
