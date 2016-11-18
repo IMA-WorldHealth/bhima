@@ -1389,6 +1389,7 @@
       "ERROR_ACCOUNT"         : "Selected accounts are invalid",
       "ERROR_AMOUNT"          : "Amount's values are invalid",
       "ERROR_TOTALS"          : "The totals are not balanced",
+      "ERROR_PRECISION"       : "The amounts entered cannot have more than 4 decimal places in precision",
       "INVALID_VALUES"        : "There are invalid values detected",
       "PATIENT_INVOICE"       : "Patient Invoice",
       "REFERENCE"             : "Reference",
