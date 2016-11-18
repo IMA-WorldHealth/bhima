@@ -40,10 +40,9 @@ function UserModalController($state, Projects, Users, Notify) {
     if (userForm.$invalid) { return; }
     if (!userForm.$dirty) { return; }
 
-
     promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
 
-    promise
+    return promise
       .then(function () {
         var translateKey = (vm.isCreating) ?  'USERS.CREATED' : 'USERS.UPDATED';
         Notify.success(translateKey);
@@ -58,7 +57,7 @@ function UserModalController($state, Projects, Users, Notify) {
 
   // make sure that the passwords exist and match.
   function validPassword() {
-    return vm.user.password && vm.user.password.length && vm.user.password === vm.user.passwordVerify;
+    return Users.validatePassword(vm.user.password, vm.user.passwordVerify);
   }
 
   // opens a new modal to let the user set a password

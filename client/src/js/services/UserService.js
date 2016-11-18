@@ -20,6 +20,7 @@ function UserService($http, util) {
   service.projects = projects;
   service.updatePassword = updatePassword;
   service.updatePermissions = updatePermissions;
+  service.validatePassword = validatePassword;
 
   /* ------------------------------------------------------------------------ */
 
@@ -78,5 +79,20 @@ function UserService($http, util) {
   function updatePassword(id, data) {
     return $http.put('/users/' + id + '/password', data)
     .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @function validatePassword
+   *
+   * @param {String} passwordA - a user password
+   * @param {String} passwordB - a challenge password
+   *
+   * @description
+   * This function exists to validate password inputs where two passwords are
+   * required and must be equal.  This is involved in updating/creating a user
+   * password to ensure that the password is correctly memorized by the user..
+   */
+  function validatePassword(passwordA, passwordB) {
+    return passwordA && passwordA.length && passwordA === passwordB;
   }
 }
