@@ -67,7 +67,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   // set convention payment details
   function conventionPaymentDetails(convention) {
     vm.financialTransaction = true;
-    let conventionType = vm.incomes.filter(function (item) {
+    var conventionType = vm.incomes.filter(function (item) {
       return item.id === 3;
     })[0];
     vm.voucher.type_id = JSON.stringify(conventionType);

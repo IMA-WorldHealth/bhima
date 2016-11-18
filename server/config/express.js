@@ -25,7 +25,9 @@ const uploads      = require('../lib/uploader');
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
-  const isProduction = (process.env.NODE_ENV === 'production');
+  // TODO - things don't work well yet.
+  //const isProduction = (process.env.NODE_ENV === 'production');
+  const isProduction = false;
 
   winston.debug('Configuring middleware.');
 
