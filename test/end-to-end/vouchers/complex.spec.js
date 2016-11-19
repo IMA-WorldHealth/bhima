@@ -145,7 +145,6 @@ describe('Complex Vouchers', function () {
 
     // select invoices
     GU.selectRow('invoiceGrid', detail.invoices[0]);
-    GU.selectRow('invoiceGrid', detail.invoices[1]);
 
     // validate selection
     FU.buttons.submit();
