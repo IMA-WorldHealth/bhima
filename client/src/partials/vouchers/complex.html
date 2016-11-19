@@ -6,7 +6,7 @@
 
 <div class="flex-content">
   <div class="container-fluid">
-    <form name="ComplexVoucherForm" bh-form-defaults novalidate>
+    <form name="ComplexVoucherForm" bh-submit="ComplexVoucherCtrl.submit(ComplexVoucherForm)" bh-form-defaults novalidate>
 
       <!-- description -->
       <div class="row">
@@ -120,8 +120,10 @@
           </div>
 
           <!-- the grid  -->
-          <div id="voucherGridId"
+          <div
+            id="voucherGridId"
             ui-grid="ComplexVoucherCtrl.gridOptions"
+            ui-grid-grouping
             ui-grid-auto-resize>
           </div>
 
@@ -132,18 +134,13 @@
               {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
             </span>
 
-            <button
-              class="btn btn-primary"
-              ng-disabled="!ComplexVoucherCtrl.validInput"
-              ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)"
-              data-method="submit">
+            <bh-loading-button disabled="!ComplexVoucherCtrl.validInput">
               {{ "FORM.BUTTONS.SUBMIT" | translate }}
-            </button>
+            </bh-loading-button>
           </div>
 
         </div>
       </div>
-
     </form>
   </div>
 </div>
