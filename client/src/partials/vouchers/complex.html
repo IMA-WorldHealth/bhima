@@ -129,9 +129,11 @@
 
           <!-- the footer  -->
           <div class="space-between" style="margin-top: 5px;">
-            <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}" ng-hide="ComplexVoucherCtrl.posted">
-              <span ng-class="ComplexVoucherCtrl.notifyMessage.icon"></span>
-              {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
+            <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
+              <span  ng-hide="ComplexVoucherCtrl.posted">
+                <span ng-class="ComplexVoucherCtrl.notifyMessage.icon"></span>
+                {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
+              </span>
             </span>
 
             <bh-loading-button disabled="!ComplexVoucherCtrl.validInput">
