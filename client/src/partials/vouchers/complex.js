@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('ComplexJournalVoucherController', ComplexJournalVoucherController);
 
 ComplexJournalVoucherController.$inject = [
-  'VoucherService', '$translate', 'AccountService',
-  'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService', 'CashboxService',
-  'VoucherToolkitService', 'ReceiptModal', 'bhConstants'
+  'VoucherService', '$translate', 'AccountService', 'CurrencyService',
+  'SessionService', 'FindEntityService', 'FindReferenceService',
+  'NotifyService', 'CashboxService', 'VoucherToolkitService', 'ReceiptModal',
+  'bhConstants', 'GridAggregatorService', 'uiGridConstants'
 ];
 
 /**
@@ -21,7 +21,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement a mean to categorise transactions for cashflow reports
  * @todo/@fixme - this error notification system needs serious refactor.
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox, Toolkit, Receipts, bhConstants) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox, Toolkit, Receipts, bhConstants, GridAggregators, uiGridConstants) {
   var vm = this;
 
   vm.bhConstants = bhConstants;
@@ -33,14 +33,30 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }];
 
   // breadcrumb dropdown
-  vm.dropdown = [
-    {
-      label: 'VOUCHERS.GLOBAL.TOOLS',
-      color: 'btn-default',
-      icon: 'fa-cogs',
-      option: Toolkit.options
-    }
-  ];
+  vm.dropdown = [{
+    label: 'VOUCHERS.GLOBAL.TOOLS',
+    color: 'btn-default',
+    icon: 'fa-cogs',
+    option: Toolkit.options
+  }];
+
+  // global variables
+  var MIN_DECIMAL_VALUE= bhConstants.lengths.minDecimalValue;
+  var MIN_PRECISION_VALUE = getDecimalPrecision(MIN_DECIMAL_VALUE);
+
+  // ui-grid options
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    fastWatch         : true,
+    enableSorting     : false,
+    enableColumnMenus : false,
+    showColumnFooter  : true,
+    onRegisterApi     : onRegisterApi
+  };
+
+  function onRegisterApi(api) {
+    vm.gridApi = api;
+  }
 
   /** ======================== voucher tools ========================== */
 
@@ -53,17 +69,18 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   // open convention payment function
   function openConventionPaymentTool() {
     Toolkit.open(conventionPaymentTool)
-    .then(function (result) {
-      if (!result) { return; }
+      .then(function (result) {
+        if (!result) { return; }
 
-      vm.rows = result.rows;
-      vm.rows.forEach(function (item) {
-        checkRowValidity(item.index);
+        vm.rows = result.rows;
+        vm.rows.forEach(function (item) {
+          checkRowValidity(item.index);
+        });
+
+        vm.gridOptions.data = vm.rows;
+        refreshState();
+        conventionPaymentDetails(result.convention);
       });
-      vm.gridOptions.data = vm.rows;
-      refreshState();
-      conventionPaymentDetails(result.convention);
-    });
   }
 
   // set convention payment details
@@ -79,12 +96,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }
 
   /** ======================== end voucher tools ======================= */
-  var MIN_DECIMAL_VALUE= bhConstants.lengths.minDecimalValue;
-  var MIN_PRECISION_VALUE = getDecimalPrecision(MIN_DECIMAL_VALUE);
 
-  // global variables
-  vm.gridOptions = {};
-  vm.gridApi = {};
 
   // bind the startup method as a reset method
   vm.submit = submit;
@@ -104,12 +116,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   // load the available currencies
   Currencies.read()
-  .then(function (currencies) {
-    currencies.forEach(function (currency) {
-      currency.label = Currencies.format(currency.id);
-    });
-    vm.currencies = currencies;
-  });
+    .then(function (currencies) {
+      currencies.forEach(function (currency) {
+        currency.label = Currencies.format(currency.id);
+      });
+      vm.currencies = currencies;
+    })
+    .catch(Notify.handleError);
 
   /** Entity modal */
   function openEntityModal(row) {
@@ -184,7 +197,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** clean and generate voucher items data */
   function handleVoucherItems() {
-    var voucherItems = [];
+    var voucherItems;
     var account_id;
     var entity_uuid;
     var document_uuid;
@@ -334,6 +347,11 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       vm.sumDebit += row.debit;
       vm.sumCredit += row.credit;
     });
+
+    // if the gridApi is available call the datachange function to recompute footer totals
+    if (vm.gridApi) {
+      vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+    }
   }
 
   /** run the module on startup and refresh */
@@ -365,22 +383,21 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     vm.financialAccount = [];
 
     Cashbox.read(null, { detailed: 1 })
-    .then(function (list) {
+      .then(function (list) {
 
-      list.forEach(function (item) {
+        list.forEach(function (item) {
 
-        if (vm.financialAccount.indexOf(item.account_id) === -1) {
-          vm.financialAccount.push(item.account_id);
-        }
+          if (vm.financialAccount.indexOf(item.account_id) === -1) {
+            vm.financialAccount.push(item.account_id);
+          }
 
-        if (vm.financialAccount.indexOf(item.transfer_account_id) === -1) {
-          vm.financialAccount.push(item.transfer_account_id);
-        }
+          if (vm.financialAccount.indexOf(item.transfer_account_id) === -1) {
+            vm.financialAccount.push(item.transfer_account_id);
+          }
 
-      });
-
-    })
-    .catch(Notify.handleError);
+        });
+      })
+      .catch(Notify.handleError);
   }
 
   /** check use of financial accounts */
@@ -401,10 +418,10 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /* ============================= Transfer Type ============================= */
   Vouchers.transactionType()
-  .then(function (list) {
-    groupType(list.data);
-  })
-  .catch(Notify.handleError);
+    .then(function (list) {
+      groupType(list.data);
+    })
+    .catch(Notify.handleError);
 
   vm.buildDescription = buildDescription;
 
@@ -445,50 +462,48 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /* ============================= Grid ====================================== */
 
   // grid default options
-  vm.gridOptions.appScopeProvider = vm;
-  vm.gridOptions.enableColumnMenus = false;
-  vm.gridOptions.columnDefs       =
-    [
-      { field : 'isValid', displayName : '...',
-        headerCellFilter: 'translate', cellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/status.grid.tmpl.html',
-        enableFiltering: false,
-        enableColumnMenu: false,
-        width: 40
-      }, {
-        field : 'account', displayName : 'FORM.LABELS.ACCOUNT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/account.grid.tmpl.html'
-      }, {
-        field : 'debit', displayName : 'FORM.LABELS.DEBIT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/debit.grid.tmpl.html'
-      }, {
-        field : 'credit', displayName : 'FORM.LABELS.CREDIT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/credit.grid.tmpl.html'
-      }, {
-        field : 'entity', displayName : 'FORM.LABELS.DEBTOR_CREDITOR',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/entity.grid.tmpl.html',
-      }, {
-        field : 'reference', displayName : 'FORM.LABELS.REFERENCE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/vouchers/templates/reference.grid.tmpl.html',
-      }, {
-        field : 'action', displayName : '...',
-        width: 25,
-        cellTemplate: 'partials/vouchers/templates/remove.grid.tmpl.html',
-      }
-    ];
+  vm.gridOptions.columnDefs = [{
+    field : 'isValid',
+    displayName : '...',
+    cellTemplate: 'partials/vouchers/templates/status.grid.tmpl.html',
+    width: 40
+  }, {
+    field : 'account',
+    displayName : 'FORM.LABELS.ACCOUNT',
+    headerCellFilter: 'translate',
+    cellTemplate: 'partials/vouchers/templates/account.grid.tmpl.html'
+  }, {
+    field : 'debit',
+    displayName : 'FORM.LABELS.DEBIT',
+    headerCellFilter: 'translate',
+    cellTemplate: 'partials/vouchers/templates/debit.grid.tmpl.html',
+    footerCellClass : 'text-right'
+  }, {
+    field : 'credit',
+    displayName : 'FORM.LABELS.CREDIT',
+    headerCellFilter: 'translate',
+    cellTemplate: 'partials/vouchers/templates/credit.grid.tmpl.html',
+    footerCellClass : 'text-right'
+  }, {
+    field : 'entity',
+    displayName : 'FORM.LABELS.DEBTOR_CREDITOR',
+    headerCellFilter: 'translate',
+    cellTemplate: 'partials/vouchers/templates/entity.grid.tmpl.html',
+  }, {
+    field : 'reference',
+    displayName : 'FORM.LABELS.REFERENCE',
+    headerCellFilter: 'translate',
+    cellTemplate: 'partials/vouchers/templates/reference.grid.tmpl.html',
+  }, {
+    field : 'action', displayName : '...',
+    width: 25,
+    cellTemplate: 'partials/vouchers/templates/remove.grid.tmpl.html',
+  }];
 
-  // register API
-  vm.gridOptions.onRegisterApi = onRegisterApi;
+  // set up the debit/credit aggregators
+  GridAggregators.extendColumnWithAggregator(vm.gridOptions.columnDefs[2], GridAggregators.aggregators.tree.debit);
+  GridAggregators.extendColumnWithAggregator(vm.gridOptions.columnDefs[3], GridAggregators.aggregators.tree.credit);
 
-  /** API register function */
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
   /* ============================= End Grid ================================== */
 
   /** submit data */
@@ -520,7 +535,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
         Receipts.voucher(result.uuid, true);
       })
       .catch(Notify.handleError);
-
   }
 
   startup();

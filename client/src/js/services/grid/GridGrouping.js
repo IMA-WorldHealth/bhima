@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('GridGroupingService', GridGroupingService);
+  .service('GridGroupingService', GridGroupingService);
 
 GridGroupingService.$inject = [
-  'uiGridGroupingConstants', '$filter', 'SessionService', '$timeout', 'util'
+  'GridAggregatorService', 'SessionService', 'uiGridGroupingConstants', '$timeout', 'util'
 ];
 
 /**
@@ -12,54 +12,10 @@ GridGroupingService.$inject = [
  * client side posting journal module. It also provides a number of helper
  * methods that can be used to provide custom transaction grouping.
  */
-function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout, util) {
-
-  // cache the enterprise currency id for easy lookup
-  var currencyId = Session.enterprise.currency_id;
-
-  // cache the currency filter for later lookup
-  var $currency = $filter('currency');
-
-  // alias copy
-  var copy = angular.copy;
-
-  /** @const renders any currencied amount */
-  var DEFAULT_COST_AGGREGATOR = {
-
-    // used to render amounts in the aggregate columns
-    // TODO - this should render the currency from the row set.
-    customTreeAggregationFinalizerFn : function (aggregation) {
-      aggregation.rendered = $currency(aggregation.value, currencyId);
-    },
-
-    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-  };
-
-  /** @const aggregates quantities as needed */
-  var DEFAULT_QUANTITY_AGGREGATOR = {
-    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-  };
-
-  /** @const aggregates by choosing a single item to display */
-  /** @todo - this currently defaults to MAX, should be implemented as its own custom aggregator */
-  var DEFAULT_SINGLE_AGGREGATOR = {
-    treeAggregationType: uiGridGroupingConstants.aggregation.MAX,
-    customTreeAggregationFinalizerFn: function (aggregation) {
-      aggregation.rendered = aggregation.value;
-    }
-  };
+function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, $timeout, util) {
 
   /** @const aggregators assigned by column ids */
-  var DEFAULT_AGGREGATORS = {
-    'debit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
-    'credit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
-    'cost' : copy(DEFAULT_COST_AGGREGATOR),
-    'quantity' : copy(DEFAULT_QUANTITY_AGGREGATOR),
-    'amount' : copy(DEFAULT_QUANTITY_AGGREGATOR),
-    'description' : copy(DEFAULT_SINGLE_AGGREGATOR),
-    'date' : copy(DEFAULT_SINGLE_AGGREGATOR),
-    'trans_date' : copy(DEFAULT_SINGLE_AGGREGATOR), // TODO - eliminate this in favor of "date"
-  };
+  var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
 
   /**
    * @method configureDefaultAggregators
@@ -79,8 +35,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
       var aggregator = DEFAULT_AGGREGATORS[column.field];
 
       if (aggregator) {
-        column.treeAggregationType = aggregator.treeAggregationType;
-        column.customTreeAggregationFinalizerFn = aggregator.customTreeAggregationFinalizerFn;
+        GridAggregators.extendColumnWithAggregator(column, aggregator);
       }
     });
   }
@@ -121,7 +76,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     this.selectedRowCount = gridApi.selection.getSelectedCount();
   }
 
-  //handle the select batch event
+  // handle the select batch event
 
   /**
    * @method configureDefaultGroupingOptions
@@ -145,7 +100,6 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
       gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
 
       gridApi.selection.on.rowSelectionChangedBatch(null, handleBatchSelection.bind(this));
-
     }
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
