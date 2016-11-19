@@ -327,7 +327,8 @@
       "UPDATE_PASSWORD"       : "Modifier mot de passe",
       "UPDATE"                : "Mettre à jour",
       "VALIDATE"              : "Valider",
-      "VIEW_ERRORS"           : "Voir erreurs"
+      "VIEW_ERRORS"           : "Voir Erreurs",
+      "VIEW_DETAILS"          : "Voir les Détails"
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Confirmez vous cette action ?",

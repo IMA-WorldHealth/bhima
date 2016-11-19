@@ -39,7 +39,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       headerCellFilter: 'translate',
       visible: true,
       enableCellEdit: false,
-      cellTemplate: '/partials/journal/templates/error-link.cell.html',
+      cellTemplate: '/partials/journal/templates/details-link.cell.html',
       allowCellFocus: false
     }
   ];
