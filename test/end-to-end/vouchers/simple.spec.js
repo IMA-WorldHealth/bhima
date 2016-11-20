@@ -15,7 +15,7 @@ describe('Simple Vouchers', function () {
     date: yesterday,
     type: 'transfer',
     toAccount: 'Test Debtor Group Account',
-    fromAccount: 'Updated inventory accounts',
+    fromAccount: 'First Test Item Account',
     description: 'Awesome description',
     amount: 100.12
   };

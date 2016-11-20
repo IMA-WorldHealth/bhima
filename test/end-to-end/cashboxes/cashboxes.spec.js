@@ -115,7 +115,7 @@ describe('Cashboxes', function () {
 
     helpers.navigate('#/cashboxes');
     // navigate to the update form for the second item
-    update(2);
+    update(0);
 
     // click the "delete" button
     FU.buttons.delete();

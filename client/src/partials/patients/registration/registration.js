@@ -21,7 +21,7 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
   var vm = this;
 
   vm.submit = submit;
-  vm.enableFullDate = enableFullDate;
+  vm.toggleFullDate = toggleFullDate;
   vm.calculateYOB = calculateYOB;
 
   vm.maxLength = bhConstants.lengths.maxTextLength;
@@ -37,6 +37,18 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
   vm.datepickerOptions = {
     maxDate : new Date(),
     minDate : bhConstants.dates.minDOB
+  };
+
+  var yearOptions = {
+    format : 'yyyy',
+    datepickerMode : 'year',
+    minMode : 'year'
+  };
+
+  var dayOptions = {
+    format : 'dd-MM-yyyy',
+    datepickerMode : 'day',
+    minMode : 'day'
   };
 
   setupRegistration();
@@ -62,11 +74,20 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
       .catch(Notify.handleError);
   }
 
+  function setDateComponent() {
+    var currentOptions = vm.fullDateEnabled ? dayOptions : yearOptions;
+
+    // set the database flag to track if a date is set to JAN 01 or if the date is unknown
+    vm.medical.dob_unknown_date = !vm.fullDateEnabled;
+    angular.merge(vm.datepickerOptions, currentOptions);
+  }
+
   function setupRegistration() {
     vm.finance = {};
     vm.medical = {};
 
-    vm.fullDateEnabled = false;
+    vm.fullDateEnabled = true;
+    setDateComponent();
     vm.yob = null;
 
     vm.medical.origin_location_id = Session.enterprise.location_id;
@@ -76,8 +97,9 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
   /*
    * Date and location utility methods
    */
-  function enableFullDate() {
-    vm.fullDateEnabled = true;
+  function toggleFullDate() {
+    vm.fullDateEnabled = !vm.fullDateEnabled;
+    setDateComponent();
   }
 
   function calculateYOB(value) {

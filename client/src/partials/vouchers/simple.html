@@ -80,12 +80,14 @@
                  <ui-select
                    name="fromAccount"
                    ng-model="SimpleVoucherCtrl.voucher.fromAccount"
-                   theme="bootstrap"
                    required>
                    <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                      <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
                    </ui-select-match>
-                   <ui-select-choices ui-select-focus-patch repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
+                   <ui-select-choices
+                     ui-select-focus-patch
+                     ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
+                     repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
                      <strong ng-bind-html="account.number | highlight:$select.search"></strong>
                      <span ng-bind-html="account.label | highlight:$select.search"></span>
                    </ui-select-choices>
@@ -105,12 +107,14 @@
                 <ui-select
                   name="toAccount"
                   ng-model="SimpleVoucherCtrl.voucher.toAccount"
-                  theme="bootstrap"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
                   </ui-select-match>
-                  <ui-select-choices ui-select-focus-patch repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
+                     <ui-select-choices
+                       ui-select-focus-patch
+                       ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
+                       repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
                     <span ng-bind-html="account.label | highlight:$select.search"></span>
                   </ui-select-choices>

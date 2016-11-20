@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/section_resultats) The section resultat API', function () {
+describe.skip('(/section_resultats) The section resultat API', function () {
 
   var newSectionResultat = {
     text : 'A new Section Resultat',
@@ -11,11 +11,9 @@ describe('(/section_resultats) The section resultat API', function () {
     is_charge : 1
   };
 
-
   var responseKeys = [
     'id', 'text', 'position', 'is_charge'
   ];
-
 
   it('POST /section_resultats adds a section resultat', function () {
     return agent.post('/section_resultats')

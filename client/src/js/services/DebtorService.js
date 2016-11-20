@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('DebtorService', DebtorService);
 
-DebtorService.$inject = [ '$http', 'util' ];
+DebtorService.$inject = [ '$q', '$http', 'util', 'Store' ];
 
 /**
  * Debtor Service
@@ -25,7 +25,7 @@ DebtorService.$inject = [ '$http', 'util' ];
  *
  * @module services/DebtorService
  */
-function DebtorService($http, util) {
+function DebtorService($q, $http, util, Store) {
   var service = this;
 
   /** returns a list of debtors */
@@ -42,6 +42,9 @@ function DebtorService($http, util) {
 
   /** returns a list of invoices owed to a given debtor */
   service.invoices = invoices;
+
+  // load debtors
+  service.store = store;
 
   function read(uuid) {
     var path = '/debtors/';
@@ -76,6 +79,12 @@ function DebtorService($http, util) {
 
     return $http.get(path.replace(':uuid', uuid), { params : params })
       .then(util.unwrapHttpResponse);
+  }
+
+  function store() {
+    return read().then(function (data) {
+      return new Store({ identifier: 'uuid', data: data });
+    });
   }
 
   return service;

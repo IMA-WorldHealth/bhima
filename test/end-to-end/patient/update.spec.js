@@ -12,7 +12,7 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Patient Edit', function () {
-  const patient = '274c51ae-efcc-4238-98c6-f402bfb39866';
+  const patient = '81af634f-321a-40de-bc6f-ceb1167a9f65';
   const path = `#/patients/${patient}/edit`;
 
   before(() => browser.get(path));

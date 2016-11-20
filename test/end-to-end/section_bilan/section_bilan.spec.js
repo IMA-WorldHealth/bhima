@@ -8,7 +8,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Section Bilan Module', function () {
+describe.skip('Section Bilan Module', function () {
   'use strict';
 
   const path = '#/section_bilan';
