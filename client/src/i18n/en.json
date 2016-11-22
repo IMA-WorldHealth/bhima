@@ -247,13 +247,12 @@
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
-    "ADD_EXCHANGE"        : "Add Exchange Rates",
-    "DESCRIPTION"         : "This interface allows you to add an exchange rate",
     "ENTERPRISE_CURRENCY" : "Enterprise Currency",
-    "NEW_RATE"            : "New Rate",
+    "EXCHANGE_RATES"       : "Exchange Rate(s)",
     "REVIEW"              : "Review Rates ",
     "REVIEW_RATE"         : "Review the exchange Rate",
-    "TITLE"               : "Configure Exchange Rates"
+    "TITLE"               : "Configure Exchange Rates",
+    "RATE_SET"            : "rate last set"
   },
   "FISCAL": {
     "ALREADY_CLOSED"        : "Already closed",

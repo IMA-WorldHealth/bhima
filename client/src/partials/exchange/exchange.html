@@ -30,7 +30,7 @@
               <tr id="rate-{{ $index + 1 }}" ng-repeat="rate in ExchangeCtrl.rates | orderBy:'-date' | limitTo:12" ng-click="ExchangeCtrl.update(rate)">
                 <td>{{ rate.date | date }}</td>
                 <td>{{ ExchangeCtrl.formatCurrency(rate.currency_id) }}</td>
-                <td>{{ rate.rate | currency:rate.currency_id }}</td>
+                <td>{{ rate.rate }}</td>
               </tr>
             </tbody>
           </table>
@@ -68,7 +68,7 @@
                 <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(id) }} </label>
                 <div class="col-md-6">
                   {{ row.rate | currency:id }}
-                  <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(id, row)">{{ "FORM.BUTTONS.SUBMIT" | translate }}</a>
+                  <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(id, row)">{{ "FORM.BUTTONS.UPDATE" | translate }}</a>
                 </div>
               </div>
               <div ng-if="!ExchangeCtrl.current">

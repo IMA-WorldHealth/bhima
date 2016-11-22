@@ -45,14 +45,16 @@ function ExchangeRateService($http, util, Currencies, Session) {
 
   /* ------------------------------------------------------------------------ */
 
-  function read() {
+  function read(options) {
     var rates;
+
+    options = options || {};
 
     // if we have local cached rates, return them immediately
     //if (cache) { return $q.resolve(cache); }
 
     // query the exchange_rate table on the backend
-    return $http.get('/exchange')
+    return $http.get('/exchange', options)
       .then(util.unwrapHttpResponse)
       .then(function (data) {
 
