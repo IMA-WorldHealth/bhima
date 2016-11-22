@@ -25,9 +25,7 @@ function ExchangeController(Session, Exchange, Notify, Currencies, $uibModal) {
   }
 
   // formats the currency nicely
-  vm.formatCurrency = function formatCurrency(id) {
-    return Currencies.name(id) + ' (' + Currencies.symbol(id) + ')';
-  };
+  vm.formatCurrency = Currencies.format;
 
   // opens a modal to set a new exchange rate
   vm.setNewExchangeRate = function setNewExchangeRate() {

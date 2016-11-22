@@ -26,7 +26,7 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
   } else {
     vm.text = 'EXCHANGE.NEW_RATE';
     vm.action = 'create';
-  } 
+  }
 
 
   // bind methods
@@ -47,7 +47,7 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
 
     if(creation){
       delete vm.data.id;
-    }  
+    }
 
     promise = (creation) ?
       Rates.create(rate) :

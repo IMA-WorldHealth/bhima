@@ -249,8 +249,6 @@
     "ADDING_RATE"         : "Adding an exchange Rate",
     "ENTERPRISE_CURRENCY" : "Enterprise Currency",
     "EXCHANGE_RATES"       : "Exchange Rate(s)",
-    "REVIEW"              : "Review Rates ",
-    "REVIEW_RATE"         : "Review the exchange Rate",
     "TITLE"               : "Configure Exchange Rates",
     "RATE_SET"            : "rate last set"
   },

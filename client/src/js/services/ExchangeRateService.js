@@ -54,7 +54,7 @@ function ExchangeRateService($http, util, Currencies, Session) {
     //if (cache) { return $q.resolve(cache); }
 
     // query the exchange_rate table on the backend
-    return $http.get('/exchange', options)
+    return $http.get('/exchange', { params: options })
       .then(util.unwrapHttpResponse)
       .then(function (data) {
 
