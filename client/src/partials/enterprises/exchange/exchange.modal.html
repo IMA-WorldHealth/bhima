@@ -1,0 +1,64 @@
+<form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" bh-form-defaults novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">{{ "EXCHANGE.TITLE" | translate }}</li>
+      <li class="title">{{ "EXCHANGE.ADDING_RATE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <bh-date-editor
+      date-value="ModalCtrl.rate.date"
+      validation-trigger="ModalForm.$submitted"
+      max-date="ModalCtrl.timestamp">
+    </bh-date-editor>
+
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.currency_id.$invalid }">
+      <label class="control-label">
+        {{ "FORM.LABELS.CURRENCY" | translate }}
+      </label>
+
+      <ui-select
+        name="currency_id"
+        ng-model="ModalCtrl.rate.currency_id"
+        ng-disabled="ModalCtrl.currencies.length === 1"
+        required>
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CURRENCY' | translate }}">
+          <span>{{ ModalCtrl.format($select.selected.id) }}</span>
+        </ui-select-match>
+        <ui-select-choices
+          ui-select-focus-patch
+          repeat="currency.id as currency in ModalCtrl.currencies | filter:$select.search">
+          <span ng-bind-html="ModalCtrl.format(currency.id) | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="ModalForm.currency_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }"
+      >
+      <label class="control-label">{{ "FORM.LABELS.EXCHANGE_RATE" | translate }}</label>
+      <input class="form-control" type="number" name="rate" ng-model="ModalCtrl.rate.rate" required>
+      <div class="help-block" ng-messages="ModalForm.rate.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
+  </div>
+</form>
