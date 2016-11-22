@@ -20,7 +20,6 @@ describe('Enterprises ::', function () {
     email : 'ima@imaworldhealth.com',
     po_box : 'POBOX USA 1',
     phone : '01500',
-    currency_id : 2,
     gain_account : 'Test Gain Account',
     loss_account : 'Test Expense Accounts'
   };
@@ -32,7 +31,6 @@ describe('Enterprises ::', function () {
     email : 'enterprise@test.org',
     po_box : 'POBOX USA 1',
     phone : '243 81 504 0540',
-    currency_id : 2,
     gain_account : 'Test Gain Account',
     loss_account : 'Test Expense Accounts'
   };
@@ -62,9 +60,6 @@ describe('Enterprises ::', function () {
 
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
-
-    // currency select
-    components.currencySelect.set(enterprise.currency_id);
 
     FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', enterprise.gain_account);
     FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', enterprise.loss_account);
@@ -109,9 +104,6 @@ describe('Enterprises ::', function () {
 
      FU.input('EnterpriseCtrl.enterprise.name', default_enterprise.name);
      FU.input('EnterpriseCtrl.enterprise.abbr', default_enterprise.abbr);
-
-     // currency select
-     components.currencySelect.set(default_enterprise.currency_id);
 
      FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', default_enterprise.gain_account);
      FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', default_enterprise.loss_account);
