@@ -54,11 +54,6 @@
                 </div>
               </div>
 
-              <bh-currency-select
-                currency-id="EnterpriseCtrl.enterprise.currency_id"
-                validation-trigger="EnterpriseCtrl.$submitted">
-              </bh-currency-select>
-
               <!-- gain account  -->
               <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.gain_account.$invalid }">
                 <label class="control-label">
@@ -176,29 +171,31 @@
 
       <!-- project form  -->
       <div class="col-md-6">
-
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <b><i class="fa fa-cube"></i> {{ 'TREE.PROJECT' | translate }}</b>
-            </div>
-
-            <ul class="list-group">
-              <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
-                <i class="fa fa-hospital-o"></i>
-                <span>{{ p.name }} ({{ p.abbr }})</span>
-                <a data-delete="{{ p.abbr }}" class="badge badge-danger" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)"><i class="fa fa-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}</a>
-                <a data-update="{{ p.abbr }}" class="badge badge-info" ng-click="EnterpriseCtrl.editProject(p.id)"><i class="fa fa-edit"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}</a>
-              </li>
-            </ul>
-
-            <div class="panel-footer text-right">
-              <button type="submit" class="btn btn-default"
-                data-method="create"
-                ng-click="EnterpriseCtrl.addProject()">
-                <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
-              </button>
-            </div>
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <b><i class="fa fa-cube"></i> {{ 'TREE.PROJECT' | translate }}</b>
           </div>
+
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
+              <i class="fa fa-hospital-o"></i>
+              <span>{{ p.name }} ({{ p.abbr }})</span>
+              <a data-delete="{{ p.abbr }}" class="badge badge-danger" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)"><i class="fa fa-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}</a>
+              <a data-update="{{ p.abbr }}" class="badge badge-info" ng-click="EnterpriseCtrl.editProject(p.id)"><i class="fa fa-edit"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}</a>
+            </li>
+          </ul>
+
+          <div class="panel-footer text-right">
+            <button type="submit" class="btn btn-default"
+              data-method="create"
+              ng-click="EnterpriseCtrl.addProject()">
+              <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- embedded exchange rate -->
+        <div ui-view="exchange"></div>
 
       </div>
     </div>

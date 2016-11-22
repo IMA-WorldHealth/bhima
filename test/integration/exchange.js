@@ -23,7 +23,17 @@ describe('(/exchange) The /exchange API endpoint', function () {
   it('GET /exchange returns a list of exchange rates', function () {
     return agent.get('/exchange')
       .then(function (res) {
-        expect(res).to.have.status(200);
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  it('GET /exchange?limit=1 only returns one exchange rate', function () {
+    return agent.get('/exchange')
+      .query({ limit : 1 })
+      .then(function (res) {
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
@@ -60,8 +70,8 @@ describe('(/exchange) The /exchange API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /exchange should update an Unknow exchange rate', function () {
-    return agent.put('/exchange/inknowexchangerate')
+  it('PUT /exchange should update an unknown exchange rate', function () {
+    return agent.put('/exchange/unknownexchangerate')
       .send({ rate : 1000000 })
       .then(function (res) {
 
@@ -73,7 +83,7 @@ describe('(/exchange) The /exchange API endpoint', function () {
 
 
   it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', function () {
-    return agent.delete('/exchange/inknowexchangerate')
+    return agent.delete('/exchange/unknownexchangerate')
       .then(function (res) {
 
         // make sure the API conforms to app standards

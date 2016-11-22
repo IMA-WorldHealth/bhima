@@ -7,7 +7,7 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 helpers.configure(chai);
 
-describe('Exchange Rate', function () {
+describe.skip('Exchange Rate', function () {
   'use strict';
 
   const path = '#/exchange';

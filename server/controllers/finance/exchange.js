@@ -20,29 +20,51 @@ function getExchangeRate(enterpriseId, currencyId, date) {
     .then(rows => rows[0]);
 }
 
-// GET /exchange
-//
-// The enterprise currency is assumed from the session.
+/**
+ * @method list
+ *
+ * @description
+ * This function lists all exchange rates in the database tied to
+ * the session enterprises.
+ *
+ * URL: /exchange
+ */
 exports.list = function list(req, res, next) {
-  var enterprise = req.session.enterprise;
+  const enterprise = req.session.enterprise;
+  const options  = req.query;
 
-  exchangeRateList(enterprise.id)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+  getExchangeRateList(enterprise.id, options)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
-// exchange rate list
-function exchangeRateList(enterpriseId) {
-  let sql =
-    `SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date,
+/**
+ * @function getExchangeRateList
+ * @private
+ *
+ * @description
+ * Returns the list of exchange rates tied to a particular enterprise.
+ */
+function getExchangeRateList(enterpriseId, options) {
+
+  options = options || {};
+
+  const limit = Number(options.limit);
+  const limitQuery = Number.isNaN(limit) ? '' : `LIMIT ${limit}`;
+
+  const sql = `
+    SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date,
       enterprise.currency_id AS 'enterprise_currency_id'
     FROM exchange_rate
     JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
     WHERE exchange_rate.enterprise_id = ?
-    ORDER BY date;`;
+    ORDER BY date DESC
+    ${ limitQuery };
+  `;
+
   return db.exec(sql, [enterpriseId]);
 }
 
@@ -51,7 +73,7 @@ exports.create = function create(req, res, next) {
   var sql,
       data = req.body.rate;
 
-  // preprocess dates for mysql insertion
+  // pre-process dates for mysql insertion
   if (data.date) {
     data.date = new Date(data.date);
   }

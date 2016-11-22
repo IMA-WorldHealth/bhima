@@ -25,16 +25,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     controller : 'LoginController as LoginCtrl',
     templateUrl : 'partials/login/login.html'
   })
-  .state('enterprises', {
-    url : '/enterprises',
-    controller: 'EnterpriseController as EnterpriseCtrl',
-    templateUrl: 'partials/enterprises/enterprises.html'
-  })
-  .state('exchange', {
-    url : '/exchange',
-    controller : 'ExchangeRateController as ExchangeCtrl',
-    templateUrl: 'partials/exchange/exchange.html'
-  })
   .state('settings', {
     url : '/settings?previous',
     controller: 'settings as SettingsCtrl',
