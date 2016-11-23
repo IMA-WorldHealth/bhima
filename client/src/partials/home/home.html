@@ -28,7 +28,7 @@
               <dd>
                 <div ng-repeat="currency in HomeCtrl.currencies track by currency.id" style="padding-left:15px;">
                   <em>{{ currency.name }}</em> {{ currency.rate | currency:currency.id }}
-                  <a href ui-sref="exchange">
+                  <a href ui-sref="enterprises.page">
                     <span class="glyphicon glyphicon-link"></span>
                     {{ ::"FORM.BUTTONS.UPDATE" | translate }}
                   </a>
