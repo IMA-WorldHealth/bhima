@@ -51,7 +51,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       },
       { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
       { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
-      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate'},
+      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right' },
       { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
       { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
       { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate'},
@@ -119,5 +119,4 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     })
     .catch(Notify.handleError);
   }
-
 }

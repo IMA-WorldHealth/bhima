@@ -33,27 +33,20 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
     var record = Inventory.clean(vm.session);
     map[vm.action](record, vm.identifier)
-    .then(function (res) {
-      Instance.close(res);
-    });
+      .then(function (res) {
+        Instance.close(res);
+      })
+      .catch(Notify.handleError);
   }
 
   /** add inventory list */
   function addList(record) {
-    return Inventory.create(record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+    return Inventory.create(record);
   }
 
   /** edit inventory list */
   function editList(record, uuid) {
-    return Inventory.update(uuid, record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+    return Inventory.update(uuid, record);
   }
 
   /** cancel action */
@@ -72,7 +65,7 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
       vm.inventoryGroupList = list;
       GroupStore = new Store({ identifier: 'uuid', data: vm.inventoryGroupList });
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
     // Inventory Group
     InventoryType.read()
@@ -80,7 +73,7 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
       vm.inventoryTypeList = list;
       TypeStore = new Store({ data: vm.inventoryTypeList });
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
     // Inventory Unit
     InventoryUnit.read()
@@ -88,19 +81,18 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
       vm.inventoryUnitList = list;
       UnitStore = new Store({ data: vm.inventoryUnitList });
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
     if (vm.identifier) {
       Inventory.read(vm.identifier)
-      .then(function (list) {
-        vm.session = list;
-        vm.session.group = GroupStore.get(vm.session.group_uuid);
-        vm.session.type  = TypeStore.get(vm.session.type_id);
-        vm.session.unit = UnitStore.get(vm.session.unit_id);
-      })
-      .catch(Notify.errorHandler);
+        .then(function (list) {
+          vm.session = list;
+          vm.session.group = GroupStore.get(vm.session.group_uuid);
+          vm.session.type  = TypeStore.get(vm.session.type_id);
+          vm.session.unit = UnitStore.get(vm.session.unit_id);
+        })
+        .catch(Notify.handleError);
     }
-
   }
 
 }
