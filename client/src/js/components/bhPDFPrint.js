@@ -33,7 +33,7 @@ angular.module('bhima.components')
 });
 
 
-bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
+bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'LanguageService'];
 
 /**
  * @class bhPDFPrintController
@@ -61,7 +61,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout) {
+function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
   var cachedRequest;
   var component = this;
 
@@ -73,7 +73,8 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
 
   /** @todo update all options (receipt modal + direct print directive to use bhConstants included in account management PR */
   var pdfOptions = {
-    renderer : 'pdf'
+    renderer : 'pdf',
+    lang : Languages.key
   };
   var responseType = 'arraybuffer';
   var pdfType = 'application/pdf';
