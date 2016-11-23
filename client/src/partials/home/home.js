@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 HomeController.$inject = [
   'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService',
-  '$translate', '$scope', 'NotifyService', 'FiscalService'
+  '$translate', '$scope', 'NotifyService', 'FiscalService', 'moment'
 ];
 
 /**
@@ -17,10 +17,12 @@ HomeController.$inject = [
  * @todo - implement fiscal year client-side services to get relevant fiscal year
  * services and information.
  */
-function HomeController(Currencies, Rates, Session, System, $translate, $scope, Notify, Fiscal) {
+function HomeController(Currencies, Rates, Session, System, $translate, $scope, Notify, Fiscal, Moment) {
   var vm = this;
 
   vm.today = new Date();
+
+  vm.primaryExchange = {};
 
   // bind the session information
   vm.project = Session.project;
@@ -44,7 +46,12 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
     .then(function () {
       vm.currencies.forEach(function (currency) {
         currency.rate = Rates.getCurrentRate(currency.id);
+        currency.formattedDate = new Moment(currency.date).format('LL');
       });
+
+      // @TODO Method for selecting primary exchange
+      vm.primaryExchange = vm.currencies[0];
+      console.log(vm.primaryExchange);
     })
     .catch(Notify.handleError);
 

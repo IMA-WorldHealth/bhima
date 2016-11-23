@@ -810,3 +810,27 @@ growl-notification.fading.ng-leave.ng-leave-active {
   margin-right: auto;
   margin-left: auto
 }
+
+/* @TODO Move all panel/ panel-body styles into segment */
+.segment {
+  margin-bottom : 5px;
+}
+
+.segment > .panel-body {
+  /* padding-top : 5px; */
+}
+.segment-title {
+  position : absolute;
+  top : 3px;
+  left : 10px;
+  text-align : left;
+  color : #a8a8a8;
+}
+
+.progress-bar {
+  transition : none;
+}
+
+.progress-bar.ima-blue {
+  background-color : #085484;
+}
