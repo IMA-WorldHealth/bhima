@@ -15,9 +15,10 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql =
-    `SELECT c.id, c.name, c.note, c.format_key,
-      c.symbol, c.min_monentary_unit
-    FROM currency AS c;`;
+    `SELECT currency.id, currency.name, currency.note, currency.format_key,
+      currency.symbol, currency.min_monentary_unit, latest_rate.date
+    FROM currency left join (select * from exchange_rate group by id order by date asc) as latest_rate
+    ON currency.id = latest_rate.currency_id group by currency.id;`;
 
   db.exec(sql)
   .then(function (rows) {

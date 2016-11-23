@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ ::HomeCtrl.enterprise.name }}</li>
-      <li class="title">{{ ::HomeCtrl.project.name }}</li>
+      <li class="static" style="text-transform : uppercase">{{ "HOME.BHIMA" | translate }}</li>
+      <li class="title">{{ ::HomeCtrl.enterprise.name }}</li>
     </ol>
   </div>
 </div>
@@ -11,59 +11,102 @@
   <div class="container-fluid">
 
     <div class="row">
+      <div class="col-md-12">
 
-      <!-- project information panel -->
-      <div class="col-md-8">
-        <div class="panel panel-default" style="min-height:30vh;">
+        <div class="panel panel-default segment">
           <div class="panel-body">
-            <h4>
-              {{ ::HomeCtrl.project.name }} <small>{{ ::HomeCtrl.project.abbr }}</small>
-              <small class="pull-right"><span class="glyphicon glyphicon-calendar"></span> {{ ::HomeCtrl.today | date }}</small>
-            </h4>
-            <dl>
-              <dt>{{ ::"FORM.LABELS.CURRENCY" | translate }}</dt>
-              <dd>{{ ::HomeCtrl.enterprise.currencyLabel }}</dd>
+            <h1 style="margin-top : 10px">{{ HomeCtrl.enterprise.name }}</h1>
+          </div>
+        </div>
 
-              <dt>{{ ::"TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</dt>
-              <dd>
-                <div ng-repeat="currency in HomeCtrl.currencies track by currency.id" style="padding-left:15px;">
-                  <em>{{ currency.name }}</em> {{ currency.rate | currency:currency.id }}
-                  <a href ui-sref="enterprises.page">
-                    <span class="glyphicon glyphicon-link"></span>
-                    {{ ::"FORM.BUTTONS.UPDATE" | translate }}
-                  </a>
-                </div>
-              </dd>
+      </div>
+    </div>
 
-              <dt>
-                {{ ::"TREE.FISCAL_YEAR" | translate }}
-                <bh-info template="/partials/home/fiscal.popover.html"></bh-info>
-              </dt>
-              <dd>
-                <div class="progress" style="margin-bottom:0px;">
-                  <div class="progress-bar" role="progressbar" style="width:{{HomeCtrl.year.percentage}}%;">
-                    {{ HomeCtrl.year.percentage | percentage }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-6">
-                    {{ HomeCtrl.year.start_date | date }}
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    {{ HomeCtrl.year.end_date | date }}
-                  </div>
-                </div>
-              </dd>
-            </dl>
+    <div class="row">
+      <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title">Project</div>
+            <div class="ui huge ima-blue statistic">
+              <div class="value">
+                {{HomeCtrl.project.abbr}}
+              </div>
+              <div class="uilabel">
+                {{HomeCtrl.project.name}}
+              </div>
+            </div>
+            <!-- <h1>{{ HomeCtrl.project.abbr }}</h1> -->
+            <!-- <br> -->
+            <!-- {{ HomeCtrl.project.name }} -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title">Enterprise Currency</div>
+            <div class="ui huge ima-blue statistic">
+              <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div>
+              <div class="uilabel">{{ HomeCtrl.enterprise.currencyLabel }}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- system information panel -->
       <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title">{{ ::"TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</div>
+            <div class="ui huge ima-blue statistic">
+              <div class="value">{{ HomeCtrl.primaryExchange.rate}}({{ HomeCtrl.primaryExchange.symbol }})</div>
+              <!-- <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div> -->
+              <div class="uilabel">Set on {{ HomeCtrl.primaryExchange.formattedDate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default segment">
+          <div class="panel-body">
+            <div class="segment-title">Fiscal year</div>
+
+            <div style="margin-top : 12px">
+            <div class="progress" style="margin-bottom:0px;">
+              <div class="ima-blue progress-bar" role="progressbar" style="width:{{HomeCtrl.year.percentage}}%;">
+                {{ ::HomeCtrl.today | date }}
+              </div>
+            </div>
+
+            <!-- Ensure column padding is appropriate -->
+            <div class="row">
+              <div class="col-xs-6">
+                {{ HomeCtrl.year.start_date | date }}
+              </div>
+              <div class="col-xs-6 text-right">
+                {{ HomeCtrl.year.end_date | date }}
+              </div>
+            </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <!-- system information panel -->
+      <div class="col-md-12">
         <div class="panel panel-default" style="min-height:30vh;">
           <div class="panel-heading">
-            <span class="glyphicon glyphicon-info-sign"></span> {{ ::"SYSTEM.INFORMATION" | translate }}
+             {{ ::"SYSTEM.INFORMATION" | translate }}
           </div>
           <div class="panel-body">
             <dl class="dl-horizontal">
