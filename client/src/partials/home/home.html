@@ -89,47 +89,5 @@
         </div>
       </div>
     </div>
-
-    <!--
-      chart graphic
-      @todo - should this be in a separate <ui-view>?
-    -->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="panel panel-default" style="max-height: 50vh; padding:15px;">
-          <div class="pull-right" uib-dropdown>
-            <button class="btn btn-default" uib-dropdown-toggle>
-              <span class="glyphicon glyphicon-cog" ng-hide="HomeCtrl.selected"></span>
-              {{ HomeCtrl.selected | translate }}
-              <span class="caret"></span>
-            </button>
-            <ul role="menu" uib-dropdown-menu>
-              <li
-                role="menuitem"
-                ng-repeat="chart in HomeCtrl.charts track by chart.label"
-                ng-class="{ 'active' : HomeCtrl.selected == chart.label }">
-                <a
-                  ng-click="HomeCtrl.selectChart(chart)"
-                  ng-disabled="HomeCtrl.selected==chart.label"
-                  href>
-                  {{ chart.label | translate }}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <h4>{{ ::"SYSTEM.EVENTS" | translate }} <small>{{ HomeCtrl.graph.label | translate }}</small></h4>
-          <canvas
-            height="75vh"
-            class="chart chart-line"
-            chart-data="HomeCtrl.graph.data"
-            chart-labels="HomeCtrl.graph.labels"
-            chart-series="HomeCtrl.graph.series"
-            chart-options="HomeCtrl.graph.options"
-            chart-colors="HomeCtrl.graph.colors">
-          </canvas>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
