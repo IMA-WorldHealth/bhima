@@ -32,7 +32,7 @@
       </div>
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.INVOICE'}}</span>: <strong>{{reference}}</strong> <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency cost}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency cost metadata.enterprise.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date date}} <br>
         <span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{user.display_name}}
       </div>
@@ -65,14 +65,14 @@
       <tr>
         <td>{{this.code}}</td>
         <td>{{this.text}}</td>
-        <td class="text-right">{{currency this.transaction_price}}</td>
+        <td class="text-right">{{currency this.transaction_price ../metadata.enterprise.currency_id}}</td>
         <td class="text-right">{{quantity}}</td>
-        <td class="text-right">{{currency (multiply this.transaction_price quantity)}}</td>
+        <td class="text-right">{{currency (multiply this.transaction_price quantity) ../metadata.enterprise.currency_id}}</td>
       </tr>
       {{/each}}
       <tr>
         <td colspan="4" class="text-right">{{translate 'TABLE.COLUMNS.TOTAL'}}</td>
-        <td class="text-right">{{currency (sum items 'transaction_price' 'quantity')}}</td>
+        <td class="text-right">{{currency (sum items 'transaction_price' 'quantity') metadata.enterprise.currency_id}}</td>
       </tr>
     </tbody>
   </table>
@@ -91,16 +91,16 @@
               <td class="text-right">
                 ({{this.label}} {{this.billing_value}}%
                 {{translate 'FORM.LABELS.OF'}}
-                {{currency (sum ../items 'transaction_price' 'quantity')}}) =
+                {{currency (sum gitems 'transaction_price' 'quantity') ../metadata.enterprise.currency_id}}) =
               </td>
               <td class="text-right">
-                +{{currency this.value}}
+                +{{currency this.value ../metadata.enterprise.currency_id}}
               </td>
             </tr>
           {{/each}}
           <tr style="font-weight: bold;">
             <td class="text-right">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.BILLING_SERVICES'}}) = </td>
-            <td class="text-right">+{{currency (sum billing 'value')}}</td>
+            <td class="text-right">+{{currency (sum billing 'value') ../metadata.enterprise.currency_id}}</td>
           </tr>
         </table>
       {{/if}}
@@ -113,7 +113,7 @@
               <h4><u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :</h4>
             </td>
             <td class="text-right">
-              <b>-{{currency (sum subsidy 'value')}}</b>
+              <b>-{{currency (sum subsidy 'value') metadata.enterprise.currency_id}}</b>
             </td>
           </tr>
         </table>
@@ -126,7 +126,7 @@
             <h1>{{translate 'FORM.LABELS.TOTAL'}} : </h1>
           </td>
           <td class="text-right">
-            <h1><b>{{currency cost}}</b></h1>
+            <h1><b>{{currency cost metadata.enterprise.currency_id}}</b></h1>
           </td>
         </tr>
       </table>
