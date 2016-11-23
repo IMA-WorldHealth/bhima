@@ -8,15 +8,16 @@ InventoryListActionsModalController.$inject = [
 ];
 
 function InventoryListActionsModalController(Account, Inventory, InventoryGroup, InventoryType, InventoryUnit, Notify, Instance, Store, Data) {
-  var vm = this, session = vm.session = {};
+  var vm = this;
+  var item = vm.item = {};
 
   // variables for storage
-  var GroupStore = {},
-      TypeStore  = {},
-      UnitStore  = {};
+  var GroupStore = {};
+  var TypeStore  = {};
+  var UnitStore  = {};
 
-  // map for actions
-  var map = { 'add' : addList, 'edit' : editList };
+  vm.isCreateState = Data.action === 'add';
+  vm.isEditState = Data.action === 'edit';
 
   // expose to the view
   vm.submit = submit;
@@ -29,22 +30,22 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var record = Inventory.clean(vm.session);
-    return map[vm.action](record, vm.identifier)
+    var record = Inventory.clean(vm.item);
+
+    var promise = vm.isCreateState ?
+      Inventory.create(record) :
+      Inventory.update(vm.identifier, record);
+
+    promise
       .then(function (res) {
+        var message = vm.isCreateState ?
+          'FORM.INFO.CREATE_SUCCESS' :
+          'FORM.INFO.UPDATE_SUCCESS';
+
+        Notify.success(message);
         Instance.close(res);
       })
       .catch(Notify.handleError);
-  }
-
-  /** add inventory list */
-  function addList(record) {
-    return Inventory.create(record);
-  }
-
-  /** edit inventory list */
-  function editList(record, uuid) {
-    return Inventory.update(uuid, record);
   }
 
   /** cancel action */
@@ -83,11 +84,11 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
     if (vm.identifier) {
       Inventory.read(vm.identifier)
-        .then(function (list) {
-          vm.session = list;
-          vm.session.group = GroupStore.get(vm.session.group_uuid);
-          vm.session.type  = TypeStore.get(vm.session.type_id);
-          vm.session.unit = UnitStore.get(vm.session.unit_id);
+        .then(function (item) {
+          vm.item = item;
+          vm.item.group = GroupStore.get(vm.item.group_uuid);
+          vm.item.type  = TypeStore.get(vm.item.type_id);
+          vm.item.unit = UnitStore.get(vm.item.unit_id);
         })
         .catch(Notify.handleError);
     }
