@@ -53,9 +53,8 @@ INSERT INTO unit VALUES
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payment', '/finance/reports/cash_payment'),
   (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense'),
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
-  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
+  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts');
-
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -263,12 +262,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Balance report
 (150, 1),
 
--- The Report accounts
-(152,1),
-
-
 -- Report Customer Debts
-(151,1);
+(151, 1),
+
+-- The Report accounts
+(152,1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -424,23 +422,32 @@ INSERT INTO `voucher_item` VALUES
   (HUID(UUID()), 3628, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
 
 -- patient invoices
-SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
+SET @first_invoice  = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
+SET @third_invoice  = HUID('7dbd811b-6f47-4942-8ee4-087dc818dae0');
 
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at, is_distributable) VALUES
   (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
-  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
+  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1),
+  (1,3,@third_invoice,130.0000,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),1,1,'2016-11-11 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-11-11 14:31:14',1);
 
 INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
-  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
+  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000),
+  (@third_invoice,HUID('2e1442a7-3e75-671e-823d-42ad135ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),4,25.0000,25.0000,0.0000,200.0000);
 
 -- caution payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
+SET @cash_payment2 = HUID('ceed8548-654f-4071-b60b-b85f04acbb59');
 
 -- @todo Make sure this is in the posting_journal
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
-  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
+  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
+  (@cash_payment2, 1, 3, '2016-11-11 14:33:13', HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 2, 30.0000, 1, 2, "Cash Paiement", 1);
+
+-- @cash_item
+INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
+  (HUID(UUID()), @cash_payment, 100, @first_invoice);
 
 INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
@@ -453,8 +460,16 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,'D',NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
-
+  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@cash_payment2, 'Cash Payment',3631,0.0000,30.0000,0.0000,30.0000,2,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS7','2016-01-09 14:35:55',@cash_payment2, 'Cash Payment',3627,30.0000,0.0000,30.0000,0.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Billing',3626,0.0000,20.0000,0.0000,20.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Billing',3626,0.0000,40.0000,0.0000,40.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Subsidy',3626,130.0000,0.0000,130.0000,0.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Invoicing',3636,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS6','2016-01-09 14:35:55',@third_invoice, 'Invoicing',3631,130.0000,0.0000,130.0000,0.0000,2,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'D',NULL,NULL,1,2,1,NULL);
+    
+    
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
   (1,'Zone Sante A','Territoire A','Province A'),

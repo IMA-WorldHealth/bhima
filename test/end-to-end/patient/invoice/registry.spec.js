@@ -16,7 +16,7 @@ describe('Invoice Registry', () => {
 
   const path = '#/invoices';
   const page = new InvoiceRegistryPage();
-  const numInvoices = 5;
+  const numInvoices = 6;
 
   // This will be run before every single test ('it') - navigating the browser to the correct page.
   before(() => helpers.navigate(path));
@@ -35,7 +35,7 @@ describe('Invoice Registry', () => {
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
 
-    element(by.id('TPA1')).click();
+    element(by.id('TPA2')).click();
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();

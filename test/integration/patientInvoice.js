@@ -13,7 +13,7 @@ describe('(/invoices) Patient Invoices', function () {
   'use strict';
 
   /* total number of invoices in the database */
-  const numInvoices = 2;
+  const numInvoices = 3;
   const numCreatedInvoices = 3;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';

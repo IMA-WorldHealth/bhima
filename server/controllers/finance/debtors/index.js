@@ -267,7 +267,7 @@ function financialPatient(debtorUuid) {
       FROM general_ledger
       LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
-      WHERE general_ledger.entity_uuid = ?
+      WHERE general_ledger.entity_uuid = ? 
     ) as transaction
     GROUP BY transaction.trans_id
     ORDER BY transaction.trans_date ASC;`;

@@ -39,13 +39,6 @@ function TrialBalanceTest(){
     expect(trialBalance.getLineCount()).to.eventually.equal(3);
     trialBalance.switchView(); //from group by transaction to account
 
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    trialBalance.viewErrorList(); //will print error grid
-
-    expect(trialBalanceError.getLineCount()).to.eventually.equal(2);
-    trialBalanceError.reset(); //back to the group by account view
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-
     trialBalance.showAccountDetailInTransaction(0); //will print list of transaction relative to selected account line(index 0 in occurrence)
     expect(trialBalanceDetail.getLineCount()).to.eventually.equal(3);
     trialBalanceDetail.reset();

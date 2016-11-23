@@ -14,7 +14,7 @@ function InvoiceRegistrySearch() {
   'use strict';
 
   const params = {
-    monthBillNumber : 0,
+    monthBillNumber : 1,
     referenceValue : 'TPA2',
     serviceValue : 'Test Service',
     userValue : 'Super User',
@@ -89,13 +89,13 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it('filters by <select> should return two results', () => {
+  it('filters by <select> should return three results', () => {
     FU.buttons.search();
     FU.select('ModalCtrl.params.service_id', 'Test Service');
     FU.select('ModalCtrl.params.user_id', 'Super User');
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(2);
 
     // make sure to clear the filters for the next test
