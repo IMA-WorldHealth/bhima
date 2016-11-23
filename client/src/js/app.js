@@ -136,42 +136,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   /* inventory routes */
 
-  .state('inventory', {
-    controller: 'inventory',
-    templateUrl: '/partials/inventory/index.html'
-  })
-  .state('inventoryList', {
-    url : '/inventory/list',
-    controller : 'InventoryListController as InventoryCtrl',
-    templateUrl : 'partials/inventory/list/list.html'
-  })
-  .state('inventoryConfiguration', {
-    url : '/inventory/configuration',
-    views : {
-      '' : {
-        templateUrl : 'partials/inventory/configuration/configuration.html',
-        controller : 'InventoryConfigurationController as InventoryCtrl'
-      },
-      'groups@inventoryConfiguration' : {
-        templateUrl : 'partials/inventory/configuration/groups/groups.html',
-        controller : 'InventoryGroupsController as GroupsCtrl'
-      },
-      'types@inventoryConfiguration' : {
-        templateUrl : 'partials/inventory/configuration/types/types.html',
-        controller : 'InventoryTypesController as TypesCtrl'
-      },
-      'units@inventoryConfiguration' : {
-        templateUrl : 'partials/inventory/configuration/units/units.html',
-        controller : 'InventoryUnitsController as UnitsCtrl'
-      }
-    }
-  })
-  // @TODO IMPLEMENT THEM
-  // .state('/inventory/types',  {
-  //   url : '/inventory/types',
-  //   controller : 'InventoryTypesController as InventoryCtrl',
-  //   templateUrl : 'partials/inventory/types/types.html'
-  // })
   .state('prices', {
     url : '/prices',
     controller: 'PriceListController as PriceListCtrl',

@@ -27,12 +27,10 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) {
-      return;
-    }
+    if (form.$invalid) { return; }
 
     var record = Inventory.clean(vm.session);
-    map[vm.action](record, vm.identifier)
+    return map[vm.action](record, vm.identifier)
       .then(function (res) {
         Instance.close(res);
       })
@@ -94,5 +92,4 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
         .catch(Notify.handleError);
     }
   }
-
 }

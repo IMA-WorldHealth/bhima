@@ -4,14 +4,14 @@ angular.module('bhima.controllers')
 // dependencies injection
 InventoryListController.$inject = [
   '$translate', 'InventoryService', 'NotifyService',
-  'uiGridConstants', 'ModalService'
+  'uiGridConstants', 'ModalService', '$state'
 ];
 
 /**
  * Inventory List Controllers
  * This controller is responsible of the inventory list module
  */
-function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal) {
+function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state) {
   var vm = this;
 
   /** gobal variables */
@@ -81,14 +81,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** add inventory item */
   function addInventoryItem() {
-    var request = { action : 'add' };
-
-    return Modal.openInventoryListActions(request)
-    .then(function (res) {
-      startup();
-      Notify.success($translate.instant('FORM.INFO.SAVE_SUCCESS'));
-    })
-    .catch(Notify.errorHandler);
+    $state.go('inventory.create');
   }
 
   /** update inventory item */
