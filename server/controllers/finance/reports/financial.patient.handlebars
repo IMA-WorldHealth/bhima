@@ -28,8 +28,8 @@
             <td>{{this.trans_id}}</td>
             <td>{{date this.date}}</td>
             <td>{{this.description}}</td>
-            <td>{{currency this.debit currency_id}}</td>
-            <td>{{currency this.credit currency_id}}</td>
+            <td>{{currency this.debit ../metadata.enterprise.currency_id}}</td>
+            <td>{{currency this.credit ../metadata.enterprise.currency_id}}</td>
           </tr>
         {{else}}       
           <tr>
@@ -42,11 +42,11 @@
       <tfoot>
         <tr>
           <td colspan="4">{{translate "FORM.LABELS.TOTAL" }}</td>
-          <td>{{currency sum.debit currency_id}}</td>
-          <td>{{currency sum.credit currency_id}}</td>
+          <td>{{currency sum.debit metadata.enterprise.currency_id}}</td>
+          <td>{{currency sum.credit metadata.enterprise.currency_id}}</td>
         </tr>       
         <tr>
-          <th colspan="6" class="text-right">{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</th>
+          <th colspan="6" class="text-right">{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance metadata.enterprise.currency_id}}</th>
         </tr>
       </tfoot>
     </table>
