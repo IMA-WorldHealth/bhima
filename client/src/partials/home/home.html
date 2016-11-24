@@ -105,14 +105,19 @@
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            Debtors
+            Enterprise Debtors
           </div>
           <div class="panel-body" style="padding : 5px;">
+            <p ng-if="HomeCtrl.noDebt" class="text-info" style="margin-top : 3px;">
+              <i class="fa fa-info-circle"></i> All debts to the enterprise are balanced
+            </p>
             <canvas
                height="120"
                class="chart chart-pie"
                chart-data="HomeCtrl.owedGraph.data"
-               chart-colors="HomeCtrl.owedGraph.colors">
+               chart-colors="HomeCtrl.owedGraph.colors"
+               chart-labels="HomeCtrl.owedGraph.labels"
+               chart-options="HomeCtrl.owedGraph.options">
             </canvas>
           </div>
         </div>

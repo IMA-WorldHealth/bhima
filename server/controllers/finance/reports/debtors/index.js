@@ -32,9 +32,7 @@ const REPORT_KEY = 'AGED_DEBTOR';
  * The HTTP interface which actually creates the report.
  */
 function agedDebtorReport(req, res, next) {
-
   const qs = req.query;
-
   const metadata = _.clone(req.session);
 
   let report;
@@ -44,8 +42,33 @@ function agedDebtorReport(req, res, next) {
     return next(e);
   }
 
+  // fire the SQL for the report
+  queryContext(qs)
+    .then(function (data) {
+      return report.render(data);
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method queryContext
+ *
+ * @param {Object} params Paramters passed in to customise the report - these
+ *                        are usually passed in through the query string
+ * @description
+ * The HTTP interface which actually creates the report.
+ */
+function queryContext(queryParams) {
+  const params = queryParams || {};
   const havingNonZeroValues = ' HAVING total > 0 ';
-  const includeZeroes = Boolean(Number(qs.zeroes));
+  const includeZeroes = Boolean(Number(params.zeroes));
+
+  // format the dates for MySQL escape
+  const dates = _.fill(Array(4), new Date(params.date));
 
   const data = {};
 
@@ -78,24 +101,16 @@ function agedDebtorReport(req, res, next) {
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
 
-  // format the dates for MySQL escape
-  const dates = _.fill(Array(4), new Date(qs.date));
-
-  // fire the SQL for the report
-  db.exec(debtorSql, dates)
+  return db.exec(debtorSql, dates)
     .then(debtors => {
       data.debtors = debtors;
       return db.exec(aggregateSql, dates);
     })
     .then(aggregates => {
       data.aggregates = aggregates[0];
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+      return data;
+    });
 }
 
+exports.context = queryContext;
 exports.aged = agedDebtorReport;
