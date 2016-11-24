@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 HomeController.$inject = [
   'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService',
-  '$translate', '$scope', 'NotifyService', 'FiscalService', 'moment'
+  '$translate', '$scope', 'NotifyService', 'FiscalService', 'moment', 'DashboardService'
 ];
 
 /**
@@ -17,7 +17,7 @@ HomeController.$inject = [
  * @todo - implement fiscal year client-side services to get relevant fiscal year
  * services and information.
  */
-function HomeController(Currencies, Rates, Session, System, $translate, $scope, Notify, Fiscal, Moment) {
+function HomeController(Currencies, Rates, Session, System, $translate, $scope, Notify, Fiscal, Moment, DashboardService) {
   var vm = this;
 
   vm.today = new Date();
@@ -74,12 +74,32 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
   // initialize with data
   loadSystemInformation();
 
+  // @TODO move all graph (debtors) code into individual UI view
+  // @TODO move to service to deal with assigning application colours
   vm.darkBlueGradient = ['#085484', '#3a6893', '#597ba2', '#7490b1', '#90a5c0', '#abbbd0',
     '#c7d1df', '#e3e8ef', '#ffffff'];
 
   vm.owedGraph = {
-    data : [1, 2, 3, 4, 5, 6, 7, 8],
-    colors : vm.darkBlueGradient
-
+    colors : vm.darkBlueGradient,
+    options : {
+      legend : {
+        display : true
+      }
+    }
   };
+
+  DashboardService.debtors()
+    .then(function (result) {
+      var debtorGroups = result.data.debtors;
+
+      vm.owedGraph.data = debtorGroups.map(function (group) {
+        return group.total;
+      });
+      vm.owedGraph.labels = debtorGroups.map(function (group) {
+        return group.name;
+      });
+
+      console.log('got result', result);
+      vm.noDebt = result.data.aggregates.total === 0;
+    });
 }

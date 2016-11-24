@@ -84,6 +84,8 @@ const generalLedger    = require('../controllers/finance/generalLedger');
 const cashflow         = require('../controllers/finance/reports/cashflow');
 const financialPatient = require('../controllers/finance/patient');
 
+const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
@@ -383,6 +385,8 @@ exports.configure = function configure(app) {
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
+
+  app.get('/dashboard/debtors', dashboardDebtors.getReport);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
