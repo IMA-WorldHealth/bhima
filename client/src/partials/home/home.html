@@ -2,7 +2,7 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" style="text-transform : uppercase">{{ "HOME.BHIMA" | translate }}</li>
-      <li class="title">{{ ::HomeCtrl.enterprise.name }}</li>
+      <li class="title">{{ HomeCtrl.enterprise.name }}</li>
     </ol>
   </div>
 </div>
@@ -59,7 +59,7 @@
 
         <div class="panel panel-default segment">
           <div class="panel-body text-center">
-            <div class="segment-title">{{ ::"TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</div>
+            <div class="segment-title">{{ "TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</div>
             <div class="ui huge ima-blue statistic">
               <div class="value">{{ HomeCtrl.primaryExchange.rate}}({{ HomeCtrl.primaryExchange.symbol }})</div>
               <!-- <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div> -->
@@ -79,7 +79,7 @@
             <div style="margin-top : 12px">
             <div class="progress" style="margin-bottom:0px;">
               <div class="ima-blue progress-bar" role="progressbar" style="width:{{HomeCtrl.year.percentage}}%;">
-                {{ ::HomeCtrl.today | date }}
+                {{ HomeCtrl.today | date }}
               </div>
             </div>
 
@@ -101,31 +101,47 @@
     </div>
 
     <div class="row">
+      <div class="col-md-6">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Debtors
+          </div>
+          <div class="panel-body" style="padding : 5px;">
+            <canvas
+               height="120"
+               class="chart chart-pie"
+               chart-data="HomeCtrl.owedGraph.data"
+               chart-colors="HomeCtrl.owedGraph.colors">
+            </canvas>
+          </div>
+        </div>
+      </div>
 
       <!-- system information panel -->
-      <div class="col-md-12">
-        <div class="panel panel-default" style="min-height:30vh;">
+      <div class="col-md-6">
+        <div class="panel panel-default">
           <div class="panel-heading">
-             {{ ::"SYSTEM.INFORMATION" | translate }}
+             {{ "SYSTEM.INFORMATION" | translate }}
           </div>
           <div class="panel-body">
             <dl class="dl-horizontal">
-              <dt>{{ ::"SYSTEM.PLATFORM" | translate }}</dt>
+              <dt>{{ "SYSTEM.PLATFORM" | translate }}</dt>
               <dd>{{ HomeCtrl.system.platform }}</dd>
 
-              <dt>{{ ::"SYSTEM.CPUS" | translate }}</dt>
+              <dt>{{ "SYSTEM.CPUS" | translate }}</dt>
               <dd>{{ HomeCtrl.system.numCPUs }}</dd>
 
-              <dt>{{ ::"SYSTEM.MACHINE_UPTIME" | translate }}</dt>
+              <dt>{{ "SYSTEM.MACHINE_UPTIME" | translate }}</dt>
               <dd>{{ HomeCtrl.system.machineUptime | amDurationFormat }}</dd>
 
-              <dt>{{ ::"SYSTEM.PROCESS_UPTIME" | translate }}</dt>
+              <dt>{{ "SYSTEM.PROCESS_UPTIME" | translate }}</dt>
               <dd>{{ HomeCtrl.system.processUptime | amDurationFormat }}</dd>
 
-              <dt>{{ ::"SYSTEM.MEMORY_USAGE" | translate }}</dt>
+              <dt>{{ "SYSTEM.MEMORY_USAGE" | translate }}</dt>
               <dd>{{ HomeCtrl.system.memoryUsage | number }}%</dd>
 
-              <dt>{{ ::"SYSTEM.VERSION" | translate }}</dt>
+              <dt>{{ "SYSTEM.VERSION" | translate }}</dt>
               <dd>{{ HomeCtrl.system.version }}</dd>
             </dl>
           </div>
