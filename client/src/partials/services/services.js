@@ -2,13 +2,12 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', 'SessionService', 'ModalService', 'util'
+  'ServiceService', '$translate', 'SessionService', 'ModalService', 'util', 'NotifyService'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, $translate, SessionService, ModalService, util) {
+function ServicesController(Services, $translate, SessionService, ModalService, util, Notify) {
   var vm = this;
 
-  vm.enterprises = [];
   vm.choosen = {};
   vm.state = 'default';
   vm.view = 'default';
@@ -22,13 +21,6 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   vm.cancel = cancel;
   vm.submit = submit;
   vm.del    = del;
-  vm.more   = more;
-
-
-  function handler(error) {
-    console.error(error);
-    vm.state.error();
-  }
 
   // sets the module view state
   function setState(state) {
@@ -40,20 +32,8 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
     // load Services
     refreshServices();
 
-    // load Enterprises
-    Enterprises.read().then(function (data) {
-      vm.enterprises = data;
-    }).catch(handler);
-
-    // load Cost Center
-    FinancialService.readCostCenter().then(function (data) {
-      vm.costCenters = data;
-    }).catch(handler);
-
-    // load Profit Center
-    FinancialService.readProfitCenter().then(function (data) {
-      vm.profitCenters = data;
-    }).catch(handler);
+    // Cost Center Assignment - not yet implemented in 2.x
+    // Profit Center Assignment - not yet implemented in 2.x
 
     setState('default');
   }
@@ -74,30 +54,6 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
     setState('default');
     vm.service= data;
     vm.view = 'update';
-  }
-
-  // switch to view more information about
-  // data is an object that contains all the information of a service
-  function more(data) {
-    setState('default');
-    vm.service= data;
-    vm.choosen.service = data.name;
-    var ccId = data.cost_center_id;
-    var pcId = data.profit_center_id;
-
-    // load Cost Center value for a specific service
-    FinancialService.getCost(vm.projectId,ccId).
-    then(function (data) {
-      vm.choosen.charge = data.cost;
-    }).catch(handler);
-
-    // load Profit Center value for a specific service
-    FinancialService.getProfit(vm.projectId,pcId).
-    then(function (data) {
-      vm.choosen.profit = data.profit;
-    }).catch(handler);
-
-    vm.view = 'more';
   }
 
   // switch to delete warning mode
@@ -153,7 +109,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
         update(service.id);
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();
