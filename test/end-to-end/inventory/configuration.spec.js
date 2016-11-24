@@ -12,8 +12,10 @@ helpers.configure(chai);
 
 describe('Inventory Configuration', () => {
 
+  const url = '#/inventory/configuration';
+
   // navigate to the page
-  before(() => helpers.navigate('#/inventory/configuration'));
+  before(() => helpers.navigate(url));
 
   const group = {
     name : '[E2E] Inventory Group',
@@ -41,7 +43,7 @@ describe('Inventory Configuration', () => {
 
   describe('Groups', () => {
     // navigate to the page
-    before(() => helpers.navigate('#/inventory/configuration'));
+    before(() => helpers.navigate(url));
 
     it('successfully creates a new inventory group', () => {
       element(by.css('[data-create-group]')).click();
@@ -70,7 +72,7 @@ describe('Inventory Configuration', () => {
   // test inventory type
   describe('Types', () => {
     // navigate to the page
-    before(() => helpers.navigate('#/inventory/configuration'));
+    before(() => helpers.navigate(url));
 
     it('Successfully creates a new inventory type', () => {
       element(by.css('[data-create-type]')).click();
@@ -91,7 +93,7 @@ describe('Inventory Configuration', () => {
   // test inventory unit
   describe('Units', () => {
     // navigate to the page
-    before(() => helpers.navigate('#/inventory/configuration'));
+    before(() => helpers.navigate(url));
 
     it('Successfully creates a new inventory unit', () => {
       element(by.css('[data-create-unit]')).click();

@@ -1,16 +1,6 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
     $stateProvider
-      .state('inventory', {
-        url : '/inventory',
-        controller : 'InventoryListController as InventoryCtrl',
-        templateUrl : 'partials/inventory/list/list.html'
-      })
-      .state('inventory.create', {
-        url : '/create',
-        onEnter :['$state', 'ModalService', openInventoryCreateModal],
-        onExit : ['$uibModalStack', closeModal]
-      })
       .state('inventoryConfiguration', {
         url : '/inventory/configuration',
         views : {
@@ -31,7 +21,31 @@ angular.module('bhima.routes')
             controller : 'InventoryUnitsController as UnitsCtrl'
           }
         }
-     });
+     })
+      .state('inventory', {
+        abstract : true,
+        url : '/inventory',
+        controller : 'InventoryListController as InventoryCtrl',
+        templateUrl : 'partials/inventory/list/list.html'
+      })
+      .state('inventory.create', {
+        url : '/create',
+        onEnter :['$state', 'ModalService', onEnterFactory('create')],
+        onExit : ['$uibModalStack', closeModal]
+      })
+      .state('inventory.update', {
+        url : '/:uuid/update',
+        onEnter :['$state', 'ModalService', onEnterFactory('update')],
+        onExit : ['$uibModalStack', closeModal]
+      })
+      .state('inventory.list', {
+        url: '/:uuid',
+        params : {
+          uuid : { squash : true, value : null },
+          created : false,  // default for transitioning from child states
+          updated : false,  // default for transitioning from child states
+        }
+      });
       // @TODO IMPLEMENT THEM
       // .state('/inventory/types',  {
       //   url : '/inventory/types',
@@ -45,19 +59,27 @@ function closeModal($uibModalStack) {
   $uibModalStack.dismissAll();
 }
 
-function openInventoryCreateModal($state, Modal) {
-  var request = { action : 'add' };
-  var instance = Modal.openInventoryListActions(request);
+// creates both the create and update states
+function onEnterFactory(stateType) {
+  var isCreateState = (stateType === 'create');
 
-  instance
+  return function onEnter ($state, Modal) {
+    var instance = Modal.openInventoryListActions();
+    instance
+      .then(function (uuid) {
 
-    // TODO - make this pass the uuid for flashing
-    .then(function (uuid) {
+        var params = { uuid : uuid };
 
-      // inventory list should take a uuid in for flashing
-      $state.go('^', null , { notify : true });
-    })
-    .catch(function () {
-      $state.go('^');
-    });
+        if (isCreateState) {
+          params.created = true;
+        } else {
+          params.updated = true;
+        }
+
+        $state.go('^.list', params, { reload : true });
+      })
+      .catch(function (error) {
+        $state.go('^.list', { id : $state.params.id }, {notify : false });
+      });
+  };
 }

@@ -242,18 +242,11 @@ function ModalService(Modal) {
     }
 
     /** Inventory Units Modals for actions */
-    function openInventoryUnitActions(request) {
-
+    function openInventoryUnitActions() {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/inventory/configuration/units/modals/actions.tmpl.html',
         controller   : 'InventoryUnitActionsModalController',
         controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
       });
 
       var instance = Modal.open(params);

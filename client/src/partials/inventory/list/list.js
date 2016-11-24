@@ -85,15 +85,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   }
 
   /** update inventory item */
-  function editInventoryItem(inventory) {
-    var request = { action : 'edit', identifier : inventory.uuid };
-
-    return Modal.openInventoryListActions(request)
-    .then(function (res) {
-      startup();
-      Notify.success($translate.instant('FORM.INFO.UPDATE_SUCCESS'));
-    })
-    .catch(Notify.errorHandler);
+  function editInventoryItem(item) {
+    $state.go('inventory.update', { uuid : item.uuid });
   }
 
   /** enable filter */
@@ -107,9 +100,9 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** startup */
   function startup() {
     Inventory.read()
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    })
-    .catch(Notify.handleError);
+      .then(function (list) {
+        vm.gridOptions.data = list;
+      })
+      .catch(Notify.handleError);
   }
 }

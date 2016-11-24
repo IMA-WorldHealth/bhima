@@ -1,55 +1,17 @@
 angular.module('bhima.services')
 .service('InventoryService', InventoryService);
 
-InventoryService.$inject = [ '$http', 'util' ];
+InventoryService.$inject = [ 'PrototypeApiService' ];
 
-function InventoryService($http, util) {
-  var service = this;
+function InventoryService(Api) {
+  var service = new Api('/inventory/metadata/');
 
-  // base url
-  var baseUrl = '/inventory/metadata/';
-
-  // bind service methods
-  service.read   = read;
-  service.create = create;
-  service.update = update;
   service.clean  = clean;
-  service.report = report;
 
   // FIXME this getInventoryItems function need to be deleted
-  service.getInventoryItems = read;
-
-  /* ------------------------------------------------------------------------ */
-
-  /** optionally takes in a UUID to specify a single item */
-  function read(uuid) {
-    return $http.get(baseUrl.concat(uuid || ''))
-      .then(util.unwrapHttpResponse);
-  }
-
-  /** create inventory metadata */
-  function create(record) {
-    return $http.post(baseUrl, record)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /** update inventory metadata */
-  function update(uuid, record) {
-    return $http.put(baseUrl.concat(uuid), record)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /** get inventory metadata report */
-  function report(filetype) {
-    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
-    var params = { renderer: filetype };
-
-    return $http.get('/inventory/reports/metadata', {
-      params: params,
-      responseType: responseType
-    })
-    .then(util.unwrapHttpResponse);
-  }
+  service.getInventoryItems = function () {
+    return this.read();
+  };
 
   /** format data to data structure in the db */
   function clean(session) {
@@ -67,4 +29,5 @@ function InventoryService($http, util) {
     };
   }
 
+  return service;
 }

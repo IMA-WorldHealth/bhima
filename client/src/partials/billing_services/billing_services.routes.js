@@ -18,7 +18,7 @@ angular.module('bhima.routes')
       })
       .state('billingServices.create', {
         url: '/create',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('create')],
+        onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('create')],
         onExit : ['$uibModalStack', closeModal]
       })
       .state('billingServices.list', {
@@ -31,7 +31,7 @@ angular.module('bhima.routes')
       })
       .state('billingServices.update', {
         url: '/{id:int}/update',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('update')],
+        onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('update')],
         onExit : ['$uibModalStack', closeModal]
       })
       .state('billingServices.delete', {
@@ -67,7 +67,7 @@ angular.module('bhima.routes')
  * @description
  * This configures the update versus create states.
  */
-function onEnterFactory(stateType) {
+function onBillingEnterFactory(stateType) {
 
   var isCreateState = (stateType === 'create');
 

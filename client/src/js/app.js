@@ -134,8 +134,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl: 'partials/references/groups/groups.html'
   })
 
-  /* inventory routes */
-
   .state('prices', {
     url : '/prices',
     controller: 'PriceListController as PriceListCtrl',
