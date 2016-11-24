@@ -28,7 +28,7 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
   vm.project = Session.project;
   vm.user = Session.user;
   vm.enterprise = Session.enterprise;
-  vm.graph = {};
+  // vm.graph = {};
 
   // load exchange rates
   Currencies.read()
@@ -73,4 +73,13 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
 
   // initialize with data
   loadSystemInformation();
+
+  vm.darkBlueGradient = ['#085484', '#3a6893', '#597ba2', '#7490b1', '#90a5c0', '#abbbd0',
+    '#c7d1df', '#e3e8ef', '#ffffff'];
+
+  vm.owedGraph = {
+    data : [1, 2, 3, 4, 5, 6, 7, 8],
+    colors : vm.darkBlueGradient
+
+  };
 }
