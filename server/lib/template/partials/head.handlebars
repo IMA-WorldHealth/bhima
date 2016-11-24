@@ -3,5 +3,12 @@
   <title>{{translate title}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <style>
+    @media print {
+      table, tr, td, th, tbody, thead, tfoot {
+        page-break-inside: avoid !important;
+      }
+    }
+  </style>
   <meta charset="utf-8" />
 </head>
