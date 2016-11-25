@@ -10,7 +10,6 @@ const GU = require('../shared/GridUtils');
 helpers.configure(chai);
 
 describe('Report Accounts generator', () => {
-  'use strict';
 
   function getInvoiceNumber(gridId) {
     return GU.getRows(gridId).count();
@@ -21,20 +20,15 @@ describe('Report Accounts generator', () => {
 
   // TODO client side report removed, required update for server PDF success
   it('GET /reports/report_accounts Create a new Report of an Account', () => {
-
     FU.buttons.create();
 
-    FU.input('ReportConfigCtrl.label', 'Report of Account 1100');
-    
-    FU.select('ReportConfigCtrl.account', '1100');
-
+    FU.input('ReportConfigCtrl.label', 'Report of Account 41003');
+    FU.uiSelect('ReportConfigCtrl.account', '41003');
     FU.select('ReportConfigCtrl.source',  'Tous');
 
     // focus on the button zone
     FU.buttons.submit();
 
     expect(getInvoiceNumber('report-grid')).to.eventually.equal(numReports);
-
   });
-
 });

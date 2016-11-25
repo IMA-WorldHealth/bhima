@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('report_accountsController', ReportAccountsConfigController);
 
 ReportAccountsConfigController.$inject = [
-  '$state', '$uibModalInstance', 'AccountService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails'
+  '$state', '$uibModalInstance', 'AccountService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants'
 ];
 
 /**
@@ -12,7 +12,7 @@ ReportAccountsConfigController.$inject = [
  * This controller is responsible for the configuration of the ReportAccounts report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify, Languages, SavedReports, reportDetails) {
+function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify, Languages, SavedReports, reportDetails, bhConstants) {
   var vm = this;
   var report = reportDetails;
 
@@ -20,30 +20,27 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
   vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
+  vm.bhConstants = bhConstants;
 
-  //Default value for General Ledger
+  // default value for General Ledger
   vm.source = 1;
 
   vm.reportSource = [
     {id: 1, label : 'FORM.LABELS.GENERAL_LEDGER'},
-    {id: 2, label : 'FORM.LABELS.POSTING_JOURNAL'},   
+    {id: 2, label : 'FORM.LABELS.POSTING_JOURNAL'},
     {id: 3, label : 'FORM.LABELS.ALL'}
   ];
 
-
-  Accounts.read(null, { detailed: 1, is_auxiliary: 0})
+  Accounts.read()
     .then(function (accounts) {
-      accounts.forEach(function (account) {
-        account.hrlabel = account.number + ' ' + account.label;
-      });
-
       vm.accounts = accounts;
     })
     .catch(Notify.handleError);
 
   function generate(form) {
-    var url = 'reports/finance/account';
     if (form.$invalid) { return; }
+
+    var url = 'reports/finance/account';
 
     var options = {
       account_id      : vm.account.id,
@@ -58,7 +55,6 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
 
     return SavedReports.requestPDF(url, report, options)
       .then(function (result) {
-        vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
       });
