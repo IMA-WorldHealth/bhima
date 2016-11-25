@@ -38,8 +38,8 @@ function ClientsReportController($state, ModalInstance, Clients, Notify, Languag
 
     var options = {
       label : vm.label,
-      dateFrom : vm.dateFrom,
-      dateTo : vm.dateTo,
+      dateFrom : new Date(vm.dateFrom),
+      dateTo : new Date(vm.dateTo),
       lang : Languages.key,
       ignoredClients : vm.ignoredClients,
       detailPrevious : vm.detailPrevious

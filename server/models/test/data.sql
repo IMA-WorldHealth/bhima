@@ -166,7 +166,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (147,1),
 
 (148, 1),
-
 -- Income Expense Report
 (149,1),
 
@@ -185,6 +184,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Purchase order folder 
 (154, 1), (155, 1), (156, 1);
+
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -224,6 +224,7 @@ INSERT INTO `debtor_group` VALUES
   (1,HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'First Test Debtor Group',3631,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,NULL,NULL,0,10,0,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   (1,HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Second Test Debtor Group',3631,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,NULL,NULL,0,300,1,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   (1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Third Test Debtor Group',3631,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,NULL,NULL,0,20,1,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 
 INSERT INTO `patient_group` VALUES
   (HUID('0b8fcc00-8640-479d-872a-31d36361fcfd'),1,NULL,'Test Patient Group 1','Test Patient Group 1 Note','2016-03-10 08:44:23'),
@@ -365,6 +366,7 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
+
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES

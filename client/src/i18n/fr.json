@@ -1285,7 +1285,8 @@
     "VIEW_CREDIT_NOTE" : "Voir la note de credit",
     "CLIENTS_REPORT"   : {
       "TITLE" : "Rapport Clients",
-      "ANNUAL_MVT" : "Mouvement Annuel"
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Mouvement Precedent"
     }
   },
   "SECTION_BILAN": {
