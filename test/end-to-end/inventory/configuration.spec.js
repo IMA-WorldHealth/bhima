@@ -28,7 +28,7 @@ describe('Inventory Configuration', () => {
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2504',
-    sales_account : 'Updated inventory accounts',
+    sales_account : 'First Test Item Account',
     stock_account : '',
     cogs_account  : ''
   };
@@ -109,5 +109,4 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
   });
-
 });

@@ -24,14 +24,12 @@
       </thead>
 
       <tbody>
-        <tr ng-repeat="unit in UnitsCtrl.unitList | orderBy: 'text'">
+        <tr ng-repeat="unit in UnitsCtrl.unitList | orderBy: 'text' track by unit.id">
           <td>{{ $index + 1 }}</td>
           <td>{{ unit.text }}</td>
           <td>
-            <a style="cursor:pointer; text-decoration:none;"
-              ng-click="UnitsCtrl.editInventoryUnit(unit.id)"
-              data-edit-unit="{{ unit.text }}">
-              <i class="fa fa-edit"></i>
+            <a href ng-click="UnitsCtrl.editInventoryUnit(unit.id)" data-edit-unit="{{ unit.text }}">
+              <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
             </a>
           </td>
         </tr>

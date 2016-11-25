@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('InventoryUnitActionsModalController', InventoryUnitActionsModalController);
+  .controller('InventoryUnitActionsModalController', InventoryUnitActionsModalController);
 
 InventoryUnitActionsModalController.$inject = [
   'InventoryUnitService', 'NotifyService', '$uibModalInstance', 'data'
@@ -20,9 +20,7 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) {
-      return;
-    }
+    if (form.$invalid) { return; }
 
     var record = cleanForSubmit(vm.session);
     map[vm.action](record, vm.identifier)
@@ -34,19 +32,13 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
   /** add inventory unit */
   function addUnit(record) {
     return InventoryUnit.create(record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+      .catch(Notify.errorHandler);
   }
 
   /** edit inventory unit */
   function editUnit(record, uuid) {
     return InventoryUnit.update(uuid, record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+      .catch(Notify.errorHandler);
   }
 
   /** cancel action */
@@ -75,5 +67,4 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
     }
 
   }
-
 }
