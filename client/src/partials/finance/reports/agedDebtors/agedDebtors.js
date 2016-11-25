@@ -28,14 +28,6 @@ function AgedDebtorsController(Notify, AgedDebtorReports) {
     { field: 'actions', displayName: 'FORM.LABELS.ACTIONS', headerCellFilter: 'translate' }
   ];
 
-  /*
-  AgedDebtorReports.read()
-    .then(function (reports) {
-      vm.gridOptions.data = reports;
-    })
-    .catch(Notify.handleError);
-
-  */
   vm.gridOptions.data = [];
 
   // open the configuration modal for a new Aged Debtors report

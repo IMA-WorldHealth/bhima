@@ -36,7 +36,6 @@ function agedDebtorReport(req, res, next) {
   const qs = req.query;
 
   const metadata = _.clone(req.session);
-  metadata.currency_id = req.session.enterprise.currency_id;
 
   let report;
   try {
@@ -53,10 +52,10 @@ function agedDebtorReport(req, res, next) {
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+      SUM(IF(DATEDIFF(?, gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
@@ -69,21 +68,24 @@ function agedDebtorReport(req, res, next) {
   // aggregates the data above as totals into columns of 30, 60, 90, and >90
   const aggregateSql = `
     SELECT
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+      SUM(IF(DATEDIFF(?, gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
 
+  // format the dates for MySQL escape
+  const dates = _.fill(Array(4), new Date(qs.date));
+
   // fire the SQL for the report
-  db.exec(debtorSql)
+  db.exec(debtorSql, dates)
     .then(debtors => {
       data.debtors = debtors;
-      return db.exec(aggregateSql);
+      return db.exec(aggregateSql, dates);
     })
     .then(aggregates => {
       data.aggregates = aggregates[0];
