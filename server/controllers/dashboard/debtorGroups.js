@@ -1,3 +1,4 @@
+'use strict';
 const moment = require('moment');
 
 const report = require('../finance/reports/debtors');

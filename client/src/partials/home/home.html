@@ -27,7 +27,7 @@
 
         <div class="panel panel-default segment">
           <div class="panel-body text-center">
-            <div class="segment-title">Project</div>
+            <div class="segment-title">{{ "FORM.LABELS.PROJECT" | translate }}</div>
             <div class="ui huge ima-blue statistic">
               <div class="value">
                 {{HomeCtrl.project.abbr}}
@@ -36,9 +36,6 @@
                 {{HomeCtrl.project.name}}
               </div>
             </div>
-            <!-- <h1>{{ HomeCtrl.project.abbr }}</h1> -->
-            <!-- <br> -->
-            <!-- {{ HomeCtrl.project.name }} -->
           </div>
         </div>
       </div>
@@ -46,7 +43,7 @@
 
         <div class="panel panel-default segment">
           <div class="panel-body text-center">
-            <div class="segment-title">Enterprise Currency</div>
+            <div class="segment-title">{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</div>
             <div class="ui huge ima-blue statistic">
               <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div>
               <div class="uilabel">{{ HomeCtrl.enterprise.currencyLabel }}</div>
@@ -62,8 +59,7 @@
             <div class="segment-title">{{ "TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</div>
             <div class="ui huge ima-blue statistic">
               <div class="value">{{ HomeCtrl.primaryExchange.rate}}({{ HomeCtrl.primaryExchange.symbol }})</div>
-              <!-- <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div> -->
-              <div class="uilabel">Set on {{ HomeCtrl.primaryExchange.formattedDate }}</div>
+              <div class="uilabel">{{ "HOME.EXCHANGE_SET" | translate }} {{ HomeCtrl.primaryExchange.formattedDate }}</div>
             </div>
           </div>
         </div>
@@ -74,7 +70,7 @@
       <div class="col-md-12">
         <div class="panel panel-default segment">
           <div class="panel-body">
-            <div class="segment-title">Fiscal year</div>
+            <div class="segment-title">{{ "FISCAL.FISCAL_YEAR" | translate }}</div>
 
             <div style="margin-top : 12px">
             <div class="progress" style="margin-bottom:0px;">
@@ -102,55 +98,7 @@
 
     <div class="row">
       <div class="col-md-6">
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            Enterprise Debtors
-          </div>
-          <div class="panel-body" style="padding : 5px;">
-            <p ng-if="HomeCtrl.noDebt" class="text-info" style="margin-top : 3px;">
-              <i class="fa fa-info-circle"></i> All debts to the enterprise are balanced
-            </p>
-            <canvas
-               height="120"
-               class="chart chart-pie"
-               chart-data="HomeCtrl.owedGraph.data"
-               chart-colors="HomeCtrl.owedGraph.colors"
-               chart-labels="HomeCtrl.owedGraph.labels"
-               chart-options="HomeCtrl.owedGraph.options">
-            </canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- system information panel -->
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-             {{ "SYSTEM.INFORMATION" | translate }}
-          </div>
-          <div class="panel-body">
-            <dl class="dl-horizontal">
-              <dt>{{ "SYSTEM.PLATFORM" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.platform }}</dd>
-
-              <dt>{{ "SYSTEM.CPUS" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.numCPUs }}</dd>
-
-              <dt>{{ "SYSTEM.MACHINE_UPTIME" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.machineUptime | amDurationFormat }}</dd>
-
-              <dt>{{ "SYSTEM.PROCESS_UPTIME" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.processUptime | amDurationFormat }}</dd>
-
-              <dt>{{ "SYSTEM.MEMORY_USAGE" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.memoryUsage | number }}%</dd>
-
-              <dt>{{ "SYSTEM.VERSION" | translate }}</dt>
-              <dd>{{ HomeCtrl.system.version }}</dd>
-            </dl>
-          </div>
-        </div>
+        <div ui-view="debtors"></div>
       </div>
     </div>
   </div>

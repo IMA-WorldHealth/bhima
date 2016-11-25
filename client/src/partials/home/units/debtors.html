@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ "HOME.DEBTORS.TITLE" | translate }}
+  </div>
+  <div class="panel-body" style="padding : 5px;">
+    <div class="text-right">
+      {{ "HOME.DEBTORS.CACHED" | translate }} <span am-time-ago="DebtorCtrl.reportCached"></span>
+    </div>
+    <p ng-if="DebtorCtrl.noDebt" class="text-info" style="margin-top : 3px;">
+    <i class="fa fa-info-circle"></i> {{ "HOME.DEBTORS.BALANCED" | translate }}
+    </p>
+    <canvas
+       height="120"
+       class="chart chart-pie"
+       chart-data="DebtorCtrl.owedGraph.data"
+       chart-colors="DebtorCtrl.owedGraph.colors"
+       chart-labels="DebtorCtrl.owedGraph.labels"
+       chart-options="DebtorCtrl.owedGraph.options">
+    </canvas>
+  </div>
+</div>

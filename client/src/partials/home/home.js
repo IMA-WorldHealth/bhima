@@ -28,7 +28,6 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
   vm.project = Session.project;
   vm.user = Session.user;
   vm.enterprise = Session.enterprise;
-  // vm.graph = {};
 
   // load exchange rates
   Currencies.read()
@@ -51,17 +50,8 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
 
       // @TODO Method for selecting primary exchange
       vm.primaryExchange = vm.currencies[0];
-      console.log(vm.primaryExchange);
     })
     .catch(Notify.handleError);
-
-  // loads system information from the server
-  function loadSystemInformation() {
-    System.information()
-      .then(function (data) {
-        vm.system = data;
-      });
-  }
 
   Fiscal.fiscalYearDate({ date : vm.today })
     .then(function (year) {
@@ -69,37 +59,4 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
       vm.year.percentage = vm.year.percentage * 100;
     })
     .catch(Notify.handleError);
-
-
-  // initialize with data
-  loadSystemInformation();
-
-  // @TODO move all graph (debtors) code into individual UI view
-  // @TODO move to service to deal with assigning application colours
-  vm.darkBlueGradient = ['#085484', '#3a6893', '#597ba2', '#7490b1', '#90a5c0', '#abbbd0',
-    '#c7d1df', '#e3e8ef', '#ffffff'];
-
-  vm.owedGraph = {
-    colors : vm.darkBlueGradient,
-    options : {
-      legend : {
-        display : true
-      }
-    }
-  };
-
-  DashboardService.debtors()
-    .then(function (result) {
-      var debtorGroups = result.data.debtors;
-
-      vm.owedGraph.data = debtorGroups.map(function (group) {
-        return group.total;
-      });
-      vm.owedGraph.labels = debtorGroups.map(function (group) {
-        return group.name;
-      });
-
-      console.log('got result', result);
-      vm.noDebt = result.data.aggregates.total === 0;
-    });
 }

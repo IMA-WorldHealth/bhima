@@ -10,7 +10,7 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-md-5" style="margin-bottom : 10px;">
         <div class="form-group">
           <label for="select-language">{{ "FORM.LABELS.LANGUAGE" | translate }}</label>
           <select
@@ -49,6 +49,35 @@
             <i class="fa fa-bug"></i> {{ "SETTINGS.BUG_LINK" | translate }}
           </span>
         </a>
+      </div>
+      <!-- system information panel -->
+      <div class="col-md-6 col-md-offset-1">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+             {{ "SYSTEM.INFORMATION" | translate }}
+          </div>
+          <div class="panel-body">
+            <dl class="dl-horizontal">
+              <dt>{{ "SYSTEM.PLATFORM" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.platform }}</dd>
+
+              <dt>{{ "SYSTEM.CPUS" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.numCPUs }}</dd>
+
+              <dt>{{ "SYSTEM.MACHINE_UPTIME" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.machineUptime | amDurationFormat }}</dd>
+
+              <dt>{{ "SYSTEM.PROCESS_UPTIME" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.processUptime | amDurationFormat }}</dd>
+
+              <dt>{{ "SYSTEM.MEMORY_USAGE" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.memoryUsage | number }}%</dd>
+
+              <dt>{{ "SYSTEM.VERSION" | translate }}</dt>
+              <dd>{{ SettingsCtrl.system.version }}</dd>
+            </dl>
+          </div>
+        </div>
       </div>
     </div>
   </div>
