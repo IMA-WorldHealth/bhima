@@ -16,9 +16,19 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   $stateProvider
   .state('index', {
+    abstract : true,
     url : '/',
     controller : 'HomeController as HomeCtrl',
     templateUrl : 'partials/home/home.html'
+  })
+  .state('index.details', {
+    url : '',
+    views : {
+      'debtors@index' : {
+        templateUrl : 'partials/home/units/debtors.html',
+        controller : 'DashboardDebtorController as DebtorCtrl'
+      }
+    }
   })
   .state('login', {
     url : '/login',
