@@ -10,7 +10,7 @@ const GU = require('../shared/GridUtils');
 
 helpers.configure(chai);
 
-describe('Aged Debtors report generator', () => {
+describe('Aged Debtors Report', () => {
   'use strict';
 
   function getInvoiceNumber(gridId) {
@@ -23,15 +23,14 @@ describe('Aged Debtors report generator', () => {
   // TODO client side report removed, required update for server PDF success
   it('GET /reports/agedDebtors Create a new Report of Aged Debtors', () => {
 
-    var untilDate = new Date('12-31-2016');
+    let date = new Date('12-31-2016');
     element(by.id('create-report')).click();
 
-    FU.input('ReportConfigCtrl.label', 'Report Debts of December 31,2016');
-    components.dateEditor.set(untilDate,'', 'label');
+    FU.input('ReportConfigCtrl.label', 'Report Debts of December 31, 2016');
+    components.dateEditor.set(date, null, 'label');
 
     // focus on the button zone
-    FU.buttons.submit();    
+    FU.buttons.submit();
     expect(getInvoiceNumber('report-grid')).to.eventually.equal(numReports);
-
   });
 });

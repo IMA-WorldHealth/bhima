@@ -75,6 +75,11 @@ class ReportManager {
     // merge options into default options
     _.defaults(this.options, defaults);
 
+    // default to the session user
+    if (metadata && metadata.user) {
+      this.options.user = metadata.user;
+    }
+
     // normalize the path for different operating systems
     this.template = path.normalize(templatePath);
 

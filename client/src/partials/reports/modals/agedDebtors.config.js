@@ -1,8 +1,9 @@
 angular.module('bhima.controllers')
 .controller('agedDebtorsController', AgedDebtorsConfigController);
 
-// dependencies injection
-AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService', 'reportDetails' ];
+AgedDebtorsConfigController.$inject = [
+  '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService', 'reportDetails'
+];
 
 /**
  * AgedDebtors config controller
@@ -11,7 +12,7 @@ AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 
  * This controller is responsible of Aged Debtors report, that report include
  * all incomes minus all depenses
  */
-function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages, reportDetails) {
+function AgedDebtorsConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails) {
   var vm = this;
 
   // expose to the view
@@ -19,34 +20,29 @@ function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Noti
   vm.cancel = ModalInstance.dismiss;
   vm.report = reportDetails;
 
-  vm.$loading = false;
+  vm.date = new Date();
 
-  // TODO Move to service
-  function requestPDF() {
-    var url = 'reports/finance/agedDebtors';
+  function requestPDF(form) {
+    if (form.$invalid) { return; }
 
-    if (!vm.untilDate || !vm.label) { return ; }
-    vm.$loading = true;
+    var url = 'reports/finance/debtors/aged';
 
     // TODO Very specific parameters, API should be carefully designed
     var pdfParams = {
       reportId    : vm.report.id,
       label       : vm.label,
+      date        : vm.date,
+      zeroes      : vm.zeroes,
       lang        : Languages.key,
-      untilDate   : vm.untilDate,
       renderer    : 'pdf',
       saveReport  : true
     };
 
-    $http.get(url, { params : pdfParams })
+    return $http.get(url, { params : pdfParams })
       .then(function (result) {
-        vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
-       })
-      .catch(function (error) {
-        vm.$loading = false;
-        throw error;
-      });
+      })
+      .catch(Notify.handleError);
   }
 }
