@@ -18,6 +18,9 @@ describe('(/cash) Cash Payments', function () {
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf' }
   ];
 
+  const INV_1 = 'c44619e0-3a88-4754-a750-a414fc9567bf';
+  const INV_2 = 'ceed8548-654f-4071-b60b-b85f04acbb59';  
+
   const REFERENCE = 'TPA1';
 
   // can't find undefined cash payments
@@ -215,5 +218,30 @@ describe('(/cash) Cash Payments', function () {
         })
         .catch(helpers.handler);
     });
+
+
+    // Check if the invoice is paid 
+    it('GET /cash/:checkin sould found one invoice paid', function () {
+      return agent.get(`/cash/checkin/${INV_1}`)
+        .then(function (res) {
+          expect(res).to.be.json;
+          expect(res).to.have.status(200);
+          expect(res.body.length).to.equal(1);
+        })
+       .catch(helpers.handler);
+    });  
+
+    // Check if the invoice is not paid
+    it('GET /cash/:checkin sould found zero invoice paid', function () {
+      return agent.get(`/cash/checkin/${INV_2}`)
+        .then(function (res) {
+          expect(res).to.be.json;
+          expect(res).to.have.status(200);
+          expect(res.body.length).to.equal(0);
+        })
+       .catch(helpers.handler);
+    });
+
+
   });
 });

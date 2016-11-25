@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 CashPaymentRegistryController.$inject = [
-  'CashService', 'NotifyService', 'SessionService', 'ModalService',
+  'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'ModalService',
   'uiGridConstants',  'uiGridGroupingConstants', 'LanguageService'
 ];
 
@@ -12,7 +12,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry
  */
-function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
   var vm = this;
 
   var initFilter = { identifiers: {}, display: {} };
@@ -23,12 +23,14 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
   vm.gridOptions = {};
   vm.loading = false;
   vm.enterprise = Session.enterprise;
+  vm.bhConstants = bhConstants;
 
   // expose to the view
   vm.showReceipt = showReceipt;
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.cancelCash = cancelCash;
 
   // grid default options
   vm.gridOptions.appScopeProvider  = vm;
@@ -64,8 +66,13 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
     { field : 'action', displayName : '...',
       cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html',
       enableFiltering: false
-    }
+    },
+    { field : 'action', displayName : '',
+      cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html',
+      enableFiltering: false
+    }  
   ];
+  vm.gridOptions.rowTemplate = '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html';
 
   // search
   function search() {
@@ -127,6 +134,17 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
       vm.gridOptions.data = list;
     })
     .catch(Notify.handleError);
+  }
+
+ // Function for Cancel Cash cancel all Invoice
+  function cancelCash(invoice) {
+    Cash.openCancelCashModal(invoice)
+      .then(function (success) {
+        if (success) {
+          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+          return load();
+        }
+      });
   }
 
   // startup

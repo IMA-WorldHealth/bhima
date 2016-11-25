@@ -332,6 +332,7 @@
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Do you confirm this action?",
+      "CONFIRM_CREDIT_NOTE"    : "The invoice you want to cancel already paid, would you want to cancel this bill",
       "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be undone.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
       "CANNOT_UNDONE_ACTION"   : "This action CANNOT BE REVERSED, the action will be permanent. You must be sure that you want to do this action.",
       "NO_CORRESPONDANCY"      : "No correspondancy found for ",
@@ -356,6 +357,7 @@
     },
     "INFO": {
       "BY"                   : "By",
+      "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
       "CREATED"              : "Created",
@@ -1182,6 +1184,7 @@
       "BILLING_DATE"       : "Billing Date",
       "BY"                 : "By",
       "CASHBOX"            : "Cashbox",
+      "CANCEL_CASH"        : "Cancel Cash Payment",
       "CHARGE"             : "Charge",
       "CLIENT"             : "Client",
       "CODE"               : "Code",
