@@ -19,5 +19,5 @@ mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/triggers.sql
 mysql -u $DB_USER -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql
 mysql -u $DB_USER -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
 mysql -u $DB_USER -u $DB_USER -p$DB_PASS $DB_NAME < server/models/debug.sql
-mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/bhima.sql
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql
 mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql

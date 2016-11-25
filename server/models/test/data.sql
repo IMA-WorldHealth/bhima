@@ -112,23 +112,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 --  Cashbox Management
 (105,1),
 
---  Depots Management
-(106,1),
-
 --  Debtor Groups Management
 (107,1),
-
---  Bilan Section Management
-(109,1),
-
---  Section Resultat Management
-(110,1),
-
---  Reference Group Management
-(111,1),
-
---  Reference Management
-(112,1),
 
 -- Simple Journal Vouchers
 (134, 1),
@@ -150,8 +135,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- inventory configuration module
 (140, 1),
-
-(148, 1),
 
 -- Voucher records
 (141, 1),
