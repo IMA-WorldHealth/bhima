@@ -248,10 +248,14 @@
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
+    "ADD_EXCHANGE"        : "Ajouter taux",
+    "DESCRIPTION"         : "This section help you to define an exchange rate",
     "ENTERPRISE_CURRENCY" : "Enterprise Currency",
-    "EXCHANGE_RATES"       : "Exchange Rate(s)",
-    "TITLE"               : "Configure Exchange Rates",
-    "RATE_SET"            : "rate last set"
+    "EXCHANGE_RATES"      : "Exchange Rate(s)",
+    "NEW_RATE"            : "New Exchange Rate",
+    "RATE_SET"            : "Rate last set",
+    "REVIEW_RATE"         : "Review the exchange rate",
+    "TITLE"               : "Exchange Rate Management"
   },
   "FISCAL": {
     "ALREADY_CLOSED"        : "Already closed",
