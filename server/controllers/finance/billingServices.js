@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * The /billing_service API module
  *
@@ -26,11 +28,10 @@ const BadRequest = require('../../lib/errors/BadRequest');
  * service entity.
  */
 function lookupBillingService(id) {
-  'use strict';
-
-  var sql =
+  let sql =
     `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
-      bs.created_at, bs.updated_at, a.number
+      bs.created_at, bs.updated_at, a.number AS accountNumber,
+      a.label AS accountLabel
     FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
@@ -39,13 +40,7 @@ function lookupBillingService(id) {
 
     // if no records matching, throw a 404
     if (rows.length === 0) {
-      throw new NotFound(
-
-        /** @todo - replace with ES6 template strings */
-        _.template(
-          'Could not find a billing service with id: ${id}.'
-        )({ id : id })
-      );
+      throw new NotFound(`Could not find a billing service with id: ${id}.`);
     }
 
     // return a single JSON of the record
@@ -60,7 +55,6 @@ function lookupBillingService(id) {
  * @description retrieve the details of a single billing service.
  */
 exports.detail = function detail(req, res, next) {
-  'use strict';
 
   // looks up the billing service by ID
   lookupBillingService(req.params.id)
@@ -79,9 +73,7 @@ exports.detail = function detail(req, res, next) {
  * levels of detail
  */
 exports.list = function list(req, res, next) {
-  'use strict';
-
-  var sql =
+  let sql =
     `SELECT bs.id, bs.label, bs.created_at
     FROM billing_service AS bs
     ORDER BY bs.label;`;
@@ -90,7 +82,7 @@ exports.list = function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql =
       `SELECT bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id,
-        bs.description, bs.value, a.number
+        bs.description, bs.value, a.number AS accountNumber, a.label AS accountLabel
       FROM billing_service AS bs JOIN account AS a
         ON bs.account_id = a.id
       ORDER BY bs.id;`;
@@ -111,7 +103,6 @@ exports.list = function list(req, res, next) {
  * @desc creates a new billing service
  */
 exports.create = function create(req, res, next) {
-  'use strict';
 
   // cache posted data for easy lookup
   var data = req.body.billingService;
@@ -123,28 +114,22 @@ exports.create = function create(req, res, next) {
   if (data.value <= 0) {
     return next(
       new BadRequest(
-
-        /** @todo - replace with ES6 template strings */
-        _.template(
-          'The value submitted to a billing service must be positive.  ' +
-          'You provided the negative value ${value}.'
-        )({ value : data.value })
+        `The value submitted to a billing service must be positive.
+        You provided the negative value ${data.value}.`
       )
     );
   }
 
-  var sql =
+  let sql =
     `INSERT INTO billing_service (account_id, label, description, value)
     VALUES (?, ?, ?, ?);`;
 
   db.exec(sql, [ data.account_id, data.label, data.description, data.value ])
-  .then(function (results) {
-
-    // return the id to the client for future lookups.
-    res.status(201).json({ id : results.insertId });
-  })
-  .catch(next)
-  .done();
+    .then(function (results) {
+      res.status(201).json({ id : results.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -154,33 +139,28 @@ exports.create = function create(req, res, next) {
  * @desc updates an existing billing service with new information
  */
 exports.update = function update(req, res, next) {
-  'use strict';
-
-  // cache the id
-  var id = req.params.id;
-  var data = req.body.billingService;
+  let id = req.params.id;
+  const data = req.body.billingService;
 
   // remove the :id if it exists inside the billingService object
   delete data.id;
 
-  var sql =
+  let sql =
     'UPDATE billing_service SET ? WHERE id = ?;';
 
   // ensure that the billing service matching :id exists
   lookupBillingService(id)
-  .then(function () {
-    return db.exec(sql, [ data, req.params.id ]);
-  })
-  .then(function () {
-
-    // return the full changed object
-    return lookupBillingService(id);
-  })
-  .then(function (billingService) {
-    res.status(200).json(billingService);
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      return db.exec(sql, [ data, req.params.id ]);
+    })
+    .then(function () {
+      return lookupBillingService(id);
+    })
+    .then(function (billingService) {
+      res.status(200).json(billingService);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -190,19 +170,13 @@ exports.update = function update(req, res, next) {
  * @desc deletes a billing service in the database
  */
 exports.delete = function del(req, res, next) {
-  'use strict';
-
-  var sql =
+  let sql =
     'DELETE FROM billing_service WHERE id = ?;';
 
   // first make sure that the billing service exists
   lookupBillingService(req.params.id)
-  .then(function () {
-    return db.exec(sql, [ req.params.id ]);
-  })
-  .then(function () {
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+    .then(() => db.exec(sql, [ req.params.id ]))
+    .then(() => { res.sendStatus(204); })
+    .catch(next)
+    .done();
 };

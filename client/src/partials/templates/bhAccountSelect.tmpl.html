@@ -1,0 +1,28 @@
+<ng-form name="{{ $ctrl.name }}" data-bh-account-select>
+  <div class="form-group" ng-class="{ 'has-error' : $ctrl.validationTrigger && AccountForm.account.$invalid }">
+    <label class="control-label">
+      {{ $ctrl.label | translate }}
+    </label>
+
+    <ui-select
+     name="account"
+     ng-model="$ctrl.initialValue"
+     on-select="$ctrl.onSelect($item)"
+     ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+       <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices
+       ui-select-focus-patch
+       ui-disable-choice="account.type_id === $ctrl.TITLE_ACCOUNT"
+       repeat="account.id as account in $ctrl.accounts | filter: { 'hrlabel' : $select.search }">
+       <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+       <span ng-bind-html="account.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountForm.account.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</ng-form>

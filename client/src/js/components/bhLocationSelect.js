@@ -1,18 +1,18 @@
 angular.module('bhima.components')
 
-/**
- * Location Selection Component - bhLocationSelect
- */
-.component('bhLocationSelect', {
-  templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
-  controller : LocationSelectController,
-  bindings: {
-    locationUuid:      '=', // two-way binding
-    disable:           '<', // one-way binding
-    validationTrigger: '<', // one-way binding
-    name:              '@'
-  }
-});
+  /**
+   * Location Selection Component - bhLocationSelect
+   */
+  .component('bhLocationSelect', {
+    templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
+    controller : LocationSelectController,
+    bindings: {
+      locationUuid:      '=', // two-way binding
+      disable:           '<', // one-way binding
+      validationTrigger: '<', // one-way binding
+      name:              '@'
+    }
+  });
 
 LocationSelectController.$inject =  [ 'LocationService', '$scope', '$timeout' ];
 
