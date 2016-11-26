@@ -44,12 +44,14 @@ function CurrencyService($http, $q, util) {
    * additional HTTP request.
    *
    * @method read
+   * @param {Boolean} forceCacheRefresh Optionally ensure the request does not
+   *
    * @returns {Promise} A list of currencies from the database.
    */
-  function read() {
+  function read(forceCacheRefresh) {
 
     // if we have currencies cached, return them directly
-    if (cache) { return $q.resolve(cache); }
+    if (cache && !forceCacheRefresh) { return $q.resolve(cache); }
 
     return $http.get(baseUrl)
       .then(util.unwrapHttpResponse)
