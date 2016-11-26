@@ -41,7 +41,7 @@ function ReportsModalController($http, Instance, $sce, $window, Data, Notify, ut
     vm.loading = false;
 
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.handleError);
 
   function reportRequest(url, filetype) {
 

@@ -31,7 +31,7 @@ function InventoryTypesController(InventoryType, Notify, Modal) {
       }
     })
     .then(startup)
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** edit inventory type */
@@ -43,7 +43,7 @@ function InventoryTypesController(InventoryType, Notify, Modal) {
       Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .then(startup)
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** initializes the view */
@@ -53,7 +53,7 @@ function InventoryTypesController(InventoryType, Notify, Modal) {
     .then(function (list) {
       vm.typeList = list;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
 }

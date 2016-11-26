@@ -37,7 +37,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
     .then(function (res) {
       return res;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** edit inventory group */
@@ -46,7 +46,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
       .then(function (res) {
         return res;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   /** cancel action */
@@ -88,7 +88,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
       .then(function (accounts) {
         vm.accountList = accounts;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
 
     if (vm.identifier) {
       InventoryGroup.read(vm.identifier)
@@ -107,7 +107,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
           .then(function (account) {
             vm.session.salesAccount = essentialAccountDetail(account);
           })
-          .catch(Notify.errorHandler);
+          .catch(Notify.handleError);
         }
 
         // stock accounts
@@ -116,7 +116,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
           .then(function (account) {
             vm.session.stockAccount = essentialAccountDetail(account);
           })
-          .catch(Notify.errorHandler);
+          .catch(Notify.handleError);
         }
 
         // cogs accounts
@@ -125,10 +125,10 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
           .then(function (account) {
             vm.session.cogsAccount = essentialAccountDetail(account);
           })
-          .catch(Notify.errorHandler);
+          .catch(Notify.handleError);
         }
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
     }
 
   }

@@ -28,7 +28,7 @@ function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Langua
     });
     vm.cashboxes = list;
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.handleError);
 
   function generate() {
     var url = 'reports/finance/cashflow';

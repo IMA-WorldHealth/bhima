@@ -37,7 +37,7 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
     .then(function (res) {
       return res;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** edit inventory type */
@@ -46,7 +46,7 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
     .then(function (res) {
       return res;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** cancel action */
@@ -71,7 +71,7 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
       .then(function (type) {
         vm.session = type[0];
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
     }
 
   }

@@ -161,7 +161,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       .then(function (list) {
         vm.gridOptions.data = list;
       })
-      .catch(Notify.errorHandler)
+      .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
   }
 
@@ -179,7 +179,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
    */
   function errorHandler(error) {
     vm.hasError = true;
-    Notify.errorHandler(error);
+    Notify.handleError(error);
   }
 
   /**
@@ -202,7 +202,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     .then(function (result) {
       vm.transactionTypes = result;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
     Vouchers.read()
       .then(function (list) {

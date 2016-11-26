@@ -24,21 +24,21 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
 
     var record = cleanForSubmit(vm.session);
     map[vm.action](record, vm.identifier)
-    .then(function (res) {
-      Instance.close(res);
-    });
+      .then(function (res) {
+        Instance.close(res);
+      });
   }
 
   /** add inventory unit */
   function addUnit(record) {
     return InventoryUnit.create(record)
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   /** edit inventory unit */
   function editUnit(record, uuid) {
     return InventoryUnit.update(uuid, record)
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   /** cancel action */
@@ -63,7 +63,7 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
       .then(function (unit) {
         vm.session = unit[0];
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
     }
 
   }

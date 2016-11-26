@@ -26,12 +26,14 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
 
     Modal.openInventoryUnitActions(request)
       .then(function (res) {
+
+        // if an id is returned, show the success create message
         if (res.id) {
           Notify.success('FORM.INFO.CREATE_SUCCESS');
         }
       })
       .then(startup)
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   /** edit inventory unit */
@@ -43,7 +45,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       })
       .then(startup)
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   /** initializes the view */
@@ -53,6 +55,6 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
       .then(function (list) {
         vm.unitList = list;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 }

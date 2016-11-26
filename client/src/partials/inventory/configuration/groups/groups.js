@@ -42,7 +42,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
       }
     })
     .then(startup)
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** edit inventory group */
@@ -54,7 +54,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
       Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .then(startup)
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   /** init the module */
@@ -66,7 +66,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     .then(InventoryGroup.read)
     .then(handleGroupList)
     .then(countInventory)
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
     // handle the list of accounts
     function handleAccountList(list) {
@@ -100,7 +100,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
         .then(function (number) {
           item.inventory_counted = number;
         })
-        .catch(Notify.errorHandler);
+        .catch(Notify.handleError);
       });
     }
 

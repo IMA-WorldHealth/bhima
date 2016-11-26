@@ -64,7 +64,7 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Co
     })
     .catch(function (error) {
       vm.hasError = true;
-      Notify.errorHandler(error);
+      Notify.handleError(error);
     })
     .finally(toggleLoadingIndicator);
 

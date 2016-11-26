@@ -83,7 +83,7 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       startup();
       Notify.success('FORM.INFO.SAVE_SUCCESS');
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // edit en existing transaction type
@@ -98,7 +98,7 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       startup();
       Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   function startup() {
