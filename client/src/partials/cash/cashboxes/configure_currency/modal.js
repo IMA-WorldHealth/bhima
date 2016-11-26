@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('CashboxCurrencyModalController', CashboxCurrencyModalController);
+  .controller('CashboxCurrencyModalController', CashboxCurrencyModalController);
 
 CashboxCurrencyModalController.$inject = [
   '$uibModalInstance', 'AccountService', 'CashboxService',
-  'currency', 'cashbox', 'data', 'bhConstants'
+  'currency', 'cashbox', 'data', 'bhConstants', 'NotifyService'
 ];
 
 /**
@@ -13,7 +13,7 @@ CashboxCurrencyModalController.$inject = [
  * cashboxes.  Each cashbox must have a currencied account defined for each currency
  * supported by the application.
  */
-function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, bhConstants) {
+function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, bhConstants, Notify) {
   var vm = this;
 
   // if a currency matches, we are updating.  Otherwise, we are creating.
@@ -40,21 +40,15 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
 
   /* ------------------------------------------------------------------------ */
 
-  // generic error handling
-  function handler(error) {
-    vm.error = true;
-    console.log(error);
-  }
-
   // startup script for the controller
   function startup() {
 
-    // load accounts and properly formats their labels
-    Accounts.read()
+    // load accounts and properly order them
+    Accounts.read(null, { detailed : 1 })
       .then(function (accounts) {
-        vm.accounts = accounts;
+        vm.accounts = Accounts.order(accounts);
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   // return data to the
@@ -74,7 +68,7 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
     // upon successful completion, close the modal or error out
   return promise
     .then(function () { ModalInstance.close(); })
-    .catch(handler);
+    .catch(Notify.handleError);
   }
 
   // startup the controller

@@ -50,8 +50,6 @@ function AccountService($http, util, Session) {
           });
         }
 
-        /* @todo make this ordering work */
-        // return order(accounts);
         return accounts;
       });
   }
@@ -174,9 +172,8 @@ function AccountService($http, util, Session) {
   */
   function del(accountId){
     return $http.delete(baseUrl.concat(accountId))
-    .then(util.unwrapHttpResponse);    
+    .then(util.unwrapHttpResponse);
   }
-
 
   return service;
 }

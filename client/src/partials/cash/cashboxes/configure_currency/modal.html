@@ -30,7 +30,7 @@
         <ui-select-choices
           ui-select-focus-patch
           ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
-          repeat="account.id as account in ::CashboxModalCtrl.accounts | filter:$select.search">
+          repeat="account.id as account in CashboxModalCtrl.accounts | filter: { 'hrlabel' : $select.search }">
           <span ng-bind-html="account.number | highlight:$select.search"></span>
           <small ng-bind-html="account.label | highlight:$select.search"></small>
         </ui-select-choices>
@@ -49,7 +49,7 @@
         <ui-select-choices
           ui-select-focus-patch
           ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
-          repeat="account.id as account in ::CashboxModalCtrl.accounts | filter:$select.search">
+          repeat="account.id as account in CashboxModalCtrl.accounts | filter: { 'hrlabel' : $select.search }">
           <span ng-bind-html="account.number | highlight:$select.search"></span>
           <small ng-bind-html="account.label | highlight:$select.search"></small>
         </ui-select-choices>
