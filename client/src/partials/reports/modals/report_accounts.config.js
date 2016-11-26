@@ -39,7 +39,7 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
 
       vm.accounts = accounts;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
   function generate(form) {
     var url = 'reports/finance/account';

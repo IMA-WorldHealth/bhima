@@ -4,14 +4,14 @@ angular.module('bhima.controllers')
 // dependencies injection
 InventoryListController.$inject = [
   '$translate', 'InventoryService', 'NotifyService',
-  'uiGridConstants', 'ModalService'
+  'uiGridConstants', 'ModalService', '$state'
 ];
 
 /**
  * Inventory List Controllers
  * This controller is responsible of the inventory list module
  */
-function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal) {
+function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state) {
   var vm = this;
 
   /** gobal variables */
@@ -51,7 +51,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       },
       { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
       { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
-      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate'},
+      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right' },
       { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
       { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
       { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate'},
@@ -81,26 +81,12 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** add inventory item */
   function addInventoryItem() {
-    var request = { action : 'add' };
-
-    return Modal.openInventoryListActions(request)
-    .then(function (res) {
-      startup();
-      Notify.success($translate.instant('FORM.INFO.SAVE_SUCCESS'));
-    })
-    .catch(Notify.errorHandler);
+    $state.go('inventory.create');
   }
 
   /** update inventory item */
-  function editInventoryItem(inventory) {
-    var request = { action : 'edit', identifier : inventory.uuid };
-
-    return Modal.openInventoryListActions(request)
-    .then(function (res) {
-      startup();
-      Notify.success($translate.instant('FORM.INFO.UPDATE_SUCCESS'));
-    })
-    .catch(Notify.errorHandler);
+  function editInventoryItem(item) {
+    $state.go('inventory.update', { uuid : item.uuid });
   }
 
   /** enable filter */
@@ -114,10 +100,9 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** startup */
   function startup() {
     Inventory.read()
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    })
-    .catch(Notify.handleError);
+      .then(function (list) {
+        vm.gridOptions.data = list;
+      })
+      .catch(Notify.handleError);
   }
-
 }

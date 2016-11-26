@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('InventoryUnitsController', InventoryUnitsController);
+  .controller('InventoryUnitsController', InventoryUnitsController);
 
 // dependencies injection
 InventoryUnitsController.$inject = [
@@ -25,13 +25,15 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
     var request = { action : 'add' };
 
     Modal.openInventoryUnitActions(request)
-    .then(function (res) {
-      if (res.id) {
-        Notify.success('FORM.INFO.CREATE_SUCCESS');
-      }
-    })
-    .then(startup)
-    .catch(Notify.errorHandler);
+      .then(function (res) {
+
+        // if an id is returned, show the success create message
+        if (res.id) {
+          Notify.success('FORM.INFO.CREATE_SUCCESS');
+        }
+      })
+      .then(startup)
+      .catch(Notify.handleError);
   }
 
   /** edit inventory unit */
@@ -39,21 +41,20 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
     var request = { action : 'edit', identifier : id };
 
     Modal.openInventoryUnitActions(request)
-    .then(function (res) {
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
-    })
-    .then(startup)
-    .catch(Notify.errorHandler);
+      .then(function (res) {
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      })
+      .then(startup)
+      .catch(Notify.handleError);
   }
 
   /** initializes the view */
   function startup() {
     // get inventory units
     InventoryUnit.read()
-    .then(function (list) {
-      vm.unitList = list;
-    })
-    .catch(Notify.errorHandler);
+      .then(function (list) {
+        vm.unitList = list;
+      })
+      .catch(Notify.handleError);
   }
-
 }

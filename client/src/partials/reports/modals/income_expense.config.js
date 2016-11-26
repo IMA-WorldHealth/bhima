@@ -35,7 +35,7 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
 
       vm.cashboxes = cashboxes;
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
 
   function generate(form) {
     var url = 'reports/finance/income_expense';

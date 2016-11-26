@@ -118,7 +118,8 @@ function getItemsMetadata() {
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
-      i.unit_id = iu.id;`;
+      i.unit_id = iu.id
+    ORDER BY i.code;`;
 
   return db.exec(sql);
 }

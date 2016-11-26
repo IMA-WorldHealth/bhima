@@ -14,7 +14,7 @@ helpers.configure(chai);
 describe('Inventory List', () => {
 
   // navigate to the page
-  before(() => helpers.navigate('#/inventory/list'));
+  before(() => helpers.navigate('#/inventory'));
 
   let currentDate = new Date();
   let uniqueIdentifier = currentDate.getTime().toString();
@@ -44,35 +44,35 @@ describe('Inventory List', () => {
 
   it('successfully creates a new inventory item (metadata)', () => {
     FU.buttons.create();
-    FU.input('$ctrl.session.label', metadata.text);
-    FU.input('$ctrl.session.code', metadata.code);
-    element(by.model('$ctrl.session.consumable')).click();
-    FU.input('$ctrl.session.price', metadata.price);
-    FU.select('$ctrl.session.group', metadata.group);
-    FU.select('$ctrl.session.type', metadata.type);
-    FU.select('$ctrl.session.unit', metadata.unit);
-    FU.input('$ctrl.session.unit_weight', metadata.unit_weight);
-    FU.input('$ctrl.session.unit_volume', metadata.unit_volume);
+    FU.input('$ctrl.item.label', metadata.text);
+    FU.input('$ctrl.item.code', metadata.code);
+    element(by.model('$ctrl.item.consumable')).click();
+    FU.input('$ctrl.item.price', metadata.price);
+    FU.select('$ctrl.item.group', metadata.group);
+    FU.select('$ctrl.item.type', metadata.type);
+    FU.select('$ctrl.item.unit', metadata.unit);
+    FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
+    FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
     FU.modal.submit();
     components.notification.hasSuccess();
   });
 
   it('dont creates a new inventory item (metadata) for invalid data', () => {
     FU.buttons.create();
-    FU.input('$ctrl.session.label', metadata.text);
-    FU.input('$ctrl.session.unit_weight', metadata.unit_weight);
-    FU.input('$ctrl.session.unit_volume', metadata.unit_volume);
+    FU.input('$ctrl.item.label', metadata.text);
+    FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
+    FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
     FU.modal.submit();
 
     // check validations
-    FU.validation.ok('$ctrl.session.label');
-    FU.validation.ok('$ctrl.session.unit_weight');
-    FU.validation.ok('$ctrl.session.unit_volume');
-    FU.validation.error('$ctrl.session.code');
-    FU.validation.error('$ctrl.session.price');
-    FU.validation.error('$ctrl.session.group');
-    FU.validation.error('$ctrl.session.type');
-    FU.validation.error('$ctrl.session.unit');
+    FU.validation.ok('$ctrl.item.label');
+    FU.validation.ok('$ctrl.item.unit_weight');
+    FU.validation.ok('$ctrl.item.unit_volume');
+    FU.validation.error('$ctrl.item.code');
+    FU.validation.error('$ctrl.item.price');
+    FU.validation.error('$ctrl.item.group');
+    FU.validation.error('$ctrl.item.type');
+    FU.validation.error('$ctrl.item.unit');
 
     //components.notification.hasDanger();
 
@@ -81,15 +81,15 @@ describe('Inventory List', () => {
 
   it('successfully updates an existing inventory item (metadata)', () => {
     element(by.css(`[data-edit-metadata="${metadata.code}"]`)).click();
-    FU.input('$ctrl.session.label', metadataUpdate.text);
-    FU.input('$ctrl.session.code', metadataUpdate.code);
-    element(by.model('$ctrl.session.consumable')).click();
-    FU.input('$ctrl.session.price', metadataUpdate.price);
-    FU.select('$ctrl.session.group', metadataUpdate.group);
-    FU.select('$ctrl.session.type', metadataUpdate.type);
-    FU.select('$ctrl.session.unit', metadataUpdate.unit);
-    FU.input('$ctrl.session.unit_weight', metadataUpdate.unit_weight);
-    FU.input('$ctrl.session.unit_volume', metadataUpdate.unit_volume);
+    FU.input('$ctrl.item.label', metadataUpdate.text);
+    FU.input('$ctrl.item.code', metadataUpdate.code);
+    element(by.model('$ctrl.item.consumable')).click();
+    FU.input('$ctrl.item.price', metadataUpdate.price);
+    FU.select('$ctrl.item.group', metadataUpdate.group);
+    FU.select('$ctrl.item.type', metadataUpdate.type);
+    FU.select('$ctrl.item.unit', metadataUpdate.unit);
+    FU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
+    FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
 
     FU.modal.submit();
     components.notification.hasSuccess();

@@ -242,17 +242,13 @@ function ModalService(Modal) {
     }
 
     /** Inventory Units Modals for actions */
-    function openInventoryUnitActions(request) {
-
+    function openInventoryUnitActions(data) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/inventory/configuration/units/modals/actions.tmpl.html',
         controller   : 'InventoryUnitActionsModalController',
         controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
         resolve : {
-          data :  function dataProvider() { return request; }
+          data : function dataProvider() { return data; }
         }
       });
 
@@ -262,14 +258,10 @@ function ModalService(Modal) {
 
     /** Inventory List Modals for actions */
     function openInventoryListActions(request) {
-
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/inventory/list/modals/actions.tmpl.html',
         controller   : 'InventoryListActionsModalController',
         controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
         resolve : {
           data :  function dataProvider() { return request; }
         }

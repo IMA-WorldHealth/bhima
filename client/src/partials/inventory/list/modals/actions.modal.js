@@ -4,19 +4,22 @@ angular.module('bhima.controllers')
 InventoryListActionsModalController.$inject = [
   'AccountService', 'InventoryService', 'InventoryGroupService',
   'InventoryTypeService', 'InventoryUnitService', 'NotifyService',
-  '$uibModalInstance', 'Store', 'data'
+  '$uibModalInstance', 'Store', '$state', '$q'
 ];
 
-function InventoryListActionsModalController(Account, Inventory, InventoryGroup, InventoryType, InventoryUnit, Notify, Instance, Store, Data) {
-  var vm = this, session = vm.session = {};
+function InventoryListActionsModalController(Account, Inventory, InventoryGroup, InventoryType, InventoryUnit, Notify, Instance, Store, $state, $q) {
+  var vm = this;
+  var item = vm.item = {};
+
+  // this is the UUID of the update state.
+  vm.identifier = $state.params.uuid;
+  vm.isUpdateState = angular.isDefined(vm.identifier);
+  vm.isCreateState = !angular.isDefined(vm.identifier);
 
   // variables for storage
-  var GroupStore = {},
-      TypeStore  = {},
-      UnitStore  = {};
-
-  // map for actions
-  var map = { 'add' : addList, 'edit' : editList };
+  var GroupStore = {};
+  var TypeStore  = {};
+  var UnitStore  = {};
 
   // expose to the view
   vm.submit = submit;
@@ -27,33 +30,24 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) {
-      return;
-    }
+    if (form.$invalid) { return; }
 
-    var record = Inventory.clean(vm.session);
-    map[vm.action](record, vm.identifier)
-    .then(function (res) {
-      Instance.close(res);
-    });
-  }
+    var record = Inventory.clean(vm.item);
 
-  /** add inventory list */
-  function addList(record) {
-    return Inventory.create(record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
-  }
+    var promise = vm.isCreateState ?
+      Inventory.create(record) :
+      Inventory.update(vm.identifier, record);
 
-  /** edit inventory list */
-  function editList(record, uuid) {
-    return Inventory.update(uuid, record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+    promise
+      .then(function (res) {
+        var message = vm.isCreateState ?
+          'FORM.INFO.CREATE_SUCCESS' :
+          'FORM.INFO.UPDATE_SUCCESS';
+
+        Notify.success(message);
+        Instance.close(res);
+      })
+      .catch(Notify.handleError);
   }
 
   /** cancel action */
@@ -63,44 +57,42 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
   /** startup */
   function startup() {
-    vm.action = Data.action;
-    vm.identifier = Data.identifier;
+
 
     // Inventory Group
-    InventoryGroup.read()
-    .then(function (list) {
-      vm.inventoryGroupList = list;
-      GroupStore = new Store({ identifier: 'uuid', data: vm.inventoryGroupList });
-    })
-    .catch(Notify.errorHandler);
-
-    // Inventory Group
-    InventoryType.read()
-    .then(function (list) {
-      vm.inventoryTypeList = list;
-      TypeStore = new Store({ data: vm.inventoryTypeList });
-    })
-    .catch(Notify.errorHandler);
-
-    // Inventory Unit
-    InventoryUnit.read()
-    .then(function (list) {
-      vm.inventoryUnitList = list;
-      UnitStore = new Store({ data: vm.inventoryUnitList });
-    })
-    .catch(Notify.errorHandler);
-
-    if (vm.identifier) {
-      Inventory.read(vm.identifier)
+    var inventoryGroupPromise = InventoryGroup.read()
       .then(function (list) {
-        vm.session = list;
-        vm.session.group = GroupStore.get(vm.session.group_uuid);
-        vm.session.type  = TypeStore.get(vm.session.type_id);
-        vm.session.unit = UnitStore.get(vm.session.unit_id);
+        vm.inventoryGroupList = list;
+        GroupStore = new Store({ identifier: 'uuid', data: vm.inventoryGroupList });
+      });
+
+    // Inventory Group
+    var inventoryTypePromise = InventoryType.read()
+      .then(function (list) {
+        vm.inventoryTypeList = list;
+        TypeStore = new Store({ data: vm.inventoryTypeList });
+      });
+
+    var inventoryUnitPromise = InventoryUnit.read()
+      .then(function (list) {
+        vm.inventoryUnitList = list;
+        UnitStore = new Store({ data: vm.inventoryUnitList });
+      });
+
+    $q.all([ inventoryGroupPromise, inventoryTypePromise, inventoryUnitPromise ])
+      .then(function () {
+
+        // if we are in the update state, load the appropriate information
+        if (vm.isUpdateState) {
+          return Inventory.read(vm.identifier)
+            .then(function (item) {
+              vm.item = item;
+              vm.item.group = GroupStore.get(vm.item.group_uuid);
+              vm.item.type  = TypeStore.get(vm.item.type_id);
+              vm.item.unit = UnitStore.get(vm.item.unit_id);
+            });
+        }
       })
-      .catch(Notify.errorHandler);
-    }
-
+      .catch(Notify.handleError);
   }
-
 }
