@@ -1,16 +1,18 @@
 angular.module('bhima.controllers')
-.controller('EnterpriseController', EnterpriseController);
+  .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  '$translate', 'EnterpriseService', 'CurrencyService', 'AccountStoreService',
-  'util', 'NotifyService', 'ProjectService', 'ModalService'
+  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService',
+  'ProjectService', 'ModalService', 'AccountService', 'bhConstants'
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController($translate, Enterprises, Currencies, Accounts, util, Notify, Projects, Modal) {
+function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal, Accounts, bhConstants) {
   var vm = this;
+
+  vm.bhConstants = bhConstants;
 
   vm.enterprises = [];
   vm.enterprise = {};
@@ -29,45 +31,30 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
 
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
-    .then(function (enterprises) {
-      vm.hasEnterprise = enterprises.length ? true : false;
-      vm.enterprises = vm.hasEnterprise ? enterprises : [];
+      .then(function (enterprises) {
+        vm.hasEnterprise = (enterprises.length > 0);
+        vm.enterprises = vm.hasEnterprise ? enterprises : [];
 
-      /**
-       * @note: set the enterprise to the first one
-       * this choice need the team point of view for to setting the default enterprise
-       */
-      vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
-    })
-    .then(Accounts.accounts)
-    .then(function (list) {
-      vm.accounts = list;
+        /**
+         * @note: set the enterprise to the first one
+         * this choice need the team point of view for to setting the default enterprise
+         */
+        vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
 
-      // gain account
-      vm.enterprise.gain_account = vm.accounts.get(vm.enterprise.gain_account_id);
-      // loss account
-      vm.enterprise.loss_account = vm.accounts.get(vm.enterprise.loss_account_id);
-    })
-    .then(refreshProjects)
-    .catch(Notify.handleError);
-
-    // load accounts
-    Accounts.accounts()
-    .then(function (list) {
-      vm.accounts = list;
-
-      // gain account
-      vm.enterprise.gain_account = vm.accounts.get(vm.enterprise.gain_account_id);
-      // loss account
-      vm.enterprise.loss_account = vm.accounts.get(vm.enterprise.loss_account_id);
-    })
-    .catch(Notify.handleError);
+        return Accounts.read();
+      })
+      .then(function (accounts) {
+        vm.accounts = Accounts.order(accounts);
+        return refreshProjects();
+      })
+      .catch(Notify.handleError);
 
     // load currencies
     Currencies.read()
-    .then(function (currencies) {
-      vm.currencies = currencies;
-    }).catch(Notify.handleError);
+      .then(function (currencies) {
+        vm.currencies = currencies;
+      })
+      .catch(Notify.handleError);
 
   }
 
@@ -104,8 +91,8 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
       location_id : enterprise.location_id,
       currency_id : enterprise.currency_id,
       po_box : enterprise.po_box,
-      gain_account_id : enterprise.gain_account.id,
-      loss_account_id : enterprise.loss_account.id
+      gain_account_id : enterprise.gain_account_id,
+      loss_account_id : enterprise.loss_account_id
     };
   }
 

@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Enterprises ::', function () {
+describe('Enterprises', function () {
 
   const path = '#/enterprises';
   const enterpriseId = 1;
@@ -20,8 +20,8 @@ describe('Enterprises ::', function () {
     email : 'ima@imaworldhealth.com',
     po_box : 'POBOX USA 1',
     phone : '01500',
-    gain_account : 'Test Gain Account',
-    loss_account : 'Test Expense Accounts'
+    gain_account_id : 'Test Gain Account',
+    loss_account_id : 'Test Expense Accounts'
   };
 
   // default enterprise
@@ -31,8 +31,8 @@ describe('Enterprises ::', function () {
     email : 'enterprise@test.org',
     po_box : 'POBOX USA 1',
     phone : '243 81 504 0540',
-    gain_account : 'Test Gain Account',
-    loss_account : 'Test Expense Accounts'
+    gain_account_id : 'Test Gain Account',
+    loss_account_id : 'Test Expense Accounts'
   };
 
   // project
@@ -61,8 +61,8 @@ describe('Enterprises ::', function () {
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
-    FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', enterprise.gain_account);
-    FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', enterprise.loss_account);
+    FU.uiSelect('EnterpriseCtrl.enterprise.gain_account_id', enterprise.gain_account_id);
+    FU.uiSelect('EnterpriseCtrl.enterprise.loss_account_id', enterprise.loss_account_id);
 
     FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
     FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
@@ -105,8 +105,8 @@ describe('Enterprises ::', function () {
      FU.input('EnterpriseCtrl.enterprise.name', default_enterprise.name);
      FU.input('EnterpriseCtrl.enterprise.abbr', default_enterprise.abbr);
 
-     FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', default_enterprise.gain_account);
-     FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', default_enterprise.loss_account);
+     FU.uiSelect('EnterpriseCtrl.enterprise.gain_account_id', default_enterprise.gain_account_id);
+     FU.uiSelect('EnterpriseCtrl.enterprise.loss_account_id', default_enterprise.loss_account_id);
 
      FU.input('EnterpriseCtrl.enterprise.po_box', default_enterprise.po_box);
      FU.input('EnterpriseCtrl.enterprise.email', default_enterprise.email);

@@ -62,13 +62,16 @@
 
                 <ui-select
                   name="gain_account"
-                  ng-model="EnterpriseCtrl.enterprise.gain_account"
-                  theme="bootstrap"
+                  ng-model="EnterpriseCtrl.enterprise.gain_account_id"
+                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
                   </ui-select-match>
-                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in  EnterpriseCtrl.accounts.data | filter:$select.search">
+                  <ui-select-choices
+                    ui-select-focus-patch
+                    ui-disable-choice="account.type_id === EnterpriseCtrl.bhConstants.accounts.TITLE"
+                    repeat="account.id as account in  EnterpriseCtrl.accounts | filter: { 'hrlabel': $select.search }">
                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
                     <span ng-bind-html="account.label | highlight:$select.search"></span>
                   </ui-select-choices>
@@ -87,13 +90,16 @@
 
                 <ui-select
                   name="loss_account"
-                  ng-model="EnterpriseCtrl.enterprise.loss_account"
-                  theme="bootstrap"
+                  ng-model="EnterpriseCtrl.enterprise.loss_account_id"
+                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
                   </ui-select-match>
-                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in  EnterpriseCtrl.accounts.data | filter:$select.search">
+                  <ui-select-choices
+                    ui-select-focus-patch
+                    ui-disable-choice="account.type_id === EnterpriseCtrl.bhConstants.accounts.TITLE"
+                    repeat="account.id as account in  EnterpriseCtrl.accounts | filter:{'hrlabel' : $select.search}">
                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
                     <span ng-bind-html="account.label | highlight:$select.search"></span>
                   </ui-select-choices>
