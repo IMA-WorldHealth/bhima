@@ -158,34 +158,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       .replace(':user', Session.user.display_name);
   }
 
-  /**
-   * @method formatFilterParameters
-   * @description format filters parameters
-   */
- function formatFilterParameters(params) {
-   var columns = [
-     { field: 'is_caution', displayName: 'FORM.LABELS.CAUTION' },
-     { field: 'cashbox_id', displayName: 'FORM.LABELS.CASHBOX' },
-     { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
-     { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-     { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-     { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
-     { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
-   ];
-
-   // returns columns from filters
-   return columns.filter(function (column) {
-     var value = params[column.field];
-
-     if (angular.isDefined(value)) {
-       column.value = value;
-       return true;
-     } else {
-       return false;
-     }
-   });
- }
-
 
   /**
    * @method formatFilterParameters
