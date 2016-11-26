@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('HomeController', HomeController);
 
 HomeController.$inject = [
-  'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService',
-  '$translate', '$scope', 'NotifyService', 'FiscalService', 'moment', 'DashboardService'
+  'CurrencyService', 'ExchangeRateService', 'SessionService',
+  'NotifyService', 'FiscalService', 'DashboardService', 'moment'
 ];
 
 /**
@@ -17,7 +17,7 @@ HomeController.$inject = [
  * @todo - implement fiscal year client-side services to get relevant fiscal year
  * services and information.
  */
-function HomeController(Currencies, Rates, Session, System, $translate, $scope, Notify, Fiscal, Moment, DashboardService) {
+function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardService, Moment) {
   var vm = this;
 
   vm.today = new Date();
@@ -30,7 +30,7 @@ function HomeController(Currencies, Rates, Session, System, $translate, $scope, 
   vm.enterprise = Session.enterprise;
 
   // load exchange rates
-  Currencies.read()
+  Currencies.read(true)
     .then(function (currencies) {
       vm.currencies = currencies.filter(function (currency) {
         return currency.id !== Session.enterprise.currency_id;
