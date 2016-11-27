@@ -30,6 +30,14 @@ function DashboardDebtorController(Dashboard) {
       vm.owedGraph.labels = debtorGroups.map(function (group) {
         return group.name;
       });
+
+      // server will not pass aggregates object if there have been no transactions
+      // (or if there are no debtor groups), this case is handled
+      if (!result.data.aggregates) {
+        vm.noDebt = true;
+        return;
+      }
+
       vm.noDebt = result.data.aggregates.total === 0;
     });
 }
