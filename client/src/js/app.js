@@ -27,6 +27,14 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
       'debtors@index' : {
         templateUrl : 'partials/home/units/debtors.html',
         controller : 'DashboardDebtorController as DebtorCtrl'
+      },
+      'invoices@index' : {
+        templateUrl : 'partials/home/units/invoices.html',
+        controller : 'DashboardInvoiceController as InvoiceCtrl'
+      },
+      'patients@index' : {
+        templateUrl : 'partials/home/units/patients.html',
+        controller : 'DashboardPatientController as PatientCtrl'
       }
     }
   })

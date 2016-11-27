@@ -29,13 +29,14 @@
 
 'use strict';
 
-const _    = require('lodash');
-const q = require('q');
-const uuid = require('node-uuid');
+const _      = require('lodash');
+const q      = require('q');
+const uuid   = require('node-uuid');
+const moment = require('moment');
 
-const util = require('../../../lib/util');
-const db    = require('../../../lib/db');
-const topic = require('../../../lib/topic');
+const util   = require('../../../lib/util');
+const db     = require('../../../lib/db');
+const topic  = require('../../../lib/topic');
 
 const BadRequest  = require('../../../lib/errors/BadRequest');
 const NotFound    = require('../../../lib/errors/NotFound');

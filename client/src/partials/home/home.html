@@ -14,8 +14,15 @@
       <div class="col-md-12">
 
         <div class="panel panel-default segment">
-          <div class="panel-body">
-            <h1 style="margin-top : 10px">{{ HomeCtrl.enterprise.name }}</h1>
+          <div class="panel-body text-center">
+            <div class="ui ima-blue statistic">
+              <div class="value">
+                {{ HomeCtrl.enterprise.name }}
+              </div>
+              <div class="uilabel">
+                <i class="fa fa-user"></i> {{ 'HOME.CONNECTED_USER' | translate }}: {{ HomeCtrl.user.display_name }} 
+              </div>
+            </div>
           </div>
         </div>
 
@@ -99,6 +106,11 @@
     <div class="row">
       <div class="col-md-6">
         <div ui-view="debtors"></div>
+      </div>
+
+      <div class="col-md-6">
+        <div ui-view="invoices"></div>
+        <div ui-view="patients"></div>
       </div>
     </div>
   </div>

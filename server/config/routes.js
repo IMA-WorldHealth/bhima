@@ -85,6 +85,7 @@ const cashflow         = require('../controllers/finance/reports/cashflow');
 const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
+const stats            = require('../controllers/dashboard/stats');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -103,6 +104,10 @@ exports.configure = function configure(app) {
   app.get('/system/events', system.events);
   app.get('/system/stream', system.stream);
   app.get('/system/information', system.info);
+
+  // dashbord stats 
+  app.get('/patients/stats', stats.patients);
+  app.get('/invoices/stats', stats.invoices);
 
   // exchange rate modules
   app.get('/exchange', exchange.list);
