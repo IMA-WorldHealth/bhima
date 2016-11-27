@@ -796,12 +796,18 @@
     "BHIMA"          : "Bhima",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
+    "EXCHANGE_SET"   : "Configuré le",
     "FISCAL_YEAR_INFO" : "Chronologie de l'année fiscale",
     "FISCAL_YEAR_DESCRIPTION" : "Cette chronologie montre les progrès réalisés grâce à l'année fiscale.",
     "PROJECT_NAME"   : "Nom Project",
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
-    "TODAY"          : "Date du jour"
+    "TODAY"          : "Date du jour",
+    "DEBTORS" : { 
+      "TITLE"    : "Debiteurs de l'entreprise",
+      "BALANCED" : "Toutes les dettes sont reglées",
+      "CACHED"   : "Données à jour"
+    }
   },
   "INVENTORY" : {
     "ADD_GROUP"     : "Ajouter Groupe d'inventaires",
@@ -889,28 +895,33 @@
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "PAGE_TITLE"         : "Facture des patients",
+    "STAT_TOTAL_INVOICE" : "Total factures",
+    "STAT_PAID"          : "Payés",
+    "STAT_NOT_PAID"      : "En attente de paiement",
     "SUBSIDY_BREAKDOWN"  : "Subvention disfonctionnelle",
     "SUCCESS"            : "Facture des patients enregistrés avec succès."
 
   },
   "PATIENT_RECORDS": {
     "CHECK_IN" : {
-      "TITLE" : "Vérification",
-      "SUBMIT" : "Vérification des patients",
-      "NOT_RECENT" : "Ce patient n'a pas récemment été vérifiée, vérifier le patient pour la suivi de cette visite à l'hôpital.",
-      "ORIGINAL"  : "Ce patient n'a jamais été vérifiée.",
+      "TITLE" : "Visites",
+      "SUBMIT" : "Confirmer la visite du patient",
+      "NOT_RECENT" : "Ce patient n'a pas été à l'hopital récemment, vérifier le patient pour le suivi de cette visite à l'hôpital.",
+      "ORIGINAL"  : "Ce patient n'a jamais été consulté à l'hopital.",
       "RECENT"  : "Visites récentes",
-      "REPORT_TITLE" : "Titre du Rapport",
-      "ITEM" : "Vérifiée",
-      "BY" : "par",
       "REPORT_TITLE" : "Rapport de consultations des patients",
-      "SUCCESS" : "Le patient a déjà été vérifié"
+      "ITEM" : "Confirmée",
+      "BY" : "par",
+      "SUCCESS" : "Confirmation de la visite du patient avec succes"
     },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Numéro de compte",
       "DEBTOR_GROUP"  : "Groupe débiteur",
       "REPORT_TITLE"  : "Activité financière du Patient"
     },
+    "STAT_TOTAL_PATIENT" : "Total Patients",
+    "STAT_TOTAL_VISIT"   : "Total Visits",
+    "STAT_TOTAL_NEW"     : "Nouveaux Patients",
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",

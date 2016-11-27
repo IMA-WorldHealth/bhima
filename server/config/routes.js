@@ -350,6 +350,7 @@ exports.configure = function configure(app) {
   app.get('/invoices', patientInvoice.list);
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
+  app.get('/invoices/stats', patientInvoice.stats);
   app.get('/invoices/:uuid', patientInvoice.detail);
 
   // route for invoice Report
@@ -400,6 +401,7 @@ exports.configure = function configure(app) {
   // Patients API
   app.get('/patients', patients.list);
   app.post('/patients', patients.create);
+  app.get('/patients/stats', patients.stats);
   app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);
   app.get('/patients/:uuid/groups', patients.groups.list);

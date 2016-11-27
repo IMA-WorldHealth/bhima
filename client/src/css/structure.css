@@ -20,6 +20,11 @@
   display: none !important;
 }
 
+/**
+ * IMA colors 
+ */
+.bg-ima-blue { background-color : #085484; color: #fff; }
+
 /*
  * Sidebar
  */
@@ -816,9 +821,6 @@ growl-notification.fading.ng-leave.ng-leave-active {
   margin-bottom : 5px;
 }
 
-.segment > .panel-body {
-  /* padding-top : 5px; */
-}
 .segment-title {
   position : absolute;
   top : 3px;

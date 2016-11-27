@@ -11,11 +11,12 @@
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  */
 
-
-const db   = require('../../lib/db');
-const uuid = require('node-uuid');
-const _    = require('lodash');
-const util = require('../../lib/util');
+const Q      = require('q');
+const moment = require('moment');
+const db     = require('../../lib/db');
+const uuid   = require('node-uuid');
+const _      = require('lodash');
+const util   = require('../../lib/util');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -40,6 +41,9 @@ exports.lookupInvoice = lookupInvoice;
 // @todo - this is used by the invoices receipt which really should use
 // a .find() method
 exports.listInvoices = listInvoices;
+
+/** Get invoices status */
+exports.stats = invoiceStat;
 
 /**
  * list
@@ -292,4 +296,100 @@ function search(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+/** 
+ * @function invoiceStat
+ * 
+ * @description This function help to get statistical data about invoices 
+ */
+function invoiceStat(req, res, next) {
+  let params = req.query;
+  let bundle = {};
+
+  // date handler 
+  let date = params.date ? 
+    moment(params.date).format('YYYY-MM-DD').toString() : 
+    moment().format('YYYY-MM-DD').toString();
+
+  // cancelled transaction type
+  const CANCELED_TRANSACTION_TYPE = 10;
+
+  // date restriction 
+  const DATE_CLAUSE = '(MONTH(invoice.date) = MONTH(?) AND YEAR(invoice.date) = YEAR(?))';
+
+  // query invoices which are not cancelled 
+  let sqlInvoices =
+    `SELECT COUNT(*) AS total, SUM(cost) AS cost FROM invoice 
+     WHERE ${DATE_CLAUSE} AND 
+     invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE});`;
+
+  // query invoices which are paid 
+  let sqlBalance = 
+    `SELECT (debit - credit) as balance, project_id, cost 
+     FROM (
+      SELECT SUM(debit) as debit, SUM(credit) as credit, invoice.project_id, invoice.cost   
+      FROM combined_ledger
+      JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
+      WHERE invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}) 
+        AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL 
+      GROUP BY uuid
+     ) AS i
+     JOIN project ON i.project_id = project.id 
+     `;
+  
+  // promises requests 
+  let dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date])];
+
+  Q.all(dbPromise)
+  .spread((invoices, invoiceBalances) => {
+
+    // total invoices 
+    bundle.total = invoices[0].total;
+    bundle.total_cost = invoices[0].cost;
+
+    /**
+     * Paid Invoices 
+     * Get list of invoices which are fully paid
+     */ 
+    let paid = invoiceBalances.filter(item => {
+      return item.balance === 0;
+    });
+    bundle.invoice_paid_amount = paid.reduce((previous, current) => {
+      return current.cost + previous;
+    }, 0);
+    bundle.invoice_paid = paid.length;
+
+    /**
+     * Partial Paid Invoices 
+     * Get list of invoices which are partially paid
+     */ 
+    let partial = invoiceBalances.filter(item => {
+      return item.balance > 0 && item.balance !== item.cost;
+    });
+    bundle.invoice_partial_amount = partial.reduce((previous, current) => {
+      return current.cost - current.balance + previous;
+    }, 0);
+    bundle.invoice_partial = partial.length;
+
+    /**
+     * Unpaid Invoices 
+     * Get list of invoices which are not paid
+     */ 
+    let unpaid = invoiceBalances.filter(item => {
+      return item.balance > 0;
+    });
+    bundle.invoice_unpaid_amount = unpaid.reduce((previous, current) => {
+      return current.balance + previous;
+    }, 0);
+    bundle.invoice_unpaid = unpaid.length;
+    
+    // server date 
+    bundle.date = date;
+
+    res.status(200).json(bundle);
+  })
+  .catch(next)
+  .done();
+
 }

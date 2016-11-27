@@ -29,13 +29,14 @@
 
 'use strict';
 
-const _    = require('lodash');
-const q = require('q');
-const uuid = require('node-uuid');
+const _      = require('lodash');
+const q      = require('q');
+const uuid   = require('node-uuid');
+const moment = require('moment');
 
-const util = require('../../../lib/util');
-const db    = require('../../../lib/db');
-const topic = require('../../../lib/topic');
+const util   = require('../../../lib/util');
+const db     = require('../../../lib/db');
+const topic  = require('../../../lib/topic');
 
 const BadRequest  = require('../../../lib/errors/BadRequest');
 const NotFound    = require('../../../lib/errors/NotFound');
@@ -82,6 +83,9 @@ exports.lookupByDebtorUuid = lookupByDebtorUuid;
 
 // Get the latest patient Invoice
 exports.latestInvoice = latestInvoice;
+
+// patient stats 
+exports.stats = patientStats;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
@@ -690,4 +694,43 @@ function latestInvoice (req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * @method patientStats
+ * 
+ * @description This method help to get patient stats abount visits and registrations 
+ */
+function patientStats(req, res, next) {
+  let params = req.query;
+  let bundle = {};
+
+  // date handler 
+  let date = params.date ? 
+    moment(params.date).format('YYYY-MM-DD').toString() : 
+    moment().format('YYYY-MM-DD').toString();
+
+  const sqlPatient = 
+    `SELECT COUNT(uuid) AS total FROM patient 
+     WHERE MONTH(registration_date) = MONTH(?) AND YEAR(registration_date) = YEAR(?);`;
+
+  const sqlVisit = 
+    `SELECT COUNT(v.uuid) AS total_visit 
+     FROM patient_visit v JOIN patient p ON p.uuid = v.patient_uuid 
+     WHERE MONTH(v.start_date) = MONTH(?) AND YEAR(v.start_date) = YEAR(?);`;
+  
+  let dbPromise = [
+    db.exec(sqlPatient, [date, date]), 
+    db.exec(sqlVisit, [date, date])
+  ];
+
+  q.all(dbPromise)
+  .spread((registration, visits) => {
+    bundle.total = registration[0].total;
+    bundle.total_visit = visits[0].total_visit;
+    bundle.date = date;
+    res.status(200).json(bundle);
+  })
+  .catch(next)
+  .done();
 }

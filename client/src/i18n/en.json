@@ -880,6 +880,9 @@
     "SUBSIDY_BREAKDOWN"  : "Subsidy Breakdown",
     "COMBINED_SUBSIDIES" : "Combined Subsidies",
     "PAGE_TITLE"         : "Patient Invoice",
+    "STAT_TOTAL_INVOICE" : "Total Invoices",
+    "STAT_PAID"          : "Paid",
+    "STAT_NOT_PAID"      : "Waiting Payment",
     "SUCCESS"            : "Patient invoice successfully recorded."
   },
   "PATIENT_RECORDS": {
@@ -902,7 +905,10 @@
       "ACCOUNT"       : "Account Number",
       "DEBTOR_GROUP"  : "Debtor Group",
       "REPORT_TITLE"  : "Patient Financial Activity"
-    }
+    },
+    "STAT_TOTAL_PATIENT" : "Total Patients",
+    "STAT_TOTAL_VISIT"   : "Total Visits",
+    "STAT_TOTAL_NEW"     : "New Patients"
   },
   "PATIENT_REG": {
     "PAGE_TITLE"           : "Patient Registration",
