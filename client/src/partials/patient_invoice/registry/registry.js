@@ -17,6 +17,10 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   var cache = AppCache('InvoiceRegistry');
 
+  // Background color for make the difference betwen the valid and cancel invoice
+  var reversedBackgroundColor = {'background-color': '#ffb3b3' };
+  var regularBackgroundColor = { 'background-color': 'none' };
+
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
   vm.onRemoveFilter = onRemoveFilter;
@@ -86,6 +90,11 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
     // hook the returned patients up to the grid.
     request.then(function (invoices) {
+      invoices.forEach(function (invoice) {
+        invoice._backgroundColor =
+          (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+      });   
+
       // put data in the grid
       vm.uiGridOptions.data = invoices;
     })
@@ -141,7 +150,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
         return load();
       }
-    });
+    })
+    .catch(Notify.handleError);
   }
 
   // Function for Credit Note cancel all Invoice
@@ -159,7 +169,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       } else {
         openModal(invoice);
       }
-    });
+    })
+    .catch(Notify.handleError);
   }
 
   // fire up the module

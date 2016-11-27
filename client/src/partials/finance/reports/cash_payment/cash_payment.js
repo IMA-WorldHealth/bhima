@@ -32,6 +32,10 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   vm.clearFilters = clearFilters;
   vm.cancelCash = cancelCash;
 
+  // Background color for make the difference betwen the valid and cancel paiement
+  var reversedBackgroundColor = {'background-color': '#ffb3b3' };
+  var regularBackgroundColor = { 'background-color': 'none' };
+
   // grid default options
   vm.gridOptions.appScopeProvider  = vm;
   vm.gridOptions.showColumnFooter  = true;
@@ -130,8 +134,13 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   // load cash
   function load(filters) {
     Cash.search(filters)
-    .then(function (list) {
-      vm.gridOptions.data = list;
+    .then(function (rows) {
+      rows.forEach(function (row) {
+        row._backgroundColor =
+          (row.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+      });      
+
+      vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);
   }
