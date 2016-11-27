@@ -168,6 +168,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cash Payment Registry
 (147,1),
 
+(148, 1),
+
 -- Income Expense Report
 (149,1),
 

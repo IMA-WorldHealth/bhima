@@ -138,33 +138,6 @@
           >
         </bh-find-patient>
       </div>
-
-      <div class="radio"
-        ng-class="{ 'has-error' : ModalForm.distributableOptions.$invalid && ModalForm.$submitted }">
-        <p class="control-label">
-          <strong>{{ "FORM.LABELS.DISTRIBUTABLE" | translate }}</strong>
-          <span style="display:inline-block;" class="pull-right">
-            <a href ng-click="ModalCtrl.clear('is_distributable')" tabindex="-1">
-              <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-            </a>
-          </span>
-        </p>
-
-        <label>
-          <input type="radio" name="distributable" id="yes" value="1" ng-model="ModalCtrl.params.is_distributable">
-          {{ "FORM.LABELS.YES" | translate }}
-        </label>
-      </div>
-
-      <div class="radio">
-        <label>
-          <input type="radio" name="distributable" id="no" value="0" ng-model="ModalCtrl.params.is_distributable">
-          {{ "FORM.LABELS.NO" | translate }}
-        </label>
-        <div class="help-block" ng-messages="ModalForm.distributableOptions.$error" ng-show="ModalForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
-      </div>
     </fieldset>
   </div>
 
