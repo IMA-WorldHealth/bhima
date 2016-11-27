@@ -202,7 +202,7 @@ function find(options) {
   };
 
   let sql =`
-    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
+    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference, invoice.reference AS ref,
       invoice.date, patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id

@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants'
+  'uiGridConstants', 'ModalService', 'CashService'
 ];
 
 /**
@@ -12,10 +12,14 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
+
+  // Background color for make the difference betwen the valid and cancel invoice
+  var reversedBackgroundColor = {'background-color': '#ffb3b3' };
+  var regularBackgroundColor = { 'background-color': 'none' };
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
@@ -86,6 +90,11 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
     // hook the returned patients up to the grid.
     request.then(function (invoices) {
+      invoices.forEach(function (invoice) {
+        invoice._backgroundColor =
+          (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+      });   
+
       // put data in the grid
       vm.uiGridOptions.data = invoices;
     })
@@ -133,15 +142,35 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     load(vm.filters);
   }
 
+ //Call the opening of Modal
+  function openModal(invoice){
+    Invoices.openCreditNoteModal(invoice)
+    .then(function (success) {
+      if (success) {
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+        return load();
+      }
+    })
+    .catch(Notify.handleError);
+  }
+
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
-    Invoices.openCreditNoteModal(invoice)
-      .then(function (success) {
-        if (success) {
-          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load();
-        }
-      });
+    Cash.checkCashPayment(invoice.uuid).
+    then(function (res){
+      var numberPayment = res.length;
+      if(numberPayment > 0){
+        ModalService.confirm('FORM.DIALOGS.CONFIRM_CREDIT_NOTE')
+        .then(function (bool){
+          if(bool){
+            openModal(invoice);
+          }
+        });
+      } else {
+        openModal(invoice);
+      }
+    })
+    .catch(Notify.handleError);
   }
 
   // fire up the module

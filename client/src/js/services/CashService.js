@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('CashService', CashService);
 
 CashService.$inject = [
-  'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
+  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$http', 'util'
 ];
 
 /**
@@ -12,8 +12,11 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Api, Exchange, Session, moment) {
-  var service = new Api('/cash/');
+function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
+  var service     = new Api('/cash/');
+  var baseUrl     = '/cash/';
+  var urlCheckin  = '/cash/checkin/';
+
 
   // templates for descriptions
   var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
@@ -25,6 +28,8 @@ function CashService(Api, Exchange, Session, moment) {
   service.getTransferRecord = getTransferRecord;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatFilterParameters = formatFilterParameters;
+  service.openCancelCashModal = openCancelCashModal;
+  service.checkCashPayment = checkCashPayment;  
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -153,33 +158,62 @@ function CashService(Api, Exchange, Session, moment) {
       .replace(':user', Session.user.display_name);
   }
 
+
   /**
    * @method formatFilterParameters
    * @description format filters parameters
    */
- function formatFilterParameters(params) {
-   var columns = [
-     { field: 'is_caution', displayName: 'FORM.LABELS.CAUTION' },
-     { field: 'cashbox_id', displayName: 'FORM.LABELS.CASHBOX' },
-     { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
-     { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-     { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-     { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
-     { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
-   ];
+  function formatFilterParameters(params) {
+    var columns = [
+      { field: 'is_caution', displayName: 'FORM.LABELS.CAUTION' },
+      { field: 'cashbox_id', displayName: 'FORM.LABELS.CASHBOX' },
+      { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
+      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
+      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
+      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
+      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+    ];
 
-   // returns columns from filters
-   return columns.filter(function (column) {
-     var value = params[column.field];
+    // returns columns from filters
+    return columns.filter(function (column) {
+      var value = params[column.field];
 
-     if (angular.isDefined(value)) {
-       column.value = value;
-       return true;
-     } else {
-       return false;
-     }
-   });
- }
+      if (angular.isDefined(value)) {
+        column.value = value;
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+  //open a dialog box to Cancel Cash Paiement
+  function openCancelCashModal(invoice) {
+    return Modal.open({
+      templateUrl : 'partials/cash/modals/modalCancelCash.html',
+      resolve : { data : { invoice : invoice } },
+      size : 'md',
+      animation : true,
+      keyboard  : false,
+      backdrop : 'static',
+      controller : 'ModalCancelCashController as ModalCtrl',
+    }).result;
+  }
+
+  /**
+   * @desc It checkCashPayment the invoice from the database
+   * @param {String} invoiceUuid, is the uuid of invoice
+   * @example
+   * service.checkCashPayment(invoiceUuid)
+   * .then(function (res){
+   *   your code here
+   *  });
+   */
+  function checkCashPayment (invoiceUuid){
+    var url = urlCheckin + invoiceUuid;
+    return $http.get(url)
+      .then(util.unwrapHttpResponse);
+  }
 
   return service;
 }
