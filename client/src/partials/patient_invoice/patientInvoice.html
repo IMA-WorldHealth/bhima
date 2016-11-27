@@ -259,11 +259,6 @@
           ng-click="PatientInvoiceCtrl.clear(detailsForm)">
           {{ "FORM.BUTTONS.CLEAR" | translate }}
         </button>
-        <p
-          class="text-danger"
-          ng-show="PatientInvoiceCtrl.Invoice._invalid && detailsForm.$submitted">
-          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFO.INVALID_ITEMS" | translate }}
-        </p>
       </div>
     </div>
   </div>

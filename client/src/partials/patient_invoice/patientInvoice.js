@@ -82,6 +82,12 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     // update value for form validation
     detailsForm.$setSubmitted();
 
+    // make sure there are actually items to validate
+    if (vm.Invoice.store.data.length === 0) {
+      Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
+      return;
+    }
+
     // ask service items to validate themselves - if anything is returned it is invalid
     var invalidItems = vm.Invoice.validate(true);
 

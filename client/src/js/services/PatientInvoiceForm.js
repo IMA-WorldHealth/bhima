@@ -330,6 +330,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     if (item.inventory_uuid) {
       this.inventory.release(item.inventory_uuid);
     }
+    this.digest();
   };
 
   /**
