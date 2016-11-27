@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'CurrencyService'
+  'uiGridConstants'
 ];
 
 /**
@@ -12,14 +12,13 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, Currencies) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
-  vm.setCurrency = setCurrency;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.creditNote = creditNote;
@@ -57,21 +56,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     enableSorting : true,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
+  vm.receiptOptions = {};
 
-  // receipt options
-  vm.selectedCurrency = {
-    id : vm.enterprise.currency_id,
-    symbol : vm.enterprise.currencySymbol
+  // receiptOptions are used in the bh-print directive under the receipt-action template
+  vm.setReceiptCurrency = function setReceiptCurrency(currencyId) {
+    vm.receiptOptions.currency = currencyId;
   };
-
-  vm.receiptOptions = {
-    currency : vm.selectedCurrency.id
-  };
-
-  function setCurrency(currency) {
-    vm.selectedCurrency = currency;
-    vm.receiptOptions.currency = vm.selectedCurrency.id;
-  }
 
   function handler(error) {
     vm.hasError = true;
@@ -81,11 +71,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
-  Currencies.read()
-    .then(function (currencies) {
-      vm.currencies = currencies;
-    });
 
   // this function loads invoices from the database with search parameters
   // if passed in.

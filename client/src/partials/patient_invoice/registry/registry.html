@@ -23,15 +23,8 @@
 
 
       <div class="toolbar-item">
-        <div class="btn-group" uib-dropdown dropdown-append-to-body>
-          <button class="btn btn-default" uib-dropdown-toggle>{{ "INVOICE_REGISTRY.RECEIPT_CURRENCY" | translate }}</button>
-          <button style="min-width : 30px" class="btn btn-default">
-            <span>{{InvoiceRegistryCtrl.selectedCurrency.symbol}}</span>
-          </button>
-          <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-            <li ng-repeat="currency in InvoiceRegistryCtrl.currencies track by currency.id" role="menuitem"><a ng-click="InvoiceRegistryCtrl.setCurrency(currency)" href>{{currency.name}} (<b>{{currency.symbol}}</b>)</a></li>
-          </ul>
-        </div>
+        <bh-receipt-currency
+          on-update="InvoiceRegistryCtrl.setReceiptCurrency(currencyId)" />
       </div>
     </div>
   </div>
