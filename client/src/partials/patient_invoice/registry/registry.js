@@ -60,6 +60,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     enableSorting : true,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
+  vm.receiptOptions = {};
+
+  // receiptOptions are used in the bh-print directive under the receipt-action template
+  vm.setReceiptCurrency = function setReceiptCurrency(currencyId) {
+    vm.receiptOptions.currency = currencyId;
+  };
 
   function handler(error) {
     vm.hasError = true;
@@ -83,7 +89,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     }
 
     // if we have search parameters, use search.  Otherwise, just read all
-    // invoices.    
+    // invoices.
     var request = angular.isDefined(parameters) ?
       Invoices.search(parameters) :
       Invoices.read();

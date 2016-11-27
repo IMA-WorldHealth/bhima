@@ -33,7 +33,8 @@
         ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
         ng-if="$ctrl.selected == $ctrl.options.findById"
         ng-keypress="$ctrl.onKeyPress($event)"
-        placeholder="{{ $ctrl.selected.placeholder | translate }}...",
+        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        autocomplete="off"
         ng-required="$ctrl.required">
 
       <!-- search by Name  -->
@@ -51,6 +52,7 @@
         typeahead-template-url="/partials/templates/patientList.tmpl.html"
         typeahead-on-select="$ctrl.selectPatient($item)"
         placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        autocomplete="off"
         ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->

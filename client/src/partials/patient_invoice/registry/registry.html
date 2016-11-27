@@ -20,6 +20,12 @@
         >
         </bh-pdf-print>
       </div>
+
+
+      <div class="toolbar-item">
+        <bh-receipt-currency
+          on-update="InvoiceRegistryCtrl.setReceiptCurrency(currencyId)" />
+      </div>
     </div>
   </div>
 </div>

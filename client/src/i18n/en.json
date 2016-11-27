@@ -255,7 +255,11 @@
     "NEW_RATE"            : "New Exchange Rate",
     "RATE_SET"            : "Rate last set",
     "REVIEW_RATE"         : "Review the exchange rate",
-    "TITLE"               : "Exchange Rate Management"
+    "TITLE"               : "Exchange Rate Management",
+    "REVIEW"              : "Review Rates ",
+    "INVOICE_DISCLAIMER"  : "Exchange rate based on the latest enterprise exchange:",
+    "SET_AS"              : "Set as",
+    "ON"                  : "on"
   },
   "FISCAL": {
     "ALREADY_CLOSED"        : "Already closed",
@@ -814,7 +818,8 @@
     "LIST_UNIT"     : "Inventory Unit form"
   },
   "INVOICE_REGISTRY" : {
-    "TITLE" : "Invoice Registry"
+    "TITLE" : "Invoice Registry",
+    "RECEIPT_CURRENCY" : "Receipt Currency"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
