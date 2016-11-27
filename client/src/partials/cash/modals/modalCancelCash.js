@@ -28,6 +28,7 @@ function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
     return Vouchers.reverse(vm.cancelCash)
       .then(function () {
         return Instance.close(true);
-      });
+      })
+      .catch(Notify.handleError);
   }
 }
