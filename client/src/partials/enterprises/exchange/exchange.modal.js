@@ -24,7 +24,11 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
 
   vm.submit = submit;
   vm.format = Currencies.format;
+  vm.symbol = Currencies.symbol;
   vm.cancel = function () { ModalInstance.dismiss(); };
+
+  // this turns on and off the currency select input
+  vm.hasMultipleCurrencies = false;
 
   Currencies.read()
     .then(function (currencies) {
@@ -34,20 +38,29 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
         });
 
       // use the first currency in the list
-      vm.rate.currency_id = vm.currencies[0];
+      vm.rate.currency = vm.currencies[0];
+
+      // if there are more than a single other currency (besides the enterprise currency)
+      // show the currency selection input
+      if (vm.currencies.length > 1) {
+        vm.hasMultipleCurrencies = true;
+      }
     })
     .catch(Notify.handleError);
 
   function submit(form) {
     if (form.$invalid) { return; }
 
-    vm.rate.enterprise_id = Session.enterprise.id;
+    // gather form data for submission
+    var data = angular.copy(vm.rate);
 
-    // TODO clean this up with proper Ui-select syntax when internet available
-    var currency = vm.rate.currency_id;
-    vm.rate.currency_id = currency.id;
+    data.enterprise_id = Session.enterprise.id;
 
-    return Exchange.create(vm.rate)
+    // TODO clean this up with proper ui-select syntax when internet available
+    var currency = vm.rate.currency;
+    data.currency_id = currency.id;
+
+    return Exchange.create(data)
       .then(function () {
         ModalInstance.close();
       });
