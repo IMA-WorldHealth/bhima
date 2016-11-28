@@ -51,6 +51,10 @@ exports.lookup = lookup;
 /** list all cash payment */
 exports.listPayment = listPayment;
 
+/** checkInvoicePayment if the invoice is paid */
+exports.checkInvoicePayment = checkInvoicePayment;
+
+
 // looks up a single cash record and associated cash_items
 function lookup(id) {
   'use strict';
@@ -145,8 +149,9 @@ function listPayment(params) {
     SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, v.type_id
     FROM cash
+      LEFT JOIN voucher v ON v.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
@@ -277,6 +282,26 @@ function reference(req, res, next) {
 
     // references should be unique - return the first one
     res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * GET /cash/:checkin/:invoiceUuid
+ * Check if the invoice is paid 
+ */
+function checkInvoicePayment(req, res, next) {
+  const bid = db.bid(req.params.invoiceUuid);
+  const sql =
+    `SELECT cash_item.cash_uuid, cash_item.invoice_uuid
+      FROM cash_item
+    WHERE cash_item.invoice_uuid = ?
+    AND cash_item.cash_uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10);`;
+
+  db.exec(sql, [bid])
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();

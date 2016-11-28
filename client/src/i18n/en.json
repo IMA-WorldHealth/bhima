@@ -255,7 +255,11 @@
     "NEW_RATE"            : "New Exchange Rate",
     "RATE_SET"            : "Rate last set",
     "REVIEW_RATE"         : "Review the exchange rate",
-    "TITLE"               : "Exchange Rate Management"
+    "TITLE"               : "Exchange Rate Management",
+    "REVIEW"              : "Review Rates ",
+    "INVOICE_DISCLAIMER"  : "Exchange rate based on the latest enterprise exchange:",
+    "SET_AS"              : "Set as",
+    "ON"                  : "on"
   },
   "FISCAL": {
     "ALREADY_CLOSED"        : "Already closed",
@@ -332,6 +336,7 @@
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Do you confirm this action?",
+      "CONFIRM_CREDIT_NOTE"    : "The invoice you want to cancel already paid, would you want to cancel this bill",
       "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be undone.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
       "CANNOT_UNDONE_ACTION"   : "This action CANNOT BE REVERSED, the action will be permanent. You must be sure that you want to do this action.",
       "NO_CORRESPONDANCY"      : "No correspondancy found for ",
@@ -356,6 +361,7 @@
     },
     "INFO": {
       "BY"                   : "By",
+      "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
       "CREATED"              : "Created",
@@ -812,7 +818,8 @@
     "LIST_UNIT"     : "Inventory Unit form"
   },
   "INVOICE_REGISTRY" : {
-    "TITLE" : "Invoice Registry"
+    "TITLE" : "Invoice Registry",
+    "RECEIPT_CURRENCY" : "Receipt Currency"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -1188,6 +1195,7 @@
       "BILLING_DATE"       : "Billing Date",
       "BY"                 : "By",
       "CASHBOX"            : "Cashbox",
+      "CANCEL_CASH"        : "Cancel Cash Payment",
       "CHARGE"             : "Charge",
       "CLIENT"             : "Client",
       "CODE"               : "Code",

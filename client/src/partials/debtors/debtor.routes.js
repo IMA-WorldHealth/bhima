@@ -17,8 +17,8 @@ angular.module('bhima.routes')
         // setting the URL as simply create matches as a :uuid - there should be a way to set orders
         // this should ideally route to /create
         url : '/create',
-        templateUrl : 'partials/debtors/groups.edit.html',
-        controller : 'DebtorGroupCreateController as GroupEditCtrl'
+        templateUrl : 'partials/debtors/groups.update.html',
+        controller : 'DebtorGroupCreateController as GroupUpdateCtrl'
       })
       .state('debtorGroups.list', {
         url : '',
@@ -26,8 +26,8 @@ angular.module('bhima.routes')
       })
       .state('debtorGroups.update', {
         url : '/update',
-        templateUrl : 'partials/debtors/groups.edit.html',
-        controller : 'DebtorGroupUpdateController as GroupEditCtrl',
+        templateUrl : 'partials/debtors/groups.update.html',
+        controller : 'DebtorGroupUpdateController as GroupUpdateCtrl',
         data : { label : null }
       });
   }]);

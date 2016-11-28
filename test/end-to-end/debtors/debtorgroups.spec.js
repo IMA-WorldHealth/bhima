@@ -22,14 +22,14 @@ describe('Debtor Groups Management', function () {
   it('creates a debtor group', function () {
     FU.buttons.create();
 
-    FU.input('GroupEditCtrl.group.name', 'E2E Debtor Group');
-    FU.uiSelect('GroupEditCtrl.group.account_id', '47001');
-    FU.input('GroupEditCtrl.group.max_credit', '1200');
-    FU.input('GroupEditCtrl.group.note', 'This debtor group was created by an automated end to end test.');
-    FU.input('GroupEditCtrl.group.phone', '+243 834 443');
-    FU.input('GroupEditCtrl.group.email', 'e2e@email.com');
+    FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
+    FU.uiSelect('GroupUpdateCtrl.group.account_id', '47001');
+    FU.input('GroupUpdateCtrl.group.max_credit', '1200');
+    FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');
+    FU.input('GroupUpdateCtrl.group.phone', '+243 834 443');
+    FU.input('GroupUpdateCtrl.group.email', 'e2e@email.com');
 
-    FU.select('GroupEditCtrl.group.price_list_uuid', 'Test Price List');
+    FU.select('GroupUpdateCtrl.group.price_list_uuid', 'Test Price List');
 
     FU.buttons.submit();
 
@@ -43,8 +43,8 @@ describe('Debtor Groups Management', function () {
     let updateGroup = element.all(by.css('[data-group-entry]'));
     updateGroup.all(by.css('[data-method="update"]')).first().click();
 
-    FU.input('GroupEditCtrl.group.max_credit', '500');
-    FU.input('GroupEditCtrl.group.name', '[Updated]');
+    FU.input('GroupUpdateCtrl.group.max_credit', '500');
+    FU.input('GroupUpdateCtrl.group.name', '[Updated]');
 
     FU.buttons.submit();
 
