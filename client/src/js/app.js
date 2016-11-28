@@ -38,6 +38,20 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
       }
     }
   })
+  .state('exchange', {
+    abstract : true,
+    url : '/exchange',
+    templateUrl: 'partials/application/exchange.html'
+  })
+  .state('exchange.index', {
+    url : '',
+    views : {
+      'exchange@exchange' : {
+        templateUrl : 'partials/enterprises/exchange/exchange.html',
+        controller : 'ExchangeController as ExchangeCtrl'
+      }
+    }
+  })
   .state('login', {
     url : '/login',
     controller : 'LoginController as LoginCtrl',

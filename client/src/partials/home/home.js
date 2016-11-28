@@ -24,6 +24,9 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
 
   vm.primaryExchange = {};
 
+  // this limits the number of places that the page displays for the exchange rate
+  vm.EXCHANGE_RATE_DISPLAY_SIZE = 6;
+
   // bind the session information
   vm.project = Session.project;
   vm.user = Session.user;
