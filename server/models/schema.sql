@@ -25,7 +25,6 @@ CREATE TABLE `account` (
   `is_charge` TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
-  UNIQUE KEY `account_2` (`label`),
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `cc_id` (`cc_id`),
