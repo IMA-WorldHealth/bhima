@@ -67,6 +67,7 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
     var insertedIndex;
 
     account.number = Number(account.number);
+    account.type_id = Number(account.type_id);
     account.hrlabel = Accounts.label(account);
 
     // update local store
@@ -81,17 +82,15 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
 
 
   AccountGrid.prototype.updateViewDelete = function updateViewDelete(event, account) {
-    findAndRemove(this._store.data, 'id', account.id);
+    // findAndRemove(this._store.data, 'id', account.id);
 
-    function findAndRemove(array, property, value) {
-      array.forEach(function(result, index) {
-        if(result[property] === value) {
-          array.splice(index, 1);
-        }    
-      });
-    }
+    // Update the store for other modules accessing it
+    var removeIndex = this._store.index[account.id];
+    this._store.remove(account.id);
+    this.formatStore();
 
-    return this._store.data;
+    // Update this grid
+    this.data.splice(removeIndex, 1);
   };
 
 
@@ -131,6 +130,10 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
   AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
     this.data.splice(index, 0, account);
   };
+
+  AccountGrid.prototype.getAccount = function getAccount(id) {
+    return this._store.get(id);
+  }
 
   return AccountGrid;
 }

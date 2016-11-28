@@ -192,16 +192,14 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     .then(function (bool){
       // if the user clicked cancel, reset the view and return
       if (!bool) {
-        vm.view = 'default';
         return;
       }
 
       if (!account.id) {
         return;
       }
-      var accountId = account.id;
 
-      Accounts.delete(accountId)
+      Accounts.delete(account.id)
       .then(function (result){
         $rootScope.$broadcast('ACCOUNT_DELETED', account);
         Notify.success('ACCOUNT.DELETED');
@@ -209,7 +207,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
       })
       .catch(handleModalError);
     });
-    
+
   }
 
   function resetModal(accountForm) {
