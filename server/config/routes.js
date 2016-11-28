@@ -85,6 +85,7 @@ const cashflow         = require('../controllers/finance/reports/cashflow');
 const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
+const stats            = require('../controllers/dashboard/stats');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -103,6 +104,10 @@ exports.configure = function configure(app) {
   app.get('/system/events', system.events);
   app.get('/system/stream', system.stream);
   app.get('/system/information', system.info);
+
+  // dashbord stats 
+  app.get('/patients/stats', stats.patients);
+  app.get('/invoices/stats', stats.invoices);
 
   // exchange rate modules
   app.get('/exchange', exchange.list);
@@ -350,7 +355,6 @@ exports.configure = function configure(app) {
   app.get('/invoices', patientInvoice.list);
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
-  app.get('/invoices/stats', patientInvoice.stats);
   app.get('/invoices/:uuid', patientInvoice.detail);
 
   // route for invoice Report
@@ -401,7 +405,6 @@ exports.configure = function configure(app) {
   // Patients API
   app.get('/patients', patients.list);
   app.post('/patients', patients.create);
-  app.get('/patients/stats', patients.stats);
   app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);
   app.get('/patients/:uuid/groups', patients.groups.list);

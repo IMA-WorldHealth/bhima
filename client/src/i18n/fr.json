@@ -263,7 +263,11 @@
     "NEW_RATE"            : "Nouveau taux",
     "RATE_SET"            : "Taux configuré",
     "REVIEW_RATE"         : "Revoir le taux",
-    "TITLE"               : "Gestion taux d'echange"
+    "TITLE"               : "Gestion taux d'echange",
+    "REVIEW"              : "Revoir le taux",
+    "INVOICE_DISCLAIMER"  : "Taux de Change basé sur le dernier taux de l'entreprise",
+    "SET_AS"              : "Defini comme",
+    "ON"                  : "sur"
   },
   "FISCAL": {
     "ALREADY_CLOSED"        : "A déjà été cloturé",
@@ -365,6 +369,7 @@
     },
     "INFO": {
       "BY"                   : "Par",
+      "CANCEL_CASH"          : "Annulation de paiement",
       "CLEAR_FILTERS"        : "Rafraîchir le filtre",
       "CLOSE_FISCAL_YEAR"    : "Clôturer l'année fiscale",
       "CLOSED"               : "Fermée",
@@ -829,7 +834,8 @@
     "LIST_UNIT"     : "Formes d'inventaires"
   },
   "INVOICE_REGISTRY" : {
-    "TITLE" : "Registre des Factures"
+    "TITLE" : "Registre des Factures",
+    "RECEIPT_CURRENCY" : "Monnaie du reçu"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
