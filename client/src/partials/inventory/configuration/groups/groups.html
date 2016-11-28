@@ -33,7 +33,7 @@
       </thead>
 
       <tbody>
-        <tr ng-repeat="group in GroupsCtrl.groupList | orderBy: 'name'">
+        <tr ng-repeat="group in GroupsCtrl.groupList | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
           <td>{{ group.inventory_counted }} <small>{{ 'INVENTORY.ELEMENT' | translate | lowercase }}(s)</small></td>
@@ -41,7 +41,7 @@
           <td class="text-center">{{ group.stockAccountNumber }}</td>
           <td class="text-center">{{ group.cogsAccountNumber }}</td>
           <td>
-            <a style="cursor:pointer; text-decoration:none;"
+            <a href
               ng-click="GroupsCtrl.editInventoryGroup(group.uuid)"
               data-edit-group="{{ group.code }}">
               <i class="fa fa-edit"></i> {{ 'FORM.LABELS.EDIT' | translate }}

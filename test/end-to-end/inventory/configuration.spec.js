@@ -22,15 +22,13 @@ describe('Inventory Configuration', () => {
     code : '1704',
     sales_account : 'Test Capital One',
     stock_account : 'Test Capital Two',
-    cogs_account  : 'Test Balance'
+    cogs_account  : 'Test Debtor Accounts1'
   };
 
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2504',
-    sales_account : 'First Test Item Account',
-    stock_account : '',
-    cogs_account  : ''
+    sales_account : 'Test Capital One',
   };
 
   // inventory type

@@ -877,7 +877,7 @@ CREATE TABLE `inventory_group` (
   `uuid` BINARY(16) NOT NULL,
   `name` varchar(100) NOT NULL,
   `code` varchar(30) NOT NULL,
-  `sales_account` mediumint(8) unsigned NOT NULL,
+  `sales_account` mediumint(8) unsigned DEFAULT NULL,
   `cogs_account` mediumint(8) unsigned DEFAULT NULL,
   `stock_account` mediumint(8) unsigned DEFAULT NULL,
   `donation_account` mediumint(8) unsigned DEFAULT NULL,

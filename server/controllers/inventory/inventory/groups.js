@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Inventory Groups Controller
  * This controller is responsible for handling CRUD operations with inventory groups
@@ -17,15 +19,11 @@ exports.countInventory = countInventory;
 
 /** list inventory group */
 function list () {
-  'use strict';
-
   return getGroups();
 }
 
 /** details of inventory group */
 function details (identifier) {
-  'use strict';
-
   return getGroups(identifier);
 }
 
@@ -33,8 +31,6 @@ function details (identifier) {
 
 /** create new inventory group */
 function create (record) {
-  'use strict';
-
   record.uuid = db.bid(record.uuid || uuid.v4());
 
   let sql = `INSERT INTO inventory_group SET ?;`;
@@ -48,8 +44,6 @@ function create (record) {
 
 /** update an existing inventory group */
 function update (record, identifier) {
-  'use strict';
-
   let uid = db.bid(identifier);
 
   let sql = `UPDATE inventory_group SET ? WHERE uuid = ?;`;
@@ -66,8 +60,6 @@ function update (record, identifier) {
  * @param {string} uid the group uuid is optional
  */
 function getGroups(uid) {
-  'use strict';
-
   let sql = `
     SELECT BUID(uuid) AS uuid, code, name, sales_account, cogs_account, stock_account
     FROM inventory_group
@@ -83,8 +75,6 @@ function getGroups(uid) {
  * @param {string} uid the group uuid
  */
 function countInventory(uid) {
-  'use strict';
-
   uid = (uid) ? db.bid(uid) : undefined;
 
   let sql = `
@@ -97,8 +87,6 @@ function countInventory(uid) {
 
 /** remove inventory group */
 function remove (uuid) {
-  'use strict';
-
   let uib = db.bid(uuid);
   let sql = 'DELETE FROM inventory_group WHERE uuid = ?;';
   return db.exec(sql, [uib]);
