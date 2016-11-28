@@ -2,14 +2,14 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="active">{{ "PRICE_LIST.TITLE" | translate }}</li>
+      <li class="title">{{ "PRICE_LIST.TITLE" | translate }}</li>
     </ol>
   </div>
 </div>
 
 <div class="flex-util">
   <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }}
+    <span class="fa fa-plus"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }}
   </button>
 </div>
 
@@ -19,7 +19,7 @@
     <div class="row">
 
       <div class="col-xs-6">
-        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+        <div class="panel panel-default" style="overflow: auto; max-height: 80vh;">
           <div class="panel-heading">
             {{ "TABLE.COLUMNS.LISTS" | translate }}
           </div>
@@ -60,34 +60,10 @@
           </div>
         </div>
 
-        <div ng-switch-when="create_success">
-          <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="update_success">
-          <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4>{{ PriceListCtrl.HTTPError.data.code | translate }} </h4>
-          </div>
-        </div>
-
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "PRICE_LIST.ADD_PRICE_LIST" | translate }}</div>
           <div class="panel-body">
-            <form name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
+            <form name="CreateForm" bh-submit="PriceListCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
@@ -135,9 +111,9 @@
               <hr>
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-priceList" type="submit" data-method="submit">
+                <bh-loading-button loading-state="CreateForm.$loading" id="submit-priceList">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
-                </button>
+                </bh-loading-button>
                 <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
@@ -149,7 +125,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
           <div class="panel-body">
-            <form name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
+            <form name="UpdateForm" bh-submit="PriceListCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
@@ -197,9 +173,9 @@
               <hr>
 
               <div class="form-group">
-                <button class="btn btn-default" id="change_priceList" type="submit" data-method="submit">
+                <bh-loading-button loading-state="UpdateForm.$loading" id="change_priceList" >
                   {{ "FORM.BUTTONS.SAVE" | translate }}
-                </button>
+                </bh-loading-button>
                 <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
