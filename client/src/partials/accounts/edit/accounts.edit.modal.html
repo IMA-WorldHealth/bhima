@@ -45,15 +45,22 @@
       </div>
     </div>
 
-    <div ng-if="!AccountEditCtrl.isCreateState" class="form-group">
-      <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
-      <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p>
-    </div>
+    <!-- @TODO Re-disable account type edditing after accounts are stable -->
+    <!-- Account type read only -->
+    <!-- <div ng-if="!AccountEditCtrl.isCreateState" class="form-group"> -->
+      <!-- <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label> -->
+      <!-- <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p> -->
+    <!-- </div> -->
 
-    <div ng-if="AccountEditCtrl.isCreateState" class="form-group"
+    <div class="form-group"
          ng-class="{'has-error' : AccountForm.type_id.$invalid && AccountForm.$submitted}">
       <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
-      <select class="form-control" ng-model="AccountEditCtrl.account.type_id" name="type_id" required>
+      <select
+        class="form-control"
+        ng-model="AccountEditCtrl.account.type_id"
+        name="type_id"
+        required>
+        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT_TYPE" | translate }}</option>
         <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}">{{entry.translation_key | translate}}</option>
       </select>
       <div class="help-block" ng-messages="AccountForm.type_id.$error" ng-show="AccountForm.$submitted">

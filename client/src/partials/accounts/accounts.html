@@ -33,13 +33,23 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-xs-12">
+        <!-- @todo Consider how the application is loaded and cached and make this functionality apply to the whole application -->
+        <!-- Hide broken UI-Grid on page load -->
+        <div ng-if="!AccountsCtrl.pageLoaded"><i class="fa fa-spin fa-circle-o-notch"></i></div>
         <div
           id="account-grid"
           style="height : calc(100vh - 65px)"
+          ng-show="AccountsCtrl.pageLoaded"
           ui-grid="AccountsCtrl.gridOptions"
           ui-grid-tree-view
           ui-grid-auto-resize
           ui-grid-resize-columns>
+
+          <bh-grid-loading-indicator
+            loading-state="AccountsCtrl.loading"
+            empty-state="AccountsCtrl.gridOptions.data.length===0"
+            error-state="AccountsCtrl.hasError">
+          </bh-grid-loading-indicator>
         </div>
       </div>
     </div>
