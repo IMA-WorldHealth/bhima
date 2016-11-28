@@ -1028,7 +1028,10 @@
     "PRICE_LIST_ITEMS" : "Price list items",
     "TITLE"            : "Price List Management",
     "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
-    "UPDATE"           : "Update a Price List"
+    "UPDATE"           : "Update a Price List",
+    "ERRORS" : {
+      "HAS_NEGATIVE_PRICE" : "You cannot assign a negative price to an item.  Please either assign a positive percentage, a negative percentage, or a positive value."
+    }
   },
   "PROJECT": {
     "ADDING_PROJECT"  : "Adding a new project",

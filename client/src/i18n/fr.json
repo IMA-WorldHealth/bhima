@@ -1055,7 +1055,10 @@
     "PRICE_LIST_ITEMS" : "Eléments de la liste des prix",
     "TITLE"            : "Liste des Prix",
     "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",
-    "UPDATE"           : "Mettre à jour une liste de prix"
+    "UPDATE"           : "Mettre à jour une liste de prix",
+    "ERRORS" : {
+      "HAS_NEGATIVE_PRICE" : "Vous ne pouvez pas assigner une valeur negatif."
+    }
   },
   "PROJECT": {
     "ADDING_PROJECT"  : "Ajout nouveau projet",

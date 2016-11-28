@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
-  'PriceListService', '$translate', '$uibModal', 'InventoryService', 'ModalService', 'util'
+  'PriceListService', '$uibModal', 'InventoryService', 'ModalService', 'util', 'NotifyService'
 ];
 
-function PriceListController(PriceListService, $translate, $uibModal, Inventory, ModalService, util) {
+function PriceListController(PriceListService, $uibModal, Inventory, ModalService, util, Notify) {
   var vm = this;
   vm.view = 'default';
 
@@ -14,7 +14,7 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
   vm.create   = create;
   vm.submit   = submit;
   vm.update   = update;
-  vm.del      = del;  
+  vm.del      = del;
   vm.cancel   = cancel;
   vm.addItem  = addItem;
   vm.getInventory = getInventory;
@@ -23,20 +23,17 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
   vm.length250 = util.length250;
   vm.maxLength = util.maxTextLength;
 
-  function handler(error) {
-    console.error(error);
-  }
-
   // fired on startup
   function startup() {
     // start up loading indicator
     vm.loading = true;
 
-    // load Inventory 
-    Inventory.getInventoryItems()
-    .then(function (data) {
-      vm.inventories = data;
-    }).catch(handler);
+    // load Inventory
+    Inventory.read()
+      .then(function (inventory) {
+        vm.inventories = inventory;
+      })
+      .catch(Notify.handleError);
 
     // load PriceList
     refreshPriceList();
@@ -54,16 +51,16 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
     return inventory[0].label;
   }
 
-  function removeItem(item){
+  function removeItem(item) {
     if (vm.pricelistItems.length > 1) {
       vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
     } else {
       ModalService.alert('PRICE_LIST.UNABLE_TO_DELETE');
-    }  
+    }
   }
 
   function create() {
-    vm.priceList = null;  
+    vm.priceList = null;
     vm.pricelistItems = [];
     vm.view = 'create';
   }
@@ -75,13 +72,13 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
     vm.priceList = data;
 
     PriceListService.read(data.uuid)
-    .then(function (data) {
-      vm.pricelistItems = data.items;
-    });
-
+      .then(function (data) {
+        vm.pricelistItems = data.items;
+      })
+      .catch(Notify.handleError);
   }
 
-  
+
   // refresh the displayed PriceList
   function refreshPriceList() {
     return PriceListService.read(null, { detailed : 1 })
@@ -93,7 +90,10 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
 
   // form submission
   function submit(invalid) {
-    if (invalid) { return; }
+    if (invalid) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return;
+    }
 
     var promise;
     var creation = (vm.view === 'create');
@@ -102,25 +102,26 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
 
     var priceList = angular.copy(vm.priceList);
 
-
     promise = (creation) ?
       PriceListService.create(priceList) :
       PriceListService.update(priceList.uuid, priceList);
 
-    promise
+    return promise
       .then(function (response) {
         return refreshPriceList();
       })
       .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })      
-      .catch(handler);
+        var message = creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        Notify.success(message);
+        vm.view = 'default';
+      })
+      .catch(Notify.handleError);
   }
 
   // switch to delete warning mode
   function del(priceList) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
+    .then(function (bool) {
        // if the user clicked cancel, reset the view and return
        if (!bool) {
           vm.view = 'default';
@@ -128,31 +129,28 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
        }
 
       // if we get there, the user wants to delete a priceList
-      vm.view = 'delete_confirm';
       PriceListService.delete(priceList.uuid)
-      .then(function () {
-         vm.view = 'delete_success';
-         return refreshPriceList();
-      })
-      .catch(function (error) {
-        vm.HTTPError = error;
-        vm.view = 'delete_error';
-      });
-    });  
+        .then(function () {
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+          return refreshPriceList();
+        })
+        .catch(Notify.handleError);
+    });
   }
 
   // Add pricelist Item in a  modal
   function addItem() {
-    $uibModal.open({
+    return $uibModal.open({
       templateUrl : 'partials/price_list/modal.html',
-      size : 'md',
-      animation : true,
-      controller : 'PriceListModalController as ModalCtrl'
+      controller : 'PriceListModalController as ModalCtrl',
+      keyboard : false,
+      backdrop: 'static',
+      size : 'md'
     }).result
     .then(function (items) {
       vm.pricelistItems.push(items);
-    });        
+    });
   }
 
-  startup();  
+  startup();
 }
