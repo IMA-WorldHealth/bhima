@@ -131,9 +131,5 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
     this.data.splice(index, 0, account);
   };
 
-  AccountGrid.prototype.getAccount = function getAccount(id) {
-    return this._store.get(id);
-  }
-
   return AccountGrid;
 }

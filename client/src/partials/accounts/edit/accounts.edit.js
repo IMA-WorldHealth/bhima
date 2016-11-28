@@ -107,6 +107,9 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     vm.account = angular.copy(account);
     accountParentId = vm.account.parent.id || vm.account.parent;
     vm.account.parent = accountStore.get(accountParentId);
+
+    // cast to string to match type options
+    vm.account.type_id = String(vm.account.type_id);
   }
 
   function defineNewAccount() {
@@ -129,7 +132,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     }
 
     // default type
-    vm.account.type_id = cacheType || vm.types[0].id;
+    vm.account.type_id = cacheType || null;
   }
 
 

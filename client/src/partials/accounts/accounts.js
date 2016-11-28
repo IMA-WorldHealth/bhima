@@ -28,11 +28,13 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
 
   // lang parameter for document
   vm.parameter = { lang: Language.key };
+  vm.loading = true;
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
     .then(bindGridData)
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(toggleLoadingIndicator);
 
   var columns = [
     { field : 'number', displayName : '', cellClass : 'text-right', width : 70},
@@ -44,6 +46,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     appScopeProvider : vm,
     enableSorting : false,
     enableFiltering : false,
+    flatEntityAccess : true,
     showTreeExpandNoChildren : false,
     enableColumnMenus : false,
     rowTemplate : '/partials/accounts/templates/grid.leafRow.tmpl.html',
@@ -68,16 +71,24 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     if (forceRefresh) {
       vm.initialDataSet = true;
       bindGridData();
-      $timeout(function () { scrollTo(account.id) }, scrollDelay);
+
+      // @todo delaying scroll removes a corner case where the grid hasn't yet
+      //       fully processed the new data - this should probably follow an event
+      $timeout(function () { scrollTo(account.id); }, scrollDelay);
     }
   }
 
+  // scroll to a row given an account ID
   function scrollTo(accountId) {
     vm.api.core.scrollTo(getDisplayAccount(accountId));
   }
 
   function getDisplayAccount(id) {
     var account;
+
+    // UI Grid uses the actual data object, pulling it directly from the account
+    // store will not match UI grid's copy so this method iterates through grid
+    // options data
     vm.gridOptions.data.some(function (row) {
       if (row.id === id) {
         account = row;
@@ -101,13 +112,17 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   }
 
   function bindGridData() {
-    console.log(vm.Accounts.data);
     vm.gridOptions.data = vm.Accounts.data;
+  }
+
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   vm.toggleInlineFilter = function toggleInlineFilter() {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
-    console.log(vm.gridOptions.enableFiltering);
     vm.api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
+
+  $timeout(function () { vm.pageLoaded = true; });
 }
