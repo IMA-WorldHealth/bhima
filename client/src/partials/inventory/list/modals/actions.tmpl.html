@@ -44,11 +44,9 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="checkbox">
       <label>
-        <input type="checkbox" name="consumable"
-          ng-true-value="1" ng-false-value="0"
-          ng-model="$ctrl.item.consumable">
+        <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
          {{ 'FORM.LABELS.CONSUMABLE' | translate }}
       </label>
     </div>
@@ -56,7 +54,10 @@
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
       <label class="control-label">{{ 'FORM.LABELS.PRICE' | translate }}</label>
-      <input class="form-control" type="text" name="price"
+      <input class="form-control"
+        type="number"
+        ng-min="0"
+        name="price"
         ng-model="$ctrl.item.price"
         placeholder="{{ 'FORM.PLACEHOLDERS.PRICE' | translate }}..."
         required>
@@ -122,8 +123,7 @@
 
     <div class="form-group">
       <label class="control-label">{{ 'FORM.LABELS.UNIT_VOLUME' | translate }}</label>
-      <input class="form-control" type="number" step="1" name="unit_volume"
-        ng-model="$ctrl.item.unit_volume"
+      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume"
         placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
     </div>
 
