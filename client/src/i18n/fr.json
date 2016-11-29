@@ -365,7 +365,8 @@
       "MISSING_CASHBOX_ID" : "Caisse non definie",
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
-      "REQUIRED"           : "Cette valeur est requise."
+      "REQUIRED"           : "Cette valeur est requise.",
+      "INVALID"            : "Donnees Invalides"
     },
     "INFO": {
       "BY"                   : "Par",
@@ -665,8 +666,8 @@
       "USERNAME"               : "Nom Utilisateur",
       "USER"                   : "Utilisateur",
       "VALUE"                  : "Valeur",
-      "VILLAGE"                : "Village",
-      "VILLAGE_NAME"           : "Nom du Village",
+      "VILLAGE"                : "Village/Commune",
+      "VILLAGE_NAME"           : "Nom du Village/Commune",
       "VILLE"                  : "Ville/Commune",
       "VOUCHER"                : "Bordereau",
       "VOLUME"                 : "Volume",
@@ -712,7 +713,7 @@
       "UNIT_WEIGHT"  : "Entrer le poids",
       "UNIT_VOLUME"  : "Entrer le volume",
       "USERNAME"     : "Entrer le nom utilisateur",
-      "VILLAGE"      : "Entrer village",
+      "VILLAGE"      : "Entrer village/Commune",
       "FILTER_NAME"        : "Filtrer par Nom...",
       "SEARCH_NAME"        : "Chercher Par Nom",
       "SEARCH_PATIENT_ID"  : "Chercher ID Patient"
@@ -756,7 +757,7 @@
       "TRANSFER_TYPE"      : "Sélectionner le type de transfert",
       "TYPE"               : "Sélectionner un type",
       "USER"               : "Selectionner Utilisateur",
-      "VILLAGE"            : "Sélectionner village",
+      "VILLAGE"            : "Sélectionner village/Commune",
       "ZS"                 : "Sélectionner zone de sante"
     },
     "VALIDATION": {
@@ -847,7 +848,7 @@
     "MANAGE_COUNTRY"        : "Gerer Les Pays",
     "MANAGE_PROVINCE"       : "Gerer Les Province",
     "MANAGE_SECTOR"         : "Gerer Les Secteurs",
-    "MANAGE_VILLAGE"        : "Gerer Les Villages",
+    "MANAGE_VILLAGE"        : "Gerer Les Villages/Communes",
     "REGISTERED"            : "Localisations Enregistrées",
     "TITLE"                 : "Gestion des localisations"
   },
@@ -1342,7 +1343,7 @@
       "UNPAID_INVOICE_2"   : " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
       "USER"               : "Utilisateur",
       "VALUE"              : "Valeur",
-      "VILLAGE"            : "Village"
+      "VILLAGE"            : "Village/Commune"
     }
   },
   "TRANSACTION_TYPE" : {
@@ -1423,14 +1424,14 @@
     "AGED_DEBTORS"               : "Les plus anciens débiteurs"
   },
   "VILLAGE": {
-    "CONFIG"       : "Configuration de Gestion des Villages",
+    "CONFIG"       : "Configuration de Gestion des Villages/Commune",
     "EDIT"         : "Editer Village",
     "INFO"         : "Ce module vous aider à gérer les villages.",
-    "NAME_VILLAGE" : "Nom de Village",
-    "NEW_VILLAGE"  : "Ajouter Village",
-    "REGISTER"     : "Enregistrer un Village",
-    "REGISTERED"   : "Villages Enregistrés",
-    "TITLE"        : "Gestion des Villages"
+    "NAME_VILLAGE" : "Nom de Village/Commune",
+    "NEW_VILLAGE"  : "Ajouter Village/Commune",
+    "REGISTER"     : "Enregistrer un Village/Commune",
+    "REGISTERED"   : "Villages/Communes Enregistrés",
+    "TITLE"        : "Gestion des Villages/Communes"
   },
   "VOUCHERS": {
     "COMPLEX": {
