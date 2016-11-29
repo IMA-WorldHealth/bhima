@@ -47,7 +47,7 @@
     "SUBMIT_CREATE"  : "Create Account",
     "SUBMIT_DELETE"  : "Delete Account",
     "SUBMIT_UPDATE"  : "Update Account",
-
+    "TYPE_CHANGE_BLOCKED" : "You cannot change the type of a title account with children.",
     "TYPES" : {
       "INCOME" : "Income",
       "EXPENSE" : "Expense",
