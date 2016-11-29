@@ -87,8 +87,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     this.inventory = new Pool({ identifier: 'uuid', data : [] });
 
     // set up the inventory
-    // @todo - if necessary, we could call this in a reload() or setup() method
-    Inventory.getInventoryItems()
+    Inventory.read()
       .then(function (data) {
         this.inventory.initialize('uuid', data);
       }.bind(this));
