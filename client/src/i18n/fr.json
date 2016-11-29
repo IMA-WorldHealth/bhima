@@ -47,12 +47,12 @@
     "TITLE"          : "Gestion des Comptes",
     "TITLE_ACCOUNT"  : "Comptes Titre",
     "UPDATED"        : "Modifié",
+    "TYPE_CHANGE_BLOCKED" : "Vous ne pouvez pas modifier le type d'un compte de titre qui a des sous-comptes.",
     "TYPES" : {
       "BALANCE" : "Balance",
       "EXPENSE" : "Frais",
       "TITLE" : "Titre",
       "INCOME" : "Produit",
-      "BALANCE" : "Balance",
       "EXPENSE" : "Charge"
     },
     "UPDATED"        : "Les données du compte ont été mis à jour"
