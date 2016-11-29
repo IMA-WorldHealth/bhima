@@ -87,8 +87,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     this.inventory = new Pool({ identifier: 'uuid', data : [] });
 
     // set up the inventory
-    // @todo - if necessary, we could call this in a reload() or setup() method
-    Inventory.getInventoryItems()
+    Inventory.read(null, { detailed : 1 })
       .then(function (data) {
         this.inventory.initialize('uuid', data);
       }.bind(this));
@@ -152,15 +151,23 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
   PatientInvoiceForm.prototype.validate = function validate(highlight) {
     this.digest();
 
+    var globalConfigurationError = null;
+
     // filters out valid items
     var invalidItems = this.store.data.filter(function (row) {
       row[ROW_ERROR_FLAG] = highlight ? row._invalid : false;
+
+      // this sets the global configuration error if a
+      if (!row._hasSalesAccount) {
+        globalConfigurationError = row._message;
+      }
+
       return row._invalid;
     });
 
-
     this._invalid = invalidItems.length > 0;
     this._valid = !this._invalid;
+    this._error = globalConfigurationError;
 
     return invalidItems;
   };
@@ -360,6 +367,9 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // make sure to validate and calculate new totals
     this.digest();
+
+    // check for global configuration errors
+    this.validate();
   };
 
 

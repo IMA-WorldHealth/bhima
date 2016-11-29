@@ -111,6 +111,14 @@
       </div>
     </div>
 
+    <div ng-show="PatientInvoiceCtrl.Invoice._error" class="row">
+      <div class="col-xs-12">
+        <div class="alert alert-danger">
+          <i class="fa fa-warning"></i> {{ PatientInvoiceCtrl.Invoice._error | translate }}
+        </div>
+      </div>
+    </div>
+
     <!-- TODO Move padding to generic CSS class -->
     <div class="row" style="padding-bottom : 5px;">
       <div class="col-xs-12">
