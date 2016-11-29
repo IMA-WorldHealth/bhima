@@ -174,7 +174,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
   function updateDescription() {
     if(vm.Invoice.recipient && vm.selectedService){
-      vm.Invoice.details.description = ['', vm.Invoice.recipient.display_name, vm.selectedService.name].join(' ');
+      vm.Invoice.details.description = [vm.descriptionPrefix, vm.Invoice.recipient.display_name, vm.selectedService.name].join(' ');
     }
   }
 
