@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
-  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants'
+  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate'
 ];
 
 /**
@@ -16,7 +16,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants, translate) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -29,6 +29,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
+
+
+  translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value;});
 
   // read in services and bind to the view
   Services.read()
@@ -67,6 +70,8 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
     .then(function (patient) {
       vm.Invoice.setPatient(patient);
+      updateDescription();
+
       return Patients.balance(patient.debtor_uuid);
     })
     .then(function (balance) {
@@ -154,6 +159,22 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
     if (angular.isDefined(vm.services) && vm.services.length) {
       vm.Invoice.setService(vm.services[SERVICE_INDEX]);
+      vm.selectedService = vm.services[SERVICE_INDEX];
+    }
+  }
+
+  function setService (service_id) {
+
+    Services.read(service_id)
+      .then(function (service) {
+        vm.selectedService = service;
+        updateDescription();
+      });
+  }
+
+  function updateDescription() {
+    if(vm.Invoice.recipient && vm.selectedService){
+      vm.Invoice.details.description = ['', vm.Invoice.recipient.display_name, vm.selectedService.name].join(' ');
     }
   }
 
@@ -187,6 +208,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.clear = clear;
   vm.addItems = addItems;
   vm.handleChange = handleChange;
+  vm.setService = setService;
 
   // Set initial default values
   clear();
