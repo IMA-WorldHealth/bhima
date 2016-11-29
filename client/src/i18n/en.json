@@ -890,7 +890,12 @@
     "STAT_TOTAL_INVOICE" : "Total Invoices",
     "STAT_PAID"          : "Paid",
     "STAT_NOT_PAID"      : "Waiting Payment",
-    "SUCCESS"            : "Patient invoice successfully recorded."
+    "SUCCESS"            : "Patient invoice successfully recorded.",
+    "ERRORS"             : {
+      "INVALID_NUMBERS" : "The record contains negative, zero, or invalid numbers",
+      "MISSING_SALES_ACCOUNT" : "The record contains an inventory item missing a sales account.  You cannot make an invoice without a sales account.",
+      "NOT_CONFIGURED" : "The record is missing an inventory item. Please put in an inventory item or remove the row."
+    }
   },
   "PATIENT_RECORDS": {
     "TITLE"              : "Patients",

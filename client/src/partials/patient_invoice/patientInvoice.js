@@ -67,7 +67,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
     .then(function (patient) {
       vm.Invoice.setPatient(patient);
-
       return Patients.balance(patient.debtor_uuid);
     })
     .then(function (balance) {
@@ -92,9 +91,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     var invalidItems = vm.Invoice.validate(true);
 
     if (invalidItems.length) {
-      Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
 
       var firstInvalidItem = invalidItems[0];
+      Notify.danger(firstInvalidItem._message);
 
       // show the user where the error is
       vm.gridApi.core.scrollTo(firstInvalidItem);

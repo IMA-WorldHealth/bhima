@@ -64,12 +64,33 @@ function PatientInvoiceItemService(uuid) {
       item.quantity > 0 &&
       item.transaction_price >= 0;
 
+    // ensure the item has a sales account
+    var hasSalesAccount = angular.isDefined(item._salesAccount) &&
+      item._salesAccount !== null;
+
+    item._hasSalesAccount = hasSalesAccount;
+
     // the item is only initialised if it has an inventory item
     item._initialised = angular.isDefined(item.inventory_uuid);
 
     // alias both valid and invalid for easy reading
-    item._valid = item._initialised && hasValidNumbers;
+    item._valid = item._initialised && hasValidNumbers && hasSalesAccount;
     item._invalid = !item._valid;
+
+    item._message = '';
+
+    // if the item is invalid, bind the error reason to it.
+    if (item._invalid) {
+
+      // possible validation messages
+      if (!item._initialised) {
+        item._message = 'PATIENT_INVOICE.ERRORS.MISSING_SALES_ACCOUNT';
+      } else if (!hasSalesAccount) {
+        item._message = 'PATIENT_INVOICE.ERRORS.NOT_CONFIGURED';
+      } else {
+        item._message = 'PATIENT_INVOICE.ERRORS.INVALID_NUMBERS';
+      }
+    }
   };
 
   /**
@@ -91,6 +112,9 @@ function PatientInvoiceItemService(uuid) {
       this.transaction_price = inventoryItem.price;
       this.inventory_price = inventoryItem.price;
       this.inventory_uuid = inventoryItem.uuid;
+
+      // special binding to make sure inventory items have a sales_account
+      this._salesAccount = inventoryItem.sales_account;
     } catch (e) {}
 
     // reset the validation flags.
