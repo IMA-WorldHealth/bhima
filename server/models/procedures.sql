@@ -155,6 +155,8 @@ CREATE PROCEDURE PostInvoice(
   IN uuid binary(16)
 )
 BEGIN
+  DECLARE InvalidSalesAccounts CONDITION FOR SQLSTATE '45006';
+
   -- required posting values
   DECLARE date DATETIME;
   DECLARE enterprise_id SMALLINT(5);
@@ -170,6 +172,8 @@ BEGIN
   DECLARE gain_account_id INT UNSIGNED;
   DECLARE loss_account_id INT UNSIGNED;
 
+  DECLARE verify_invalid_accounts SMALLINT(5);
+
   -- populate initial values specifically for this invoice
   SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
     INTO date, enterprise_id, project_id, currency_id
@@ -178,6 +182,21 @@ BEGIN
 
   -- populate core set-up values
   CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+
+  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced 
+  SELECT COUNT(invoice_item.uuid) 
+    INTO verify_invalid_accounts
+  FROM invoice JOIN invoice_item JOIN inventory JOIN inventory_group
+  ON invoice.uuid = invoice_item.invoice_uuid 
+    AND invoice_item.inventory_uuid = inventory.uuid 
+    AND inventory.group_uuid = inventory_group.uuid
+  WHERE invoice.uuid = uuid
+  AND inventory_group.sales_account IS NULL;
+  
+  IF verify_invalid_accounts > 0 THEN
+    SIGNAL InvalidSalesAccounts
+    SET MESSAGE_TEXT = 'A NULL sales account has been found for an inventory item in this invoice.';
+  END IF;
 
   CALL CopyInvoiceToPostingJournal(uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id, currency_id);
 END $$
