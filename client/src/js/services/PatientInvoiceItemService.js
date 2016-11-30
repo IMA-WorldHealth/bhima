@@ -84,9 +84,9 @@ function PatientInvoiceItemService(uuid) {
 
       // possible validation messages
       if (!item._initialised) {
-        item._message = 'PATIENT_INVOICE.ERRORS.MISSING_SALES_ACCOUNT';
-      } else if (!hasSalesAccount) {
         item._message = 'PATIENT_INVOICE.ERRORS.NOT_CONFIGURED';
+      } else if (!hasSalesAccount) {
+        item._message = 'PATIENT_INVOICE.ERRORS.MISSING_SALES_ACCOUNT';
       } else {
         item._message = 'PATIENT_INVOICE.ERRORS.INVALID_NUMBERS';
       }
