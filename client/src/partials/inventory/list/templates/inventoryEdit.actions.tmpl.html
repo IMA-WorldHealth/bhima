@@ -1,9 +1,11 @@
 <div class="ui-grid-cell-contents">
-  <a
-    title="{{ 'FORM.LABELS.EDIT' | translate }}"
-    href
-    ng-click="grid.appScope.editInventoryItem(row.entity)"
-    data-edit-metadata="{{ row.entity.code }}">
-    <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
-  </a>
+  <span ng-hide="row.groupHeader">
+    <a
+      title="{{ 'FORM.LABELS.EDIT' | translate }}"
+      href
+      ng-click="grid.appScope.editInventoryItem(row.entity)"
+      data-edit-metadata="{{ row.entity.code }}">
+      <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+    </a>
+  </span>
 </div>

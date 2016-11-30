@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryListController.$inject = [
-  '$translate', 'InventoryService', 'NotifyService',
-  'uiGridConstants', 'ModalService', '$state'
+  '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants',
+  'ModalService', '$state'
 ];
 
 /**
@@ -42,26 +42,30 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
-  vm.gridOptions.columnDefs       =
-    [
-      { field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
-      },
-      { field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
-        cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
-      },
-      { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
-      { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
-      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right' },
-      { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
-      { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
-      { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate'},
-      { field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate'},
-      { field : 'action', displayName : '',
-        cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
-        enableFiltering: false,
-        enableColumnMenu: false
-      }
-    ];
+  vm.gridOptions.fastWatch = true;
+  vm.gridOptions.columnDefs  =
+    [{
+      field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
+    },{
+      field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
+      cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
+    },
+    { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
+    { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
+    { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right' },
+    { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
+    { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
+    { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate', cellClass: 'text-right' },
+    { field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate', cellClass: 'text-right' },
+    {
+      field : 'action',
+      displayName : '',
+      cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
+      enableFiltering: false,
+      enableSorting: false,
+      enableColumnMenu: false,
+    }
+  ];
 
   // register API
   vm.gridOptions.onRegisterApi = onRegisterApi;
@@ -100,8 +104,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** startup */
   function startup() {
     Inventory.read()
-      .then(function (list) {
-        vm.gridOptions.data = list;
+      .then(function (inventory) {
+        vm.gridOptions.data = inventory;
       })
       .catch(Notify.handleError);
   }

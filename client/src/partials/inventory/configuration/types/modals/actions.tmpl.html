@@ -1,4 +1,4 @@
-<form name="ActionForm" method="post" novalidate>
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
     <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_TYPE' | translate }}</span>
@@ -28,11 +28,8 @@
       ng-click="$ctrl.cancel()">
       {{ 'FORM.BUTTONS.CANCEL' | translate }}
     </button>
-    <button type="submit"
-      class="btn btn-primary"
-      ng-click="$ctrl.submit(ActionForm)"
-      data-method="submit">
+    <bh-loading-button loading-state="ActionForm.$loading">
       {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-    </button>
+    </bh-loading-button>
   </div>
 </form>
