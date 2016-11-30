@@ -159,22 +159,17 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
     if (angular.isDefined(vm.services) && vm.services.length) {
       vm.Invoice.setService(vm.services[SERVICE_INDEX]);
-      vm.selectedService = vm.services[SERVICE_INDEX];
     }
   }
 
-  function setService (service_id) {
-
-    Services.read(service_id)
-      .then(function (service) {
-        vm.selectedService = service;
-        updateDescription();
-      });
+  function handleServiceChange () {
+    vm.Invoice.setService(vm.Invoice.service);
+    updateDescription();
   }
 
   function updateDescription() {
-    if(vm.Invoice.recipient && vm.selectedService){
-      vm.Invoice.details.description = [vm.descriptionPrefix, vm.Invoice.recipient.display_name, vm.selectedService.name].join(' ');
+    if(vm.Invoice.recipient){
+      vm.Invoice.details.description = [vm.descriptionPrefix, vm.Invoice.recipient.display_name, vm.Invoice.service.name].join('/');
     }
   }
 
@@ -208,7 +203,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.clear = clear;
   vm.addItems = addItems;
   vm.handleChange = handleChange;
-  vm.setService = setService;
+  vm.handleServiceChange = handleServiceChange;
 
   // Set initial default values
   clear();

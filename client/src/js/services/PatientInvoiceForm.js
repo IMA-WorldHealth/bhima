@@ -241,6 +241,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * @param {Object} service - a service object as read from the database
    */
   PatientInvoiceForm.prototype.setService = function setService(service) {
+    this.service = service;
     this.details.service_id = service.id;
   };
 
