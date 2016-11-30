@@ -791,6 +791,7 @@ CREATE TABLE `general_ledger` (
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
@@ -1318,6 +1319,7 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
