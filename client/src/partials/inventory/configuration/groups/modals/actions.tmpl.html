@@ -1,4 +1,4 @@
-<form name="ActionForm" bh-form-defaults novalidate>
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" bh-form-defaults novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
     <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_GROUP' | translate }}</span>
@@ -43,13 +43,14 @@
 
       <ui-select
         name="salesAccount"
-        ng-model="$ctrl.session.salesAccount"
-        theme="bootstrap"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+        ng-model="$ctrl.session.salesAccount">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
           <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+        <ui-select-choices
+          ui-select-focus-patch
+          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
+          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
           <strong ng-bind-html="account.number | highlight:$select.search"></strong>
           <span ng-bind-html="account.label | highlight:$select.search"></span>
         </ui-select-choices>
@@ -66,12 +67,14 @@
       </label>
       <ui-select
         name="stockAccount"
-        ng-model="$ctrl.session.stockAccount"
-        theme="bootstrap">
+        ng-model="$ctrl.session.stockAccount">
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"  allow-clear="true">
           <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+        <ui-select-choices
+          ui-select-focus-patch
+          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
+          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
           <strong ng-bind-html="account.number | highlight:$select.search"></strong>
           <span ng-bind-html="account.label | highlight:$select.search"></span>
         </ui-select-choices>
@@ -85,12 +88,14 @@
 
       <ui-select
         name="cogsAccount"
-        ng-model="$ctrl.session.cogsAccount"
-        theme="bootstrap">
+        ng-model="$ctrl.session.cogsAccount">
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
           <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+        <ui-select-choices
+          ui-select-focus-patch
+          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
+          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
           <strong ng-bind-html="account.number | highlight:$select.search"></strong>
           <span ng-bind-html="account.label | highlight:$select.search"></span>
         </ui-select-choices>
@@ -104,11 +109,9 @@
       ng-click="$ctrl.cancel()">
       {{ 'FORM.BUTTONS.CANCEL' | translate }}
     </button>
-    <button type="submit"
-      class="btn btn-primary"
-      ng-click="$ctrl.submit(ActionForm)"
-      data-method="submit">
+
+    <bh-loading-button loading-state="ActionForm.$loading">
       {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-    </button>
+    </bh-loading-button>
   </div>
 </form>

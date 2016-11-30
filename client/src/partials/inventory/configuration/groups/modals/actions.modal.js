@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('InventoryGroupsActionsModalController', InventoryGroupsActionsModalController);
 
 InventoryGroupsActionsModalController.$inject = [
-  'AccountService', 'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data'
+  'AccountService', 'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data', 'bhConstants'
 ];
 
-function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, Instance, Data) {
+function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, Instance, Data, bhConstants) {
   var vm = this, session = vm.session = {};
 
   // map for actions
@@ -14,6 +14,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
   // expose to the view
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.bhConstants = bhConstants;
 
   // startup
   startup();
@@ -34,18 +35,12 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
   /** add inventory group */
   function addGroup(record) {
     return InventoryGroup.create(record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.handleError);
+      .catch(Notify.handleError);
   }
 
   /** edit inventory group */
   function editGroup(record, uuid) {
     return InventoryGroup.update(uuid, record)
-      .then(function (res) {
-        return res;
-      })
       .catch(Notify.handleError);
   }
 
@@ -86,7 +81,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
 
     Account.read()
       .then(function (accounts) {
-        vm.accountList = accounts;
+        vm.accounts = accounts;
       })
       .catch(Notify.handleError);
 
