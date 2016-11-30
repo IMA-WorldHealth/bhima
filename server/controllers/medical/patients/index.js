@@ -610,11 +610,11 @@ function loadLatestInvoice (latestInvoice){
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
         FROM (
-          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM combined_ledger
           WHERE record_uuid IN (?) AND entity_uuid = ?
         UNION ALL
-          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM  combined_ledger
           WHERE reference_uuid IN (?) AND entity_uuid = ?
         ) AS ledger
@@ -627,11 +627,11 @@ function loadLatestInvoice (latestInvoice){
       FROM (
         SELECT uuid,  debit, credit, entity_uuid
         FROM (
-          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM combined_ledger
           WHERE record_uuid IN (?) AND entity_uuid = ? AND debit = 0
         UNION ALL
-          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM  combined_ledger
           WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit = 0
         ) AS ledger
