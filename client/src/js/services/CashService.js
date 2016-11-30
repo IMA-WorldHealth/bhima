@@ -14,22 +14,21 @@ CashService.$inject = [
  */
 function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   var service     = new Api('/cash/');
-  var baseUrl     = '/cash/';
   var urlCheckin  = '/cash/checkin/';
 
-
   // templates for descriptions
-  var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
-  var PAYMENT_DESCRIPTION = 'Cash Payment/ :date / :user';
-  var CAUTION_DESCRIPTION = 'Caution Payment / :date / :user';
+  var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :name';
+  var PAYMENT_DESCRIPTION = 'Cash Payment/ :date / :name';
+  var CAUTION_DESCRIPTION = 'Caution Payment / :date / :name';
 
   // custom methods
   service.create = create;
   service.getTransferRecord = getTransferRecord;
   service.calculateDisabledIds = calculateDisabledIds;
+  service.formatCashDescription = formatCashDescription;
   service.formatFilterParameters = formatFilterParameters;
   service.openCancelCashModal = openCancelCashModal;
-  service.checkCashPayment = checkCashPayment;  
+  service.checkCashPayment = checkCashPayment;
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -75,8 +74,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       data.items = allocatePaymentAmounts(data);
     }
 
-    data.description = formatCashDescription(payment.date, payment.is_caution);
-
     // remove data.invoices property before submission to the server
     delete data.invoices;
 
@@ -87,12 +84,15 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   /*
    * Nicely format the cash payment description
    */
-  function formatCashDescription(date, isCaution) {
+  function formatCashDescription(patient, payment) {
+    var isCaution = payment.is_caution;
+    var date = payment.date;
+
     var tmpl = isCaution ? CAUTION_DESCRIPTION : PAYMENT_DESCRIPTION;
 
     return tmpl
       .replace(':date', moment(date).format('YYYY-MM-DD'))
-      .replace(':user', Session.user.display_name);
+      .replace(':name', patient.display_name);
   }
 
   /**
