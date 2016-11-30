@@ -899,6 +899,11 @@
     "COMBINED_SUBSIDIES" : "Les subventions combinées",
     "DISTRIBUTION_TYPE"  : "Type des distributions",
     "DISTRIBUTION_TYPE_EXPLANATION" : "Cette option détermine si les éléments de facturation peuvent être distribués à la pharmacie ou si elles ont déjà été consommés.",
+    "ERRORS"             : {
+      "INVALID_NUMBERS"       : "L'enregistrement contient des nombres qui sont soit negatifs, soit des zeros ou soit invalides",
+      "MISSING_SALES_ACCOUNT" : "L'enregistrement contient un item d'inventaire qui n'a pas de compte de vente associé à son groupe",
+      "NOT_CONFIGURED"        : "L'enregistrement ne contient pas d'item inventaire. Veuillez inserer un item ou supprimer la ligne."
+    },
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "PAGE_TITLE"         : "Facture des patients",
