@@ -5,8 +5,8 @@ before_install:
   - export DISPLAY=:99.0
   - export CHROME_BIN=/usr/bin/google-chrome
   - sudo apt-get update -qq
-  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
-  - sudo apt-get install -qq wkhtmltopdf
+  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6 -y
+  - sudo apt-get install -qq wkhtmltopdf -y
   - sh -e /etc/init.d/xvfb start
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome*.deb
@@ -19,7 +19,6 @@ services:
 language: node_js
 node_js:
   - node
-  - '5'
   - '4'
 
 before_script:
@@ -37,7 +36,7 @@ script:
   - ./node_modules/.bin/protractor protractor.conf.js
 
 git:
-  depth: 3
+  depth: 1
 
 before_cache:
   - rm -f npm-debug.log
