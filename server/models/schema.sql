@@ -1088,7 +1088,7 @@ CREATE TABLE `price_list_item` (
   `is_percentage`       BOOLEAN NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `price_list_item_1` (`label`),
+  UNIQUE KEY `price_list_item_1` (`label`, `inventory_uuid`),
   UNIQUE KEY `price_list_item_2` (`price_list_uuid`, `inventory_uuid`),
   KEY `price_list_uuid` (`price_list_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),

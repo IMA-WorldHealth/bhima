@@ -2,6 +2,7 @@
 /* jshint expr : true */
 
 const helpers = require('./helpers');
+const uuid = require('node-uuid');
 
 /*
  * The /prices API endpoint
@@ -27,7 +28,6 @@ describe('(/prices ) Price List', function () {
     value : 12
   }];
 
-
   const priceListItems2 = [{
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Test $20 reduction on an item',
@@ -40,13 +40,25 @@ describe('(/prices ) Price List', function () {
     value : 12
   }];
 
-  var complexPriceList = {
+  const priceListItemsWithDuplicates = [{
+    inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
+    label : 'Duplicate Label',
+    is_percentage : false,
+    value : 10
+  }, {
+    inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+    label : 'Duplicate Label',
+    is_percentage : false,
+    value : 10
+  }];
+
+  const complexPriceList = {
     label : 'Test Price List w/ Two Items',
     description : 'A price list with two items attached.',
     items : priceListItems
   };
 
-  var invalidPriceList = {
+  const invalidPriceList = {
     label : 'An invalid price list',
     items :[{
       inventory_uuid : null,
@@ -54,6 +66,13 @@ describe('(/prices ) Price List', function () {
       is_percentage : false,
       value : 1.2
     }]
+  };
+
+  const duplicatesPriceList = {
+    uuid : uuid.v4(),
+    label : 'This list contains duplicate labels',
+    description : 'The list has a tone of items.',
+    items : priceListItemsWithDuplicates
   };
 
   const responseKeys = [
@@ -164,6 +183,22 @@ describe('(/prices ) Price List', function () {
       })
       .then(function (res) {
         helpers.api.listed(res, 3);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /prices with items with duplicate labels should be allowed.', function () {
+    return agent.post('/prices')
+      .send({ list : duplicatesPriceList })
+      .then(function (res) {
+        helpers.api.created(res);
+        duplicatesPriceList.uuid = res.body.uuid;
+        return agent.get(`/prices/${duplicatesPriceList.uuid}`);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
