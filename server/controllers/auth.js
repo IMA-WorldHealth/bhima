@@ -28,6 +28,9 @@ exports.login = login;
 // GET /logout
 exports.logout = logout;
 
+// POST /reload
+exports.reload = reload;
+
 /**
  * @method login
  *
@@ -173,6 +176,131 @@ function logout(req, res, next) {
     // destroy the session
     req.session.destroy();
     res.sendStatus(200);
+  })
+  .catch(next)
+  .done();
+}
+
+
+// POST /reload
+exports.reload = reload;
+
+/**
+ * @method reload
+ *
+ * @description
+ * Logs a client into the server.  The /login route accepts a POST request with
+ * a username,  and project id.  It checks if the username 
+ * exist in the database, then verifies that the user has permission to access
+ * the database all enterprise, project, and user data for easy access.
+ */
+function reload(req, res, next) {
+  let username = req.body.username;
+  let projectId = req.body.project;
+
+  const session = {};
+
+  let sql = `
+    SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
+    FROM user JOIN project_permission JOIN project ON
+      user.id = project_permission.user_id AND project.id = project_permission.project_id
+    WHERE user.username = ?;
+  `;
+
+  db.exec(sql, [username])
+  .then(function (rows) {
+
+    // if no data found, we return a login error
+    if (rows.length === 0) {
+      throw new Unauthorized('Bad username and project combination.');
+    }
+
+    // we assume only one match for the user
+    session.user = rows[0];
+
+    // next make sure this user has permissions
+    sql = `
+      SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
+      FROM unit LEFT JOIN permission
+        ON unit.id = permission.unit_id;
+    `;
+
+    return db.exec(sql, [session.user.id]);
+  })
+  .then(modules => {
+
+    let unauthorized = modules.every(mod => !mod.authorized);
+
+    // if no permissions, notify the user that way
+    if (unauthorized) {
+      throw new Unauthorized('This user does not have any permissions.');
+    }
+
+    session.paths = modules;
+
+    // update the database for when the user logged in
+    sql =
+      'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
+
+    return db.exec(sql, [new Date(), session.user.id]);
+  })
+  .then(() => {
+
+    // we need to construct the session on the client side, including:
+    //   the current enterprise
+    //   the current project
+    sql = `
+      SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
+        c.symbol AS currencySymbol, e.po_box,
+        CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
+      FROM enterprise AS e
+      JOIN currency AS c ON e.currency_id = c.id
+      JOIN village ON village.uuid = e.location_id
+      JOIN sector ON sector.uuid = village.sector_uuid
+      JOIN province ON province.uuid = sector.province_uuid
+      WHERE e.id = ?;
+    `;
+
+    return db.exec(sql, [session.user.enterprise_id]);
+  })
+  .then(rows => {
+
+    if (!rows.length) {
+      throw new InternalServerError('There are no enterprises registered in the database!');
+    }
+
+    session.enterprise = rows[0];
+
+    sql = `
+      SELECT p.id, p.name, p.abbr, p.enterprise_id
+      FROM project AS p WHERE p.id = ?;
+    `;
+
+    return db.exec(sql, [session.user.project_id]);
+  })
+  .then(rows => {
+    if (!rows.length) {
+      throw new Unauthorized('No project matching the provided id.');
+    }
+
+    session.project = rows[0];
+
+    // bind the session  variables
+    req.session.project = session.project;
+    req.session.user = session.user;
+    req.session.enterprise = session.enterprise;
+    req.session.paths = session.paths;
+
+    // broadcast LOGIN event
+    Topic.publish(Topic.channels.APP, {
+      event: Topic.events.LOGIN,
+      entity: Topic.entities.USER,
+      user_id : req.session.user.id,
+      id: session.user.id
+    });
+
+    // send the session data back to the client
+    res.status(200).json(session);
   })
   .catch(next)
   .done();
