@@ -160,14 +160,20 @@ function listPayment(params) {
 
   if (params) {
     let reference = params.reference;
+    let userId = params.user_id;
 
     if (reference) {
       delete params.reference;
     }
 
+    if (userId) {
+      params[`u.id`] = userId;
+      delete params.user_id;
+    }
+
     let qc =
       params.dateFrom && params.dateTo ?
-      util.queryCondition(sql, params, null, 'DATE(date) BETWEEN DATE(?) AND DATE(?)') :
+      util.queryCondition(sql, params, null, 'DATE(cash.date) BETWEEN DATE(?) AND DATE(?)') :
       util.queryCondition(sql, params);
 
     if (reference) {
