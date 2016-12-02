@@ -46,7 +46,7 @@ function PatientInvoicePage() {
     btns.distributable.click();
 
     // select the first enabled service in the list
-    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
+    FU.select('PatientInvoiceCtrl.Invoice.service', 'Administration');
   };
 
   // try to click the submit button
