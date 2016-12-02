@@ -113,7 +113,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
   function load() {
     service.user = $storage.user;
     service.enterprise = $storage.enterprise;
-
+    service.project = $storage.project;
+    service.paths = $storage.paths;
+    
     if($storage.user){
       return $http.post('/reload', { username: $storage.user.username})
       .then(util.unwrapHttpResponse)
@@ -121,12 +123,8 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
         service.project = session.project;
         service.paths = session.paths;
       });
-    } else {
-      service.user = $storage.user;
-      service.enterprise = $storage.enterprise;
-      service.project = $storage.project;
-      service.paths = $storage.paths;
     }
+    
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session
