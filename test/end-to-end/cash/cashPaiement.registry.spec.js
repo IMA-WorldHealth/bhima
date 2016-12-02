@@ -16,7 +16,7 @@ helpers.configure(chai);
  * Note: These tests depends on integration tests data
  * so, the integration tests must be done before
  */
-describe.only('Reports Cash Payment', () => {
+describe('Reports Cash Payment', () => {
 
   // navigate to the page
   before(() => helpers.navigate('#/finance/reports/cash_payment'));
