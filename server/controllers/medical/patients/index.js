@@ -629,11 +629,11 @@ function loadLatestInvoice (latestInvoice){
         FROM (
           SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM combined_ledger
-          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit = 0
+          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
         UNION ALL
           SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
           FROM  combined_ledger
-          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit = 0
+          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
         ) AS ledger
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;

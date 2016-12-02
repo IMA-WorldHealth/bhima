@@ -820,14 +820,14 @@ BEGIN
   );
 
   INSERT INTO stage_cash_records
-    SELECT cl.record_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+    SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
     FROM combined_ledger AS cl
     WHERE cl.record_uuid IN (
       SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
     ) AND cl.entity_uuid = cashDebtorUuid;
 
   INSERT INTO stage_cash_references
-    SELECT cl.reference_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+    SELECT cl.reference_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
     FROM combined_ledger AS cl
     WHERE cl.reference_uuid IN (
       SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
