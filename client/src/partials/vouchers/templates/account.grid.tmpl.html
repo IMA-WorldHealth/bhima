@@ -11,6 +11,7 @@
    </ui-select-match>
    <ui-select-choices
      ui-select-focus-patch
+     class="ui-grid-ui-select"
      ui-disable-choice="account.type_id === grid.appScope.bhConstants.accounts.TITLE"
      repeat="account in grid.appScope.accounts | filter:$select.search">
      <strong ng-bind-html="account.number | highlight:$select.search"></strong>
