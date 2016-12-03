@@ -444,6 +444,12 @@ function find(options) {
     delete options.dateBirthTo;
   }
 
+  if (options.patient_group_uuid) {
+    conditions.statements.push('(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1');
+    conditions.parameters.push(db.bid(options.patient_group_uuid));
+    delete options.patient_group_uuid;
+  }
+
   // use util.queryCondition to fill out the rest of the query
   sql += conditions.statements.join(' AND ');
 
