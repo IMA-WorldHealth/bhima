@@ -40,5 +40,5 @@ describe('Invoice Registry', () => {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
-  
+
 });

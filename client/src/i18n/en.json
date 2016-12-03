@@ -167,7 +167,7 @@
     "CREATE_ANOTHER" : "Create another Debtor Group",
     "CREATED"        : "Debtor group recorded successfully",
     "DEBTOR"         : {
-      "SUBSCRIBED"    : "Subcribed debtor"
+      "SUBSCRIBED"    : "Subcribed debtor(s)"
     },
     "EDIT"           : "Edit Debtor Group",
     "GROUPS"         : "Debtor Groups",
@@ -567,6 +567,7 @@
       "PATIENT_DETAILS"        : "Patient Details",
       "PATIENT_ID"             : "Patient ID",
       "PATIENT_NAME"           : "Patient Name",
+      "PATIENT_LIST"           : "Patient List",
       "PAYMENT"                : "Payment",
       "PAYMENT_DETAILS"        : "Payment Details",
       "PAYMENT_METHOD"         : "Payment Method",

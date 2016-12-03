@@ -243,7 +243,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
       if (angular.isDefined(value)) {
         column.value = value;
 
-        if (column.field === 'debtor_group_uuid' || 'patient_group_uuid') {
+        if (column.field === 'debtor_group_uuid' || column.field === 'patient_group_uuid') {
           column.value = column.value.slice(0, LIMIT_UUID_LENGTH);
         }
 
