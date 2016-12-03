@@ -35,8 +35,9 @@
                   <select
                     class="form-control"
                     name="service"
-                    ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
-                    ng-options="service.id as service.name for service in PatientInvoiceCtrl.services"
+                    ng-model="PatientInvoiceCtrl.Invoice.service"
+                    ng-options="service as service.name for service in PatientInvoiceCtrl.services"
+                    ng-change="PatientInvoiceCtrl.handleServiceChange()"
                     required>
                     <option disabled="disabled" value="">{{ "FORM.LABELS.SERVICE" | translate }}</option>
                   </select>

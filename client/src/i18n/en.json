@@ -357,7 +357,8 @@
       "MISSING_CASHBOX_ID" : "Missing Cashbox",
       "MISSING_DEBTOR_ID"  : "Identifying missing Debtor",
       "RECORD_ERROR"       : "Please resolve any errors on the form (marked in red).",
-      "REQUIRED"           : "This value is required."
+      "REQUIRED"           : "This value is required.",
+      "INVALID"            : "invalid data"
     },
     "INFO": {
       "BY"                   : "By",
@@ -656,8 +657,8 @@
       "UNIT_WEIGHT"            : "Weight",
       "UNIT_VOLUME"            : "Volume",
       "VALUE"                  : "Value",
-      "VILLAGE"                : "Village",
-      "VILLAGE_NAME"           : "Village Name",
+      "VILLAGE"                : "Village/Township",
+      "VILLAGE_NAME"           : "Village/Township Name",
       "VILLE"                  : "Township/Commune",
       "VOUCHER"                : "Voucher",
       "VOLUME"                 : "Volume",
@@ -702,7 +703,7 @@
       "USERNAME"     : "Enter your username",
       "PASSWORD"     : "Enter your password",
       "TYPE"         : "Enter the type",
-      "VILLAGE"      : "Enter village",
+      "VILLAGE"      : "Enter village/Township",
       "SUPPLIER"     : "Enter supplier",
       "FILTER_NAME"  : "Filter by name...",
       "SEARCH_NAME"        : "Search by Name",
@@ -747,7 +748,7 @@
       "TRANSFER_TYPE"      : "Select a Transfer type",
       "TYPE"               : "Select a Type",
       "USER"               : "Select User",
-      "VILLAGE"            : "Select a Village",
+      "VILLAGE"            : "Select a Village/Township",
       "ZS"                 : "Select a Health Zone"
     },
     "VALIDATION": {
@@ -831,7 +832,7 @@
     "MANAGE_COUNTRY"        : "Manage Country",
     "MANAGE_PROVINCE"       : "Manage Province",
     "MANAGE_SECTOR"         : "Manage Sector",
-    "MANAGE_VILLAGE"        : "Manage Village",
+    "MANAGE_VILLAGE"        : "Manage Village/Township",
     "REGISTERED"            : "Registered Locations",
     "TITLE"                 : "Location Manager"
   },
@@ -1317,7 +1318,7 @@
       "UNPAID_INVOICE_2"   : " days. Please make sure that the debtor has not made a payment and schedule a recovery ",
       "USER"               : "User",
       "VALUE"              : "Value",
-      "VILLAGE"            : "Village",
+      "VILLAGE"            : "Village/Township",
       "QUANTITY"           : "Quantity"
     }
   },
@@ -1397,14 +1398,14 @@
     "AGED_DEBTORS"               : "Aged Debtors"
   },
   "VILLAGE": {
-    "CONFIG"       : "Village Manager Configuration",
-    "EDIT"         : "Edit Village",
-    "INFO"         : "This module will help you to manage village, use this module to create, edit and remove village",
-    "NAME_VILLAGE" : "Village Name",
-    "NEW_VILLAGE"  : "Add Village",
-    "REGISTER"     : "Register a Village",
-    "REGISTERED"   : "Registered Villages",
-    "TITLE"        : "Village Management"
+    "CONFIG"       : "Village/Township Manager Configuration",
+    "EDIT"         : "Edit Village/Township",
+    "INFO"         : "This module will help you to manage village/Township, use this module to create, edit and remove village/Township",
+    "NAME_VILLAGE" : "Village/Township Name",
+    "NEW_VILLAGE"  : "Add Village/Township",
+    "REGISTER"     : "Register a Village/Township",
+    "REGISTERED"   : "Registered Villages/Townships",
+    "TITLE"        : "Village/Townships Management"
   },
   "VOUCHERS": {
     "COMPLEX": {

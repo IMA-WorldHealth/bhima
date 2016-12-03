@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
-  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants'
+  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate'
 ];
 
 /**
@@ -16,7 +16,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants, translate) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -29,6 +29,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
+
+
+  translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value;});
 
   // read in services and bind to the view
   Services.read()
@@ -67,6 +70,8 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
     .then(function (patient) {
       vm.Invoice.setPatient(patient);
+      updateDescription();
+
       return Patients.balance(patient.debtor_uuid);
     })
     .then(function (balance) {
@@ -157,6 +162,17 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     }
   }
 
+  function handleServiceChange () {
+    vm.Invoice.setService(vm.Invoice.service);
+    updateDescription();
+  }
+
+  function updateDescription() {
+    if(vm.Invoice.recipient){
+      vm.Invoice.details.description = [vm.descriptionPrefix, vm.Invoice.recipient.display_name, vm.Invoice.service.name].join('/');
+    }
+  }
+
   // reset everything in the controller - default values
   function clear(detailsForm) {
 
@@ -187,6 +203,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.clear = clear;
   vm.addItems = addItems;
   vm.handleChange = handleChange;
+  vm.handleServiceChange = handleServiceChange;
 
   // Set initial default values
   clear();
