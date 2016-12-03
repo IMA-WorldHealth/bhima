@@ -50,16 +50,19 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
         headerCellFilter : 'translate',
         cellTemplate: '/partials/patient_invoice/registry/templates/cost.cell.tmpl.html',
         aggregationType: uiGridConstants.aggregationTypes.sum,
-        footerCellFilter: 'currency:grid.appScope.enterprise.currency_id'
+        aggregationHideLabel : true,
+        footerCellClass : 'text-right',
+        footerCellFilter: 'currency:' + Session.enterprise.currency_id
       },
       { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
       { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-      { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html' },
-      { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html' }
+      { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html', enableSorting: false },
+      { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
     ],
     enableSorting : true,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
+
   vm.receiptOptions = {};
 
   // receiptOptions are used in the bh-print directive under the receipt-action template
@@ -99,7 +102,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       invoices.forEach(function (invoice) {
         invoice._backgroundColor =
           (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
-      });   
+      });
 
       // put data in the grid
       vm.uiGridOptions.data = invoices;

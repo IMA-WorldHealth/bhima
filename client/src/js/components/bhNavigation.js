@@ -159,4 +159,6 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
 
   // if the session is reloaded, download the new tree units
   $rootScope.$on('session:reload', loadTreeUnits);
+
+  loadTreeUnits();
 }
