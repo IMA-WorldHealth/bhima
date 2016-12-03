@@ -115,6 +115,16 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     service.enterprise = $storage.enterprise;
     service.project = $storage.project;
     service.paths = $storage.paths;
+    
+    if($storage.user){
+      return $http.post('/reload', { username: $storage.user.username})
+      .then(util.unwrapHttpResponse)
+      .then(function (session) {
+        service.project = session.project;
+        service.paths = session.paths;
+      });
+    }
+    
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session

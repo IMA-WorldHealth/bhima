@@ -99,6 +99,7 @@ exports.configure = function configure(app) {
   // auth gateway
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
+  app.post('/reload', auth.reload);
 
   // system and event helpers
   app.get('/system/events', system.events);
