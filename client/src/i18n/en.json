@@ -706,6 +706,7 @@
       "VILLAGE"      : "Enter village/Township",
       "SUPPLIER"     : "Enter supplier",
       "FILTER_NAME"  : "Filter by name...",
+      "FILTER_BY"    : "Filter by" ,
       "SEARCH_NAME"        : "Search by Name",
       "SEARCH_PATIENT_ID"  : "Search by Patient ID"
     },
