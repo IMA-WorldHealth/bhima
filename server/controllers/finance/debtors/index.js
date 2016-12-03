@@ -161,11 +161,11 @@ function invoices(req, res, next) {
         FROM (
           SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
           FROM (
-            SELECT record_uuid AS uuid, debit, credit, entity_uuid
+            SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
             FROM combined_ledger
             WHERE record_uuid IN (?) AND entity_uuid = ?
           UNION ALL
-            SELECT reference_uuid AS uuid, debit, credit, entity_uuid
+            SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
             FROM  combined_ledger
             WHERE reference_uuid IN (?) AND entity_uuid = ?
           ) AS ledger
@@ -222,7 +222,7 @@ function balance(req, res, next) {
     sql =
       `SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
-        SELECT record_uuid as uuid, debit, credit
+        SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
         FROM combined_ledger
         WHERE entity_uuid = ?
       ) AS ledger

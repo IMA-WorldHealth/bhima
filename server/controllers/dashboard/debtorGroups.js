@@ -22,7 +22,9 @@ function getReport(req, res, next) {
   }
 
   // the cache has expired or has never been created - calculate the report
-  report.context()
+  // ensure the lastest data from both the posting journal and the general ledger
+  // is used
+  report.context({combinedLedger : 1})
     .then(function (result) {
       timestamp = new moment();
       cachedReport = result;

@@ -47,7 +47,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> {{ "DEBTOR_GROUP.DEBTOR.SUBSCRIBED" | translate }}
+                    <a ui-sref="patientRegistry({ filters : { debtor_group_uuid : debtorGroup.uuid }})"><span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> {{ "DEBTOR_GROUP.DEBTOR.SUBSCRIBED" | translate }}</a>
                   </div>
                 </div>
               </div>

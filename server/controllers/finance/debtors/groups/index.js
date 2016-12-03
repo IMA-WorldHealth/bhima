@@ -270,7 +270,7 @@ function loadInvoices(params) {
     `SELECT BUID(i.uuid) as uuid, i.date, CONCAT(project.abbr, i.reference) as reference,
       debit, credit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
     FROM (
-      SELECT record_uuid as uuid, combined_ledger.date, SUM(debit) as debit, SUM(credit) as credit,
+      SELECT record_uuid as uuid, combined_ledger.trans_date as date, SUM(debit_equiv) as debit, SUM(credit_equiv) as credit,
         entity_uuid, invoice.reference, invoice.project_id
       FROM combined_ledger
       JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
