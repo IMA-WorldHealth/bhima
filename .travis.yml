@@ -2,12 +2,11 @@ sudo: required
 dist: trusty
 
 before_install:
-  - export DISPLAY=:99.0
   - export CHROME_BIN=/usr/bin/google-chrome
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - jdk_switcher use oraclejdk8
   - sudo apt-get update -qq
-  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
-  - sudo apt-get install -qq wkhtmltopdf
-  - sh -e /etc/init.d/xvfb start
+  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6 wkhtmltopdf
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome*.deb
 
@@ -15,38 +14,28 @@ services:
   - mysql
   - redis-server
 
-
 language: node_js
 node_js:
   - node
-  - '5'
   - '4'
 
 before_script:
-  - bash sh/install.sh
+  - "export DISPLAY=:99.0"
+  - "sh sh/install.sh"
   - npm run lint
 
 script:
-  - bash sh/deploy.sh
-  - sleep 5
+  - sh sh/deploy.sh
+  - sleep 3
   - ./node_modules/.bin/mocha test/integration/
   - ./node_modules/.bin/karma start --single-run
-  - bash sh/install.sh
+  - sh sh/install.sh
   - ./node_modules/.bin/webdriver-manager update
-  - sleep 2
+  - sleep 3
   - ./node_modules/.bin/protractor protractor.conf.js
 
 git:
-  depth: 3
+  depth: 1
 
 before_cache:
   - rm -f npm-debug.log
-
-addons:
-  artifacts:
-    s3_region: "eu-central-1"
-    debug: true
-    paths:
-      - $(ls /var/log/*.log | tr "\n" ":")
-      - $(ls $HOME/test/artifacts/ | tr "\n" ":")
-
