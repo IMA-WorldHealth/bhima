@@ -207,6 +207,8 @@ describe('Cash Payments', function () {
   });
 
   describe('Cash Transfer ', CashTransfer);
+
+  describe('Payments Registry', require('./cash.registry'));
 });
 
 
