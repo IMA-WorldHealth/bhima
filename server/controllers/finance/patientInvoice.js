@@ -68,7 +68,7 @@ function listInvoices() {
   const sql = `
     SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
-      service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
+      service.name as serviceName, user.display_name, invoice.date,
       enterprise.currency_id, voucher.type_id
     FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
@@ -100,7 +100,7 @@ function lookupInvoice(invoiceUuid) {
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, invoice.is_distributable, user.display_name,
+      invoice.user_id, invoice.date, user.display_name,
       enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
@@ -205,7 +205,7 @@ function find(options) {
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference, invoice.reference AS ref,
       invoice.date, patient.display_name as patientName, invoice.cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
+      BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid

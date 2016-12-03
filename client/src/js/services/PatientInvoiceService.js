@@ -100,7 +100,6 @@ function PatientInvoiceService(Modal, util, Session, Api) {
    */
   function formatFilterParameters(params) {
     var columns = [
-      { field: 'is_distributable', displayName: 'FORM.LABELS.DISTRIBUTABLE' },
       { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },

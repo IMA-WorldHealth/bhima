@@ -45,30 +45,9 @@
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
-
-                <label class="control-label">
-                  {{ "FORM.LABELS.TYPE" | translate }}
-                  <bh-info template="typePopover.tmpl.html" direction="right"></bh-info>
-                </label>
-
-                <!-- TODO distributable vs. non distributable sales or invoices should be designed/reviewed carefully -->
-                <div class="form-group">
-                  <label class="radio-inline">
-                    <input type="radio" name="serviceType" id="distributable" value="1" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" checked required>
-                    {{ "FORM.LABELS.DISTRIBUTABLE" | translate }}
-                  </label>
-                  <label class="radio-inline">
-                    <input type="radio" name="serviceType" id="not-distributable" value="0" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" required>
-                    {{ "FORM.LABELS.NO_DISTRIBUTABLE" | translate }}
-                  </label>
-                  <div class="help-block" ng-messages="detailsForm.serviceType.$error" ng-show="detailsForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
               </div>
 
               <div class="col-md-6">
-
                 <!--
                   @todo - since we know this is a financial date, we could set min and max for periods etc.
                 -->
