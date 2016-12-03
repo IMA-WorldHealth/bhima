@@ -33,13 +33,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="group in PatientGroupCtrl.groups" ng-class="{ 'bg-info' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
+              <tr ng-repeat="group in PatientGroupCtrl.groups" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
                 <td>{{ group.name}}</td>
                 <td>{{ group.priceListLable }}</td>
                 <td>{{ group.note }}</td>
                 <td>
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : { patient_group_uuid : group.uuid } })">
+                    <span class="glyphicon glyphicon-list"></span> {{ "FORM.LABELS.PATIENT_LIST" | translate }}
                   </a>
                 </td>
               </tr>

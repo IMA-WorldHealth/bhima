@@ -29,7 +29,10 @@ angular.module('bhima.routes')
       .state('patientRegistry', {
         url  : '/patients',
         controller: 'PatientRegistryController as PatientRegistryCtrl',
-        templateUrl: '/partials/patients/registry/registry.html'
+        templateUrl: '/partials/patients/registry/registry.html',
+        params : {
+          filters : null
+        }
       })
       .state('patientGroups', {
         url : '/patients/groups',

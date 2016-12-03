@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants'
+  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, AppCache, util, Receipts, uiGridConstants) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');
@@ -153,6 +153,11 @@ function PatientRegistryController(Patients, Notify, AppCache, util, Receipts, u
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    // if filters are directly passed in through params, override cached filters
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
     vm.filters = cache.filters;
     vm.filtersFmt = Patients.formatFilterParameters(cache.filters || {});
     load(vm.filters);
