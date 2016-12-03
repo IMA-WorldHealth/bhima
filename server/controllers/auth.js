@@ -22,13 +22,13 @@ const Forbidden = require('../lib/errors/Forbidden');
 const InternalServerError = require('../lib/errors/InternalServerError');
 const Topic = require('../lib/topic');
 
-// POST /login
+// POST /auth/login
 exports.login = login;
 
-// GET /logout
+// GET /auth/logout
 exports.logout = logout;
 
-// POST /reload
+// POST /auth/reload
 exports.reload = reload;
 
 /**
@@ -45,8 +45,6 @@ function login(req, res, next) {
   let password = req.body.password;
   let projectId = req.body.project;
 
-  const session = {};
-
   let sql = `
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
@@ -55,253 +53,209 @@ function login(req, res, next) {
   `;
 
   db.exec(sql, [username, password, projectId])
-  .then(function (rows) {
+    .then(function (rows) {
 
-    // if no data found, we return a login error
-    if (rows.length === 0) {
-      throw new Unauthorized('Bad username and password combination.');
-    }
+      // if no data found, we return a login error
+      if (rows.length === 0) {
+        throw new Unauthorized('Bad username and password combination.');
+      }
 
-    // we assume only one match for the user
-    session.user = rows[0];
+      return loadSessionInformation(rows[0]);
+    })
+    .then(session => {
 
-    // next make sure this user has permissions
-    sql = `
-      SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
-      FROM unit LEFT JOIN permission
-        ON unit.id = permission.unit_id;
-    `;
+      // bind the session variables
+      req.session.project = session.project;
+      req.session.user = session.user;
+      req.session.enterprise = session.enterprise;
+      req.session.paths = session.paths;
 
-    return db.exec(sql, [session.user.id]);
-  })
-  .then(modules => {
+      // broadcast LOGIN event
+      Topic.publish(Topic.channels.APP, {
+        event: Topic.events.LOGIN,
+        entity: Topic.entities.USER,
+        user_id : req.session.user.id,
+        id: session.user.id
+      });
 
-    let unauthorized = modules.every(mod => !mod.authorized);
+      // send the session data back to the client
+      res.status(200).json(session);
+    })
+    .catch(next)
+    .done();
+  }
 
-    // if no permissions, notify the user that way
-    if (unauthorized) {
-      throw new Unauthorized('This user does not have any permissions.');
-    }
+  /**
+   * @method logout
+   *
+   * Destroys the server side session and sets the user as inactive.
+   */
+  function logout(req, res, next) {
+    let sql =
+      'UPDATE user SET user.active = 0 WHERE user.id = ?;';
 
-    session.paths = modules;
+    db.exec(sql, [req.session.user.id])
+    .then(() => {
 
-    // update the database for when the user logged in
-    sql =
-      'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
+      // broadcast LOGOUT event
+      Topic.publish(Topic.channels.APP, {
+        event: Topic.events.LOGOUT,
+        entity: Topic.entities.USER,
+        user_id : req.session.user.id,
+        id: req.session.user.id,
+      });
 
-    return db.exec(sql, [new Date(), session.user.id]);
-  })
-  .then(() => {
-
-    // we need to construct the session on the client side, including:
-    //   the current enterprise
-    //   the current project
-    sql = `
-      SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
-        c.symbol AS currencySymbol, e.po_box,
-        CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
-      FROM enterprise AS e
-      JOIN currency AS c ON e.currency_id = c.id
-      JOIN village ON village.uuid = e.location_id
-      JOIN sector ON sector.uuid = village.sector_uuid
-      JOIN province ON province.uuid = sector.province_uuid
-      WHERE e.id = ?;
-    `;
-
-    return db.exec(sql, [session.user.enterprise_id]);
-  })
-  .then(rows => {
-
-    if (!rows.length) {
-      throw new InternalServerError('There are no enterprises registered in the database!');
-    }
-
-    session.enterprise = rows[0];
-
-    sql = `
-      SELECT p.id, p.name, p.abbr, p.enterprise_id
-      FROM project AS p WHERE p.id = ?;
-    `;
-
-    return db.exec(sql, [session.user.project_id]);
-  })
-  .then(rows => {
-    if (!rows.length) {
-      throw new Unauthorized('No project matching the provided id.');
-    }
-
-    session.project = rows[0];
-
-    // bind the session variables
-    req.session.project = session.project;
-    req.session.user = session.user;
-    req.session.enterprise = session.enterprise;
-    req.session.paths = session.paths;
-
-    // broadcast LOGIN event
-    Topic.publish(Topic.channels.APP, {
-      event: Topic.events.LOGIN,
-      entity: Topic.entities.USER,
-      user_id : req.session.user.id,
-      id: session.user.id
-    });
-
-    // send the session data back to the client
-    res.status(200).json(session);
-  })
-  .catch(next)
-  .done();
+      // destroy the session
+      req.session.destroy();
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
- * @method logout
- *
- * Destroys the server side session and sets the user as inactive.
- */
-function logout(req, res, next) {
-  let sql =
-    'UPDATE user SET user.active = 0 WHERE user.id = ?;';
-
-  db.exec(sql, [req.session.user.id])
-  .then(() => {
-
-    // broadcast LOGOUT event
-    Topic.publish(Topic.channels.APP, {
-      event: Topic.events.LOGOUT,
-      entity: Topic.entities.USER,
-      user_id : req.session.user.id,
-      id: req.session.user.id,
-    });
-
-    // destroy the session
-    req.session.destroy();
-    res.sendStatus(200);
-  })
-  .catch(next)
-  .done();
-}
-
-
-// POST /reload
-exports.reload = reload;
-
-/**
- * @method reload
+ * @function loadSessionInformation
  *
  * @description
- * Logs a client into the server.  The /login route accepts a POST request with
- * a username,  and project id.  It checks if the username 
- * exist in the database, then verifies that the user has permission to access
- * the database all enterprise, project, and user data for easy access.
+ * This method takes in a user object (with an id) and loads all the session
+ * information about it.  This can be used to populate or refresh req.session
+ * in case there are user changes that are made (such as to the enterprise,
+ * project, or otherwise).
+ *
+ * @param {Object} user - the user object to look up the session
+ *
+ * @returns {Promise} - a promise resolving to the session
+ *
+ * @private
  */
-function reload(req, res, next) {
-  let username = req.body.username;
-  let projectId = req.body.project;
+function loadSessionInformation(user) {
 
+  // this will be the new session
   const session = {};
 
   let sql = `
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
-    WHERE user.username = ?;
+    WHERE user.id = ?;
   `;
 
-  db.exec(sql, [username])
-  .then(function (rows) {
+  return db.exec(sql, [user.id])
+    .then(rows => {
 
-    // if no data found, we return a login error
-    if (rows.length === 0) {
-      throw new Unauthorized('Bad username and project combination.');
-    }
+      // if no data found, we return a login error
+      if (rows.length === 0) {
+        throw new InternalServerError(`Server could not locate user with id ${user.id}`);
+      }
 
-    // we assume only one match for the user
-    session.user = rows[0];
+      // we assume only one match for the user
+      session.user = rows[0];
 
-    // next make sure this user has permissions
-    sql = `
-      SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
-      FROM unit LEFT JOIN permission
-        ON unit.id = permission.unit_id;
-    `;
+      // next make sure this user has permissions
+      sql = `
+        SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
+        FROM unit LEFT JOIN permission
+          ON unit.id = permission.unit_id;
+      `;
 
-    return db.exec(sql, [session.user.id]);
-  })
-  .then(modules => {
+      return db.exec(sql, [session.user.id]);
+    })
+    .then(modules => {
 
-    let unauthorized = modules.every(mod => !mod.authorized);
+      let unauthorized = modules.every(mod => !mod.authorized);
 
-    // if no permissions, notify the user that way
-    if (unauthorized) {
-      throw new Unauthorized('This user does not have any permissions.');
-    }
+      // if no permissions, notify the user that way
+      if (unauthorized) {
+        throw new Unauthorized('This user does not have any permissions.');
+      }
 
-    session.paths = modules;
+      session.paths = modules;
 
-    // update the database for when the user logged in
-    sql =
-      'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
+      // update the database for when the user logged in
+      sql =
+        'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
 
-    return db.exec(sql, [new Date(), session.user.id]);
-  })
-  .then(() => {
+      return db.exec(sql, [new Date(), session.user.id]);
+    })
+    .then(() => {
 
-    // we need to construct the session on the client side, including:
-    //   the current enterprise
-    //   the current project
-    sql = `
-      SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
-        c.symbol AS currencySymbol, e.po_box,
-        CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
-      FROM enterprise AS e
-      JOIN currency AS c ON e.currency_id = c.id
-      JOIN village ON village.uuid = e.location_id
-      JOIN sector ON sector.uuid = village.sector_uuid
-      JOIN province ON province.uuid = sector.province_uuid
-      WHERE e.id = ?;
-    `;
+      // we need to construct the session on the client side, including:
+      //   the current enterprise
+      //   the current project
+      sql = `
+        SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
+          c.symbol AS currencySymbol, e.po_box,
+          CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
+        FROM enterprise AS e
+        JOIN currency AS c ON e.currency_id = c.id
+        JOIN village ON village.uuid = e.location_id
+        JOIN sector ON sector.uuid = village.sector_uuid
+        JOIN province ON province.uuid = sector.province_uuid
+        WHERE e.id = ?;
+      `;
 
-    return db.exec(sql, [session.user.enterprise_id]);
-  })
-  .then(rows => {
+      return db.exec(sql, [session.user.enterprise_id]);
+    })
+    .then(rows => {
 
-    if (!rows.length) {
-      throw new InternalServerError('There are no enterprises registered in the database!');
-    }
+      if (!rows.length) {
+        throw new InternalServerError('There are no enterprises registered in the database!');
+      }
 
-    session.enterprise = rows[0];
+      session.enterprise = rows[0];
 
-    sql = `
-      SELECT p.id, p.name, p.abbr, p.enterprise_id
-      FROM project AS p WHERE p.id = ?;
-    `;
+      sql = `
+        SELECT p.id, p.name, p.abbr, p.enterprise_id
+        FROM project AS p WHERE p.id = ?;
+      `;
 
-    return db.exec(sql, [session.user.project_id]);
-  })
-  .then(rows => {
-    if (!rows.length) {
-      throw new Unauthorized('No project matching the provided id.');
-    }
+      return db.exec(sql, [session.user.project_id]);
+    })
+    .then(rows => {
+      if (!rows.length) {
+        throw new Unauthorized('No project matching the provided id.');
+      }
 
-    session.project = rows[0];
+      session.project = rows[0];
 
-    // bind the session  variables
-    req.session.project = session.project;
-    req.session.user = session.user;
-    req.session.enterprise = session.enterprise;
-    req.session.paths = session.paths;
-
-    // broadcast LOGIN event
-    Topic.publish(Topic.channels.APP, {
-      event: Topic.events.LOGIN,
-      entity: Topic.entities.USER,
-      user_id : req.session.user.id,
-      id: session.user.id
+      return session;
     });
+}
 
-    // send the session data back to the client
-    res.status(200).json(session);
-  })
-  .catch(next)
-  .done();
+
+/**
+ * @method reload
+ *
+ * @description
+ * Uses the same login code to re
+ */
+function reload(req, res, next) {
+
+  if (!(req.session && req.session.user)) {
+    return next(new Unauthorized('The user is not signed in.'));
+  }
+
+  // refresh the user's session by manually calling refresh session
+  loadSessionInformation(req.session.user)
+    .then(session => {
+
+      // bind the session  variables
+      req.session.project = session.project;
+      req.session.user = session.user;
+      req.session.enterprise = session.enterprise;
+      req.session.paths = session.paths;
+
+      // broadcast LOGIN event
+      Topic.publish(Topic.channels.APP, {
+        event: Topic.events.RELOAD,
+        entity: Topic.entities.USER,
+        user_id : req.session.user.id,
+        id: session.user.id
+      });
+
+      // send the session data back to the client
+      res.status(200).json(session);
+    })
+    .catch(next)
+    .done();
 }

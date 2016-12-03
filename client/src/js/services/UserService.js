@@ -37,7 +37,7 @@ function UserService($http, util) {
     var url = (id) ? '/users/' + id : '/users';
 
     return $http.get(url)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   // updates a user with id

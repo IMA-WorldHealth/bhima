@@ -97,16 +97,16 @@ exports.configure = function configure(app) {
   app.get('/units', units.list);
 
   // auth gateway
-  app.post('/login', auth.login);
-  app.get('/logout', auth.logout);
-  app.post('/reload', auth.reload);
+  app.post('/auth/login', auth.login);
+  app.get('/auth/logout', auth.logout);
+  app.post('/auth/reload', auth.reload);
 
   // system and event helpers
   app.get('/system/events', system.events);
   app.get('/system/stream', system.stream);
   app.get('/system/information', system.info);
 
-  // dashbord stats 
+  // dashbord stats
   app.get('/patients/stats', stats.patients);
   app.get('/invoices/stats', stats.invoices);
 

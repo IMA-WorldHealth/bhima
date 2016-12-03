@@ -38,6 +38,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
   // logout http method
   service.logout = logout;
 
+  // reloads a user's session
+  service.reload = reload;
+
   // set the user, enterprise, and project for the session
   // this should happen right after login
   function create(user, enterprise, project, paths) {
@@ -60,6 +63,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     // update bindings
     load();
 
+    // TODO - use $state
     $location.url('/login');
   }
 
@@ -72,7 +76,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
    */
   function login(credentials) {
     /** @todo - should the login reject if a user is already logged in? */
-    return $http.post('/login', credentials)
+    return $http.post('/auth/login', credentials)
       .then(util.unwrapHttpResponse)
       .then(function (session) {
 
@@ -95,7 +99,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
    * @return {Promise} promise - the HTTP logout promise
    */
   function logout() {
-    return $http.get('/logout')
+    return $http.get('/auth/logout')
       .then(function () {
 
         // destroy the user's session from $storage
@@ -115,16 +119,21 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     service.enterprise = $storage.enterprise;
     service.project = $storage.project;
     service.paths = $storage.paths;
-    
-    if($storage.user){
-      return $http.post('/reload', { username: $storage.user.username})
-      .then(util.unwrapHttpResponse)
-      .then(function (session) {
-        service.project = session.project;
-        service.paths = session.paths;
-      });
+  }
+
+  function reload() {
+    if ($storage.user) {
+      return $http.post('/auth/reload', { username: $storage.user.username})
+        .then(util.unwrapHttpResponse)
+        .then(function (session) {
+
+          // re-create the user session in the $storage
+          create(session.user, session.enterprise, session.project, session.paths);
+
+          // tell the tree to re-download a user's units
+          $rootScope.$emit('session:reload');
+        });
     }
-    
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session

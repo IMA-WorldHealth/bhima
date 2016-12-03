@@ -37,11 +37,14 @@ describe('SessionService', function () {
     httpBackend = $httpBackend;
 
     // mocked responses
-    httpBackend.when('POST', '/login')
+    httpBackend.when('POST', '/auth/login')
       .respond(200, { user : user, project : project, enterprise : enterprise });
 
-    httpBackend.when('GET', '/logout')
+    httpBackend.when('GET', '/auth/logout')
       .respond(200);
+
+    httpBackend.when('POST', '/auth/reload')
+      .respond(200, { user : user, project : project, enterprise : enterprise });
   }));
 
   // make sure $http is clean after tests
@@ -77,7 +80,7 @@ describe('SessionService', function () {
     Session.login(user);
 
     // expect the HTTP backend to have been hit
-    httpBackend.expectPOST('/login');
+    httpBackend.expectPOST('/auth/login');
     httpBackend.flush();
 
     // the event should have been emitted
@@ -91,7 +94,7 @@ describe('SessionService', function () {
     Session.logout();
 
     // expect the HTTP backend to have been hit
-    httpBackend.expectGET('/logout');
+    httpBackend.expectGET('/auth/logout');
     httpBackend.flush();
 
     // the event should have been emitted
