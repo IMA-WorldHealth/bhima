@@ -88,7 +88,7 @@ exports.configure = function configure(app) {
 
   // Only allow routes to use /login, /projects, /logout, and /languages if a
   // user session does not exists
-  let publicRoutes = ['/login', '/languages', '/projects/', '/logout'];
+  let publicRoutes = ['/auth/login', '/languages', '/projects/', '/auth/logout'];
 
   app.use(function (req, res, next) {
     if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {

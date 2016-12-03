@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/login) The login API', function () {
+describe('(/auth/login) The login API', function () {
   'use strict';
 
   const port = process.env.PORT || 8080;
@@ -52,7 +52,7 @@ describe('(/login) The login API', function () {
 
   it('rejects an unrecognized user', function () {
     return chai.request(url)
-      .post('/login')
+      .post('/auth/login')
       .send(invalidUser)
       .then(function (res) {
         helpers.api.errored(res, 401);
@@ -64,7 +64,7 @@ describe('(/login) The login API', function () {
 
   it('rejects a recognized user user without a project', function () {
     return chai.request(url)
-      .post('/login')
+      .post('/auth/login')
       .send({ username : validUser.username, password : validUser.password })
       .then(function (res) {
         helpers.api.errored(res, 401);
@@ -75,7 +75,7 @@ describe('(/login) The login API', function () {
 
   it('rejects a recognized user without a password', function () {
     return chai.request(url)
-      .post('/login')
+      .post('/auth/login')
       .send({ username : validUser.username, project : validUser.project })
       .then(function (res) {
         helpers.api.errored(res, 401);
@@ -86,7 +86,7 @@ describe('(/login) The login API', function () {
 
   it('sets a user\'s session properties', function () {
     return chai.request(url)
-      .post('/login')
+      .post('/auth/login')
       .send(validUser)
       .then(function (res) {
         expect(res).to.have.status(200);

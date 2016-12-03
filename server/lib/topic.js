@@ -29,6 +29,7 @@ const events = {
   DELETE: 'delete',
   REPORT: 'report',
   LOGIN: 'login',
+  RELOAD : 'reload',
   LOGOUT: 'logout',
   SEARCH: 'search'
 };
