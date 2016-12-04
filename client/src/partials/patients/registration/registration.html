@@ -162,7 +162,7 @@
                     ng-class="{'has-error' : DetailForm.debtorGroup.$invalid && PatientRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert type="danger" ng-if="PatientRegCtrl.debtorGroups.length === 0">
+                    <uib-alert class="text-danger" type="danger" ng-if="PatientRegCtrl.debtorGroups.length === 0">
                       <i class="fa fa-warning"></i>
                       {{ "FORM.LABELS.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
                     </uib-alert>
