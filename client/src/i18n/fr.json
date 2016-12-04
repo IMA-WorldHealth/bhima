@@ -576,6 +576,7 @@
       "PATIENT_DETAILS"        : "Détails Patient",
       "PATIENT_ID"             : "ID Patient",
       "PATIENT_NAME"           : "Nom du Patient",
+      "PATIENT_LIST"           : "Liste des Patients",
       "PAYMENT"                : "Paiement",
       "PAYMENT_DETAILS"        : "Details Paiement",
       "PAYMENT_METHOD"         : "Mode de paiement",
@@ -715,6 +716,7 @@
       "USERNAME"     : "Entrer le nom utilisateur",
       "VILLAGE"      : "Entrer village/Commune",
       "FILTER_NAME"        : "Filtrer par Nom...",
+      "FILTER_BY"          : "Filtrer par",
       "SEARCH_NAME"        : "Chercher Par Nom",
       "SEARCH_PATIENT_ID"  : "Chercher ID Patient"
     },
