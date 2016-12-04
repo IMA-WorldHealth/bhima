@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 
 describe('(/system) System Information', () => {
 
-  it('GET /system/events downloads a list of events', () => {
+  it.skip('GET /system/events downloads a list of events', () => {
     return agent.get('/system/events')
       .then((res) => {
         expect(res).to.have.status(200);

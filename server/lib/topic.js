@@ -79,9 +79,14 @@ function databaseLogger(data) {
     data: JSON.stringify(data)
   };
 
+  /*
+   * @todo - in a week of operation on a small scale ~600 events were
+   * written.  We are turning this off until we get a better idea of how
+   * to scale this.
   db.exec('INSERT INTO event SET ?', [record])
-  .catch(err => winston.error(err))
-  .done();
+    .catch(err => winston.error(err))
+    .done();
+  */
 }
 
 /**
