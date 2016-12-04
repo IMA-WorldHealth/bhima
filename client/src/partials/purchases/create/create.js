@@ -17,6 +17,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
+  vm.timestamp = new Date();
 
   // make sure we have all the suppliers we need.
   Suppliers.read()
