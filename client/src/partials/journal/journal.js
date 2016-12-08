@@ -226,7 +226,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Journal.formatFilterParameters(filters);
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 102px)' } : {};
+      bhConstants.utilBar.expandedHeightStyle : bhConstants.utilBar.collapsedHeightStyle;
   }
 
   // remove a filter with from the filter object, save the filters and reload
