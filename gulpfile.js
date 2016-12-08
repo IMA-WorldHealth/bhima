@@ -42,6 +42,8 @@ const paths = {
 
       // this is very cheeky
       'client/vendor/moment/moment.js',
+      'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
+
       '!client/vendor/**/src{,/**}',
       '!client/vendor/**/js{,/**}'
     ],
