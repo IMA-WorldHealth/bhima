@@ -41,10 +41,10 @@ function report(req, res, next) {
   let params = req.query;
 
   processingCashflowReport(params)
-  .then(result => {
-    res.status(200).json(result);
-  })
-  .catch(next);
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(next);
 }
 
 /** processingCashflowReport */
@@ -541,9 +541,11 @@ function document(req, res, next) {
         tempExpense[item.origin_id] = typeof tempExpense[item.origin_id] !== 'undefined' ? false : true;
 
         if (tempExpense[item.origin_id] === true) {
+
           var value = expenses.reduce(function (a, b) {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
+
           session.summationExpense[period].push({
             'transfer_type' : item.transactionType,
             'currency_id'   : item.currency_id,

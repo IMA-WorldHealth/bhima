@@ -13,10 +13,12 @@
         <div class="col-md-12">
           <div class="panel panel-default">
             <div class="panel-body">
+
               <!-- left  -->
               <div class="col-md-6">
                 <bh-date-editor
-                  date-value="ComplexVoucherCtrl.voucher.date"
+                  date-value="ComplexVoucherCtrl.Voucher.details.date"
+                  validation-trigger="ComplexVoucherForm.$submitted"
                   max-date="ComplexVoucherCtrl.timestamp">
                 </bh-date-editor>
 
@@ -33,10 +35,11 @@
                     <span ng-if="ComplexVoucherCtrl.type==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
                     <span ng-if="ComplexVoucherCtrl.type==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
                   </span>
+
                   <textarea
                     class="form-control"
                     name="description"
-                    ng-model="ComplexVoucherCtrl.voucher.description"
+                    ng-model="ComplexVoucherCtrl.Voucher.details.description"
                     placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
                     required>
                   </textarea>
@@ -50,33 +53,37 @@
               <!-- right  -->
               <div class="col-md-6">
 
-                <div class="form-group"
-                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.type_id.$invalid }">
+                <div class="form-group" ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.type_id.$invalid }">
                   <label class="control-label">
-                    {{ 'FORM.LABELS.TRANSFER_TYPE' | translate }}
-                    <i uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSFER_TYPE_INFO' | translate }}"
+                    {{ 'FORM.LABELS.TRANSACTION_TYPE' | translate }}
+                    <span uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSFER_TYPE_INFO' | translate }}"
                       popover-trigger="'mouseenter'"
-                      popover-placement="bottom-left"
-                      class="fa fa-info-circle">
-                    </i>
+                      popover-placement="bottom"
+                      class="text-info fa fa-info-circle">
+                    </span>
                   </label>
 
                   <!-- financial transaction  -->
+                  <!-- @todo - this should be a ui-select with a grouping functionality -->
                   <select class="form-control"
                     name="type_id"
-                    ng-model="ComplexVoucherCtrl.voucher.type_id"
-                    ng-change="ComplexVoucherCtrl.buildDescription()"
-                    ng-disabled="!ComplexVoucherCtrl.financialTransaction" ng-required="ComplexVoucherCtrl.financialTransaction">
-                    <option value="" disabled>--- {{ 'FORM.SELECT.TRANSFER_TYPE' | translate }} ---</option>
+                    ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
+                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccounts">
+
+                    <option value="" disabled>{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}</option>
 
                     <!-- incomes  -->
                     <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
-                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.incomes" ng-selected="item.id === ComplexVoucherCtrl.defaultIncomeTypeId">{{ item.text | translate }}</option>
+                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.incomes" ng-selected="item.id === ComplexVoucherCtrl.defaultIncomeTypeId">
+                        {{ item.text | translate }}
+                      </option>
                     </optgroup>
 
                     <!-- expenses  -->
                     <optgroup label="{{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }}">
-                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.expenses">{{ item.text | translate }}</option>
+                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.expenses">
+                        {{ item.text | translate }}
+                      </option>
                     </optgroup>
                   </select>
                   <p ng-show="ComplexVoucherCtrl.financialTransaction && !ComplexVoucherForm.$submitted" class="text-info">
@@ -88,59 +95,70 @@
                 </div>
 
                 <bh-currency-select
-                  currency-id="ComplexVoucherCtrl.voucher.currency_id"
+                  currency-id="ComplexVoucherCtrl.Voucher.details.currency_id"
                   validation-trigger="ComplexVoucherForm.$submitted">
                 </bh-currency-select>
-
               </div>
-
             </div>
           </div>
         </div>
       </div>
 
-      <!-- detail of transaction  -->
-      <div class="row">
+      <div class="row" style="margin-bottom : 5px;">
         <div class="col-md-12">
 
-          <!-- the heading  -->
-          <div class="space-between" style="margin-bottom: 5px;">
-            <!-- Hack styles to make text behave look like class "btn".  This should be formalized into a class -->
-            <span style="display: inline-block; padding: 6px 12px; vertical-align:middle;">
-              <i class="fa fa-list"></i> {{ 'FORM.LABELS.TRANSACTION' | translate }}s
-            </span>
-
+          <!-- "Recover Cache" button -->
+          <div class="pull-right">
             <button
-              type="button"
-              class="btn btn-default pull-right"
-              ng-click="ComplexVoucherCtrl.addVoucherItem()"
-              data-button-add-item>
-              <i class="fa fa-plus-circle"></i> {{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
+              class="btn btn-default"
+              id="recover"
+              ng-class="{ 'btn-primary' : ComplexVoucherCtrl.Voucher.hasCacheAvailable() }"
+              ng-click="ComplexVoucherCtrl.Voucher.readCache()"
+              ng-disabled="!ComplexVoucherCtrl.Voucher.hasCacheAvailable() || ComplexVoucherCtrl.Voucher.hasRecoveredCache || ComplexVoucherForm.$submitted">
+              <i class="fa fa-recycle"></i> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
             </button>
           </div>
 
-          <!-- the grid  -->
-          <div
-            id="voucherGridId"
-            ui-grid="ComplexVoucherCtrl.gridOptions"
-            ui-grid-grouping
-            ui-grid-auto-resize>
-          </div>
-
-          <!-- the footer  -->
-          <div class="space-between" style="margin-top: 5px;">
-            <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
-              <span  ng-hide="ComplexVoucherCtrl.posted">
-                <span ng-class="ComplexVoucherCtrl.notifyMessage.icon"></span>
-                {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
-              </span>
+          <!-- "Add number of grid rows" input-group -->
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                id="btn-add-rows"
+                class="btn btn-default"
+                ng-click="ComplexVoucherCtrl.Voucher.addItems(ComplexVoucherCtrl.itemIncrement)">
+                <i class="fa fa-plus-circle"></i> {{ "FORM.BUTTONS.ADD" | translate }}
+              </button>
             </span>
-
-            <bh-loading-button disabled="!ComplexVoucherCtrl.validInput">
-              {{ "FORM.BUTTONS.SUBMIT" | translate }}
-            </bh-loading-button>
+            <input
+              type="number"
+              class="form-control"
+              ng-model="ComplexVoucherCtrl.itemIncrement"
+              style="max-width : 40px;">
           </div>
+        </div>
+      </div>
 
+      <!-- the grid  -->
+      <div id="voucherGridId" ui-grid="ComplexVoucherCtrl.gridOptions" ui-grid-auto-resize>
+      </div>
+
+
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-md-6">
+          <p ng-show="ComplexVoucherCtrl.Voucher._error" class="text-danger">
+            <i class="fa fa-warning"></i> {{ ComplexVoucherCtrl.Voucher._error | translate }}
+          </p>
+        </div>
+
+        <div class="col-md-6 text-right">
+          <button class="btn btn-default" ng-click="ComplexVoucherCtrl.clear()" type="button">
+            {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </button>
+
+          <bh-loading-button loading-state="ComplexVoucherForm.$loading">
+            {{ "FORM.BUTTONS.SUBMIT" | translate }}
+          </bh-loading-button>
         </div>
       </div>
     </form>

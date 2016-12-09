@@ -2,8 +2,7 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'util',
-  'TransactionTypeStoreService'
+  'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService'
 ];
 
 /**
