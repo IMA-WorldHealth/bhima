@@ -123,13 +123,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
     { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate',
-      cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
+      // cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       enableFiltering: false
     },
     { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate',
-      cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
+      // cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       enableFiltering: false
@@ -140,7 +140,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
       enableCellEdit: false,
-      allowCellFocus: false,
       aggregationType : uiGridConstants.aggregationTypes.count
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false},

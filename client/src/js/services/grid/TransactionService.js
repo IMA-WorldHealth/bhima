@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants'];
+TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService'];
 
 /**
  * Transactions Service
@@ -13,14 +13,20 @@ TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants'];
  * NOTE: this requires that both cellNav and edit features are enabled on the
  * ui-grid.
  *
+ *
+ * @todo split into util and save logic
+ *
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService(util, uiGridConstants, bhConstants) {
+function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
+
+  // allow or block editing multiple transactions simultaneously
+  var MULTIPLE_EDITS = false;
 
   // convert arguments to an array
   function toArray(args) {
@@ -97,8 +103,13 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
 
+      window.myapi = api;
+      this.gridApi.edit.on.afterCellEdit(null, function (rowEntity, colDef, newValue, oldValue) {
+        console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
+      });
+
       // cellNav is not enabled by default
-      this.disableCellNavigation();
+      // this.disableCellNavigation();
 
       // on each row rendering, recompute the transaction row indexes
       api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
@@ -273,8 +284,12 @@ function TransactionService(util, uiGridConstants, bhConstants) {
    *   inferred from the child rows.
    */
   Transactions.prototype.edit = function edit(uuid) {
-
     var api = this.gridApi;
+
+    if (this.isEditing() && !MULTIPLE_EDITS) {
+      Notify.warn('JOURNAL.SINGLE_EDIT_ONLY');
+      return;
+    }
 
     // if a row is passed in, resolve the row to the child record_uuid
     if (angular.isObject(uuid)) {
@@ -297,7 +312,12 @@ function TransactionService(util, uiGridConstants, bhConstants) {
    * This function saves all transactions by
    */
   Transactions.prototype.save = function save() {
+
     // @TODO validate()
+
+    console.log('saving, using');
+    console.log(this._edits);
+    console.log(this.getTransactionRows(this._edits[0]));
 
     // remove the ROW_EDIT_FLAG property on all transactions
     this._edits.forEach(function (uuid) {
@@ -309,6 +329,7 @@ function TransactionService(util, uiGridConstants, bhConstants) {
 
     // disable cell navigation
     this.disableCellNavigation();
+
   };
 
   /**
