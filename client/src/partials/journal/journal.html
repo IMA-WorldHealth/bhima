@@ -56,7 +56,29 @@
   </a>
 </div>
 
-<div class="flex-content">
+<!-- @todo remove hardcoded styles -->
+<div
+  ng-if="JournalCtrl.transactions.isEditing()"
+  class="flex-util"
+  style="height : 42px; line-height : 2.2; padding-left : 10px; padding-right : 10px;">
+  <span>Editing</span> <b> {{ JournalCtrl.transactions._entity.trans_id }}</b>
+  <span>Debits</span> <b>{{ JournalCtrl.transactions._entity.aggregates.debit }}</b>
+  <span>Credits</span> <b>{{ JournalCtrl.transactions._entity.aggregates.credit }}</b>
+  <b>({{ JournalCtrl.transactions._entity.aggregates.totalRows }})</b> <span>Rows</span>
+  <div class="toolbar">
+    <div class="toolbar-item">
+      <button class="btn btn-sm btn-default">Add Row</button>
+      <button class="btn btn-sm btn-default">Delete Row</button>
+      <button class="btn btn-sm btn-default">Save Transaction</button>
+    </div>
+  </div>
+  <!-- <button class="btn btn-sm btn-default">BUTTON</button> -->
+  <!-- <button class="btn btn-sm btn-default">BUTTON</button> -->
+
+</div>
+
+<!-- Overflow stops the scroll bar from pushing the screen on grid size change -->
+<div class="flex-content" style="overflow-y : hidden;">
   <div class="container-fluid">
 
     <div class="row">

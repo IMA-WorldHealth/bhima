@@ -6,7 +6,7 @@ JournalController.$inject = [
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache'
+  'AppCache', '$timeout'
 ];
 
 /**
@@ -31,7 +31,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, $timeout) {
   var vm = this;
 
   /** @constants */
@@ -239,6 +239,18 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   function clearFilters() {
     cacheFilters({});
     load({});
+  }
+
+  vm.editTransaction = editTransaction;
+  function editTransaction(row) {
+    vm.filterBarHeight = bhConstants.utilBar.expandedHeightStyle;
+    transactions.edit(row);
+  }
+
+  vm.saveTransaction = saveTransaction;
+  function saveTransaction() {
+    vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
+    transactions.save();
   }
 
   // runs on startup

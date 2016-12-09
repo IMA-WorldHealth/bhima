@@ -316,7 +316,7 @@ function localStorageConfig($localStorageProvider) {
  * populated according to the enterprise configuration
  */
 function constantConfig() {
-  var UTIL_BAR_HEIGHT = '102px';
+  var UTIL_BAR_HEIGHT = '106px';
 
   return {
     accounts : {

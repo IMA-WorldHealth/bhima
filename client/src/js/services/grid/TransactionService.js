@@ -95,7 +95,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
     this.transactionIndices = {};
 
     // this array stores the transactions ids currently being edited.
-    this._edits = [];
+    this._entity = null;
+    // this._edits = [];
 
     gridOptions.cellEditableCondition = cellEditableCondition;
     gridOptions.enableCellEditOnFocus = true;
@@ -302,8 +303,33 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
     setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
     this.scrollIntoView(uuid);
-    this._edits.push(uuid);
+    this._entity = {
+      uuid : uuid,
+      rows : this.getTransactionRows(uuid),
+      aggregates : {}
+    };
+    this._entity.trans_id = this._entity.rows[0].entity.trans_id;
+    this.digestAggregates();
+    console.log('entity', this._entity);
+
+    // @sfount proposal
+    // 1. Download transaction information seperate from current view
+    // 2. Show entity information in edit bar
+    // 3. Ensure whenever filters or searches are applied that styles and edit classes are updated
   };
+
+  Transactions.prototype.digestAggregates = function digestAggregates () {
+    this._entity.aggregates.totalRows = this._entity.rows.length;
+    this._entity.aggregates.credit = this._entity.rows.reduce(function (a, b) {
+      return a + b.entity.credit;
+    }, 0);
+    this._entity.aggregates.debit = this._entity.rows.reduce(function (a, b) {
+      return a + b.entity.debit;
+    }, 0);
+
+  };
+
+
 
   /**
    * @method save
@@ -316,17 +342,17 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
     // @TODO validate()
 
     console.log('saving, using');
-    console.log(this._edits);
-    console.log(this.getTransactionRows(this._edits[0]));
+    // console.log(this._edits);
+    // console.log(this.getTransactionRows(this._edits[0]));
 
     // remove the ROW_EDIT_FLAG property on all transactions
-    this._edits.forEach(function (uuid) {
-      setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, false);
-    }.bind(this));
+    // this._edits.forEach(function (uuid) {
+    setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
+    // }.bind(this));
 
     // set the edits length to 0
-    this._edits.length = 0;
-
+    // this._edits.length = 0;
+    this._entity = null;
     // disable cell navigation
     this.disableCellNavigation();
 
@@ -342,7 +368,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
    *   otherwise.
    */
   Transactions.prototype.isEditing = function isEditing() {
-    return this._edits.length > 0;
+    return this._entity !== null;
+    // return this._edits.length > 0;
   };
 
   /**
