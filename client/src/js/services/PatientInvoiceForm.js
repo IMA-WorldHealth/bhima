@@ -14,8 +14,6 @@ PatientInvoiceFormService.$inject = [
  * with the Patient PatientInvoiceForm module.  You must specify a cacheKey to enable the
  * class to be instantiated correctly.
  *
- * @todo (required) discuss if all subsidies/billings services are all
- *   percentages.  If so, the logic can be simplified.
  * @todo (required) only the maximum of the bill should be subsidised
  * @todo (required) billing services and subsidies should be ignored for
  *   specific debtors.

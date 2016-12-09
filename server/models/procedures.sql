@@ -183,16 +183,16 @@ BEGIN
   -- populate core set-up values
   CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
 
-  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced 
-  SELECT COUNT(invoice_item.uuid) 
+  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced
+  SELECT COUNT(invoice_item.uuid)
     INTO verify_invalid_accounts
   FROM invoice JOIN invoice_item JOIN inventory JOIN inventory_group
-  ON invoice.uuid = invoice_item.invoice_uuid 
-    AND invoice_item.inventory_uuid = inventory.uuid 
+  ON invoice.uuid = invoice_item.invoice_uuid
+    AND invoice_item.inventory_uuid = inventory.uuid
     AND inventory.group_uuid = inventory_group.uuid
   WHERE invoice.uuid = uuid
   AND inventory_group.sales_account IS NULL;
-  
+
   IF verify_invalid_accounts > 0 THEN
     SIGNAL InvalidSalesAccounts
     SET MESSAGE_TEXT = 'A NULL sales account has been found for an inventory item in this invoice.';
@@ -660,16 +660,16 @@ BEGIN
         the difference to the debtor and credit the difference as a gain to the gain_account
 
         - The debtor entity an invoice reference are not included on the gain
-          account transaction. In this case the debtor covered MORE than the 
-          invoiced amount and so referencing them on the enterprise gain will 
-          actually debit them the additional amount. 
+          account transaction. In this case the debtor covered MORE than the
+          invoiced amount and so referencing them on the enterprise gain will
+          actually debit them the additional amount.
       */
       IF (remainder > 0) THEN
-  
-        -- The debtor is not debited in this transaction. They have already 
-        -- balanced the invoice and their debt according to the invoice (the 
+
+        -- The debtor is not debited in this transaction. They have already
+        -- balanced the invoice and their debt according to the invoice (the
         -- exact amount). The additional payment can just be put in a gain account.
-        
+
         -- credit the rounding account
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
@@ -687,9 +687,9 @@ BEGIN
         A negative remainder means that the debtor underpaid slightly and we should credit
         the difference to the debtor and debit the difference as a loss to the loss_account
 
-        - The debtor and invoice are referenced on the loss account transaction 
-          make up for the amount that is loss. In this case the debtor has not 
-          actually paid enough money to cover the amount of the invoice. If this 
+        - The debtor and invoice are referenced on the loss account transaction
+          make up for the amount that is loss. In this case the debtor has not
+          actually paid enough money to cover the amount of the invoice. If this
           is not referenced his balance will not be zero.
       */
       ELSE
