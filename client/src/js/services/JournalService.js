@@ -9,9 +9,20 @@ JournalService.$inject = ['PrototypeApiService'];
  * This service is responsible of all process with the posting journal
  */
 function JournalService(Api) {
-  var service = new Api('/journal/');
+  var URL = '/journal/';
+  var service = new Api(URL);
 
   service.formatFilterParameters = formatFilterParameters;
+  service.grid = grid;
+
+  /**
+   * Standard API read method, as this will be used to drive the journal grids
+   * this method wil always request aggregate information
+   */
+  function grid(id, parameters) {
+    var gridOptions = angular.extend({aggregates : 1}, parameters);
+    return this.read(id, gridOptions);
+  }
 
   /**
    * This function prepares the filters for the journal for display to the

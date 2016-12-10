@@ -188,9 +188,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.loading = true;
     vm.hasError = false;
 
-    Journal.read(null, options)
+    Journal.grid(null, options)
       .then(function (records) {
-        vm.gridOptions.data = records;
+        vm.gridOptions.data = records.journal;
 
         // try to unfold groups
         try { grouping.unfoldAllGroups(); } catch (e) {}
