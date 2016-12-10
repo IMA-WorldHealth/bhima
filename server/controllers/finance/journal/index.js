@@ -231,10 +231,18 @@ function journalEntryList(options) {
 /**
  * GET /journal
  * Getting data from the posting journal
+ *
+ * optional query flags
+ * - aggregates {Boolean} If passed as true querries will return an object with
+ *   both requested journal rows as well as aggregate information about all
+ *   transactions involved in the request; total credits, debits and row counts.
  */
 function list(req, res, next) {
 
   let promise;
+
+  let includeAggregates = Number(req.query.aggregates);
+  delete req.query.aggregates;
 
   // TODO - clean this up a bit.  We should only use a single column definition
   // for both this and find()
@@ -267,11 +275,73 @@ function list(req, res, next) {
   }
 
   promise
-    .then(rows => {
+    .then(function (journalResults) {
+
+      // aggregate information requested - return promise getting this info
+      if (includeAggregates) {
+        return addAggregateData(journalResults);
+      } else {
+        // no aggregates required - directly return results
+        return journalResults;
+      }
+    })
+    .then(function (rows) {
       res.status(200).json(rows);
     })
     .catch(next)
     .done();
+}
+
+/**
+ * Wrapper method for requesting and formatting journal rows and aggregate
+ * information
+ *
+ * - returns a correctly formatted object with aggregates and journal rows
+ */
+function addAggregateData(journalRows) {
+  return queryTransactionAggregates(journalRows)
+    .then(function (aggregateResults) {
+      // format object according to API specification
+      return {
+        journal : journalRows,
+        aggregate : aggregateResults
+      };
+    });
+}
+
+/**
+ * Add additional transaction aggregate information based on the transactions/
+ * rows in journal querries
+ *
+ * - Expects an array of journal voucher rows
+ *
+ * - This one flag returns an object containing both journal rows and aggregate
+ *   informaiton, this is described in the API
+ */
+function queryTransactionAggregates(journalRows) {
+  let transactionIds = journalRows
+    .map(row => row.record_uuid)
+    .filter((transactionId, index, allTransactionIds) => {
+      // only keep elements that are unique
+      return allTransactionIds.indexOf(transactionId) === index;
+    })
+    .map(transactionId => db.bid(transactionId));
+
+  let emptyTransactions = transactionIds.length === 0;
+  let aggregateQuery = `
+    SELECT
+      trans_id, SUM(credit_equiv) as credit_equiv, BUID(record_uuid) as record_uuid,
+      SUM(debit_equiv) as debit_equiv, COUNT(uuid) as totalRows
+    FROM posting_journal
+    WHERE record_uuid in (?)
+    GROUP BY record_uuid;
+  `;
+
+  // if there are no record uuids to search on we can optimise by not running the query
+  if (emptyTransactions) {
+    return Promise.resolve([]);
+  }
+  return db.exec(aggregateQuery, [transactionIds]);
 }
 
 /**

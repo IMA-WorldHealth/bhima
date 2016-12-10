@@ -12,12 +12,27 @@ describe('(/journal) API endpoint', function () {
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
   const NUM_ROW_ALL_RECORDS = 13;
+  const DISTINCT_TRANSACTIONS = 6;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal : it returns a set of records ', function () {
     return agent.get('/journal')
       .then(function (res) {
         helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /journal - returns an object of aggregate information and journal rows with aggregates flag set', function () {
+    return agent.get('/journal')
+      .query({ aggregates : 1})
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        expect(res.body).to.be.a('object');
+        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
+        expect(res.body.aggregate).to.have.length(DISTINCT_TRANSACTIONS);
       })
       .catch(helpers.handler);
   });
@@ -52,6 +67,21 @@ function SearchTests() {
       .query({ description })
       .then(function (res) {
         helpers.api.listed(res, NUM_MATCHES);
+      })
+      .catch(helpers.handler);
+  });
+
+  if('GET /journal?description : journal querry with filters returns correct aggregate information for subset', function () {
+    const NUM_MATCHES = 1;
+    return agent.get('/journal')
+      .query({ description, aggregates : 1 })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        expect(res.body).to.be.a('object');
+        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
+        expect(res.body.aggregate).to.have.length(NUM_MATCHES);
       })
       .catch(helpers.handler);
   });
