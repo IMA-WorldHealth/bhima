@@ -5,7 +5,9 @@ var fnc = require('./finance');
 function generateLines (lines, detailPrevious, currencyId) {
   var out = '';
   for(var id in lines){
-    out += htmlTableLine(lines[id], detailPrevious, currencyId);
+    if(lines.hasOwnProperty(id)){
+      out += htmlTableLine(lines[id], detailPrevious, currencyId);
+    }
   }
   return out;
 }
