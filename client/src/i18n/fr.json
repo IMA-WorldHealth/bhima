@@ -297,6 +297,7 @@
       "CLOSE"                 : "Fermer",
       "CONFIGURE"             : "Configurer",
       "CONFIRM"               : "Confirmer",
+      "CONFIRM_CANCEL"        : "Confirmer Annulation",
       "CONNECTION"            : "Connexion",
       "DELETE"                : "Supprimer",
       "DISMISS"               : "Rejeter",
@@ -443,7 +444,7 @@
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
-      "CANCELED"               : "Annulee",
+      "CANCELED"               : "Annulée",
       "CHARACTERISTICS"         : "Caractéristiques",
       "CASHBOX"                : "Caisse",
       "CASHIER"                : "Caissier",
@@ -1024,15 +1025,16 @@
     "COLUMNS" : "Colonnes"
   },
   "ERRORS" : {
-    "DATE_IN_WRONG_PERIOD" : "Dates dans la mauvaise periode",
-    "MISSING_DESCRIPTION" : "Descriptions omises",
-    "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
-    "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
-    "MISSING_ACCOUNTS" : "Compte(s) omis",
-    "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
-    "MISSING_ENTITY" : "Ligne(s) sans ID entite",
+    "DATE_IN_WRONG_PERIOD"     : "Dates dans la mauvaise periode",
+    "MISSING_DESCRIPTION"      : "Descriptions omises",
+    "LOCKED_ACCOUNT"           : "Compte(s) verrouille(s)",
+    "UNBALANCED_TRANSACTIONS"  : "Transaction(s) non balancee(s)",
+    "MISSING_ACCOUNTS"         : "Compte(s) omis",
+    "MISSING_DOCUMENT_ID"      : "Ligne(s) sans ID Document",
+    "MISSING_ENTITY"           : "Ligne(s) sans ID entite",
     "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
-    "SINGLE_LINE_TRANSACTION" : "Transaction(s) avec une ligne"
+    "MULTIPLE_CANCELLING"      : "Annulation multiple. Cette transaction a deja été annulée",
+    "SINGLE_LINE_TRANSACTION"  : "Transaction(s) avec une ligne"
   },
   "WARNINGS" : {
     "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
