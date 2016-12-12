@@ -75,7 +75,7 @@
       </div>
     </div>
 
-    <div ng-show="ToolCtrl.convention" class="form-group">
+    <div ng-show="ToolCtrl.convention" class="test-right">
       <span>{{ 'FORM.LABELS.TOTAL_BILLED' | translate }}: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span><br>
       <span>{{ 'FORM.LABELS.TOTAL_SELECTED_INVOICES' | translate }}: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span>
     </div>
@@ -90,9 +90,9 @@
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
 
-    <bh-loading-button loading-state="ToolCtrl.$loading"
+    <bh-loading-button loading-state="ToolForm.$loading"
       disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
-      {{ "FORM.BUTTONS.GENERATE" | translate }}
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </bh-loading-button>
   </div>
 </form>

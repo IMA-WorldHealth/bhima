@@ -59,7 +59,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
   // ui-grid options
   vm.gridOptions = {
     appScopeProvider  : vm,
-    //fastWatch         : true,
+    fastWatch         : true,
     flatEntityAccess : true,
     enableSorting     : false,
     enableColumnMenus : false,
@@ -85,12 +85,20 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
       .then(function (result) {
         if (!result) { return; }
 
-        vm.rows = result.rows;
-        vm.rows.forEach(function (item) {
-        });
+        var rows = result.rows;
+        var n = result.rows.length;
 
-        // vm.gridOptions.data = vm.rows;
-        conventionPaymentDetails(result.convention);
+        while (n--) {
+          vm.Voucher.addItems(1);
+
+          var lastRowIdx = vm.Voucher.store.data.length - 1;
+          var lastRow = vm.Voucher.store.data[lastRowIdx];
+
+          lastRow.configure(rows[n]);
+        }
+
+        vm.Voucher.validate();
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
       });
   }
 
@@ -147,15 +155,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
     return Currencies.symbol(currency_id);
   }
 
-
-  /** summation */
-  function summation() {
-    // if the gridApi is available call the datachange function to recompute footer totals
-    if (vm.gridApi) {
-      vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
-    }
-  }
-
   /** run the module on startup and refresh */
   function startup() {
     vm.gridOptions.data = vm.Voucher.store.data;
@@ -177,8 +176,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
       return item.type === 'expense';
     });
   }
-
-
 
   /* ============================= Grid ====================================== */
 

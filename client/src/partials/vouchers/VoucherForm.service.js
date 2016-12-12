@@ -111,13 +111,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
         self.accounts = Accounts.order(accounts);
       });
 
-    /* @todo
-    Vouchers.transactionType()
-      .then(function (types) {
-        groupType(
-        });
-        */
-
     // this will contain the grid rows
     this.store = new Store({ identifier: 'uuid', data : [] });
 
@@ -152,11 +145,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
     // this will store the validity condition.  We could use array.every() but it
     // seems like Chrome greedily exits if a false condition is it.
-    var valid;
+    var valid = true;
 
     // loop through each row, checking the amounts and accounts of each item.
     items.forEach(function (item, index) {
-      valid = item.validate();
+      valid = valid && item.validate();
 
       // if the row has an error, save it as the form error
       if (item._error) {
@@ -174,6 +167,9 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
         uniqueAccountsArray.push(item.account_id);
       }
     });
+
+    // set the hasCashboxAccount flag if necessary
+    this.hasCashboxAccount = (err === ERROR_MISSING_TRANSACTION_TYPE);
 
     // validate that this uses multiple accounts in the transaction
     var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
@@ -195,10 +191,8 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     // attach error to the form
     this._error = err;
 
-    console.log('error:', err);
-
     // return the boolean condition to the caller
-    return valid && hasUniqueAccounts;
+    return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
   };
 
   /**

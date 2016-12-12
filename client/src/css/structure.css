@@ -847,3 +847,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .ui-grid-canvas {
   padding-top : 0;
 }
+
+/* fix weird double-line on grid footers */
+.ui-grid-footer-panel {
+  border-bottom: none;
+}

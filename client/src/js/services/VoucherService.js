@@ -23,10 +23,51 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
   service.reverse = reverse;
   service.transactionType = transactionType;
 
+  // returns true if the key starts with an underscore
+  function isInternalKey(key) {
+    return key[0] === '_' || key[0] === '$';
+  }
+
+  // strips internal keys from object
+  function stripInternalObjectKeys(object) {
+
+    var o = {};
+
+    angular.forEach(object, function (value, key) {
+      if (!isInternalKey(key)) {
+        o[key] = value;
+      }
+    });
+
+    return o;
+  }
+
   /**
    * Wraps the prototype create method.
    */
   function create(voucher) {
+
+    var v = angular.copy(voucher);
+
+    // format items for posting, removing validation keys and unlinking old objects
+    v.items = v.items.map(function (item) {
+      var escapedItem = stripInternalObjectKeys(item);
+
+      if (escapedItem.entity) {
+        escapedItem.entity_uuid = escapedItem.entity.uuid;
+      }
+
+      if (escapedItem.reference) {
+        escapedItem.reference_uuid = escapedItem.reference.uuid;
+      }
+
+      return escapedItem;
+    });
+
+    // @fixme - this is a hack to get type_id to properly work with all the other services and things
+    console.log('v.type_id', v);
+    //v.type_id = v.type_id.id;
+
     return Api.create.call(service, { voucher : voucher });
   }
 
