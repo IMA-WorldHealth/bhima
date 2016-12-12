@@ -11,11 +11,25 @@ GridGroupingService.$inject = [
  * This service is responsible for setting the grouping configuration for the
  * client side posting journal module. It also provides a number of helper
  * methods that can be used to provide custom transaction grouping.
+ *
+ * @TODO This service should not perform grouping on columns that are not specified
+ * in the `gridOptions`. There are too many places for this to be defined with this
+ * set up.
  */
 function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, $timeout, util) {
 
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
+  // var DEFAULT_AGGREGATORS = {
+  //   // 'debit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
+  //   // 'credit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
+  //   'cost' : copy(DEFAULT_COST_AGGREGATOR),
+  //   'quantity' : copy(DEFAULT_QUANTITY_AGGREGATOR),
+  //   'amount' : copy(DEFAULT_QUANTITY_AGGREGATOR),
+  //   'description' : copy(DEFAULT_SINGLE_AGGREGATOR),
+  //   'date' : copy(DEFAULT_SINGLE_AGGREGATOR),
+  //   'trans_date' : copy(DEFAULT_SINGLE_AGGREGATOR), // TODO - eliminate this in favor of "date"
+  // };
 
   /**
    * @method configureDefaultAggregators
@@ -31,6 +45,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
    * @private
    */
   function configureDefaultAggregators(columns) {
+    console.log('called ');
     columns.forEach(function (column) {
       var aggregator = DEFAULT_AGGREGATORS[column.field];
 
@@ -104,12 +119,43 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
     gridApi.core.on.rowsRendered(null, util.once(function () {
+			console.log('applying initial group column');
       gridApi.grouping.groupColumn(this.column);
+      // configureDefaultAggregators(gridApi.grid.columns);
+      groupByTransactionView(gridApi);
 
       // for the expandAllRows() to be fired last
-      unfoldAllGroups(gridApi);
+      // unfoldAllGroups(gridApi);
     }.bind(this)));
   }
+
+	function groupByTransactionView(gridApi) {
+    var fieldKey = 'trans_id';
+    gridApi.grouping.groupColumn(fieldKey);
+
+    // set the header row text for grouped element
+    gridApi.grid.columns.some(function (column) {
+      if (column.grouping && column.grouping.groupPriority > -1) {
+
+        console.log('grouping rule applies');
+        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+          // @todo this will be called for every row in a group but only needs to be called once
+          aggregation.value = row.entity.transaction.debit_equiv;
+        };
+
+        column.customTreeAggregationFinalizerFn = function (aggregation) {
+          if (typeof(aggregation.groupVal) !== 'undefined') {
+            aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
+          } else {
+            aggregation.rendered = null;
+          }
+        };
+
+        return true;
+      }
+      return false;
+    });
+	}
 
   function unfoldAllGroups(api) {
     $timeout(api.treeBase.expandAllRows, 0, false);
@@ -118,8 +164,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
   function changeGrouping (column) {
     this.gridApi.grouping.clearGrouping();
     this.gridApi.grouping.groupColumn(column);
-    this.gridApi.grouping.aggregateColumn('debit_equiv', uiGridGroupingConstants.aggregation.SUM);
-    this.gridApi.grouping.aggregateColumn('credit_equiv', uiGridGroupingConstants.aggregation.SUM);
+    // this.gridApi.grouping.aggregateColumn('debit_equiv', uiGridGroupingConstants.aggregation.SUM);
+    // this.gridApi.grouping.aggregateColumn('credit_equiv', uiGridGroupingConstants.aggregation.SUM);
 
     unfoldAllGroups(this.gridApi);
   }
