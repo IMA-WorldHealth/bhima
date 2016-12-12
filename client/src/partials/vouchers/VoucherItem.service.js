@@ -115,6 +115,8 @@ function VoucherItemService(uuid, Constants, util) {
     } else {
       this._error = '';
     }
+
+    return this._valid;
   };
 
   /**
@@ -127,6 +129,22 @@ function VoucherItemService(uuid, Constants, util) {
   VoucherItem.prototype.configure = function configure(item) {
     this.account_id = item.account_id;
     this._initialized = true;
+
+    if (angular.isDefined(item.debit)) {
+      this.debit = item.debit;
+    }
+
+    if (angular.isDefined(item.credit)) {
+      this.credit = item.credit;
+    }
+
+    if (angular.isDefined(item.entity)) {
+      this.entity = item.entity;
+    }
+
+    if (angular.isDefined(item.reference)) {
+      this.reference = item.reference;
+    }
   };
 
   return VoucherItem;

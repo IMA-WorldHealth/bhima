@@ -29,7 +29,7 @@ const GU = require('../shared/GridUtils');
 
    // account setter
    account(number) {
-    FU.uiSelectAppended('row.entity.account', number, this._node);
+    FU.uiSelectAppended('row.entity.account_id', number, this._node);
    }
 
    // sets the debit value
@@ -105,7 +105,7 @@ class ComplexVoucherPage {
 
   // set the description field
   description(value) {
-    FU.input('ComplexVoucherCtrl.voucher.description', value);
+    FU.input('ComplexVoucherCtrl.Voucher.details.description', value);
     return this;
   }
 
@@ -117,7 +117,7 @@ class ComplexVoucherPage {
 
   // set the transfer type
   transferType(id) {
-    element(by.model('ComplexVoucherCtrl.voucher.type_id')).click();
+    element(by.model('ComplexVoucherCtrl.Voucher.details.type_id')).click();
     element(by.css(`[data-item="${id}"]`)).click();
     return this;
   }
@@ -132,7 +132,7 @@ class ComplexVoucherPage {
   addRow() {
 
     // click the add row button
-    $('[data-button-add-item]').click();
+    element(by.id('btn-add-rows')).click();
 
     // create a new row reference to the last row
     let row = new Row(this._rows.length);

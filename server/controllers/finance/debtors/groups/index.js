@@ -1,4 +1,5 @@
 'use strict';
+
 /**
 * The Debtor Groups Controllers
 *
@@ -128,11 +129,11 @@ function create(req, res, next) {
   data.uuid = db.bid(data.uuid || uuid.v4());
 
   db.exec(sql, data)
-  .then(function () {
-    res.status(201).json({ uuid: uuid.unparse(data.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      res.status(201).json({ uuid: uuid.unparse(data.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -241,11 +242,11 @@ function invoices(req, res, next) {
   options.debtor_uuid = req.params.uuid;
 
   loadInvoices(options)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -258,6 +259,7 @@ function invoices(req, res, next) {
  * }
  */
 function loadInvoices(params) {
+
   // cancelled transaction type
   const CANCELED_TRANSACTION_TYPE = 10;
 
@@ -274,7 +276,7 @@ function loadInvoices(params) {
         entity_uuid, invoice.reference, invoice.project_id
       FROM combined_ledger
       JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
-      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
       GROUP BY uuid
     ) AS i
     JOIN project ON i.project_id = project.id
@@ -287,9 +289,9 @@ function loadInvoices(params) {
   let bid = db.bid(params.debtor_uuid);
 
   return db.exec(sqlDebtors, [bid])
-  .then(result => {
-    if (!result.length) { return []; }
-    let uuids = result.map(item => item.uuid);
-    return db.exec(sqlInvoices, [uuids]);
-  });
+    .then(result => {
+      if (!result.length) { return []; }
+      let uuids = result.map(item => item.uuid);
+      return db.exec(sqlInvoices, [uuids]);
+    });
 }

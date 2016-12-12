@@ -26,16 +26,6 @@
                   class="form-group"
                   ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
                   <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
-                  <span
-                    style="display: inline-block"
-                    class="label"
-                    ng-show="ComplexVoucherCtrl.financialTransaction"
-                    ng-class="{'label-success': ComplexVoucherCtrl.type==='income', 'label-warning': ComplexVoucherCtrl.type==='expense'}">
-                    {{ ComplexVoucherCtrl.descriptionPrefix }}
-                    <span ng-if="ComplexVoucherCtrl.type==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
-                    <span ng-if="ComplexVoucherCtrl.type==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
-                  </span>
-
                   <textarea
                     class="form-control"
                     name="description"
@@ -68,7 +58,7 @@
                   <select class="form-control"
                     name="type_id"
                     ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
-                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccounts">
+                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
 
                     <option value="" disabled>{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}</option>
 
@@ -86,9 +76,13 @@
                       </option>
                     </optgroup>
                   </select>
-                  <p ng-show="ComplexVoucherCtrl.financialTransaction && !ComplexVoucherForm.$submitted" class="text-info">
-                    <i class="fa fa-info-circle"></i> {{ 'VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT' | translate }}
-                  </p>
+
+                  <div class="help-block" ng-show="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
+                    <p class="text-info">
+                      <i class="fa fa-info-circle"></i> {{ 'VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT' | translate }}
+                    </p>
+                  </div>
+
                   <div class="help-block" ng-messages="ComplexVoucherForm.type_id.$error" ng-show="ComplexVoucherForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>

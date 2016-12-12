@@ -7,7 +7,7 @@ const ComplexVoucherPage = require('./complex.page');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 
-describe('Complex Vouchers', function () {
+describe.only('Complex Vouchers', function () {
 
   before(() => helpers.navigate('vouchers/complex'));
 
