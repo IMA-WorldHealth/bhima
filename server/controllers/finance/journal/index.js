@@ -222,7 +222,7 @@ function journalEntryList(options) {
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
     WHERE p.uuid IN (?)
-    ORDER BY p.trans_date DESC
+    ORDER BY p.trans_date DESC, record_uuid ASC
   `;
 
   return db.exec(sql, [uuids]);
