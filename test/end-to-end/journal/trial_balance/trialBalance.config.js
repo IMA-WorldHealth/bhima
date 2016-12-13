@@ -52,6 +52,12 @@ function TrialBalanceTest(){
     trialBalance.closeTrialBalance();
   });
 
+  it('it should print a transaction', function () {
+    browser.refresh(); //Fix me, How to check the report in PDF
+    journal.checkRow(6);
+    element(by.id('print')).click();
+  });
+
   it('it should post a transaction with success', function () {
     browser.refresh(); //just to uncheck the line selected previewsly
     journal.checkRow(6);
