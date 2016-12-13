@@ -45,14 +45,33 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
    * @private
    */
   function configureDefaultAggregators(columns) {
-    console.log('called ');
+    console.log('column processor');
     columns.forEach(function (column) {
       var aggregator = DEFAULT_AGGREGATORS[column.field];
 
       if (aggregator) {
         GridAggregators.extendColumnWithAggregator(column, aggregator);
       }
+
+			if (column.grouping && column.grouping.groupPriority > -1) {
+
+        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+          // @todo this will be called for every row in a group but only needs to be called once
+          aggregation.value = row.entity.transaction.debit_equiv;
+        };
+
+        column.customTreeAggregationFinalizerFn = function (aggregation) {
+          if (typeof(aggregation.groupVal) !== 'undefined') {
+            aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
+          } else {
+            aggregation.rendered = null;
+          }
+        };
+        // return true;
+      }
+
     });
+		return columns;
   }
 
 
@@ -135,25 +154,25 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
     // set the header row text for grouped element
     gridApi.grid.columns.some(function (column) {
-      if (column.grouping && column.grouping.groupPriority > -1) {
+      // if (column.grouping && column.grouping.groupPriority > -1) {
 
-        console.log('grouping rule applies');
-        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
-          // @todo this will be called for every row in a group but only needs to be called once
-          aggregation.value = row.entity.transaction.debit_equiv;
-        };
+      //   console.log('grouping rule applies');
+      //   column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+      //     // @todo this will be called for every row in a group but only needs to be called once
+      //     aggregation.value = row.entity.transaction.debit_equiv;
+      //   };
 
-        column.customTreeAggregationFinalizerFn = function (aggregation) {
-          if (typeof(aggregation.groupVal) !== 'undefined') {
-            aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
-          } else {
-            aggregation.rendered = null;
-          }
-        };
+      //   column.customTreeAggregationFinalizerFn = function (aggregation) {
+      //     if (typeof(aggregation.groupVal) !== 'undefined') {
+      //       aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
+      //     } else {
+      //       aggregation.rendered = null;
+      //     }
+      //   };
 
-        return true;
-      }
-      return false;
+      //   return true;
+      // }
+      // return false;
     });
 	}
 
@@ -234,7 +253,11 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
       this.gridApi = api;
 
       // attach custom renderers
-      configureDefaultAggregators(gridOptions.columnDefs);
+			// @TODO - this used to just be called once, as a processor it is called frequently; investigate need
+			var AGGREGATE_PRIORITY = 410;
+			api.grid.registerColumnsProcessor(configureDefaultAggregators, AGGREGATE_PRIORITY);
+
+      // configureDefaultAggregators(gridOptions.columnDefs);
 
       // configure default grouping
       configureDefaultGroupingOptions.call(this, api);

@@ -210,6 +210,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = preprocessJournalData(records);
+				transactions.applyEdits();
 
         // try to unfold groups
         try { grouping.unfoldAllGroups(); } catch (e) {}

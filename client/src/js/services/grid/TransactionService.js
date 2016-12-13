@@ -109,11 +109,37 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
         console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
       });
 
+      var scope = this;
+
+      // console.log('INITIAL INIT', this);
+			api.grid.registerRowsProcessor(function (rows) {
+
+        console.log('row processor', rows);
+        // console.log('rp', this._entity);
+        if (this._entity) {
+          // console.log('set property for edits', this._entity);
+          setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, true);
+        }
+        // console.log('rows processor', rows.length);
+        // console.log(api.grid.rows.length);
+        return rows;
+      }.bind(this), 410);
+
       // cellNav is not enabled by default
       // this.disableCellNavigation();
 
       // on each row rendering, recompute the transaction row indexes
-      api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
+      // api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
+      api.core.on.rowsRendered(null, function (rows) { console.log('rows rendered'); });
+
+      api.grid.registerDataChangeCallback(function (rows) {
+        console.log('data change rows', rows);
+        createTransactionIndexMap.bind(scope)();
+        // console.log(scope.transactionIndices);
+        // console.log('row data change');
+      }, [uiGridConstants.dataChange.ROW]);
+
+      // console.log(uiGridConstants);
     }.bind(this));
   }
 
@@ -162,6 +188,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
   function createTransactionIndexMap() {
     var rows = this.gridApi.grid.rows;
     this.transactionIndices = indexBy(rows, 'record_uuid');
+
+    console.log('created index', this.transactionIndices);
   }
 
   /**
@@ -175,8 +203,13 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
    * @return {Array} rows - the rows in the grid used to render that transaction.
    */
   Transactions.prototype.getTransactionRows = function getTransactionRows(uuid) {
+
+    console.log('GET ROWS:USING:', this.gridApi.grid.rows);
+    // console.log('get rows', this, uuid);
     var array = this.gridApi.grid.rows;
-    var indices = this.transactionIndices[uuid];
+    var indices = this.transactionIndices[uuid] || [];
+
+    console.log('using indices', indices);
 
     // return an array of transaction rows.  These are bound to the grid, despite
     // being a new array.
@@ -233,22 +266,33 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
    * @private
    */
   function setPropertyOnTransaction(uuid, property, value) {
-
     var rows = this.getTransactionRows(uuid);
+    var visible = false;
+
+    console.log('updating property on rows', rows);
 
     // loop through all rows to set the transactions
     rows.forEach(function (row) {
       if (row.entity.record_uuid === uuid) {
         row[property] = value;
 
+
+        // This will check to see if any of the rows in a transaction are visible
+        if (row.visible) { visible = true; }
+
         // set the transaction property with the same record
-        var parent = getParentNode(row);
-        parent[property] = value;
+        // var parent = getParentNode(row);
+        // parent[property] = value;
       }
     });
 
+    // ensure this flag is only set if the transaction row header exists
+    // all rows are made 'children' of a row header - even if their transaction header does not exist
+    if (visible) {
+      getParentNode(rows[0])[property] = value;
+    }
     // make sure the grid updates with the changes
-    this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+    // this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
 
@@ -310,7 +354,7 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
     };
     this._entity.trans_id = this._entity.rows[0].entity.trans_id;
     this.digestAggregates();
-    console.log('entity', this._entity);
+    // console.log('entity', this._entity);
 
     // @sfount proposal
     // 1. Download transaction information seperate from current view
@@ -330,6 +374,16 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
   };
 
 
+  // This function should be called whenever the underlying model changes
+  // (i.e a new search) to ensure that the latest transactions changes are applied
+  Transactions.prototype.applyEdits = function applyEdits () {
+     console.log('apply edits');
+    this.transactionIndices = {};
+    // this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
+    // createTransactionIndexMap.bind(this)();
+  }
+
+
 
   /**
    * @method save
@@ -341,7 +395,7 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
     // @TODO validate()
 
-    console.log('saving, using');
+    // console.log('saving, using');
     // console.log(this._edits);
     // console.log(this.getTransactionRows(this._edits[0]));
 

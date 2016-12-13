@@ -59,12 +59,12 @@
 <!-- @todo remove hardcoded styles -->
 <div
   ng-if="JournalCtrl.transactions.isEditing()"
-  class="flex-util"
+  class="flex-util bg-primary"
   style="height : 42px; line-height : 2.2; padding-left : 10px; padding-right : 10px;">
-  <span>Editing</span> <b> {{ JournalCtrl.transactions._entity.trans_id }}</b>
-  <span>Debits</span> <b>{{ JournalCtrl.transactions._entity.aggregates.debit }}</b>
-  <span>Credits</span> <b>{{ JournalCtrl.transactions._entity.aggregates.credit }}</b>
-  <b>({{ JournalCtrl.transactions._entity.aggregates.totalRows }})</b> <span>Rows</span>
+  <div class="text-menu-item"><b>{{ JournalCtrl.transactions._entity.trans_id }}</b></div>
+  <div class="text-menu-item"><span>{{ "POSTING_JOURNAL.DEBIT_LETTER" | translate }}:</span>{{ JournalCtrl.transactions._entity.aggregates.debit }}</div>
+  <div class="text-menu-item"><span>{{ "POSTING_JOURNAL.CREDIT_LETTER" | translate }}:</span>{{ JournalCtrl.transactions._entity.aggregates.credit }}</div>
+  <div class="text-menu-item"><span>{{ "POSTING_JOURNAL.TOTAL_ROWS" | translate}}:</span>{{ JournalCtrl.transactions._entity.aggregates.totalRows }}</div>
   <div class="toolbar">
     <div class="toolbar-item">
       <button class="btn btn-sm btn-default">Add Row</button>
