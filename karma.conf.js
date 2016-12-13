@@ -14,9 +14,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'client/vendor/angular/angular.js',
-      'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/vendor.min.js',
+      'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/bhima.min.js',
       'bin/client/partials/**/*.html',
       'test/client-unit/**/*.spec.js'
