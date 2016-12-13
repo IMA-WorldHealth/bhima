@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('GridGroupingService', GridGroupingService);
 
 GridGroupingService.$inject = [
-  'GridAggregatorService', 'SessionService', 'uiGridGroupingConstants', '$timeout', 'util'
+  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService',  '$timeout', 'util'
 ];
 
 /**
@@ -125,7 +125,9 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
   }
 
   function removeGrouping () {
-    this.gridApi.grouping.clearGrouping();
+    try {
+      this.gridApi.grouping.clearGrouping();
+    } catch (e) { }
   }
 
   // return the current grouping

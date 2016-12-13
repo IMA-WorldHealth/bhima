@@ -116,9 +116,8 @@ class ComplexVoucherPage {
   }
 
   // set the transfer type
-  transferType(id) {
-    element(by.model('ComplexVoucherCtrl.Voucher.details.type_id')).click();
-    element(by.css(`[data-item="${id}"]`)).click();
+  transactionType(type) {
+    FU.uiSelect('ComplexVoucherCtrl.Voucher.details.type_id', type);
     return this;
   }
 

@@ -64,10 +64,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
       return escapedItem;
     });
 
-    // @fixme - this is a hack to get type_id to properly work with all the other services and things
-    console.log('v.type_id', v);
-    //v.type_id = v.type_id.id;
-
     return Api.create.call(service, { voucher : voucher });
   }
 

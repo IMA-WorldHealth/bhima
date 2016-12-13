@@ -102,19 +102,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
       });
   }
 
-  // set convention payment details
-  function conventionPaymentDetails(convention) {
-    vm.financialTransaction = true;
-
-    var conventionType = vm.incomes.filter(function (item) {
-      return item.id === 3;
-    })[0];
-
-    vm.voucher.type_id = JSON.stringify(conventionType);
-    vm.voucher.description = convention.name;
-    vm.defaultIncomeTypeId = 3;
-  }
-
   /** ======================== end voucher tools ======================= */
 
   // bind the startup method as a reset method
@@ -164,18 +151,12 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   Vouchers.transactionType()
     .then(function (list) {
-      groupType(list.data);
+      vm.types = list.data.map(function (item) {
+        item.hrText = $translate.instant(item.text);
+        return item;
+      });
     })
     .catch(Notify.handleError);
-
-  function groupType(array) {
-    vm.incomes = array.filter(function (item) {
-      return item.type === 'income';
-    });
-    vm.expenses = array.filter(function (item) {
-      return item.type === 'expense';
-    });
-  }
 
   /* ============================= Grid ====================================== */
 

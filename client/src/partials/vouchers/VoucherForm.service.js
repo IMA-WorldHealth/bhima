@@ -87,7 +87,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     var self = this;
 
     // load cashboxes for their accounts.
-    Cashboxes.read()
+    Cashboxes.read(null, { detailed: 1 })
       .then(function (cashboxes) {
 
         self.cashAccounts = cashboxes
@@ -137,8 +137,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     this.totals = calculateItemTotals(items);
 
     var err;
-    var cashAccounts = this.cashAccounts;
-    var hasTypeId = angular.isDefined(this.details.type_id);
 
     // this array will store unique accounts
     var uniqueAccountsArray = [];
@@ -146,6 +144,13 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     // this will store the validity condition.  We could use array.every() but it
     // seems like Chrome greedily exits if a false condition is it.
     var valid = true;
+
+
+    // do validation checks to see if we have a transaction type for a cashbox
+    // account
+    var cashAccounts = this.cashAccounts;
+
+    var hasCashboxAccount = false;
 
     // loop through each row, checking the amounts and accounts of each item.
     items.forEach(function (item, index) {
@@ -156,20 +161,24 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
         err = item._error;
       }
 
-      // if there is a cashbox account used, the voucher type_id is required
-      var hasCashboxAccount = cashAccounts.indexOf(item.account_id) > -1;
-      if (hasCashboxAccount && !hasTypeId) {
-        err = ERROR_MISSING_TRANSACTION_TYPE;
-      }
-
       // if there unique accounts array does not have this account, add it.
       if (uniqueAccountsArray.indexOf(item.account_id) === -1) {
         uniqueAccountsArray.push(item.account_id);
       }
+
+      if (cashAccounts.indexOf(item.account_id) !== -1) {
+        hasCashboxAccount = true;
+      }
     });
 
-    // set the hasCashboxAccount flag if necessary
-    this.hasCashboxAccount = (err === ERROR_MISSING_TRANSACTION_TYPE);
+    // if there is a cashbox account used, the voucher type_id is required
+    this.hasCashboxAccount = hasCashboxAccount;
+
+    // validate that the cashbox accounts and type_id are set
+    var hasTypeId = angular.isDefined(this.details.type_id);
+    if (!hasTypeId && this.hasCashboxAccount) {
+      err = ERROR_MISSING_TRANSACTION_TYPE;
+    }
 
     // validate that this uses multiple accounts in the transaction
     var hasUniqueAccounts = (uniqueAccountsArray.length > 1);

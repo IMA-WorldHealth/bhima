@@ -12,8 +12,7 @@ const TrialBalanceDetailPage = require('./trialBalanceDetail.page');
 const TrialBalanceErrorPage = require('./errorView.page');
 const GeneralLedgerPage = require('../../general_ledger/generalLedger.page.js');
 
-function TrialBalanceTest(){
-  'use strict';
+function TrialBalanceTest() {
 
   const journal = new JournalCorePage();
   const trialBalance = new TrialBalancePage();
@@ -59,7 +58,7 @@ function TrialBalanceTest(){
   });
 
   it('it should post a transaction with success', function () {
-    browser.refresh(); //just to uncheck the line selected previewsly
+    browser.refresh(); //just to uncheck the line selected previously
     journal.checkRow(6);
     journal.openTrialBalanceModal();
     trialBalance.submitData();

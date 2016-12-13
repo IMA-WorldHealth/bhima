@@ -7,7 +7,7 @@ const ComplexVoucherPage = require('./complex.page');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 
-describe.only('Complex Vouchers', function () {
+describe('Complex Vouchers', function () {
 
   before(() => helpers.navigate('vouchers/complex'));
 
@@ -62,11 +62,11 @@ describe.only('Complex Vouchers', function () {
     });
 
     /*
-     * set the transfer type to one which have a specific Id
+     * set the transaction type to one which have a specific Id
      * (e.g. cash payment Id is 1)
      * @see client/src/js/services/VoucherService.js
      */
-    page.transferType(1);
+    page.transactionType('Autres R');
 
     // submit the page
     page.submit();
@@ -131,7 +131,8 @@ describe.only('Complex Vouchers', function () {
       tool: 'Convention - Paiement factures',
       cashbox: '$',
       convention: 'Second Test',
-      invoices: [0, 1]
+      invoices: [0, 1],
+      transactionType: 'Convention'
     };
 
     // click on the convention tool
@@ -148,6 +149,9 @@ describe.only('Complex Vouchers', function () {
 
     // validate selection
     FU.modal.submit();
+
+    // set the transaction type
+    FU.uiSelect('ComplexVoucherCtrl.Voucher.details.type_id', detail.transactionType);
 
     // submit voucher
     FU.buttons.submit();
