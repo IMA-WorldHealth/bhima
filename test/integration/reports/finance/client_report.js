@@ -13,5 +13,5 @@ const params = {
   detailPrevious : true
 };
 
-describe.only(`(${target}) clients report`, RenderingTests(target, null, params));
+describe(`(${target}) clients report`, RenderingTests(target, null, params));
 
