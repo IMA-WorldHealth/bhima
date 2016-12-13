@@ -43,22 +43,26 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       allowCellFocus: false
     }
   ];
+
   var errorList = null, records = $state.params.records;
 
   vm.enterprise = Session.enterprise;
   vm.dataByTrans = records;
+
   vm.viewDetail = {
     'trans' : transactionView,
     'account' : accountView,
     key : 'FORM.BUTTONS.GROUP_BY_TRANSACTION',
     selected : 'account'
   };
+
   vm.gridOptions = {
     enableColumnMenus: false,
     treeRowHeaderAlwaysVisible: false,
     appScopeProvider: vm,
     columnDefs : columns
   };
+
   vm.grouping = new Grouping(vm.gridOptions, false);
   vm.columns = new Columns(vm.gridOptions);
   vm.loading = true;
@@ -85,6 +89,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * This view is one of the two mains views because from this view you can post to the general ledger
    **/
   function transactionView() {
+
     vm.columns.setVisibleColumns({
       balance_before : false,
       balance_final : false,
@@ -94,6 +99,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       trans_id : true,
       account_number : true
     });
+
     vm.gridOptions.data = vm.dataByTrans;
     vm.viewDetail.key = 'FORM.BUTTONS.GROUP_BY_ACCOUNT';
     vm.viewDetail.selected = 'trans';
@@ -112,6 +118,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * This view is one of the two mains views because from this view you can post to the general ledger
    **/
   function accountView() {
+
     vm.columns.setVisibleColumns({
       balance_before : true,
       balance_final : true,
@@ -121,12 +128,17 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       account_number : true,
       trans_id : false
     });
+
     fetchDataByAccount()
       .then(function (data) {
         vm.gridOptions.data = data;
         vm.viewDetail.key = 'FORM.BUTTONS.GROUP_BY_TRANSACTION';
         vm.viewDetail.selected = 'account';
-        vm.grouping.removeGrouping();
+
+        $timeout(function () {
+          vm.grouping.removeGrouping();
+        }, 0, false);
+
       })
       .catch(Notify.handleError);
   }
@@ -209,7 +221,10 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
   fetchDataByAccount()
     .then(function (data) {
       vm.gridOptions.data = data;
-      $timeout(vm.grouping.removeGrouping, 0, false);
+
+      $timeout(function () {
+        vm.grouping.removeGrouping();
+      }, 0, false);
     })
     .catch(Notify.handleError);
 

@@ -55,27 +55,23 @@
 
                   <!-- financial transaction  -->
                   <!-- @todo - this should be a ui-select with a grouping functionality -->
-                  <select class="form-control"
+                  <ui-select
                     name="type_id"
                     ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
-                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
+                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount"
+                    append-to-body="true">
 
-                    <option value="" disabled>{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}</option>
+                    <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+                      <span>{{$select.selected.text | translate }}</span>
+                    </ui-select-match>
 
-                    <!-- incomes  -->
-                    <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
-                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.incomes" ng-selected="item.id === ComplexVoucherCtrl.defaultIncomeTypeId">
-                        {{ item.text | translate }}
-                      </option>
-                    </optgroup>
-
-                    <!-- expenses  -->
-                    <optgroup label="{{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }}">
-                      <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in ComplexVoucherCtrl.expenses">
-                        {{ item.text | translate }}
-                      </option>
-                    </optgroup>
-                  </select>
+                    <ui-select-choices
+                      ui-select-focus-patch
+                      repeat="item.id as item in ComplexVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
+                      group-by="'type'">
+                      <div ng-bind-html="item.hrText | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
 
                   <div class="help-block" ng-show="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
                     <p class="text-info">
