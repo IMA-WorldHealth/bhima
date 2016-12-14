@@ -202,14 +202,6 @@ function balanceReporting(params) {
     'GROUP BY a.id ';
   }
 
-  const TITLE_ACCOUNT_TYPE = 4;
-    
-  // fill with zero if all accounts 
-  sql += query.accountOption === 'all' ? 
-    `UNION ALL SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit 
-     FROM account a JOIN period_total pt ON pt.account_id <> a.id 
-     WHERE a.type_id <> ${TITLE_ACCOUNT_TYPE};`: '';
-
   queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
 
   return db.exec(sql, queryParameters)
@@ -230,6 +222,33 @@ function balanceReporting(params) {
   })
   .then(function (rows) {
     data.middle = rows;
+    return data;
+  })
+  .then(function (rows) {
+    // Manual mixing 
+    const TITLE_ACCOUNT_TYPE = 4;
+    
+    // fill with zero if all accounts 
+    sql = 
+      `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit 
+       FROM account a WHERE a.type_id <> ${TITLE_ACCOUNT_TYPE} AND a.locked = 0;`;
+    
+    return query.accountOption === 'all' ? db.exec(sql) : false;
+  })
+  .then(function (rows) {
+
+    if (!rows) { return data; }
+    
+    // Naive manipulation for filling with zero 
+    let accounts = rows;
+    let touched  = data.beginning.map(item => {
+      return item.id;
+    });
+    accounts.forEach(item => {
+      if (touched.indexOf(item.id) === -1) {
+        data.beginning.push(item);
+      }
+    });
     return data;
   });
 }
