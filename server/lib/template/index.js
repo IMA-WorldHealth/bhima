@@ -21,7 +21,6 @@ const math = require('./helpers/math');
 const dates = require('./helpers/dates');
 const finance = require('./helpers/finance');
 const objects = require('./helpers/objects');
-const dbgAnnualLine = require('./helpers/debtorAnnualList');
 
 const hbs = exphbs.create({
   helpers : {
@@ -34,8 +33,7 @@ const hbs = exphbs.create({
     substract : math.substract,
     currency : finance.currency,
     indentAccount : finance.indentAccount,
-    look : objects.look,
-    annualLine : dbgAnnualLine.generateLines
+    look : objects.look
   },
 
   // load partials from the partials sub-directory

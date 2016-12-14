@@ -34,8 +34,21 @@
     </thead>
 
     <tbody>
-      {{#annualLine lines detailPrevious enterprise.currency_id}}
-      {{/annualLine}}
+      {{#each lines}}
+        <tr>
+          <td>{{this.accountNumber}}</td>
+          <td>{{this.name}}</td>
+          {{#if ../detailPrevious}}
+            <td class='text-right'> {{currency this.initDebit enterprise.currency_id}} </td>
+            <td class='text-right'> {{currency this.initCredit enterprise.currency_id}} </td>
+            {{else}}
+            <td class='text-right'> {{currency this.balance enterprise.currency_id}} </td>
+          {{/if}}
+          <td class='text-right'> {{currency this.debit enterprise.currency_id}} </td>
+          <td class='text-right'> {{currency this.credit enterprise.currency_id}} </td>
+          <td class='text-right'> {{currency this.finalBalance enterprise.currency_id}} </td>
+        </tr>
+      {{/each}}
     </tbody>
     <tfoot>
       <tr>

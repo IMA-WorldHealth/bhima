@@ -51,9 +51,9 @@ function ClientsReportController($state, ModalInstance, Clients, Notify, Languag
         ModalInstance.dismiss();
         $state.reload();
       })
-      .catch(function (error) {
+      .catch(Notify.handleError)
+      .finally(function () {
         vm.$loading = false;
-        throw error;
       });
   }
 }
