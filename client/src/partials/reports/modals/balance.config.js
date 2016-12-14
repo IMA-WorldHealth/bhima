@@ -53,7 +53,7 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
     vm.$loading = true;
 
     var options = {
-      account_option: vm.accountOption,
+      accountOption: vm.accountOption,
       label: vm.label,
       classe: vm.classe.number,
       classe_name: vm.classe.name,

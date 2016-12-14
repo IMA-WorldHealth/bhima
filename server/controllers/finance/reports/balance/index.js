@@ -190,7 +190,7 @@ function balanceReporting(params) {
     'JOIN period AS p ON pt.period_id = p.id ' +
     'WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ? ' +
      (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id;';
+    'GROUP BY a.id ';
 
   if (dateRange) {
     sql =
@@ -199,8 +199,16 @@ function balanceReporting(params) {
     'JOIN period AS p ON pt.period_id = p.id ' +
     'WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ? ' +
      (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id;';
+    'GROUP BY a.id ';
   }
+
+  const TITLE_ACCOUNT_TYPE = 4;
+    
+  // fill with zero if all accounts 
+  sql += query.accountOption === 'all' ? 
+    `UNION ALL SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit 
+     FROM account a JOIN period_total pt ON pt.account_id <> a.id 
+     WHERE a.type_id <> ${TITLE_ACCOUNT_TYPE};`: '';
 
   queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
 
@@ -214,14 +222,7 @@ function balanceReporting(params) {
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ? ' +
        (hasClasse ? 'AND a.classe = ? ' : '') +
-      'GROUP BY a.id ';
-
-    const TITLE_ACCOUNT_TYPE = 4;
-    
-    // fill with zero if all accounts 
-    // sql += query.accountOption === 'all' ? 
-    //   `UNION SELECT number, label, id, type_id, is_charge, is_asset, 0 AS credit, 0 AS debit 
-    //    FROM account WHERE type_id <> ${TITLE_ACCOUNT_TYPE};`: '';
+      'GROUP BY a.id;';
 
     query.date = (dateRange) ? query.dateTo : query.date;
 

@@ -30,7 +30,7 @@
           <i class="fa fa-adjust"></i> {{ "FORM.BUTTONS.TRIAL_BALANCE" | translate }}
         </button>
 
-        <button class="btn btn-default" data-method="print" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openJournalReport()">
+        <button class="btn btn-default" data-method="print" id="print" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openJournalReport()">
           <i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}
         </button>
       </div>
