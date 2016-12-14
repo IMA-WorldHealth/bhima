@@ -11,11 +11,7 @@
     "REV"            : "Comptes de produits",
     "STOCKS"         : "Comptes des stocks",
     "THPART"         : "Comptes de tiers et à régulariser",
-    "TITLE"          : "Libelle de Compte",
     "TYPE"           : "Type de Compte",
-    "CHART"          : "Plan Comptable",
-    "COST"           : "Comptes des charges et pertes par nature",
-    "LIST"           : "Liste des comptes",
     "ADD"            : "Ajouter un Compte",
     "ADD_CHILD"      : "Ajouter un Compte fils",
     "ALL_ACCOUNT"    : "Tous les comptes",
@@ -46,13 +42,11 @@
     "SUBMIT_UPDATE"  : "Mettre à jour un compte",
     "TITLE"          : "Gestion des Comptes",
     "TITLE_ACCOUNT"  : "Comptes Titre",
-    "UPDATED"        : "Modifié",
     "TYPE_CHANGE_BLOCKED" : "Vous ne pouvez pas modifier le type d'un compte de titre qui a des sous-comptes.",
     "TYPES" : {
       "BALANCE" : "Balance",
-      "EXPENSE" : "Frais",
-      "TITLE" : "Titre",
-      "INCOME" : "Produit",
+      "TITLE"   : "Titre",
+      "INCOME"  : "Produit",
       "EXPENSE" : "Charge"
     },
     "UPDATED"        : "Les données du compte ont été mis à jour"
@@ -67,12 +61,15 @@
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
   "BALANCE" : {
-    "MONTH_SOLD"    : "Mouvement du mois",
-    "NEW_SOLD"      : "Nouveau solde",
-    "OLD_SOLD"      : "Ancien solde",
-    "PERIOD_CHOICE" : "Choix de la period",
-    "DATE_RANGE"    : "Intervalle de date",
-    "DATE_UNTIL"    : "Jusqu'a la date"
+    "ACCOUNT_CHOICE"  : "Choix des comptes",
+    "ALL_ACCOUNT"     : "Tous les comptes",
+    "DATE_RANGE"      : "Intervalle de date",
+    "DATE_UNTIL"      : "Jusqu'a la date",
+    "MONTH_SOLD"      : "Mouvement du mois",
+    "NEW_SOLD"        : "Nouveau solde",
+    "OLD_SOLD"        : "Ancien solde",
+    "PERIOD_CHOICE"   : "Choix de la period",
+    "TOUCHED_ACCOUNT" : "Comptes mouvementés"
   },
   "BILLING_SERVICES": {
     "BTN": {

@@ -65,12 +65,15 @@
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
   },
   "BALANCE" : {
-    "MONTH_SOLD"    : "Month Movement",
-    "NEW_SOLD"      : "New Balance",
-    "OLD_SOLD"      : "Old Balance",
-    "PERIOD_CHOICE" : "Period choice",
-    "DATE_RANGE"    : "Date range",
-    "DATE_UNTIL"    : "Until a date"
+    "ACCOUNT_CHOICE"  : "Accounts choice",
+    "ALL_ACCOUNT"     : "All accounts",
+    "DATE_RANGE"      : "Date range",
+    "DATE_UNTIL"      : "Until a date",
+    "MONTH_SOLD"      : "Month Movement",
+    "NEW_SOLD"        : "New Balance",
+    "OLD_SOLD"        : "Old Balance",
+    "PERIOD_CHOICE"   : "Period choice",
+    "TOUCHED_ACCOUNT" : "Touched accounts"
   },
   "BILLING_SERVICES": {
     "BTN": {

@@ -176,7 +176,7 @@ function getSold (item){
  * @param {object} params An object which contains dates range and the account class
  */
 function balanceReporting(params) {
-  let sql, hasClasse, dateRange, queryParameters,
+  let sql, hasClasse, dateRange, queryParameters, 
       query = params,
       data = {};
 
@@ -214,7 +214,14 @@ function balanceReporting(params) {
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ? ' +
        (hasClasse ? 'AND a.classe = ? ' : '') +
-      'GROUP BY a.id;';
+      'GROUP BY a.id ';
+
+    const TITLE_ACCOUNT_TYPE = 4;
+    
+    // fill with zero if all accounts 
+    // sql += query.accountOption === 'all' ? 
+    //   `UNION SELECT number, label, id, type_id, is_charge, is_asset, 0 AS credit, 0 AS debit 
+    //    FROM account WHERE type_id <> ${TITLE_ACCOUNT_TYPE};`: '';
 
     query.date = (dateRange) ? query.dateTo : query.date;
 
