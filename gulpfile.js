@@ -63,6 +63,9 @@ const paths = {
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
+      // Angular Touch
+      'client/vendor/angular-touch/angular-touch.min.js',
+
       // Angular UI Select
       'client/vendor/angular-ui-select/dist/select.js',
 

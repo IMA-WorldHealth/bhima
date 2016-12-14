@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants'
+  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants', '$translate'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');
@@ -18,21 +18,21 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   var patientDetailActionTemplate =
       '<div class="ui-grid-cell-contents"> ' +
         '<a ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
-          '<span class="fa fa-book"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }} ' +
+          '<span class="fa fa-book"></span> {{ ::"PATIENT_REGISTRY.RECORD" | translate }} ' +
         '</a>' +
       '</div>';
 
   var patientEditActionTemplate =
       '<div class="ui-grid-cell-contents"> ' +
         '<a ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
-          '<span class="fa fa-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }} ' +
+          '<span class="fa fa-edit"></span> {{ ::"TABLE.COLUMNS.EDIT" | translate }} ' +
         '</a> ' +
       '</div>';
 
   var patientCardActionTemplate =
       '<div class="ui-grid-cell-contents"> ' +
-        '<a href="" ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
-          '<span class="fa fa-user"></span> {{ "PATIENT_REGISTRY.CARD" | translate }} ' +
+        '<a href ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
+          '<span class="fa fa-user"></span> {{ ::"PATIENT_REGISTRY.CARD" | translate }} ' +
         '</a>' +
       '</div>';
 
@@ -44,29 +44,33 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   // track if module is making a HTTP request for patients
   vm.loading = false;
 
+  var columnDefs = [
+    { field : 'reference',
+      displayName : 'TABLE.COLUMNS.REFERENCE',
+      aggregationType: uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true
+    },
+    { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
+    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate' },
+    { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter: 'translate' },
+    { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate'  },
+    { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter: 'translate' },
+    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate' },
+    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate' },
+    { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
+    { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
+    { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate, enableSorting: false }
+  ];
+
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
+    enableSorting : true,
     enableColumnMenus : false,
-    columnDefs : [
-      { field : 'reference',
-        displayName : 'TABLE.COLUMNS.REFERENCE',
-        headerCellFilter: 'translate',
-        aggregationType: uiGridConstants.aggregationTypes.count
-      },
-      { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter : 'translate' },
-      { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter : 'translate' },
-      { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter : 'translate'  },
-      { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter : 'translate'  },
-      { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter : 'translate' },
-      { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter : 'translate' },
-      { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter : 'translate' },
-      { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate },
-      { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate },
-      { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate }
-    ],
-    enableSorting : true
+    flatEntityAccess : true,
+    fastWatch: true,
+    columnDefs : columnDefs
   };
 
   // error handler
@@ -153,6 +157,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+
     // if filters are directly passed in through params, override cached filters
     if ($state.params.filters) {
       cacheFilters($state.params.filters);
