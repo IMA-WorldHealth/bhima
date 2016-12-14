@@ -6,7 +6,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
-  'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select'
+  'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch'
 ]);
 
 function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {

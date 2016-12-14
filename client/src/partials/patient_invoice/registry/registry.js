@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('InvoiceRegistryController', InvoiceRegistryController);
+  .controller('InvoiceRegistryController', InvoiceRegistryController);
 
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
@@ -32,34 +32,40 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   vm.loading = false;
   vm.enterprise = Session.enterprise;
 
+  var columnDefs = [
+    { field : 'reference',
+      displayName : 'TABLE.COLUMNS.REFERENCE',
+      headerCellFilter: 'translate',
+      aggregationType: uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true,
+      footerCellClass : 'text-center'
+    },
+    { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
+    { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+    { field : 'cost',
+      displayName : 'TABLE.COLUMNS.COST',
+      headerCellFilter : 'translate',
+      cellTemplate: '/partials/patient_invoice/registry/templates/cost.cell.tmpl.html',
+      aggregationType: uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
+      footerCellClass : 'text-right',
+      footerCellFilter: 'currency:' + Session.enterprise.currency_id
+    },
+    { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
+    { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
+    { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html', enableSorting: false },
+    { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
+  ];
+
   //setting columns names
   vm.uiGridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
     enableColumnMenus : false,
-    columnDefs : [
-      { field : 'reference',
-        displayName : 'TABLE.COLUMNS.REFERENCE',
-        headerCellFilter: 'translate',
-        aggregationType: uiGridConstants.aggregationTypes.count
-      },
-      { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
-      { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
-      { field : 'cost',
-        displayName : 'TABLE.COLUMNS.COST',
-        headerCellFilter : 'translate',
-        cellTemplate: '/partials/patient_invoice/registry/templates/cost.cell.tmpl.html',
-        aggregationType: uiGridConstants.aggregationTypes.sum,
-        aggregationHideLabel : true,
-        footerCellClass : 'text-right',
-        footerCellFilter: 'currency:' + Session.enterprise.currency_id
-      },
-      { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
-      { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-      { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html', enableSorting: false },
-      { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
-    ],
     enableSorting : true,
+    fastWatch: true,
+    flatEntityAccess : true,
+    columnDefs : columnDefs,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
 
