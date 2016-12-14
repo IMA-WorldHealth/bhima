@@ -1,8 +1,8 @@
-<div style="padding: 5px;">
-  <a href=""
-  ng-if="row.entity.uuid"
-  ng-click="grid.appScope.showReceipt(row.entity.uuid)"
-  data-link-receipt="{{ row.entity.uuid }}">
-  <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
+<div class="ui-grid-cell-contents">
+  <a href
+    ng-if="row.entity.uuid"
+    ng-click="grid.appScope.showReceipt(row.entity.uuid)"
+    data-link-receipt="{{ ::row.entity.uuid }}">
+    <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
   </a>
 </div>

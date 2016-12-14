@@ -40,11 +40,9 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.buttonPrint = { pdfUrl: '/reports/inventory/items' };
 
   // grid default options
-  vm.gridOptions.appScopeProvider = vm;
-  vm.gridOptions.enableFiltering  = vm.filterEnabled;
-  vm.gridOptions.fastWatch = true;
-  vm.gridOptions.columnDefs  =
-    [{
+
+  var columnDefs  = [
+    {
       field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
     },{
       field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
@@ -64,11 +62,16 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       enableFiltering: false,
       enableSorting: false,
       enableColumnMenu: false,
-    }
-  ];
+  }];
 
-  // register API
-  vm.gridOptions.onRegisterApi = onRegisterApi;
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableFiltering  : vm.filterEnabled,
+    fastWatch : true,
+    flatEntityAccess : true,
+    columnDefs: columnDefs,
+    onRegisterApi : onRegisterApi
+  };
 
   // API register function
   function onRegisterApi(gridApi) {

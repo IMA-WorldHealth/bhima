@@ -37,56 +37,51 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   var regularBackgroundColor = { 'background-color': 'none' };
 
   // grid default options
-  vm.gridOptions.appScopeProvider  = vm;
-  vm.gridOptions.showColumnFooter  = true;
-  vm.gridOptions.enableColumnMenus = false;
-  vm.gridOptions.enableFiltering   = vm.filterEnabled;
-  vm.gridOptions.columnDefs        = [
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    showColumnFooter : true,
+    enableColumnMenus : false,
+    flatEntityAccess : true,
+    fastWatch : true,
+    enableFiltering  : vm.filterEnabled
+  };
+
+  vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
-      headerCellFilter: 'translate',
-      aggregationType: uiGridConstants.aggregationTypes.count
-    },
-    { field : 'date', displayName : 'TABLE.COLUMNS.DATE',
-      headerCellFilter: 'translate',
-      cellFilter : 'date:"mediumDate"',
+      headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
+    }, {
+      field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
       customTreeAggregationFinalizerFn: timeAggregation
-    },
-    { field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT',
-      headerCellFilter: 'translate'
-    },
-    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter: 'translate'
-    },
-    { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT',
-      headerCellFilter: 'translate',
+    }, {
+      field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
+    }, {
+      field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
+    }, {
+      field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
       cellTemplate: 'partials/finance/reports/cash_payment/templates/amount.grid.html'
-    },
-    { field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX',
-      headerCellFilter: 'translate'
-    },
-    { field : 'display_name', displayName : 'TABLE.COLUMNS.USER',
-      headerCellFilter: 'translate'
-    },
-    { field : 'action', displayName : '...',
-      cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html',
-      enableFiltering: false
-    },
-    { field : 'action', displayName : '',
-      cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html',
-      enableFiltering: false
-    }  
+    }, {
+      field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
+    }, {
+      field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
+    }, {
+      field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
+      cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html'
+    }, {
+      field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
+      cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html'
+    }
   ];
+
   vm.gridOptions.rowTemplate = '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html';
 
   // search
   function search() {
     Modal.openSearchCashPayment()
-    .then(function (filters) {
-      if (!filters) { return; }
-
-      reload(filters);
-    })
-    .catch(Notify.handleError);
+      .then(function (filters) {
+        if (!filters) { return; }
+        reload(filters);
+      })
+      .catch(Notify.handleError);
   }
 
   // on remove one filter
@@ -134,15 +129,15 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   // load cash
   function load(filters) {
     Cash.search(filters)
-    .then(function (rows) {
-      rows.forEach(function (row) {
-        row._backgroundColor =
-          (row.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
-      });      
+      .then(function (rows) {
+        rows.forEach(function (row) {
+          row._backgroundColor =
+            (row.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+        });
 
-      vm.gridOptions.data = rows;
-    })
-    .catch(Notify.handleError);
+        vm.gridOptions.data = rows;
+      })
+      .catch(Notify.handleError);
   }
 
  // Function for Cancel Cash cancel all Invoice
