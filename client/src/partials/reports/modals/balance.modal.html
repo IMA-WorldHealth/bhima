@@ -41,6 +41,19 @@
     </div>
   </div>
 
+  <!-- accounts option choosen -->
+  <fieldset class="form-group">
+    <legend>{{ 'BALANCE.ACCOUNT_CHOICE' | translate }}</legend>
+    <label>
+      <input type="radio" ng-model="ReportConfigCtrl.accountOption" ng-value="'all'">
+      {{ 'BALANCE.ALL_ACCOUNT' | translate }}
+    </label>
+    <label>
+      <input type="radio" ng-model="ReportConfigCtrl.accountOption" ng-value="'touched'">
+      {{ 'BALANCE.TOUCHED_ACCOUNT' | translate }}
+    </label>
+  </fieldset>
+
   <!-- period option choosen -->
   <fieldset class="form-group">
     <legend>{{ 'BALANCE.PERIOD_CHOICE' | translate }}</legend>
