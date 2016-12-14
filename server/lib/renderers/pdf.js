@@ -40,11 +40,8 @@ function renderPDF(context, template, options) {
 
   return html.render(context, template, options)
     .then(function (htmlStringResult) {
-
-      // only apply specific options for now
-      var pageSize = options.pageSize || 'A4';
-      var orientation = options.orientation || 'portrait';
-      var pdfOptions = { pageSize, orientation };
+      // pick options relevent to rendering PDFs
+      var pdfOptions = _.pick(options, ['pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']);
 
       // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
       let pdfStream = wkhtmltopdf(htmlStringResult, pdfOptions);
