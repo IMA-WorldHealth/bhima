@@ -1,5 +1,6 @@
 {
   "ACCOUNT": {
+    "ALL_CLASSES"    : "All classes",
     "ASSET"          : "Asset Accounts",
     "CHART"          : "Chart of Accounts",
     "COST"           : "Costs Accounts",
@@ -13,9 +14,6 @@
     "THPART"         : "Third-party accounts and regularize",
     "TITLE"          : "Account Text",
     "TYPE"           : "Account Type",
-    "CHART"          : "Chart of Accounts",
-    "COST"           : "Costs Accounts",
-    "LIST"           : "Accounts list",
     "BALANCED"       : "Accounts are balanced",
     "ADD"            : "Add Account",
     "ADD_CHILD"      : "Add child account",

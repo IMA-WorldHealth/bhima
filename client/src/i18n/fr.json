@@ -1,5 +1,6 @@
 {
   "ACCOUNT": {
+    "ALL_CLASSES"    : "Toutes les classes",
     "ASSET"          : "Comptes des valeurs immobilisées",
     "CHART"          : "Plan Comptable",
     "COST"           : "Comptes des charges et pertes par nature",

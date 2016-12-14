@@ -25,7 +25,7 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
     { number : 6, name : 'ACCOUNT.COST' },
     { number : 7, name : 'ACCOUNT.REV' },
     { number : 8, name : 'ACCOUNT.EXP_PROD' },
-    { number : '*', name : 'ACCOUNT.ALL_ACCOUNT' }
+    { number : '*', name : 'ACCOUNT.ALL_CLASSES' }
   ];
 
   // init date
