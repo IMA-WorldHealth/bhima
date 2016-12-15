@@ -48,9 +48,10 @@ const GU = require('../shared/GridUtils');
      this._node.$('[data-entity-button]').click();
 
      // the modal is now open
+     const modal = $('[uib-modal-window="modal-window"]');
 
      // select the proper entity type (Debtor/Creditor)
-     FU.dropdown('[data-dropdown-target="entity"]', type);
+     FU.dropdown('[data-dropdown-target="entity"]', type, modal);
 
      // select the typeahead
      FU.uiSelect('$ctrl.entity', name);
