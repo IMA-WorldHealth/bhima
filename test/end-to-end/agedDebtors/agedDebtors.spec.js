@@ -30,7 +30,7 @@ describe('Aged Debtors Report', () => {
     components.dateEditor.set(date, null, 'label');
 
     // focus on the button zone
-    FU.buttons.submit();
+    FU.modal.submit();
     expect(getInvoiceNumber('report-grid')).to.eventually.equal(numReports);
   });
 });

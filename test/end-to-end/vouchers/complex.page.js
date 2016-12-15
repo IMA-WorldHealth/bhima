@@ -56,7 +56,7 @@ const GU = require('../shared/GridUtils');
      FU.uiSelect('$ctrl.entity', name);
 
      // click the 'submit' button
-     $('[data-modal="entity"]').$('[data-method="submit"]').click();
+     FU.modal.submit();
    }
 
    // sets the reference
@@ -70,8 +70,8 @@ const GU = require('../shared/GridUtils');
 
      GU.selectRow('referenceGrid', index);
 
-     // submit the modal
-     $('[data-reference-modal]').$('[data-method="submit"]').click();
+     // submit the modal 
+     FU.modal.submit();
    }
  }
 
