@@ -17,7 +17,7 @@ SettingsController.$inject = [
 function SettingsController(Languages, Session, Constants, $translate, Notify, $window, System) {
   var vm = this;
 
-  vm.back = function () { $window.history.back(); };
+  vm.back = function back() { $window.history.back(); };
 
   // load settings from services
   vm.settings = { language : Languages.key };
@@ -28,10 +28,10 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
 
   /** bind the language service for use in the view */
   Languages.read()
-  .then(function (languages) {
-    vm.languages = languages;
-  })
-  .catch(Notify.handleError);
+    .then(function (languages) {
+      vm.languages = languages;
+    })
+    .catch(Notify.handleError);
 
   // formatting or bug report
   var emailAddress = Constants.settings.CONTACT_EMAIL;
