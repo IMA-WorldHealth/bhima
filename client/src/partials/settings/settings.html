@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "HOME.BHIMA" | translate }}</li>
-      <li class="title">{{ "SETTINGS.TITLE" | translate }}</li>
+      <li class="static" translate>HOME.BHIMA</li>
+      <li class="title" translate>SETTINGS.TITLE</li>
     </ol>
   </div>
 </div>
@@ -12,21 +12,21 @@
     <div class="row">
       <div class="col-md-5" style="margin-bottom : 10px;">
         <div class="form-group">
-          <label for="select-language">{{ "FORM.LABELS.LANGUAGE" | translate }}</label>
+          <label for="select-language" translate>FORM.LABELS.LANGUAGE</label>
           <select
             id="select-language"
             ng-model="SettingsCtrl.settings.language"
             ng-change="SettingsCtrl.languageService.set(SettingsCtrl.settings.language)"
             ng-options="key as lang.name for (key, lang) in SettingsCtrl.languages"
             class="form-control">
-            <option value="" disabled="disabled" selected>{{ "FORM.SELECT.LANGUAGE" | translate }}</option>
+            <option value="" disabled="disabled" translate>FORM.SELECT.LANGUAGE</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="select-default">{{ "FORM.LABELS.HOME_PAGE" | translate }}</label>
+          <label for="select-default" translate>FORM.LABELS.HOME_PAGE</label>
           <select id="select-default" class="form-control">
-            <option selected>{{ "FORM.SELECT.LAST_PAGE" | translate }}</option>
+            <option selected translate>FORM.SELECT.LAST_PAGE</option>
           </select>
         </div>
 
@@ -34,46 +34,47 @@
           class="btn btn-default"
           ng-click="SettingsCtrl.back()"
           data-back-button>
-          <i class="fa fa-arrow-left"></i> {{ "FORM.BUTTONS.BACK" | translate }}
+          <i class="fa fa-arrow-left"></i>
+          <span translate>FORM.BUTTONS.BACK</span>
         </button>
 
         <button
           class="btn btn-default"
           ng-click="SettingsCtrl.logout()"
           data-logout-button>
-          <i class="fa fa-sign-out"></i> {{ "FORM.BUTTONS.LOGOUT" | translate }}
+          <i class="fa fa-sign-out"></i>
+          <span translate>FORM.BUTTONS.LOGOUT</span>
         </button>
 
         <a ng-href="mailto:{{SettingsCtrl.bugLink}}" class="btn btn-default" data-bug-report-button>
           <span class="text-danger">
-            <i class="fa fa-bug"></i> {{ "SETTINGS.BUG_LINK" | translate }}
+            <i class="fa fa-bug"></i> <span translate>SETTINGS.BUG_LINK</span>
           </span>
         </a>
       </div>
+
       <!-- system information panel -->
       <div class="col-md-6 col-md-offset-1">
         <div class="panel panel-default">
-          <div class="panel-heading">
-             {{ "SYSTEM.INFORMATION" | translate }}
-          </div>
+          <div class="panel-heading" translate> SYSTEM.INFORMATION </div>
           <div class="panel-body">
             <dl class="dl-horizontal">
-              <dt>{{ "SYSTEM.PLATFORM" | translate }}</dt>
+              <dt translate>SYSTEM.PLATFORM</dt>
               <dd>{{ SettingsCtrl.system.platform }}</dd>
 
-              <dt>{{ "SYSTEM.CPUS" | translate }}</dt>
+              <dt translate>SYSTEM.CPUS</dt>
               <dd>{{ SettingsCtrl.system.numCPUs }}</dd>
 
-              <dt>{{ "SYSTEM.MACHINE_UPTIME" | translate }}</dt>
+              <dt translate>SYSTEM.MACHINE_UPTIME</dt>
               <dd>{{ SettingsCtrl.system.machineUptime | amDurationFormat }}</dd>
 
-              <dt>{{ "SYSTEM.PROCESS_UPTIME" | translate }}</dt>
+              <dt translate>SYSTEM.PROCESS_UPTIME</dt>
               <dd>{{ SettingsCtrl.system.processUptime | amDurationFormat }}</dd>
 
-              <dt>{{ "SYSTEM.MEMORY_USAGE" | translate }}</dt>
+              <dt translate>SYSTEM.MEMORY_USAGE</dt>
               <dd>{{ SettingsCtrl.system.memoryUsage | number }}%</dd>
 
-              <dt>{{ "SYSTEM.VERSION" | translate }}</dt>
+              <dt translate>SYSTEM.VERSION</dt>
               <dd>{{ SettingsCtrl.system.version }}</dd>
             </dl>
           </div>
