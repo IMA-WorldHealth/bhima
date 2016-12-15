@@ -36,7 +36,9 @@ describe(`(${target}) Cashflow Reports`, function () {
       .catch(helpers.handler);
   });
 
-  it(`GET ${target}?account_id=3627 should return a BAD_DATE_INTERVAL response`, function () {
+  // TODO: remove this test
+  // default date value is the current date if no dates given
+  it.skip(`GET ${target}?account_id=3627 should return a BAD_DATE_INTERVAL response`, function () {
     return agent.get(target)
       .query({ account_id : parameters.account_id })
       .then(res => {
