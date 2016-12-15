@@ -22,6 +22,8 @@ const Invoices      = require('../../patientInvoice');
 const Patients      = require('../../../medical/patients');
 const Exchange      = require('../../exchange');
 
+const pdf = require ('../../../../lib/renderers/pdf');
+
 const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.pos.handlebars';
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.handlebars';
 const REPORT_TEMPLATE  = './server/controllers/finance/reports/invoices/report.handlebars';
@@ -70,22 +72,11 @@ function receipt(req, res, next) {
   let currencyId = options.currency || req.session.enterprise.currency_id;
   let invoiceResponse = {};
 
-  // @todo - move this is to a constant definition file
-  let thermal = {
-    // paper width is 80mm - printer seems to cut off 'n'mm at either side
-    pageWidth : '72mm',
-    pageHeight : '290mm',
-    marginLeft : '0mm',
-    marginRight : '0mm',
-    marginBottom : '0mm',
-    marginTop : '0mm'
-  };
-
   let template = RECEIPT_TEMPLATE;
 
   if (options.posReceipt) {
     template = POS_RECEIPT_TEMPLATE;
-    _.extend(options, thermal);
+    _.extend(options, pdf.posReceiptOptions);
   }
 
   let report;

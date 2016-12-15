@@ -2,13 +2,13 @@
   <meta charset="utf-8" />
 </head>
 <body>
-<p><b>BHIMA FINANCE - PATIENT INVOICE</b></p>
+<p><b style="text-transform : uppercase">{{translate 'HOME.BHIMA_FINANCE'}} - {{translate 'PATIENT_INVOICE.PAGE_TITLE'}}</b></p>
 <p>----------------------------------------------------------------</p>
 <p><b>{{recipient.display_name}}</b></p>
 <p>{{recipient.debtor_group_name}}</p>
-<p>{{reference}} ON {{date date}} BY <span style="text-transform : uppercase;">{{user.display_name}}</span></p>
+<p style="text-transform : uppercase">{{reference}} {{translate 'FORM.LABELS.ON'}} {{date date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
 <p>----------------------------------------------------------------</p>
-<table>
+<table style="width : 100%">
   <thead>
     <tr>
       <th></th>

@@ -434,6 +434,7 @@
       "BILLING_DATE"           : "Billing Date",
       "BILLING_SERVICES"       : "Billing Services Applied",
       "BY"                     : "By",
+      "ON"                     : "On",
       "BY_ID"                  : "By Id",
       "BY_NAME"                : "By Name",
       "CANCEL"                 : "Cancel",
@@ -791,6 +792,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA FINANCE",
     "CONNECTED_USER" : "User Connected",
     "EXCHANGE_RATE"  : "Exchange Rate",
     "EXCHANGE_SET"   : "Set on",
