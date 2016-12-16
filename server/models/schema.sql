@@ -14,8 +14,7 @@ CREATE TABLE `account` (
   `label` VARCHAR(200) NOT NULL,
   `parent` INT(10) UNSIGNED NOT NULL,
   `locked` TINYINT(1) UNSIGNED DEFAULT 0,
-  `cc_id` SMALLINT(6) DEFAULT NULL,
-  `pc_id` SMALLINT(6) DEFAULT NULL,
+  `fc_id` SMALLINT(6) DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `classe` INT(11) DEFAULT NULL,
   `is_asset` TINYINT(1) DEFAULT NULL,
@@ -27,11 +26,11 @@ CREATE TABLE `account` (
   UNIQUE KEY `account_1` (`number`),
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `cc_id` (`cc_id`),
+  KEY `fc_id` (`fc_id`),
   KEY `reference_id` (`reference_id`),
   FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
+  FOREIGN KEY (`fc_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -316,51 +315,51 @@ CREATE TABLE `consumption_service` (
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `fee_center`;
 
-DROP TABLE IF EXISTS `cost_center`;
-
-CREATE TABLE `cost_center` (
-  `project_id` smallint(5) unsigned NOT NULL,
+CREATE TABLE `fee_center` (
   `id` smallint(6) NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
-  `note` text,
+  `project_id` smallint(5) unsigned NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `is_cost` tinyint(1) DEFAULT 0,
   `is_principal` tinyint(1) DEFAULT 0,
+  `note` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `const_center_1` (`text`),
+  UNIQUE KEY `fee_center_1` (`label`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cost_center_assignation`;
+DROP TABLE IF EXISTS `cost_assignation`;
 
-CREATE TABLE `cost_center_assignation` (
-  `project_id` smallint(5) unsigned NOT NULL,
+CREATE TABLE `cost_assignation` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `auxi_cc_id` smallint(6) NOT NULL,
+  `auxiliary_cost_id` smallint(6) NOT NULL,
   `cost` float DEFAULT 0,
-  `date` date DEFAULT NULL,
+  `period_id` mediumint(8) UNSIGNED NOT NULL,
+  `auxi_cc_id` smallint(6) NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `note` text,
   PRIMARY KEY (`id`),
-  KEY `project_id` (`project_id`),
-  KEY `auxi_cc_id` (`auxi_cc_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`auxi_cc_id`) REFERENCES `cost_center` (`id`)
+  UNIQUE KEY `cost_assignation_1` (`auxiliary_cost_id`, `period_id`),
+  KEY `auxiliary_cost_id` (`auxiliary_cost_id`),
+  KEY `period_id` (`period_id`),
+  FOREIGN KEY (`auxiliary_cost_id`) REFERENCES `fee_center` (`id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `cost_assignation_item`;
 
-DROP TABLE IF EXISTS `cost_center_assignation_item`;
-
-CREATE TABLE `cost_center_assignation_item` (
-  `cost_center_assignation_id` int(10) unsigned NOT NULL,
+CREATE TABLE `cost_assignation_item` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `pri_cc_id` smallint(6) NOT NULL,
-  `init_cost` float DEFAULT 0,
-  `value_criteria` float DEFAULT '1',
+  `cost_assignation_id` int(10) unsigned NOT NULL,
+  `principal_cost_id` smallint(6) NOT NULL,
+  `allocated_value` float DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `cost_center_assignation_id` (`cost_center_assignation_id`),
-  KEY `pri_cc_id` (`pri_cc_id`),
-  FOREIGN KEY (`cost_center_assignation_id`) REFERENCES `cost_center_assignation` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`pri_cc_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
+  KEY `cost_assignation_id` (`cost_assignation_id`),
+  KEY `principal_cost_id` (`principal_cost_id`),
+  FOREIGN KEY (`cost_assignation_id`) REFERENCES `cost_assignation` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`principal_cost_id`) REFERENCES `fee_center` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -749,24 +748,21 @@ CREATE TABLE `general_ledger` (
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  `cc_id`             SMALLINT(6),
-  `pc_id`             SMALLINT(6),
+  `fc_id`             SMALLINT(6),
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   KEY `period_id` (`period_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  KEY `cc_id` (`cc_id`),
-  KEY `pc_id` (`pc_id`),
+  KEY `fc_id` (`fc_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`fc_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1287,16 +1283,14 @@ CREATE TABLE `posting_journal` (
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  `cc_id`             SMALLINT(6),
-  `pc_id`             SMALLINT(6),
+  `fc_id`             SMALLINT(6),
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   KEY `period_id` (`period_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  KEY `cc_id` (`cc_id`),
-  KEY `pc_id` (`pc_id`),
+  KEY `fc_id` (`fc_id`),
   INDEX `trans_date` (`trans_date`),
   INDEX `record_uuid` (`record_uuid`),
   INDEX `reference_uuid` (`record_uuid`),
@@ -1308,22 +1302,8 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`fc_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `profit_center`;
-
-CREATE TABLE `profit_center` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
-  `note` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `profit_center_1` (`text`),
-  KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `project`;
 
@@ -1606,17 +1586,17 @@ CREATE TABLE `service` (
   `id` smallint(5) unsigned not null auto_increment,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
-  `cost_center_id` SMALLINT(6) DEFAULT NULL,
-  `profit_center_id` SMALLINT(6) DEFAULT NULL,
+  `cc_id` SMALLINT(6) DEFAULT NULL,
+  `pc_id` SMALLINT(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `service_1` (`name`),
-  UNIQUE KEY `service_2` (`cost_center_id`, `profit_center_id`),
+  UNIQUE KEY `service_2` (`cc_id`, `pc_id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `cost_center_id` (`cost_center_id`),
-  KEY `profit_center_id` (`profit_center_id`),
+  KEY `cc_id` (`cc_id`),
+  KEY `pc_id` (`pc_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`),
-  FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`cc_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`pc_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
