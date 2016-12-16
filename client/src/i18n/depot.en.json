@@ -1,0 +1,14 @@
+{
+  "DEPOT": {
+    "ADD_DEPOT"   : "Add a Depot",
+    "ALL_DEPOTS"  : "All Depots",
+    "DEPOTS_LIST" : "Depots list",
+    "DESCRIPTION" : "This module allows you to List, Create, Edit and Delete a Depot",
+    "EDIT_DEPOT"  : "Edit the information in a Depot",
+    "MAIN": {
+      "TITLE" : "Depot Management"
+    },
+    "NO_DEPOT"    : "No Depot",
+    "TITLE"       : "Depot Management"
+  }
+}

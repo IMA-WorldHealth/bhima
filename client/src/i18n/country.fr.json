@@ -1,0 +1,11 @@
+{
+  "COUNTRY": {
+    "CONFIGURATION" : "Configuration de gestion des pays",
+    "DESCRIPTION"   : "Ce module vous aidera à gérer les pays, à gauche vous voyez les pays disponibles dans le systeme. Utiliser ce module pour",
+    "EDIT"          : "Editer un pays",
+    "NEW_COUNTRY"   : "Ajout Nouveau Pays",
+    "REGISTER"      : "Enregistrer un pays",
+    "REGISTERED"    : "Pays Enregistrées",
+    "TITLE"         : "Gestion des Pays"
+  }
+}

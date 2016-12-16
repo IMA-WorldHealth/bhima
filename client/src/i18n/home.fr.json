@@ -1,0 +1,19 @@
+{
+  "HOME": {
+    "BHIMA"          : "Bhima",
+    "CONNECTED_USER" : "Utilisateur Connecte",
+    "EXCHANGE_RATE"  : "Taux d'echange",
+    "EXCHANGE_SET"   : "Configuré le",
+    "FISCAL_YEAR_INFO" : "Chronologie de l'année fiscale",
+    "FISCAL_YEAR_DESCRIPTION" : "Cette chronologie montre les progrès réalisés grâce à l'année fiscale.",
+    "PROJECT_NAME"   : "Nom Project",
+    "SYSTEM"         : "Hospital Management System",
+    "TITLE"          : "Bhima",
+    "TODAY"          : "Date du jour",
+    "DEBTORS" : { 
+      "TITLE"    : "Debiteurs de l'entreprise",
+      "BALANCED" : "Toutes les dettes sont reglées",
+      "CACHED"   : "Données à jour"
+    }
+  }
+}

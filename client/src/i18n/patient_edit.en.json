@@ -1,0 +1,10 @@
+{
+  "PATIENT_EDIT": {
+    "FINANCIAL_INFO" : "Financial Information",
+    "PAGE_TITLE"     : "Edit Patient Details",
+    "RECORD_SAME"    : "No changes have been made to the form. Update the patients details and then press submit.",
+    "REGISTERED"     : "Registered",
+    "WARN"           : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients",
+    "EDIT_DETAILS"   : "Edit Details"
+  }
+}

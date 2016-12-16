@@ -1,0 +1,12 @@
+{
+  "REFERENCE_GROUP": {
+    "ADD"           : "Add a Reference Group",
+    "ALERT"         : "Reference Group management module is a module that has been designed to allow administration of existing Reference Group within the organization, the table is left to record, to update the attributes of a Reference Group and the deletion.",
+    "ALERT_2"       : "Two Reference Group to the same Bilan Section can not have the same position number",
+    "NEW_REFERENCE" : "New Reference Group",
+    "NO_REFERENCES" : "No grave Reference Group have been registered.",
+    "REGISTERED"    : "Registered References Groups",
+    "TITLE"         : "Reference group management",
+    "UPD_REFERENCE" : "Update Reference Group"
+  }
+}

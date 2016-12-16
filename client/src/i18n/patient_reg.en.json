@@ -1,0 +1,8 @@
+{
+  "PATIENT_REG": {
+    "PAGE_TITLE"           : "Patient Registration",
+    "PATIENT_DETAILS"      : "Patient Details",
+    "SUCCESS" : "Patient Registered Successfully",
+    "CARD" : "Patient Card"
+  }
+}

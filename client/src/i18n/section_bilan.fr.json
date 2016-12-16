@@ -1,0 +1,11 @@
+{
+  "SECTION_BILAN": {
+    "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
+    "ALERT"             : "Bilan section management",
+    "ALL"               : "Tous les sections du bilan",
+    "EDIT"              : "Editer une section bilan",
+    "NEW"               : "Nouvelle section du bilan",
+    "NO_SECTION_BILAN"  : "Pas de section du bilan",
+    "TITLE"             : "Section du bilan"
+  }
+}

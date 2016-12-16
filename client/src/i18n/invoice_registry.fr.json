@@ -1,0 +1,6 @@
+{
+  "INVOICE_REGISTRY" : {
+    "TITLE" : "Registre des Factures",
+    "RECEIPT_CURRENCY" : "Monnaie du reçu"
+  }
+}

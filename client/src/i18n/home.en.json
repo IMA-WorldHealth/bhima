@@ -1,0 +1,19 @@
+{
+  "HOME": {
+    "BHIMA"          : "Bhima",
+    "CONNECTED_USER" : "User Connected",
+    "EXCHANGE_RATE"  : "Exchange Rate",
+    "EXCHANGE_SET"   : "Set on",
+    "PROJECT_NAME"   : "Project Name",
+    "SYSTEM"         : "Hospital Management System",
+    "TITLE"          : "Bhima",
+    "TODAY"          : "Date of day",
+    "FISCAL_YEAR_INFO" : "Fiscal Year Timeline",
+    "FISCAL_YEAR_DESCRIPTION" : "This timeline shows progress made through the current fiscal year.",
+    "DEBTORS" : { 
+      "TITLE" : "Enterprise Debtors",
+      "BALANCED" : "All debts to the enterprise are balanced",
+      "CACHED"  : "Data refreshed"
+    }
+  }
+}

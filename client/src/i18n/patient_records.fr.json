@@ -1,0 +1,27 @@
+{
+  "PATIENT_RECORDS": {
+    "CHECK_IN" : {
+      "TITLE" : "Visites",
+      "SUBMIT" : "Confirmer la visite du patient",
+      "NOT_RECENT" : "Ce patient n'a pas été à l'hopital récemment, vérifier le patient pour le suivi de cette visite à l'hôpital.",
+      "ORIGINAL"  : "Ce patient n'a jamais été consulté à l'hopital.",
+      "RECENT"  : "Visites récentes",
+      "REPORT_TITLE" : "Rapport de consultations des patients",
+      "ITEM" : "Confirmée",
+      "BY" : "par",
+      "SUCCESS" : "Confirmation de la visite du patient avec succes"
+    },
+    "FINANCIAL_ACTIVITY" : {
+      "ACCOUNT"       : "Numéro de compte",
+      "DEBTOR_GROUP"  : "Groupe débiteur",
+      "REPORT_TITLE"  : "Activité financière du Patient"
+    },
+    "STAT_TOTAL_PATIENT" : "Total Patients",
+    "STAT_TOTAL_VISIT"   : "Total Visits",
+    "STAT_TOTAL_NEW"     : "Nouveaux Patients",
+    "TITLE"              : "Patients",
+    "UPDATE_PICTURE"     : "Mettre à jour la Photo",
+    "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
+    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
+  }
+}

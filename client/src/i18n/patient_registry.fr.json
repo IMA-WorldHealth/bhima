@@ -1,0 +1,13 @@
+{
+  "PATIENT_REGISTRY" : {
+    "CARD"                  : "Carte",
+    "DAY"                   : "jour",
+    "DAYS"                  : "jours",
+    "MONTH"                 : "mois",
+    "MONTHS"                : "mois",
+    "RECORD"                : "Enregistrement",
+    "YEAR_OLD"              : "an",
+    "YEARS_OLD"             : "ans",
+    "TITLE"                 : "Registre des patients"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "INVENTORY" : {
+    "ADD_GROUP"     : "Add inventory group",
+    "ADD_METADATA"  : "Add inventory",
+    "ADD_TYPE"      : "Add inventory type",
+    "ADD_UNIT"      : "Add inventory unit form",
+    "CONFIGURATION" : "Configurations",
+    "CONTAINS"      : "Contains",
+    "EDIT_GROUP"    : "Edit inventory group",
+    "EDIT_METADATA" : "Edit inventory",
+    "EDIT_TYPE"     : "Edit inventory type",
+    "EDIT_UNIT"     : "Edit inventory unit form",
+    "ELEMENT"       : "Element",
+    "LIST"          : "Inventory Data List",
+    "LIST_METADATA" : "Inventory",
+    "LIST_GROUP"    : "Inventory Groups",
+    "LIST_TYPE"     : "Inventory Types",
+    "LIST_UNIT"     : "Inventory Unit form"
+  }
+}
