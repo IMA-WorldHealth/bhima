@@ -290,6 +290,7 @@
       "CLOSE"                 : "Close",
       "CONFIGURE"             : "Configure",
       "CONFIRM"               : "Confirm",
+      "CONFIRM_CANCEL"        : "Confirm Cancellation",
       "CONNECTION"            : "Connexion",
       "DELETE"                : "Delete",
       "DISMISS"               : "Dismiss",
@@ -349,17 +350,17 @@
       "CONFIRM_MODAL"          : "Confirmation Needed"
     },
     "ERRORS": {
-      "CONNECTION"         : "Connection error",
-      "GENERIC"            : "The form contains errors.",
-      "HAS_ERROR"          : "Contains an error",
-      "HAS_ERRORS"         : "The form contains errors.  Please correct them and resubmit.",
-      "MIN_CURRENCY_UNIT"  : "This value is too small for the selected currency.",
-      "MISSING"            : "This form is missing required fields (marked in red).",
-      "MISSING_CASHBOX_ID" : "Missing Cashbox",
-      "MISSING_DEBTOR_ID"  : "Identifying missing Debtor",
-      "RECORD_ERROR"       : "Please resolve any errors on the form (marked in red).",
-      "REQUIRED"           : "This value is required.",
-      "INVALID"            : "invalid data"
+      "CONNECTION"          : "Connection error",
+      "GENERIC"             : "The form contains errors.",
+      "HAS_ERROR"           : "Contains an error",
+      "HAS_ERRORS"          : "The form contains errors.  Please correct them and resubmit.",
+      "MIN_CURRENCY_UNIT"   : "This value is too small for the selected currency.",
+      "MISSING"             : "This form is missing required fields (marked in red).",
+      "MISSING_CASHBOX_ID"  : "Missing Cashbox",
+      "MISSING_DEBTOR_ID"   : "Identifying missing Debtor",
+      "RECORD_ERROR"        : "Please resolve any errors on the form (marked in red).",
+      "REQUIRED"            : "This value is required.",
+      "INVALID"             : "invalid data"
     },
     "INFO": {
       "BY"                   : "By",
@@ -996,15 +997,16 @@
       "COLUMNS" : "Columns"
     },
     "ERRORS" : {
-      "DATE_IN_WRONG_PERIOD" : "Dates in wrong period",
-      "MISSING_DESCRIPTION" : "Descriptions omitted",
-      "LOCKED_ACCOUNT" : "Locked account(s)",
-      "UNBALANCED_TRANSACTIONS" : "Unbalanced Transaction(s)",
-      "MISSING_ACCOUNTS" : "Accounts omitted",
-      "MISSING_DOCUMENT_ID" : "Records without document ID",
-      "MISSING_ENTITY" : "LRecord without entity ID",
+      "DATE_IN_WRONG_PERIOD"     : "Dates in wrong period",
+      "MISSING_DESCRIPTION"      : "Descriptions omitted",
+      "LOCKED_ACCOUNT"           : "Locked account(s)",
+      "UNBALANCED_TRANSACTIONS"  : "Unbalanced Transaction(s)",
+      "MISSING_ACCOUNTS"         : "Accounts omitted",
+      "MISSING_DOCUMENT_ID"      : "Records without document ID",
+      "MISSING_ENTITY"           : "Record without entity ID",
       "MISSING_FISCAL_OR_PERIOD" : "Fiscal year or period omitted",
-      "SINGLE_LINE_TRANSACTION" : "Transaction with a single line"
+      "MULTIPLE_CANCELLING"      : "Multiple Cancelling. This transaction has been already cancelled",
+      "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line"
     },
     "WARNINGS" : {
       "MISSING_ENTITY" : "Record without entity type and entity ID"

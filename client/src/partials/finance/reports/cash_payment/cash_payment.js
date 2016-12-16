@@ -149,10 +149,9 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   function cancelCash(invoice) {
     Cash.openCancelCashModal(invoice)
       .then(function (success) {
-        if (success) {
-          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load();
-        }
+        if (!success) { return; }
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+        load();
       });
   }
 

@@ -29,6 +29,9 @@ function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
       .then(function () {
         return Instance.close(true);
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        Instance.close();
+      });
   }
 }
