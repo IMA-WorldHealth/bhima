@@ -22,7 +22,7 @@ function DateIntervalModalController (Instance) {
 
   // close
   function close() {
-    Instance.dismiss();
+    Instance.close();
   }
 
 }

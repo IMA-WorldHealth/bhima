@@ -31,11 +31,11 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   /** buttons in the headercrumb */
   vm.bcButtons = [
-    { icon: 'fa fa-filter', label: $translate.instant('FORM.BUTTONS.FILTER'),
-      action: toggleFilter, color: 'btn-default'
-    },
     { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
       action: search, color: 'btn-default'
+    },
+    { icon: 'fa fa-filter', color: 'btn-info',
+      action: toggleFilter, 
     }
   ];
 
@@ -142,7 +142,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // enable filter
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[0].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
+    vm.bcButtons[1].color = vm.filterEnabled ? 'btn-info active' : 'btn-info';
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
@@ -161,8 +161,13 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       .then(function (list) {
         vm.gridOptions.data = list;
       })
-      .catch(Notify.handleError)
-      .finally(toggleLoadingIndicator);
+      .catch(function (err) {
+        if (err && !err.code) { return; }
+        Notify.handleError(err);
+      })
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // showReceipt
