@@ -1,7 +1,7 @@
 <!--
 Limitations of current templating structure:
-* Assumption is made children of the root node are folders
-* Only two levels of depth is supported for children
+ * Assumption is made children of the root node are folders
+ * Only two levels of depth is supported for children
 -->
 <div class="flex-tree">
   <ul>
@@ -16,7 +16,7 @@ Limitations of current templating structure:
           'fa-folder-open' : unit.open && unit.children.length > 0,
           'fa-folder' : !unit.open && unit.children.length > 0}">
         </span>
-        <span class="tree-title">{{ unit.key | translate }}</span>
+        <span class="tree-title" translate>{{unit.key}}</span>
       </a>
 
       <ul ng-if="$ctrl.isOpen(unit)">
@@ -33,22 +33,22 @@ Limitations of current templating structure:
               'fa-folder-open' : child.open && child.children.length > 0,
               'fa-folder' : !child.open && child.children.length > 0}">
             </span>
-            <span class="tree-title">{{ child.key | translate }}</span>
+            <span class="tree-title" translate>{{child.key}}</span>
           </a>
 
           <!-- otherwise, it is just a plan link -->
           <a ng-click="$ctrl.navigate(child)" ng-if="$ctrl.isChildNode(child)" data-unit-key="{{ ::child.key }}">
             <span class="fa fa-file-o"></span>
-            <span class="tree-title">{{ child.key | translate }}</a></span>
+            <span class="tree-title" translate>{{child.key}}</span>
           </a>
 
           <ul ng-if="$ctrl.isOpen(child)">
 
             <!-- third level: subchild -->
             <li ng-repeat="subchild in child.children track by subchild.id" ng-class="{ 'selected' : subchild.selected }" class="subtree">
-              <a ng-click="$ctrl.navigate(subchild)" ng-class="{ 'selected' : subchild.selected }" data-unit-key="{{ subchild.key }}">
+              <a ng-click="$ctrl.navigate(subchild)" ng-class="{ 'selected' : subchild.selected }" data-unit-key="{{ ::subchild.key }}">
                 <span class="fa fa-file-o"></span>
-                <span class="tree-title">{{ subchild.key | translate }}</a></span>
+                <span class="tree-title" translate>{{subchild.key}}</span>
               </a>
             </li>
           </ul>
