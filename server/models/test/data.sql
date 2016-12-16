@@ -14,20 +14,20 @@ INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B
 
 -- Accounts
 INSERT INTO `account` VALUES
-  (3626,4,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
-  (3627,3,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
-  (3628,3,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
-  (3629,4,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
-  (3630,3,1,41001,'Test Debtor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
-  (3631,3,1,41002,'Test Debtor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3635,3,1,41003,'Test Debtor Accounts3',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3636,4,1,46000,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3637,3,1,46001,'First Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
-  (3638,3,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3639,4,1,57000,'Test Income Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3640,3,1,57003,'Test Gain Account',3639,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3641,4,1,67000,'Test Expense Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3642,3,1,67003,'Test Loss Account',3641,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0);
+  (3626,4,1,1000,'Test Capital Account',0,0,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
+  (3627,3,1,1100,'Test Capital One',3626,0,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
+  (3628,3,1,1200,'Test Capital Two',3626,0,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
+  (3629,4,1,40000,'Test Balance Accounts',0,0,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
+  (3630,3,1,41001,'Test Debtor Accounts1',3629,0,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
+  (3631,3,1,41002,'Test Debtor Accounts2',3629,0,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3635,3,1,41003,'Test Debtor Accounts3',3629,1,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3636,4,1,46000,'Test Inventory Accounts',3629,1,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3637,3,1,46001,'First Test Item Account',3636,0,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
+  (3638,3,1,47001,'Test Debtor Group Account',3626,0,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3639,4,1,57000,'Test Income Accounts',0,1,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3640,3,1,57003,'Test Gain Account',3639,0,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3641,4,1,67000,'Test Expense Accounts',0,1,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3642,3,1,67003,'Test Loss Account',3641,0,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0);
 
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
@@ -275,21 +275,21 @@ INSERT INTO `reference` VALUES
   (3,0,'AC','Reference resultat 1',1,NULL,1),
   (4,0,'XX','Deletable reference 1',1,NULL,NULL);
 
-INSERT INTO `cost_center` VALUES
-  (1,1,'cost center 1','cost note',1),
-  (1,2,'cost center 2','cost note 2',0),
-  (1,3,'cost center 3', 'cost note 3', 1);
+INSERT INTO `fee_center` VALUES
+  (1,1,'fee center 1', 1, 1, 'fee center a principal cost center'),
+  (2,1,'fee center 2', 1, 0, 'fee center a auxiliary cost center'),
+  (3,1,'fee center 3', 1, 1, 'fee center a principal cost center'),
+  (4,1,'fee center 4', 1, 1, 'fee center a principal cost center'),
+  (5,1,'fee center 5', 0, 1, 'fee center a profit center always principal'),
+  (6,1,'fee center 6', 0, 1, 'fee center a profit center always principal'),
+  (7,1,'fee center 7', 0, 1, 'fee center a profit center always principal');
 
-INSERT INTO `profit_center` VALUES
-  (1,1,'profit center 1','profit note'),
-  (1,2,'profit center 2','profit note 2'),
-  (1,3,'profit center 3', 'profit note 3');
 
 -- Services
 INSERT INTO `service` VALUES
-  (1, 1, 'Test Service', 1, 1),
-  (2, 1, 'Administration', 2, 2),
-  (3, 1, 'Medecine Interne', 1, 2);
+  (1, 1, 'Test Service', 1, 5),
+  (2, 1, 'Administration', 3, 6),
+  (3, 1, 'Medecine Interne', 4, 7);
 
 -- billing service configuration
 
@@ -354,17 +354,17 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
 
 INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,NULL,1,2,1),
   -- vouchers data
-  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
+  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,'D',NULL,'Sample voucher data three',1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
