@@ -34,7 +34,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
       action: search, color: 'btn-default'
     },
-    { icon: 'fa fa-filter', color: 'btn-info',
+    { icon: 'fa fa-filter', color: 'btn-default',
       action: toggleFilter, 
     }
   ];
@@ -142,7 +142,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // enable filter
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[1].color = vm.filterEnabled ? 'btn-info active' : 'btn-info';
+    vm.bcButtons[1].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
