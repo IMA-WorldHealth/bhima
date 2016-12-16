@@ -147,7 +147,7 @@ describe('Complex Vouchers', function () {
     GU.selectRow('invoiceGrid', detail.invoices[0]);
 
     // validate selection
-    FU.buttons.submit();
+    FU.modal.submit();
 
     // submit voucher
     FU.buttons.submit();

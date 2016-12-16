@@ -12,25 +12,26 @@ function CashPaymentsRegistryTests() {
   before(() => helpers.navigate('#/finance/reports/cash_payment'));
 
   const PAYMENT_INSIDE_REGISTRY = 3;
+  const PAYMENT_PRIMARY_CASHBOX = 0;
 
   it('find payment by date interval', () => {
 
     /** Get all payment of the year 2016 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment of january 2016 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/01/2016');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Get all payment of the year 2015 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2015', '31/12/2015');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -42,13 +43,13 @@ function CashPaymentsRegistryTests() {
     /** Existing reference */
     FU.buttons.search();
     FU.input('$ctrl.bundle.reference', 'TPA1');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Not Existing reference */
     FU.buttons.search();
     FU.input('$ctrl.bundle.reference', 'NOT_A_REFERENCE');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -60,7 +61,7 @@ function CashPaymentsRegistryTests() {
     /** Get all payment of Patient/2/Patient */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.debtor_uuid', 'Patient/2/Patient');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     // clear filters
@@ -72,19 +73,19 @@ function CashPaymentsRegistryTests() {
     /** Get all payment on Test Primary Cashbox A */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Primary Cashbox A');
-    FU.buttons.submit();
-    GU.expectRowCount('payment-registry', 0);
+    FU.modal.submit();
+    GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
 
     /** Get all payment on Test Aux Cashbox A */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Aux Cashbox A');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment on Test Aux Cashbox B */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Aux Cashbox B');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -96,13 +97,13 @@ function CashPaymentsRegistryTests() {
     /** Get all payment of Regular User */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Regular User');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     /** Get all payment of super user */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Super User');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     // clear filters
