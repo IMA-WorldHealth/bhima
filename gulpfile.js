@@ -14,6 +14,7 @@ const iife    = require('gulp-iife');
 const pump    = require('pump');
 const rimraf  = require('rimraf');
 const less    = require('gulp-less');
+const merge   = require('gulp-merge-json');
 
 // child process for custom scripts
 const exec = require('child_process').exec;
@@ -186,6 +187,21 @@ gulp.task('client-vendor-build-bootstrap', function () {
     .pipe(gulp.dest(CLIENT_FOLDER + 'css'));
 });
 
+// Concatenation of translation files into a single file
+gulp.task('translations-files-fr', function () {
+  return gulp.src('client/src/i18n/*.fr.json')
+  .pipe(merge('fr.json'))
+  .pipe(gulp.dest('client/src/i18n/'));
+});
+
+// Concatenation of translation files into a single file
+gulp.task('translations-files-en', function () {
+  return gulp.src('client/src/i18n/*.en.json')
+  .pipe(merge('en.json'))
+  .pipe(gulp.dest('client/src/i18n/'));
+});
+
+
 // move static files to the public directory
 gulp.task('client-mv-static', ['client-lint-i18n'], function () {
   return gulp.src(paths.client.static)
@@ -215,7 +231,13 @@ gulp.task('watch-client', function () {
 
 // builds the client with all the options available
 gulp.task('build-client', function () {
-  gulp.start('client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static');
+  gulp.start('translations-files', 'client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static');
+});
+
+
+// builds the client with all translations files
+gulp.task('translations-files', function () {
+  gulp.start('translations-files-en', 'translations-files-fr');
 });
 
 // Lint client code separately from build process

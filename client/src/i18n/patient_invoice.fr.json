@@ -1,14 +1,23 @@
 {
-  "PATIENT_GROUP": {
-    "ADD_PATIENT_GROUP"  : "Nouveau Groupe de Patients",
-    "ALL_PATIENT_GROUP"  : "Groupes Patients Enregistrées",
-    "DESCRIPTION1"       : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
-    "DESCRIPTION2"       : "Modifier un Groupe Patient",
-    "EDIT_PATIENT_GROUP" : "Formulaire de mise à jour de Groupe de patients",
-    "PATIENT_GROUP"      : "Patient Group",
-    "PRICE_LIST"         : "Liste des Prix",
-    "REGISTER"           : "Enregistrer Groupe Patient",
-    "SUBSIDY"            : "Subventions",
-    "TITLE"              : "Gestion des Groupes Patients"
+  "PATIENT_INVOICE": {
+    "BASE_PRICE_ALTERED" : "Le prix de base pour cet élément de ligne a été complétée par une liste de prix.",
+    "BILLING_SERVICES"   : "Les services de facturation appliquée",
+    "BILLING_SERVICE_BREAKDOWN" : "Le service des facturations est disfonctionnel",
+    "COMBINED_SUBSIDIES" : "Les subventions combinées",
+    "DISTRIBUTION_TYPE"  : "Type des distributions",
+    "DISTRIBUTION_TYPE_EXPLANATION" : "Cette option détermine si les éléments de facturation peuvent être distribués à la pharmacie ou si elles ont déjà été consommés.",
+    "ERRORS"             : {
+      "INVALID_NUMBERS"       : "L'enregistrement contient des nombres qui sont soit negatifs, soit des zeros ou soit invalides",
+      "MISSING_SALES_ACCOUNT" : "L'enregistrement contient un item d'inventaire qui n'a pas de compte de vente associé à son groupe",
+      "NOT_CONFIGURED"        : "L'enregistrement ne contient pas d'item inventaire. Veuillez inserer un item ou supprimer la ligne."
+    },
+    "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
+    "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
+    "PAGE_TITLE"         : "Facture des patients",
+    "STAT_TOTAL_INVOICE" : "Total factures",
+    "STAT_PAID"          : "Payés",
+    "STAT_NOT_PAID"      : "En attente de paiement",
+    "SUBSIDY_BREAKDOWN"  : "Subvention disfonctionnelle",
+    "SUCCESS"            : "Facture des patients enregistrés avec succès."
   }
 }
