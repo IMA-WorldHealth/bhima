@@ -366,6 +366,7 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1),
   (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1);
 
+
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
   (1,'Zone Sante A','Territoire A','Province A'),
