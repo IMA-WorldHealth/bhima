@@ -57,7 +57,6 @@ describe('(/invoices) Patient Invoices', function () {
   });
 
   it('GET patients/:uuid/invoices/latest shows the most recent bill of a patient', () => {
-    const LIMIT = 1;
     return agent.get(`/patients/${debtorUuid}/invoices/latest`)
       .then(function (result) {
         expect(result).to.have.status(200);
