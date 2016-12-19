@@ -74,7 +74,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     { field : 'action', displayName : '',
       cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html',
       enableFiltering: false
-    }  
+    }
   ];
   vm.gridOptions.rowTemplate = '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html';
 
@@ -138,7 +138,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
       rows.forEach(function (row) {
         row._backgroundColor =
           (row.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
-      });      
+      });
 
       vm.gridOptions.data = rows;
     })
