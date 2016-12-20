@@ -205,6 +205,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.loading = true;
     vm.hasError = false;
 
+    // @fixme
+    window.store = Store;
     Journal.grid(null, options)
       .then(function (records) {
 

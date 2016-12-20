@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService'];
+TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid'];
 
 /**
  * Transactions Service
@@ -19,7 +19,7 @@ TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyS
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService(util, uiGridConstants, bhConstants, Notify) {
+function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
 
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
@@ -96,6 +96,7 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
     // this array stores the transactions ids currently being edited.
     this._entity = null;
+    this._changes = {};
     // this._edits = [];
 
     gridOptions.cellEditableCondition = cellEditableCondition;
@@ -105,23 +106,15 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
       this.gridApi = api;
 
       window.myapi = api;
-      this.gridApi.edit.on.afterCellEdit(null, function (rowEntity, colDef, newValue, oldValue) {
-        console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
-      });
+      this.gridApi.edit.on.afterCellEdit(null, editCell.bind(this));
 
       var scope = this;
 
-      // console.log('INITIAL INIT', this);
 			api.grid.registerRowsProcessor(function (rows) {
 
-        console.log('row processor', rows);
-        // console.log('rp', this._entity);
         if (this._entity) {
-          // console.log('set property for edits', this._entity);
           setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, true);
         }
-        // console.log('rows processor', rows.length);
-        // console.log(api.grid.rows.length);
         return rows;
       }.bind(this), 410);
 
@@ -130,19 +123,50 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
       // on each row rendering, recompute the transaction row indexes
       // api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
-      api.core.on.rowsRendered(null, function (rows) { console.log('rows rendered'); });
+      // api.core.on.rowsRendered(null, function (rows) { console.log('rows rendered'); });
 
       api.grid.registerDataChangeCallback(function (rows) {
-        console.log('data change rows', rows);
         createTransactionIndexMap.bind(scope)();
-        // console.log(scope.transactionIndices);
-        // console.log('row data change');
+
+        console.log('creating new index', rows);
       }, [uiGridConstants.dataChange.ROW]);
 
-      // console.log(uiGridConstants);
     }.bind(this));
   }
 
+  Transactions.prototype.addRow = function addRow() {
+
+    var transactionRow = {};
+
+    // @todo use transaction row template instead of inidividual assignments
+    console.log(this._entity);
+    transactionRow.uuid = uuid();
+    transactionRow.transaction = this._entity.transaction;
+    transactionRow.trans_id = this._entity.trans_id;
+    transactionRow.trans_date = this._entity.date;
+    transactionRow.record_uuid = this._entity.record_uuid;
+    transactionRow.hrRecord = this._entity.hrRecord;
+    console.log(transactionRow, this._entity);
+
+    this._entity.newRows.push(transactionRow);
+
+    this.gridApi.grid.options.data.push(transactionRow);
+    setPropertyOnTransaction.call(this, transactionRow.uuid, ROW_EDIT_FLAG, true);
+    this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+    console.log(uiGridConstants.dataChange);
+  }
+
+  // tied to afterCellEdit event
+  function editCell(rowEntity, colDef, newValue, oldValue) {
+    if (oldValue !== newValue) {
+      this._changes[rowEntity.uuid] = this._changes[rowEntity.uuid] || {};
+      this._changes[rowEntity.uuid][colDef.field] = newValue;
+    }
+    // this._changes[rowEntity.uuid][colDef] = newValue;
+
+    // console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
+    console.log(this._changes);
+  }
 
   /**
    * @function enableCellNavigation
@@ -188,8 +212,6 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
   function createTransactionIndexMap() {
     var rows = this.gridApi.grid.rows;
     this.transactionIndices = indexBy(rows, 'record_uuid');
-
-    console.log('created index', this.transactionIndices);
   }
 
   /**
@@ -204,12 +226,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
    */
   Transactions.prototype.getTransactionRows = function getTransactionRows(uuid) {
 
-    console.log('GET ROWS:USING:', this.gridApi.grid.rows);
-    // console.log('get rows', this, uuid);
     var array = this.gridApi.grid.rows;
     var indices = this.transactionIndices[uuid] || [];
-
-    console.log('using indices', indices);
 
     // return an array of transaction rows.  These are bound to the grid, despite
     // being a new array.
@@ -269,16 +287,23 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
     var rows = this.getTransactionRows(uuid);
     var visible = false;
 
-    console.log('updating property on rows', rows);
+    // ensure that only the visible rows parent UI is updated
+    var visibleIndex = -1;
 
+    console.log('setting property');
     // loop through all rows to set the transactions
-    rows.forEach(function (row) {
+    rows.forEach(function (row, index) {
       if (row.entity.record_uuid === uuid) {
+
+        console.log('setting child property');
         row[property] = value;
 
 
         // This will check to see if any of the rows in a transaction are visible
-        if (row.visible) { visible = true; }
+        if (row.visible) {
+          visible = true;
+          visibleIndex = index;
+        }
 
         // set the transaction property with the same record
         // var parent = getParentNode(row);
@@ -289,7 +314,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
     // ensure this flag is only set if the transaction row header exists
     // all rows are made 'children' of a row header - even if their transaction header does not exist
     if (visible) {
-      getParentNode(rows[0])[property] = value;
+      console.log('setting parent property');
+      getParentNode(rows[visibleIndex])[property] = value;
     }
     // make sure the grid updates with the changes
     // this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
@@ -330,6 +356,7 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
    */
   Transactions.prototype.edit = function edit(uuid) {
     var api = this.gridApi;
+    var RETURN_DATA_ENTITY = true;
 
     if (this.isEditing() && !MULTIPLE_EDITS) {
       Notify.warn('JOURNAL.SINGLE_EDIT_ONLY');
@@ -345,21 +372,31 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
       this.enableCellNavigation();
     }
 
+    // @todo create template row for addRow to use
     setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
     this.scrollIntoView(uuid);
     this._entity = {
       uuid : uuid,
-      rows : this.getTransactionRows(uuid),
-      aggregates : {}
+      rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
+      aggregates : {},
+      newRows : []
     };
     this._entity.trans_id = this._entity.rows[0].entity.trans_id;
+    this._entity.transaction = this._entity.rows[0].entity.transaction;
+    this._entity.date = this._entity.rows[0].entity.trans_date;
+    this._entity.record_uuid = this._entity.rows[0].entity.record_uuid;
+    this._entity.hrRecord = this._entity.rows[0].entity.hrRecord;
+
     this.digestAggregates();
-    // console.log('entity', this._entity);
 
     // @sfount proposal
     // 1. Download transaction information seperate from current view
     // 2. Show entity information in edit bar
     // 3. Ensure whenever filters or searches are applied that styles and edit classes are updated
+
+    console.log('editing with', this._entity);
+
+
   };
 
   Transactions.prototype.digestAggregates = function digestAggregates () {
@@ -376,11 +413,26 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
   // This function should be called whenever the underlying model changes
   // (i.e a new search) to ensure that the latest transactions changes are applied
+  //
+  // - currently this ensures the current transaction being edited is shown in
+  // ALL searches. The server does not know about new or edited rows and cannot
+  // search based on this new information. This should also provide a more
+  // uniform user experience.
+  // - local filters will still be applied to new and updated rows.
   Transactions.prototype.applyEdits = function applyEdits () {
-     console.log('apply edits');
     this.transactionIndices = {};
-    // this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
-    // createTransactionIndexMap.bind(this)();
+
+    console.log(this.transactionIndices);
+    if (this._entity) {
+      // apply edits - ensure current rows are shown
+
+      // include new rows
+      this._entity.newRows.forEach(function (row) {
+        this.gridApi.grid.options.data.push(row);
+      }.bind(this));
+
+      // ensure removal of old rows
+    }
   }
 
 
@@ -395,9 +447,6 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify) {
 
     // @TODO validate()
 
-    // console.log('saving, using');
-    // console.log(this._edits);
-    // console.log(this.getTransactionRows(this._edits[0]));
 
     // remove the ROW_EDIT_FLAG property on all transactions
     // this._edits.forEach(function (uuid) {

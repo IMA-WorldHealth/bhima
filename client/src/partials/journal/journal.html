@@ -67,7 +67,7 @@
   <div class="text-menu-item"><span>{{ "POSTING_JOURNAL.TOTAL_ROWS" | translate}}:</span>{{ JournalCtrl.transactions._entity.aggregates.totalRows }}</div>
   <div class="toolbar">
     <div class="toolbar-item">
-      <button class="btn btn-sm btn-default">Add Row</button>
+      <button ng-click="JournalCtrl.transactions.addRow()" class="btn btn-sm btn-default">Add Row</button>
       <button class="btn btn-sm btn-default">Delete Row</button>
       <button class="btn btn-sm btn-default">Save Transaction</button>
     </div>

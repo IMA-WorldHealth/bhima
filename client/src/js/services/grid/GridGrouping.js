@@ -45,7 +45,6 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
    * @private
    */
   function configureDefaultAggregators(columns) {
-    console.log('column processor');
     columns.forEach(function (column) {
       var aggregator = DEFAULT_AGGREGATORS[column.field];
 
@@ -57,7 +56,9 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
         column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
           // @todo this will be called for every row in a group but only needs to be called once
-          aggregation.value = row.entity.transaction.debit_equiv;
+          if (row.entity.transaction) {
+            aggregation.value = row.entity.transaction.debit_equiv;
+          }
         };
 
         column.customTreeAggregationFinalizerFn = function (aggregation) {
@@ -138,13 +139,12 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
     gridApi.core.on.rowsRendered(null, util.once(function () {
-			console.log('applying initial group column');
       gridApi.grouping.groupColumn(this.column);
       // configureDefaultAggregators(gridApi.grid.columns);
       groupByTransactionView(gridApi);
 
       // for the expandAllRows() to be fired last
-      // unfoldAllGroups(gridApi);
+      unfoldAllGroups(gridApi);
     }.bind(this)));
   }
 
