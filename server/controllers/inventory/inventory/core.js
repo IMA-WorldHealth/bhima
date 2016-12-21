@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 * Inventory Core Functions
 *
@@ -5,10 +7,8 @@
 * handling.
 */
 
-'use strict';
-
-var uuid = require('node-uuid'),
-    db = require('../../../lib/db');
+const uuid = require('node-uuid');
+const db = require('../../../lib/db');
 
 // this should be a const in future ES versions
 var errors = {
