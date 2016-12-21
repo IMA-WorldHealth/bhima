@@ -15,8 +15,7 @@ describe('(/accounts) Accounts', function () {
     label : 'Account for integration test',
     parent : 0,
     locked : 0,
-    cc_id : null,
-    pc_id : null,
+    fc_id : null,
     classe : 4,
     is_asset : 0,
     reference_id : null,
@@ -25,15 +24,14 @@ describe('(/accounts) Accounts', function () {
     is_title : 0
   };
 
-  var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
   var balanceAccountId = 3631;
 
   const responseKeys = [
-    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
+    'id', 'enterprise_id', 'locked', 'fc_id', 'created', 'classe', 'is_asset',
     'reference_id', 'is_brut_link', 'is_charge', 'number',
     'label', 'parent', 'type_id', 'is_title', 'type', 'translation_key',
-    'cost_center_text', 'profit_center_text'
+    'fee_center_text'
   ];
 
   it('GET /accounts?detailed=1 returns the full list of account', function () {
