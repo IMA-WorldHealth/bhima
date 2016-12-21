@@ -17,15 +17,15 @@
 
       <!-- filters  -->
       {{#if hasFilter}}
-      <div>
-        <i class="fa fa-filter"></i>
-        {{#if display.reference}}{{translate 'TABLE.COLUMNS.REFERENCE'}}: {{look display 'reference'}} /{{/if}}
-        {{#if display.dateFrom}} {{translate 'TABLE.COLUMNS.DATE'}}: {{date (look display 'dateFrom')}} - {{date (look display 'dateTo')}} /{{/if}}
-        {{#if display.debtor_uuid}} {{translate 'TABLE.COLUMNS.PATIENT'}}: {{look display 'debtor_uuid'}} /{{/if}}
-        {{#if display.cashbox_id}} {{translate 'TABLE.COLUMNS.CASHBOX'}}: {{look display 'cashbox_id'}} /{{/if}}
-        {{#if display.user_id}}{{translate 'TABLE.COLUMNS.USER'}}: {{look display 'user_id'}}/{{/if}}
-        {{#if display.is_caution}}{{translate 'FORM.LABELS.CAUTION'}}: <i class="fa fa-check"></i> {{/if}}
-      </div>
+        <div>
+          <i class="fa fa-filter"></i>
+          {{#if display.reference}}{{translate 'TABLE.COLUMNS.REFERENCE'}}: {{look display 'reference'}} /{{/if}}
+          {{#if display.dateFrom}} {{translate 'TABLE.COLUMNS.DATE'}}: {{date (look display 'dateFrom')}} - {{date (look display 'dateTo')}} /{{/if}}
+          {{#if display.debtor_uuid}} {{translate 'TABLE.COLUMNS.PATIENT'}}: {{look display 'debtor_uuid'}} /{{/if}}
+          {{#if display.cashbox_id}} {{translate 'TABLE.COLUMNS.CASHBOX'}}: {{look display 'cashbox_id'}} /{{/if}}
+          {{#if display.user_id}}{{translate 'TABLE.COLUMNS.USER'}}: {{look display 'user_id'}}/{{/if}}
+          {{#if display.is_caution}}{{translate 'FORM.LABELS.CAUTION'}}: <i class="fa fa-check"></i> {{/if}}
+        </div>
       {{/if}}
 
       <br>
@@ -62,11 +62,10 @@
       TODO: display the currency and in monetary format according the cashbox
     -->
     {{#if display.cashbox_id}}
-    <div class="col-xs-12">
-      <span>{{translate 'FORM.LABELS.TOTAL'}}</span>:
-      <strong class="text-right">{{sum rows 'amount'}}</strong>
-    </div>
+      <div class="col-xs-12">
+        <span>{{translate 'FORM.LABELS.TOTAL'}}</span>:
+        <strong class="text-right">{{sum rows 'amount'}}</strong>
+      </div>
     {{/if}}
-
   </div>
 </body>

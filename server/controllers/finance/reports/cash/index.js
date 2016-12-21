@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview
  * Cash Reports
@@ -9,7 +11,6 @@
  *
  * @module finance/reports/cash
  */
-'use strict';
 
 const _    = require('lodash');
 const q    = require('q');
@@ -93,6 +94,7 @@ function report(req, res, next) {
   let report;
   let lang = req.query.lang;
   let enterprise = req.session.enterprise;
+
   // set up the report with report manager
   try {
 
@@ -102,7 +104,7 @@ function report(req, res, next) {
       hasFilter = Object.keys(display).length;
     }
 
-    report = new ReportManager(REPORT_TEMPLATE, req.session, { lang: lang });
+    report = new ReportManager(REPORT_TEMPLATE, req.session, { lang });
   } catch (e) {
     return next(e);
   }
