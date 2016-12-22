@@ -3,17 +3,18 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'DebtorService', 'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance'
+  'DebtorService', 'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance', 'CurrencyService'
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Instance) {
+function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Instance, Currencies) {
   var vm = this;
 
   // global variables
   var noMissingDatePart;
+  var isObject = angular.isObject;
 
   // expose to the view
   vm.bundle = {};
@@ -61,28 +62,30 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
         out[i] = vm.bundle[i];
       }
     }
+
     return out;
   }
 
   /**
    * @function formatFilterValues
    * @description identifier and display value
-   * @param {object} formatedFilters a returned value of formatFilterParameters
-   * @return {object} fomatedValues { identifiers: {}, display: {} }
+   * @param {object} formattedFilters a returned value of formatFilterParameters
+   * @return {object} formattedValues { identifiers: {}, display: {} }
    */
-  function formatFilterValues(formatedFilters) {
+  function formatFilterValues(formattedFilters) {
     var out = { identifiers: {}, display: {} };
-    for (var key in formatedFilters) {
 
-      if (!formatedFilters.hasOwnProperty(key)) { continue; }
+    for (var key in formattedFilters) {
+
+      if (!formattedFilters.hasOwnProperty(key)) { continue; }
 
       // get identifiers
-      out.identifiers[key] = typeof(formatedFilters[key]) === 'object' ?
-        formatedFilters[key].uuid || formatedFilters[key].id || formatedFilters[key] : formatedFilters[key];
+      out.identifiers[key] = isObject(formattedFilters[key]) ?
+        formattedFilters[key].uuid || formattedFilters[key].id || formattedFilters[key] : formattedFilters[key];
 
       // get value to display
-      out.display[key] = typeof(formatedFilters[key]) === 'object' ?
-        formatedFilters[key].text || formatedFilters[key].label || formatedFilters[key].display_name || formatedFilters[key] : formatedFilters[key];
+      out.display[key] = isObject(formattedFilters[key]) ?
+        formattedFilters[key].text || formattedFilters[key].label || formattedFilters[key].display_name || formattedFilters[key] : formattedFilters[key];
     }
 
     return out;
