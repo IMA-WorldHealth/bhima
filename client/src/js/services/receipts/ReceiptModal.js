@@ -52,6 +52,7 @@ function ReceiptModal(Modal, Receipts) {
     var receiptOptions = {
       renderer      : Receipts.renderers.PDF
     };
+
     angular.extend(receiptOptions, userOptions);
 
     var invoiceRequest = Receipts.invoice(uuid, receiptOptions);
@@ -73,7 +74,7 @@ function ReceiptModal(Modal, Receipts) {
    * @param {String} uuid             Target patient UUID
    * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
    */
-  function patient(uuid, notifyCreated) {
+  function patient(uuid, notifyCreated, userOptions) {
 
     var options = {
       title         : 'PATIENT_REG.PAGE_TITLE',
@@ -83,7 +84,13 @@ function ReceiptModal(Modal, Receipts) {
       notifyCreated : notifyCreated
     };
 
-    var patientRequest = Receipts.patient(uuid, { renderer : options.renderer });
+    var receiptOptions = {
+      renderer      : Receipts.renderers.PDF
+    };
+
+    angular.extend(receiptOptions, userOptions);
+
+    var patientRequest = Receipts.patient(uuid, receiptOptions);
     var patientProvider = {
       resolve : {
         receipt  : function receiptProvider() { return { promise : patientRequest }; },

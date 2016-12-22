@@ -39,7 +39,8 @@ exports.posReceiptOptions  = {
   marginLeft : '0mm',
   marginRight : '0mm',
   marginBottom : '0mm',
-  marginTop : '0mm'
+  marginTop : '0mm',
+  orientation : 'portrait'
 };
 
 /**

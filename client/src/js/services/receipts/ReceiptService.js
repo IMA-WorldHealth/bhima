@@ -25,6 +25,7 @@ function ReceiptService($http, util, Language, AppCache) {
     HTML : 'html',
     JSON : 'json'
   };
+
   var cache = new AppCache('receipts');
 
   service.posReceipt = cache.posReceipt || '0';
@@ -100,6 +101,7 @@ function ReceiptService($http, util, Language, AppCache) {
 
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
+    options.posReceipt = service.posReceipt;
     var route = '/reports/finance/cash/'.concat(uuid);
     return fetch(route, options);
   }
