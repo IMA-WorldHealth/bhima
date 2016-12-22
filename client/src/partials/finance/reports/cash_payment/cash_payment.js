@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('CashPaymentRegistryController', CashPaymentRegistryController);
+  .controller('CashPaymentRegistryController', CashPaymentRegistryController);
 
 // dependencies injection
 CashPaymentRegistryController.$inject = [
@@ -14,8 +14,6 @@ CashPaymentRegistryController.$inject = [
  */
 function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
   var vm = this;
-
-  var initFilter = { identifiers: {}, display: {} };
 
   // global variables
   vm.filters = { lang: Languages.key };
@@ -43,36 +41,33 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch : true,
-    enableFiltering  : vm.filterEnabled
+    enableFiltering : vm.filterEnabled,
+    rowTemplate : '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html'
   };
 
-  vm.gridOptions.columnDefs = [
-    { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
-      headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
-    }, {
-      field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
-      customTreeAggregationFinalizerFn: timeAggregation
-    }, {
-      field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
-    }, {
-      field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
-    }, {
-      field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-      cellTemplate: 'partials/finance/reports/cash_payment/templates/amount.grid.html'
-    }, {
-      field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
-    }, {
-      field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
-    }, {
-      field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-      cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html'
-    }, {
-      field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-      cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html'
-    }
-  ];
-
-  vm.gridOptions.rowTemplate = '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html';
+  vm.gridOptions.columnDefs = [{
+    field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
+  }, {
+    field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
+  }, {
+    field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
+  }, {
+    field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
+  }, {
+    field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
+    cellTemplate: 'partials/finance/reports/cash_payment/templates/amount.grid.html'
+  }, {
+    field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
+  }, {
+    field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
+  }, {
+    field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
+    cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html'
+  }, {
+    field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
+    cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html'
+  }];
 
   // search
   function search() {
@@ -86,23 +81,14 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
 
   // on remove one filter
   function onRemoveFilter(key) {
-    if (key === 'dateFrom' ||  key === 'dateTo') {
-      // remove all dates filters if one selected
-      delete vm.filters.identifiers.dateFrom;
-      delete vm.filters.identifiers.dateTo;
-      delete vm.filters.display.dateFrom;
-      delete vm.filters.display.dateTo;
-    } else {
-      // remove the key
-      delete vm.filters.identifiers[key];
-      delete vm.filters.display[key];
-    }
+    delete vm.filters.identifiers[key];
+    delete vm.filters.display[key];
     reload(vm.filters);
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-    reload(initFilter);
+    reload({ display : undefined, identifiers : undefined });
   }
 
   // reload with filter
@@ -119,20 +105,13 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     Modal.openReports({ url: url, params: params });
   }
 
-  // Time Aggregation
-  function timeAggregation(aggregation) {
-    var date = new Date(aggregation.groupVal);
-    var time = date.getHours() + ':' + date.getMinutes();
-    aggregation.rendered = aggregation.groupVal ? date.toDateString().concat('  (', time, ')') : null;
-  }
-
   // load cash
   function load(filters) {
     Cash.search(filters)
       .then(function (rows) {
         rows.forEach(function (row) {
-          row._backgroundColor =
-            (row.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+          var hasCreditNote = (row.type_id === bhConstants.transactionType.CREDIT_NOTE);
+          row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
         });
 
         vm.gridOptions.data = rows;
@@ -152,5 +131,4 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
 
   // startup
   load();
-
 }
