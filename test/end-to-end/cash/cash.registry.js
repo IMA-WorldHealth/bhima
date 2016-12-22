@@ -42,7 +42,7 @@ function CashPaymentsRegistryTests() {
 
     /** Existing reference */
     FU.buttons.search();
-    FU.input('$ctrl.bundle.reference', 'TPA1');
+    FU.input('$ctrl.bundle.reference', 'CP.TPA.1');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
@@ -111,7 +111,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('successfully Cancel a Cash Payment', () => {
-    element(by.id(`TPA2`)).click();
+    element(by.id('CP.TPA.2')).click();
     FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
     FU.modal.submit();
     components.notification.hasSuccess();

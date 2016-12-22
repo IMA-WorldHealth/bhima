@@ -7,7 +7,6 @@ helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 
-
 /*
  * Patient Search Tests
  *

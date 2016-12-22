@@ -23,24 +23,24 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
 
   // client
   Debtors.read()
-  .then(function (list) {
-    vm.debtors = list;
-  })
-  .catch(Notify.handleError);
+    .then(function (list) {
+      vm.debtors = list;
+    })
+    .catch(Notify.handleError);
 
   // cashboxes
   Cashboxes.read()
-  .then(function (list) {
-    vm.cashboxes = list;
-  })
-  .catch(Notify.handleError);
+    .then(function (list) {
+      vm.cashboxes = list;
+    })
+    .catch(Notify.handleError);
 
   // users
   Users.read()
-  .then(function (list) {
-    vm.users = list;
-  })
-  .catch(Notify.handleError);
+    .then(function (list) {
+      vm.users = list;
+    })
+    .catch(Notify.handleError);
 
   function submit() {
     var queryParam = formatFilterParameters(vm.bundle);

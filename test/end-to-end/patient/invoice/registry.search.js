@@ -1,3 +1,5 @@
+'use strict';
+
 /* jshint expr:true */
 /* global element, by, browser */
 const chai = require('chai');
@@ -11,11 +13,10 @@ const FU = require('../../shared/FormUtils');
 const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
-  'use strict';
 
   const params = {
     monthBillNumber : 0,
-    referenceValue : 'TPA2',
+    referenceValue : 'IV.TPA.2',
     serviceValue : 'Test Service',
     userValue : 'Super User',
     distributableInvoiceNumber : 4,
@@ -79,7 +80,7 @@ function InvoiceRegistrySearch() {
 
   it('filters by reference should return a single result', () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.reference', 'TPA2');
+    FU.input('ModalCtrl.params.reference', 'IV.TPA.2');
     FU.modal.submit();
 
     expectNumberOfGridRows(1);
