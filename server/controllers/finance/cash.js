@@ -172,9 +172,8 @@ function listPayment(params) {
     parameters : []
   };
 
-  // TODO - this depends on a merge in progress...
   if (params.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${'PA'}', project.abbr, cash.reference) = ?`);
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) = ?`);
     conditions.parameters.push(params.reference);
     delete params.reference;
   }
@@ -213,15 +212,15 @@ function listPayment(params) {
 
   sql += conditions.statements.join(' AND ');
 
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    conditions.parameters.push(limit);
-  }
-
   // check if the query is empty and template in a final '1';
   if (conditions.parameters.length === 0) {
-    sql += ' 1;';
+    sql += ' 1 ';
+  }
+
+  // finally, apply the LIMIT query
+  if (!isNaN(limit)) {
+    sql += ' LIMIT ?;';
+    conditions.parameters.push(limit);
   }
 
   return db.exec(sql, conditions.parameters);
