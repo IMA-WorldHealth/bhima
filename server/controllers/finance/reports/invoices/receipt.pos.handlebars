@@ -1,9 +1,11 @@
 <head>
   <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
 </head>
 <body>
 <p><b style="text-transform : uppercase">{{translate 'HOME.BHIMA_FINANCE'}} - {{translate 'PATIENT_INVOICE.PAGE_TITLE'}}</b></p>
-<p>----------------------------------------------------------------</p>
+<!-- <p>----------------------------------------------------------------</p> -->
+<div style="text-align : center;">{{> barcode value=barcode}}</div>
 <p><b>{{recipient.display_name}}</b></p>
 <p>{{recipient.debtor_group_name}}</p>
 <p style="text-transform : uppercase">{{reference}} {{translate 'FORM.LABELS.ON'}} {{date date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
@@ -28,5 +30,7 @@
 </table>
 <p>----------------------------------------------------------------</p>
 <h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{currency cost metadata.enterprise.currency_id}}</b></h2>
+
+<script>JsBarcode('.barcode').init();</script>
 </body>
 

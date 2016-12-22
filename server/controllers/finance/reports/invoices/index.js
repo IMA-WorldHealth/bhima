@@ -15,6 +15,7 @@
 const q  = require('q');
 const _  = require('lodash');
 const util = require('../../../../lib/util');
+
 const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
@@ -27,6 +28,8 @@ const pdf = require ('../../../../lib/renderers/pdf');
 const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.pos.handlebars';
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.handlebars';
 const REPORT_TEMPLATE  = './server/controllers/finance/reports/invoices/report.handlebars';
+
+const invoiceIdentifier = require('../../../../config/identifiers').INVOICE;
 
 exports.report = report;
 exports.receipt = receipt;
