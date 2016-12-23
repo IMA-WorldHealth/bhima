@@ -491,7 +491,7 @@ INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `
   (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'Salary payment transaction type', 'expense', 'SALAIRE', 1),
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'Cash return transaction type', 'expense', 'PAYBACK', 1),
   (9, 'VOUCHERS.SIMPLE.PURCHASES', 'Purchase transaction type', 'expense', 'ACHAT', 1),
-  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'creditNote', 'CREDIT NOTE', 1);
+  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'other', 'CREDIT NOTE', 1);
 
 SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
 INSERT INTO `purchase` VALUES

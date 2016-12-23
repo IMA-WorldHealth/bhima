@@ -13,10 +13,13 @@
 
 const Q      = require('q');
 const moment = require('moment');
-const db     = require('../../lib/db');
 const uuid   = require('node-uuid');
 const _      = require('lodash');
+
+const identifiers = require('../../config/identifiers');
+
 const util   = require('../../lib/util');
+const db     = require('../../lib/db');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -66,7 +69,7 @@ function list(req, res, next) {
  */
 function listInvoices() {
   const sql = `
-    SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
+    SELECT CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
       service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
       enterprise.currency_id, voucher.type_id
@@ -97,7 +100,7 @@ function lookupInvoice(invoiceUuid) {
   let buid = db.bid(invoiceUuid);
 
   let invoiceDetailQuery =
-    `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference,
+    `SELECT BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
       invoice.user_id, invoice.date, invoice.is_distributable, user.display_name,
@@ -130,22 +133,20 @@ function lookupInvoice(invoiceUuid) {
   `;
 
   return db.one(invoiceDetailQuery, [buid], invoiceUuid, 'invoice')
-    .then(function (invoice) {
+    .then(invoice => {
       record = invoice;
       return db.exec(invoiceItemsQuery, [buid]);
     })
-    .then(function (rows) {
+    .then(rows => {
       record.items = rows;
       return db.exec(invoiceBillingQuery, [buid]);
     })
-    .then(function (rows) {
+    .then(rows => {
       record.billing = rows;
-
       return db.exec(invoiceSubsidyQuery, [buid]);
     })
-    .then(function (rows) {
+    .then(rows => {
       record.subsidy = rows;
-
       return record;
     });
 }
@@ -203,7 +204,7 @@ function find(options) {
   };
 
   let sql =`
-    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference, invoice.reference AS ref,
+    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS ref,
       invoice.date, patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id
@@ -226,7 +227,7 @@ function find(options) {
   }
 
   if (options.reference) {
-    conditions.statements.push('CONCAT(project.abbr, invoice.reference) = ?');
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) = ?`);
     conditions.parameters.push(options.reference);
     delete options.reference;
   }
@@ -288,9 +289,9 @@ function find(options) {
  */
 function search(req, res, next) {
   find(req.query)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }

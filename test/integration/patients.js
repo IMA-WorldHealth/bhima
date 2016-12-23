@@ -94,7 +94,9 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with \'reference\' parameter', function () {
-      return agent.get('/patients/search/?reference=TPA1')
+      let conditions = { reference : 'PA.TPA.1' };
+      return agent.get('/patients/search')
+        .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
         })
@@ -122,13 +124,13 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
-      let conditions = { name : 'Test', reference : 'TPA1' };
+      let conditions = { name : 'Test', reference : 'PA.TPA.1' };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
-          expect(res.body[0].reference).to.be.equals('TPA1');
+          expect(res.body[0].reference).to.be.equals(conditions.reference);
         })
         .catch(helpers.handler);
     });
