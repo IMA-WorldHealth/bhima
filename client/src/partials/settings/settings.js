@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SettingsController.$inject = [
   'LanguageService', 'SessionService', 'bhConstants', '$translate',
-  'NotifyService', '$window', 'SystemService'
+  'NotifyService', '$window', 'SystemService', 'ReceiptService'
 ];
 
 /**
@@ -14,13 +14,14 @@ SettingsController.$inject = [
  *
  * @constructor
  */
-function SettingsController(Languages, Session, Constants, $translate, Notify, $window, System) {
+function SettingsController(Languages, Session, Constants, $translate, Notify, $window, System, Receipts) {
   var vm = this;
 
   vm.back = function back() { $window.history.back(); };
+  vm.cachePosReceipt = cachePosReceipt;
 
   // load settings from services
-  vm.settings = { language : Languages.key };
+  vm.settings = { language : Languages.key, posReceipt : Receipts.posReceipt };
 
   // bind methods/services to the view
   vm.languageService = Languages;
@@ -57,6 +58,10 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
       .then(function (data) {
         vm.system = data;
       });
+  }
+
+  function cachePosReceipt(value, old) {
+    Receipts.setPosReceipt(value);
   }
 
   // initialize with data

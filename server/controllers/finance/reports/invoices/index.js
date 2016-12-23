@@ -77,7 +77,7 @@ function receipt(req, res, next) {
 
   let template = RECEIPT_TEMPLATE;
 
-  if (options.posReceipt) {
+  if (Boolean(Number(options.posReceipt))) {
     template = POS_RECEIPT_TEMPLATE;
     _.extend(options, pdf.posReceiptOptions);
   }

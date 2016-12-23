@@ -11,7 +11,7 @@ exports.generate = generate;
  * ${receiptIdentifier}.${uuid(6)}
  *
  */
-const UUID_ACCURACY_LENGTH = 12;
+const UUID_ACCURACY_LENGTH = 8;
 
 function generate(receiptIdentifier, uuid) {
   let entityIdentifier = uuid.substr(0, UUID_ACCURACY_LENGTH);
