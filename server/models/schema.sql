@@ -495,8 +495,6 @@ CREATE TABLE `debtor` (
   `group_uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `debtor_1` (`text`),
-  UNIQUE KEY `debtor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
