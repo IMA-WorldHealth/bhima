@@ -1477,7 +1477,6 @@
       "RECEIPT" :  {
         "SUCCESS" : "Bon de paiement enregistré avec succès."
       },
-      
       "REPORT" : "Rapport des Quittances",
       "TITLE"  : "Quittance",
       "TOOLS"  : "Outils",
@@ -1508,5 +1507,4 @@
     "LOGINS" : "Connexion",
     "PURCHASES" : "Achats"
   }
-
 }
