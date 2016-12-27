@@ -48,7 +48,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'reference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       aggregationType: uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true
+      aggregationHideLabel : true, headerCellFilter: 'translate'
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
     { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate' },

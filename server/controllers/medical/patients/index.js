@@ -378,8 +378,8 @@ function find(options) {
         , q.abbr, q.father_name, q.mother_name, q.profession, q.employer, q.hospital_no,
         q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
         q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
-        BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
-        q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked, q.last_visit
+        BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.text,
+        q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked
       `;
 
     // remove options.detailed so that it cannot be used again
@@ -389,7 +389,7 @@ function find(options) {
   // build the main part of the SQL query
   let sql = `
     SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
-      q.sex, q.dob, q.registration_date, q.debtor_group_uuid ${detailedColumns}
+      q.sex, q.dob, q.registration_date, q.debtor_group_uuid, q.hospital_no, q.last_visit ${detailedColumns}
     FROM (
       SELECT p.uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT}', proj.abbr, p.reference) AS reference,
         p.display_name, p.debtor_uuid AS debtor_uuid, p.sex, p.dob, p.father_name, p.mother_name, p.profession,
@@ -411,7 +411,7 @@ function find(options) {
   if (options.name) {
       let keyValue = '%' + options.name + '%';
 
-    conditions.statements.push('q.display_name LIKE  ? ');
+    conditions.statements.push('LOWER(q.display_name) LIKE ? ');
     conditions.parameters.push(keyValue);
 
     // remove options.name so that it cannot be used again
