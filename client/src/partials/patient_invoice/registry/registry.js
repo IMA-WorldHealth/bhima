@@ -121,6 +121,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   // search and filter data in Invoice Registry
   function search() {
+
     Invoices.openSearchModal(vm.filters)
       .then(function (parameters) {
         // no parameters means the modal was dismissed.
@@ -153,7 +154,13 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     vm.filters = cache.filters;
-    vm.filtersFmt = Invoices.formatFilterParameters(cache.filters || {});
+
+    // @TODO work around for not caching patient name
+    if (vm.filters.patientUuid) {
+      delete vm.filters.patientUuid;
+    }
+    vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
+
     load(vm.filters);
   }
 

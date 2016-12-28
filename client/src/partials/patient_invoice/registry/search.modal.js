@@ -31,23 +31,38 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
   vm.setPatient = setPatient;
 
-  Projects.read()
-    .then(function (projects) {
-      vm.projects = projects;
-    })
-    .catch(Notify.handleError);
+  initialise();
 
-  Services.read()
-    .then(function (services) {
-      vm.services = services;
-    })
-    .catch(Notify.handleError);
+  function initialise() {
+    // ensure patient uuid is correctly assigned at startup
+    if (vm.params.patientUuid) {
+      // @TODO Until `find-patient` exposes method to set patient by default, this ensures the UI
+      // is up to date with the values.
+      delete vm.params.patientUuid;
+    }
 
-  Users.read()
-    .then(function (users) {
-      vm.users = users;
-    })
-    .catch(Notify.handleError);
+    fetchDependencies();
+  }
+
+  function fetchDependencies() {
+    Projects.read()
+      .then(function (projects) {
+        vm.projects = projects;
+      })
+      .catch(Notify.handleError);
+
+    Services.read()
+      .then(function (services) {
+        vm.services = services;
+      })
+      .catch(Notify.handleError);
+
+    Users.read()
+      .then(function (users) {
+        vm.users = users;
+      })
+      .catch(Notify.handleError);
+  }
 
   // submit the filter object to the parent controller.
   function submit(form) {
