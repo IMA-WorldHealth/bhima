@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview
  * Invoice Reports
@@ -9,7 +11,6 @@
  * @todo - implement the filtering portion of this.  See patient registrations
  * for inspiration.
  */
-'use strict';
 
 const q  = require('q');
 const _  = require('lodash');
@@ -89,7 +90,6 @@ function receipt(req, res, next) {
     })
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
-
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
