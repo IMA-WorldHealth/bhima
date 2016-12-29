@@ -1,5 +1,5 @@
-<div class="ui-grid-cell-contents">
-  <a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid, false, grid.appScope.receiptOptions)" data-method="receipt">
-    <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
+<div class="ui-grid-cell-contents text-action" ng-click="grid.appScope.openReceiptModal(row.entity.uuid, false, grid.appScope.receiptOptions)" >
+  <a href data-method="receipt">
+    <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT<span>
   </a>
 </div>

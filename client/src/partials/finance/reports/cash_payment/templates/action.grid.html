@@ -1,16 +1,5 @@
-<div class="ui-grid-cell-contents">
-  <a class="text-action"
-    ng-if="row.entity.uuid"
-    ng-click="grid.appScope.showReceipt(row.entity.uuid)"
-    data-link-receipt="{{ row.entity.uuid }}" href>
-    <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
+<div class="ui-grid-cell-contents text-action" ng-click="grid.appScope.showReceipt(row.entity.uuid)">
+  <a data-link-receipt="{{ ::row.entity.uuid }}" href>
+    <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
   </a>
-
-  <!-- TODO implement the cancel operation  -->
-  <!-- <a class="text-action text-danger"
-    ng-if="row.entity.uuid"
-    ng-click="grid.appScope.discardPayment(row.entity.uuid)"
-    data-link-receipt="{{ row.entity.uuid }}" href>
-    <i class="fa fa-remove"></i> {{ "FORM.LABELS.CANCEL" | translate }}
-  </a> -->
 </div>

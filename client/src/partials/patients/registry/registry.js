@@ -16,25 +16,25 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   var cache = AppCache('PatientRegistry');
 
   var patientDetailActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
-          '<span class="fa fa-book"></span> {{ ::"PATIENT_REGISTRY.RECORD" | translate }} ' +
-        '</a>' +
-      '</div>';
+    '<div class="ui-grid-cell-contents text-action" ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
+      '<a href> ' +
+        '<span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span> ' +
+      '</a>' +
+    '</div>';
 
   var patientEditActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
-          '<span class="fa fa-edit"></span> {{ ::"TABLE.COLUMNS.EDIT" | translate }} ' +
-        '</a> ' +
-      '</div>';
+    '<div class="ui-grid-cell-contents text-action" ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
+      '<a href> ' +
+        '<span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span> ' +
+      '</a> ' +
+    '</div>';
 
   var patientCardActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a href ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
-          '<span class="fa fa-user"></span> {{ ::"PATIENT_REGISTRY.CARD" | translate }} ' +
-        '</a>' +
-      '</div>';
+    '<div class="ui-grid-cell-contents text-action" ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
+      '<a href> ' +
+        '<span class="fa fa-user"></span> <span translate>PATIENT_REGISTRY.CARD</span> ' +
+      '</a>' +
+    '</div>';
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
