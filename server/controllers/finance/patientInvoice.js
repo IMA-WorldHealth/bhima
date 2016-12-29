@@ -43,9 +43,7 @@ exports.search = search;
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
-// @todo - this is used by the invoices receipt which really should use
-// a .find() method
-exports.listInvoices = listInvoices;
+exports.find = find;
 
 /**
  * list
@@ -53,7 +51,7 @@ exports.listInvoices = listInvoices;
  * Retrieves a list of all patient invoices in the database
  */
 function list(req, res, next) {
-  listInvoices()
+  find({})
     .then(function (invoices) {
       res.status(200).json(invoices);
     })
@@ -61,33 +59,6 @@ function list(req, res, next) {
     .done();
 }
 
-
-/**
- * @method listInvoices
- *
- * @description
- * Looks up all patients invoices in the data base
- *
- */
-function listInvoices() {
-  const sql = `
-    SELECT CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
-      service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
-      enterprise.currency_id, voucher.type_id
-    FROM invoice
-      LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
-      JOIN service ON service.id = invoice.service_id
-      JOIN user ON user.id = invoice.user_id
-      JOIN project ON invoice.project_id = project.id
-      JOIN enterprise ON enterprise.id = project.enterprise_id
-    ORDER BY invoice.date DESC, invoice.reference DESC;
-  `;
-
-  // TODO - this shouldn't throw an error...
-  return db.exec(sql);
-}
 
 /**
  * @method lookupInvoice

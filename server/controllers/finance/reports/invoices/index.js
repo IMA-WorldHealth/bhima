@@ -50,8 +50,10 @@ function report(req, res, next) {
     return next(e);
   }
 
+  const query = _.clone(req.query);
+
   // @todo - this should use a .find() method like patient registratons
-  Invoices.listInvoices()
+  Invoices.find(query)
     .then(rows => report.render({ rows }))
     .then(result => {
       res.set(result.headers).send(result.report);
