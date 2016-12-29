@@ -439,6 +439,7 @@
       "BILLING_DATE"           : "Date Facturation",
       "BILLING_SERVICES"       : "Les services de facturation appliquée",
       "BY"                     : "Par",
+      "ON"                     : "Sur",
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
@@ -807,6 +808,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
     "EXCHANGE_SET"   : "Configuré le",

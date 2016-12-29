@@ -156,7 +156,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     vm.filters = cache.filters;
 
     // @TODO work around for not caching patient name
-    if (vm.filters.patientUuid) {
+    if (vm.filters && vm.filters.patientUuid) {
       delete vm.filters.patientUuid;
     }
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});

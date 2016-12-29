@@ -201,6 +201,25 @@
         </select>
       </div>
 
+      <div class="form-group">
+        <label class="control-label">{{ 'FORM.LABELS.USER' | translate }}</label>
+
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+
+        <select
+          class="form-control"
+          name="user"
+          ng-model="ModalCtrl.params.user_id"
+          ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
+          <option value="" disabled>{{ 'FORM.SELECT.USER' | translate }}</option>
+        </select>
+      </div>
+
+
     </fieldset>
 
     <fieldset>

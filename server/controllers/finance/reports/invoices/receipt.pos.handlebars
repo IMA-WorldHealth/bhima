@@ -31,6 +31,14 @@
 <p>----------------------------------------------------------------</p>
 <h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{currency cost metadata.enterprise.currency_id}}</b></h2>
 
+<!-- Bill exchange -->
+{{#if exchange}}
+<span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>
+<br>
+<span>{{{translate 'EXCHANGE.SET_AS'}}} 1:{{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}</span>
+<h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{{currency exchangedTotal receiptCurrency}}}</b></h2>
+{{/if}}
+
 <script>JsBarcode('.barcode').init();</script>
 </body>
 

@@ -194,7 +194,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       templateUrl : 'partials/cash/modals/modalCancelCash.html',
       resolve : { data : { invoice : invoice } },
       size : 'md',
-      animation : true,
+      animation : false,
       keyboard  : false,
       backdrop : 'static',
       controller : 'ModalCancelCashController as ModalCtrl',
