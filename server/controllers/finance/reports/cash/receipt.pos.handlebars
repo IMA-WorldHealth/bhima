@@ -1,0 +1,45 @@
+<head>
+  <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
+<body>
+<p><b style="text-transform : uppercase">{{translate 'HOME.BHIMA'}} - {{translate 'CASH.TITLE'}}</b></p>
+<div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
+
+<h2>{{payment.reference}}</h2>
+<strong>{{patient.display_name}}</strong> {{translate 'FORM.LABELS.ON'}} {{date payment.date}}
+
+<p>----------------------------------------------------------------</p>
+<p>
+<strong>
+{{#with payment}}
+  {{#if is_caution}}
+    {{translate "CASH.CAUTION"}}
+  {{else}}
+    {{translate "FORM.LABELS.INVOICE"}}
+  {{/if}}
+{{/with}}
+</strong>
+</p>
+
+<table style="width : 100%">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each payment.items as |item| }}
+        <tr>
+          <td>{{item.reference}}</td>
+          <td style="text-align : right;">{{currency item.amount ../payment.currency_id}}</td>
+        </tr>
+      {{/each}}
+  </tbody>
+</table>
+
+<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL"}}: {{currency payment.amount payment.currency_id}}</h2>
+
+<script>JsBarcode('.barcode').init();</script>
+</body>

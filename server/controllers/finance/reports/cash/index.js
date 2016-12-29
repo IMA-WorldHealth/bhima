@@ -18,6 +18,8 @@ const q    = require('q');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const ReportManager = require('../../../../lib/ReportManager');
 
+const pdf = require('../../../../lib/renderers/pdf');
+
 const CashPayments = require('../../cash');
 const Exchange = require('../../exchange');
 const Users = require('../../../admin/users');
@@ -25,6 +27,7 @@ const Patients = require('../../../medical/patients');
 const Enterprises = require('../../../admin/enterprises');
 
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/cash/receipt.handlebars';
+const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/cash/receipt.pos.handlebars';
 const REPORT_TEMPLATE = './server/controllers/finance/reports/cash/report.handlebars';
 
 /**
@@ -41,9 +44,17 @@ function receipt(req, res, next) {
 
   let report;
 
+  let template = RECEIPT_TEMPLATE;
+
+  if (Boolean(Number(options.posReceipt))) {
+    template = POS_RECEIPT_TEMPLATE;
+    _.extend(options, pdf.posReceiptOptions);
+  }
+
+
   // set up the report with report manager
   try {
-    report = new ReportManager(RECEIPT_TEMPLATE, req.session, options);
+    report = new ReportManager(template, req.session, options);
   } catch (e) {
     return next(e);
   }
