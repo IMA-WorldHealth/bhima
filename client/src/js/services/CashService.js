@@ -172,6 +172,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
       { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+      { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' }
     ];
 
     // returns columns from filters
@@ -187,7 +188,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
     });
   }
 
-  //open a dialog box to Cancel Cash Paiement
+  //open a dialog box to Cancel Cash Payment
   function openCancelCashModal(invoice) {
     return Modal.open({
       templateUrl : 'partials/cash/modals/modalCancelCash.html',
@@ -201,7 +202,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   }
 
   /**
-   * @desc It checkCashPayment the invoice from the database
+   * @desc checkCashPayment the invoice from the database
    * @param {String} invoiceUuid, is the uuid of invoice
    * @example
    * service.checkCashPayment(invoiceUuid)

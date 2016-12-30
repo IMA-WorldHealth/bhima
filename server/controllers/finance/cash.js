@@ -23,6 +23,7 @@
  */
 
 const uuid = require('node-uuid');
+const _ = require('lodash');
 
 const db   = require('../../lib/db');
 const util = require('../../lib/util');
@@ -133,7 +134,7 @@ function list(req, res, next) {
  */
  function search(req, res, next) {
    listPayment(req.query)
-     .then(function (rows) {
+     .then(rows => {
        res.status(200).json(rows);
      })
      .catch(next)
@@ -145,7 +146,7 @@ function list(req, res, next) {
  * @description list all payment made
  */
 function listPayment(params) {
-  const sql = `
+  let sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
       CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
@@ -157,35 +158,72 @@ function listPayment(params) {
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
+    WHERE
   `;
 
-  if (params) {
-    let reference = params.reference;
-    let userId = params.user_id;
+  params = params || {};
 
-    if (reference) {
-      delete params.reference;
-    }
+  // if the limit exists, remove it.
+  const limit = Number(params.limit);
+  delete params.limit;
 
-    if (userId) {
-      params[`u.id`] = userId;
-      delete params.user_id;
-    }
+  const conditions = {
+    statements : [],
+    parameters : []
+  };
 
-    let qc =
-      params.dateFrom && params.dateTo ?
-      util.queryCondition(sql, params, null, 'DATE(cash.date) BETWEEN DATE(?) AND DATE(?)') :
-      util.queryCondition(sql, params);
-
-    if (reference) {
-      qc.query += ' HAVING reference = ? ';
-      qc.conditions.push(reference);
-    }
-
-    return db.exec(qc.query, qc.conditions);
+  if (params.reference) {
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) = ?`);
+    conditions.parameters.push(params.reference);
+    delete params.reference;
   }
 
-  return db.exec(sql);
+  // convert the uuid to binary if passed in
+  if (params.uuid) {
+    conditions.statements.push('cash.uuid = ?');
+    conditions.parameters.push(db.bid(params.uuid));
+    delete params.uuid;
+  }
+
+  // load all cash payments from (and including) a certain date
+  if (params.dateFrom) {
+    conditions.statements.push('cash.date >= DATE(?)');
+    conditions.parameters.push(new Date(params.dateFrom));
+    delete params.dateFrom;
+  }
+
+  // load all cash payments up to (and including) a certain date
+  if (params.dateTo) {
+    conditions.statements.push('cash.date <= DATE(?)');
+    conditions.parameters.push(new Date(params.dateTo));
+    delete params.dateTo;
+  }
+
+  if (params.debtor_uuid) {
+    conditions.statements.push('cash.debtor_uuid = ?');
+    conditions.parameters.push(db.bid(params.debtor_uuid));
+    delete params.debtor_uuid;
+  }
+
+  const queryParts = util.parseQueryStringToSQL(params, 'cash');
+
+  conditions.statements = conditions.statements.concat(queryParts.statements);
+  conditions.parameters = conditions.parameters.concat(queryParts.parameters);
+
+  sql += conditions.statements.join(' AND ');
+
+  // check if the query is empty and template in a final '1';
+  if (conditions.parameters.length === 0) {
+    sql += ' 1 ';
+  }
+
+  // finally, apply the LIMIT query
+  if (!isNaN(limit)) {
+    sql += ' LIMIT ?;';
+    conditions.parameters.push(limit);
+  }
+
+  return db.exec(sql, conditions.parameters);
 }
 
 /**

@@ -409,7 +409,7 @@ function find(options) {
 
   // this is every permutation of the first, last, and middle name combinations you can imagine.
   if (options.name) {
-      let keyValue = '%' + options.name + '%';
+    let keyValue = '%' + options.name + '%';
 
     conditions.statements.push('LOWER(q.display_name) LIKE ? ');
     conditions.parameters.push(keyValue);

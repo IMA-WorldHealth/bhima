@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="$ctrl.submit(ModalForm)"
+  bh-submit="$ctrl.submit(ModalForm)"
   data-modal="cash-payment-search"
   bh-form-defaults
   novalidate>
@@ -24,7 +24,7 @@
 
     <fieldset>
       <legend>
-        <i class="fa fa-users"></i> {{ "FORM.LABELS.PAYMENT_DETAILS" | translate }}
+        {{ "FORM.LABELS.PAYMENT_DETAILS" | translate }}
       </legend>
 
       <!-- reference  -->
@@ -39,25 +39,32 @@
       <div class="form-group">
         <label class="control-label">{{ "FORM.LABELS.CLIENT" | translate }}</label>
 
-        <ui-select name="debtor" ng-model="$ctrl.bundle.debtor_uuid" theme="bootstrap">
+        <ui-select name="debtor" ng-model="$ctrl.bundle.debtor_uuid">
           <ui-select-match>
             <span>{{$select.selected.text}}</span>
           </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="debtor as debtor in $ctrl.debtors | filter:$select.search">
+          <ui-select-choices ui-select-focus-patch repeat="debtor in $ctrl.debtors | filter:{ text : $select.search } track by debtor.uuid">
             <span ng-bind-html="debtor.text | highlight:$select.search"></span>
           </ui-select-choices>
         </ui-select>
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
+          {{ "FORM.LABELS.CAUTION" | translate }}
+        </label>
       </div>
 
       <!-- cashbox -->
       <div class="form-group">
         <label class="control-label">{{ "FORM.LABELS.CASHBOX" | translate }}</label>
 
-        <ui-select name="cashbox" ng-model="$ctrl.bundle.cashbox_id" theme="bootstrap">
+        <ui-select name="cashbox" ng-model="$ctrl.bundle.cashbox_id">
           <ui-select-match>
             <span>{{$select.selected.label}}</span>
           </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="cashbox as cashbox in $ctrl.cashboxes | filter:$select.search">
+          <ui-select-choices ui-select-focus-patch repeat="cashbox in $ctrl.cashboxes | filter:$select.search track by cashbox.id">
             <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
           </ui-select-choices>
         </ui-select>
@@ -67,22 +74,21 @@
       <div class="form-group">
         <label class="control-label">{{ "FORM.LABELS.USER" | translate }}</label>
 
-        <ui-select name="user" ng-model="$ctrl.bundle.user_id" theme="bootstrap">
+        <ui-select name="user" ng-model="$ctrl.bundle.user_id">
           <ui-select-match>
             <span>{{$select.selected.display_name}}</span>
           </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="user as user in $ctrl.users | filter:$select.search">
+          <ui-select-choices ui-select-focus-patch repeat="user in $ctrl.users | filter:$select.search track by user.id">
             <span ng-bind-html="user.display_name | highlight:$select.search"></span>
           </ui-select-choices>
         </ui-select>
       </div>
 
-      <div class="form-group">
-        <label>
-          <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
-          {{ "FORM.LABELS.CAUTION" | translate }}
-        </label>
-      </div>
+      <bh-currency-select
+        currency-id="$ctrl.bundle.currency_id"
+        validation-trigger="CashVoucherForm.$submitted">
+      </bh-currency-select>
+
     </fieldset>
 
   </div>
@@ -91,6 +97,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel">
       {{ "FORM.BUTTONS.CLOSE" | translate }}
     </button>
+
     <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </bh-loading-button>

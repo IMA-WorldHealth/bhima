@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview
  * Cash Reports
@@ -9,7 +11,6 @@
  *
  * @module finance/reports/cash
  */
-'use strict';
 
 const _    = require('lodash');
 const q    = require('q');
@@ -93,28 +94,36 @@ function report(req, res, next) {
   let report;
   let lang = req.query.lang;
   let enterprise = req.session.enterprise;
+
   // set up the report with report manager
   try {
-
     if (req.query.identifiers && req.query.display) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
-      hasFilter = Object.keys(display).length;
+      hasFilter = Object.keys(display).length > 0;
     }
 
-    report = new ReportManager(REPORT_TEMPLATE, req.session, { lang: lang });
+    report = new ReportManager(REPORT_TEMPLATE, req.session, req.query);
   } catch (e) {
     return next(e);
   }
 
-  let data = {};
-
   CashPayments.listPayment(options)
     .then(rows => {
-      data.rows = rows;
-      data.display = display;
-      data.hasFilter = hasFilter;
-      data.enterprise = enterprise;
+
+      // sum the currencies in each
+      const aggregates = rows.reduce(function (totals, row) {
+
+        // make sure a total exists
+        totals[row.currency_id] = totals[row.currency_id] || 0;
+
+        // add on to the total the amount in the row
+        totals[row.currency_id] += row.amount;
+
+        return totals;
+      }, {});
+
+      const data = { rows, display, hasFilter, enterprise, aggregates };
       return report.render(data);
     })
     .then(result => {
