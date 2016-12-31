@@ -3,36 +3,40 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 CashPaymentRegistryController.$inject = [
-  'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'ModalService',
-  'uiGridConstants',  'uiGridGroupingConstants', 'LanguageService', 'ReceiptService'
+  'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
+  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService'
 ];
 
 /**
  * Cash Payment Registry Controller
+ *
  * This controller is responsible to display all cash payment made and provides
- * print and search utilities for the registry
+ * print and search utilities for the registry.`j
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages, Receipts) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal) {
   var vm = this;
+
+  var cache = AppCache('CashRegistry');
+
+  // Background color for make the difference between the valid and cancel paiement
+  var reversedBackgroundColor = { 'background-color': '#ffb3b3' };
+  var regularBackgroundColor = { 'background-color': 'none' };
 
   // global variables
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
   vm.gridOptions = {};
-  vm.loading = false;
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
 
+  // bind the cash payments receipt
+  vm.openReceiptModal = Receipt.cash;
+
   // expose to the view
-  vm.showReceipt = showReceipt;
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.cancelCash = cancelCash;
-
-  // Background color for make the difference betwen the valid and cancel paiement
-  var reversedBackgroundColor = {'background-color': '#ffb3b3' };
-  var regularBackgroundColor = { 'background-color': 'none' };
 
   // grid default options
   vm.gridOptions = {
@@ -42,7 +46,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     flatEntityAccess : true,
     fastWatch : true,
     enableFiltering : vm.filterEnabled,
-    rowTemplate : '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html'
+    rowTemplate : '/partials/cash/payments/templates/grid.canceled.tmpl.html'
   };
 
   vm.gridOptions.columnDefs = [{
@@ -56,18 +60,23 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
     field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-    cellTemplate: 'partials/finance/reports/cash_payment/templates/amount.grid.html'
+    cellTemplate : 'partials/cash/payments/templates/amount.grid.html'
   }, {
     field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
   }, {
     field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
   }, {
     field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html'
+    cellTemplate: 'partials/cash/payments/templates/action.grid.html'
   }, {
     field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html'
+    cellTemplate: 'partials/cash/payments/templates/cancelCash.action.tmpl.html'
   }];
+
+  function handleError(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
 
   // search
   function search() {
@@ -75,8 +84,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
       .then(function (filters) {
         if (!filters) { return; }
         reload(filters);
-      })
-      .catch(Notify.handleError);
+      });
   }
 
   // on remove one filter
@@ -88,7 +96,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-    reload({ display : undefined, identifiers : undefined });
+    reload({ display : [], identifiers : {} });
   }
 
   // reload with filter
@@ -98,16 +106,12 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
     load(filters.identifiers);
   }
 
-  // showReceipt
-  function showReceipt(uuid) {
-    var url = '/reports/finance/cash/' + uuid;
-    var params = { renderer: 'pdf', lang: Languages.key, posReceipt : Receipts.posReceipt };
-
-    Modal.openReports({ url: url, params: params });
-  }
-
   // load cash
   function load(filters) {
+    vm.hasError = false;
+
+    toggleLoadingIndicator();
+
     Cash.search(filters)
       .then(function (rows) {
         rows.forEach(function (row) {
@@ -117,7 +121,10 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
 
         vm.gridOptions.data = rows;
       })
-      .catch(Notify.handleError);
+      .catch(handleError)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
   }
 
  // Function for Cancel Cash cancel all Invoice
@@ -128,6 +135,10 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
         load();
       });
+  }
+
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // startup

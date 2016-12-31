@@ -11,7 +11,7 @@ const moment = require('moment');
 function CashPaymentsRegistryTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/finance/reports/cash_payment'));
+  before(() => helpers.navigate('#/payments'));
 
   const PAYMENT_INSIDE_REGISTRY = 3;
   const PAYMENT_PRIMARY_CASHBOX = 0;
