@@ -40,7 +40,7 @@ function build(req, res, next) {
   let template;
 
   // if the POS option is selected, render a thermal receipt.
-  if (options.posReceipt) {
+  if (Boolean(Number(options.posReceipt))) {
     _.assign(options, pdf.posReceiptOptions);
     template = POS_TEMPLATE;
   } else {

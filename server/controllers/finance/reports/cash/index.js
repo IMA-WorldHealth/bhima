@@ -14,6 +14,7 @@
 
 const _    = require('lodash');
 const q    = require('q');
+const moment = require('moment');
 
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -21,6 +22,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 const pdf = require('../../../../lib/renderers/pdf');
 
 const CashPayments = require('../../cash');
+const Debtors = require('../../debtors');
 const Exchange = require('../../exchange');
 const Users = require('../../../admin/users');
 const Patients = require('../../../medical/patients');
@@ -65,19 +67,38 @@ function receipt(req, res, next) {
     .then(payment => {
       data.payment = payment;
 
+      // lookup balances on all invoices
+      let invoices = payment.items.map(invoices => invoices.invoice_uuid);
+
       return q.all([
         Users.lookup(payment.user_id),
         Patients.lookupByDebtorUuid(payment.debtor_uuid),
         Enterprises.lookupByProjectId(payment.project_id),
+        Debtors.invoiceBalances(payment.debtor_uuid, invoices)
       ]);
     })
-    .spread((user, patient, enterprise) => {
-      _.assign(data, { user, patient, enterprise });
+    .spread((user, patient, enterprise, invoices) => {
+      _.assign(data, { user, patient, enterprise, invoices });
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
     .then(exchange => {
       data.rate = exchange.rate;
+      data.currentDateFormatted = (new moment()).format('L');
       data.hasRate = (data.rate && !data.payment.is_caution);
+
+      data.balances = data.invoices.reduce((aggregate, invoice) => {
+        aggregate[invoice.uuid] = invoice.balance;
+        return aggregate;
+      }, {});
+
+      data.payment.items.forEach(invoiceItem => {
+        invoiceItem.balance = data.balances[invoiceItem.invoice_uuid];
+
+        // if the payment is anything other than the enterprise rate, exchange it
+        // @todo perform ALL exchanges in a standard library
+        invoiceItem.exchangedBalance = data.hasRate ? _.round(invoiceItem.balance * data.rate) : invoiceItem.balance;
+        invoiceItem.payment_complete = invoiceItem.balance === 0;
+      });
 
       return report.render(data);
     })
@@ -135,6 +156,7 @@ function report(req, res, next) {
       }, {});
 
       const data = { rows, display, hasFilter, enterprise, aggregates };
+
       return report.render(data);
     })
     .then(result => {

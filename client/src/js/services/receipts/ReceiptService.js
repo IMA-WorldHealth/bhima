@@ -89,6 +89,7 @@ function ReceiptService($http, util, Language, AppCache) {
 
   // print the patient card
   function patient(uuid, options) {
+    options.posReceipt = service.posReceipt;
     var route ='/reports/medical/patients/'.concat(uuid);
     return fetch(route, options);
   }

@@ -904,6 +904,7 @@
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",
     "STAT_TOTAL_INVOICE" : "Total Invoices",
+    "LABEL_PAID"         : "Invoice has been paid in full",
     "STAT_PAID"          : "Paid",
     "STAT_NOT_PAID"      : "Waiting Payment",
     "SUBSIDY_BREAKDOWN"  : "Subsidy Breakdown",

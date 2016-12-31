@@ -35,6 +35,7 @@ const uuid   = require('node-uuid');
 const moment = require('moment');
 
 const identifiers = require('../../../config/identifiers');
+const barcode = require('../../../lib/barcode');
 
 const util   = require('../../../lib/util');
 const db     = require('../../../lib/db');
@@ -241,7 +242,11 @@ function lookupPatient(patientUuid) {
     WHERE p.uuid = ?;
   `;
 
-  return db.one(sql, buid, patientUuid, 'patient');
+  return db.one(sql, buid, patientUuid, 'patient')
+    .then(function (patient) {
+      patient.barcode = barcode.generate(identifiers.PATIENT, patient.uuid);
+      return patient;
+    });
 }
 
 /**
@@ -289,9 +294,10 @@ function list(req, res, next) {
   listPatientsQuery =
     `SELECT BUID(p.uuid) AS uuid, p.display_name,
       CONCAT_WS('.', '${identifiers.PATIENT}', pr.abbr, p.reference) AS reference,
-      p.dob, p.sex, p.registration_date, p.hospital_no, MAX(pv.start_date) AS last_visit
+      p.dob, p.sex, p.registration_date, p.hospital_no, MAX(pv.start_date) AS last_visit, u.display_name AS userName
     FROM patient AS p
     JOIN project AS pr ON p.project_id = pr.id
+    JOIN user AS u ON p.user_id = u.id
     LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
     GROUP BY p.uuid
     ORDER BY p.registration_date DESC, p.display_name ASC
@@ -397,11 +403,12 @@ function find(options) {
         p.email, p.address_1, p.address_2, p.renewal, p.origin_location_id, p.current_location_id,
         p.registration_date, p.title, p.notes, p.hospital_no, p.user_id, d.text, proj.abbr, dg.account_id,
         dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.start_date) AS last_visit,
-        dg.uuid AS debtor_group_uuid
+        dg.uuid AS debtor_group_uuid, u.display_name as userName
         FROM patient AS p
         JOIN project AS proj ON p.project_id = proj.id
         JOIN debtor AS d ON p.debtor_uuid = d.uuid
         JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        JOIN user AS u ON p.user_id = u.id
         LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
         GROUP BY p.uuid
       ) AS q WHERE

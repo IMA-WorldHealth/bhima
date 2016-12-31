@@ -3,43 +3,65 @@
   <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
 </head>
 <body>
-<p><b style="text-transform : uppercase">{{translate 'HOME.BHIMA'}} - {{translate 'CASH.TITLE'}}</b></p>
+<p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
+<h2 style="text-align : left; margin : 0px">{{payment.reference}}</h2>
+<p style="margin-top : 0px">{{date payment.date}}</p>
+
 <div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
 
-<h2>{{payment.reference}}</h2>
-<strong>{{patient.display_name}}</strong> {{translate 'FORM.LABELS.ON'}} {{date payment.date}}
-
+<h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
+({{patient.reference}}) - {{patient.debtor_group_name}}
 <p>----------------------------------------------------------------</p>
-<p>
-<strong>
-{{#with payment}}
-  {{#if is_caution}}
-    {{translate "CASH.CAUTION"}}
-  {{else}}
-    {{translate "FORM.LABELS.INVOICE"}}
-  {{/if}}
-{{/with}}
-</strong>
-</p>
+{{#if hasRate}}
+<span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>
+<br>
+<span>{{{translate 'EXCHANGE.SET_AS'}}} 1:{{rate}} {{{translate 'EXCHANGE.ON'}}} {{currentDateFormatted}}</span>
+<p>----------------------------------------------------------------</p>
+{{/if}}
 
+{{#if payment.is_caution}}
+{{translate "CASH.CAUTION"}}
+    
+{{/if}}
+
+<!-- if !payment.is_caution -->
+{{#each payment.items as |item| }}
+
+<p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">{{translate "FORM.LABELS.INVOICE"}} {{item.reference}}</p>
 <table style="width : 100%">
   <thead>
     <tr>
-      <th></th>
-      <th></th>
+      <th></th><th></th>
     </tr>
   </thead>
   <tbody>
-    {{#each payment.items as |item| }}
-        <tr>
-          <td>{{item.reference}}</td>
-          <td style="text-align : right;">{{currency item.amount ../payment.currency_id}}</td>
-        </tr>
-      {{/each}}
+    <tr>
+      <td>{{translate "PATIENT_INVOICE.STAT_PAID"}}</td>
+      <td style="text-align : right;">{{currency item.amount ../payment.currency_id}}</td>
+    </tr>
+    <tr>
+      <td>{{translate "TABLE.COLUMNS.REMAINING_BALANCE"}}</td>
+      <td style="text-align : right;">{{currency item.balance ../enterprise.currency.id}}</td>
+    </tr>
+
+    {{#if ../hasRate}}
+    <tr>
+      <td colspan="2" style="text-align : right">({{currency item.exchangedBalance ../payment.currency_id}})</td>
+    </tr>
+    {{/if}}
+
+    {{#if item.payment_complete}}
+    <tr>
+      <td colspan="2" style="font-weight : bold; text-align : right"><span>&#x2713;</span> {{translate "PATIENT_INVOICE.LABEL_PAID"}}</td>
+    </tr>
+    {{/if}}
   </tbody>
 </table>
+<p>----------------------------------------------------------------</p>
+{{/each}}
+<!-- /if -->
 
-<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL"}}: {{currency payment.amount payment.currency_id}}</h2>
+<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_PAID"}}: {{currency payment.amount payment.currency_id}}</h2>
 
 <script>JsBarcode('.barcode').init();</script>
 </body>

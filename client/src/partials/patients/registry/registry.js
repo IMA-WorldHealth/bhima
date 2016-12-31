@@ -57,6 +57,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter: 'translate' },
     { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate' },
     { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate' },
+    { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
     { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
     { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
     { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate, enableSorting: false }
@@ -99,7 +100,6 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
 
     // hook the returned patients up to the grid.
     request.then(function (patients) {
-
       patients.forEach(function (patient) {
         patient.patientAge = util.getMomentAge(patient.dob, 'years');
       });

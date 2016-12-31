@@ -1,18 +1,17 @@
 <head>
   <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
 </head>
 <body>
 <p><b style="text-transform : uppercase">{{translate 'HOME.BHIMA'}} - {{translate 'TREE.PATIENT_REGISTRATION'}}</b></p>
+<p style="text-align:center">{{>barcode value=patient.barcode }}</p>
 <p>----------------------------------------------------------------</p>
-<p><b>{{patient.display_name}}</b></p>
+<p><b>{{patient.display_name}} - {{ patient.reference }}</b></p>
 <p><u>{{translate "FORM.LABELS.DOB"}}</u>: {{date patient.dob }}</p>
 <p><u>{{translate "TABLE.COLUMNS.REGISTERED_ON"}}</u>: {{date patient.registration_date }}</p>
 <p><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u>: {{ patient.debtor_group_name }}</p>
 <p>----------------------------------------------------------------</p>
 
-<p style="text-align:center">
-  {{>barcode value=patient.reference }}
-  {{ patient.reference }}
-</p>
 
 <script>JsBarcode('.barcode').init();</script>
+</body>
