@@ -933,6 +933,13 @@
       "REPORT_TITLE" : "Patient Checkin Report",
       "SUCCESS" : "Patient has been checked in"
     },
+    "VISITS" : { 
+      "TITLE" : "Patient Visits",
+      "ADMIT" : "Admit Patient",
+      "DISCHARGE" : "Discharge Patient",
+      "ORIGINAL" : "This patient has no logged visits.",
+      "RECENT" : "Recent Visits"
+    },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Account Number",
       "DEBTOR_GROUP"  : "Debtor Group",
