@@ -166,8 +166,12 @@ function invoiceBalances(debtorUuid, uuids, paramOptions) {
      (options.balanced === '1') ? 'HAVING balance = 0' :
      (options.balanced === '0') ? 'HAVING balance <> 0' :
      '';
-
   let invoices = uuids.map(uuid => db.bid(uuid));
+
+  if (uuids.length===0) {
+    return [];
+  }
+
 
   // select all invoice and payments against invoices from the combined ledger
   let sql = `
