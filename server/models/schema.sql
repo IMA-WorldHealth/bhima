@@ -1,8 +1,8 @@
 SET foreign_key_checks = 0;
 
-SET names 'utf8';
-SET character_set_database = 'utf8';
-SET collation_database = 'utf8_unicode_ci';
+SET names 'utf8mb4';
+SET character_set_database = 'utf8mb4';
+SET collation_database = 'utf8mb4_unicode_ci';
 
 DROP TABLE IF EXISTS `account`;
 
@@ -33,8 +33,7 @@ CREATE TABLE `account` (
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
@@ -43,8 +42,7 @@ CREATE TABLE `account_type` (
   `translation_key` VARCHAR(35) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_type_1` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `assignation_patient`;
 CREATE TABLE `assignation_patient` (
@@ -56,7 +54,7 @@ CREATE TABLE `assignation_patient` (
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS billing_service;
@@ -73,7 +71,7 @@ CREATE TABLE billing_service (
   UNIQUE KEY `billing_service_2` (`account_id`, `label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -87,7 +85,7 @@ CREATE TABLE `budget` (
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   UNIQUE KEY `budget_1` (`account_id`, `period_id`),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
@@ -114,7 +112,7 @@ CREATE TABLE `cash` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
@@ -125,7 +123,7 @@ CREATE TABLE `cash_item` (
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cash_box`;
 CREATE TABLE `cash_box` (
@@ -137,7 +135,7 @@ CREATE TABLE `cash_box` (
   UNIQUE KEY `cash_box_1` (`label`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
@@ -158,7 +156,7 @@ CREATE TABLE `cash_box_account_currency` (
   FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_accounting`;
@@ -171,7 +169,7 @@ CREATE TABLE `config_accounting` (
   UNIQUE KEY `config_accounting_2` (`label`, `account_id`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_cotisation`;
@@ -180,7 +178,7 @@ CREATE TABLE `config_cotisation` (
   `label` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `config_cotisation_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_cotisation_item`;
@@ -195,7 +193,7 @@ CREATE TABLE `config_cotisation_item` (
   KEY `cotisation_id` (`cotisation_id`),
   FOREIGN KEY (`config_cotisation_id`) REFERENCES `config_cotisation` (`id`),
   FOREIGN KEY (`cotisation_id`) REFERENCES `cotisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_paiement_period`;
@@ -209,7 +207,7 @@ CREATE TABLE `config_paiement_period` (
   UNIQUE KEY `config_paiement_period_1` (`paiement_period_id`),
   KEY `paiement_period_id` (`paiement_period_id`),
   FOREIGN KEY (`paiement_period_id`) REFERENCES `paiement_period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_rubric`;
@@ -219,7 +217,7 @@ CREATE TABLE `config_rubric` (
   `label` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `config_rubric_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_rubric_item`;
@@ -235,7 +233,7 @@ CREATE TABLE `config_rubric_item` (
   KEY `rubric_id` (`rubric_id`),
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   FOREIGN KEY (`rubric_id`) REFERENCES `rubric` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `config_tax`;
@@ -245,7 +243,7 @@ CREATE TABLE `config_tax` (
   `label` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `config_tax_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `config_tax_item`;
 
@@ -260,7 +258,7 @@ CREATE TABLE `config_tax_item` (
   KEY `tax_id` (`tax_id`),
   FOREIGN KEY (`config_tax_id`) REFERENCES `config_tax` (`id`),
   FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `consumption`;
 
@@ -279,7 +277,7 @@ CREATE TABLE `consumption` (
   KEY `depot_uuid` (`depot_uuid`),
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`document_id`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `consumption_loss`;
 
@@ -287,7 +285,7 @@ CREATE TABLE `consumption_loss` (
   `uuid` BINARY(16) NOT NULL,
   `consumption_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `consumption_patient`;
 
@@ -301,7 +299,7 @@ CREATE TABLE `consumption_patient` (
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `consumption_service`;
 
@@ -315,7 +313,7 @@ CREATE TABLE `consumption_service` (
   KEY `service_id` (`service_id`),
   FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `cost_center`;
@@ -330,7 +328,7 @@ CREATE TABLE `cost_center` (
   UNIQUE KEY `const_center_1` (`text`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_center_assignation`;
 
@@ -346,7 +344,7 @@ CREATE TABLE `cost_center_assignation` (
   KEY `auxi_cc_id` (`auxi_cc_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`auxi_cc_id`) REFERENCES `cost_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `cost_center_assignation_item`;
@@ -362,7 +360,7 @@ CREATE TABLE `cost_center_assignation_item` (
   KEY `pri_cc_id` (`pri_cc_id`),
   FOREIGN KEY (`cost_center_assignation_id`) REFERENCES `cost_center_assignation` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`pri_cc_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `cotisation`;
@@ -382,7 +380,7 @@ CREATE TABLE `cotisation` (
   KEY `six_account_id` (`six_account_id`),
   FOREIGN KEY (`four_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`six_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `cotisation_paiement`;
@@ -399,7 +397,7 @@ CREATE TABLE `cotisation_paiement` (
   KEY `cotisation_id` (`cotisation_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`cotisation_id`) REFERENCES `cotisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `country`;
@@ -409,7 +407,7 @@ CREATE TABLE `country` (
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `country_1` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `credit_note`;
@@ -434,7 +432,7 @@ CREATE TABLE `credit_note` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `creditor`;
 
@@ -447,7 +445,7 @@ CREATE TABLE `creditor` (
   UNIQUE KEY `creditor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `creditor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `creditor_group`;
 
@@ -464,7 +462,7 @@ CREATE TABLE `creditor_group` (
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `critere`;
 CREATE TABLE `critere` (
@@ -472,7 +470,7 @@ CREATE TABLE `critere` (
   `text` varchar(50) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `currency`;
@@ -486,7 +484,7 @@ CREATE TABLE `currency` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `currency_1` (`name`),
   UNIQUE KEY `currency_2` (`symbol`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `debtor`;
@@ -497,7 +495,7 @@ CREATE TABLE `debtor` (
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `debtor_group`;
@@ -530,7 +528,7 @@ CREATE TABLE `debtor_group` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS debtor_group_billing_service;
 
@@ -544,7 +542,7 @@ CREATE TABLE debtor_group_billing_service (
   KEY `billing_service_id` (`billing_service_id`),
   FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `debtor_group_history`;
@@ -561,7 +559,7 @@ CREATE TABLE `debtor_group_history` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS debtor_group_subsidy;
@@ -577,7 +575,7 @@ CREATE TABLE debtor_group_subsidy (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `depot`;
@@ -588,7 +586,7 @@ CREATE TABLE `depot` (
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS discount;
@@ -606,7 +604,7 @@ CREATE TABLE discount (
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `document_map`;
@@ -614,7 +612,7 @@ CREATE TABLE `document_map` (
   `uuid`              BINARY(16) NOT NULL,
   `text`              TEXT NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
@@ -653,7 +651,7 @@ CREATE TABLE `employee` (
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`grade_id`) REFERENCES `grade` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `enterprise`;
@@ -679,14 +677,14 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `entity_map`;
 CREATE TABLE `entity_map` (
   `uuid`              BINARY(16) NOT NULL,
   `text`              TEXT NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
@@ -701,7 +699,7 @@ CREATE TABLE `event` (
   INDEX event_channel (channel),
   INDEX event_entity (entity),
   INDEX event_type (type)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
@@ -717,7 +715,7 @@ CREATE TABLE `exchange_rate` (
   INDEX `date` (`date`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `fiscal_year`;
@@ -741,7 +739,7 @@ CREATE TABLE `fiscal_year` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `fonction`;
@@ -750,7 +748,7 @@ CREATE TABLE `fonction` (
   `fonction_txt` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fonction_1` (`fonction_txt`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `general_ledger`;
@@ -793,7 +791,7 @@ CREATE TABLE `general_ledger` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `grade`;
@@ -805,9 +803,7 @@ CREATE TABLE `grade` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_1` (`code`),
   UNIQUE KEY `grade_2` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `holiday`;
 
@@ -822,7 +818,7 @@ CREATE TABLE `holiday` (
   UNIQUE KEY `holiday_1` (`employee_id`, `dateFrom`, `dateTo`),
   KEY `employee_id` (`employee_id`),
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `holiday_paiement`;
 
@@ -835,8 +831,17 @@ CREATE TABLE `holiday_paiement` (
   KEY `holiday_id` (`holiday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `icd10`;
+
+CREATE TABLE `icd10` (
+  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `code`  VARCHAR(8) NOT NULL,
+  `label` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `icd10_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `inventory`;
 
@@ -869,7 +874,7 @@ CREATE TABLE `inventory` (
   FOREIGN KEY (`group_uuid`) REFERENCES `inventory_group` (`uuid`),
   FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
   FOREIGN KEY (`type_id`) REFERENCES `inventory_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `inventory_group`;
@@ -889,7 +894,7 @@ CREATE TABLE `inventory_group` (
   KEY `cogs_account` (`cogs_account`),
   KEY `stock_account` (`stock_account`),
   KEY `donation_account` (`donation_account`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `inventory_log`;
@@ -904,7 +909,7 @@ CREATE TABLE `inventory_log` (
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `inventory_type`;
@@ -914,7 +919,7 @@ CREATE TABLE `inventory_type` (
   `text` varchar(150) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_type_1` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `inventory_unit`;
@@ -924,7 +929,7 @@ CREATE TABLE `inventory_unit` (
   `text` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_unit_1` (`text`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `journal_log`;
@@ -938,7 +943,7 @@ CREATE TABLE `journal_log` (
   PRIMARY KEY (`uuid`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `language`;
@@ -952,7 +957,7 @@ CREATE TABLE `language` (
   UNIQUE KEY `language_1` (`name`),
   UNIQUE KEY `language_2` (`key`),
   UNIQUE `locale_key` (`locale_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `mod_snis_zs`;
@@ -964,7 +969,7 @@ CREATE TABLE `mod_snis_zs` (
   `province` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mod_snis_zs_1` (`zone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `movement`;
@@ -984,7 +989,7 @@ CREATE TABLE `movement` (
   FOREIGN KEY (`tracking_number`) REFERENCES `stock` (`tracking_number`),
   FOREIGN KEY (`depot_exit`) REFERENCES `depot` (`uuid`),
   FOREIGN KEY (`depot_entry`) REFERENCES `depot` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `offday`;
@@ -996,7 +1001,7 @@ CREATE TABLE `offday` (
   `percent_pay` float DEFAULT '100',
   PRIMARY KEY (`id`),
   UNIQUE KEY `offday_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `paiement`;
@@ -1020,7 +1025,7 @@ CREATE TABLE `paiement` (
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`),
   FOREIGN KEY (`paiement_period_id`) REFERENCES `paiement_period` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `paiement_period`;
 
@@ -1044,7 +1049,7 @@ CREATE TABLE `paiement_period` (
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   FOREIGN KEY (`config_cotisation_id`) REFERENCES `config_cotisation` (`id`),
   FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `partial_paiement`;
@@ -1060,7 +1065,7 @@ CREATE TABLE `partial_paiement` (
   KEY `currency_id` (`currency_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `price_list`;
 
@@ -1075,7 +1080,7 @@ CREATE TABLE `price_list` (
   UNIQUE KEY `price_list_1` (`label`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `price_list_item`;
@@ -1095,7 +1100,7 @@ CREATE TABLE `price_list_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- TODO write schema change (transactions) into SQL update script
 DROP TABLE IF EXISTS `patient`;
@@ -1145,7 +1150,7 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `patient_document`;
 
@@ -1161,7 +1166,7 @@ CREATE TABLE `patient_document` (
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `patient_group`;
 
@@ -1178,7 +1183,7 @@ CREATE TABLE `patient_group` (
    KEY `price_list_uuid` (`price_list_uuid`),
    FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
    FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS patient_group_billing_service;
 
@@ -1192,7 +1197,7 @@ CREATE TABLE patient_group_billing_service (
   KEY `billing_service_id` (`billing_service_id`),
   FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS patient_group_subsidy;
@@ -1207,8 +1212,7 @@ CREATE TABLE patient_group_subsidy (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `patient_visit`;
 
@@ -1217,14 +1221,22 @@ CREATE TABLE `patient_visit` (
   `patient_uuid` BINARY(16) NOT NULL,
   `start_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL,
+  `start_notes` TEXT,
+  `end_notes` TEXT,
+  `start_diagnosis_id` INT(10) unsigned,
+  `end_diagnosis_id` INT(10) unsigned,
   `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
   KEY `user_id` (`user_id`),
+  KEY `start_diagnosis_id` (`start_diagnosis_id`),
+  KEY `end_diagnosis_id` (`end_diagnosis_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `period`;
 
@@ -1239,7 +1251,7 @@ CREATE TABLE `period` (
   UNIQUE KEY `period_1` (`start_date`, `end_date`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `period_total`;
@@ -1261,7 +1273,7 @@ CREATE TABLE `period_total` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `permission`;
@@ -1276,7 +1288,7 @@ CREATE TABLE `permission` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `posting_journal`;
 
@@ -1324,7 +1336,7 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `profit_center`;
 
@@ -1337,7 +1349,7 @@ CREATE TABLE `profit_center` (
   UNIQUE KEY `profit_center_1` (`text`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `project`;
 
@@ -1353,7 +1365,7 @@ CREATE TABLE `project` (
   UNIQUE KEY `project_2` (`abbr`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `project_permission`;
 
@@ -1367,7 +1379,7 @@ CREATE TABLE `project_permission` (
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `province`;
@@ -1380,7 +1392,7 @@ CREATE TABLE `province` (
   UNIQUE KEY `province_1` (`name`, `country_uuid`),
   KEY `country_uuid` (`country_uuid`),
   FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `purchase`;
 
@@ -1405,7 +1417,7 @@ CREATE TABLE `purchase` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `purchase_item`;
 
@@ -1422,7 +1434,7 @@ CREATE TABLE `purchase_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `reference`;
 
@@ -1435,7 +1447,7 @@ CREATE TABLE `reference` (
   `reference_group_id` tinyint(3) unsigned DEFAULT NULL,
   `section_resultat_id` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `reference_group`;
@@ -1449,7 +1461,7 @@ CREATE TABLE `reference_group` (
   PRIMARY KEY (`id`),
   KEY `section_bilan_id` (`section_bilan_id`),
   FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `report`;
@@ -1459,7 +1471,7 @@ CREATE TABLE `report` (
   `report_key`          TEXT NOT NULL,
   `title_key`           TEXT NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `saved_report`;
 
@@ -1476,7 +1488,7 @@ CREATE TABLE `saved_report` (
   KEY `report_id` (`report_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
-) ENGINE= InnoDB DEFAULT CHARSET=utf8;
+) ENGINE= InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `rubric`;
@@ -1491,7 +1503,7 @@ CREATE TABLE `rubric` (
   `is_advance` tinyint(1) DEFAULT 0,
   `is_social_care` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `rubric_paiement`;
 
@@ -1505,7 +1517,7 @@ CREATE TABLE `rubric_paiement` (
   KEY `rubric_id` (`rubric_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`rubric_id`) REFERENCES `rubric` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `invoice`;
 
@@ -1532,7 +1544,7 @@ CREATE TABLE `invoice` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS invoice_billing_service;
 CREATE TABLE invoice_billing_service (
@@ -1545,7 +1557,7 @@ CREATE TABLE invoice_billing_service (
   KEY `billing_service_id` (`billing_service_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `invoice_item`;
 
@@ -1564,7 +1576,7 @@ CREATE TABLE `invoice_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS invoice_subsidy;
 
@@ -1578,7 +1590,7 @@ CREATE TABLE `invoice_subsidy` (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `section_bilan`;
 
@@ -1588,7 +1600,7 @@ CREATE TABLE `section_bilan` (
   `is_actif` tinyint(1) DEFAULT NULL,
   `position` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `section_resultat`;
 
@@ -1598,7 +1610,7 @@ CREATE TABLE `section_resultat` (
   `position` int(10) unsigned DEFAULT NULL,
   `is_charge` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `sector`;
@@ -1610,7 +1622,7 @@ CREATE TABLE `sector` (
   UNIQUE KEY `sector_1` (`name`, `province_uuid`),
   KEY `province_id` (`province_uuid`),
   FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `service`;
@@ -1629,7 +1641,7 @@ CREATE TABLE `service` (
   FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`),
   FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `stock`;
@@ -1647,7 +1659,7 @@ CREATE TABLE `stock` (
   KEY `purchase_order_uuid` (`purchase_order_uuid`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
   FOREIGN KEY (`purchase_order_uuid`) REFERENCES `purchase` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `subsidy`;
@@ -1663,7 +1675,7 @@ CREATE TABLE subsidy (
   UNIQUE KEY `subsidy_1` (`label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `supplier`;
@@ -1684,7 +1696,7 @@ CREATE TABLE `supplier` (
   UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `tax`;
@@ -1704,7 +1716,7 @@ CREATE TABLE `tax` (
   KEY `six_account_id` (`six_account_id`),
   FOREIGN KEY (`four_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`six_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `tax_paiement`;
@@ -1721,7 +1733,7 @@ CREATE TABLE `tax_paiement` (
   KEY `tax_id` (`tax_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `taxe_ipr`;
 
@@ -1740,7 +1752,7 @@ CREATE TABLE `taxe_ipr` (
   `cumul_mensuel` float DEFAULT NULL,
   `currency_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `transaction_type`;
@@ -1753,7 +1765,7 @@ CREATE TABLE `transaction_type` (
   `fixed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_type_1` (`id`, `text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `unit`;
@@ -1768,7 +1780,7 @@ CREATE TABLE `unit` (
   `path` tinytext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit_1` (`name`, `key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user`;
 
@@ -1783,7 +1795,7 @@ CREATE TABLE `user` (
   `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `village`;
@@ -1796,7 +1808,7 @@ CREATE TABLE `village` (
   UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- NOTE: type_id is the transaction_type table.  FK not possible due to NULLs.
 DROP TABLE IF EXISTS `voucher`;
@@ -1820,7 +1832,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   UNIQUE KEY `voucher_1` (`project_id`, `reference`),
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
@@ -1836,7 +1848,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   KEY `voucher_uuid` (`voucher_uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- a view to make SQL statements look nicer.
 CREATE VIEW combined_ledger AS
