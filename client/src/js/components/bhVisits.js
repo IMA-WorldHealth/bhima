@@ -20,6 +20,9 @@ function VisitsController(Patients, Notify) {
 
   vm.visiting = false;
 
+  vm.admit = Patients.Visits.openAdmission;
+
+
   Patients.Visits.read(vm.patientUuid, { limit : DEFAULT_VISIT_LIMIT })
     .then(function (results) {
       vm.loaded = true;
@@ -29,6 +32,7 @@ function VisitsController(Patients, Notify) {
     .finally(function () {
       vm.loading = false;
     });
+
 
 
   console.log(vm.patientUuid);

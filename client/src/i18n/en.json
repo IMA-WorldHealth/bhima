@@ -936,6 +936,7 @@
     "VISITS" : { 
       "TITLE" : "Patient Visits",
       "ADMIT" : "Admit Patient",
+      "ADMISSION" : "Admission",
       "DISCHARGE" : "Discharge Patient",
       "ORIGINAL" : "This patient has no logged visits.",
       "RECENT" : "Recent Visits"
