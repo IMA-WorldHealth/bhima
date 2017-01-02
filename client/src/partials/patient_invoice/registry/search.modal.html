@@ -12,12 +12,12 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow: auto; max-height: 80vh;">
+  <div class="modal-body" style="overflow: auto; max-height: 400px;">
 
     <!-- billing date fieldset -->
     <fieldset>
       <legend>
-        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.BILLING_DATE" | translate }}
+        {{ "FORM.LABELS.BILLING_DATE" | translate }}
       </legend>
 
       <ul class="list-inline" data-invoice-date>
@@ -81,7 +81,7 @@
     <!-- invoice details fieldset -->
     <fieldset>
       <legend>
-        <i class="fa fa-list-alt"></i> {{ "FORM.LABELS.INVOICES_DETAILS" | translate }}
+        {{ "FORM.LABELS.INVOICES_DETAILS" | translate }}
       </legend>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">

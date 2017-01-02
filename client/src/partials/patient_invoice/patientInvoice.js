@@ -145,7 +145,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.Invoice.clearCache();
 
     Receipts.invoice(invoice.uuid, true)
-    .then(function () { clear(); });
+      .then(function () { clear(); });
   }
 
   // register the patient search api
@@ -154,6 +154,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   }
 
   function setDefaultService() {
+
     // select service based on criteria (currently 0th element)
     var SERVICE_INDEX = 0;
 
