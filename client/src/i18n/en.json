@@ -363,7 +363,7 @@
       "INVALID"             : "invalid data"
     },
     "INFO": {
-      "BY"                   : "By",
+      "BY"                   : "by",
       "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
@@ -433,7 +433,7 @@
       "BANK_ACCOUNT"           : "Bank Account",
       "BILLING_DATE"           : "Billing Date",
       "BILLING_SERVICES"       : "Billing Services Applied",
-      "BY"                     : "By",
+      "BY"                     : "by",
       "ON"                     : "On",
       "BY_ID"                  : "By Id",
       "BY_NAME"                : "By Name",
@@ -1216,7 +1216,7 @@
       "BILL"               : "Bill",
       "BILLED_BY"          : "Billed by",
       "BILLING_DATE"       : "Billing Date",
-      "BY"                 : "By",
+      "BY"                 : "by",
       "CASHBOX"            : "Cashbox",
       "CANCEL_CASH"        : "Cancel Cash Payment",
       "CHARGE"             : "Charge",

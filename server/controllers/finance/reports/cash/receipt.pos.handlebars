@@ -5,7 +5,7 @@
 <body>
 <p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
 <h2 style="text-align : left; margin : 0px">{{payment.reference}}</h2>
-<p style="margin-top : 0px">{{date payment.date}}</p>
+<p style="margin-top : 0px">{{date payment.date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
 
 <div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
 

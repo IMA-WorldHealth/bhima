@@ -34,7 +34,7 @@ exports.build = build;
 
 function build(req, res, next) {
   const qs = req.query;
-  const options = _.defaults(defaults, qs);
+  const options = _.defaults(qs, defaults);
 
   let report;
   let template;

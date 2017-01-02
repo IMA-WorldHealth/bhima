@@ -4,11 +4,15 @@
 </head>
 <body>
 <p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
-<!-- <p>----------------------------------------------------------------</p> -->
+<h2 style="text-align : left; margin : 0px">{{reference}}</h2>
+<p style="margin-top : 0px">
+  {{date date}} {{translate 'FORM.LABELS.BY'}} {{display_name}}
+</p>
+
 <div style="text-align : center;">{{> barcode value=barcode}}</div>
-<p><b>{{recipient.display_name}}</b></p>
-<p>{{recipient.debtor_group_name}}</p>
-<p style="text-transform : uppercase">{{reference}} {{translate 'FORM.LABELS.ON'}} {{date date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
+
+<h2 style="margin-bottom : 0px">{{recipient.display_name}}</h2>
+({{recipient.reference}}) - {{recipient.debtor_group_name}}
 <p>----------------------------------------------------------------</p>
 <table style="width : 100%">
   <thead>
