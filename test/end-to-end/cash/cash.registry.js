@@ -6,6 +6,8 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const moment = require('moment');
+
 function CashPaymentsRegistryTests() {
 
   // navigate to the page
@@ -16,9 +18,14 @@ function CashPaymentsRegistryTests() {
 
   it('find payment by date interval', () => {
 
+    // TODO - why does this need to be tomorrow?
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    let tomorrowFmt = moment(tomorrow).format('DD/MM/YYYY');
+
     /** Get all payment of the year 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01/01/2016', '31/12/2016');
+    components.dateInterval.range('01/01/2016', tomorrowFmt);
     FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 

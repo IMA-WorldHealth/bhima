@@ -32,8 +32,11 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const identifiers = require('../../config/identifiers');
+const barcode = require('../../lib/barcode');
 
 const cashCreate = require('./cash.create');
+
+const entityIdentifier = identifiers.CASH_PAYMENT;
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -104,6 +107,7 @@ function lookup(id) {
       // bind the cash items to the "items" property and return
       record.items = rows;
 
+      record.barcode = barcode.generate(entityIdentifier, record.uuid);
       return record;
     });
 }

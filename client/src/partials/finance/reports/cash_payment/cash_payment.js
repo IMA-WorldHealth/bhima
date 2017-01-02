@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'ModalService',
-  'uiGridConstants',  'uiGridGroupingConstants', 'LanguageService'
+  'uiGridConstants',  'uiGridGroupingConstants', 'LanguageService', 'ReceiptService'
 ];
 
 /**
@@ -12,7 +12,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages, Receipts) {
   var vm = this;
 
   // global variables
@@ -101,7 +101,8 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal
   // showReceipt
   function showReceipt(uuid) {
     var url = '/reports/finance/cash/' + uuid;
-    var params = { renderer: 'pdf', lang: Languages.key };
+    var params = { renderer: 'pdf', lang: Languages.key, posReceipt : Receipts.posReceipt };
+
     Modal.openReports({ url: url, params: params });
   }
 

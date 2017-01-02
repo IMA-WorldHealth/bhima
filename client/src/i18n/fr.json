@@ -439,6 +439,7 @@
       "BILLING_DATE"           : "Date Facturation",
       "BILLING_SERVICES"       : "Les services de facturation appliquée",
       "BY"                     : "Par",
+      "ON"                     : "Sur",
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
@@ -482,6 +483,7 @@
       "DETAILS"                : "Details",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
+      "DISABLED"               : "Désactivée",
       "DOB"                    : "Date de Naissance",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -489,6 +491,7 @@
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
+      "ENABLED"                : "Activé",
       "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTER_BIRTH_YEAR"       : "Entrez seulement l'année de naissance",
@@ -666,6 +669,7 @@
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
       "USE"                    : "Utilisation",
       "USERNAME"               : "Nom Utilisateur",
+      "USE_POS_RECEIPT"        : "Impression POS",
       "USER"                   : "Utilisateur",
       "VALUE"                  : "Valeur",
       "VILLAGE"                : "Village/Commune",
@@ -804,6 +808,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
     "EXCHANGE_SET"   : "Configuré le",
@@ -1188,7 +1193,8 @@
   "SETTINGS": {
     "TITLE" : "Paramètres",
     "BUG_LINK" : "Signaler un Problème",
-    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO" : "Si cette option est activé, l'impression sera fait avec l'imprimante thermique."
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Ajout d'une subvention",

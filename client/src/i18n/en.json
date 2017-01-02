@@ -363,7 +363,7 @@
       "INVALID"             : "invalid data"
     },
     "INFO": {
-      "BY"                   : "By",
+      "BY"                   : "by",
       "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
@@ -433,7 +433,8 @@
       "BANK_ACCOUNT"           : "Bank Account",
       "BILLING_DATE"           : "Billing Date",
       "BILLING_SERVICES"       : "Billing Services Applied",
-      "BY"                     : "By",
+      "BY"                     : "by",
+      "ON"                     : "On",
       "BY_ID"                  : "By Id",
       "BY_NAME"                : "By Name",
       "CANCEL"                 : "Cancel",
@@ -477,6 +478,7 @@
       "DETAILS"                : "Details",
       "DEBTOR_CREDITOR"        : "Debtor/Creditor",
       "DISTRIBUTABLE"          : "Distributable",
+      "DISABLED"               : "Disabled",
       "DOB"                    : "Date of Birth",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -484,6 +486,7 @@
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
+      "ENABLED"                : "Enabled",
       "END"                    : "End",
       "END_DATE"               : "End Date",
       "ENTERPRISE"             : "Enterprise",
@@ -656,6 +659,7 @@
       "UPDATE_GROUP_DEBTOR"    : "Update Debtor Group",
       "UPDATE_PATIENT_GROUP"   : "Update Patient Group Subscription",
       "USE"                    : "Use",
+      "USE_POS_RECEIPT"        : "POS Receipts",
       "USER"                   : "Utilisateur",
       "USERNAME"               : "Username",
       "UNIT"                   : "Galenique form",
@@ -791,6 +795,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA FINANCE",
     "CONNECTED_USER" : "User Connected",
     "EXCHANGE_RATE"  : "Exchange Rate",
     "EXCHANGE_SET"   : "Set on",
@@ -899,6 +904,7 @@
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",
     "STAT_TOTAL_INVOICE" : "Total Invoices",
+    "LABEL_PAID"         : "Invoice has been paid in full",
     "STAT_PAID"          : "Paid",
     "STAT_NOT_PAID"      : "Waiting Payment",
     "SUBSIDY_BREAKDOWN"  : "Subsidy Breakdown",
@@ -1163,7 +1169,8 @@
   "SETTINGS": {
     "TITLE" : "Settings",
     "BUG_LINK" : "Report an Issue",
-    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO" : "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format"
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",
@@ -1209,7 +1216,7 @@
       "BILL"               : "Bill",
       "BILLED_BY"          : "Billed by",
       "BILLING_DATE"       : "Billing Date",
-      "BY"                 : "By",
+      "BY"                 : "by",
       "CASHBOX"            : "Cashbox",
       "CANCEL_CASH"        : "Cancel Cash Payment",
       "CHARGE"             : "Charge",

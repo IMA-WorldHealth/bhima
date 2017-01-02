@@ -17,9 +17,11 @@ const uuid   = require('node-uuid');
 const _      = require('lodash');
 
 const identifiers = require('../../config/identifiers');
+const entityIdentifier = identifiers.INVOICE;
 
 const util   = require('../../lib/util');
 const db     = require('../../lib/db');
+const barcode = require('../../lib/barcode');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -147,6 +149,9 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(rows => {
       record.subsidy = rows;
+
+      // provide barcode string to be rendered by client/ receipts
+      record.barcode = barcode.generate(entityIdentifier, record.uuid);
       return record;
     });
 }
