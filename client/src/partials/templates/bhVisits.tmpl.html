@@ -28,8 +28,8 @@
       </p>
 
 
-      <button ng-if="!$ctrl.visiting" class="btn btn-default" ng-click="$ctrl.admit()">
-        {{ "PATIENT_RECORDS.VISITS.ADMIT" | translate }}
+      <button class="btn btn-default" ng-click="$ctrl.admit()">
+        {{ $ctrl.visiting ? "PATIENT_RECORDS.VISITS.DISCHARGE" : "PATIENT_RECORDS.VISITS.ADMIT" | translate }}
       </button>
 
     </div>

@@ -29,7 +29,7 @@ function VisitService($http, util, Modal) {
   }
 
   // admission vs. discharge
-  function openAdmission(isAdmission) {
+  function openAdmission(isAdmission, currentVisit) {
     var modalOptions = {
       templateUrl : 'partials/patients/record/units/visits.modal.html',
       controller : 'VisitsAdmissionController',
@@ -37,7 +37,10 @@ function VisitService($http, util, Modal) {
       size : 'md',
       backdrop : 'static',
       animation : false,
-      resolve : function provider() { return isAdmission; }
+      resolve : {
+        isAdmission : function isAdmissionProvider() { return isAdmission; },
+        currentVisit : function currentVisitProvider() { return currentVisit; }
+      }
     };
 
     var instance = Modal.open(modalOptions);

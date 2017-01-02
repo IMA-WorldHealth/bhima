@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('VisitsAdmissionController', VisitsAdmissionController);
 
-VisitsAdmissionController.$inject = ['$uibModalInstance'];
+VisitsAdmissionController.$inject = ['$uibModalInstance', 'isAdmission', 'currentVisit'];
 
-function VisitsAdmissionController(ModalInstance) {
+function VisitsAdmissionController(ModalInstance, isAdmission, currentVisit) {
   var vm = this;
 
   var mockDiagnosis = [
@@ -19,8 +19,20 @@ function VisitsAdmissionController(ModalInstance) {
     }
   ];
 
-  vm.diagnosis = mockDiagnosis;
+  vm.diagnosese = mockDiagnosis;
+  vm.isAdmission = isAdmission;
 
   vm.cancel = ModalInstance.close;
+  vm.admit = admit;
+
+  vm.$loading = false;
+
+  function admit(form) {
+
+    if (form.$invalid) {
+      return;
+    }
+    vm.$loading = true;
+  }
 }
 
