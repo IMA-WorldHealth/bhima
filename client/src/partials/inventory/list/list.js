@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('InventoryListController', InventoryListController);
+  .controller('InventoryListController', InventoryListController);
 
 // dependencies injection
 InventoryListController.$inject = [
@@ -14,7 +14,7 @@ InventoryListController.$inject = [
 function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state) {
   var vm = this;
 
-  /** gobal variables */
+  /** global variables */
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
@@ -41,27 +41,32 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   // grid default options
 
-  var columnDefs  = [
-    {
-      field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
-    },{
-      field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
-      cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
-    },
-    { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
-    { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
-    { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right' },
-    { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
-    { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
-    { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate', cellClass: 'text-right' },
-    { field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate', cellClass: 'text-right' },
-    {
-      field : 'action',
-      displayName : '',
-      cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
-      enableFiltering: false,
-      enableSorting: false,
-      enableColumnMenu: false,
+  var columnDefs  = [{
+    field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
+  },{
+    field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
+    cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
+  }, {
+    field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'
+  }, {
+    field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'
+  }, {
+    field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+  }, {
+    field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'
+  }, {
+    field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'
+  }, {
+    field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+  }, {
+    field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+  }, {
+    field : 'action',
+    displayName : '',
+    cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
+    enableFiltering: false,
+    enableSorting: false,
+    enableColumnMenu: false,
   }];
 
   vm.gridOptions = {

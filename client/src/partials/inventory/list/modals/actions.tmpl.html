@@ -1,15 +1,12 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" bh-form-defaults novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">
-        {{ "FORM.LABELS.INVENTORY" | translate }}
+      <li class="static" translate>FORM.LABELS.INVENTORY</li>
+      <li class="title text-capitalize" ng-show="$ctrl.isCreateState" translate>
+        INVENTORY.ADD_METADATA
       </li>
-      <li class="title text-capitalize" ng-show="$ctrl.isCreateState">
-        {{ "INVENTORY.ADD_METADATA" | translate }}
-      </li>
-
-      <li class="title text-capitalize" ng-show="$ctrl.isUpdateState">
-        {{ "INVENTORY.EDIT_METADATA" | translate }}
+      <li class="title text-capitalize" ng-show="$ctrl.isUpdateState" translate>
+        INVENTORY.EDIT_METADATA
       </li>
     </ol>
   </div>
@@ -18,7 +15,7 @@
     <div
       class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.CODE' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.CODE</label>
       <input ng-model="$ctrl.item.code"
         class="form-control"
         type="text"
@@ -32,7 +29,7 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
       <input ng-model="$ctrl.item.label"
         class="form-control"
         type="text"
@@ -47,13 +44,13 @@
     <div class="checkbox">
       <label>
         <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
-         {{ 'FORM.LABELS.CONSUMABLE' | translate }}
+        <span translate>FORM.LABELS.CONSUMABLE</span>
       </label>
     </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.PRICE' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.PRICE</label>
       <input class="form-control"
         type="number"
         ng-min="0"
@@ -68,14 +65,12 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.GROUP' | translate }}</label>
-      <select
-        class="form-control"
-        name="group"
+      <label class="control-label" translate>FORM.LABELS.GROUP</label>
+      <select class="form-control" name="group"
         ng-model="$ctrl.item.group"
-        ng-options="ig as ig.name for ig in $ctrl.inventoryGroupList"
+        ng-options="ig as ig.name for ig in $ctrl.inventoryGroupList track by ig.uuid"
         required>
-        <option value="" disabled> {{ 'FORM.SELECT.INVENTORY_GROUP' | translate }} </option>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_GROUP</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.group.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -84,14 +79,14 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.type.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.TYPE' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.TYPE</label>
       <select
         class="form-control"
         name="type"
         ng-model="$ctrl.item.type"
-        ng-options="type as type.text for type in $ctrl.inventoryTypeList"
+        ng-options="type as type.text for type in $ctrl.inventoryTypeList track by type.id"
         required>
-        <option value="" disabled> {{ 'FORM.SELECT.INVENTORY_TYPE' | translate }} </option>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_TYPE</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.type.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -100,14 +95,14 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.UNIT' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.UNIT</label>
       <select
         class="form-control"
         name="unit"
         ng-model="$ctrl.item.unit"
         ng-options="unit as unit.text for unit in $ctrl.inventoryUnitList"
         required>
-        <option value="" disabled> {{ 'FORM.SELECT.INVENTORY_UNIT' | translate }} </option>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_UNIT</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.unit.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -115,30 +110,25 @@
     </div>
 
     <div class="form-group">
-      <label class="control-label">{{ 'FORM.LABELS.UNIT_WEIGHT' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.UNIT_WEIGHT</label>
       <input class="form-control" type="number" step="1" name="unit_weight"
         ng-model="$ctrl.item.unit_weight"
         placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_WEIGHT' | translate }}...">
     </div>
 
     <div class="form-group">
-      <label class="control-label">{{ 'FORM.LABELS.UNIT_VOLUME' | translate }}</label>
-      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume"
-        placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
+      <label class="control-label" translate>FORM.LABELS.UNIT_VOLUME</label>
+      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume" placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
     </div>
-
   </div>
 
   <div class="modal-footer">
-    <button type="button"
-      class="btn btn-default"
-      data-method="cancel"
-      ng-click="$ctrl.cancel()">
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    <button type="button" class="btn btn-default" data-method="cancel" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
     <bh-loading-button loading-state="ActionForm.$loading">
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

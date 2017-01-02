@@ -115,15 +115,14 @@ function createInventoryItems(req, res, next) {
  * Update an inventory data entry
  */
 function updateInventoryItems(req, res, next) {
-
   core.updateItemsMetadata(req.body, req.params.uuid)
-  .then((metadata) => {
-    res.status(200).json(metadata);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(metadata => {
+      res.status(200).json(metadata);
+    })
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -159,17 +158,13 @@ function getInventoryItemsById(req, res, next) {
   var uuid = req.params.uuid;
 
   core.getItemsMetadataById(uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEM;
-    }
-
-    res.status(200).json(rows[0]);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(function (row) {
+      res.status(200).json(row);
+    })
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**

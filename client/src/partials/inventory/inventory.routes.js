@@ -79,7 +79,7 @@ function onEnterFactory(stateType) {
         $state.go('^.list', params, { reload : true });
       })
       .catch(function (error) {
-        $state.go('^.list', { id : $state.params.id }, {notify : false });
+        $state.go('^.list', { uuid : $state.params.id }, {notify : false });
       });
   };
 }

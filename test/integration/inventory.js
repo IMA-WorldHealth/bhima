@@ -264,12 +264,12 @@ describe('(/inventory) The Inventory HTTP API', () => {
       .then((res) => {
         // NOTE: Returned data are from the /inventory/:uuid/metadata API
         // these data are not sended by the test but come from join with other table :
-        // label, groupNmae, type, unit
-        expect(res.body[0].uuid).to.be.equal(metadataUpdate.uuid);
-        expect(res.body[0].code).to.be.equal(metadataUpdate.code);
-        expect(res.body[0].text).to.be.equal(metadataUpdate.label);
-        expect(res.body[0].price).to.be.equal(metadataUpdate.price);
-        expect(res.body[0].group_uuid).to.be.equal(metadataUpdate.group_uuid);
+        // label, groupName, type, unit
+        expect(res.body.uuid).to.be.equal(metadataUpdate.uuid);
+        expect(res.body.code).to.be.equal(metadataUpdate.code);
+        expect(res.body.text).to.be.equal(metadataUpdate.label);
+        expect(res.body.price).to.be.equal(metadataUpdate.price);
+        expect(res.body.group_uuid).to.be.equal(metadataUpdate.group_uuid);
       })
       .catch(helpers.handler);
   });

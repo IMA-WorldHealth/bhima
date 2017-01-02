@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('InventoryListActionsModalController', InventoryListActionsModalController);
+  .controller('InventoryListActionsModalController', InventoryListActionsModalController);
 
 InventoryListActionsModalController.$inject = [
   'AccountService', 'InventoryService', 'InventoryGroupService',
@@ -38,14 +38,16 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
       Inventory.create(record) :
       Inventory.update(vm.identifier, record);
 
-    promise
+    return promise
       .then(function (res) {
         var message = vm.isCreateState ?
           'FORM.INFO.CREATE_SUCCESS' :
           'FORM.INFO.UPDATE_SUCCESS';
 
         Notify.success(message);
-        Instance.close(res);
+
+        // pass back the uuid
+        Instance.close(res.uuid);
       })
       .catch(Notify.handleError);
   }

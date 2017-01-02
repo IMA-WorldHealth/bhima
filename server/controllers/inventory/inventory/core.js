@@ -84,7 +84,7 @@ function updateItemsMetadata(record, identifier) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record, record.uuid])
-  .then(() => getItemsMetadataById(identifier));
+    .then(() => getItemsMetadataById(identifier));
 }
 
 /**
@@ -135,7 +135,7 @@ function getItemsMetadata() {
 */
 function getItemsMetadataById(uuid) {
 
-  var sql =
+  const sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.origin_stamp AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
@@ -146,7 +146,7 @@ function getItemsMetadataById(uuid) {
       i.unit_id = iu.id
     WHERE i.uuid = ?;`;
 
-  return db.exec(sql, [db.bid(uuid)]);
+  return db.one(sql, [db.bid(uuid), uuid, 'inventory']);
 }
 
 /**

@@ -13,7 +13,7 @@
  */
 
 angular.module('bhima.filters')
-.filter('currency', CurrencyFilter);
+  .filter('currency', CurrencyFilter);
 
 CurrencyFilter.$inject = [
   'currencyFormat', 'SessionService'
