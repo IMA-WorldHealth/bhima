@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('LocationModalController', LocationModalController);
 
 LocationModalController.$inject = [
-  'LocationService', '$uibModalInstance', 'appcache', 'Store', 'NotifyService'
+  '$rootScope', 'LocationService', '$uibModalInstance', 'appcache', 'Store', 'NotifyService'
 ];
 
 /**
@@ -15,7 +15,7 @@ LocationModalController.$inject = [
  *
  * @class LocationModalController
  */
-function LocationModalController(Locations, Instance, AppCache, Store, Notify) {
+function LocationModalController($rootScope, Locations, Instance, AppCache, Store, Notify) {
   var vm = this;
 
   /** caches the current view in local storage */
@@ -207,6 +207,7 @@ function LocationModalController(Locations, Instance, AppCache, Store, Notify) {
 
         // notify success
         Notify.success('FORM.INFO.CREATE_SUCCESS');
+        $rootScope.$broadcast('LOCATIONS_UPDATED', data);
 
         if (vm.registerMultiple) {
 
@@ -224,6 +225,7 @@ function LocationModalController(Locations, Instance, AppCache, Store, Notify) {
           }
 
         } else {
+
           return Instance.close(data);
         }
       })
