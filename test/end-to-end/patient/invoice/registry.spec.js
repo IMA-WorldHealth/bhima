@@ -31,7 +31,7 @@ describe('Invoice Registry', () => {
     FU.modal.close();
   });
 
-  describe('Searching functionnality of patient', Search);
+  describe('Search', Search);
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
 

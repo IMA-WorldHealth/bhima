@@ -110,7 +110,8 @@
     "TRANSFER": {
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
-      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous."
+      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
+      "SUCCESS" : "Transfer effectué vers le compte de transfer."
     },
     "RECEIPT": {
       "TITLE"   : "Recu",

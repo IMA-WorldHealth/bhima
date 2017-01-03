@@ -18,10 +18,13 @@
 'use strict';
 
 const q = require('q');
+const uuid = require('node-uuid');
+
 const db          = require('../../../lib/db');
-const uuid        = require('node-uuid');
 const NotFound    = require('../../../lib/errors/NotFound');
 const BadRequest  = require('../../../lib/errors/BadRequest');
+
+const identifiers = require('../../../config/identifiers');
 
 exports.list   = list;
 exports.detail = detail;
@@ -148,7 +151,6 @@ function invoices(req, res, next) {
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
       uuids = uuids.map(item => item.uuid);
-
       return invoiceBalances(req.params.uuid, uuids, options);
     })
     .then(function (invoices) {

@@ -14,6 +14,8 @@ const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
 
+  const NUM_INVOICES = 5;
+
   const params = {
     monthBillNumber : 0,
     referenceValue : 'IV.TPA.2',
@@ -103,6 +105,19 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
+  it('clear filters should remove all filters on the registry', () => {
+    FU.buttons.search();
+    FU.input('ModalCtrl.params.reference', 'IV.TPA.2');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(1);
+    expectNumberOfFilters(1);
+
+    FU.buttons.clear();
+
+    expectNumberOfGridRows(NUM_INVOICES);
+    expectNumberOfFilters(0);
+  });
 }
 
 module.exports = InvoiceRegistrySearch;

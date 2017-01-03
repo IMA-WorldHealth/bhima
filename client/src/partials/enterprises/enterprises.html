@@ -63,7 +63,6 @@
                 <ui-select
                   name="gain_account"
                   ng-model="EnterpriseCtrl.enterprise.gain_account_id"
-                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
@@ -91,7 +90,6 @@
                 <ui-select
                   name="loss_account"
                   ng-model="EnterpriseCtrl.enterprise.loss_account_id"
-                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
