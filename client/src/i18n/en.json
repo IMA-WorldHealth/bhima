@@ -939,7 +939,8 @@
       "ADMISSION" : "Admission",
       "DISCHARGE" : "Discharge Patient",
       "ORIGINAL" : "This patient has no logged visits.",
-      "RECENT" : "Recent Visits"
+      "RECENT" : "Recent Visits",
+      "SEARCH_INFO" : "The input will search for diagnoses after 3 characters have been typed."
     },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Account Number",

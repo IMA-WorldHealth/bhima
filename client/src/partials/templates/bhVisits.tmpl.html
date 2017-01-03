@@ -5,7 +5,7 @@
 
     <span class="pull-right">
       <bh-pdf-link
-        pdf-url="reports/medical/patients/{{ CheckInCtrl.id }}/vists"
+        pdf-url="reports/medical/patients/{{ $ctrl.patientUuid }}/checkins"
         disable-cache="true">
       </bh-pdf-link>
     </span>
@@ -13,18 +13,9 @@
 
   <div class="panel-body" style="height : 250px; overflow-y : auto;">
 
-    <!-- <bh-loading-button -->
-      <!-- id="checkin" -->
-      <!-- loading-state="CheckInCtrl.checkingIn" -->
-      <!-- button-class="btn-default btn-block" -->
-      <!-- ng-click="CheckInCtrl.checkin()"> -->
-      <!-- <i class="fa fa-sign-in"></i> -->
-      <!-- {{ "PATIENT_RECORDS.CHECK_IN.SUBMIT" | translate }} -->
-    <!-- </bh-loading-button> -->
-
     <div style="text-align : center">
       <p ng-if="$ctrl.loaded && $ctrl.visits.length===0">
-        {{ "PATIENT_RECORDS.VISITS.ORIGINAL" | translate }}
+      <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
       </p>
 
 
@@ -37,15 +28,27 @@
     <br />
 
     <div ng-if="$ctrl.loaded && $ctrl.visits.length">
-      <p><b>{{ "PATIENT_RECORDS.VISITS.RECENT" | translate }}</b></p>
+      <!-- <p><b>{{ "PATIENT_RECORDS.VISITS.RECENT" | translate }}</b></p> -->
 
-      <ul class="list-unstyled">
-        <li data-check-entry ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
-          <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> {{ "PATIENT_RECORDS.CHECK_IN.BY" | translate }} {{ visit.username }}
-          <br />
-          <span class="icon-spacer text-muted"><i>{{visit.start_date | date : 'medium'}}</i></span>
-        </li>
-      </ul>
+      <!-- <ul class="list-unstyled"> -->
+        <!-- <li data-check-entry ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay"> -->
+      <table>
+        <tbody>
+          <tr ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+          <!-- <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> {{ "PATIENT_RECORDS.CHECK_IN.BY" | translate }} {{ visit.username }} -->
+          <td>{{visit.start_date | date}} -
+
+          <span ng-if="visit.end_date">
+            {{visit.end_date | date}}
+            ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
+          </span>
+          <span ng-if="!visit.end_date">(<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)</span>
+
+          </td>
+          <!-- <br /> -->
+          <!-- <span class="icon-spacer text-muted"><i>{{visit.start_date | date : 'medium'}}</i></span> -->
+        <!-- </li> -->
+      <!-- </ul> -->
     </div>
   </div>
 </div>

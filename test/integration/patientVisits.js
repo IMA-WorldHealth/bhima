@@ -11,7 +11,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
   const KEYS = [
     'patient_uuid', 'uuid', 'start_date', 'end_date', 'start_notes',
     'end_notes', 'start_diagnosis_id', 'end_diagnosis_id', 'is_open',
-    'user_id', 'username'
+    'user_id', 'username', 'start_diagnosis_code', 'start_diagnosis_label'
   ];
 
   it('GET /patients/:uuid/visits returns a list of all patient visits', () => {

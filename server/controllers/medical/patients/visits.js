@@ -33,7 +33,7 @@ exports.discharge = discharge;
 const COLUMNS = `
   BUID(uuid) AS uuid, BUID(patient_uuid) as patient_uuid, start_date, start_notes,
   end_date, end_notes, user_id, user.username, start_diagnosis_id, end_diagnosis_id,
-  ISNULL(end_date) AS is_open
+  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code
 `;
 
 /**
@@ -79,6 +79,7 @@ function list(req, res, next) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN user on patient_visit.user_id = user.id
+    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
     WHERE ${whereQuery}
     ORDER BY start_date DESC
     ${limitQuery}
@@ -106,6 +107,7 @@ function detail(req, res, next) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN user on patient_visit.user_id = user.id
+    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
     WHERE uuid = ?;
   `;
 
@@ -156,6 +158,7 @@ function listByPatient(req, res, next) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN user on patient_visit.user_id = user.id
+    LEFT JOIN icd10 on patient_visit.start_diagnosis_id = icd10.id
     WHERE patient_uuid = ?
     ${diagnosisQuery}
     ORDER BY start_date DESC
@@ -194,6 +197,9 @@ function admission(req, res, next) {
   const visitUuid = uuid.v4();
   data.uuid = db.bid(visitUuid);
   data.patient_uuid = req.params.uuid;
+
+  // add user id
+  data.user_id = req.session.user.id;
 
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.

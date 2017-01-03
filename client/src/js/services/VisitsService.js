@@ -8,7 +8,11 @@ function VisitService($http, util, Modal) {
   var baseUrl = '/patients/';
 
   service.read = read;
-  service.checkin = checkin;
+
+  service.admit = admit;
+  service.discharge = discharge;
+
+  service.diagnoses = diagnoses;
 
   service.openAdmission = openAdmission;
 
@@ -20,16 +24,59 @@ function VisitService($http, util, Modal) {
       .then(util.unwrapHttpResponse);
   }
 
-  function checkin(patientUuid) {
-    if (!patientUuid) {
-      return;
+  // function checkin(patientUuid) {
+  //   if (!patientUuid) {
+  //     return;
+  //   }
+  //   return $http.post(baseUrl.concat(patientUuid, '/checkin'))
+  //     .then(util.unwrapHttpResponse);
+  // }
+
+  function admit(patientUuid, visitDetails) {
+    if (!patientUuid) { return; }
+
+    // format admission specific information
+    var details = angular.copy(visitDetails);
+    details.start_diagnosis_id = details.diagnosis.id;
+
+    if (details.notes) {
+      details.start_notes = details.notes;
+      delete details.notes;
     }
-    return $http.post(baseUrl.concat(patientUuid, '/checkin'))
+
+    delete details.diagnosis;
+
+    return $http.post(baseUrl.concat(patientUuid, '/visits/admission'), details)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function discharge(patientUuid, visitDetails) {
+    if (!patientUuid) { return; }
+
+    // format admission specific information
+    var details = angular.copy(visitDetails);
+
+    if (details.notes) {
+      details.end_notes = details.notes;
+      delete details.notes;
+    }
+
+    details.end_diagnosis_id = details.diagnosis.id;
+
+    delete details.diagnosis;
+
+    return $http.post(baseUrl.concat(patientUuid, '/visits/discharge'), details)
+      .then(util.unwrapHttpResponse);
+
+  }
+
+  function diagnoses() {
+    return $http.get('/diagnoses')
       .then(util.unwrapHttpResponse);
   }
 
   // admission vs. discharge
-  function openAdmission(isAdmission, currentVisit) {
+  function openAdmission(patientUuid, isAdmission, currentVisit) {
     var modalOptions = {
       templateUrl : 'partials/patients/record/units/visits.modal.html',
       controller : 'VisitsAdmissionController',
@@ -38,6 +85,7 @@ function VisitService($http, util, Modal) {
       backdrop : 'static',
       animation : false,
       resolve : {
+        patient : function patientProvider() { return patientUuid; },
         isAdmission : function isAdmissionProvider() { return isAdmission; },
         currentVisit : function currentVisitProvider() { return currentVisit; }
       }

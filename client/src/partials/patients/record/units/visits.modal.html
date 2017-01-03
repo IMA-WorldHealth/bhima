@@ -8,24 +8,31 @@
 <form name="VisitForm" bh-submit="AdmitCtrl.admit(VisitForm)" bh-form-defaults novalidate>
 <div class="modal-body">
 
+  <div ng-if="!AdmitCtrl.isAdmission" class="form-group">
+    <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
+    <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
+  </div>
+
   <div
     class="form-group"
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">
+
+
     <label class="control-label">{{ "FORM.LABELS.DIAGNOSIS" | translate }}</label>
 
-    <ui-select
+    <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
+    <!-- ng-required="!AdmitCtrl.isAdmission"> -->
+    <input
+      type="text"
       name="diagnosis"
-      ng-model="AdmitCtrl.diagnosis"
-      theme="bootstrap"
-      ng-required="!AdmitCtrl.isAdmission">
-      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.DIAGNOSIES' | translate }}">
-        <span>{{$select.selected.label}} ({{$select.selected.code}})</span>
-      </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="diagnosis in AdmitCtrl.diagnosese | filter:$select.search">
-        <span ng-bind-html="diagnosis.label | highlight:$select.search"></span>
-        (<span ng-bind-html="diagnosis.code | highlight:$select.search"></span>)
-      </ui-select-choices>
-    </ui-select>
+      class="form-control"
+      ng-model="AdmitCtrl.visit.diagnosis"
+      uib-typeahead="diagnosis as diagnosis.label for diagnosis in AdmitCtrl.diagnoses | filter:$viewValue | limitTo:8"
+      typeahead-on-select="AdmitCtrl.select()"
+      autocomplete="off"
+      typeahead-min-length="3"
+      required>
+    </label>
 
     <div class="help-block" ng-messages="VisitForm.diagnosis.$error" ng-show="VisitForm.$submitted">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -36,7 +43,7 @@
     class="form-group"
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
     <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
-    <textarea name="notes" ng-model="AdmitCtrl.notes" class="form-control"></textarea>
+    <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
 
     <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
