@@ -859,7 +859,8 @@
     "MANAGE_SECTOR"         : "Gerer Les Secteurs",
     "MANAGE_VILLAGE"        : "Gerer Les Villages/Communes",
     "REGISTERED"            : "Localisations Enregistrées",
-    "TITLE"                 : "Gestion des localisations"
+    "TITLE"                 : "Gestion des localisations",
+    "REGISTER_AGAIN"        : "Enregisterer une autre Localisation"
   },
   "LOGIN": {
     "TITLE" : "Authentification"

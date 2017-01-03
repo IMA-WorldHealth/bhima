@@ -207,6 +207,7 @@ function LocationSelectController(Locations, $scope, $timeout) {
       if (angular.isDefined(vm.name)) {
         $scope[vm.name].$bhValue = vm.village.uuid;
       }
+
       vm.locationUuid = vm.village.uuid;
     }
   }

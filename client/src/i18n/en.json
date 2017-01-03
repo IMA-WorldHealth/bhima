@@ -846,7 +846,8 @@
     "MANAGE_SECTOR"         : "Manage Sector",
     "MANAGE_VILLAGE"        : "Manage Village/Township",
     "REGISTERED"            : "Registered Locations",
-    "TITLE"                 : "Location Manager"
+    "TITLE"                 : "Location Manager",
+    "REGISTER_AGAIN"        : "Register another Location"
   },
   "LOGIN": {
     "TITLE" : "Authentication"
