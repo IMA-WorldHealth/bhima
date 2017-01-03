@@ -13,16 +13,14 @@
           class="btn btn-default"
           ng-class="{ 'active' : LocationModalCtrl.view.index === view.index }"
           ng-click="LocationModalCtrl.setView(view.cacheKey)"
-          data-location-view-key="{{ key }}"
-          >
+          data-location-view-key="{{ key }}">
           {{ view.translateKey | translate }}
         </button>
       </div>
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$invalid }"
-      >
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$invalid }">
       <label class="control-label">
         {{ "FORM.LABELS.COUNTRY" | translate }}
       </label>
@@ -33,8 +31,7 @@
         ng-model="LocationModalCtrl.country"
         ng-change="LocationModalCtrl.loadProvinces()"
         ng-options="country as country.name for country in LocationModalCtrl.countries track by country.uuid"
-        required
-        >
+        required>
         <option value="" disabled>{{ LocationModalCtrl.messages.country | translate }}</option>
       </select>
       <input
@@ -48,8 +45,7 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$invalid }"
-      ng-if="LocationModalCtrl.view.index > 1"
-      >
+      ng-if="LocationModalCtrl.view.index > 1">
       <label class="control-label">
         {{ "FORM.LABELS.PROVINCE" | translate }}
       </label>
@@ -100,8 +96,7 @@
 
     <div class="form-group"
       ng-if="LocationModalCtrl.view.index > 3"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$invalid }"
-      >
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$invalid }">
       <label class="control-label">
         {{ "FORM.LABELS.VILLAGE" | translate }}
       </label>

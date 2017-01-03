@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('LocationModalController', LocationModalController);
 
 LocationModalController.$inject = [
-  'LocationService', '$uibModalInstance', 'appcache'
+  '$rootScope', 'LocationService', '$uibModalInstance', 'appcache'
 ];
 
 /**
@@ -15,7 +15,7 @@ LocationModalController.$inject = [
  *
  * @class LocationModalController
  */
-function LocationModalController(Locations, Instance, AppCache) {
+function LocationModalController($rootScope, Locations, Instance, AppCache) {
   var vm = this;
 
   /** caches the current view in local storage */
@@ -200,6 +200,8 @@ function LocationModalController(Locations, Instance, AppCache) {
     }
 
     return promise.then(function (data) {
+      // udpate all instances of bhLocationSelect
+      $rootScope.$broadcast('LOCATIONS_UPDATED', data);
       return Instance.close(data);
     })
     .catch(function (error) {
