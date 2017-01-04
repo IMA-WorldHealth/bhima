@@ -99,15 +99,14 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
  * Create a new inventory data entry
  */
 function createInventoryItems(req, res, next) {
-
   core.createItemsMetadata(req.body, req.session)
-  .then((identifier) => {
-    res.status(201).json({ uuid: identifier });
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((identifier) => {
+      res.status(201).json({ uuid: identifier });
+    })
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**

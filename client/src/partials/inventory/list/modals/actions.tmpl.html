@@ -82,47 +82,47 @@
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group.$invalid }">
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group_uuid.$invalid }">
       <label class="control-label" translate>FORM.LABELS.GROUP</label>
-      <select class="form-control" name="group"
-        ng-model="$ctrl.item.group"
-        ng-options="ig as ig.name for ig in $ctrl.inventoryGroupList track by ig.uuid"
+      <select class="form-control" name="group_uuid"
+        ng-model="$ctrl.item.group_uuid"
+        ng-options="group.uuid as group.name for group in $ctrl.groups"
         required>
         <option value="" disabled translate>FORM.SELECT.INVENTORY_GROUP</option>
       </select>
-      <div class="help-block" ng-messages="ActionForm.group.$error" ng-show="ActionForm.$submitted">
+      <div class="help-block" ng-messages="ActionForm.group_uuid.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.type.$invalid }">
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.type_id.$invalid }">
       <label class="control-label" translate>FORM.LABELS.TYPE</label>
       <select
         class="form-control"
-        name="type"
-        ng-model="$ctrl.item.type"
-        ng-options="type as type.text for type in $ctrl.inventoryTypeList track by type.id"
+        name="type_id"
+        ng-model="$ctrl.item.type_id"
+        ng-options="type.id as type.text for type in $ctrl.types"
         required>
         <option value="" disabled translate>FORM.SELECT.INVENTORY_TYPE</option>
       </select>
-      <div class="help-block" ng-messages="ActionForm.type.$error" ng-show="ActionForm.$submitted">
+      <div class="help-block" ng-messages="ActionForm.type_id.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit.$invalid }">
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit_id.$invalid }">
       <label class="control-label" translate>FORM.LABELS.UNIT</label>
       <select
         class="form-control"
-        name="unit"
-        ng-model="$ctrl.item.unit"
-        ng-options="unit as unit.text for unit in $ctrl.inventoryUnitList"
+        name="unit_id"
+        ng-model="$ctrl.item.unit_id"
+        ng-options="unit.id as unit.text for unit in $ctrl.units"
         required>
         <option value="" disabled translate>FORM.SELECT.INVENTORY_UNIT</option>
       </select>
-      <div class="help-block" ng-messages="ActionForm.unit.$error" ng-show="ActionForm.$submitted">
+      <div class="help-block" ng-messages="ActionForm.unit_id.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>

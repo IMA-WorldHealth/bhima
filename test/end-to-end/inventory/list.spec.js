@@ -48,9 +48,9 @@ describe('Inventory List', () => {
     FU.input('$ctrl.item.code', metadata.code);
     element(by.model('$ctrl.item.consumable')).click();
     FU.input('$ctrl.item.price', metadata.price);
-    FU.select('$ctrl.item.group', metadata.group);
-    FU.select('$ctrl.item.type', metadata.type);
-    FU.select('$ctrl.item.unit', metadata.unit);
+    FU.select('$ctrl.item.group_uuid', metadata.group);
+    FU.select('$ctrl.item.type_id', metadata.type);
+    FU.select('$ctrl.item.unit_id', metadata.unit);
     FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
     FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
     FU.modal.submit();
@@ -70,9 +70,9 @@ describe('Inventory List', () => {
     FU.validation.ok('$ctrl.item.unit_volume');
     FU.validation.error('$ctrl.item.code');
     FU.validation.error('$ctrl.item.price');
-    FU.validation.error('$ctrl.item.group');
-    FU.validation.error('$ctrl.item.type');
-    FU.validation.error('$ctrl.item.unit');
+    FU.validation.error('$ctrl.item.group_uuid');
+    FU.validation.error('$ctrl.item.type_id');
+    FU.validation.error('$ctrl.item.unit_id');
 
     //components.notification.hasDanger();
 
@@ -85,9 +85,9 @@ describe('Inventory List', () => {
     FU.input('$ctrl.item.code', metadataUpdate.code);
     element(by.model('$ctrl.item.consumable')).click();
     FU.input('$ctrl.item.price', metadataUpdate.price);
-    FU.select('$ctrl.item.group', metadataUpdate.group);
-    FU.select('$ctrl.item.type', metadataUpdate.type);
-    FU.select('$ctrl.item.unit', metadataUpdate.unit);
+    FU.select('$ctrl.item.group_uuid', metadataUpdate.group);
+    FU.select('$ctrl.item.type_id', metadataUpdate.type);
+    FU.select('$ctrl.item.unit_id', metadataUpdate.unit);
     FU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
     FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
 
