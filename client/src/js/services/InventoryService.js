@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('InventoryService', InventoryService);
+  .service('InventoryService', InventoryService);
 
 InventoryService.$inject = [ 'PrototypeApiService' ];
 

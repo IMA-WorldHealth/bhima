@@ -4,14 +4,14 @@ angular.module('bhima.controllers')
 // dependencies injection
 InventoryListController.$inject = [
   '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants',
-  'ModalService', '$state'
+  'ModalService', '$state', '$rootScope'
 ];
 
 /**
  * Inventory List Controllers
  * This controller is responsible of the inventory list module
  */
-function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state) {
+function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state, $rootScope) {
   var vm = this;
 
   /** global variables */
@@ -19,30 +19,12 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.gridOptions = {};
   vm.gridApi = {};
 
-  /** paths in the headercrumb */
-  vm.bcPaths = [
-    { label : 'TREE.INVENTORY' },
-    { label : 'TREE.INVENTORY_LIST' }
-  ];
-
-  /** buttons in the headercrumb */
-  vm.bcButtons = [
-    { icon: 'fa fa-filter', label: $translate.instant('FORM.BUTTONS.FILTER'),
-      action: toggleFilter, color: 'btn-default'
-    },
-    { icon: 'fa fa-plus', label: $translate.instant('FORM.LABELS.ADD'),
-      action: addInventoryItem, color: 'btn-default',
-      dataMethod: 'create'
-    }
-  ];
-
-  /** button Print */
-  vm.buttonPrint = { pdfUrl: '/reports/inventory/items' };
+  vm.toggleFilter = toggleFilter;
 
   // grid default options
-
   var columnDefs  = [{
-    field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
+    field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate',
+    aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
   },{
     field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
     cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
@@ -72,6 +54,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.gridOptions = {
     appScopeProvider : vm,
     enableFiltering  : vm.filterEnabled,
+    showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
     columnDefs: columnDefs,
@@ -83,30 +66,14 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.gridApi = gridApi;
   }
 
-  /** expose to the view */
-  vm.addInventoryItem  = addInventoryItem;
-  vm.editInventoryItem = editInventoryItem;
-  vm.toggleFilter      = toggleFilter;
-
   /** initial setting start */
   startup();
-
-  /** add inventory item */
-  function addInventoryItem() {
-    $state.go('inventory.create');
-  }
-
-  /** update inventory item */
-  function editInventoryItem(item) {
-    $state.go('inventory.update', { uuid : item.uuid });
-  }
 
   /** enable filter */
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[0].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
     vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   /** startup */
@@ -117,4 +84,9 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       })
       .catch(Notify.handleError);
   }
+
+  // the inventory methods``
+  //$rootScope.$on('inventory:created', vm.InventoryStore.updateViewInsert.bind(vm.Accounts));
+  // $rootScope.$on('inventory:deleted', vm.InventoryStore.updateViewDelete.bind(vm.Accounts));
+  // $rootScope.$on('inventory:updated', handleUpdatedAccount);
 }
