@@ -35,13 +35,15 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   }, {
     field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
   }, {
+    field : 'default_quantity', displayName : 'FORM.LABELS.DEFAULT_QUANTITY', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+  }, {
     field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'
   }, {
     field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'
   }, {
-    field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+    field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate', cellClass: 'text-right', type:'number', visible: false
   }, {
-    field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate', cellClass: 'text-right', type:'number'
+    field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate', cellClass: 'text-right', type:'number', visible: false
   }, {
     field : 'action',
     displayName : '',

@@ -231,6 +231,7 @@ describe('(/inventory) The Inventory HTTP API', () => {
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article',
     price : 5,
+    default_quantity: 15,
     group_uuid : inventoryGroup.uuid,
     unit_id : 1,
     type_id : 1,

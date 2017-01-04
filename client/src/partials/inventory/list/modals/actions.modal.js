@@ -16,6 +16,9 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
   vm.isUpdateState = angular.isDefined(vm.identifier);
   vm.isCreateState = !angular.isDefined(vm.identifier);
 
+  // toggle for creating multiple inventory items at once
+  vm.createAnotherItem = false;
+
   // variables for storage
   var GroupStore = {};
   var TypeStore  = {};
@@ -46,6 +49,11 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
         Notify.success(message);
 
+        if (vm.createAnotherItem) {
+          item = vm.item = {};
+          return;
+        }
+
         // pass back the uuid
         Instance.close(res.uuid);
       })
@@ -59,7 +67,6 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
 
   /** startup */
   function startup() {
-
 
     // Inventory Group
     var inventoryGroupPromise = InventoryGroup.read()

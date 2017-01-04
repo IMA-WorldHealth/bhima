@@ -63,6 +63,24 @@
       </div>
     </div>
 
+    <!-- default quantity -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.default_quantity.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.DEFAULT_QUANTITY
+      </label>
+        <bh-info template="default_quantity.tmpl.html" direction="right"></bh-info>
+      <input class="form-control"
+        type="number"
+        ng-min="1"
+        name="default_quantity"
+        ng-model="$ctrl.item.default_quantity"
+        placeholder="{{ 'FORM.PLACEHOLDERS.QUANTITY' | translate }}...">
+      <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group.$invalid }">
       <label class="control-label" translate>FORM.LABELS.GROUP</label>
@@ -123,6 +141,13 @@
   </div>
 
   <div class="modal-footer">
+
+    <div class="checkbox" style="display : inline-block" ng-if="$ctrl.isCreateState">
+      <label>
+        <input type="checkbox" ng-model="$ctrl.createAnotherItem"> <span translate>INVENTORY.CREATE_ANOTHER</span>
+      </label>
+    </div>
+
     <button type="button" class="btn btn-default" data-method="cancel" ng-click="$ctrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
@@ -132,3 +157,10 @@
     </bh-loading-button>
   </div>
 </form>
+
+<script type="text/ng-template" id="default_quantity.tmpl.html">
+  <dl style="margin-bottom: 0; padding-bottom:0">
+    <dt translate>FORM.LABELS.DEFAULT_QUANTITY</dt>
+    <dd translate>INVENTORY.DEFAULT_QUANTITY_DEFINITION</dd>
+  </dl>
+</script>
