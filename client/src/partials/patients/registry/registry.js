@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants', '$translate'
+  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService'
 ];
 
 /**
@@ -10,10 +10,11 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns) {
   var vm = this;
 
-  var cache = AppCache('PatientRegistry');
+  var cacheKey = 'PatientRegistry';
+  var cache = AppCache(cacheKey);
 
   var patientDetailActionTemplate =
     '<div class="ui-grid-cell-contents text-action" ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
@@ -41,6 +42,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   vm.clearFilters = clearFilters;
   vm.patientCard = patientCard;
   vm.filterBarHeight = {};
+  vm.openColumnConfiguration = openColumnConfiguration;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -75,6 +77,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     fastWatch: true,
     columnDefs : columnDefs
   };
+
+  var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
 
   // error handler
   function handler(error) {
@@ -126,6 +130,10 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
         cacheFilters(parameters);
         return load(vm.filters);
       });
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.

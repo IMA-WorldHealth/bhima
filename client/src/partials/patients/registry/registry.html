@@ -14,6 +14,16 @@
           <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <button
+          ng-click="PatientRegistryCtrl.openColumnConfiguration()"
+          data-method="config"
+          class="btn btn-default">
+          <i class="fa fa-cogs"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+        </button>
+      </div>
+
       <div class="toolbar-item">
         <bh-pdf-print
           pdf-url="reports/medical/patients"
