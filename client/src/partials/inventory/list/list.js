@@ -76,7 +76,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  /** startup */
+  /* startup */
   function startup() {
     Inventory.read()
       .then(function (inventory) {
@@ -84,9 +84,4 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       })
       .catch(Notify.handleError);
   }
-
-  // the inventory methods``
-  //$rootScope.$on('inventory:created', vm.InventoryStore.updateViewInsert.bind(vm.Accounts));
-  // $rootScope.$on('inventory:deleted', vm.InventoryStore.updateViewDelete.bind(vm.Accounts));
-  // $rootScope.$on('inventory:updated', handleUpdatedAccount);
 }
