@@ -110,7 +110,8 @@
     "TRANSFER": {
       "TITLE" : "New Cash Transfer",
       "ACTION" : "You are transferring funds out of the cashbox.",
-      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below."
+      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below.",
+      "SUCCESS" : "Successfully transferred money out of the cash window."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -845,7 +846,8 @@
     "MANAGE_SECTOR"         : "Manage Sector",
     "MANAGE_VILLAGE"        : "Manage Village/Township",
     "REGISTERED"            : "Registered Locations",
-    "TITLE"                 : "Location Manager"
+    "TITLE"                 : "Location Manager",
+    "REGISTER_AGAIN"        : "Register another Location"
   },
   "LOGIN": {
     "TITLE" : "Authentication"

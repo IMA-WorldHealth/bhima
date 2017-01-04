@@ -1,8 +1,10 @@
 /* global element, by, browser */
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
-const helpers = require('../shared/helpers');
 
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
@@ -29,7 +31,6 @@ function PatientRegistrySearch() {
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-
 
   function expectNumberOfGridRows(number) {
     expect(rows.count(),
@@ -171,4 +172,3 @@ function PatientRegistrySearch() {
 }
 
 module.exports = PatientRegistrySearch;
-

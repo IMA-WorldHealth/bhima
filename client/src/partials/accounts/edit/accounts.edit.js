@@ -141,7 +141,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   // @todo form validation using validators on a component
   function titleChangedValidation(newAccountType) {
     var notTitleAccount = Number(newAccountType) !== Constants.accounts.TITLE;
-    var hasChildren = vm.account.children.length;
+    var hasChildren = vm.account.children && vm.account.children.length;
 
     if (notTitleAccount && hasChildren) {
       vm.invalidTitleAccount = true;

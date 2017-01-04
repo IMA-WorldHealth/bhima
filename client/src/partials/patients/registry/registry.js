@@ -40,6 +40,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.patientCard = patientCard;
+  vm.filterBarHeight = {};
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -48,15 +49,16 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'reference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       aggregationType: uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true, headerCellFilter: 'translate'
+      aggregationHideLabel : true, headerCellFilter: 'translate',
+      footerCellClass : 'text-center'
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
-    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate' },
+    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate', type: 'number' },
     { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter: 'translate' },
     { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate' },
     { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter: 'translate' },
-    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate' },
-    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate' },
+    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate', type: 'date' },
+    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate', type: 'date' },
     { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
     { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
     { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
@@ -130,6 +132,10 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   function cacheFilters(filters) {
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Patients.formatFilterParameters(filters);
+
+    // check if there are filters applied
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+      { 'height' : 'calc(100vh - 105px)' } : {};
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -166,6 +172,10 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     vm.filters = cache.filters;
     vm.filtersFmt = Patients.formatFilterParameters(cache.filters || {});
     load(vm.filters);
+
+    // check if there are filters applied
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+      { 'height' : 'calc(100vh - 105px)' } : {};
   }
 
   // fire up the module

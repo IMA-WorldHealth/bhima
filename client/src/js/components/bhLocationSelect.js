@@ -14,7 +14,7 @@ angular.module('bhima.components')
   }
 });
 
-LocationSelectController.$inject =  [ 'LocationService', '$scope', '$timeout' ];
+LocationSelectController.$inject =  [ 'LocationService', '$rootScope', '$scope', '$timeout' ];
 
 /**
  * Location Select Controller
@@ -52,7 +52,7 @@ LocationSelectController.$inject =  [ 'LocationService', '$scope', '$timeout' ];
  * </bh-location-select>
  *
  */
-function LocationSelectController(Locations, $scope, $timeout) {
+function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
   var vm = this;
 
   /** loading indicator */
@@ -111,7 +111,7 @@ function LocationSelectController(Locations, $scope, $timeout) {
   };
 
   function loadCountries() {
-    Locations.countries()
+    return Locations.countries()
     .then(function (countries) {
 
       // bind the countries to view
@@ -207,6 +207,7 @@ function LocationSelectController(Locations, $scope, $timeout) {
       if (angular.isDefined(vm.name)) {
         $scope[vm.name].$bhValue = vm.village.uuid;
       }
+
       vm.locationUuid = vm.village.uuid;
     }
   }
@@ -280,15 +281,31 @@ function LocationSelectController(Locations, $scope, $timeout) {
    */
   $scope.$watch('$ctrl.locationUuid', loadLocation);
 
+  // @TODO Temporary locations update fix - this should expose an API to be updated or
+  // should use bhConstants
+  $rootScope.$on('LOCATIONS_UPDATED', refreshData);
+
+  function refreshData() {
+    var cacheSector = angular.copy(vm.sector);
+    var cacheVillage = angular.copy(vm.village);
+
+    loadProvinces()
+    .then(function (results) {
+      return loadSectors();
+    })
+    .then(function (results) {
+      vm.sector = cacheSector;
+      return loadVillages();
+    })
+    .then(function () {
+      vm.village = cacheVillage;
+    });
+  }
+
   /**
    * Open "Add a Location" modal
    */
   function openAddLocationModal() {
-    Locations.modal()
-    .finally(function () {
-
-      // load countries again in case we added a country!
-      loadCountries();
-    });
+    Locations.modal();
   }
 }
