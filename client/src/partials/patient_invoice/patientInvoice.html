@@ -5,6 +5,14 @@
       <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
       <li class="title" ng-show="PatientInvoiceCtrl.Invoice.recipient">{{ PatientInvoiceCtrl.Invoice.recipient.display_name }}</li>
     </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-receipt-currency
+          on-update="PatientInvoiceCtrl.setReceiptCurrency(currencyId)">
+        </bh-receipt-currency>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -23,8 +31,7 @@
                     suppress-reset="true"
                     on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
                     on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)"
-                    validation-trigger="detailsForm.$submitted"
-                    >
+                    validation-trigger="detailsForm.$submitted">
                   </bh-find-patient>
                 </div>
 
