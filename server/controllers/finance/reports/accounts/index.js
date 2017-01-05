@@ -16,6 +16,10 @@ function chart(req, res, next) {
   let report;
 
   let params = req.query;
+
+  // @TODO Define server constants library
+  const TITLE_ID = 4;
+
   params.user = req.session.user;
 
   try {
@@ -27,6 +31,11 @@ function chart(req, res, next) {
   Accounts.lookupAccount()
     .then(Accounts.processAccountDepth)
     .then(accounts => {
+
+      accounts.TITLE_ACCOUNT_ID = TITLE_ID;
+      accounts.forEach(account => {
+        account.is_title_account = account.type_id === TITLE_ID;
+      });
       return report.render({ accounts });
     })
     .then(result => {
