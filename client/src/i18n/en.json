@@ -397,7 +397,7 @@
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Found",
       "PATIENT_NOT_FOUND"           : "Patient Not Found",
-      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully transferred",
+      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully uploaded.",
       "PREVIOUS"                    : "Previous",
       "SALE_DETAILS"                : "Sale Details",
       "SAVE_SUCCESS"                : "Save success",
@@ -474,6 +474,7 @@
       "DEBTOR_GROUP"           : "Debtor Group",
       "DEBTOR_GROUP_FORM"      : "Form debtor group record",
       "DEFINE_UNTIL_DATE"      : "Define a limit date",
+      "DEFAULT_QUANTITY"       : "Default Quantity",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
       "DETAILS"                : "Details",
@@ -661,9 +662,10 @@
       "UPDATE_PATIENT_GROUP"   : "Update Patient Group Subscription",
       "USE"                    : "Use",
       "USE_POS_RECEIPT"        : "POS Receipts",
-      "USER"                   : "Utilisateur",
+      "USER"                   : "User",
       "USERNAME"               : "Username",
       "UNIT"                   : "Galenique form",
+      "UNIT_PRICE"             : "Unit Price",
       "UNIT_WEIGHT"            : "Weight",
       "UNIT_VOLUME"            : "Volume",
       "VALUE"                  : "Value",
@@ -689,7 +691,7 @@
       "PROJECT_NAME"     : "the project name"
     },
     "PLACEHOLDERS": {
-      "ACCOUNT"      : "Enter account",
+      "ACCOUNT"      : "Enter an account",
       "CASHBOX"      : "Enter the cashbox",
       "CODE"         : "Enter code",
       "COUNTRY"      : "Enter country",
@@ -700,12 +702,12 @@
       "DOCUMENT_NAME": "Enter document name",
       "EMAIL"        : "Enter email",
       "MAX_CREDIT"   : "Enter max credit",
-      "NAME"         : "Enter name",
+      "NAME"         : "Enter a name",
       "NOTES"        : "Enter any additional information",
       "PATIENT_ID"   : "Enter Patient ID",
-      "PATIENT_NAME" : "Enter Patient Name",
-      "PHONE"        : "Enter Phone number",
-      "PRICE"        : "Enter price",
+      "PATIENT_NAME" : "Enter a Patient Name",
+      "PHONE"        : "Enter a Phone number",
+      "PRICE"        : "Enter a price",
       "PROVINCE"     : "Enter province",
       "SECTOR"       : "Enter sector",
       "UNIT_WEIGHT"  : "Enter weight",
@@ -718,7 +720,8 @@
       "FILTER_NAME"  : "Filter by name...",
       "FILTER_BY"    : "Filter by" ,
       "SEARCH_NAME"        : "Search by Name",
-      "SEARCH_PATIENT_ID"  : "Search by Patient ID"
+      "SEARCH_PATIENT_ID"  : "Search by Patient ID",
+      "QUANTITY" : "Enter a quantity"
     },
     "SELECT": {
       "EMPTY"              : "Empty",
@@ -806,19 +809,20 @@
     "TODAY"          : "Date of day",
     "FISCAL_YEAR_INFO" : "Fiscal Year Timeline",
     "FISCAL_YEAR_DESCRIPTION" : "This timeline shows progress made through the current fiscal year.",
-    "DEBTORS" : { 
+    "DEBTORS" : {
       "TITLE" : "Enterprise Debtors",
       "BALANCED" : "All debts to the enterprise are balanced",
       "CACHED"  : "Data refreshed"
     }
   },
   "INVENTORY" : {
-    "ADD_GROUP"     : "Add inventory group",
-    "ADD_METADATA"  : "Add inventory",
-    "ADD_TYPE"      : "Add inventory type",
-    "ADD_UNIT"      : "Add inventory unit form",
+    "ADD_GROUP"     : "Add Inventory Group",
+    "ADD_METADATA"  : "Add Inventory Item",
+    "ADD_TYPE"      : "Add Inventory Type",
+    "ADD_UNIT"      : "Add Inventory unit form",
     "CONFIGURATION" : "Configurations",
     "CONTAINS"      : "Contains",
+    "CREATE_ANOTHER" : "Create another inventory item",
     "EDIT_GROUP"    : "Edit inventory group",
     "EDIT_METADATA" : "Edit inventory",
     "EDIT_TYPE"     : "Edit inventory type",
@@ -828,7 +832,8 @@
     "LIST_METADATA" : "Inventory",
     "LIST_GROUP"    : "Inventory Groups",
     "LIST_TYPE"     : "Inventory Types",
-    "LIST_UNIT"     : "Inventory Unit form"
+    "LIST_UNIT"     : "Inventory Unit form",
+    "DEFAULT_QUANTITY_DEFINITION" : "The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time."
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Invoice Registry",
