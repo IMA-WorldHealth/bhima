@@ -177,7 +177,7 @@ function invoiceBalances(debtorUuid, uuids, paramOptions) {
 
   // select all invoice and payments against invoices from the combined ledger
   let sql = `
-    SELECT BUID(i.uuid) AS uuid, CONCAT(project.abbr, invoice.reference) AS reference,
+    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
       credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
     FROM (
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
@@ -269,16 +269,16 @@ function financialPatient(debtorUuid) {
   let sql = `
     SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit,
     transaction.reference, transaction.abbr
-    FROM(
+    FROM (
       SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-      posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
+        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
       FROM posting_journal
       LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
       WHERE posting_journal.entity_uuid = ?
       UNION
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-      general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
+        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
       FROM general_ledger
       LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
