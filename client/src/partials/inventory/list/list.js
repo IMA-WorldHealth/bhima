@@ -4,20 +4,22 @@ angular.module('bhima.controllers')
 // dependencies injection
 InventoryListController.$inject = [
   '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants',
-  'ModalService', '$state', '$rootScope'
+  'ModalService', '$state', '$rootScope', 'appcache'
 ];
 
 /**
  * Inventory List Controllers
  * This controller is responsible of the inventory list module
  */
-function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state, $rootScope) {
+function InventoryListController ($translate, Inventory, Notify, uiGridConstants, Modal, $state, $rootScope, AppCache) {
   var vm = this;
 
   /** global variables */
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
+
+  var cache = new AppCache('Inventory');
 
   vm.toggleFilter = toggleFilter;
 
@@ -73,7 +75,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** enable filter */
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
+    vm.filterEnabled = cache.filterEnabled = !vm.filterEnabled;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
@@ -85,5 +87,9 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
         vm.gridOptions.data = inventory;
       })
       .catch(Notify.handleError);
+
+    // load the cached filter state
+    vm.filterEnabled = cache.filterEnabled || false;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
   }
 }
