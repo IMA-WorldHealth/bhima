@@ -23,7 +23,7 @@ angular.module('bhima.components')
     options : '<'
   },
   transclude : true,
-  template : 
+  template :
     '<a href ng-click="$ctrl.print()">' +
       '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
       '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
@@ -76,6 +76,7 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
     renderer : 'pdf',
     lang : Languages.key
   };
+
   var responseType = 'arraybuffer';
   var pdfType = 'application/pdf';
 
@@ -141,7 +142,6 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
   function toggleLoading() {
     component.$loading = !component.$loading;
   }
-
 
   // ensure that the template/ iframe element is available
   // both the $onInit and $postLink methods are fired before guaranteeing the

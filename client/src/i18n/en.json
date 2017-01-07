@@ -160,9 +160,6 @@
     "UPDATE"         : "Update a creditor group",
     "FAILURE_DELETE" : "Failure of the deletion of the creditor group"
   },
-  "DB": {
-    "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
-  },
   "DEBTOR_GROUP": {
     "BACK"           : "Back to Debtor Groups",
     "CREATE"         : "Create Debtor Group",
@@ -207,6 +204,11 @@
     "UPDATED"        : "Debtor group record updated",
     "LOADING"        : "Fetching Debtor Group",
     "SUBSCRIPTIONS"  : "Subscriptions"
+  },
+  "DOWNLOADS" : {
+    "JSON" : "Download as JSON",
+    "PDF" : "Download as PDF",
+    "CSV" : "Download as CSV"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
