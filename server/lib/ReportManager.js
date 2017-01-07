@@ -34,7 +34,8 @@ const db = require('./db');
 const renderers = {
   json : require('./renderers/json'),
   html : require('./renderers/html'),
-  pdf  : require('./renderers/pdf')
+  pdf  : require('./renderers/pdf'),
+  csv  : require('./renderers/csv')
 };
 
 // default report configuration
@@ -99,11 +100,12 @@ class ReportManager {
 
     // remove render-specific options
     delete options.renderer;
+    delete options.csvKey;
     delete options.lang;
 
     // set the metadata
     this.metadata = metadata;
-    delete this.metadata.path; // @fixme - remove user paths that are annoying to print out
+    delete this.metadata.path;
   }
 
   /**

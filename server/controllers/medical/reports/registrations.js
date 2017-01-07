@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview reports/registrations
  *
@@ -9,7 +11,6 @@
  * @requires Patients
  * @requires ReportManager
  */
-'use strict';
 
 const _ = require('lodash');
 
@@ -58,7 +59,7 @@ function formatFilters(qs) {
  * GET /reports/patient/registrations
  */
 function build(req, res, next) {
-  const options = req.query;
+  const options = _.extend(req.query, { csvKey : 'patients' });
 
   let report;
 

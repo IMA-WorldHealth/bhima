@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const Accounts = require('../../accounts');
 const ReportManager = require('../../../../lib/ReportManager');
 
@@ -9,7 +10,7 @@ const TEMPLATE = './server/controllers/finance/reports/accounts/chart.handlebars
  * @method chart
  *
  * @description
- * generate chart of account as a document
+ * Generate chart of account as a document
  */
 function chart(req, res, next) {
 
@@ -22,8 +23,10 @@ function chart(req, res, next) {
 
   params.user = req.session.user;
 
+  const options = _.extend(req.query, { csvKey : 'accounts' });
+
   try {
-    report = new ReportManager(TEMPLATE, req.session, params);
+    report = new ReportManager(TEMPLATE, req.session, options);
   } catch(e) {
     return next(e);
   }
@@ -32,10 +35,10 @@ function chart(req, res, next) {
     .then(Accounts.processAccountDepth)
     .then(accounts => {
 
-      accounts.TITLE_ACCOUNT_ID = TITLE_ID;
       accounts.forEach(account => {
         account.is_title_account = account.type_id === TITLE_ID;
       });
+
       return report.render({ accounts });
     })
     .then(result => {

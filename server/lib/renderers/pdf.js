@@ -33,6 +33,7 @@ exports.defaultReportOptions = {
   pageSize : 'A4',
   orientation : 'portrait'
 };
+
 exports.posReceiptOptions  = {
   pageWidth : '72mm',
   pageHeight : '290mm',
@@ -57,6 +58,7 @@ function renderPDF(context, template, options) {
 
   return html.render(context, template, options)
     .then(function (htmlStringResult) {
+
       // pick options relevent to rendering PDFs
       var pdfOptions = _.pick(options, ['pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']);
 

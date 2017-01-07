@@ -53,7 +53,6 @@ function receipt(req, res, next) {
     _.extend(options, pdf.posReceiptOptions);
   }
 
-
   // set up the report with report manager
   try {
     report = new ReportManager(template, req.session, options);
@@ -155,7 +154,7 @@ function report(req, res, next) {
         return totals;
       }, {});
 
-      const data = { rows, display, hasFilter, enterprise, aggregates };
+      const data = { rows, display, hasFilter, enterprise, aggregates, csv: rows };
 
       return report.render(data);
     })
