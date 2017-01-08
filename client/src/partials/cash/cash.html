@@ -1,7 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "CASH.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="static" translate>CASH.TITLE</li>
       <li class="title">{{ CashCtrl.cashbox.label }}</li>
     </ol>
   </div>
@@ -15,11 +16,11 @@
       <div class="col-md-2">
 
         <button class="btn btn-warning btn-block" ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-change-cashbox>
-          <i class="fa fa-inbox"></i> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
+          <i class="fa fa-inbox"></i> <span translate>CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX</span>
         </button>
 
         <button style="margin-bottom: 1em;" class="btn btn-primary btn-block" ui-sref="cash.transfer({ id: CashCtrl.cashbox.id })" data-perform-transfer>
-          <i class="fa fa-exchange"></i> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
+          <i class="fa fa-exchange"></i> <span translate>CASH.VOUCHER.CASHBOXES.TRANSFER</span>
         </button>
       </div>
 
@@ -27,8 +28,7 @@
       <div class="col-md-8">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <i class="fa fa-barcode"></i>
-            {{ "CASH.VOUCHER.SLIP" | translate }} <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
+            <span translate>CASH.VOUCHER.SLIP</span> <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
           </div>
           <div class="panel-body">
             <form name="CashVoucherForm" bh-submit="CashCtrl.submit(CashVoucherForm)" bh-form-defaults novalidate>
@@ -36,6 +36,7 @@
               <fieldset ng-disabled="CashVoucherForm.$loading">
 
                 <bh-find-patient
+                  suppress-reset="true"
                   on-search-complete="CashCtrl.usePatient(patient)"
                   on-register-api="CashCtrl.onRegisterApiCallback(api)"
                   validation-trigger="CashVoucherForm.$submitted"
@@ -54,20 +55,19 @@
                   validation-trigger="CashVoucherForm.$submitted"
                   on-change="CashCtrl.digestExchangeRate(currency)"
                   disable-ids="CashCtrl.disabledCurrencyIds"
-                  cashbox-id="CashCtrl.cashbox.id"
-                  >
+                  cashbox-id="CashCtrl.cashbox.id">
                 </bh-currency-select>
 
                 <!-- determine if we are creating a caution or an invoice payment -->
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
-                  <p><strong class="control-label">{{ "FORM.LABELS.TYPE" | translate }}</strong></p>
+                  <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
                   <label class="radio-inline">
                     <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.togglePaymentType(CashCtrl.payment.is_caution)" data-caution-option="1" required>
-                    {{ "FORM.LABELS.CAUTION" | translate }}
+                    <span translate>FORM.LABELS.CAUTION</span>
                   </label>
                   <label class="radio-inline">
                     <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.togglePaymentType(CashCtrl.payment.is_caution)" data-caution-option="0" required>
-                    {{ "FORM.LABELS.INVOICE" | translate }}
+                    <span translate>FORM.LABELS.INVOICE</span>
                   </label>
 
                   <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
@@ -86,9 +86,9 @@
                   <table class="table table-condensed" ng-show="CashCtrl.payment.invoices.length > 0">
                     <thead>
                       <tr>
-                        <th style="width: 25%;">{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
-                        <th style="width: 50%;">{{ "TABLE.COLUMNS.DATE" | translate }}</th>
-                        <th style="width: 25%;">{{ "TABLE.COLUMNS.AMOUNT" | translate }}</th>
+                        <th style="width: 25%;" translate>TABLE.COLUMNS.REFERENCE</th>
+                        <th style="width: 50%;" translate>TABLE.COLUMNS.DATE</th>
+                        <th style="width: 25%;" translate>TABLE.COLUMNS.AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -106,13 +106,13 @@
 
                       <!-- only show the sum if we have more rows than 1 -->
                       <tr ng-show="CashCtrl.payment.invoices.length > 1">
-                        <td colspan="2" class="text-right"><u>{{ "TABLE.COLUMNS.TOTAL" | translate }}</u></td>
+                        <td colspan="2" class="text-right"><u translate>TABLE.COLUMNS.TOTAL</u></td>
                         <td class="text-right">{{ CashCtrl.slip.rawTotal | currency:CashCtrl.enterprise.currency_id }}</td>
                       </tr>
 
                       <!-- only show this segment if using a foreign currency -->
                       <tr>
-                        <td colspan="2" class="text-right"><b>{{ "TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</b></td>
+                        <td colspan="2" class="text-right"><b translate>TABLE.COLUMNS.EXCHANGE_RATE</b></td>
                         <td class="text-right">
                           <span ng-show="CashCtrl.payment.currency_id !== CashCtrl.enterprise.currency_id">
                             {{ CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
@@ -125,19 +125,19 @@
 
                       <!-- show a nice total row of what the payer owes today -->
                       <tr>
-                        <th colspan="2" class="text-right">{{ "TABLE.COLUMNS.TOTAL" | translate }}</th>
+                        <th colspan="2" class="text-right" translate>TABLE.COLUMNS.TOTAL</th>
                         <td class="text-right">{{ CashCtrl.slip.total | currency:CashCtrl.payment.currency_id }}</td>
                       </tr>
                     </tfoot>
                   </table>
 
                   <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button" data-open-invoices-btn>
-                    <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.BUTTONS.SELECT_INVOICES" | translate }}
+                    <span class="fa fa-plus-circle"></span> <span translate>FORM.BUTTONS.SELECT_INVOICES</span>
                   </button>
 
                   <!-- show informational message if there are not invoice selected -->
                   <p ng-if="CashCtrl.payment.invoices.length === 0" class="text-center text-primary">
-                    <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.VOUCHER.NO_INVOICES_SELECTED" | translate }}
+                    <span class="fa fa-info-circle"></span> <span translate>CASH.VOUCHER.NO_INVOICES_SELECTED</span>
                   </p>
                 </div>
 
@@ -145,13 +145,13 @@
 
                 <div ng-show="CashCtrl.patientBalance > 0" class="form-group">
                   <div class="alert alert-info">
-                    <span ng-show="CashCtrl.slip.rate">
-                      <strong>{{ 'CASH.CAUTION_COVER' | translate }}</strong> -
-                      <strong>{{ 'FORM.LABELS.SOLD' | translate }}</strong>:
+                    <span ng-if="CashCtrl.slip.rate">
+                      <strong translate>CASH.CAUTION_COVER</strong> -
+                      <strong translate>FORM.LABELS.SOLD</strong>:
                       {{ CashCtrl.patientBalance * CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
                     </span>
                     <span ng-hide="CashCtrl.slip.rate">
-                      <strong class="text-capitalize">{{ 'CASH.CAUTION_REMAINING' | translate }}</strong>:
+                      <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
                       {{ CashCtrl.patientBalance | currency:CashCtrl.enterprise.currency_id }}
                     </span>
                   </div>
@@ -162,14 +162,17 @@
                   data-payment-currency-input
                   currency-id="CashCtrl.payment.currency_id"
                   model="CashCtrl.payment.amount"
-                  form="CashVoucherForm"
-                  validation-trigger="CashVoucherForm.$submitted"
-                  >
+                  validation-trigger="CashVoucherForm.$submitted">
                 </bh-currency-input>
 
                 <div class="form-group text-right">
+
+                  <button type="button" class="btn btn-default" ng-click="CashCtrl.clear(CashVoucherForm)">
+                    <span translate>FORM.BUTTONS.CLEAR</span>
+                  </button>
+
                   <bh-loading-button loading-state="CashVoucherForm.$loading">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                    <span translate>FORM.BUTTONS.SUBMIT</span>
                   </bh-loading-button>
                 </div>
               </fieldset>

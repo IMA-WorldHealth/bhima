@@ -41,6 +41,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   vm.digestExchangeRate = digestExchangeRate;
   vm.togglePaymentType = togglePaymentType;
   vm.submit = submit;
+  vm.clear = clear;
   vm.onRegisterApiCallback = onRegisterApiCallback;
 
   // fired when the bhFindPatient API becomes available
@@ -56,7 +57,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.timestamp = new Date();
 
     /* This is the actual payment form */
-    settupPayment();
+    setupPayment();
 
     Currencies.read()
       .then(function (currencies) {
@@ -177,7 +178,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   }
 
-  function settupPayment() {
+  function setupPayment() {
     // load payment type from cache
     var DEFAULT_PAYMENT_TYPE = 0;
     var paymentType = cache.is_caution || DEFAULT_PAYMENT_TYPE;
@@ -196,18 +197,25 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       })
       .then(function () {
 
-        // reset the data
-        settupPayment();
-
-        // reset the bhFindPatient component
-        vm.bhFindPatient.reset();
-
-        // make sure the form is pristine
-        form.$setPristine();
-
-        delete vm.slip;
+        // clear and refresh the form
+        clear(form);
       })
       .catch(Notify.handleError);
+  }
+
+  function clear(form) {
+
+    // delete the slip information
+    delete vm.slip;
+
+    // clear the patient selection
+    vm.bhFindPatient.reset();
+
+    // run the setup script
+    setupPayment();
+
+    // clear the form
+    form.$setPristine();
   }
 
   // start up the module
