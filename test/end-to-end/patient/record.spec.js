@@ -39,16 +39,33 @@ describe('Patient Record', function () {
  });
 
   // sub unit tests - these can be moved to individual files if they become too large
-  it('displays the correct number of check ins', function () {
-    expect(element.all(by.css('[data-check-entry]')).count()).to.eventually.equal(1);
+  it('displays the correct number of patient visits', function () {
+    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(1);
   });
 
-  it('checks in a patient', function () {
-    element(by.id('checkin')).click();
-    components.notification.hasSuccess();
+  it('admits a patient', function () {
+    var diagnosisLabel = 'dio';
+    element(by.id('submit-visit')).click();
 
-    // verify that the check in has been displayed
-    expect(element.all(by.css('[data-check-entry]')).count()).to.eventually.equal(2);
+    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    FU.modal.submit();
+
+    // check to see a new visit has been added
+    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+  });
+
+  it('dicharges a patient with a new diagnosis', function () {
+    var diagnosisLabel = 'iod';
+    element(by.id('submit-visit')).click();
+
+    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
+
+    FU.modal.submit();
+
+    // this is part of the same visit so expect no difference in number of visits
+    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+
   });
 
   // Upload patient documents

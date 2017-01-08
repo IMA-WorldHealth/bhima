@@ -22,7 +22,7 @@
  * @requires lib/errors/NotFound
  * @requires medical/patients/groups
  * @requires medical/patients/documents
- * @requires medical/patients/checkin
+ * @requires medical/patients/vists
  * @requires medical/patients/pictures
  *
  * @todo Review naming conventions
@@ -46,13 +46,13 @@ const NotFound    = require('../../../lib/errors/NotFound');
 
 const groups    = require('./groups');
 const documents = require('./documents');
-const checkin   = require('./checkin');
+const visits = require('./visits');
 const pictures  = require('./pictures');
 
 // bind submodules
 exports.groups    = groups;
 exports.documents = documents;
-exports.checkin   = checkin;
+exports.visits = visits;
 exports.pictures  = pictures;
 
 // create a new patient

@@ -18,8 +18,6 @@ const NotFound = require('../errors/NotFound');
  * connection based on parameters in the environment variables, and then wrapping
  * all database queries in promise calls.
  *
- * @todo implement db.one() that automatically generates 404 errors as necessary.
- *
  * @requires q
  * @requires mysql
  * @requires winston

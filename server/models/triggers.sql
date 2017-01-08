@@ -1,6 +1,5 @@
 DELIMITER $$
 
-
 -- Patient Triggers
 
 CREATE TRIGGER patient_reference BEFORE INSERT ON patient

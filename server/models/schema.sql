@@ -35,7 +35,6 @@ CREATE TABLE `account` (
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -44,7 +43,6 @@ CREATE TABLE `account_type` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_type_1` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `assignation_patient`;
 CREATE TABLE `assignation_patient` (
@@ -807,8 +805,6 @@ CREATE TABLE `grade` (
   UNIQUE KEY `grade_2` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
 DROP TABLE IF EXISTS `holiday`;
 
 CREATE TABLE `holiday` (
@@ -837,6 +833,15 @@ CREATE TABLE `holiday_paiement` (
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `icd10`;
+
+CREATE TABLE `icd10` (
+  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `code`  VARCHAR(8) NOT NULL,
+  `label` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `icd10_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `inventory`;
 
@@ -1209,7 +1214,6 @@ CREATE TABLE patient_group_subsidy (
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `patient_visit`;
 
 CREATE TABLE `patient_visit` (
@@ -1217,13 +1221,21 @@ CREATE TABLE `patient_visit` (
   `patient_uuid` BINARY(16) NOT NULL,
   `start_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL,
+  `start_notes` TEXT,
+  `end_notes` TEXT,
+  `start_diagnosis_id` INT(10) unsigned,
+  `end_diagnosis_id` INT(10) unsigned,
   `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
   KEY `user_id` (`user_id`),
+  KEY `start_diagnosis_id` (`start_diagnosis_id`),
+  KEY `end_diagnosis_id` (`end_diagnosis_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `period`;
