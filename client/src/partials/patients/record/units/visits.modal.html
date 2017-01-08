@@ -1,7 +1,7 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">{{ "FORM.INFO.PATIENTS" | translate }}</li>
-    <li class="title">{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE" | translate }}</li>
+    <li class="static"><span translate>FORM.INFO.PATIENTS</span></li>
+    <li class="title"><span translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</span></li>
   </ol>
 </div>
 
@@ -17,11 +17,9 @@
     class="form-group"
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">
 
-
-    <label class="control-label">{{ "FORM.LABELS.DIAGNOSIS" | translate }}</label>
+    <label class="control-label"><span translate>FORM.LABELS.DIAGNOSIS</span></label>
 
     <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
-    <!-- ng-required="!AdmitCtrl.isAdmission"> -->
     <input
       type="text"
       name="diagnosis"
@@ -42,7 +40,7 @@
   <div
     class="form-group"
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
-    <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+    <label class="control-label"><span translate>FORM.LABELS.NOTES</span></label>
     <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
 
     <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
@@ -54,10 +52,10 @@
 
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
-    {{ "FORM.BUTTONS.CANCEL" | translate }}
+    <span translate>FORM.BUTTONS.CANCEL</span>
   </button>
   <bh-loading-button loading-state="AdmitCtrl.$loading">
-    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    <span translate>FORM.BUTTONS.SUBMIT</span>
   </bh-loading-button>
 </div>
 </form>

@@ -12,13 +12,11 @@ VisitsController.$inject = ['PatientService', 'NotifyService', 'moment'];
 
 function VisitsController(Patients, Notify, Moment) {
   var vm = this;
-
+  var mostRecentVisit;
 
   // Currently not limited on client to give accurate representation of total
   // number of visits
   var DEFAULT_VISIT_LIMIT = 3;
-  var mostRecentVisit;
-
   vm.viewLimit = DEFAULT_VISIT_LIMIT;
 
   vm.loaded = false;
@@ -26,20 +24,18 @@ function VisitsController(Patients, Notify, Moment) {
 
   vm.visiting = false;
 
+  // expose methods to the view
   vm.admit = admit;
 
   refreshVisitFeed();
 
   function refreshVisitFeed() {
-    // Patients.Visits.read(vm.patientUuid, { limit : DEFAULT_VISIT_LIMIT })
+    vm.loading = true;
+    vm.loaded = false;
     Patients.Visits.read(vm.patientUuid)
       .then(function (results) {
-
-        console.log('got', results);
         vm.visits = results;
-
         vm.visits.forEach(calculateDays);
-
         mostRecentVisit = vm.visits[0];
 
         if (mostRecentVisit) {
@@ -64,14 +60,8 @@ function VisitsController(Patients, Notify, Moment) {
     var isAdmission = !vm.visiting;
     Patients.Visits.openAdmission(vm.patientUuid, isAdmission, mostRecentVisit)
       .then(function (result) {
-        console.log('modal success', result);
         refreshVisitFeed();
       })
-      .catch(function (error) {
-        console.log('modal threw error', error);
-      });
+      .catch(Notify.handleError);
   }
-
-  console.log(vm.patientUuid);
-  console.log('controller fired');
 }

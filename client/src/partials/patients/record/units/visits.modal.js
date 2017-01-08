@@ -6,17 +6,15 @@ VisitsAdmissionController.$inject = ['$uibModalInstance', 'PatientService', 'pat
 function VisitsAdmissionController(ModalInstance, Patients, patient, isAdmission, currentVisit) {
   var vm = this;
 
-  vm.visit = {};
   vm.isAdmission = isAdmission;
+  vm.currentVisit = currentVisit;
 
+  // expose action methods
   vm.cancel = ModalInstance.close;
   vm.admit = admit;
 
+  vm.visit = {};
   vm.$loading = false;
-
-  vm.currentVisit = currentVisit;
-
-  console.log(vm.currentVisit);
 
   Patients.Visits.diagnoses()
     .then(function (results) {
@@ -29,31 +27,22 @@ function VisitsAdmissionController(ModalInstance, Patients, patient, isAdmission
   }
 
   function admit(form) {
-
     var submitMethod;
 
-    if (form.$invalid) {
-      return;
-    }
+    if (form.$invalid) { return; }
 
     vm.$loading = true;
 
+    // the columns updated on the patient visit table will depend on the admission/ discharge type
     submitMethod = vm.isAdmission ? Patients.Visits.admit : Patients.Visits.discharge;
 
-    // with admit
-    // date -> start_date
-    // diagnosis_id -> start_diagnosis_id
-    // if (vm.isAdmisssion) {
-      // Patients.Visits.admit(patient, vm.visit);
-    // } else {
-      // vm.visit.uuid = currentVisit.uuid;
     submitMethod(patient, vm.visit)
       .then(function (result) {
         ModalInstance.close();
+      })
+      .finally(function () {
+        vm.$loading = false;
       });
-      // patient is being discharged
-      // Patients.Visits.discharge(patient, vm.visit);
-    // }
   }
 }
 

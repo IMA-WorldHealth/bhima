@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 
   <div class="panel-heading clearfix">
-    {{ "PATIENT_RECORDS.VISITS.TITLE" | translate }} ({{$ctrl.visits.length}})
+    <span translate>PATIENT_RECORDS.VISITS.TITLE</span> ({{$ctrl.visits.length}})
 
     <span class="pull-right">
       <bh-pdf-link
@@ -14,29 +14,25 @@
   <div class="panel-body" style="height : 250px; overflow-y : auto;">
 
     <div style="text-align : center">
-      <p ng-if="$ctrl.loaded && $ctrl.visits.length===0">
-      <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
+      <p class="text-info" ng-if="$ctrl.loaded && $ctrl.visits.length===0">
+      <i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
       </p>
 
-
-      <button class="btn btn-default" ng-click="$ctrl.admit()">
-        {{ $ctrl.visiting ? "PATIENT_RECORDS.VISITS.DISCHARGE" : "PATIENT_RECORDS.VISITS.ADMIT" | translate }}
+      <button id="submit-visit" class="btn btn-default" ng-click="$ctrl.admit()">
+        <span translate>{{ $ctrl.visiting ? "PATIENT_RECORDS.VISITS.DISCHARGE" : "PATIENT_RECORDS.VISITS.ADMIT"}}</span>
       </button>
-
     </div>
-
     <br />
 
     <div ng-if="$ctrl.loaded && $ctrl.visits.length">
-      <!-- <p><b>{{ "PATIENT_RECORDS.VISITS.RECENT" | translate }}</b></p> -->
-
-      <!-- <ul class="list-unstyled"> -->
-        <!-- <li data-check-entry ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay"> -->
+      <label class="control-label">
+        <span translate>PATIENT_RECORDS.VISITS.RECENT</span>
+      </label>
       <table>
         <tbody>
-          <tr ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
-          <!-- <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> {{ "PATIENT_RECORDS.CHECK_IN.BY" | translate }} {{ visit.username }} -->
-          <td>{{visit.start_date | date}} -
+          <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+
+          <td><i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
 
           <span ng-if="visit.end_date">
             {{visit.end_date | date}}
@@ -45,10 +41,8 @@
           <span ng-if="!visit.end_date">(<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)</span>
 
           </td>
-          <!-- <br /> -->
-          <!-- <span class="icon-spacer text-muted"><i>{{visit.start_date | date : 'medium'}}</i></span> -->
-        <!-- </li> -->
-      <!-- </ul> -->
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

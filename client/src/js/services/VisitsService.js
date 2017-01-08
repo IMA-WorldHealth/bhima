@@ -7,13 +7,13 @@ function VisitService($http, util, Modal) {
   var service = this;
   var baseUrl = '/patients/';
 
+  // send/recieve with $http
   service.read = read;
-
   service.admit = admit;
   service.discharge = discharge;
-
   service.diagnoses = diagnoses;
 
+  // open modal configuration
   service.openAdmission = openAdmission;
 
   function read(patientUuid, options) {
@@ -23,14 +23,6 @@ function VisitService($http, util, Modal) {
     return $http.get(baseUrl.concat(patientUuid, '/visits'), { params : options })
       .then(util.unwrapHttpResponse);
   }
-
-  // function checkin(patientUuid) {
-  //   if (!patientUuid) {
-  //     return;
-  //   }
-  //   return $http.post(baseUrl.concat(patientUuid, '/checkin'))
-  //     .then(util.unwrapHttpResponse);
-  // }
 
   function admit(patientUuid, visitDetails) {
     if (!patientUuid) { return; }
@@ -62,12 +54,10 @@ function VisitService($http, util, Modal) {
     }
 
     details.end_diagnosis_id = details.diagnosis.id;
-
     delete details.diagnosis;
 
     return $http.post(baseUrl.concat(patientUuid, '/visits/discharge'), details)
       .then(util.unwrapHttpResponse);
-
   }
 
   function diagnoses() {
@@ -95,4 +85,3 @@ function VisitService($http, util, Modal) {
     return instance.result;
   }
 }
-
