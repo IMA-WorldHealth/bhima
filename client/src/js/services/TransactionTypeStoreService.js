@@ -8,8 +8,6 @@ TransactionTypeStoreService.$inject = ['$q', 'TransactionTypeService', 'Store'];
  * Transaction Type Store Controller
  */
 function TransactionTypeStoreService($q, TransactionType, Store) {
-  'use strict';
-
   var service = this;
   var data = new Store();
   var initialLoad = true;

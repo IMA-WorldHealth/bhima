@@ -32,7 +32,9 @@ function VoucherToolkitService($http, Modal, util) {
    * label, controller string, templateUrl string
    */
   function open(option) {
-    if (!option.controller || !option.templateUrl) { return; }
+    if (!option.controller || !option.templateUrl) {
+      throw new Error('Toolkit.open() requires a controller or templateUrl!');
+    }
 
     var instance = Modal.open({
       templateUrl  : option.templateUrl,

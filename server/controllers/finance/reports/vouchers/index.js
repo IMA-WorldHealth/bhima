@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * @overview
  * Voucher Reports
@@ -80,9 +81,12 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
 
+  const options = _.clone(req.query);
+  _.extend(options, { csvKey : 'rows' });
+
   let report;
   try  {
-    report = new ReportManager(REPORT_TEMPLATE, req.session, req.query);
+    report = new ReportManager(REPORT_TEMPLATE, req.session, options);
   } catch(e) {
     return next(e);
   }

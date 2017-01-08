@@ -132,7 +132,7 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   function invoices(uuid, parameters) {
     var url = baseUrl.concat(uuid, '/invoices');
     return $http.get(url, { params : parameters })
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   return service;
