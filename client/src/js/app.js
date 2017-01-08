@@ -375,6 +375,9 @@ function constantConfig() {
       AGED_DEBTOR : 'AGED_DEBTOR',
       CASHFLOW : 'CASHFLOW',
       INCOME_EXPENSE : 'INCOME_EXPENSE'
+    },
+    precision: {
+      MAX_DECIMAL_PRECISION : 4
     }
   };
 }

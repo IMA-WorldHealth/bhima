@@ -653,6 +653,7 @@
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
+      "TRANSACTION_TYPE"       : "Transaction Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UNDEFINED"              : "Undefined",

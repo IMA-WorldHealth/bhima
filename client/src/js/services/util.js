@@ -185,4 +185,22 @@ function UtilService(moment) {
   service.isEmptyObject = function isEmptyObject(object) {
     return Object.keys(object).length === 0;
   };
+
+
+  /**
+   * @function xor
+   *
+   * @description
+   * Returns the logical XOR of two booleans.
+   *
+   * @param {Boolean} a - a boolean value to XOR with b
+   * @param {Boolean} b - a boolean value to XOR with a
+   *
+   * @returns {Boolean} - the result
+   */
+  service.xor = function xor(a, b) {
+    /*jshint -W018 */
+     return !a !== !b;
+    /*jshint +W018 */
+  };
 }
