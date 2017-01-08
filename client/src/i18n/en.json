@@ -483,6 +483,7 @@
       "DEBTOR_CREDITOR"        : "Debtor/Creditor",
       "DISTRIBUTABLE"          : "Distributable",
       "DISABLED"               : "Disabled",
+      "DIAGNOSIS"              : "Diagnosis",
       "DOB"                    : "Date of Birth",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -939,11 +940,13 @@
     "VISITS" : { 
       "TITLE" : "Patient Visits",
       "ADMIT" : "Admit Patient",
+      "ADMISSION_DIAGNOSIS" : "Admission Diagnosis",
       "ADMISSION" : "Admission",
       "DISCHARGE" : "Discharge Patient",
       "ORIGINAL" : "This patient has no logged visits.",
       "RECENT" : "Recent Visits",
-      "SEARCH_INFO" : "The input will search for diagnoses after 3 characters have been typed."
+      "IN_PROGRESS" : "In Progress",
+      "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed."
     },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Account Number",
