@@ -34,8 +34,7 @@ describe('Invoice Registry', () => {
   describe('Search', Search);
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
-
-    element(by.id('IV.TPA.2')).click();
+    element(by.id('IV.TPA.3')).click();
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();

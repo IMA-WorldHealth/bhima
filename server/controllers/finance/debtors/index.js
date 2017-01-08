@@ -143,7 +143,9 @@ function invoices(req, res, next) {
   let sql =`
     SELECT BUID(invoice.uuid) as uuid
     FROM invoice
-    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?);`;
+    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
+    ORDER BY invoice.date ASC, invoice.reference;
+  `;
 
   db.exec(sql, [uid, reversalVoucherType])
     .then(function (uuids) {
@@ -193,7 +195,8 @@ function invoiceBalances(debtorUuid, uuids, paramOptions) {
       GROUP BY ledger.uuid ${balanced}
     ) AS i
       JOIN invoice ON i.uuid = invoice.uuid
-      JOIN project ON invoice.project_id = project.id;
+      JOIN project ON invoice.project_id = project.id
+    ORDER BY invoice.date ASC, invoice.reference;
   `;
 
   return db.exec(sql, [invoices, debtorUid, invoices, debtorUid]);
@@ -234,14 +237,15 @@ function balance(req, res, next) {
     }
 
     // select all invoice and payments against invoices from the combined ledger
-    sql =
-      `SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, BUID(entity_uuid) as entity_uuid
+    sql = `
+      SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
         FROM combined_ledger
         WHERE entity_uuid = ?
       ) AS ledger
-      GROUP BY entity_uuid;`;
+      GROUP BY entity_uuid;
+    `;
 
     return db.exec(sql, [uid, uid]);
   })
@@ -259,9 +263,7 @@ function balance(req, res, next) {
  * @description
  * This function allows to know the reports' Patient Financial Activity
  * matching parameters provided in the debtorUuid parameter.
- *
  */
-
 function financialPatient(debtorUuid) {
   const buid = db.bid(debtorUuid);
 
@@ -285,7 +287,7 @@ function financialPatient(debtorUuid) {
       WHERE general_ledger.entity_uuid = ?
     ) as transaction
     GROUP BY transaction.trans_id
-    ORDER BY transaction.trans_date ASC;`;
+    ORDER BY transaction.trans_date ASC, transaction.trans_id;`;
 
   return db.exec(sql, [buid, buid]);
 }

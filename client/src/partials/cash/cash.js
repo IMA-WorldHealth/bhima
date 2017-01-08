@@ -161,9 +161,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
     }
 
-    // format the cash payment description
-    vm.payment.description = Cash.formatCashDescription(vm.patient, vm.payment);
-
     // submit the cash payment
     if (hasCaution) {
       return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
@@ -185,13 +182,23 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.payment = {
       date : new Date(),
       is_caution : paymentType,
-      currency_id : vm.enterprise.currency_id
+      currency_id : vm.enterprise.currency_id,
+      description: ''
     };
   }
 
   // submit payment
   function submitPayment(form) {
-    return Cash.create(vm.payment)
+
+    // make a copy of the data before submitting
+    var copy = angular.copy(vm.payment);
+
+    // format the cash payment description
+    var cachedPaymentDescription = copy.description;
+    copy.description = Cash.formatCashDescription(vm.patient, copy)
+      .concat(' ', cachedPaymentDescription);
+
+    return Cash.create(copy)
       .then(function (response) {
         return Receipts.cash(response.uuid, true);
       })

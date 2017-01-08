@@ -160,7 +160,8 @@ describe('Cash Payments', function () {
 
       // expect a danger notification
       components.notification.hasDanger();
-      components.findPatient.reset();
+
+      $('[data-method="clear"]').click();
     });
 
     it('should make a payment against previous invoices', function () {

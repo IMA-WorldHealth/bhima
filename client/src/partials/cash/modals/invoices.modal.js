@@ -34,7 +34,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     onRegisterApi : onRegisterApi,
     enableColumnMenus: false,
     columnDefs : [
-      { name : 'reference'},
+      { name : 'reference' },
       { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
       { name : 'date', cellFilter: 'date' }
     ],

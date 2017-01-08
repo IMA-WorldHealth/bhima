@@ -11,6 +11,13 @@
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
 ({{patient.reference}}) - {{patient.debtor_group_name}}
+
+<br />
+
+<pre style="text-align:left; white-space: pre-wrap; padding-top: 5px;">
+  {{payment.description}}
+</pre>
+
 <p>----------------------------------------------------------------</p>
 {{#if hasRate}}
 <span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>

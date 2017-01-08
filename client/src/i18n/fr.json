@@ -249,11 +249,12 @@
     "BAD_DATE_INTERVAL" : "Mauvais interval de date",
     "BAD_REQUEST"       : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
-    "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
+    "NO_EXCHANGE_RATE" : "Aucun taux de change defini pour aujourd'hui!",
     "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",
     "NOT_FOUND"        : "Cet enregistrement n'a pas pu être trouvé",
     "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
-    "UNKNOWN"          : "Une erreur est survenue."
+    "UNKNOWN"          : "Une erreur est survenue.",
+    "OVERPAID_INVOICE" : "Vous avez payé trop aux factures."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",

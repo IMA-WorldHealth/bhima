@@ -13,7 +13,7 @@
     <div class="row">
 
       <!-- Switch Cashbox Form and Transfer -->
-      <div class="col-md-2">
+      <div class="col-md-2 col-lg-3">
 
         <button class="btn btn-warning btn-block" ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-change-cashbox>
           <i class="fa fa-inbox"></i> <span translate>CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX</span>
@@ -25,7 +25,7 @@
       </div>
 
       <!-- Cash Voucher Form -->
-      <div class="col-md-8">
+      <div class="col-md-8 col-lg-6">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span translate>CASH.VOUCHER.SLIP</span> <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
@@ -88,13 +88,13 @@
                       <tr>
                         <th style="width: 25%;" translate>TABLE.COLUMNS.REFERENCE</th>
                         <th style="width: 50%;" translate>TABLE.COLUMNS.DATE</th>
-                        <th style="width: 25%;" translate>TABLE.COLUMNS.AMOUNT</th>
+                        <th style="width: 25%;" class="text-right" translate>TABLE.COLUMNS.AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody>
 
                       <!-- show a list of previous invoices to pay again -->
-                      <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
+                      <tr ng-repeat="invoice in CashCtrl.payment.invoices | orderBy:'date' track by invoice.uuid">
                         <td>{{ invoice.reference }}</td>
                         <td>{{ invoice.date | date }}</td>
                         <td class="text-right">{{ invoice.balance | currency:CashCtrl.enterprise.currency_id }}</td>
@@ -141,6 +141,22 @@
                   </p>
                 </div>
 
+                <!-- todo ... style hacks -->
+                <div class="form-group" style="padding-top: 15px;"
+                  ng-class="{'has-error' : CashVoucherForm.$submitted && CashVoucherForm.notes.$invalid }">
+                  <label class="control-label" translate>FORM.LABELS.NOTES</label>
+                  <textarea
+                    ng-model="CashCtrl.payment.description"
+                    name="notes"
+                    placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate}}..."
+                    class="form-control"
+                    rows="4">
+                  </textarea>
+                  <div class="help-block" ng-messages="CashVoucherForm.notes.$error" ng-show="CashVoucherForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
                 <hr />
 
                 <div ng-show="CashCtrl.patientBalance > 0" class="form-group">
@@ -167,7 +183,7 @@
 
                 <div class="form-group text-right">
 
-                  <button type="button" class="btn btn-default" ng-click="CashCtrl.clear(CashVoucherForm)">
+                  <button type="button" class="btn btn-default" ng-click="CashCtrl.clear(CashVoucherForm)" data-method="clear">
                     <span translate>FORM.BUTTONS.CLEAR</span>
                   </button>
 
