@@ -6,11 +6,11 @@
          <!--@fixme - style hacks for content centering-->
         <div class="panel panel-default" style="margin-top : calc(50vh - 190px); max-width: 400px; margin-right: auto; margin-left: auto">
           <div class="panel-heading clearfix">
-            <strong>{{ "AUTH.LOGIN" | translate }}</strong>
+            <strong translate>AUTH.LOGIN</strong>
             <div class="pull-right" uib-dropdown>
-              <button class="btn btn-default btn-xs" uib-dropdown-toggle>
+              <a class="btn btn-default btn-xs" uib-dropdown-toggle>
                 <span class="caret"></span>
-              </button>
+              </a>
               <ul role="menu" uib-dropdown-menu>
                 <li role="menuitem" ng-repeat="(key, lang) in LoginCtrl.languages">
                   <a ng-click="LoginCtrl.languageService.set(key)" href>
@@ -26,7 +26,7 @@
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.username.$invalid }">
-                <label class="control-label"> {{ "FORM.LABELS.USERNAME" | translate }} </label>
+                <label class="control-label" translate>FORM.LABELS.USERNAME</label>
                 <div class="input-group">
                   <span class="input-group-addon" style="background-color: #fff;">
                     <span class="fa fa-user"></span>
@@ -38,6 +38,7 @@
                     ng-model="LoginCtrl.credentials.username"
                     placeholder="{{ 'FORM.PLACEHOLDERS.USERNAME' | translate }}"
                     autofocus
+                    autocomplete="nope"
                     required />
                 </div>
               </div>
@@ -45,7 +46,7 @@
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.password.$invalid }">
-                <label class="control-label"> {{ "FORM.LABELS.PASSWORD" | translate }} </label>
+                <label class="control-label" translate>FORM.LABELS.PASSWORD</label>
                 <div class="input-group">
                   <span class="input-group-addon" style="background-color: #fff;">
                     <span class="fa fa-lock"></span>
@@ -56,6 +57,7 @@
                     ng-model="LoginCtrl.credentials.password"
                     class="form-control"
                     placeholder="{{ 'FORM.PLACEHOLDERS.PASSWORD' | translate }}"
+                    autocomplete="nope"
                     required />
                 </div>
               </div>
@@ -63,12 +65,12 @@
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.project.$invalid }">
-                <label class="control-label">
-                  {{ "FORM.LABELS.PROJECT" | translate }}
+                <label class="control-label" translate>
+                  FORM.LABELS.PROJECT
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon" style="background-color: #fff;">
-                    <span class="fa fa-home"></span>
+                    <i class="fa fa-home"></i>
                   </span>
                   <select
                     name="project"
@@ -76,19 +78,19 @@
                     ng-model="LoginCtrl.credentials.project"
                     ng-options="proj.id as proj.name for proj in LoginCtrl.projects"
                     required >
-                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                    <option value="" disabled translate>FORM.SELECT.PROJECT</option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.$invalid }">
                 <bh-loading-button loading-state="LoginForm.$loading" button-class="btn-default">
-                 {{ "FORM.BUTTONS.CONNECTION" | translate }}
+                  <span translate>FORM.BUTTONS.CONNECTION</span>
                 </bh-loading-button>
 
                 <!-- client-side validation error: requires username, password, and project -->
                 <p class="help-block" ng-if="LoginForm.$submitted && LoginForm.$invalid" style="margin-top:10px;">
-                  <i class="fa fa-exclamation-circle"></i> {{ "FORM.ERRORS.MISSING" | translate }}
+                  <i class="fa fa-exclamation-circle"></i> <span translate>FORM.ERRORS.MISSING</span>
                 </p>
               </div>
             </form>

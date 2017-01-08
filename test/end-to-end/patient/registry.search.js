@@ -1,12 +1,13 @@
 /* global element, by, browser */
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
-const helpers = require('../shared/helpers');
 
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
-
 
 /*
  * Patient Search Tests
@@ -30,7 +31,6 @@ function PatientRegistrySearch() {
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-
 
   function expectNumberOfGridRows(number) {
     expect(rows.count(),
@@ -87,13 +87,13 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates that sex + time-delimited filtering works
-  it('should find one female patient registered in the last year.', function () {
+  it('should find no female patients registered in the last year.', function () {
     FU.buttons.search();
     $('[data-date-registration]').$('[data-date-range="year"]').click();
     element(by.id('female')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
+    expectNumberOfGridRows(0);
     expectNumberOfFilters(3);
     FU.buttons.clear();
   });
@@ -172,4 +172,3 @@ function PatientRegistrySearch() {
 }
 
 module.exports = PatientRegistrySearch;
-

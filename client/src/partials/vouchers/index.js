@@ -35,7 +35,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       action: search, color: 'btn-default'
     },
     { icon: 'fa fa-filter', color: 'btn-default',
-      action: toggleFilter, 
+      action: toggleFilter,
     }
   ];
 

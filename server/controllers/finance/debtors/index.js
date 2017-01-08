@@ -18,15 +18,19 @@
 'use strict';
 
 const q = require('q');
+const uuid = require('node-uuid');
+
 const db          = require('../../../lib/db');
-const uuid        = require('node-uuid');
 const NotFound    = require('../../../lib/errors/NotFound');
 const BadRequest  = require('../../../lib/errors/BadRequest');
+
+const identifiers = require('../../../config/identifiers');
 
 exports.list   = list;
 exports.detail = detail;
 exports.update = update;
 exports.invoices = invoices;
+exports.invoiceBalances = invoiceBalances;
 exports.financialPatient = financialPatient;
 exports.balance = function() { /** @todo - noop */ };
 
@@ -131,13 +135,13 @@ function lookupDebtor(uid) {
  * procedures.sql for easy lookup
  */
 function invoices(req, res, next) {
-  const uid = db.bid(req.params.uuid);
+  let uid = db.bid(req.params.uuid);
   const options = req.query;
   const reversalVoucherType = 10;
 
   // get the debtor invoice uuids from the invoice table
   let sql =`
-    SELECT invoice.uuid
+    SELECT BUID(invoice.uuid) as uuid
     FROM invoice
     WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?);`;
 
@@ -146,42 +150,53 @@ function invoices(req, res, next) {
 
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
-
       uuids = uuids.map(item => item.uuid);
-
-      let balanced =
-         (options.balanced === '1') ? 'HAVING balance = 0' :
-         (options.balanced === '0') ? 'HAVING balance <> 0' :
-         '';
-
-      // select all invoice and payments against invoices from the combined ledger
-      sql = `
-        SELECT BUID(i.uuid) AS uuid, CONCAT(project.abbr, invoice.reference) AS reference,
-          credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
-        FROM (
-          SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
-          FROM (
-            SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-            FROM combined_ledger
-            WHERE record_uuid IN (?) AND entity_uuid = ?
-          UNION ALL
-            SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-            FROM  combined_ledger
-            WHERE reference_uuid IN (?) AND entity_uuid = ?
-          ) AS ledger
-          GROUP BY ledger.uuid ${balanced}
-        ) AS i
-          JOIN invoice ON i.uuid = invoice.uuid
-          JOIN project ON invoice.project_id = project.id;
-      `;
-
-      return db.exec(sql, [uuids, uid, uuids, uid]);
+      return invoiceBalances(req.params.uuid, uuids, options);
     })
     .then(function (invoices) {
       res.status(200).json(invoices);
     })
     .catch(next)
     .done();
+}
+
+function invoiceBalances(debtorUuid, uuids, paramOptions) {
+  let debtorUid = db.bid(debtorUuid);
+  let options = paramOptions || {};
+
+  let balanced =
+     (options.balanced === '1') ? 'HAVING balance = 0' :
+     (options.balanced === '0') ? 'HAVING balance <> 0' :
+     '';
+  let invoices = uuids.map(uuid => db.bid(uuid));
+
+  if (uuids.length===0) {
+    return [];
+  }
+
+
+  // select all invoice and payments against invoices from the combined ledger
+  let sql = `
+    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
+      credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
+    FROM (
+      SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
+      FROM (
+        SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+        FROM combined_ledger
+        WHERE record_uuid IN (?) AND entity_uuid = ?
+      UNION ALL
+        SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+        FROM  combined_ledger
+        WHERE reference_uuid IN (?) AND entity_uuid = ?
+      ) AS ledger
+      GROUP BY ledger.uuid ${balanced}
+    ) AS i
+      JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id;
+  `;
+
+  return db.exec(sql, [invoices, debtorUid, invoices, debtorUid]);
 }
 
 /**
@@ -254,16 +269,16 @@ function financialPatient(debtorUuid) {
   let sql = `
     SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit,
     transaction.reference, transaction.abbr
-    FROM(
+    FROM (
       SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-      posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
+        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
       FROM posting_journal
       LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
       WHERE posting_journal.entity_uuid = ?
       UNION
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-      general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
+        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
       FROM general_ledger
       LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id

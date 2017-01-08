@@ -177,13 +177,13 @@ function UtilService(moment) {
    * @description return an array which contain only unique values
    */
   service.uniquelize = function uniquelize (array) {
-    // the second param is the next value in the array.
-    return array.reduce(function (uniq, value) {
+    return array.filter(function (value, idx, array) {
+      return array.indexOf(value) === idx;
+    });
+  };
 
-      // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
-      if (uniq.indexOf(value) === -1) { uniq.push(value); }
-      return uniq;
-    }, []);  // initialize with an empty array
+  service.isEmptyObject = function isEmptyObject(object) {
+    return Object.keys(object).length === 0;
   };
 
 

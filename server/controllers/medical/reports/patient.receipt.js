@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module reports/patient.receipt
  *
@@ -11,22 +13,39 @@
  * @requires lodash
  * @requires lib/ReportManager
  */
-'use strict';
 
 const Patients = require ('../patients');
 const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 const Locations = require('../../admin/locations');
 
-const template = './server/controllers/medical/reports/patient.receipt.handlebars';
+const pdf = require ('../../../lib/renderers/pdf');
+
+const CARD_TEMPLATE  = './server/controllers/medical/reports/patient.receipt.handlebars';
+const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebars';
+
+// default options for the patient card
+const defaults = {
+  pageSize : 'A6',
+  orientation: 'landscape',
+};
 
 exports.build = build;
 
 function build(req, res, next) {
   const qs = req.query;
-  const options = _.defaults({ pageSize : 'A6', orientation: 'landscape' }, qs);
+  const options = _.defaults(qs, defaults);
 
   let report;
+  let template;
+
+  // if the POS option is selected, render a thermal receipt.
+  if (Boolean(Number(options.posReceipt))) {
+    _.assign(options, pdf.posReceiptOptions);
+    template = POS_TEMPLATE;
+  } else {
+    template = CARD_TEMPLATE;
+  }
 
   try {
     report = new ReportManager(template, req.params, options);

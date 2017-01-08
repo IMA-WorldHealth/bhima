@@ -1,22 +1,50 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path    ="InventoryCtrl.bcPaths"
-  button  ="InventoryCtrl.bcButtons"
-  print   ="InventoryCtrl.buttonPrint"
->
-</bh-breadcrumb>
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.INVENTORY</li>
+      <li class="title" translate>TREE.INVENTORY_LIST</li>
+    </ol>
+
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+        <a
+          class="btn btn-default"
+          ui-sref="inventory.create"
+          data-method="create">
+          <i class="fa fa-plus"></i> <span translate>INVENTORY.ADD_METADATA</span>
+        </a>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : InventoryCtrl.filterEnabled }"
+          ng-click="InventoryCtrl.toggleFilter()"
+          data-method="filter">
+          <i class="fa fa-filter"></i> <span translate>FORM.BUTTONS.FILTER</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/reports/inventory/items"
+          disable-cache="true">
+        </bh-pdf-print>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- grid content  -->
 <div class="flex-content">
   <div class="container-fluid">
-
-    <!-- inventory list of items  -->
-    <div id="inventoryListGrid"
+    <div
+      id="inventoryListGrid"
       class="grid-full-height"
       ui-grid="InventoryCtrl.gridOptions"
       ui-grid-auto-resize
-      ui-grid-resize-columns
-      ui-grid-grouping>
+      ui-grid-resize-columns>
     </div>
   </div>
 </div>

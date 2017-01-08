@@ -1,22 +1,26 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="static">{{ "TREE.LOCATION" | translate }}</li>
-      <li class="active">{{ "VILLAGE.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+      <li class="title" translate>VILLAGE.TITLE</li>
     </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="VillageCtrl.create()" data-method="create">
+          <i class="fa fa-plus-square"></i> <span translate>VILLAGE.NEW_VILLAGE</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Links to the main menu of management maps as well as the button for adding Villages -->
 <div class="flex-util">
-  <a href="#/locations" class="btn btn-default btn-sm">
+  <a href="#/locations" class="btn btn-default btn-sm" style="margin: 0 2px;">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
   </a>
-
-  <button class="btn btn-sm btn-default" id="create" ng-click="VillageCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{'VILLAGE.NEW_VILLAGE' | translate}}
-  </button>
 </div>
 
 

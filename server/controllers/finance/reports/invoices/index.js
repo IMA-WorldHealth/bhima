@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview
  * Invoice Reports
@@ -9,11 +11,11 @@
  * @todo - implement the filtering portion of this.  See patient registrations
  * for inspiration.
  */
-'use strict';
 
 const q  = require('q');
 const _  = require('lodash');
 const util = require('../../../../lib/util');
+
 const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
@@ -21,8 +23,13 @@ const Invoices      = require('../../patientInvoice');
 const Patients      = require('../../../medical/patients');
 const Exchange      = require('../../exchange');
 
+const pdf = require ('../../../../lib/renderers/pdf');
+
+const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.pos.handlebars';
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.handlebars';
 const REPORT_TEMPLATE  = './server/controllers/finance/reports/invoices/report.handlebars';
+
+const invoiceIdentifier = require('../../../../config/identifiers').INVOICE;
 
 exports.report = report;
 exports.receipt = receipt;
@@ -43,8 +50,10 @@ function report(req, res, next) {
     return next(e);
   }
 
+  const query = _.clone(req.query);
+
   // @todo - this should use a .find() method like patient registratons
-  Invoices.listInvoices()
+  Invoices.find(query)
     .then(rows => report.render({ rows }))
     .then(result => {
       res.set(result.headers).send(result.report);
@@ -68,10 +77,17 @@ function receipt(req, res, next) {
   let currencyId = options.currency || req.session.enterprise.currency_id;
   let invoiceResponse = {};
 
+  let template = RECEIPT_TEMPLATE;
+
+  if (Boolean(Number(options.posReceipt))) {
+    template = POS_RECEIPT_TEMPLATE;
+    _.extend(options, pdf.posReceiptOptions);
+  }
+
   let report;
 
   try {
-    report = new ReportManager(RECEIPT_TEMPLATE, req.session, options);
+    report = new ReportManager(template, req.session, options);
   } catch (e) {
     return next(e);
   }
@@ -89,7 +105,6 @@ function receipt(req, res, next) {
     })
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
-
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {

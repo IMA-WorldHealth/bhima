@@ -1,15 +1,14 @@
 angular.module('bhima.controllers')
-.controller('ColumnsConfigModalController', ColumnsConfigModalController);
+  .controller('ColumnsConfigModalController', ColumnsConfigModalController);
 
-ColumnsConfigModalController.$inject = [
-  '$uibModalInstance', 'Columns'
-];
+ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'Columns' ];
 
 /**
- * @module journal/modals/columnConfig.modal
+ * @module ColumnConfigModal
  *
  * @description
- * This controller provides the column configuration for the posting journal
+ * This controller powers a generic modal that is used from the GridColumnService
+ * to toggle column visibilities.
  */
 function ColumnsConfigModalController(ModalInstance, Columns) {
   var vm = this;

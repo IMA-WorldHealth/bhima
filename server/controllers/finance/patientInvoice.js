@@ -17,9 +17,11 @@ const uuid   = require('node-uuid');
 const _      = require('lodash');
 
 const identifiers = require('../../config/identifiers');
+const entityIdentifier = identifiers.INVOICE;
 
 const util   = require('../../lib/util');
 const db     = require('../../lib/db');
+const barcode = require('../../lib/barcode');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -41,9 +43,7 @@ exports.search = search;
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
-// @todo - this is used by the invoices receipt which really should use
-// a .find() method
-exports.listInvoices = listInvoices;
+exports.find = find;
 
 /**
  * list
@@ -51,7 +51,7 @@ exports.listInvoices = listInvoices;
  * Retrieves a list of all patient invoices in the database
  */
 function list(req, res, next) {
-  listInvoices()
+  find({})
     .then(function (invoices) {
       res.status(200).json(invoices);
     })
@@ -59,33 +59,6 @@ function list(req, res, next) {
     .done();
 }
 
-
-/**
- * @method listInvoices
- *
- * @description
- * Looks up all patients invoices in the data base
- *
- */
-function listInvoices() {
-  const sql = `
-    SELECT CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
-      service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
-      enterprise.currency_id, voucher.type_id
-    FROM invoice
-      LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
-      JOIN service ON service.id = invoice.service_id
-      JOIN user ON user.id = invoice.user_id
-      JOIN project ON invoice.project_id = project.id
-      JOIN enterprise ON enterprise.id = project.enterprise_id
-    ORDER BY invoice.date ASC, invoice.reference ASC;
-  `;
-
-  // TODO - this shouldn't throw an error...
-  return db.exec(sql);
-}
 
 /**
  * @method lookupInvoice
@@ -110,7 +83,7 @@ function lookupInvoice(invoiceUuid) {
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
-    WHERE invoice.uuid = ?`;
+    WHERE invoice.uuid = ?;`;
 
   let invoiceItemsQuery =
     `SELECT BUID(invoice_item.uuid) as uuid, invoice_item.quantity, invoice_item.inventory_price,
@@ -147,6 +120,9 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(rows => {
       record.subsidy = rows;
+
+      // provide barcode string to be rendered by client/ receipts
+      record.barcode = barcode.generate(entityIdentifier, record.uuid);
       return record;
     });
 }
@@ -204,10 +180,11 @@ function find(options) {
   };
 
   let sql =`
-    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS ref,
-      invoice.date, patient.display_name as patientName, invoice.cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-      service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id
+    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
+      patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
+      CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
+      service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
+      invoice.user_id, invoice.is_distributable
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
@@ -230,6 +207,13 @@ function find(options) {
     conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) = ?`);
     conditions.parameters.push(options.reference);
     delete options.reference;
+  }
+
+  if (options.debtor_uuid) {
+    options.debtor_uuid = db.bid(options.debtor_uuid);
+    conditions.statements.push('invoice.debtor_uuid = ?');
+    conditions.parameters.push(options.debtor_uuid);
+    delete options.debtor_uuid;
   }
 
   if (options.billingDateFrom) {
@@ -265,16 +249,19 @@ function find(options) {
   sql = query.query;
   let parameters = conditions.parameters.concat(query.conditions);
 
+  // if nothing was submitted to the search, get all records
+  // this writes in WHERE 1; to the SQL query
+  if (!parameters.length) {
+    sql += ' 1';
+  }
+
+  // add in the ORDER BY date DESC
+  sql += ' ORDER BY invoice.date DESC, invoice.reference DESC ';
+
   // finally, apply the LIMIT query
   if (!isNaN(limit)) {
     sql += 'LIMIT ?;';
     parameters.push(limit);
-  }
-
-  // if nothing was submitted to the search, get all records
-  // this writes in WHERE 1; to the SQL query
-  if (!parameters.length) {
-    sql += ' 1;';
   }
 
   parameters = parameters.concat(conditions.parameters);

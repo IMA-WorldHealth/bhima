@@ -6,9 +6,9 @@ const helpers = require('./helpers');
 describe('(/fiscal) Fiscal Year', function () {
 
   var newFiscalYear = {
-    label : 'A new Fiscal Year 2017',
-    start_date : new Date('2017-01-01 01:00'),
-    end_date : new Date('2017-12-31 01:00'),
+    label : 'A new Fiscal Year 2018',
+    start_date : new Date('2018-01-01 01:00'),
+    end_date : new Date('2018-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test'
   };
@@ -33,7 +33,7 @@ describe('(/fiscal) Fiscal Year', function () {
   it('GET /fiscal returns a list of fiscal_years', function () {
     return agent.get('/fiscal')
       .then(function (res) {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });

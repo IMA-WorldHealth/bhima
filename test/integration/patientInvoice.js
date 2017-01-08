@@ -18,9 +18,6 @@ describe('(/invoices) Patient Invoices', function () {
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
-  /* a reference for one of the invoices in the database */
-  const reference = 'TPA1';
-
   // run the 'BillingScenarios' test suite
   describe('(POST /invoices)', BillingScenarios);
 
@@ -79,15 +76,10 @@ describe('(/invoices) Patient Invoices', function () {
         .catch(helpers.handler);
     });
 
-    /**
-     * valid filter, all results
-     * @fixme: there is more than one `debtor_uuid` which are returned,
-     * the reason is the join between invoice and patient tables
-     */
-    it.skip('GET /invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', function () {
+    it('GET /invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', function () {
       return agent.get('/invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
         .then(function (res) {
-          helpers.api.listed(res, numCreatedInvoices);
+          helpers.api.listed(res, 5);
         })
         .catch(helpers.handler);
     });

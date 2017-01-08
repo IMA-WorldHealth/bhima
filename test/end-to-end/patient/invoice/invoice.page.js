@@ -31,7 +31,7 @@ function PatientInvoicePage() {
   page.prepare = function prepare() {
 
     // set a patient with id TPA1
-    findPatient.findById('TPA1');
+    findPatient.findById('PA.TPA.1');
 
     // set the date to the start of this year
     dateEditor.set(new Date('2016-01-02'));

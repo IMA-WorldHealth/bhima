@@ -1,8 +1,11 @@
 /* global element, by, browser */
+
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
-describe('locations (create modal)', function () {
+const notification = require('../shared/components/notify');
+
+describe('Locations (create modal)', function () {
   'use strict';
 
   before(() => helpers.navigate('#/patients/register'));
@@ -112,7 +115,10 @@ describe('locations (create modal)', function () {
     // submit the modal
     submit();
 
+    notification.hasSuccess();
+
     // it should close the modal
     FU.exists(by.css(selector), false);
+
   });
 });

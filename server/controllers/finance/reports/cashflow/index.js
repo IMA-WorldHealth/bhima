@@ -55,6 +55,9 @@ function processingCashflowReport(params) {
     throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
   }
 
+  params.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD').toString();
+  params.dateTo = moment(params.dateTo).format('YYYY-MM-DD').toString();
+
   // get all periods for the the current fiscal year
   return getPeriods(params.dateFrom, params.dateTo)
     .then(function (periods) {
@@ -105,14 +108,14 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
             pj.account_id, pj.entity_uuid, pj.currency_id, pj.trans_id,
             pj.description, pj.comment, pj.origin_id, pj.user_id
           FROM posting_journal pj
-          WHERE pj.account_id IN (?) AND pj.trans_date >= ? AND pj.trans_date <= ?
+          WHERE pj.account_id IN (?) AND DATE(pj.trans_date) >= DATE(?) AND DATE(pj.trans_date) <= DATE(?)
         ) UNION (
           SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
             gl.debit_equiv, gl.credit_equiv, gl.debit, gl.credit,
             gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
             gl.description, gl.comment, gl.origin_id, gl.user_id
           FROM general_ledger gl
-          WHERE gl.account_id IN (?) AND gl.trans_date >= ? AND gl.trans_date <= ?
+          WHERE gl.account_id IN (?) AND DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?)
         )
       ) AS t, account AS a, user as u, transaction_type as x
       WHERE t.account_id = a.id AND t.user_id = u.id AND t.origin_id = x.id
@@ -188,6 +191,9 @@ function processingWeekCashflow(params) {
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
   }
+
+  params.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD').toString();
+  params.dateTo = moment(params.dateTo).format('YYYY-MM-DD').toString();
 
   glb.periods = getWeeks(params.dateFrom, params.dateTo);
   glb.balance = { balance: 0, account_id: params.account_id };
@@ -267,9 +273,9 @@ function closingBalance(accountId, periodStart) {
  */
 function getFiscalYear(date) {
   var query =
-    'SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy ' +
-    'JOIN period p ON p.fiscal_year_id = fy.id ' +
-    'WHERE ? BETWEEN p.start_date AND p.end_date';
+    `SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy 
+     JOIN period p ON p.fiscal_year_id = fy.id 
+     WHERE ? BETWEEN p.start_date AND p.end_date`;
   return db.exec(query, [date]);
 }
 
@@ -280,9 +286,11 @@ function getFiscalYear(date) {
  */
 function getPeriods(dateFrom, dateTo) {
   var query =
-    'SELECT id, number, start_date, end_date ' +
-    'FROM period WHERE DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?)';
-  return db.exec(query, [dateFrom, dateTo]);
+    `SELECT id, number, start_date, end_date 
+     FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?)) 
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date)) 
+	    OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
+  return db.exec(query, [dateFrom, dateTo, dateFrom, dateTo]);
 }
 
 /**

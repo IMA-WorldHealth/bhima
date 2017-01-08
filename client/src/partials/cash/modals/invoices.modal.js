@@ -36,13 +36,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     columnDefs : [
       { name : 'reference'},
       { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
-
-      // sort by date column by default
-      {
-        name : 'date',
-        cellFilter: 'date',
-        sort : { priority : 0, direction : 'desc' }
-      }
+      { name : 'date', cellFilter: 'date' }
     ],
     minRowsToShow : 10
   };

@@ -11,15 +11,13 @@ FOR EACH ROW BEGIN
 
   -- this writes a patient entity into the entity_map table
   INSERT INTO entity_map
-    SELECT new.uuid, CONCAT_WS('.', 'P', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
 
   -- this writes a debtor entity into the entity_map table
   -- NOTE: the debtor actually points to the patient entity for convienence
   INSERT INTO entity_map
-    SELECT new.debtor_uuid, CONCAT_WS('.', 'P', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
 END$$
-
-
 
 -- Purchase Triggers
 
@@ -41,7 +39,7 @@ FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM invo
 CREATE TRIGGER invoice_document_map AFTER INSERT ON invoice
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'I', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'IV', project.abbr, new.reference) FROM project where project.id = new.project_id;
 END$$
 
 
@@ -59,7 +57,6 @@ END$$
 
 -- Credit Note Triggers
 -- @FIXME - why are we still using a credit note table?
-
 CREATE TRIGGER credit_note_before_insert BEFORE INSERT ON credit_note
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM credit_note WHERE credit_note.project_id = new.project_id)$$
 
@@ -78,7 +75,7 @@ FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM vouc
 CREATE TRIGGER voucher_document_map AFTER INSERT ON voucher
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'V', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'VO', project.abbr, new.reference) FROM project where project.id = new.project_id;
 END$$
 
 
@@ -89,7 +86,7 @@ FOR EACH ROW BEGIN
 
   -- Since employees do not have UUIDs or project associations, we create their mapping by simply concatenating
   -- the id with a prefix like this: E.{{employee.id}}.
-  INSERT INTO entity_map SELECT new.debtor_uuid, CONCAT_WS('.', 'E', new.id);
+  INSERT INTO entity_map SELECT new.debtor_uuid, CONCAT_WS('.', 'EM', new.id);
 END$$
 
 
@@ -103,7 +100,7 @@ FOR EACH ROW BEGIN
 
   -- this writes the supplier's creditor into the entity_map, pointing to the supplier
   INSERT INTO entity_map
-    SELECT new.creditor_uuid, CONCAT_WS('.', 'C', new.reference);
+    SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference);
 END$$
 
 DELIMITER ;

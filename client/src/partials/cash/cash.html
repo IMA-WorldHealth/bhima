@@ -62,11 +62,11 @@
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
                   <p><strong class="control-label">{{ "FORM.LABELS.TYPE" | translate }}</strong></p>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.togglePaymentType()" data-caution-option="1" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.togglePaymentType(CashCtrl.payment.is_caution)" data-caution-option="1" required>
                     {{ "FORM.LABELS.CAUTION" | translate }}
                   </label>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.togglePaymentType()" data-caution-option="0" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.togglePaymentType(CashCtrl.payment.is_caution)" data-caution-option="0" required>
                     {{ "FORM.LABELS.INVOICE" | translate }}
                   </label>
 

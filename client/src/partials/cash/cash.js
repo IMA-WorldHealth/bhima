@@ -50,14 +50,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   // fired on controller start or form refresh
   function startup() {
-
-    /* This is the actual payment form */
-    vm.payment = { date : new Date() };
+    vm.enterprise = Session.enterprise;
 
     // timestamp to compare date values
     vm.timestamp = new Date();
-    vm.enterprise = Session.enterprise;
-    vm.payment.currency_id = vm.enterprise.currency_id;
+
+    /* This is the actual payment form */
+    settupPayment();
 
     Currencies.read()
       .then(function (currencies) {
@@ -85,7 +84,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   }
 
   // clears the invoices field whenever the voucher type changes for a better UX
-  function togglePaymentType() {
+  function togglePaymentType(type_id) {
+    cache.is_caution = type_id;
     delete vm.payment.invoices;
   }
 
@@ -177,6 +177,17 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   }
 
+  function settupPayment() {
+    // load payment type from cache
+    var DEFAULT_PAYMENT_TYPE = 0;
+    var paymentType = cache.is_caution || DEFAULT_PAYMENT_TYPE;
+    vm.payment = {
+      date : new Date(),
+      is_caution : paymentType,
+      currency_id : vm.enterprise.currency_id
+    };
+  }
+
   // submit payment
   function submitPayment(form) {
     return Cash.create(vm.payment)
@@ -186,7 +197,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       .then(function () {
 
         // reset the data
-        vm.payment = { date : new Date() };
+        settupPayment();
 
         // reset the bhFindPatient component
         vm.bhFindPatient.reset();

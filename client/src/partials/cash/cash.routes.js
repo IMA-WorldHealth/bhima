@@ -2,6 +2,12 @@ angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
     $stateProvider
 
+      .state('cashRegistry', {
+        url : '/payments',
+        controller: 'CashPaymentRegistryController as CPRCtrl',
+        templateUrl: 'partials/cash/payments/registry.html'
+      })
+
       .state('cash', {
         url : '/cash',
         abstract: true,
@@ -29,6 +35,7 @@ angular.module('bhima.routes')
         onEnter :['$state', '$uibModal', transferModal],
         onExit : ['$uibModalStack', closeModal]
       });
+
   }]);
 
 

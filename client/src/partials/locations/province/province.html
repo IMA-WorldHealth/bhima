@@ -1,10 +1,17 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="static">{{ "TREE.LOCATION" | translate }}</li>
-      <li class="active">{{ "PROVINCE.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+      <li class="title" translate>PROVINCE.TITLE</li>
     </ol>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="ProvinceCtrl.create()" data-method="create">
+          <i class="fa fa-plus-square"></i> <span translate>PROVINCE.ADD</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -13,17 +20,13 @@
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
   </a>
-
-  <button class="btn btn-sm btn-default" id="create" ng-click="ProvinceCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{'PROVINCE.ADD' | translate}}
-  </button>
 </div>
 
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-    <!-- Complete list of registred Provinces -->
+    <!-- Complete list of registered Provinces -->
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
@@ -33,9 +36,9 @@
           <table class="table table-condensed">
             <thead>
                <tr>
-                <th>{{ 'TABLE.COLUMNS.NAME' | translate}}</th>
-                <th>{{ 'TABLE.COLUMNS.COUNTRY' | translate}}</th>
-                <th>{{ 'TABLE.COLUMNS.ACTION' | translate}}</th>
+                <th translate>TABLE.COLUMNS.NAME</th>
+                <th translate>TABLE.COLUMNS.COUNTRY</th>
+                <th translate>TABLE.COLUMNS.ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -45,7 +48,9 @@
               <tr ng-repeat="province in ProvinceCtrl.provinces | orderBy:'name'">
                 <td>{{ province.name }}</td>
                 <td>{{ province.country_name }}</td>
-                <td><a class="btn btn-xs btn-default" data-province-name="{{::province.name}}" ng-click="ProvinceCtrl.update(province)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a class="btn btn-xs btn-default" data-province-name="{{::province.name}}" ng-click="ProvinceCtrl.update(province)" >
+                    <i class="glyphicon glyphicon-pencil"></i></a>
+                </td>
               </tr>
             </tbody>
           </table>

@@ -495,8 +495,6 @@ CREATE TABLE `debtor` (
   `group_uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `debtor_1` (`text`),
-  UNIQUE KEY `debtor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -848,6 +846,7 @@ CREATE TABLE `inventory` (
   `code` varchar(30) NOT NULL,
   `text` varchar(100) NOT NULL,
   `price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   `unit_weight` MEDIUMINT(9) DEFAULT 0,
@@ -857,9 +856,10 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
-  `origin_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `inventory_1` (`text`),
+  UNIQUE KEY `inventory_1` (`group_uuid`, `text`),
   UNIQUE KEY `inventory_2` (`code`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `group_uuid` (`group_uuid`),
@@ -1377,7 +1377,7 @@ CREATE TABLE `province` (
   `name` VARCHAR(100) NOT NULL,
   `country_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `province_1` (`name`),
+  UNIQUE KEY `province_1` (`name`, `country_uuid`),
   KEY `country_uuid` (`country_uuid`),
   FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1607,7 +1607,7 @@ CREATE TABLE `sector` (
   `name` VARCHAR(80) NOT NULL,
   `province_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `sector_1` (`name`),
+  UNIQUE KEY `sector_1` (`name`, `province_uuid`),
   KEY `province_id` (`province_uuid`),
   FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1793,7 +1793,7 @@ CREATE TABLE `village` (
   `name`        VARCHAR(80) NOT NULL,
   `sector_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `village_1` (`name`),
+  UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

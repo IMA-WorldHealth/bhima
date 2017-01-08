@@ -71,8 +71,9 @@ function PatientInvoiceService(Modal, util, Session, Api) {
     return Modal.open({
       templateUrl : 'partials/patient_invoice/registry/search.modal.html',
       size : 'md',
-      animation : true,
+      animation : false,
       keyboard  : false,
+      backdrop : 'static',
       controller : 'InvoiceRegistrySearchModalController as ModalCtrl',
       resolve: {
         filters : function filtersProvider() { return filters; }
