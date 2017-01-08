@@ -1,5 +1,6 @@
 {
   "ACCOUNT": {
+    "ALL_CLASSES"    : "Toutes les classes",
     "ASSET"          : "Comptes des valeurs immobilisées",
     "CHART"          : "Plan Comptable",
     "COST"           : "Comptes des charges et pertes par nature",
@@ -11,11 +12,7 @@
     "REV"            : "Comptes de produits",
     "STOCKS"         : "Comptes des stocks",
     "THPART"         : "Comptes de tiers et à régulariser",
-    "TITLE"          : "Libelle de Compte",
     "TYPE"           : "Type de Compte",
-    "CHART"          : "Plan Comptable",
-    "COST"           : "Comptes des charges et pertes par nature",
-    "LIST"           : "Liste des comptes",
     "ADD"            : "Ajouter un Compte",
     "ADD_CHILD"      : "Ajouter un Compte fils",
     "ALL_ACCOUNT"    : "Tous les comptes",
@@ -46,13 +43,11 @@
     "SUBMIT_UPDATE"  : "Mettre à jour un compte",
     "TITLE"          : "Gestion des Comptes",
     "TITLE_ACCOUNT"  : "Comptes Titre",
-    "UPDATED"        : "Modifié",
+    "TYPE_CHANGE_BLOCKED" : "Vous ne pouvez pas modifier le type d'un compte de titre qui a des sous-comptes.",
     "TYPES" : {
       "BALANCE" : "Balance",
-      "EXPENSE" : "Frais",
-      "TITLE" : "Titre",
-      "INCOME" : "Produit",
-      "BALANCE" : "Balance",
+      "TITLE"   : "Titre",
+      "INCOME"  : "Produit",
       "EXPENSE" : "Charge"
     },
     "UPDATED"        : "Les données du compte ont été mis à jour"
@@ -67,12 +62,15 @@
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
   "BALANCE" : {
-    "MONTH_SOLD"    : "Mouvement du mois",
-    "NEW_SOLD"      : "Nouveau solde",
-    "OLD_SOLD"      : "Ancien solde",
-    "PERIOD_CHOICE" : "Choix de la period",
-    "DATE_RANGE"    : "Intervalle de date",
-    "DATE_UNTIL"    : "Jusqu'a la date"
+    "ACCOUNT_CHOICE"  : "Choix des comptes",
+    "ALL_ACCOUNT"     : "Tous les comptes",
+    "DATE_RANGE"      : "Intervalle de date",
+    "DATE_UNTIL"      : "Jusqu'a la date",
+    "MONTH_SOLD"      : "Mouvement du mois",
+    "NEW_SOLD"        : "Nouveau solde",
+    "OLD_SOLD"        : "Ancien solde",
+    "PERIOD_CHOICE"   : "Choix de la period",
+    "TOUCHED_ACCOUNT" : "Comptes mouvementés"
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -112,7 +110,8 @@
     "TRANSFER": {
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
-      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous."
+      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
+      "SUCCESS" : "Transfer effectué vers le compte de transfer."
     },
     "RECEIPT": {
       "TITLE"   : "Recu",
@@ -297,6 +296,7 @@
       "CLOSE"                 : "Fermer",
       "CONFIGURE"             : "Configurer",
       "CONFIRM"               : "Confirmer",
+      "CONFIRM_CANCEL"        : "Confirmer Annulation",
       "CONNECTION"            : "Connexion",
       "DELETE"                : "Supprimer",
       "DISMISS"               : "Rejeter",
@@ -440,10 +440,11 @@
       "BILLING_DATE"           : "Date Facturation",
       "BILLING_SERVICES"       : "Les services de facturation appliquée",
       "BY"                     : "Par",
+      "ON"                     : "Sur",
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
-      "CANCELED"               : "Annulee",
+      "CANCELED"               : "Annulée",
       "CHARACTERISTICS"         : "Caractéristiques",
       "CASHBOX"                : "Caisse",
       "CASHIER"                : "Caissier",
@@ -456,6 +457,7 @@
       "COLUMNS"                : "Colonnes",
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
+      "CONTACT_ADMIN"          : "Veuillez contacter l'administrateur",
       "COST_CENTER"            : "Centre de cout",
       "CONVENTION"             : "Convention",
       "COUNTRY"                : "Pays",
@@ -480,8 +482,10 @@
       "DEFINE_UNTIL_DATE"      : "Définir une date limite",
       "DESCRIPTION"            : "Description",
       "DETAILS"                : "Details",
+      "DEFAULT_QUANTITY"       : "Quantité par Défaut",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
+      "DISABLED"               : "Désactivée",
       "DOB"                    : "Date de Naissance",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -489,6 +493,7 @@
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
+      "ENABLED"                : "Activé",
       "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTER_BIRTH_YEAR"       : "Entrez seulement l'année de naissance",
@@ -561,6 +566,7 @@
       "NB_SPOUSE"              : "Nombre epoux (se)",
       "NO"                     : "Non",
       "NOTES"                  : "Note(s)",
+      "NO_DEBTOR_GROUPS"      : "Aucun groupes débiteurs",
       "NO_DISTRIBUTABLE"       : "Non distribuable",
       "OF"                     : "De",
       "ON_DELIVERY"            : "Lors de la delivarance",
@@ -576,6 +582,7 @@
       "PATIENT_DETAILS"        : "Détails Patient",
       "PATIENT_ID"             : "ID Patient",
       "PATIENT_NAME"           : "Nom du Patient",
+      "PATIENT_LIST"           : "Liste des Patients",
       "PAYMENT"                : "Paiement",
       "PAYMENT_DETAILS"        : "Details Paiement",
       "PAYMENT_METHOD"         : "Mode de paiement",
@@ -656,6 +663,7 @@
       "UNCONFIGURED"           : "Non configuree",
       "UNDEFINED"              : "Non defini",
       "UNIT"                   : "Forme galenique",
+      "UNIT_PRICE"             : "Prix Unitaire",
       "UNIT_WEIGHT"            : "Poids",
       "UNIT_VOLUME"            : "Volume",
       "UNTIL_DATE"             : "jusqu'à la date",
@@ -664,6 +672,7 @@
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
       "USE"                    : "Utilisation",
       "USERNAME"               : "Nom Utilisateur",
+      "USE_POS_RECEIPT"        : "Impression POS",
       "USER"                   : "Utilisateur",
       "VALUE"                  : "Valeur",
       "VILLAGE"                : "Village/Commune",
@@ -715,8 +724,10 @@
       "USERNAME"     : "Entrer le nom utilisateur",
       "VILLAGE"      : "Entrer village/Commune",
       "FILTER_NAME"        : "Filtrer par Nom...",
+      "FILTER_BY"          : "Filtrer par",
       "SEARCH_NAME"        : "Chercher Par Nom",
-      "SEARCH_PATIENT_ID"  : "Chercher ID Patient"
+      "SEARCH_PATIENT_ID"  : "Chercher ID Patient",
+      "QUANTITY"           : "Entrer le Quantité"
     },
     "SELECT": {
       "EMPTY"              : "Vide",
@@ -801,6 +812,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
     "EXCHANGE_SET"   : "Configuré le",
@@ -817,17 +829,19 @@
     }
   },
   "INVENTORY" : {
-    "ADD_GROUP"     : "Ajouter Groupe d'inventaires",
-    "ADD_METADATA"  : "Ajouter inventaire",
-    "ADD_TYPE"      : "Ajouter Types d'inventaires",
-    "ADD_UNIT"      : "Ajouter Forme d'inventaires",
+    "ADD_GROUP"     : "Ajouter Groupe d'Inventaires",
+    "ADD_METADATA"  : "Ajouter Inventaire",
+    "ADD_TYPE"      : "Ajouter Types d'Inventaires",
+    "ADD_UNIT"      : "Ajouter Forme d'Inventaires",
     "CONFIGURATION" : "Configurations",
     "CONTAINS"      : "Contient",
+    "CREATE_ANOTHER" : "Ajouter une Autre Inventaires",
+    "DEFAULT_QUANTITY_DEFINITION" : "Ce champ suggérera le quantité par défaut dans le facture.",
     "EDIT_GROUP"    : "Modifier Groupe d'inventaires",
-    "EDIT_METADATA" : "Modifier inventaire",
+    "EDIT_METADATA" : "Modifier Inventaire",
     "EDIT_TYPE"     : "Modifier Types d'inventaires",
     "EDIT_UNIT"     : "Modifier Forme d'inventaires",
-    "ELEMENT"       : "Elt",
+    "ELEMENT"       : "Élément",
     "LIST"          : "Liste des données d'inventaire",
     "LIST_METADATA" : "Inventaires",
     "LIST_GROUP"    : "Groupes d'inventaires",
@@ -850,7 +864,8 @@
     "MANAGE_SECTOR"         : "Gerer Les Secteurs",
     "MANAGE_VILLAGE"        : "Gerer Les Villages/Communes",
     "REGISTERED"            : "Localisations Enregistrées",
-    "TITLE"                 : "Gestion des localisations"
+    "TITLE"                 : "Gestion des localisations",
+    "REGISTER_AGAIN"        : "Enregisterer une autre Localisation"
   },
   "LOGIN": {
     "TITLE" : "Authentification"
@@ -907,6 +922,7 @@
     },
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
+    "LABEL_PAID"         : "Cette facture a été payé.",
     "PAGE_TITLE"         : "Facture des patients",
     "STAT_TOTAL_INVOICE" : "Total factures",
     "STAT_PAID"          : "Payés",
@@ -1020,15 +1036,16 @@
     "COLUMNS" : "Colonnes"
   },
   "ERRORS" : {
-    "DATE_IN_WRONG_PERIOD" : "Dates dans la mauvaise periode",
-    "MISSING_DESCRIPTION" : "Descriptions omises",
-    "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
-    "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
-    "MISSING_ACCOUNTS" : "Compte(s) omis",
-    "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
-    "MISSING_ENTITY" : "Ligne(s) sans ID entite",
+    "DATE_IN_WRONG_PERIOD"     : "Dates dans la mauvaise periode",
+    "MISSING_DESCRIPTION"      : "Descriptions omises",
+    "LOCKED_ACCOUNT"           : "Compte(s) verrouille(s)",
+    "UNBALANCED_TRANSACTIONS"  : "Transaction(s) non balancee(s)",
+    "MISSING_ACCOUNTS"         : "Compte(s) omis",
+    "MISSING_DOCUMENT_ID"      : "Ligne(s) sans ID Document",
+    "MISSING_ENTITY"           : "Ligne(s) sans ID entite",
     "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
-    "SINGLE_LINE_TRANSACTION" : "Transaction(s) avec une ligne"
+    "MULTIPLE_CANCELLING"      : "Annulation multiple. Cette transaction a deja été annulée",
+    "SINGLE_LINE_TRANSACTION"  : "Transaction(s) avec une ligne"
   },
   "WARNINGS" : {
     "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
@@ -1056,7 +1073,10 @@
     "PRICE_LIST_ITEMS" : "Eléments de la liste des prix",
     "TITLE"            : "Liste des Prix",
     "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",
-    "UPDATE"           : "Mettre à jour une liste de prix"
+    "UPDATE"           : "Mettre à jour une liste de prix",
+    "ERRORS" : {
+      "HAS_NEGATIVE_PRICE" : "Vous ne pouvez pas assigner une valeur negatif."
+    }
   },
   "PROJECT": {
     "ADDING_PROJECT"  : "Ajout nouveau projet",
@@ -1181,7 +1201,8 @@
   "SETTINGS": {
     "TITLE" : "Paramètres",
     "BUG_LINK" : "Signaler un Problème",
-    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO" : "Si cette option est activé, l'impression sera fait avec l'imprimante thermique."
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Ajout d'une subvention",
@@ -1470,7 +1491,6 @@
       "RECEIPT" :  {
         "SUCCESS" : "Bon de paiement enregistré avec succès."
       },
-      
       "REPORT" : "Rapport des Quittances",
       "TITLE"  : "Quittance",
       "TOOLS"  : "Outils",
@@ -1501,5 +1521,4 @@
     "LOGINS" : "Connexion",
     "PURCHASES" : "Achats"
   }
-
 }

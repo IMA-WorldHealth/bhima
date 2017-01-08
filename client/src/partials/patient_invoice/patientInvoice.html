@@ -5,6 +5,14 @@
       <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
       <li class="title" ng-show="PatientInvoiceCtrl.Invoice.recipient">{{ PatientInvoiceCtrl.Invoice.recipient.display_name }}</li>
     </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-receipt-currency
+          on-update="PatientInvoiceCtrl.setReceiptCurrency(currencyId)">
+        </bh-receipt-currency>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -23,8 +31,7 @@
                     suppress-reset="true"
                     on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
                     on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)"
-                    validation-trigger="detailsForm.$submitted"
-                    >
+                    validation-trigger="detailsForm.$submitted">
                   </bh-find-patient>
                 </div>
 
@@ -305,8 +312,8 @@
 </script>
 
 <script type="text/ng-template" id="typePopover.tmpl.html">
-  <dl>
-    <dt>{{ "PATIENT_INVOICE.DISTRIBUTION_TYPE" | translate }}</dt>
-    <dd>{{ "PATIENT_INVOICE.DISTRIBUTION_TYPE_EXPLANATION" | translate }}</dd>
+  <dl style="margin-bottom: 0; padding-bottom:0">
+    <dt translate>PATIENT_INVOICE.DISTRIBUTION_TYPE</dt>
+    <dd translate>PATIENT_INVOICE.DISTRIBUTION_TYPE_EXPLANATION</dd>
   </dl>
 </script>

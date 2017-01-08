@@ -8,8 +8,8 @@ angular.module('bhima.components')
   transclude: true,
   template :
     '<button type="submit" class="btn" ng-class="$ctrl.buttonClass" ng-disabled="$ctrl.loadingState || $ctrl.disabled" data-method="submit">' +
-      '<span ng-show="$ctrl.loadingState"><span class="fa fa-circle-o-notch fa-spin"></span> {{ "FORM.INFO.LOADING" | translate }}</span>' +
-      '<span ng-hide="$ctrl.loadingState" ng-transclude>{{ "FORM.BUTTONS.SUBMIT" | translate }}</span>' +
+      '<span ng-show="$ctrl.loadingState"><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span></span>' +
+      '<span ng-hide="$ctrl.loadingState" ng-transclude translate>FORM.BUTTONS.SUBMIT</span>' +
     '</button>',
   controller : LoadingButtonController
 });

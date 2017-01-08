@@ -32,7 +32,7 @@ class ReportPage {
     });
 
     // click the generate button
-    modal.$('[data-method="submit"]').click();
+    FU.modal.submit();
   }
 
   // deletes an account from the grid

@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('ModalService', ModalService);
+  .service('ModalService', ModalService);
 
 ModalService.$inject = [ '$uibModal' ];
 
@@ -377,7 +377,7 @@ function ModalService(Modal) {
     /** searchCashPayment */
     function openSearchCashPayment(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/finance/reports/cash_payment/templates/search.modal.html',
+        templateUrl  : 'partials/cash/payments/templates/search.modal.html',
         controller   : 'SearchCashPaymentModalController',
         controllerAs : '$ctrl',
         size         : 'md',

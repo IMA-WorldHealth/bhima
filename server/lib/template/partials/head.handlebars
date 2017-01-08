@@ -3,11 +3,14 @@
   <title>{{translate title}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
   <style>
-    @media print {
-      table, tr, td, th, tbody, thead, tfoot {
-        page-break-inside: avoid !important;
-      }
+    thead { 
+      display : table-header-group;
+    }
+    
+    tr { 
+      page-break-inside : avoid;
     }
   </style>
   <meta charset="utf-8" />

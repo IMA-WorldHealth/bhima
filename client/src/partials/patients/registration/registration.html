@@ -162,7 +162,7 @@
                     ng-class="{'has-error' : DetailForm.debtorGroup.$invalid && PatientRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert type="danger" ng-if="PatientRegCtrl.debtorGroups.length === 0">
+                    <uib-alert class="text-danger" type="danger" ng-if="PatientRegCtrl.debtorGroups.length === 0">
                       <i class="fa fa-warning"></i>
                       {{ "FORM.LABELS.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
                     </uib-alert>
@@ -172,10 +172,9 @@
                       <ui-select
                         name="debtorGroup"
                         ng-model="PatientRegCtrl.finance.debtor_group_uuid"
-                        theme="bootstrap"
                         required>
                         <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (PatientRegCtrl.debtorGroups | filter:$select.search | orderBy:'name' | limitTo:8) track by group.uuid">
+                        <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (PatientRegCtrl.debtorGroups | filter:$select.search | orderBy:'name') track by group.uuid">
                           <span ng-bind-html="group.name | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>

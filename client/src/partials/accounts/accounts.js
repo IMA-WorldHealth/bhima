@@ -37,7 +37,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     .finally(toggleLoadingIndicator);
 
   var columns = [
-    { field : 'number', displayName : '', cellClass : 'text-right', width : 70},
+    { field : 'number', displayName : '', cellClass : 'text-right', width : 80},
     { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/partials/accounts/templates/grid.indentCell.tmpl.html', headerCellFilter : 'translate' },
     { name : 'actions', enableFiltering : false, displayName : '', cellTemplate : '/partials/accounts/templates/grid.actionsCell.tmpl.html', headerCellFilter : 'translate', width : 140 }
   ];

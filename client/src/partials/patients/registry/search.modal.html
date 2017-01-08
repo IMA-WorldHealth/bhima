@@ -5,17 +5,17 @@
   bh-form-defaults
   novalidate>
 
-  <div class="modal-header">
+  <div class="modal-header" style="box-shadow : 0px 2px 4px -4px black; z-index:1000">
     <ol class="headercrumb">
       <li class="static">{{ "FORM.INFO.PATIENTS" | translate }}</li>
       <li class="title">{{ "FORM.INFO.SEARCH" | translate }}</li>
     </ol>
   </div>
 
-  <div class="modal-body modal-tall" style="overflow: auto;">
+  <div class="modal-body" style="max-height : 400px; overflow: auto;">
     <fieldset>
       <legend>
-        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.DATE_REGISTRATION" | translate }}
+        {{ "FORM.LABELS.DATE_REGISTRATION" | translate }}
       </legend>
 
       <ul class="list-inline" data-date-registration>
@@ -83,7 +83,7 @@
 
     <fieldset>
       <legend>
-        <i class="fa fa-users"></i> {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+        {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
       </legend>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
@@ -134,9 +134,12 @@
       <div class="radio">
         <p class="control-label">
           <strong>{{ "FORM.LABELS.GENDER" | translate }}</strong>
-          <a href ng-click="ModalCtrl.clear('sex')" tabindex="-1">
-            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-          </a>
+
+          <span style="display:inline-block;" class="pull-right">
+            <a href ng-click="ModalCtrl.clear('sex')" tabindex="-1">
+              <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+            </a>
+          </span>
         </p>
 
         <label>
@@ -151,11 +154,77 @@
           {{ "FORM.LABELS.FEMALE" | translate }}
         </label>
       </div>
+
+      <div class="form-group">
+        <label class="control-label">
+          {{ "FORM.LABELS.DEBTOR_GROUP" | translate }}
+        </label>
+
+        <!-- @todo make this a component - it is used everywhere. Calls back method
+             `clear` and resets the id passed to the component -->
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('debtor_group_uuid')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+
+        <!-- @todo make data driven selects components to handle loading and error states -->
+        <select
+          class="form-control"
+          name="debtorGroup"
+          ng-options="group.uuid as group.name for group in ModalCtrl.debtorGroups"
+          ng-model="ModalCtrl.params.debtor_group_uuid">
+          <option disabled value="">-- {{ ::"FORM.PLACEHOLDERS.FILTER_BY" | translate}} {{ ::"FORM.LABELS.DEBTOR_GROUP" | translate }} --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">
+          {{ "PATIENT_GROUP.PATIENT_GROUP" | translate }}
+        </label>
+
+        <!-- @todo make this a component - it is used everywhere. Calls back method
+             `clear` and resets the id passed to the component -->
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('patient_group_uuid')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+
+        <!-- @todo make data driven selects components to handle loading and error states -->
+        <select
+          class="form-control"
+          name="patientGroup"
+          ng-options="group.uuid as group.name for group in ModalCtrl.patientGroups"
+          ng-model="ModalCtrl.params.patient_group_uuid">
+          <option disabled value="">-- {{ ::"FORM.PLACEHOLDERS.FILTER_BY" | translate}} {{ ::"PATIENT_GROUP.PATIENT_GROUP" | translate }} --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">{{ 'FORM.LABELS.USER' | translate }}</label>
+
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+
+        <select
+          class="form-control"
+          name="user"
+          ng-model="ModalCtrl.params.user_id"
+          ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
+          <option value="" disabled>{{ 'FORM.SELECT.USER' | translate }}</option>
+        </select>
+      </div>
+
+
     </fieldset>
 
     <fieldset>
       <legend>
-        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.DOB" | translate }}
+        {{ "FORM.LABELS.DOB" | translate }}
       </legend>
 
       <ul class="list-inline" data-date-dob>

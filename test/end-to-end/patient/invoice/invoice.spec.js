@@ -148,7 +148,7 @@ describe('Patient Invoice', function () {
     browser.refresh();
 
     // need to have a patient to recover data
-    page.patient('TPA1');
+    page.patient('PA.TPA.1');
 
     // click recover cache button
     page.recover();

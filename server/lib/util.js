@@ -76,6 +76,11 @@ function parseQueryStringToSQL(options, tablePrefix) {
     parameters: []
   };
 
+  // exit early if an empty object is passed in.
+  if (_.isEmpty(options)) {
+    return conditions;
+  }
+
   tablePrefix = tablePrefix || '';
 
   let escapedKeys = _.mapKeys(options, (value, key) => tablePrefix.concat('.', key));

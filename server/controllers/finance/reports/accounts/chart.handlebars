@@ -6,7 +6,7 @@
 
   <!-- title  -->
   <h1 class="text-center text-uppercase">
-    {{translate 'ACCOUNT.ACCOUNT_CHART'}}
+    {{translate 'REPORT.CHART_OF_ACCOUNTS'}}
   </h1>
 
   <br>
@@ -18,16 +18,14 @@
         <th class="text-left" style="width: 15%;"></th>
         <th>{{translate 'ACCOUNT.LABEL'}}</th>
         <th>{{translate 'FORM.LABELS.TYPE'}}</th>
-        <th>{{translate 'ACCOUNT.COST_CENTER'}}</th>
-        <th>{{translate 'ACCOUNT.PROFIT_CENTER'}}</th>
       </tr>
     </thead>
 
     <tbody>
       {{#each accounts}}
-        {{#if this.is_title}}
+        {{#if this.is_title_account}}
           <tr>
-            <td class="text-left"><strong>{{ this.number }}</strong></td>
+            <td class="text-right"><strong>{{ this.number }}</strong></td>
             <td class="text-left">
               <strong style="margin-left: {{indentAccount this.depth}};">
                 {{#if this.locked}}
@@ -37,12 +35,10 @@
               </strong>
             </td>
             <td>{{translate this.translation_key }}</td>
-            <td>{{ this.cost_center_text }}</td>
-            <td>{{ this.profit_center_text }}</td>
           </tr>
         {{else}}
           <tr>
-            <td class="text-left">{{ this.number }}</td>
+            <td class="text-right">{{ this.number }}</td>
             <td class="text-left">
               <span  style="margin-left: {{indentAccount this.depth}};">
                 {{#if this.locked}}
@@ -52,8 +48,6 @@
               </span>
             </td>
             <td>{{translate this.translation_key }}</td>
-            <td>{{ this.cost_center_text }}</td>
-            <td>{{ this.profit_center_text }}</td>
           </tr>
         {{/if}}
       {{/each}}

@@ -20,6 +20,7 @@ describe('Villages Management', function () {
   };
 
   it('creates a new village', function () {
+
     // switch to the create form
     FU.buttons.create();
 
@@ -53,8 +54,9 @@ describe('Villages Management', function () {
   });
 
   it('correctly blocks invalid form submission with relevant error classes', function () {
+
     // switch to the create form
-    element(by.id('create')).click();
+    FU.buttons.create();
 
     // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);

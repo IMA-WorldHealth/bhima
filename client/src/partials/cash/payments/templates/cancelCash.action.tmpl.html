@@ -1,0 +1,12 @@
+<div class="ui-grid-cell-contents">
+  <a href id="{{row.entity.reference}}" 
+    ng-click="grid.appScope.cancelCash(row.entity)" 
+    ng-hide="{{row.entity.type_id === grid.appScope.bhConstants.transactionType.CREDIT_NOTE}}"
+    class="text-danger">
+    <i class="fa fa-clone"></i> {{ ::"TABLE.COLUMNS.CANCEL_CASH" | translate }}
+  </a>
+  <a ng-show="{{row.entity.type_id === grid.appScope.bhConstants.transactionType.CREDIT_NOTE}}"
+    class="text-danger text-action" href>
+    <i class="fa fa-ban"></i> {{ ::"FORM.LABELS.CANCELED" | translate }}
+  </a>
+</div>

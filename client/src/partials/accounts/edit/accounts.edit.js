@@ -136,6 +136,21 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   }
 
 
+  vm.titleChangedValidation = titleChangedValidation;
+
+  // @todo form validation using validators on a component
+  function titleChangedValidation(newAccountType) {
+    var notTitleAccount = Number(newAccountType) !== Constants.accounts.TITLE;
+    var hasChildren = vm.account.children && vm.account.children.length;
+
+    if (notTitleAccount && hasChildren) {
+      vm.invalidTitleAccount = true;
+    } else {
+      vm.invalidTitleAccount = false;
+    }
+  }
+
+
   /** @todo re-factor method - potentially these two actions should be split into two controllers */
   function updateAccount(accountForm) {
     // only require form to have changed if this is not the create state (no initial values)
@@ -146,6 +161,10 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
       return;
     }
     if (!accountForm.$dirty) {
+      return;
+    }
+
+    if (vm.invalidTitleAccount) {
       return;
     }
 
@@ -210,7 +229,6 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
       })
       .catch(handleModalError);
     });
-
   }
 
   function resetModal(accountForm) {

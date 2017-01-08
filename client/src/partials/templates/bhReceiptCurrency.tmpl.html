@@ -1,11 +1,13 @@
 <div class="btn-group" uib-dropdown dropdown-append-to-body>
-  <button class="btn btn-default" uib-dropdown-toggle>{{ "INVOICE_REGISTRY.RECEIPT_CURRENCY" | translate }}</button>
+  <a class="btn btn-default" uib-dropdown-toggle>
+    <span translate>INVOICE_REGISTRY.RECEIPT_CURRENCY</span>
+  </a>
   <button style="min-width : 30px" class="btn btn-default">
-    <span>{{$ctrl.selectedCurrency.symbol || '-'}}</span>
+    <span>{{ $ctrl.selectedCurrency.symbol || '-' }}</span>
   </button>
   <ul class="dropdown-menu" uib-dropdown-menu role="menu">
     <li ng-repeat="currency in $ctrl.currencies.data track by currency.id" role="menuitem">
-      <a ng-click="$ctrl.update(currency)" href>{{currency.name}} (<b>{{currency.symbol}}</b>)</a>
+      <a ng-click="$ctrl.update(currency)" href>{{ ::currency.name}} (<b>{{ ::currency.symbol}}</b>)</a>
     </li>
   </ul>
 </div>

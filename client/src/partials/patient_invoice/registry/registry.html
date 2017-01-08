@@ -15,16 +15,16 @@
         </button>
       </div>
       <div class="toolbar-item">
-        <bh-pdf-print
-          pdf-url="/reports/finance/invoices"
-        >
+        <bh-pdf-print pdf-url="/reports/finance/invoices"
+          options="InvoiceRegistryCtrl.filters">
         </bh-pdf-print>
       </div>
 
 
       <div class="toolbar-item">
         <bh-receipt-currency
-          on-update="InvoiceRegistryCtrl.setReceiptCurrency(currencyId)" />
+          on-update="InvoiceRegistryCtrl.setReceiptCurrency(currencyId)">
+        </bh-receipt-currency>
       </div>
     </div>
   </div>
@@ -41,11 +41,10 @@
   <a
     href
     ng-click="InvoiceRegistryCtrl.clearFilters()"
-    ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-ban text-danger"></i>
-    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
 </div>
 
@@ -53,8 +52,9 @@
   <div class="container-fluid">
     <div
       id="invoice-registry"
+      class="grid-full-height"
+      ng-style="InvoiceRegistryCtrl.filterBarHeight"
       ui-grid="InvoiceRegistryCtrl.uiGridOptions"
-      style="height : calc(100vh - 102px)"
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns>

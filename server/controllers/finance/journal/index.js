@@ -33,6 +33,7 @@ exports.list = list;
 exports.getTransaction = getTransaction;
 exports.reverse = reverse;
 exports.find = find;
+exports.journalEntryList = journalEntryList;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -193,6 +194,42 @@ function find(options) {
 }
 
 /**
+* journalEntryList
+* Allows you to select which transactions to print
+*/
+function journalEntryList(options) { 
+  let uuids =  options.uuids.map(function(uuid) {
+    return db.bid(uuid);
+  });
+
+  let sql = `
+    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
+      dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
+      p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
+      BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
+      BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
+      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      pro.name AS project_name, per.start_date AS period_start,
+      per.end_date AS period_end, a.number AS account_number, u.display_name
+    FROM posting_journal p
+      JOIN project pro ON pro.id = p.project_id
+      JOIN period per ON per.id = p.period_id
+      JOIN account a ON a.id = p.account_id
+      JOIN user u ON u.id = p.user_id
+      JOIN currency c ON c.id = p.currency_id
+      LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
+      LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
+      LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
+    WHERE p.uuid IN (?)
+    ORDER BY p.trans_date DESC, record_uuid ASC
+  `;
+
+  return db.exec(sql, [uuids]);
+}
+
+
+/**
  * GET /journal
  * Getting data from the posting journal
  */
@@ -256,22 +293,34 @@ function getTransaction (req, res, next) {
  *
  * @description
  * This is a generic wrapper for reversing any transaction in the posting
- * journal or general ledger.  The
+ * journal or general ledger. 
  *
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
 
   const voucherUuid = uuid.v4();
-  const params = [
-    db.bid(req.params.uuid), req.session.user.id, req.body.description,
-    db.bid(voucherUuid)
-  ];
+  const recordUuid  = db.bid(req.params.uuid);
+  const params = [ recordUuid, req.session.user.id, req.body.description, db.bid(voucherUuid) ];
 
-  // create and execute a transaction
-  db.transaction()
-    .addQuery('CALL ReverseTransaction(?, ?, ?, ?);', params)
-    .execute()
+  /** 
+   * Check already cancelled 
+   * Transaction type for cancelled operation is 10
+   */
+  const CANCELLED_ID = 10;
+  const query = 
+    `SELECT uuid FROM voucher 
+     WHERE voucher.type_id = ${CANCELLED_ID} AND voucher.reference_uuid = ?`;
+
+  // create and execute a transaction if necessary 
+  db.exec(query, [recordUuid])
+    .then(rows => {
+      if (rows.length > 0) {
+        // transaction already cancelled 
+        throw new BadRequest('The transaction has been already cancelled', 'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING');
+      }
+      return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
+    })
     .then(() => res.status(201).json({ uuid : voucherUuid }))
     .catch(next)
     .done();

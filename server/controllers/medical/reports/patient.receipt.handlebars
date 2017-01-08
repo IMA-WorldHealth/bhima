@@ -33,4 +33,12 @@
       {{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }}<br />
     </div>
   </div>
+
+  <div class="row" style="margin-top: 2em;">
+    <div class="col-xs-12">
+      {{> barcode value=patient.barcode }}
+    </div>
+  </div>
+
+  <script>JsBarcode('.barcode').init();</script>
 </body>

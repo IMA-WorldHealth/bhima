@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'PatientService', 'DateService', 'params'
+  '$uibModalInstance', 'DateService', 'params', 'DebtorGroupService', 'PatientGroupService',
+  'UserService'
 ];
 
 /**
@@ -13,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, Patients, Dates, params) {
+function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService, Users) {
   var vm = this;
 
   // bind period labels from the service
@@ -29,6 +30,21 @@ function PatientRegistryModalController(ModalInstance, Patients, Dates, params) 
   vm.cancel = cancel;
   vm.clear = clear;
   vm.setDateRange = setDateRange;
+
+  DebtorGroups.read()
+    .then(function (result) {
+      vm.debtorGroups = result;
+    });
+
+  PatientGroupsService.read()
+    .then(function (result) {
+      vm.patientGroups = result;
+    });
+
+  Users.read()
+      .then(function (users) {
+        vm.users = users;
+      });
 
   // returns the parameters to the parent controller
   function submit(form) {

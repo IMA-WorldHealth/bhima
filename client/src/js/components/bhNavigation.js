@@ -26,19 +26,21 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    */
   var unitsIndex = { id : {}, path : {} };
 
-  Tree.units()
-    .then(function (units) {
+  function loadTreeUnits() {
+    Tree.units()
+      .then(function (units) {
 
-      Tree.sortByTranslationKey(units);
-      $ctrl.units = units;
+        Tree.sortByTranslationKey(units);
+        $ctrl.units = units;
 
-      calculateUnitIndex($ctrl.units);
-      expandInitialUnits($ctrl.units);
+        calculateUnitIndex($ctrl.units);
+        expandInitialUnits($ctrl.units);
 
-      // updates the tree selection on path change
-      updateSelectionOnPathChange();
-    })
-    .catch(Notify.handleError);
+        // updates the tree selection on path change
+        updateSelectionOnPathChange();
+      })
+      .catch(Notify.handleError);
+  }
 
   // Tree Utility methods
   $ctrl.toggleUnit = function toggleUnit(unit) {
@@ -154,4 +156,9 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    */
   $rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation);
   $rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange);
+
+  // if the session is reloaded, download the new tree units
+  $rootScope.$on('session:reload', loadTreeUnits);
+
+  loadTreeUnits();
 }

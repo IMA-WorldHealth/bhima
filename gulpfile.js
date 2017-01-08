@@ -42,6 +42,8 @@ const paths = {
 
       // this is very cheeky
       'client/vendor/moment/moment.js',
+      'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
+
       '!client/vendor/**/src{,/**}',
       '!client/vendor/**/js{,/**}'
     ],
@@ -60,6 +62,9 @@ const paths = {
       'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
+
+      // Angular Touch
+      'client/vendor/angular-touch/angular-touch.min.js',
 
       // Angular UI Select
       'client/vendor/angular-ui-select/dist/select.js',

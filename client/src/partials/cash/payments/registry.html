@@ -1,8 +1,8 @@
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "TREE.CASH_PAYMENT_REGISTRY" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>TREE.CASH_PAYMENT_REGISTRY</li>
     </ol>
 
     <div class="toolbar">
@@ -11,7 +11,7 @@
           ng-click="CPRCtrl.search()"
           data-method="search"
           class="btn btn-default">
-          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
       <div class="toolbar-item">
@@ -25,7 +25,6 @@
   </div>
 </div>
 
-<!-- util bar  -->
 <div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
   <bh-filters-applied
     style="max-width:90%"
@@ -33,14 +32,12 @@
     on-remove-filter="CPRCtrl.onRemoveFilter(filter)">
   </bh-filters-applied>
 
-  <a
-    href
+  <a href
     ng-click="CPRCtrl.clearFilters()"
     ng-show="CPRCtrl.formatedFilters.length > 0"
     class="text-danger"
     data-method="clear">
-    <i class="fa fa-ban text-danger"></i>
-    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+    <i class="fa fa-ban text-danger"></i> <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
 </div>
 
@@ -51,7 +48,6 @@
       id="payment-registry"
       ui-grid="CPRCtrl.gridOptions"
       style="height : calc(100vh - 102px)"
-      ui-grid-grouping
       ui-grid-auto-resize
       ui-grid-resize-columns>
 

@@ -230,14 +230,24 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
       { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
       { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', ngFilter:'date' },
       { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
+      { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
+      { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
+      { field: 'user_id', displayName: 'FORM.LABELS.USER' }
     ];
+
 
     // returns columns from filters
     return columns.filter(function (column) {
+      var LIMIT_UUID_LENGTH = 6;
       var value = params[column.field];
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        if (column.field === 'debtor_group_uuid' || column.field === 'patient_group_uuid') {
+          column.value = column.value.slice(0, LIMIT_UUID_LENGTH);
+        }
+
         return true;
       } else {
         return false;
@@ -257,7 +267,8 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
       templateUrl: 'partials/patients/registry/search.modal.html',
       size: 'md',
       keyboard: false,
-      animation: true,
+      animation: false,
+      backdrop: 'static',
       controller: 'PatientRegistryModalController as ModalCtrl',
       resolve : {
         params : function paramsProvider() { return params; }

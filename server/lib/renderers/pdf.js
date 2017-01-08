@@ -4,6 +4,7 @@
  * renderer to produce valid HTML - then streaming this through the wkhtmltopdf application to produce PDFs.
  *
  * @requires wkhtmltopdf
+ * @requires lodash
  * @requires stream-to-promise
  * @requires path
  * @requires q
@@ -11,6 +12,7 @@
  */
 'use strict';
 const wkhtmltopdf     = require('wkhtmltopdf');
+const _               = require('lodash');
 const q               = require('q');
 const streamToPromise = require('stream-to-promise');
 const process         = require('process');
@@ -26,6 +28,21 @@ exports.render = renderPDF;
 exports.headers = headers;
 exports.extension = '.pdf';
 
+// provide uniform default configurations for reports
+exports.defaultReportOptions = {
+  pageSize : 'A4',
+  orientation : 'portrait'
+};
+exports.posReceiptOptions  = {
+  pageWidth : '72mm',
+  pageHeight : '290mm',
+  marginLeft : '0mm',
+  marginRight : '0mm',
+  marginBottom : '0mm',
+  marginTop : '0mm',
+  orientation : 'portrait'
+};
+
 /**
  *
  * @param {Object} context    Object of keys and values that will be made available to the handlebar template
@@ -40,11 +57,8 @@ function renderPDF(context, template, options) {
 
   return html.render(context, template, options)
     .then(function (htmlStringResult) {
-
-      // only apply specific options for now
-      var pageSize = options.pageSize || 'A4';
-      var orientation = options.orientation || 'portrait';
-      var pdfOptions = { pageSize, orientation };
+      // pick options relevent to rendering PDFs
+      var pdfOptions = _.pick(options, ['pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']);
 
       // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
       let pdfStream = wkhtmltopdf(htmlStringResult, pdfOptions);

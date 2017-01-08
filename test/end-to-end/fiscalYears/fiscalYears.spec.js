@@ -60,7 +60,7 @@ describe('Fiscal Year', function () {
 
     // modify the fiscal year label and note
     FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
-    components.dateInterval.range('01/01/2017', '31/12/2017');
+    //components.dateInterval.range('01/01/2017', '31/12/2017');
     FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
 
     FU.buttons.submit();
@@ -180,16 +180,16 @@ describe('Fiscal Year', function () {
     FU.uiSelect('$ctrl.resultAccount', resultAccount);
 
     // submit to next step
-    submitButton.click()
+    submitButton.click();
 
     // submit to confirm info
-    submitButton.click()
+    submitButton.click();
 
     // set the pattern to confirm
     element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
 
     // submit to confirm the action
-    submitButton.click()
+    submitButton.click();
 
     // check notification
     components.notification.hasSuccess();

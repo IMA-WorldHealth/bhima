@@ -6,31 +6,39 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const moment = require('moment');
+
 function CashPaymentsRegistryTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/finance/reports/cash_payment'));
+  before(() => helpers.navigate('#/payments'));
 
   const PAYMENT_INSIDE_REGISTRY = 3;
+  const PAYMENT_PRIMARY_CASHBOX = 0;
 
   it('find payment by date interval', () => {
 
+    // TODO - why does this need to be tomorrow?
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    let tomorrowFmt = moment(tomorrow).format('DD/MM/YYYY');
+
     /** Get all payment of the year 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.buttons.submit();
+    components.dateInterval.range('01/01/2016', tomorrowFmt);
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment of january 2016 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/01/2016');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Get all payment of the year 2015 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2015', '31/12/2015');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -41,14 +49,14 @@ function CashPaymentsRegistryTests() {
 
     /** Existing reference */
     FU.buttons.search();
-    FU.input('$ctrl.bundle.reference', 'TPA1');
-    FU.buttons.submit();
+    FU.input('$ctrl.bundle.reference', 'CP.TPA.1');
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Not Existing reference */
     FU.buttons.search();
     FU.input('$ctrl.bundle.reference', 'NOT_A_REFERENCE');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -60,7 +68,7 @@ function CashPaymentsRegistryTests() {
     /** Get all payment of Patient/2/Patient */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.debtor_uuid', 'Patient/2/Patient');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     // clear filters
@@ -72,19 +80,19 @@ function CashPaymentsRegistryTests() {
     /** Get all payment on Test Primary Cashbox A */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Primary Cashbox A');
-    FU.buttons.submit();
-    GU.expectRowCount('payment-registry', 0);
+    FU.modal.submit();
+    GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
 
     /** Get all payment on Test Aux Cashbox A */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Aux Cashbox A');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment on Test Aux Cashbox B */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.cashbox_id', 'Test Aux Cashbox B');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     // clear filters
@@ -96,13 +104,13 @@ function CashPaymentsRegistryTests() {
     /** Get all payment of Regular User */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Regular User');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
     /** Get all payment of super user */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Super User');
-    FU.buttons.submit();
+    FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     // clear filters
@@ -110,7 +118,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('successfully Cancel a Cash Payment', () => {
-    element(by.id(`TPA2`)).click();
+    element(by.id('CP.TPA.2')).click();
     FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
     FU.modal.submit();
     components.notification.hasSuccess();

@@ -46,7 +46,7 @@ before(() => {
   const user = { username : 'superuser', password : 'superuser', project: 1 };
 
   // trigger login
-  return (() => agent.post('/login').send(user))();
+  return (() => agent.post('/auth/login').send(user))();
 });
 
 // runs after all tests are completed

@@ -212,7 +212,7 @@ module.exports = {
     // open the dropdown menu
     $(selector).click();
 
-    let option = element(by.cssContainingText('[uib-dropdown-menu] > li', label));
+    let option = anchor.element(by.cssContainingText('[uib-dropdown-menu] > li', label));
     return option.click();
   },
 

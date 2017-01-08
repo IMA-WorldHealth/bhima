@@ -156,8 +156,9 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     var invalidItems = this.store.data.filter(function (row) {
       row[ROW_ERROR_FLAG] = highlight ? row._invalid : false;
 
-      // this sets the global configuration error if a
-      if (!row._hasSalesAccount) {
+      // this sets the global configuration error if there is no sales account
+      // and the row has already been configured.
+      if (row._initialised && !row._hasSalesAccount) {
         globalConfigurationError = row._message;
       }
 

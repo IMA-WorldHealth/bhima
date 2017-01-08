@@ -27,10 +27,10 @@ describe('Aged Debtors Report', () => {
     element(by.id('create-report')).click();
 
     FU.input('ReportConfigCtrl.label', 'Report Debts of December 31, 2016');
-    components.dateEditor.set(date, null, 'label');
+    components.dateEditor.set(date, null, '[ng-model="ReportConfigCtrl.label"]');
 
     // focus on the button zone
-    FU.buttons.submit();
+    FU.modal.submit();
     expect(getInvoiceNumber('report-grid')).to.eventually.equal(numReports);
   });
 });

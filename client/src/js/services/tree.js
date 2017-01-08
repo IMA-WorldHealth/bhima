@@ -23,7 +23,7 @@ function Tree($http, $translate, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  /** recusively sort an array of BHIMA units respecting translation keys. */
+  /** recursively sort an array of BHIMA units respecting translation keys. */
   function sortByTranslationKey(units) {
     if (angular.isUndefined(units)) {
       return;

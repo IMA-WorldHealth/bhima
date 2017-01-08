@@ -836,3 +836,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .progress-bar.ima-blue {
   background-color : #085484;
 }
+
+/* properly deal with ui-selects inside ui-grids */
+.ui-select-bootstrap > .ui-select-choices.ui-grid-ui-select {
+  width: initial;
+}

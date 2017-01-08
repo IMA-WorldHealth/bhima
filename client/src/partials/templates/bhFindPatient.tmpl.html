@@ -4,21 +4,20 @@
     ng-class="{
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
       'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || ($ctrl.validationTrigger && $ctrl.loadStatus != 'loaded')
-    }"
-  >
-    <label class="control-label text-capitalize">{{ "FORM.LABELS.PATIENT" | translate }}</label>
+    }">
+    <label class="control-label text-capitalize" translate>FORM.LABELS.PATIENT</label>
 
     <!-- input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
 
-      <div class="input-group-btn" uib-dropdown tabindex=-1>
-        <button class="btn btn-default" type="button" uib-dropdown-toggle data-find-patient-dropdown-toggle tabindex=-1>
-          {{ $ctrl.selected.label | translate }} <span class="caret"></span>
-        </button>
+      <div class="input-group-btn" uib-dropdown>
+        <a class="btn btn-default" type="button" uib-dropdown-toggle data-find-patient-dropdown-toggle>
+          <span translate>{{ $ctrl.selected.label }}</span> <span class="caret"></span>
+        </a>
         <ul uib-dropdown-menu>
           <li ng-repeat="(key, option) in $ctrl.options">
-            <a href ng-click="$ctrl.findBy(key)" data-find-patient-option="{{ option.label }}">
-              {{ option.label | translate }}
+            <a href ng-click="$ctrl.findBy(key)" data-find-patient-option="{{ ::option.label }}" translate>
+              {{ ::option.label }}
             </a>
           </li>
         </ul>
@@ -30,11 +29,9 @@
         class="form-control"
         name="idInput"
         ng-model="$ctrl.idInput"
-        ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
         ng-if="$ctrl.selected == $ctrl.options.findById"
         ng-keypress="$ctrl.onKeyPress($event)"
         placeholder="{{ $ctrl.selected.placeholder | translate }}..."
-        autocomplete="off"
         ng-required="$ctrl.required">
 
       <!-- search by Name  -->
@@ -43,7 +40,6 @@
         class="form-control"
         name="nameInput"
         ng-model="$ctrl.nameInput"
-        ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
         ng-if="$ctrl.selected == $ctrl.options.findByName"
         ng-keypress="$ctrl.onKeyPress($event)"
         uib-typeahead="patient as patient.label for patient in $ctrl.searchByName($viewValue)"
@@ -52,7 +48,6 @@
         typeahead-template-url="/partials/templates/patientList.tmpl.html"
         typeahead-on-select="$ctrl.selectPatient($item)"
         placeholder="{{ $ctrl.selected.placeholder | translate }}..."
-        autocomplete="off"
         ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->
@@ -63,7 +58,7 @@
           ng-disabled="FindPatientForm.idInput.$invalid"
           ng-click="$ctrl.submit()"
           data-find-patient-submit>
-          {{ "FORM.BUTTONS.SEARCH" | translate }}
+          <span translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </span>
     </div>

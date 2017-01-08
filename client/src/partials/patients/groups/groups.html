@@ -1,16 +1,19 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "PATIENT_GROUP.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>PATIENT_GROUP.TITLE</li>
     </ol>
-  </div>
-</div>
 
-<div class="flex-util">
-  <button class="btn btn-sm btn-default" ng-click="PatientGroupCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
-  </button>
+   <div class="toolbar">
+     <div class="toolbar-item">
+      <button class="btn btn-default" ng-click="PatientGroupCtrl.create()" data-method="create">
+        <span class="fa fa-plus-square"></span>
+        <span translate>PATIENT_GROUP.ADD_PATIENT_GROUP</span>
+      </button>
+     </div>
+   </div>
+  </div>
 </div>
 
 <div class="flex-content">
@@ -33,13 +36,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="group in PatientGroupCtrl.groups" ng-class="{ 'bg-info' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
+              <tr ng-repeat="group in PatientGroupCtrl.groups track by group.uuid" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
                 <td>{{ group.name}}</td>
                 <td>{{ group.priceListLable }}</td>
                 <td>{{ group.note }}</td>
                 <td>
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : { patient_group_uuid : group.uuid } })">
+                    <span class="fa fa-list"></span> {{ "FORM.LABELS.PATIENT_LIST" | translate }}
                   </a>
                 </td>
               </tr>
@@ -91,7 +97,7 @@
                     name="priceList"
                     ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
                     ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PRICE_LIST" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="CreateForm.priceList.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -150,7 +156,7 @@
                     name="priceList"
                     ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
                     ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PRICE_LIST" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -190,7 +196,6 @@
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>

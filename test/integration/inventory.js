@@ -231,6 +231,7 @@ describe('(/inventory) The Inventory HTTP API', () => {
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article',
     price : 5,
+    default_quantity: 15,
     group_uuid : inventoryGroup.uuid,
     unit_id : 1,
     type_id : 1,
@@ -238,13 +239,10 @@ describe('(/inventory) The Inventory HTTP API', () => {
   };
 
   let metadataUpdate = {
-    uuid : metadata.uuid,
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article updated',
-    price : 10,
+    default_quantity: 12,
     group_uuid : inventoryGroup.uuid,
-    unit_id : 1,
-    type_id : 1,
     consumable : 0
   };
 
@@ -259,17 +257,18 @@ describe('(/inventory) The Inventory HTTP API', () => {
   });
 
   it('PUT /inventory/:uuid/metadata update an existing inventory metadata', () => {
-    return agent.put('/inventory/' + metadata.uuid + '/metadata')
+    return agent.put(`/inventory/${metadata.uuid}/metadata`)
       .send(metadataUpdate)
       .then((res) => {
+
         // NOTE: Returned data are from the /inventory/:uuid/metadata API
         // these data are not sended by the test but come from join with other table :
-        // label, groupNmae, type, unit
-        expect(res.body[0].uuid).to.be.equal(metadataUpdate.uuid);
-        expect(res.body[0].code).to.be.equal(metadataUpdate.code);
-        expect(res.body[0].text).to.be.equal(metadataUpdate.label);
-        expect(res.body[0].price).to.be.equal(metadataUpdate.price);
-        expect(res.body[0].group_uuid).to.be.equal(metadataUpdate.group_uuid);
+        // label, groupName, type, unit
+        expect(res.body.code).to.be.equal(metadataUpdate.code);
+        expect(res.body.label).to.be.equal(metadataUpdate.text);
+        expect(res.body.default_quantity).to.be.equal(metadataUpdate.default_quantity);
+        expect(res.body.group_uuid).to.be.equal(metadataUpdate.group_uuid);
+        expect(res.body.consumable).to.be.equal(metadataUpdate.consumable);
       })
       .catch(helpers.handler);
   });
