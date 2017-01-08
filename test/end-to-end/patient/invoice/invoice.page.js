@@ -14,8 +14,8 @@ function PatientInvoicePage() {
   const btns = {
     submit : element(by.id('btn-submit-invoice')),
     add : element(by.id('btn-add-rows')),
-    distributable : element(by.id('distributable')),
-    notDistributable : element(by.id('not-distributable')),
+    // distributable : element(by.id('distributable')),
+    // notDistributable : element(by.id('not-distributable')),
     clear : element(by.id('clear')),
     recover : element(by.id('recover'))
   };
@@ -43,7 +43,7 @@ function PatientInvoicePage() {
     );
 
     // set this invoice to be distributable
-    btns.distributable.click();
+    // btns.distributable.click();
 
     // select the first enabled service in the list
     FU.select('PatientInvoiceCtrl.Invoice.service', 'Administration');

@@ -6,7 +6,6 @@
 DELIMITER $$
 
 CREATE PROCEDURE StageInvoice(
-  IN is_distributable TINYINT(1),
   IN date DATETIME,
   IN cost DECIMAL(19, 4) UNSIGNED,
   IN description TEXT,
@@ -25,10 +24,10 @@ BEGIN
 
   IF (`no_invoice_stage` = 1) THEN
     CREATE temporary table stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
+    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
   ELSE
     INSERT INTO stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
+    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
   END IF;
 END $$
 
@@ -115,7 +114,7 @@ BEGIN
   CALL VerifyBillingServiceStageTable();
 
   -- invoice details
-  INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable)
+  INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description)
   SELECT * from stage_invoice where stage_invoice.uuid = uuid;
 
   -- invoice item details

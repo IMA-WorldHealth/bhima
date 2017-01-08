@@ -102,7 +102,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // the invoice details
     this.details = {
-      is_distributable : 1,
       date : new Date(),
       cost : 0,
       description : null

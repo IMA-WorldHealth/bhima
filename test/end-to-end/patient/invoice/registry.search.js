@@ -20,9 +20,7 @@ function InvoiceRegistrySearch() {
     monthBillNumber : 0,
     referenceValue : 'IV.TPA.2',
     serviceValue : 'Test Service',
-    userValue : 'Super User',
-    distributableInvoiceNumber : 4,
-    noDistributableInvoiceNumber : 0
+    userValue : 'Super User'
   };
 
   const page = new InvoiceRegistryPage();
@@ -59,18 +57,6 @@ function InvoiceRegistrySearch() {
     // set the date inputs manually
     FU.buttons.search();
     FU.input('ModalCtrl.params.billingDateTo', '2015-01-30');
-    FU.modal.submit();
-
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(1);
-
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
-  });
-
-  it('filters by radio buttons', () => {
-    FU.buttons.search();
-    element(by.id('no')).click();
     FU.modal.submit();
 
     expectNumberOfGridRows(0);

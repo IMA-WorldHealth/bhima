@@ -76,7 +76,7 @@ function lookupInvoice(invoiceUuid) {
     `SELECT BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, invoice.is_distributable, user.display_name,
+      invoice.user_id, invoice.date, user.display_name,
       enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
@@ -184,7 +184,7 @@ function find(options) {
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
       CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
-      invoice.user_id, invoice.is_distributable
+      invoice.user_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
