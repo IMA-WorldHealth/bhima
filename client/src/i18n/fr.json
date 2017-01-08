@@ -165,9 +165,6 @@
     "UPDATE"         : "Mise à jour du groupe crediteur",
     "FAILURE_DELETE" : "Echec de suppression du groupe crediteur"
   },
-  "DB": {
-    "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
-  },
   "DEBTOR_GROUP": {
     "BACK"           : "Retour vers les groupes débiteurs",
     "CREATE"         : "Créer un Groupe débiteur",
@@ -212,6 +209,11 @@
     "SUBSCRIBED"     : "Débiteurs abonnés",
     "SUBSCRIPTIONS"  : "Abonnements",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
+  },
+  "DOWNLOADS" : { 
+    "JSON" : "Télécharger en JSON",
+    "PDF" : "Télécharger en PDF",
+    "CSV" : "Télécharger en CSV"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Ajouter un dépôt",
@@ -486,6 +488,7 @@
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DISABLED"               : "Désactivée",
+      "DIAGNOSIS"              : "Diagnostic",
       "DOB"                    : "Date de Naissance",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -659,6 +662,7 @@
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TRANSFER_TYPE"          : "Type de Transfert",
+      "TRANSACTION_TYPE"       : "Type de transaction",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
       "UNDEFINED"              : "Non defini",
@@ -942,6 +946,17 @@
       "ITEM" : "Confirmée",
       "BY" : "par",
       "SUCCESS" : "Confirmation de la visite du patient avec succes"
+    },
+    "VISITS" : { 
+      "TITLE" : "Visites des patients",
+      "ADMIT" : "Admission à l'hôpital",
+      "ADMISSION_DIAGNOSIS" : "Diagnostic Admission",
+      "ADMISSION" : "Admission",
+      "DISCHARGE" : "Décharge",
+      "ORIGINAL" : "Ce patient n'a pas de visites enregistrées",
+      "RECENT" : "Dernières Visites",
+      "IN_PROGRESS" : "En cours",
+      "SEARCH_INFO" : "L'entrée recherche le diagnostic après avoir tapé 3 caractères."
     },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Numéro de compte",
