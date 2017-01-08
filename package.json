@@ -47,6 +47,7 @@
     "express-session": "^1.14.1",
     "helmet": "^3.1.0",
     "ioredis": "^2.3.1",
+    "json-2-csv": "^2.1.0",
     "lodash": "^4.16.2",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",

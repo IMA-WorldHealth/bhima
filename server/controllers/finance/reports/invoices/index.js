@@ -44,13 +44,14 @@ function report(req, res, next) {
 
   let report;
 
+  const query = _.clone(req.query);
+  _.extend(query, { csvKey : 'rows' });
+
   try {
-    report = new ReportManager(REPORT_TEMPLATE, req.session, req.query);
+    report = new ReportManager(REPORT_TEMPLATE, req.session, query);
   } catch (e) {
     return next(e);
   }
-
-  const query = _.clone(req.query);
 
   // @todo - this should use a .find() method like patient registratons
   Invoices.find(query)

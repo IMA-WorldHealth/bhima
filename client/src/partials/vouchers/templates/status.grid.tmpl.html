@@ -1,29 +1,19 @@
-<!-- <div class="ui-grid-cell-contents text-center" style="vertical-align:middle">
-  <span ng-show="row.entity.isValid" class="text-success">
-    <i class="fa fa-check-circle"></i>
-  </span>
-
-  <span ng-hide="row.entity.isValid" class="text-danger">
-    <i class="fa fa-exclamation-circle"></i>
-  </span>
-</div> -->
-
-<div ng-hide="row.entity.isValid"
+<div ng-hide="row.entity._valid"
   ng-class="{
-    'bg-warning text-warning' : !row.entity.hasAccount,
-    'bg-danger text-danger' : row.entity.hasAccount
+    'bg-warning text-warning' : !row.entity._initialized,
+    'bg-danger text-danger' : row.entity._initialized
   }"
   class="ui-grid-cell-contents text-center" style="vertical-align:middle">
 
   <!-- warning state: invalid, but not initialised yet -->
-  <span ng-hide="row.entity.hasAccount" class="fa fa-circle-o"></span>
+  <span ng-hide="row.entity._initialized" class="fa fa-circle-o" uib-tooltip="{{ row.entity._error | translate }}" tooltip-placement="right" tooltip-append-to-body="true"></span>
 
   <!-- error state: invalid and initialised -->
-  <span ng-show="row.entity.hasAccount" class="fa fa-times-circle"></span>
+  <span ng-show="row.entity._initialized" class="fa fa-times-circle" uib-tooltip="{{ row.entity._error | translate }}" tooltip-placement="right" tooltip-append-to-body="true"></span>
 </div>
 
-<div ng-show="row.entity.isValid"
+<!-- success state: valid and initialised -->
+<div ng-show="row.entity._valid"
   class="ui-grid-cell-contents bg-success text-center" style="vertical-align:middle">
-  <!-- success state: valid and initialised -->
   <span class="text-success fa fa-check-circle"></span>
 </div>

@@ -1532,7 +1532,6 @@ CREATE TABLE `invoice` (
   `date`                DATETIME NOT NULL,
   `description`         TEXT NOT NULL,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_distributable`    TINYINT(1) NOT NULL ,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
   KEY `reference` (`reference`),

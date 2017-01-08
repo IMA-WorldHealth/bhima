@@ -1,80 +1,5 @@
 -- bhima test database
 
--- set variables
-SET names 'utf8';
-SET character_set_database = 'utf8';
-SET collation_database = 'utf8_unicode_ci';
-
--- units
-INSERT INTO unit VALUES
-  (0,   'Root','TREE.ROOT','The unseen root node',NULL,'/partials/index.html','/root'),
-  (1,   'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
-  (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
-  (3,   'Invoice Registry','TREE.INVOICE_REGISTRY','Invoice Registry',5,'/partials/invoices/registry/','/invoices'),
-  (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/users/','/users'),
-  (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
-  (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',5,'/partials/accounts/','/accounts'),
-  (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,'/partials/journal/','/journal'),
-  (10,  'General Ledger','TREE.GENERAL_LEDGER','Posted Journal Data', 5,'/partials/general_ledger/','/general_ledger'),
-  (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
-  (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',5,'/partials/fiscal/','/fiscal'),
-  (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
-  (15,  'Patient Registry','TREE.PATIENT_REGISTRY','Patient Registry',12,'/partials/patients/registry/','/patients'),
-  (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
-  (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
-  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/suppliers/','/suppliers'),
-  (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
-  (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
-  (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
-  (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patients/groups/','/patients/groups'),
-  (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
-  (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
-  (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
-  (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
-  (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
-  (106, 'Depot Management', 'TREE.PHARMACY', 'Depot Management module', 1, '/partials/depots/', '/depots'),
-  (107, 'Debtor Groups Management', 'TREE.DEBTOR_GROUP', 'Debtor Groups Management module', 1, '/partials/debtors/groups/', '/debtors/groups'),
-  (109, 'Section du bilan','TREE.SECTION_BILAN','',5,'/partials/section_bilan/','/section_bilan'),
-  (110, 'Section resultat','TREE.SECTION_RESULTAT','',5,'/partials/section_resultat/','/section_resultat'),
-  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',5,'/partials/references/groups','/references/groups'),
-  (112, 'Reference','TREE.REFERENCE','References',5,'/partials/references','/references'),
-  (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 5, '/partials/vouchers/simple', '/vouchers/simple'),
-  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/billing_services'),
-  (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 5, '/partials/vouchers/complex', '/vouchers/complex'),
-  (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
-  (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/'),
-  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
-  (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
-  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
-  (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
-  (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/partials/finance/reports', '/finance/reports'),
-  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/reports/cashflow'),
-  (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/partials/finance/chart_of_accounts', '/reports/accounts_chart'),
-  (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/partials/admin/creditor_groups/', '/admin/creditor_groups'),
-  (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/cash/payments', '/payments'),
-  (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense'),
-  (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
-  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
-  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts');
-
-
--- Reserved system account type
-INSERT INTO `account_type` VALUES
-  (1, 'income', 'ACCOUNT.TYPES.INCOME'),
-  (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
-  (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
-  (4, 'title', 'ACCOUNT.TYPES.TITLE');
-
--- Languages
-INSERT INTO `language` VALUES
-  (1,'Francais','fr', 'fr-be'),
-  (2,'English','en', 'en-us');
-
--- Currencies
-INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
-  (1,'Congolese Francs','fc','Fc',NULL,50.00),
-  (2,'United States Dollars','usd','$',NULL,0.01);
-
 -- locations (enterprise location only)
 INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo'),(HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a51'), 'Test Hook Country');
 INSERT INTO `province` VALUES (HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'),'Bas Congo', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')), (HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a21'), 'Test Hook Province', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a51'));
@@ -166,9 +91,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Price list Management
 (21, 1),
 
--- Exchange Rate
-(22, 1),
-
 -- Location Management
 (26,1),
 
@@ -187,23 +109,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 --  Cashbox Management
 (105,1),
 
---  Depots Management
-(106,1),
-
 --  Debtor Groups Management
 (107,1),
-
---  Bilan Section Management
-(109,1),
-
---  Section Resultat Management
-(110,1),
-
---  Reference Group Management
-(111,1),
-
---  Reference Management
-(112,1),
 
 -- Simple Journal Vouchers
 (134, 1),
@@ -225,8 +132,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- inventory configuration module
 (140, 1),
-
-(148, 1),
 
 -- Voucher records
 (141, 1),
@@ -259,6 +164,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Cash Payment Registry
 (147,1),
+
+(148, 1),
 
 -- Income Expense Report
 (149,1),
@@ -302,9 +209,6 @@ INSERT INTO `cash_box_account_currency` VALUES
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
 
-INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
-INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot'),(6,'amp'),(7,'bags'),(8,'btl'),(9,'cap'),(10,'flc'),(11,'jar'),(12,'ltr'),(13,'pce'),(14,'sch'),(15,'tab'),(16,'tub'),(17,'vial');
-
 INSERT INTO `inventory` VALUES
   (1, HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), 'INV0', 'First Test Inventory Item', 25.0, 1, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP, NULL),
   (1, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 'INV1', 'Second Test Inventory Item', 10.0, 20, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP, NULL),
@@ -334,11 +238,6 @@ INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `
 
 INSERT INTO `assignation_patient` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'));
-
--- fonctions
-INSERT INTO `fonction` VALUES
-  (1,'Infirmier'),
-  (2,'Medecin Directeur');
 
 -- Creditor group
 INSERT INTO `creditor_group` VALUES
@@ -432,9 +331,9 @@ INSERT INTO `voucher_item` VALUES
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
 
-INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at, is_distributable) VALUES
-  (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
-  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
+INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
+  (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55'),
+  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14');
 
 INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
@@ -493,7 +392,7 @@ INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `
   (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'Salary payment transaction type', 'expense', 'SALAIRE', 1),
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'Cash return transaction type', 'expense', 'PAYBACK', 1),
   (9, 'VOUCHERS.SIMPLE.PURCHASES', 'Purchase transaction type', 'expense', 'ACHAT', 1),
-  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'creditNote', 'CREDIT NOTE', 1);
+  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'other', 'CREDIT NOTE', 1);
 
 SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
 INSERT INTO `purchase` VALUES
@@ -502,12 +401,3 @@ INSERT INTO `purchase` VALUES
 INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
-
- -- core BHIMA reports
- INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-  (1, 'cashflow', 'TREE.CASHFLOW'),
-  (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
-  (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
-  (4, 'balance', 'REPORT.BALANCE'),
-  (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
-  (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS');

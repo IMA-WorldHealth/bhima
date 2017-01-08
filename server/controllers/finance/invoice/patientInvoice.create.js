@@ -91,7 +91,7 @@ function processInvoice(invoiceUuid, invoice) {
   delete invoice.subsidies;
 
   const keys = [
-    'is_distributable', 'date', 'cost', 'description', 'service_id',
+    'date', 'cost', 'description', 'service_id',
     'debtor_uuid', 'project_id', 'user_id', 'uuid'
   ];
 
