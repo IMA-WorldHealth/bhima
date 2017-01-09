@@ -2,8 +2,8 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
-      <li class="static">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
+      <li class="static"><span translate>TREE.HOSPITAL</span></li>
+      <li class="static"><span translate>PATIENT_RECORDS.TITLE</span></li>
       <li class="title">{{ PatientEditCtrl.medical.name }}</li>
     </ol>
 
@@ -212,6 +212,32 @@
                       {{ "FORM.LABELS.FEMALE" | translate }}
                     </label>
                   </div>
+                </div>
+
+                <hr>
+                <div class="form-group">
+                    <div class="col-md-5 col-md-offset-1">
+                      <h4><span translate>FORM.LABELS.ORIGIN_LOCATION</span></h4>
+                      <bh-location-select
+                        name="origin_location_id"
+                        id="origin-location-id"
+                        validation-trigger="patientDetails.$submitted"
+                        location-uuid="PatientEditCtrl.medical.origin_location_id">
+                      </bh-location-select>
+                    </div>
+
+                    <!-- separate location searches given a certain screen size -->
+                    <div class="visible-sm-block visible-xs-block"><hr></div>
+
+                    <div class="col-md-5 col-md-offset-1">
+                      <h4><span translate>FORM.LABELS.CURRENT_LOCATION</span></h4>
+                      <bh-location-select
+                        name="current_location_id"
+                        id="current-location-id"
+                        validation-trigger="patientDetails.$submitted"
+                        location-uuid="PatientEditCtrl.medical.current_location_id">
+                      </bh-location-select>
+                    </div>
                 </div>
               </div>
             </div>
