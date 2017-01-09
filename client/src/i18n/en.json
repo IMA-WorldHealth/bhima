@@ -958,7 +958,8 @@
     "PAGE_TITLE"           : "Patient Registration",
     "PATIENT_DETAILS"      : "Patient Details",
     "SUCCESS" : "Patient Registered Successfully",
-    "CARD" : "Patient Card"
+    "CARD" : "Patient Card",
+    "IDENTITY" : "Patient Identity"
   },
   "PATIENT_REGISTRY" : {
     "CARD"                  : "Card",
