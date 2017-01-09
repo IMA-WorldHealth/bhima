@@ -68,6 +68,7 @@ function lookupTransaction(record_uuid) {
       ORDER BY p.trans_date DESC
     `;
 
+
   return db.exec(sql, [ db.bid(record_uuid) ])
     .then(function (rows) {
       return addAggregateData(rows);

@@ -40,7 +40,7 @@ FROM service AS s
 JOIN enterprise AS e ON s.enterprise_id = e.id
 LEFT JOIN (SELECT fee_center.label AS cost_center_name, id FROM fee_center WHERE fee_center.is_cost = 1) AS cc ON s.cc_id = cc.id 
 LEFT JOIN (SELECT fee_center.label AS profit_center_name, id FROM fee_center WHERE fee_center.is_cost = 0) AS pc ON s.pc_id = pc.id`;
-  }
+ }
 
   sql += ' ORDER BY s.name;';
 

@@ -475,6 +475,7 @@ CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
          description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
           entity_uuid, reference_uuid, comment, origin_id, user_id, fc_id
+
      FROM posting_journal
      WHERE trans_id
      IN (", transactions, ")");

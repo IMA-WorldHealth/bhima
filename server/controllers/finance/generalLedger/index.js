@@ -48,7 +48,7 @@ function list(req, res, next) {
     .then((rows) => {
       res.status(200).json(rows);
     })
-    .catch(next);
+    .catch(function (err){console.log(err);});
 }
 
 /**
