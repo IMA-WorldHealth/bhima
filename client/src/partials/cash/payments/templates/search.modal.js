@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
+    .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
@@ -90,5 +90,4 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
 
     return out;
   }
-
 }

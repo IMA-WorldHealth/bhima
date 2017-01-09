@@ -7,8 +7,8 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "FORM.LABELS.PAYMENT" | translate }}</li>
-      <li class="title">{{ "FORM.LABELS.SEARCH" | translate }}</li>
+      <li class="static" translate>FORM.LABELS.PAYMENT</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
     </ol>
   </div>
 
@@ -18,26 +18,25 @@
       validation-trigger="!$ctrl.validDateRange"
       on-change="$ctrl.validate()"
       required="true"
-      date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
+      date-from="$ctrl.bundle.dateFrom"
+      date-to="$ctrl.bundle.dateTo"
+      mode="clean">
     </bh-date-interval>
-
 
     <fieldset>
       <legend>
-        {{ "FORM.LABELS.PAYMENT_DETAILS" | translate }}
+        <span translate>FORM.LABELS.PAYMENT_DETAILS</span>
       </legend>
 
       <!-- reference  -->
       <div class="form-group">
-        <label class="control-label">
-          {{ 'FORM.LABELS.REFERENCE' | translate }}
-        </label>
+        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
         <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
       </div>
 
       <!-- client -->
       <div class="form-group">
-        <label class="control-label">{{ "FORM.LABELS.CLIENT" | translate }}</label>
+        <label class="control-label" translate>FORM.LABELS.CLIENT</label>
 
         <ui-select name="debtor" ng-model="$ctrl.bundle.debtor_uuid">
           <ui-select-match>
@@ -52,13 +51,13 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
-          {{ "FORM.LABELS.CAUTION" | translate }}
+          <span translate>FORM.LABELS.CAUTION</span>
         </label>
       </div>
 
       <!-- cashbox -->
       <div class="form-group">
-        <label class="control-label">{{ "FORM.LABELS.CASHBOX" | translate }}</label>
+        <label class="control-label" translate>FORM.LABELS.CASHBOX</label>
 
         <ui-select name="cashbox" ng-model="$ctrl.bundle.cashbox_id">
           <ui-select-match>
@@ -72,7 +71,9 @@
 
       <!-- user -->
       <div class="form-group">
-        <label class="control-label">{{ "FORM.LABELS.USER" | translate }}</label>
+        <label class="control-label" translate>
+          FORM.LABELS.USER
+        </label>
 
         <ui-select name="user" ng-model="$ctrl.bundle.user_id">
           <ui-select-match>
@@ -90,16 +91,15 @@
       </bh-currency-select>
 
     </fieldset>
-
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
     </button>
 
     <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

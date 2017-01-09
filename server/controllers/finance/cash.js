@@ -191,14 +191,14 @@ function listPayment(params) {
 
   // load all cash payments from (and including) a certain date
   if (params.dateFrom) {
-    conditions.statements.push('cash.date >= DATE(?)');
+    conditions.statements.push('DATE(cash.date) >= DATE(?)');
     conditions.parameters.push(new Date(params.dateFrom));
     delete params.dateFrom;
   }
 
   // load all cash payments up to (and including) a certain date
   if (params.dateTo) {
-    conditions.statements.push('cash.date <= DATE(?)');
+    conditions.statements.push('DATE(cash.date) <= DATE(?)');
     conditions.parameters.push(new Date(params.dateTo));
     delete params.dateTo;
   }

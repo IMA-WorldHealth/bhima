@@ -27,7 +27,7 @@ exports.delete = remove;
 exports.currencies = currencies;
 
 /**
- * @method l;ist
+ * @method list
  *
  * @description
  * GET /cashboxes
@@ -49,7 +49,7 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT cash_box.id, label, account_id, transfer_account_id, symbol,
-      cash_box_account_currency.currency_id 
+      cash_box_account_currency.currency_id
       FROM cash_box JOIN cash_box_account_currency ON
       cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON
       currency.id = cash_box_account_currency.currency_id

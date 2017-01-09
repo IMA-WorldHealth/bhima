@@ -32,21 +32,24 @@ bhDateInterval.$inject = ['DateService', 'moment'];
 function bhDateInterval(Dates, moment) {
   var vm = this;
 
-  vm.options = [
-    { translateKey : 'FORM.LABELS.TODAY', fn : day },
-    { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week },
-    { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
-    { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
-  ];
-
-  vm.pickerOptions = { showWeeks : false };
-
   // expose to the viewe
   vm.search = search;
   vm.clear  = clear;
 
-  // start up the modal
-  startup();
+  vm.$onInit = function () {
+
+    vm.options = [
+      { translateKey : 'FORM.LABELS.TODAY', fn : day },
+      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week },
+      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
+      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
+    ];
+
+    vm.pickerOptions = { showWeeks : false };
+
+    // start up the modal
+    startup();
+  };
 
   function search(selection) {
     vm.selected = selection.translateKey;
