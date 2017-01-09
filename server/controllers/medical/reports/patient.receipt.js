@@ -21,7 +21,14 @@ const Locations = require('../../admin/locations');
 
 const pdf = require ('../../../lib/renderers/pdf');
 
+// detailed A6 patient identification
 const CARD_TEMPLATE  = './server/controllers/medical/reports/patient.receipt.handlebars';
+
+// reduced information, smaller more compact patient identification
+// used by hospitals to save on card and ink required
+const SIMPLE_CARD_TEMPLATE = './server/controllers/medical/reports/patient.simple.receipt.handlebars';
+
+// POS receipt, quick proof of registration
 const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebars';
 
 // default options for the patient card
@@ -36,15 +43,27 @@ function build(req, res, next) {
   const qs = req.query;
   const options = _.defaults(qs, defaults);
 
-  let report;
-  let template;
+  let report, template;
+
+  let requestedPOSReceipt = Boolean(Number(options.posReceipt));
+  let requestedSimplifiedCard = Boolean(Number(options.simplified));
+
+  requestedSimplifiedCard = true;
 
   // if the POS option is selected, render a thermal receipt.
-  if (Boolean(Number(options.posReceipt))) {
+  if (requestedPOSReceipt) {
     _.assign(options, pdf.posReceiptOptions);
     template = POS_TEMPLATE;
   } else {
-    template = CARD_TEMPLATE;
+    // not a point of sale receipt
+    // check to see if the client has requested a simplified card
+    if (requestedSimplifiedCard) {
+      _.assign(options, pdf.reducedCardOptions);
+      template = SIMPLE_CARD_TEMPLATE;
+    } else {
+      // use standard card template
+      template = CARD_TEMPLATE;
+    }
   }
 
   try {

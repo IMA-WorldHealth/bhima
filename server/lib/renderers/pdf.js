@@ -34,6 +34,7 @@ exports.defaultReportOptions = {
   orientation : 'portrait'
 };
 
+// standard specification for point of sale receipts
 exports.posReceiptOptions  = {
   pageWidth : '72mm',
   pageHeight : '290mm',
@@ -42,6 +43,17 @@ exports.posReceiptOptions  = {
   marginBottom : '0mm',
   marginTop : '0mm',
   orientation : 'portrait'
+};
+
+// smaller format for providing identifications/ receipts with reduced information
+exports.reducedCardOptions = {
+  pageWidth : '75mm',
+  pageHeight : '125mm',
+  marginLeft : '5mm',
+  marginRight : '5mm',
+  marginTop : '5mm',
+  marginBottom : '5mm',
+  orientation : 'landscape'
 };
 
 /**
