@@ -62,6 +62,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate', type: 'date' },
     { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate', type: 'date' },
     { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
+    { field : 'originVillageName', displayName : 'FORM.LABELS.ORIGIN_VILLAGE', headerCellFilter: 'translate', visible: false },
+    { field : 'originSectorName', displayName : 'FORM.LABELS.ORIGIN_SECTOR', headerCellFilter: 'translate', visible: false },
     { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
     { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
     { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate, enableSorting: false }

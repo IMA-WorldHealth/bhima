@@ -78,17 +78,10 @@ describe('(/patients) Patients', function () {
   // HTTP API Test for /patients/search/ routes
   describe('(/search) Patient Search', function () {
 
-    it('GET /patients/search with missing necessary parameters', function () {
+    it('GET /patients/search with missing necessary parameters should succeed', function () {
       return agent.get('/patients/search/?')
         .then(function (res) {
-          helpers.api.errored(res, 400);
-
-          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
-          return agent.get('/patients/search');
-        })
-        .then(function (res) {
-          helpers.api.errored(res, 400);
-          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
+          helpers.api.listed(res, 3);
         })
         .catch(helpers.handler);
     });
