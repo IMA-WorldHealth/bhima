@@ -7,29 +7,29 @@ describe('(/services) The Service API', function () {
   var newService = {
     enterprise_id : 1,
     name : 'tested Service',
-    cost_center_id : 2,
-    profit_center_id : 1
+    cc_id : 1,
+    pc_id : 7
   };
 
   var serviceWithoutCostCenter = {
     name : 'without cost and profit center',
     enterprise_id : 1,
-    cost_center_id : null,
-    profit_center_id : null
+    cc_id : null,
+    pc_id : null
   };
 
   var wrongUpdateService = {
-    cost_center_id : null,
-    profit_center_id : 'wrong value'
+    cc_id : null,
+    pc_id : 'wrong value'
   };
 
   var undefinedProfitService = {
-    cost_center_id : null,
-    profit_center_id : undefined
+    cc_id : null,
+    pc_id : undefined
   };
 
   var responseKeys = [
-    'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id'
+    'id', 'cc_id', 'pc_id', 'name', 'enterprise_id'
   ];
 
   it('POST /services adds a services', function () {
