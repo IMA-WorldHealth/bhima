@@ -13,8 +13,13 @@
 
 const q = require('q');
 
+const headers = {
+  'Content-Type' : 'text/json'
+};
+
 exports.render = renderJSON;
 exports.extension = '.json';
+exports.headers = headers;
 
 /**
  * JSON Render Method

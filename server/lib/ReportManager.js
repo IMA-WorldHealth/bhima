@@ -25,6 +25,7 @@ const fs = require('fs');
 const q = require('q');
 const mkdirp = require('mkdirp');
 const uuid = require('node-uuid');
+const translateHelper = require('./helpers/translate');
 
 const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
@@ -101,6 +102,7 @@ class ReportManager {
     // remove render-specific options
     delete options.renderer;
     delete options.csvKey;
+    delete options.filename;
     delete options.lang;
 
     // set the metadata
@@ -136,6 +138,14 @@ class ReportManager {
 
       let renderHeaders = renderer.headers;
       let report = reportStream;
+
+      if (this.options.filename) {
+        let translate = translateHelper(this.options.lang);
+        let translatedName = translate(this.options.filename);
+        let fileDate = (new Date()).toLocaleDateString();
+        let formattedName = `${translatedName} ${fileDate}`;
+        renderHeaders['Content-Disposition'] = `attachment; filename=${formattedName}${renderer.extension}`;
+      }
 
       // FIXME this branching logic should be promised based
       if (this.options.saveReport) {

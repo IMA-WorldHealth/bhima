@@ -18,8 +18,7 @@ const _ = require('lodash');
 const converter = require('json-2-csv');
 
 const headers = {
-  'Content-Type' : 'text/csv',
-  'Content-Disposition': 'attachment; filename=download.csv'
+  'Content-Type' : 'text/csv'
 };
 
 // CSV rendering defaults

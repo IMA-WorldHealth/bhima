@@ -65,8 +65,10 @@ function formatFilters(qs) {
  */
 function build(req, res, next) {
   const options = _.extend(req.query, { csvKey : 'patients' });
-
   let report;
+
+  // for now ReportManager will translate any key provided for filename as well as add a uniform timestamp
+  options.filename = 'PATIENT_REG.PAGE_TITLE';
 
   // set up the report with report manager
   try {
