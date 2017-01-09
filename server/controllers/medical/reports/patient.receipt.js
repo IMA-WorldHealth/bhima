@@ -58,7 +58,7 @@ function build(req, res, next) {
   Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       patient.enterprise_name = req.session.enterprise.name;
-      patient.symbol = (patient.sex === 'M') ? 'mars' : 'venus';
+      patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
 
       data.patient = patient;
       return Locations.lookupVillage(patient.origin_location_id);
