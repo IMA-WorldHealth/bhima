@@ -6,7 +6,7 @@ PatientEdit.$inject = [
   'ScrollService', 'PatientGroupModal', 'DateService', 'bhConstants'
 ];
 
-function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal, Dates, Constants) {
+function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Dates, Constants) {
   var vm = this;
   var referenceId = $stateParams.uuid;
 
@@ -53,7 +53,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
     // TODO Full patient/details object should be passed through find patient directive
     // 1. Only download id + name in patient directive
     // 2. Download full patients/details on selection
-    return patients.read(patientId)
+    return Patients.read(patientId)
       .then(function (patient) {
 
         formatPatientAttributes(patient);
@@ -73,7 +73,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
   }
 
   function collectGroups(patientId) {
-    patients.groups(patientId)
+    Patients.groups(patientId)
       .then(function (result) {
         vm.finance = {patientGroups : result};
       });
@@ -109,7 +109,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
 
     submitPatient = util.filterFormElements(patientDetailsForm, true);
 
-    return patients.update(vm.medical.uuid, submitPatient)
+    return Patients.update(vm.medical.uuid, submitPatient)
       .then(function (updatedPatient) {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
