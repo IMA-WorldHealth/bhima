@@ -69,7 +69,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
 
       return Document.remove(vm.session.patientUuid, uuid)
       .then(function () {
-        Notify.success('FORM.INFOS.DELETE_SUCCESS');
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
         startup();
       });
     })
