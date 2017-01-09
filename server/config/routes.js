@@ -64,7 +64,6 @@ const priceList        = require('../controllers/finance/priceList');
 const billingServices  = require('../controllers/finance/billingServices');
 const accounts         = require('../controllers/finance/accounts');
 const costCenter       = require('../controllers/finance/costCenter');
-const profitCenter     = require('../controllers/finance/profitCenter');
 const reference        = require('../controllers/finance/reference');
 const subsidies        = require('../controllers/finance/subsidies');
 const patientInvoice   = require('../controllers/finance/patientInvoice');
@@ -166,14 +165,6 @@ exports.configure = function configure(app) {
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
-
-  // API for profit_center routes crud
-  app.get('/profit_centers', profitCenter.list);
-  app.get('/profit_centers/:id', profitCenter.detail);
-  app.get('/profit_centers/:id/profit', profitCenter.getProfitValue);
-  app.post('/profit_centers', profitCenter.create);
-  app.put('/profit_centers/:id', profitCenter.update);
-  app.delete('/profit_centers/:id', profitCenter.remove);
 
   // API for reference routes crud
   app.get('/references', reference.list);
