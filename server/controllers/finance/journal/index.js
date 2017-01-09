@@ -52,7 +52,7 @@ function lookupTransaction(record_uuid) {
         p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
         BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
         BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+        p.comment, p.origin_id, p.user_id, p.fc_id, pro.abbr,
         pro.name AS project_name, per.start_date AS period_start,
         per.end_date AS period_end, a.number AS account_number, u.display_name
       FROM posting_journal p
@@ -117,7 +117,7 @@ function find(options) {
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      p.comment, p.origin_id, p.user_id, p.fc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, u.display_name
     FROM posting_journal p
@@ -217,7 +217,7 @@ function journalEntryList(options) {
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      p.comment, p.origin_id, p.user_id, p.fc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, u.display_name
     FROM posting_journal p
@@ -263,7 +263,7 @@ function list(req, res, next) {
         p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
         BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
         BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+        p.comment, p.origin_id, p.user_id, p.fc_id, pro.abbr,
         pro.name AS project_name, per.start_date AS period_start,
         per.end_date AS period_end, a.number AS account_number, u.display_name
       FROM posting_journal p
