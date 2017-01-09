@@ -29,8 +29,7 @@ function list(req, res, next) {
       gl.debit_equiv, gl.credit_equiv, gl.currency_id,
       BUID(gl.entity_uuid) AS entity_uuid, gl.entity_type,
       BUID(gl.reference_uuid) AS reference_uuid, gl.comment, gl.origin_id,
-      gl.user_id, gl.cc_id, gl.pc_id,
-      pro.abbr, pro.name AS project_name,
+      gl.user_id, gl.fc_id, pro.abbr, pro.name AS project_name,
       per.start_date AS period_start, per.end_date AS period_end,
       a.number AS account_number,
       u.display_name AS user
@@ -46,5 +45,5 @@ function list(req, res, next) {
     .then(function (rows) {
         res.status(200).json(rows);
     })
-    .catch(next);
+    .catch(function (err){console.log(err);});
 }

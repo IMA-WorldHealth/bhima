@@ -29,17 +29,16 @@ const Topic = require('../../lib/topic');
  */
 function list(req, res, next) {
   let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id FROM service AS s';
+    'SELECT s.id, s.name, s.cc_id, s.pc_id FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id,
-        s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+      SELECT s.id, s.name, s.enterprise_id, s.cc_id,
+        s.pc_id, e.name AS enterprise_name, e.abbr, fc.id AS cc_id,
+        fc.text AS cost_center_name, fc.id AS pc_id, fc.text AS profit_center_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
-      LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
+      LEFT JOIN fee_center AS fc ON s.cc_id = fc.id OR s.pc_id = fc.id`;
   }
 
   sql += ' ORDER BY s.name;';
@@ -179,7 +178,7 @@ function detail(req, res, next) {
  */
 function lookupService(id) {
   const sql =`
-    SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
+    SELECT s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id
     FROM service AS s WHERE s.id = ?;
   `;
 
