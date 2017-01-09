@@ -434,6 +434,12 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
   app.get('/patients/:uuid/finance/balance', financialPatient.balance);
 
+  // Barcode API
+  app.get('/barcode/:key', report.barcodeLookup);
+
+  // redirect the request directly to the relevent client document
+  app.get('/barcode/redirect/:key', report.barcodeRedirect);
+
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */

@@ -36,7 +36,7 @@ const barcode = require('../../lib/barcode');
 
 const cashCreate = require('./cash.create');
 
-const entityIdentifier = identifiers.CASH_PAYMENT;
+const entityIdentifier = identifiers.CASH_PAYMENT.key;
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -74,7 +74,7 @@ function lookup(id) {
 
   const cashRecordSql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id
     FROM cash JOIN project ON cash.project_id = project.id
@@ -83,7 +83,7 @@ function lookup(id) {
 
   const cashItemsRecordSql = `
     SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
-      CONCAT_WS('.', '${identifiers.INVOICE}', p.abbr, i.reference) AS reference
+      CONCAT_WS('.', '${identifiers.INVOICE.key}', p.abbr, i.reference) AS reference
     FROM cash_item AS ci
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
@@ -152,7 +152,7 @@ function list(req, res, next) {
 function listPayment(params) {
   let sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
       d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, v.type_id
@@ -177,7 +177,7 @@ function listPayment(params) {
   };
 
   if (params.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.CASH_PAYMENT}', project.abbr, cash.reference) = ?`);
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`);
     conditions.parameters.push(params.reference);
     delete params.reference;
   }

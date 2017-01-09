@@ -17,7 +17,7 @@ const uuid   = require('node-uuid');
 const _      = require('lodash');
 
 const identifiers = require('../../config/identifiers');
-const entityIdentifier = identifiers.INVOICE;
+const entityIdentifier = identifiers.INVOICE.key;
 
 const util   = require('../../lib/util');
 const db     = require('../../lib/db');
@@ -73,7 +73,7 @@ function lookupInvoice(invoiceUuid) {
   let buid = db.bid(invoiceUuid);
 
   let invoiceDetailQuery =
-    `SELECT BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
+    `SELECT BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
       invoice.user_id, invoice.date, user.display_name,
@@ -182,7 +182,7 @@ function find(options) {
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
-      CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
       invoice.user_id
     FROM invoice
@@ -204,7 +204,7 @@ function find(options) {
   }
 
   if (options.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) = ?`);
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`);
     conditions.parameters.push(options.reference);
     delete options.reference;
   }

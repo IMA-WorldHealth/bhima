@@ -179,7 +179,7 @@ function invoiceBalances(debtorUuid, uuids, paramOptions) {
 
   // select all invoice and payments against invoices from the combined ledger
   let sql = `
-    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE}', project.abbr, invoice.reference) AS reference,
+    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
     FROM (
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid

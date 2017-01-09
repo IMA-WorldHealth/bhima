@@ -9,16 +9,48 @@
  */
 
 module.exports = {
-  VOUCHER : 'VO',
-  EMPLOYEE : 'EM',
-  INVOICE : 'IV',
-  CASH_PAYMENT : 'CP',
-  PATIENT : 'PA',
-  DOCUMENT : 'DO',
-  STOCK_ENTRY : 'SN',
-  STOCK_EXIT : 'SX',
-  STOCK_MOVEMENT : 'SM',
-  STOCK_LOT : 'SL',
-  INVENTORY_ITEM : 'II',
-  PURCHASE_ORDER : 'PO'
+  VOUCHER : {
+    key : 'VO',
+    table : 'voucher'
+  },
+  EMPLOYEE : {
+    key : 'EM',
+    table : 'employee'
+  },
+  INVOICE : {
+    key : 'IV',
+    table : 'invoice'
+  },
+  CASH_PAYMENT : {
+    key : 'CP',
+    table : 'cash'
+  },
+  PATIENT : {
+    key : 'PA',
+    table : 'patient',
+    redirectPath : '/#/patients/?'
+  },
+  DOCUMENT : {
+    key : 'DO'
+  },
+  STOCK_ENTRY : {
+    key : 'SN'
+  },
+  STOCK_EXIT : {
+    key : 'SX'
+  },
+  STOCK_MOVEMENT : {
+    key : 'SM'
+  },
+  STOCK_LOT : {
+    key : 'SL'
+  },
+  INVENTORY_ITEM : {
+    key : 'II',
+    table : 'inventory'
+  },
+  PURCHASE_ORDER : {
+    key : 'PO',
+    table : 'purchase_order'
+  }
 };
