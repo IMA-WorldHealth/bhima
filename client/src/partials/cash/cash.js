@@ -98,7 +98,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     Patient.balance(vm.patient.debtor_uuid)
       .then(function (balance) {
         /**
-         * balance < 0 means that enterprise must money to the patient (creditor balance)
+         * balance < 0 means that enterprise owes money to the patient (creditor balance)
          * multiply by -1 means we want work with positive value if the patient has a creditor balance
          */
         vm.patientBalance = balance * -1;
@@ -115,7 +115,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   /* Debtor Invoices Modal */
   function openInvoicesModal() {
-    Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
+
+    var invoices = angular.copy(vm.payment.invoices || [])
+      .map(function (invoice) {
+        return invoice.uuid;
+      });
+
+    Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: invoices })
       .then(function (result) {
 
         // bind the selected invoices
@@ -176,6 +182,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   }
 
   function setupPayment() {
+
     // load payment type from cache
     var DEFAULT_PAYMENT_TYPE = 0;
     var paymentType = cache.is_caution || DEFAULT_PAYMENT_TYPE;

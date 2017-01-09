@@ -2,17 +2,18 @@ angular.module('bhima.controllers')
   .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'DebtorService', 'debtorId', 'invoiceIds', '$uibModalInstance', 'SessionService',
+  'DebtorService', 'debtorId', 'invoices', '$uibModalInstance', 'SessionService',
   '$timeout', 'NotifyService'
 ];
 
 /**
  * @module cash/modals/CashInvoiceModalController
  *
- * @description This controller is responsible for retrieving a list of debtor invoices
+ * @description
+ * This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance, Session, $timeout, Notify) {
+function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, Session, $timeout, Notify) {
   var vm = this;
 
   // we start in a neutral state
@@ -47,13 +48,33 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
 
   // in order to use controllerAs syntax, we need to import the entire grid API
   // into the controller scope to bind the getSelectedRows method.
-  function onRegisterApi(api) {
-    vm.getSelectedRows = api.selection.getSelectedRows;
-    vm.selectRow = api.selection.selectRow;
+  function onRegisterApi(gridApi) {
+    vm.getSelectedRows = gridApi.selection.getSelectedRows;
 
     // set up callbacks
-    api.selection.on.rowSelectionChanged(null, selectionChangeCallback);
-    api.selection.on.rowSelectionChangedBatch(null, selectionChangeCallback);
+    gridApi.selection.on.rowSelectionChanged(null, selectionChangeCallback);
+    gridApi.selection.on.rowSelectionChangedBatch(null, selectionChangeCallback);
+
+    // bind the grid API
+    vm.gridApi = gridApi;
+
+    selectPreviouslySelectedInvoices();
+  }
+
+  // toggles previously selected rows
+  function selectPreviouslySelectedInvoices() {
+    if (!vm.gridApi) { return; }
+
+    var rows = vm.gridApi.grid.rows;
+
+    // loop through each invoice id passed in and reselect those that have
+    // previously been selected
+    rows.forEach(function (row) {
+      console.log('row', row);
+      if (invoices.indexOf(row.entity.uuid) > -1) {
+        vm.gridApi.selection.selectRow(row.entity);
+      }
+    });
   }
 
   // starts up the modal
@@ -69,15 +90,8 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
 
         // requires timeout to bind angular ids to each row before selecting them.
         $timeout(function () {
-
-          // loop through each invoice id passed in and reselect those that have
-          // previously been selected
-          vm.gridOptions.data.forEach(function (invoice) {
-            if (invoiceIds.indexOf(invoice.invoice_uuid) > -1) {
-              vm.selectRow(invoice);
-            }
-          });
-        });
+          selectPreviouslySelectedInvoices();
+        }, 0, false);
       })
       .catch(function (error) {
         vm.hasError = true;

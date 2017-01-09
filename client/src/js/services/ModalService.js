@@ -135,12 +135,7 @@ function ModalService(Modal) {
       controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
       resolve     : {
         debtorId : function debtorIdProvider() { return request.debtorUuid; },
-        invoiceIds : function invoiceIdsProvider() {
-          if (!request.invoices) { return []; }
-          return request.invoices.map(function (invoice) {
-            return invoice.invoice_uuid;
-          });
-        }
+        invoices : function invoicesProvider() { return request.invoices; }
       }
     });
 
