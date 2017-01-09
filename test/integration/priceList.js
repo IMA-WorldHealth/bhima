@@ -176,7 +176,7 @@ describe('(/prices ) Price List', function () {
       .then(function (res) {
         helpers.api.errored(res, 400);
 
-        expect(res.body.code).to.equal('ERRORS.BAD_REQUEST');
+        expect(res.body.code).to.equal('ERRORS.ER_BAD_NULL_ERROR');
 
         // make sure we didn't gain a price list!
         return agent.get('/prices');

@@ -254,7 +254,17 @@
     "NOT_FOUND"        : "Cet enregistrement n'a pas pu être trouvé",
     "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
     "UNKNOWN"          : "Une erreur est survenue.",
-    "OVERPAID_INVOICE" : "Vous avez payé trop aux factures."
+    "OVERPAID_INVOICE" : "Vous avez payé trop aux factures.",
+    "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
+    "ER_DUP_ENTRY" : "Vous avez dupliqué une valeur dans un champ unique! Assurez-vous que les valeurs nécessaires sont uniques.",
+    "ER_BAD_FIELD_ERROR" : "Vous avez entré un champ qui ne peut pas être stocké dans la base de données.",
+    "ER_ROW_IS_REFERENCED" : "Vous ne pouvez pas supprimer cet enregistrement référencé par un autre enregistrement dans la base de données.",
+    "ER_ROW_IS_REFERENCED_2" :"Vous ne pouvez pas supprimer cet enregistrement référencé par un autre enregistrement dans la base de données.",
+    "ER_BAD_NULL_ERROR" : "Un champ a été laissé vide qui ne peut pas être vide.",
+    "ER_PARSE_ERROR" : "Votre demande n'a pas été comprise. Veuillez modifier votre demande et réessayer.",
+    "ER_EMPTY_QUERY" : "Votre demande semble vide. Êtes-vous sûr de remplir tout?",
+    "ER_NO_DEFAULT_FOR_FIELD" : "Vous n'avez pas inclus suffisamment d'informations dans votre soumission! Veuillez vérifier vos erreurs et réessayer.",
+    "ER_DATA_TOO_LONG" : "Une de vos valeurs de formulaire est trop longue! Veuillez le raccourcir et le renvoyer."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",
