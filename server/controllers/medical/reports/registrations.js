@@ -8,11 +8,13 @@
  * matching query conditions passed from the patient registry UI grid.
  *
  * @requires lodash
+ * @requires moment
  * @requires Patients
  * @requires ReportManager
  */
 
 const _ = require('lodash');
+const moment = require('moment');
 
 const ReportManager = require('../../../lib/ReportManager');
 
@@ -33,7 +35,10 @@ function formatFilters(qs) {
     { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', isDate: true },
     { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate: true },
     { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', isDate: true },
-    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true }
+    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true },
+    { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
+    { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
+    { field: 'user_id', displayName: 'FORM.LABELS.USER' }
   ];
 
   return columns.filter(column => {
@@ -77,6 +82,10 @@ function build(req, res, next) {
 
   Patients.find(options)
     .then(patients => {
+
+      // calculate ages with moment
+      patients.forEach(patient => patient.age = moment().diff(patient.dob, 'years'));
+
       return report.render({ patients, filters });
     })
     .then(result => {

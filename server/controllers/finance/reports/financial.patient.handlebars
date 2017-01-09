@@ -31,7 +31,7 @@
             <td>{{currency this.debit ../metadata.enterprise.currency_id}}</td>
             <td>{{currency this.credit ../metadata.enterprise.currency_id}}</td>
           </tr>
-        {{else}}       
+        {{else}}
           <tr>
             <td colspan="6" class="text-center">
               {{translate "TABLE.COLUMNS.EMPTY"}}
@@ -44,7 +44,7 @@
           <td colspan="4">{{translate "FORM.LABELS.TOTAL" }}</td>
           <td>{{currency sum.debit metadata.enterprise.currency_id}}</td>
           <td>{{currency sum.credit metadata.enterprise.currency_id}}</td>
-        </tr>       
+        </tr>
         <tr style="background-color: #ededed;">
           <th colspan="6" class="text-right">{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance metadata.enterprise.currency_id}}</th>
         </tr>
