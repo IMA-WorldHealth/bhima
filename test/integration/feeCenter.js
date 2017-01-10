@@ -25,62 +25,80 @@ describe('(/fee_centers) The fee center API', function () {
   ];
 
 
-  it.skip('GET /cost_centers returns a list of cost centers', function () {
-    return agent.get('/cost_centers')
+  it('GET /fee_centers returns a list of fee centers', function () {
+    return agent.get('/fee_centers')
       .then(function (res) {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 7);
       })
       .catch(helpers.handler);
   });
 
   /* @todo - make this route ?detailed=1 to conform to standards */
-  it.skip('GET /cost_centers?full=1 returns a full list of cost centers', function () {
-    return agent.get('/cost_centers?full=1')
+  it('GET /fee_centers?full=1 returns a full list of fee centers', function () {
+    return agent.get('/fee_centers?full=1')
+      .then(function (res) {
+        helpers.api.listed(res, 7);
+      })
+     .catch(helpers.handler);
+  });
+
+  it('GET /fee_centers?available=1 returns a list of available fee centers', function () {
+    return agent.get('/fee_centers?available=1')
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+     .catch(helpers.handler);
+  });
+
+  it('GET /fee_centers?is_cost=1 returns a list of fee centers by filtering only cost center', function () {
+    return agent.get('/fee_centers?is_cost=1')
+      .then(function (res) {
+        helpers.api.listed(res, 4);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /fee_centers?available=1&full=1 returns a full list of available fee centers', function () {
+    return agent.get('/fee_centers?available=1&full=1')
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+     .catch(helpers.handler);
+  });
+
+  it('GET /fee_centers?is_cost=1&is_principal=1 returns a list of principal fee center which are cost', function () {
+    return agent.get('/fee_centers?is_cost=1&is_principal=1')
       .then(function (res) {
         helpers.api.listed(res, 3);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
-  it.skip('GET /cost_centers?available=1 returns a list of availables cost centers', function () {
-    return agent.get('/cost_centers?available=1')
-      .then(function (res) {
-        helpers.api.listed(res, 1);
-      })
-     .catch(helpers.handler);
-  });
-
-  it.skip('GET /cost_centers?available=1&full=1 returns a full list of availables cost centers', function () {
-    return agent.get('/cost_centers?available=1&full=1')
-      .then(function (res) {
-        helpers.api.listed(res, 1);
-      })
-     .catch(helpers.handler);
-  });
-
-  it.skip('GET /cost_center/:id returns one cost center', function () {
-    return agent.get('/cost_centers/'+ FETCHABLE_COST_CENTER_ID)
+  it('GET /fee_center/:id returns one fee center', function () {
+    return agent.get('/fee_centers/'+ FETCHABLE_FEE_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.equal(FETCHABLE_COST_CENTER_ID);
+        expect(res.body.id).to.be.equal(FETCHABLE_FEE_CENTER_ID);
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
 
-  it.skip('GET /cost_center/:id returns a 404 for an unknown cost center id', function () {
-    return agent.get('/cost_centers/unknown')
+  it('GET /fee_center/:id returns a 404 for an unknown fee center id', function () {
+    return agent.get('/fee_centers/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
+
+
   /* @todo - should this return a simple number? */
   it.skip('GET /cost_centers/:id/cost returns the cost of a provided cost center', function () {
-    return agent.get('/cost_centers/:id/cost'.replace(':id', FETCHABLE_COST_CENTER_ID))
+    return agent.get('/cost_centers/:id/cost'.replace(':id', FETCHABLE_FEE_CENTER_ID))
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -91,13 +109,13 @@ describe('(/fee_centers) The fee center API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('POST /cost_centers adds a cost center', function () {
-    return agent.post('/cost_centers')
-      .send(newCostCenter)
+  it('POST /fee_centers adds a fee center', function () {
+    return agent.post('/fee_centers')
+      .send(newFeeCenter)
       .then(function (res) {
         helpers.api.created(res);
-        newCostCenter.id = res.body.id;
-        return agent.get('/cost_centers/' + newCostCenter.id);
+        newFeeCenter.id = res.body.id;
+        return agent.get('/fee_centers/' + newFeeCenter.id);
       })
       .then(function (res){
         expect(res).to.have.status(200);
@@ -106,24 +124,24 @@ describe('(/fee_centers) The fee center API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('PUT /cost_centers/:id updates the newly added cost center', function () {
+  it('PUT /fee_centers/:id updates the newly added fee center', function () {
     var updateInfo = { note : 'update value for note' };
-    return agent.put('/cost_centers/' + newCostCenter.id)
+    return agent.put('/fee_centers/' + newFeeCenter.id)
       .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(newCostCenter.id);
+        expect(res.body.id).to.equal(newFeeCenter.id);
         expect(res.body.note).to.equal(updateInfo.note);
       })
       .catch(helpers.handler);
   });
 
-  it.skip('DELETE /cost_centers/:id deletes a cost_center', function () {
-    return agent.delete('/cost_centers/' + DELETABLE_COST_CENTER_ID)
+  it.skip('DELETE /fee_centers/:id deletes a fee_center', function () {
+    return agent.delete('/fee_centers/' + DELETABLE_FEE_CENTER_ID)
       .then(function (res) {
         helpers.api.deleted(res);
-        return agent.get('/cost_centers/' + DELETABLE_COST_CENTER_ID);
+        return agent.get('/fee_centers/' + DELETABLE_FEE_CENTER_ID);
       })
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -131,8 +149,8 @@ describe('(/fee_centers) The fee center API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('DELETE /cost_centers/:id returns a 404 for an unknown cost center id', function () {
-    return agent.delete('/cost_centers/unknown')
+  it.skip('DELETE /fee_centers/:id returns a 404 for an unknown fee center id', function () {
+    return agent.delete('/fee_centers/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })
