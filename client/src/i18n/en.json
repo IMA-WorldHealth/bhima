@@ -103,6 +103,7 @@
       "TITLE"              : "Select a Cashbox"
     },
     "TITLE"           : "Cash Window",
+    "OPTIONS"         : "Options",
     "RECEIPT": {
       "TITLE" : "Cash Receipt",
       "SUCCESS" : "Successfully created a Cash Payment"
@@ -125,6 +126,7 @@
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
         "SELECTED"        : "Selected cash"
       },
+      "SCAN_BARCODE"    : "Scan Invoice Barcode",
       "DEBTOR_INVOICES" : "Debtor Invoices",
       "RECEIPTS_TITLE"  : "Cash Payment Receipt",
       "REPORT"          : "Report",

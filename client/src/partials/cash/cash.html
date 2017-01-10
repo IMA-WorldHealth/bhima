@@ -5,6 +5,35 @@
       <li class="static" translate>CASH.TITLE</li>
       <li class="title">{{ CashCtrl.cashbox.label }}</li>
     </ol>
+
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle href>
+            <span translate>CASH.OPTIONS</span> <span class="caret"></span>
+          </a>
+          <ul uib-dropdown-menu role="menu">
+            <li role="menuitem">
+              <a href ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-action="change-cashbox">
+                <i class="fa fa-inbox"></i> <span translate>CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href ui-sref="cash.transfer({ id: CashCtrl.cashbox.id })" data-action="transfer">
+                <i class="fa fa-recycle"></i> <span translate>CASH.VOUCHER.CASHBOXES.TRANSFER</span>
+              </a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href ui-sref="cash.scan({ id: CashCtrl.cashbox.id })" data-action="scan-barcode">
+                <i class="fa fa-barcode"></i> <span translate>CASH.VOUCHER.SCAN_BARCODE</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -12,20 +41,8 @@
   <div class="container-fluid">
     <div class="row">
 
-      <!-- Switch Cashbox Form and Transfer -->
-      <div class="col-md-2 col-lg-3">
-
-        <button class="btn btn-warning btn-block" ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-change-cashbox>
-          <i class="fa fa-inbox"></i> <span translate>CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX</span>
-        </button>
-
-        <button style="margin-bottom: 1em;" class="btn btn-primary btn-block" ui-sref="cash.transfer({ id: CashCtrl.cashbox.id })" data-perform-transfer>
-          <i class="fa fa-exchange"></i> <span translate>CASH.VOUCHER.CASHBOXES.TRANSFER</span>
-        </button>
-      </div>
-
       <!-- Cash Voucher Form -->
-      <div class="col-md-8 col-lg-6">
+      <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span translate>CASH.VOUCHER.SLIP</span> <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
