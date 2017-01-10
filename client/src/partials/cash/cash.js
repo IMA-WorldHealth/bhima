@@ -23,7 +23,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   var cache = AppCache('CashPayments');
 
   /* id of the currently select cashbox */
-  var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id) || null;
+  var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id);
 
   // if no id, re-route to 'cash.select'
   if (!cashboxId) {

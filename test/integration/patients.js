@@ -4,7 +4,7 @@
 const helpers = require('./helpers');
 const q = require('q');
 
-describe.only('(/patients) Patients', function () {
+describe('(/patients) Patients', function () {
   'use strict';
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';

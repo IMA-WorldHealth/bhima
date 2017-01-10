@@ -34,8 +34,14 @@ angular.module('bhima.routes')
         params : { id : { squash: true, value: null } },
         onEnter :['$state', '$uibModal', transferModal],
         onExit : ['$uibModalStack', closeModal]
-      });
+      })
 
+      .state('cash.scan', {
+        url : '/:id/scan',
+        params : { id : { squash: true, value: null } },
+        onEnter :['$state', '$uibModal', scanBarcodeModal],
+        onExit : ['$uibModalStack', closeModal]
+      });
   }]);
 
 
@@ -57,8 +63,15 @@ function transferModal($state, Modal) {
   });
 }
 
+function scanBarcodeModal($state, Modal) {
+  Modal.open({
+    controller: 'CashBarcodeScannerModalController as CashBarCtrl',
+    templateUrl: 'partials/cash/modals/scanBarcode.modal.html',
+    backdrop: 'static',
+    keyboard: true
+  });
+}
+
 function closeModal($uibModalStack) {
   $uibModalStack.dismissAll();
 }
-
-

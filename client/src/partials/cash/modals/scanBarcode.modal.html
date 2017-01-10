@@ -1,0 +1,47 @@
+<form name="BarcodeForm" bh-form-defaults novalidate style="min-height:400px;">
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">{{ ::CashBarCtrl.cashbox.label }}</li>
+      <li class="title" translate>CASH.BARCODE.TITLE</li>
+    </ol>
+  </div>
+
+  <div class="modal-body text-center">
+
+    <!-- state: awaiting barcode input -->
+    <h1 class="text-muted">
+      Scan Barcode <br />
+      <i class="fa fa-barcode fa-3x"></i>
+    </h1>
+
+    <p>
+      <span class="text-muted" ng-if="vm.step === vm.INITIALIZED">
+        <span>Waiting for Input</span>
+      </span>
+
+      <span class="text-primary" ng-if="vm.step === vm.LOADING">
+        <i class="fa fa-info-circle"></i>
+        <span>Barcode Read! Looking up the Invoice ...</span>
+      </span>
+
+      <span class="text-success" ng-if="vm.step === vm.READ_SUCCESS">
+        <i class="fa fa-check-circle-o"></i> Found Invoice IV.HEV.12!
+      </span>
+
+      <span class="text-danger" ng-if="vm.step === vm.READ_ERROR">
+        <i class="fa fa-danger-sign"></i> Unreadable Barcode!  Please enter the barcode manually.
+      </span>
+    </p>
+
+    <!-- state: gathering required information -->
+    <h1 hidden>
+      <i class="fa fa-barcode"></i> Scanned Invoice Barcode!
+      <br />
+      <small>Gathering required information...</small>
+    </h1>
+
+    <!-- hidden barcode input -->
+    <input ng-model="CashBarCtrl.barcode" ng-change="CashBarCtrl.triggerBarcodeRead()" hidden autofocus>
+  </div>
+</form>
