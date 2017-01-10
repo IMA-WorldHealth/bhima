@@ -16,6 +16,7 @@ const path = require('path');
 const fs = require('fs');
 const db = require('../lib/db');
 const barcode = require('../lib/barcode');
+const BadRequest = require('../lib/errors/BadRequest');
 
 exports.keys = keys;
 exports.list = list;
@@ -151,9 +152,7 @@ function barcodeLookup(req, res, next) {
   let key = req.params.key;
 
   barcode.reverseLookup(key)
-    .then(function (result) {
-      res.send(result);
-    })
+    .then(result => res.send(result))
     .catch(next)
     .done();
 }
@@ -162,9 +161,11 @@ function barcodeRedirect(req, res, next) {
   let key = req.params.key;
 
   barcode.reverseLookup(key)
-    .then(function (result) {
-
-      // populated by barcode controller
+    // populated by barcode controller
+    .then(result => {
+      if (!result._redirectPath) {
+        throw new BadRequest('This barcode document does not support redirect');
+      }
       res.redirect(result._redirectPath);
     })
     .catch(next)

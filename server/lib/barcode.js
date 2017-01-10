@@ -5,6 +5,8 @@ const _ = require('lodash');
 const db = require('./db');
 const identifiers = require('../config/identifiers');
 
+const BadRequest = require('./errors/BadRequest');
+
 exports.generate = generate;
 exports.reverseLookup = reverseLookup;
 
@@ -39,8 +41,16 @@ function reverseLookup(barcodeKey) {
   let partialUuid = barcodeKey.substr(2, barcodeKey.length);
   let documentDefinition = identifiersIndex[code];
 
+  if (!documentDefinition) {
+    throw new BadRequest(`Invalid barcode document type '${code}'`);
+  }
+
+  if (!documentDefinition.lookup) {
+    throw new BadRequest(`No lookup method has been defined for barcode document type '${code}'`);
+  }
+
   let query = `
-    SELECT BUID(uuid) as uuid FROM ${documentDefinition.table} where BUID(uuid) LIKE '${partialUuid}%'
+    SELECT BUID(uuid) as uuid FROM ${documentDefinition.table} where BUID(uuid) LIKE '${partialUuid}%' COLLATE utf8_unicode_ci
   `;
 
   // search for full UUID
@@ -50,7 +60,9 @@ function reverseLookup(barcodeKey) {
     })
     .then(entity => {
       // @todo review specific logic flow
-      entity._redirectPath = documentDefinition.redirectPath.replace('?', entity.uuid);
+      if (documentDefinition.redirectPath) {
+        entity._redirectPath = documentDefinition.redirectPath.replace('?', entity.uuid);
+      }
       return entity;
     });
 }
@@ -63,4 +75,5 @@ function indexIdentifiers() {
   // assign lookup methods to supported entity types
   // @TODO this method of mapping should be reviewed
   identifiers.PATIENT.lookup = require('../controllers/medical/patients').lookupPatient;
+  identifiers.INVOICE.lookup = require('../controllers/finance/patientInvoice').lookupInvoice;
 }

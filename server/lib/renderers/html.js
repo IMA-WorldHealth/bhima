@@ -13,9 +13,13 @@ const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
+const headers = {
+  'Content-Type' : 'text/html'
+};
+
 exports.render = renderHTML;
 exports.extension = '.html';
-
+exports.headers = headers;
 /**
  *
  * @param {Object} data     Object of keys and values that will be made available to the template
