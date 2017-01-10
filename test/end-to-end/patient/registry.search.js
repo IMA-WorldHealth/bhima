@@ -93,7 +93,7 @@ function PatientRegistrySearch() {
     element(by.id('female')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
+    expectNumberOfGridRows(0);
     expectNumberOfFilters(3);
     FU.buttons.clear();
   });
