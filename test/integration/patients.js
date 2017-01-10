@@ -4,7 +4,7 @@
 const helpers = require('./helpers');
 const q = require('q');
 
-describe('(/patients) Patients', function () {
+describe.only('(/patients) Patients', function () {
   'use strict';
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
@@ -124,6 +124,16 @@ describe('(/patients) Patients', function () {
           helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
           expect(res.body[0].reference).to.be.equals(conditions.reference);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /patients/search with debtor_uuid retrieves the patients with that debtor_uuid', function () {
+      let conditions = { debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107' };
+      return agent.get('/patients/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
