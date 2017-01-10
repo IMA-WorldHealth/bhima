@@ -27,12 +27,17 @@
       {{/if}}
 
       <span><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u></span><br /> 
-      <span>{{ patient.debtor_group_name }}</span><br />
+      <span>{{ patient.debtor_group_name }}</span>
+      
+      {{#unless simplified}}
+      <!-- Information only shown on larger form identities -->
+      <br />
       <span><u>{{translate "FORM.LABELS.ADDRESS"}}</u></span> <br />
       <address>
         <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
         <span>{{village.country_name}}</span>
       </address>
+      {{/unless}}
     </div>
 
     <!-- right side is enterprise information -->

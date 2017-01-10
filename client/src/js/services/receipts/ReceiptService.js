@@ -29,6 +29,7 @@ function ReceiptService($http, util, Language, AppCache) {
   var cache = new AppCache('receipts');
 
   service.posReceipt = cache.posReceipt || '0';
+  service.simplified = cache.simplified || '0';
 
   // expose data
   service.renderers = renderers;
@@ -41,7 +42,9 @@ function ReceiptService($http, util, Language, AppCache) {
   service.voucher = voucher;
   service.transaction = transaction;
   service.payroll = payroll;
+
   service.setPosReceipt = setPosReceipt;
+  service.setSimplified = setSimplified;
 
   /**
    * @method fetch
@@ -90,6 +93,7 @@ function ReceiptService($http, util, Language, AppCache) {
   // print the patient card
   function patient(uuid, options) {
     options.posReceipt = service.posReceipt;
+    options.simplified = service.simplified;
     var route ='/reports/medical/patients/'.concat(uuid);
     return fetch(route, options);
   }
@@ -126,6 +130,10 @@ function ReceiptService($http, util, Language, AppCache) {
 
   function setPosReceipt(posReceiptEnabled) {
     service.posReceipt = cache.posReceipt = posReceiptEnabled;
+  }
+
+  function setSimplified(simplifiedEnabled) {
+    service.simplified = cache.simplified = simplifiedEnabled;
   }
 
   return service;

@@ -14,7 +14,7 @@
 const q = require('q');
 
 const headers = {
-  'Content-Type' : 'text/json'
+  'Content-Type' : 'application/json'
 };
 
 exports.render = renderJSON;

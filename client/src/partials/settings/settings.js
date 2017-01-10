@@ -19,9 +19,10 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
 
   vm.back = function back() { $window.history.back(); };
   vm.cachePosReceipt = cachePosReceipt;
+  vm.cacheSimplified = cacheSimplified;
 
   // load settings from services
-  vm.settings = { language : Languages.key, posReceipt : Receipts.posReceipt };
+  vm.settings = { language : Languages.key, posReceipt : Receipts.posReceipt, simplified : Receipts.simplified };
 
   // bind methods/services to the view
   vm.languageService = Languages;
@@ -60,11 +61,15 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
       });
   }
 
-  function cachePosReceipt(value, old) {
+  function cachePosReceipt(value) {
     Receipts.setPosReceipt(value);
   }
 
+  function cacheSimplified(value) {
+    Receipts.setSimplified(value);
+  }
+
+
   // initialize with data
   loadSystemInformation();
-
 }

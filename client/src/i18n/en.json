@@ -679,6 +679,7 @@
       "UPDATE_PATIENT_GROUP"   : "Update Patient Group Subscription",
       "USE"                    : "Use",
       "USE_POS_RECEIPT"        : "POS Receipts",
+      "USE_SIMPLIFIED_CARD"    : "Use simple patient identity",
       "USER"                   : "User",
       "USERNAME"               : "Username",
       "UNIT"                   : "Galenique form",
@@ -1206,7 +1207,8 @@
     "TITLE" : "Settings",
     "BUG_LINK" : "Report an Issue",
     "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
-    "POS_RECEIPT_INFO" : "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format"
+    "POS_RECEIPT_INFO" : "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format",
+    "SIMPLIFIED_CARD_INFO" : "Simple patient identifiers have a width of 75mm, height of 125mm are in 'Landscape' orientation. Standard identities are 'A6'."
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",
