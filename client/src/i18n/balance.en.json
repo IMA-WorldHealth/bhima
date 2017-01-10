@@ -1,0 +1,10 @@
+{
+  "BALANCE" : {
+    "MONTH_SOLD"    : "Month Movement",
+    "NEW_SOLD"      : "New Balance",
+    "OLD_SOLD"      : "Old Balance",
+    "PERIOD_CHOICE" : "Period choice",
+    "DATE_RANGE"    : "Date range",
+    "DATE_UNTIL"    : "Until a date"
+  }
+}

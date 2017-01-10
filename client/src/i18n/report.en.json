@@ -1,0 +1,34 @@
+{
+  "REPORT" : {
+    "ACCOUNT"       : "Report of Account",
+    "BALANCE"       : "Balance Report",
+    "DOWNLOAD"      : "Download",
+    "DELETE"        : "Delete Report",
+    "AGED_DEBTORS" : {
+      "TITLE": "Aged Debtors",
+      "THIRTY_DAYS" : "Less Than 30 Days",
+      "SIXTY_DAYS" : "Less Than 60 Days",
+      "NINETY_DAYS" : "Less Than 90 Days",
+      "OVER_NINETY_DAYS" : "Over 90 Days"
+    },
+    "CASH_EXPENSE"     : "Expenses",
+    "CASH_INCOME"      : "Incomes",
+    "CHART_OF_ACCOUNTS" : "Chart of Accounts",
+    "CLOSING_BALANCE"  : "Closing Balance",
+    "CONFIGURATION"    : "Report Configuration",
+    "INCOME_EXPENSE"   : "Incomes and Expenses Report",
+    "GENERATED"        : "Generated Report",
+    "MONTHLY_BALANCE"  : "Monthly Balance",
+    "OPENNING_BALANCE" : "Opening Balance",
+    "PERIOD_START"     : "Start",
+    "PERIOD_STOP"      : "Stop",
+    "PRODUCED_BY"      : "Produced by",
+    "PRODUCED_DATE"    : "Production Date",
+    "PRODUCED_ON"      : "Produced on",
+    "REPORT_ACCOUNTS"  : "Report accounts",
+    "INCOME_REPORT"    : "Incomes Report",
+    "EXPENSE_REPORT"   : "Expenses Report",
+    "SINCE"            : "Since",
+    "INCOME_EXPENSE" : "Income Expense Report"
+  }
+}

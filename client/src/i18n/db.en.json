@@ -1,0 +1,5 @@
+{
+  "DB": {
+    "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
+  }
+}

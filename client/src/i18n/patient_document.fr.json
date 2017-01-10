@@ -1,0 +1,20 @@
+{
+  "PATIENT_DOCUMENT" : {
+    "ADD"            : "Ajouter documents",
+    "DISPLAY_LIST"   : "Affichage en list",
+    "DISPLAY_THUMBNAIL" : "Affichage en miniature",
+    "DOCUMENT_TITLE" : "Titre du document",
+    "DOCUMENT_LIST"  : "Liste des documents",
+    "DOCUMENTS"      : "Documents du patient",
+    "DOWNLOAD"       : "Telecharger",
+    "INVALID_DOCUMENT" : "Format du document invalide",
+    "NO_DOCUMENT"    : "Aucun document trouvé",
+    "OVERVIEW"       : "Aperçu",
+    "POSTED_BY"      : "Posté par",
+    "SEARCH"         : "Chercher documents",
+    "TITLE"          : "Documents de Patient",
+    "UPLOAD"         : "Telecharger vers le serveur",
+    "UPLOAD_FILE"    : "Fichier à téléverser (upload)",
+    "UPLOAD_SUCCESS" : "Fichier envoyé avec success"
+  }
+}

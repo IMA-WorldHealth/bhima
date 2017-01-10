@@ -1,0 +1,21 @@
+{
+  "FISCAL": {
+    "ALREADY_CLOSED"        : "Already closed",
+    "CAN_NOT_DELETE_FY"     : "Can not delete this fiscal year because there are transactions of which were made",
+    "CLOSING_FISCAL_YEAR"   : "Closing a fiscal year",
+    "CLOSING_SUCCESS"       : "Fiscal year closed with success",
+    "FAILURE_CLOSING"       : "Failure of closing the fiscal year",
+    "FISCAL_YEAR"           : "Fiscal Year",
+    "CREATE_FISCAL_YEAR"    : "Create Fiscal Year",
+    "BACK"                  : "Back",
+    "CONFIGURATION_PAGE"    : "Configuration Page",
+    "MESSAGES"              : "You do not have any previous fiscal years this fiscal year will open with zero opening balances. If you would like to change this behavior, click the link below",
+    "NEW_FISCAL_YEAR"       : "New Fiscal Year",
+    "OPENING_BALANCE"       : "Opening Balance",
+    "RESULT_AMOUNT"         : "Result Amount",
+    "SET_OPENING_BALANCES"  : "Set Opening Balances",
+    "SOLD_DESCRIPTION"      : "This operation will sold all exploitation accounts (charge and profit) and the result will be put into the selected result account",
+    "TITLE"                 : "Fiscal years",
+    "UPDATE_FISCAL_YEAR"    : "Update fiscal year"
+  }
+}

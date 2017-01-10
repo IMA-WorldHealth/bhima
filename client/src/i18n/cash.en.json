@@ -1,0 +1,46 @@
+{
+  "CASH": {
+    "CAUTION"         : "Caution",
+    "CAUTION_COVER"   : "Invoice(s) covered by the caution",
+    "CAUTION_PAYMENT" : "Caution Payment",
+    "CAUTION_REMAINING" : "Remaining Caution",
+    "CONFIRM_PAYMENT_WHEN_CAUTION" : "Proceed payment when client has a caution",
+    "CURRENT_CASHBOX" : "Current Cashbox",
+    "DEBTOR_INVOICES" : "Debtor Invoices",
+    "PAYMENT"         : "Payment",
+    "SELECTION": {
+      "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
+      "MISSING_CASH"       : "Missing Cash",
+      "TITLE"              : "Select a Cashbox"
+    },
+    "TITLE"           : "Cash Window",
+    "RECEIPT": {
+      "TITLE" : "Cash Receipt",
+      "SUCCESS" : "Successfully created a Cash Payment"
+    },
+    "TRANSFER": {
+      "TITLE" : "New Cash Transfer",
+      "ACTION" : "You are transferring funds out of the cashbox.",
+      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below."
+    },
+    "VOUCHER": {
+      "CASHBOXES": {
+        "AVAILABLE"       : "Available Cashboxes",
+        "CHANGE_CASHBOX"  : "Change Cashbox",
+        "CURRENT_CASHBOX" : "Current Cashbox",
+        "LINK"            : "Click here to add it.",
+        "MISSING"         : "Don't see your cashbox?",
+        "TRANSFER"        : "Transfer Funds",
+        "NO_INVOICES_ASSIGNED" : "You have not assigned any invoices!  Please assign at least one invoice to the payment.",
+        "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
+        "SELECTED"        : "Selected cash"
+      },
+      "DEBTOR_INVOICES" : "Debtor Invoices",
+      "RECEIPTS_TITLE"  : "Cash Payment Receipt",
+      "REPORT"          : "Report",
+      "SLIP"            : "Cash Voucher",
+      "TITLE"           : "Cash Window",
+      "SELECTED"        : "Selected Invoices"
+    }
+  }
+}

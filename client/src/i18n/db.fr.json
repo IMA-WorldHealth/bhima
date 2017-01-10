@@ -1,0 +1,5 @@
+{
+  "DB": {
+    "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
+  }
+}

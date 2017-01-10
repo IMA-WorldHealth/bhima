@@ -1,0 +1,12 @@
+{
+  "ENTERPRISE": {
+    "ADD_ENTERPRISE"           : "Add Enterprise.",
+    "ALL_ENTERPRISES"          : "All Enterprises",
+    "CONFIGURATION_ENTERPRISE" : "Configuration Enterprise",
+    "DESCRIPTION_1"            : "Manage the application Companies from here. For now clearing the enterprise is not taken into account.",
+    "DESCRIPTION_2"            : "Edit selected Enterprise",
+    "DESCRIPTION_3"            : "Add a new enterprise.",
+    "EDITING_ENTERPRISE"       : "Editing enterprise",
+    "TITLE"                    : "Enterprise Management"
+  }
+}

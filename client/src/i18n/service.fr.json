@@ -1,0 +1,11 @@
+{
+  "SERVICE": {
+    "ADDING_SERVICE"      : "Ajout service",
+    "ADD_SERVICE"         : "Ajouter service",
+    "ALL_SERVICES"        : "Tous les services",
+    "DESCRIPTION"         : "Ce module permet de creer, lister, modifier, supprimer et voir le cout et produit du service",
+    "EDITING_SERVICE"     : "Modification service",
+    "OVERVIEWING_SERVICE" : "Visualisation sommaire du service",
+    "TITLE"               : "Gestion des services"
+  }
+}
