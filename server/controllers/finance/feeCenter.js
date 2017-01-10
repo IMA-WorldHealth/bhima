@@ -14,6 +14,7 @@ const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
+
 /**
 * Returns an array of fee centers
 *
@@ -97,7 +98,6 @@ function update (req, res, next) {
       if(res.affectedRows === 0){
         throw new NotFound(`Could not update a fee center with id ${feeCenterId}`);
       }
-
       return lookupFeeCenter(feeCenterId);
     })
     .then(function (feeCenter) {
@@ -171,7 +171,6 @@ function lookupFeeCenter(id) {
 
 /**
 * Return a fee cost value by scanning the general ledger
-*
 *
 * @example
 * // GET /fee_centers/:id/value : returns a value of the fee center

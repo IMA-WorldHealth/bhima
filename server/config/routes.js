@@ -49,6 +49,7 @@ const depots = require('../controllers/inventory/depots');
 const inventoryReports = require('../controllers/inventory/reports');
 
 // finance routes
+<<<<<<< cd065f4af97a2c7932f7a390eb50e36343456fee
 const trialBalance = require('../controllers/finance/trialBalance');
 const ledger = require('../controllers/finance/ledger');
 const fiscal = require('../controllers/finance/fiscal');
@@ -152,7 +153,10 @@ exports.configure = function configure(app) {
   // API for fee center routes CRUD
   app.get('/fee_centers', feeCenter.list);
   app.get('/fee_centers/:id', feeCenter.detail);
+<<<<<<< cd065f4af97a2c7932f7a390eb50e36343456fee
   app.get('/fee_centers/:id/value/', feeCenter.getFeeValue);
+=======
+>>>>>>> interface implementation done
   app.post('/fee_centers', feeCenter.create);
   app.put('/fee_centers/:id', feeCenter.update);
 
