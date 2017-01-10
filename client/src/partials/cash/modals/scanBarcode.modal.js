@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('CashBarcodeScannerModalController', CashBarController);
 
 CashBarController.$inject = [
-  '$state', 'CashboxService', 'NotifyService', 'BarcodeService', 'PatientService'
+  '$state', 'CashboxService', 'NotifyService', 'BarcodeService', 'PatientService', 'bhConstants', '$uibModalInstance'
 ];
 
 /**
@@ -11,11 +11,12 @@ CashBarController.$inject = [
  * @description
  * This controller is responsible for scanning barcodes and then configuring the CashForm with the barcode
 */
-function CashBarController($state, Cashboxes, Notify, Barcodes, Patients) {
+function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhConstants, Instance) {
   var vm = this;
   var id = $state.params.id;
 
   vm.triggerBarcodeRead = triggerBarcodeRead;
+  vm.dismiss = dismiss;
 
   vm.loading = true;
 
@@ -25,11 +26,15 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients) {
   vm.READ_SUCCESS = 'found';
 
   // the first step is initialized
-  vm.step = vm.INITILIZED;
+  vm.step = vm.INITIALIZED;
 
   // determine if the input was a valid barcode
   function isValidBarcode(input) {
-    return false;
+    return input.length >= bhConstants.barcodes.LENGTH;
+  }
+
+  function dismiss() {
+    Instance.dismiss();
   }
 
   function triggerBarcodeRead() {
@@ -56,21 +61,28 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients) {
         return Patients.search({ debtor_uuid : invoice.debtor_uuid });
       }).then(function (patients) {
 
-        // destructure search array
+        // de-structure search array
         var patient = patients[0];
 
         vm.patient = patient;
 
-        // signal
         vm.step = vm.READ_SUCCESS;
       })
       .catch(function (error) {
         vm.step = vm.READ_ERROR;
+      })
+      .finally(function () {
+        toggleFlickerAnimation();
       });
+  }
+
+  function toggleFlickerAnimation() {
+    vm.flicker = !vm.flicker;
   }
 
   // fired on state startup
   function startup() {
+    vm.flicker = true;
 
     Cashboxes.read(id)
       .then(function (cashbox) {

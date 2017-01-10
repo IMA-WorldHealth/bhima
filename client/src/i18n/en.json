@@ -126,6 +126,13 @@
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
         "SELECTED"        : "Selected cash"
       },
+      "BARCODE" : {
+        "SCAN" : "Scan Invoice Barcode",
+        "AWAITING_INPUT" : "Waiting for Input",
+        "AWAITING_HTTP" : "Barcode Read!  Looking up Invoice...",
+        "READ_SUCCESS" : "Found Invoice",
+        "READ_ERROR" : "Unreadable Barcode!  Please enter the barcode manually."
+      },
       "SCAN_BARCODE"    : "Scan Invoice Barcode",
       "DEBTOR_INVOICES" : "Debtor Invoices",
       "RECEIPTS_TITLE"  : "Cash Payment Receipt",

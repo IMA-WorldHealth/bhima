@@ -67,8 +67,11 @@ function scanBarcodeModal($state, Modal) {
   Modal.open({
     controller: 'CashBarcodeScannerModalController as CashBarCtrl',
     templateUrl: 'partials/cash/modals/scanBarcode.modal.html',
+    size : 'lg',
     backdrop: 'static',
     keyboard: true
+  }).result.catch(function () {
+    $state.go('^.window', $state.params);
   });
 }
 

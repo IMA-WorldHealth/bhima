@@ -357,6 +357,9 @@ function constantConfig() {
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
     },
+    barcodes : {
+      LENGTH : 0
+    },
     transactionType : {
       GENERIC_INCOME     : 1,
       CASH_PAYMENT       : 2,
