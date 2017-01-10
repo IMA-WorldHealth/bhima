@@ -21,7 +21,7 @@ function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Langua
 
   vm.$loading = false;
 
-  Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
+  Cashbox.read(null, { detailed: 1 })
   .then(function (list) {
     list.forEach(function (cashbox) {
       cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
