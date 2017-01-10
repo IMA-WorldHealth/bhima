@@ -63,7 +63,7 @@ const cash             = require('../controllers/finance/cash');
 const priceList        = require('../controllers/finance/priceList');
 const billingServices  = require('../controllers/finance/billingServices');
 const accounts         = require('../controllers/finance/accounts');
-const costCenter       = require('../controllers/finance/costCenter');
+const feeCenter        = require('../controllers/finance/feeCenter');
 const reference        = require('../controllers/finance/reference');
 const subsidies        = require('../controllers/finance/subsidies');
 const patientInvoice   = require('../controllers/finance/patientInvoice');
@@ -151,13 +151,11 @@ exports.configure = function configure(app) {
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
 
-  // API for cost_center routes CRUD
-  app.get('/cost_centers', costCenter.list);
-  app.get('/cost_centers/:id', costCenter.detail);
-  app.get('/cost_centers/:id/cost', costCenter.getCostValue);
-  app.post('/cost_centers', costCenter.create);
-  app.put('/cost_centers/:id', costCenter.update);
-  app.delete('/cost_centers/:id', costCenter.remove);
+  // API for fee center routes CRUD
+  app.get('/fee_centers', feeCenter.list);
+  app.get('/fee_centers/:id', feeCenter.detail);
+  app.post('/fee_centers', feeCenter.create);
+  app.put('/fee_centers/:id', feeCenter.update);
 
   // API for service routes
   app.post('/services', services.create);
