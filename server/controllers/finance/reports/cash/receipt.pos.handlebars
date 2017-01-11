@@ -18,12 +18,12 @@
   {{payment.description}}
 </pre>
 
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 {{#if hasRate}}
 <span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>
 <br>
 <span>{{{translate 'EXCHANGE.SET_AS'}}} 1:{{rate}} {{{translate 'EXCHANGE.ON'}}} {{currentDateFormatted}}</span>
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 {{/if}}
 
 {{#if payment.is_caution}}
@@ -63,7 +63,7 @@
     {{/if}}
   </tbody>
 </table>
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 {{/each}}
 <!-- /if -->
 

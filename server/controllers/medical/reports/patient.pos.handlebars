@@ -13,13 +13,13 @@
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
 ({{patient.reference}}) - {{patient.debtor_group_name}}
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 <p><u>{{translate "FORM.LABELS.DOB"}}</u>: {{date patient.dob }}</p>
 <p><u>{{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}</u>: {{ patient.hospital_no }}</p>
 <p><u>{{translate "FORM.LABELS.GENDER"}}</u>: {{ patient.sex }}</p>
 <p><u>{{translate "TABLE.COLUMNS.REGISTERED_ON"}}</u>: {{date patient.registration_date }}</p>
 <p><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u>: {{ patient.debtor_group_name }}</p>
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 
 <script>JsBarcode('.barcode').init();</script>
 </body>
