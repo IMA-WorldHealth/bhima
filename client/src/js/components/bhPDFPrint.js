@@ -33,7 +33,7 @@ angular.module('bhima.components')
 });
 
 
-bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'LanguageService'];
+bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService'];
 
 /**
  * @class bhPDFPrintController
@@ -61,7 +61,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'Languag
  *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
+function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages) {
   var cachedRequest;
   var component = this;
 
@@ -113,6 +113,16 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
         // expose the stored pdf to the hidden view
         // the print method is automatically called with the load listener on the $window option
         component.src = $sce.trustAsResourceUrl(fileURL);
+
+        // ensure the blob is cleared when this $scope is cleaned up
+        var cleanupListener = $scope.$on('$destroy', function () {
+          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency is updated this
+          // should be re-written to use the latest $transition standards
+          URL.revokeObjectURL(fileURL);
+
+          // de-register event listener
+          cleanupListener();
+        });
       })
       .finally(function () {
         $timeout(toggleLoading, loadingIndicatorDelay);
