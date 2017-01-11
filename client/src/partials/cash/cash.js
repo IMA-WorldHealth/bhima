@@ -44,7 +44,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   vm.enterprise = Session.enterprise;
 
   // this toggles whether the form should re-enter the checkbox state
-  var DEFAULT_BARCODE_CHECKBOX_STATE = (cache.openBarcodeModalOnSuccess || true);
+  var DEFAULT_BARCODE_CHECKBOX_STATE = true;
 
   // bind methods
   vm.submit = submit;
@@ -111,7 +111,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     // be sure the cashbox is set
     vm.Payment.setCashbox(vm.cashbox);
 
-    vm.openBarcodeModalOnSuccess = cache.openBarcodeModalOnSuccess;
+    cache.openBarcodeModalOnSuccess = vm.openBarcodeModalOnSuccess;
 
     // patient invoices are covered by caution
     var hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
@@ -154,7 +154,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
         return Receipts.cash(response.uuid, true);
       })
       .then(function () {
-
         // clear and refresh the form
         clear(form);
 
