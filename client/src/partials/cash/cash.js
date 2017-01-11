@@ -41,8 +41,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   vm.Payment = new CashForm(cacheKey);
 
   vm.timestamp = new Date();
-
   vm.enterprise = Session.enterprise;
+
+  // this toggles whether the form should re-enter the checkbox state
+  var DEFAULT_BARCODE_CHECKBOX_STATE = (cache.openBarcodeModalOnSuccess || true);
 
   // bind methods
   vm.submit = submit;
@@ -53,11 +55,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   // fired when the bhFindPatient API becomes available
   function onRegisterApiCallback(api) {
     vm.bhFindPatient = api;
-    vm.Payment.bindPatientApi(api);
   }
 
   // fired on controller start or form refresh
   function startup() {
+    vm.openBarcodeModalOnSuccess = (cache.openBarcodeModalOnSuccess || DEFAULT_BARCODE_CHECKBOX_STATE);
+
     Currencies.read()
       .then(function (currencies) {
         vm.currencies = currencies;
@@ -86,24 +89,19 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     vm.cashbox = cashbox;
     cache.cashbox = cashbox;
     vm.disabledCurrencyIds = Cash.calculateDisabledIds(vm.cashbox, vm.currencies);
-
     vm.Payment.setCashbox(cashbox);
   }
 
   /* Debtor Invoices Modal */
   function openInvoicesModal() {
-
-    // only retrieve the invoice UUIDs
-    var invoices = vm.Payment.details.invoices
-      .map(function (invoice) {
-        return invoice.uuid;
-      });
-
-    // open the invoices modal selection controller
-    Modals.openDebtorInvoices({ debtorUuid: vm.Payment.details.debtor_uuid, invoices: invoices })
-      .then(function (invoices) {
-        vm.Payment.setInvoices(invoices);
-      });
+    $state.go('cash.debtors', {
+      id : vm.cashbox.id,
+      debtor_uuid : vm.Payment.details.debtor_uuid,
+      invoices: vm.Payment.details.invoices
+        .map(function (invoice) {
+          return invoice.uuid;
+        })
+    });
   }
 
   // submits the form to the server
@@ -112,6 +110,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
 
     // be sure the cashbox is set
     vm.Payment.setCashbox(vm.cashbox);
+
+    vm.openBarcodeModalOnSuccess = cache.openBarcodeModalOnSuccess;
 
     // patient invoices are covered by caution
     var hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
@@ -157,12 +157,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
 
         // clear and refresh the form
         clear(form);
+
+        if (vm.openBarcodeModalOnSuccess) {
+          $state.go('^.scan', { id : vm.cashbox.id });
+        }
       })
       .catch(Notify.handleError);
   }
 
   function clear(form) {
-
     vm.Payment.setup();
 
     // clear the patient selection
@@ -172,13 +175,14 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     form.$setPristine();
   }
 
-  function configureCashPaymentsForm(event, data) {
-    vm.Payment.setInvoices(data.invoices);
-    vm.Payment.details.description = data.description;
-    vm.Payment.setPatient(data.patient, true);
-  }
+  RS.$on('cash:configure', function (event, data) {
+    vm.Payment.configure(data);
 
-  RS.$on('cash:configure', configureCashPaymentsForm);
+    // if the patient UUID is provided, search by that patient
+    if (data.patient) {
+      vm.bhFindPatient.searchByUuid(data.patient.uuid);
+    }
+  });
 
   // start up the module
   startup();

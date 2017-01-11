@@ -175,6 +175,10 @@ describe('Cash Payments', function () {
     });
 
     it('should make a payment against previous invoices', function () {
+
+      // @fixme - why is this better?
+      browser.refresh();
+
       var gridId = 'debtorInvoicesGrid';
 
       // select the proper patient

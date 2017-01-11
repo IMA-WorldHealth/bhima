@@ -89,22 +89,16 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * This method takes in a patient and sets the form's debtor_uuid as needed.
    * It also looks up to confirm if the patient has a caution to alert the user.
    */
-  CashForm.prototype.setPatient = function setPatient(patient, searchByUuid) {
+  CashForm.prototype.setPatient = function setPatient(patient) {
     var self = this;
 
     this.patient = patient;
     this.details.debtor_uuid = patient.debtor_uuid;
 
-    if (this.patientApi && searchByUuid) {
-      this.patientApi.searchByUuid(patient.uuid);
-    }
-
     return Patients.balance(patient.debtor_uuid)
       .then(function (balance) {
 
         var patientAccountBalance = balance * -1;
-
-        console.log('Patients.balance', balance, patientAccountBalance);
 
         self.messages.hasPositiveAccountBalance = patientAccountBalance > 0;
         self.messages.patientAccountBalance = patientAccountBalance;
@@ -114,14 +108,37 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
   };
 
   /**
-   * @method bindPatientApi
+   * @method configure
    *
    * @description
-   * This binds the bhFindPatient's API to re-search for a patient.
-   * @todo -- this feels really strictly tied ... can we do better?
+   * This is a convenience method for setting the form properties from an
+   * object passed into the form.
    */
-  CashForm.prototype.bindPatientApi = function bindPatientApi(api) {
-    this.patientApi = api;
+  CashForm.prototype.configure = function configure(config) {
+
+    if (config.patient) {
+      this.setPatient(config.invoices);
+    }
+
+    if (config.description) {
+      this.details.description = config.description;
+    }
+
+    if (config.cashbox) {
+      this.setCashbox(config.cashbox);
+    }
+
+    if (config.currency_id) {
+      this.setCurrency(config.currency_id);
+    }
+
+    if (config.is_caution) {
+      this.setCautionType(config.is_caution);
+    }
+
+    if (config.invoices) {
+      this.setInvoices(config.invoices);
+    }
   };
 
   /**

@@ -36,6 +36,17 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal]
       })
 
+      .state('cash.debtors', {
+        url : '/:id',
+        params : {
+          id : { squash: true, value: null },
+          debtor_uuid: { value: undefined },
+          invoices: { value : [] }
+        },
+        onEnter :['$state', '$uibModal', debtorInvoicesModal],
+        onExit : ['$uibModalStack', closeModal]
+      })
+
       .state('cash.scan', {
         url : '/:id/scan',
         params : { id : { squash: true, value: null } },
@@ -70,8 +81,20 @@ function scanBarcodeModal($state, Modal) {
     size : 'lg',
     backdrop: 'static',
     keyboard: true
-  }).result.catch(function () {
-    $state.go('^.window', $state.params);
+  }).result.finally(function () {
+    $state.go('^.window', { id : $state.params.id });
+  });
+}
+
+function debtorInvoicesModal($state, Modal) {
+  Modal.open({
+    templateUrl : 'partials/cash/modals/invoices.modal.html',
+    controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
+    backdrop: 'static',
+    animation : false,
+    keyboard: true
+  }).result.finally(function () {
+    $state.go('^.window', { id : $state.params.id });
   });
 }
 

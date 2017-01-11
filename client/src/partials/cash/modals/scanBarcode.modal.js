@@ -43,7 +43,9 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhCons
 
   // TODO(@jniles) potentially this should tell you if you are trying to read a
   // cash payment instead of an invoice
-  // TODO(@jniles) potentially this should clear the input when the barcode is greater in length than 10.
+  // TODO(@jniles) potentially this should clear the input when the barcode
+  // is greater in length than 10.
+  // TODO(@jniles) this should be a component
   function triggerBarcodeRead() {
     if (isValidBarcode(vm.barcode)) {
       searchForBarcode(vm.barcode);

@@ -17,6 +17,10 @@
     <i class="fa fa-warning"></i> {{ ::"FORM.ERRORS.MISSING_DEBTOR_ID" | translate }}
   </p>
 
+  <pre>
+  {{ CashInvoiceModalCtrl.$params  | json }}
+  </pre>
+
   <!-- ui-grid to select debtor invoices -->
   <div ng-if="!CashInvoiceModalCtrl.missingId">
     <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid" id="debtorInvoicesGrid">

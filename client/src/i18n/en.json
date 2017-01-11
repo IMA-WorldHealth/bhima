@@ -134,6 +134,7 @@
         "READ_ERROR" : "Unreadable Barcode!  Please enter the barcode manually."
       },
       "SCAN_BARCODE"    : "Scan Invoice Barcode",
+      "OPEN_BARCODE_MODAL" : "Scan another barcode on successful payment.",
       "DEBTOR_INVOICES" : "Debtor Invoices",
       "RECEIPTS_TITLE"  : "Cash Payment Receipt",
       "REPORT"          : "Report",

@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'DebtorService', 'debtorId', 'invoices', '$uibModalInstance', 'SessionService',
-  '$timeout', 'NotifyService'
+  'DebtorService', 'SessionService', '$timeout', 'NotifyService', '$state',
+  '$rootScope'
 ];
 
 /**
@@ -13,19 +13,20 @@ CashInvoiceModalController.$inject = [
  * This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, Session, $timeout, Notify) {
+function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, $rootScope) {
   var vm = this;
 
-  // we start in a neutral state
-  vm.loading = false;
-  vm.hasError = false;
+  var debtorId = $state.params.debtor_uuid;
+  var invoices = $state.params.invoices;
+
+  vm.$params = $state.params;
 
   // defaults to value
-  vm.missingId = !debtorId ;
+  vm.missingId = !angular.isDefined(debtorId);
 
   // bind methods
-  vm.cancel = ModalInstance.dismiss;
   vm.submit = submit;
+  vm.cancel = dismiss;
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -107,10 +108,20 @@ function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
 
+    // we start in a neutral state
+    vm.loading = false;
+    vm.hasError = false;
+
     // retrieve the outstanding patient invoices from the ui grid
     var invoices = vm.getSelectedRows();
 
-    ModalInstance.close(invoices);
+    $rootScope.$broadcast('cash:configure', { invoices : invoices });
+
+    $state.go('^.window', $state.params);
+  }
+
+  function dismiss() {
+    $state.go('^.window', $state.params);
   }
 
   // start up the module
