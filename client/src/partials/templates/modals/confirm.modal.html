@@ -1,24 +1,26 @@
 <form name="ConfirmModalForm" bh-submit="ConfirmModalCtrl.submit()" data-confirm-modal bh-form-defaults novalidate>
   <div class="modal-header">
-    <h4>{{ "FORM.DIALOGS.CONFIRM_ACTION" | translate }}</h4>
+    <ol class="headercrumb">
+      <li class="title">
+        <i class="fa fa-warning text-warning"></i> <span translate>FORM.DIALOGS.CONFIRM_ACTION</span>
+      </li>
+    </ol>
   </div>
 
   <div class="modal-body">
     <dl>
-      <dt><i class="fa fa-warning text-warning"></i> {{ ::"FORM.DIALOGS.WARNING" | translate }}</dt>
-      <dd>{{ ::ConfirmModalCtrl.prompt | translate }}</dd>
+      <dt><span translate>FORM.DIALOGS.WARNING</dt>
+      <dd translate>{{ ::ConfirmModalCtrl.prompt }}</dd>
     </dl>
   </div>
 
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.dismiss()" data-method="cancel">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button
-      loading-state="ConfirmModalForm.$loading"
-      button-class="btn-warning">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+    <bh-loading-button loading-state="ConfirmModalForm.$loading" button-class="btn-warning">
+      <span translate>FORM.BUTTONS.CONFIRM</span>
     </bh-loading-button>
   </div>
 </form>

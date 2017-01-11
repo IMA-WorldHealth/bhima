@@ -66,6 +66,23 @@ function receipt(req, res, next) {
     .then(payment => {
       data.payment = payment;
 
+      // create a description for the cash payment's receipt
+      let descriptionParts = payment.description.split(' -- ');
+
+      let renderedDescription;
+
+      if (descriptionParts.length > 1) {
+
+        // render everything after the descriptor
+        renderedDescription = _.drop(descriptionParts, 1).join('');
+      } else {
+
+        // unable to parse ... use the whole description.
+        renderedDescription = payment.description;
+      }
+
+      payment.renderedDescription = renderedDescription;
+
       // lookup balances on all invoices
       let invoices = payment.items.map(invoices => invoices.invoice_uuid);
 

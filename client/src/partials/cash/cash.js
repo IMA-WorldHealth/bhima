@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
-  'ExchangeRateService', 'SessionService', 'ModalService',
-  'NotifyService', '$state', 'ReceiptModal', 'PatientService'
+  'SessionService', 'ModalService', 'NotifyService', '$state',
+  'ReceiptModal', 'CashFormService', '$q'
 ];
 
 /**
@@ -16,11 +16,12 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts, Patient) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q) {
   var vm = this;
 
+  var cacheKey = 'CashPayments';
   // persist cash data across sessions
-  var cache = AppCache('CashPayments');
+  var cache = AppCache(cacheKey);
 
   /* id of the currently select cashbox */
   var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id);
@@ -30,18 +31,23 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     $state.go('^.select', {}, { notify : false });
 
   // if there is no URL id but one in localstorage, update the state with the
-  // localstorage params
+  // localstorage params.  This doesn't actually reload anything .. it just changes
+  // the URL.
   } else if (cashboxId && !$state.params.id) {
     $state.go('^.window', { id : cashboxId }, { location: 'replace'});
   }
 
+  // this is the cache payment form
+  vm.Payment = new CashForm(cacheKey);
+
+  vm.timestamp = new Date();
+
+  vm.enterprise = Session.enterprise;
+
   // bind methods
-  vm.openInvoicesModal = openInvoicesModal;
-  vm.usePatient = usePatient;
-  vm.digestExchangeRate = digestExchangeRate;
-  vm.togglePaymentType = togglePaymentType;
   vm.submit = submit;
   vm.clear = clear;
+  vm.openInvoicesModal = openInvoicesModal;
   vm.onRegisterApiCallback = onRegisterApiCallback;
 
   // fired when the bhFindPatient API becomes available
@@ -51,14 +57,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   // fired on controller start or form refresh
   function startup() {
-    vm.enterprise = Session.enterprise;
-
-    // timestamp to compare date values
-    vm.timestamp = new Date();
-
-    /* This is the actual payment form */
-    setupPayment();
-
     Currencies.read()
       .then(function (currencies) {
         vm.currencies = currencies;
@@ -71,39 +69,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       })
       .catch(function (error) {
 
-        Notify.handleError(error);
-
-        // if we hit a 404 error, we don't have a valid cashbox.
+        // if we hit a 404 error, we don't have a valid cashbox and do not show
+        // the error.
         if (error.status === 404) {
           $state.go('^.select', {}, { notify: false});
+          return;
         }
+
+        Notify.handleError(error);
       });
-
-    // make sure we have exchange rate (no need to do anything with it)
-    Exchange.read()
-      .catch(Notify.handleError);
-  }
-
-  // clears the invoices field whenever the voucher type changes for a better UX
-  function togglePaymentType(type_id) {
-    cache.is_caution = type_id;
-    delete vm.payment.invoices;
-  }
-
-  // fired after a patient is found via the find-patient directive
-  function usePatient(patient) {
-    vm.payment.debtor_uuid = patient.debtor_uuid;
-    vm.patient = patient;
-
-    Patient.balance(vm.patient.debtor_uuid)
-      .then(function (balance) {
-        /**
-         * balance < 0 means that enterprise owes money to the patient (creditor balance)
-         * multiply by -1 means we want work with positive value if the patient has a creditor balance
-         */
-        vm.patientBalance = balance * -1;
-      })
-      .catch(Notify.handleError);
   }
 
   // caches the cashbox
@@ -111,55 +85,37 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.cashbox = cashbox;
     cache.cashbox = cashbox;
     vm.disabledCurrencyIds = Cash.calculateDisabledIds(vm.cashbox, vm.currencies);
+
+    vm.Payment.setCashbox(cashbox);
   }
 
   /* Debtor Invoices Modal */
   function openInvoicesModal() {
 
-    var invoices = angular.copy(vm.payment.invoices || [])
+    // only retrieve the invoice UUIDs
+    var invoices = vm.Payment.details.invoices
       .map(function (invoice) {
         return invoice.uuid;
       });
 
-    Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: invoices })
-      .then(function (result) {
-
-        // bind the selected invoices
-        vm.payment.invoices = result.invoices;
-
-        // the table of invoices shown to the client is name-spaced by 'slip'
-        vm.slip = {};
-        vm.slip.rawTotal = result.total;
-        digestExchangeRate(vm.payment.currency_id);
+    // open the invoices modal selection controller
+    Modals.openDebtorInvoices({ debtorUuid: vm.Payment.details.debtor_uuid, invoices: invoices })
+      .then(function (invoices) {
+        vm.Payment.setInvoices(invoices);
       });
-  }
-
-  // exchanges the payment at the bottom of the previous invoice slip.
-  function digestExchangeRate(currencyId) {
-
-    // make sure we have all the required data before attempting to exchange
-    // any values
-    if (!(vm.slip && currencyId)) { return; }
-
-    // bind the correct exchange rate
-    vm.slip.rate = Exchange.getCurrentRate(currencyId);
-
-    // bind the correct exchanged total
-    vm.slip.total =
-      Exchange.convertFromEnterpriseCurrency(currencyId, vm.payment.date, vm.slip.rawTotal);
   }
 
   // submits the form to the server
   function submit(form) {
     if (form.$invalid) { return; }
 
-    // add in the cashbox id
-    vm.payment.cashbox_id = vm.cashbox.id;
+    // be sure the cashbox is set
+    vm.Payment.setCashbox(vm.cashbox);
 
     // patient invoices are covered by caution
-    var hasCaution = vm.slip && vm.patientBalance > 0;
-    var isCaution = Number(vm.payment.is_caution);
-    var hasInvoices = vm.payment.invoices && vm.payment.invoices.length > 0;
+    var hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
+    var isCaution = vm.Payment.isCaution();
+    var hasInvoices = vm.Payment.details.invoices && vm.Payment.details.invoices.length > 0;
 
     // if the this is not a caution payment, but no invoices are selected,
     // raise an error.
@@ -167,43 +123,30 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
     }
 
-    // submit the cash payment
-    if (hasCaution) {
-      return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
-        .then(function (ans) {
-          if (!ans) { return; }
+    var promise = $q.resolve()
+      .then(function () {
+        return hasCaution ?
+          Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
+      })
+      .then(function (allowPaymentWithCaution) {
+        if (allowPaymentWithCaution) {
           return submitPayment(form);
-        })
-        .catch(Notify.handleError);
-    } else {
-      return submitPayment(form);
-    }
-
-  }
-
-  function setupPayment() {
-
-    // load payment type from cache
-    var DEFAULT_PAYMENT_TYPE = 0;
-    var paymentType = cache.is_caution || DEFAULT_PAYMENT_TYPE;
-    vm.payment = {
-      date : new Date(),
-      is_caution : paymentType,
-      currency_id : vm.enterprise.currency_id,
-      description: ''
-    };
+        }
+      });
   }
 
   // submit payment
   function submitPayment(form) {
 
     // make a copy of the data before submitting
-    var copy = angular.copy(vm.payment);
+    var copy = angular.copy(vm.Payment.details);
 
     // format the cash payment description
     var cachedPaymentDescription = copy.description;
-    copy.description = Cash.formatCashDescription(vm.patient, copy)
-      .concat(' ', cachedPaymentDescription);
+
+    // TODO - find a much better way of doing this.  This seems quite ... hacky
+    copy.description = Cash.formatCashDescription(vm.Payment.patient, copy)
+      .concat(' -- ', cachedPaymentDescription);
 
     return Cash.create(copy)
       .then(function (response) {
@@ -219,14 +162,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   function clear(form) {
 
-    // delete the slip information
-    delete vm.slip;
+    vm.Payment.setup();
 
     // clear the patient selection
     vm.bhFindPatient.reset();
-
-    // run the setup script
-    setupPayment();
 
     // clear the form
     form.$setPristine();

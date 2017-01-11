@@ -70,7 +70,6 @@ function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, 
     // loop through each invoice id passed in and reselect those that have
     // previously been selected
     rows.forEach(function (row) {
-      console.log('row', row);
       if (invoices.indexOf(row.entity.uuid) > -1) {
         vm.gridApi.selection.selectRow(row.entity);
       }
@@ -111,17 +110,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, 
     // retrieve the outstanding patient invoices from the ui grid
     var invoices = vm.getSelectedRows();
 
-    // block the submission if there are no values selected
-    vm.empty = (invoices.length === 0);
-    if (vm.empty) { return; }
-
-    // sum up the total cost of the selected rows
-    var total = invoices.reduce(function (aggregate, invoice) {
-      return aggregate + invoice.balance;
-    }, 0);
-
-    // return both values to CashController
-    ModalInstance.close({ invoices : invoices, total : total });
+    ModalInstance.close(invoices);
   }
 
   // start up the module

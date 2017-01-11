@@ -107,6 +107,7 @@
       "TITLE"              : "Selection caisse"
     },
     "TITLE"           : "Caisse Auxilliaire",
+    "TOOLS"         : "Utils",
     "TRANSFER": {
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
@@ -129,13 +130,21 @@
         "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
+      "BARCODE" : {
+        "SCAN" : "Scanner le Code à Barres",
+        "AWAITING_INPUT" : "En Attente d'Entrée",
+        "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
+        "READ_SUCCESS" : "Facture Trouvée",
+        "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
+      },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
       "SLIP"            : "Caisse en espèces",
       "TITLE"           : "Recu de caisse",
       "SELECTED"        : "Facture selectionnée"
-    }
+    },
+    "MOTIVE" : "Motif"
   },
   "CASHBOX": {
     "ACTIONS"         : "Actions",

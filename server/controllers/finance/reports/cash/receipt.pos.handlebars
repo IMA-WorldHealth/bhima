@@ -14,9 +14,11 @@
 
 <br />
 
-<pre style="text-align:left; white-space: pre-wrap; padding-top: 5px;">
-  {{payment.description}}
-</pre>
+{{#if payment.renderedDescription}}
+  <pre style="text-align:left; white-space: pre-wrap; padding-top: 5px; font-size:1.5em; padding-left:0; margin-left:0;font-weight:bold; margin-bottom:0; padding-bottom:0">
+{{translate "CASH.MOTIVE"}}: {{payment.renderedDescription}}
+  </pre>
+{{/if}}
 
 {{> underline}}
 {{#if hasRate}}
