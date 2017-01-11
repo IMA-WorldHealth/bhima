@@ -2,18 +2,22 @@ angular.module('bhima.controllers')
   .controller('CashBarcodeScannerModalController', CashBarController);
 
 CashBarController.$inject = [
-  '$state', 'CashboxService', 'NotifyService', 'BarcodeService', 'PatientService', 'bhConstants', '$uibModalInstance'
+  '$state', 'CashboxService', 'NotifyService', 'BarcodeService', 'PatientService',
+  'bhConstants', '$uibModalInstance', '$timeout', 'PatientInvoiceService', '$rootScope'
 ];
 
 /**
  * @module cash/modals/CashBarController
  *
  * @description
- * This controller is responsible for scanning barcodes and then configuring the CashForm with the barcode
+ * This controller is responsible for scanning barcodes and the
+ * configuring the CashForm with the barcode
 */
-function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhConstants, Instance) {
+function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhConstants, Instance, $timeout, Invoices, RS) {
   var vm = this;
   var id = $state.params.id;
+
+  var MODAL_CLOSE_TIMEOUT = 500;
 
   vm.triggerBarcodeRead = triggerBarcodeRead;
   vm.dismiss = dismiss;
@@ -37,14 +41,14 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhCons
     Instance.dismiss();
   }
 
+  // TODO(@jniles) potentially this should tell you if you are trying to read a
+  // cash payment instead of an invoice
+  // TODO(@jniles) potentially this should clear the input when the barcode is greater in length than 10.
   function triggerBarcodeRead() {
-
-    console.log('TriggerBarcodeRead with:', vm.barcode);
-
-    if (!isValidBarcode(vm.barcode)) {
-      vm.step = vm.READ_ERROR;
-    } else {
+    if (isValidBarcode(vm.barcode)) {
       searchForBarcode(vm.barcode);
+    } else {
+      vm.step = vm.READ_ERROR;
     }
   }
 
@@ -58,15 +62,32 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhCons
     Barcodes.search(barcode)
       .then(function (invoice) {
         vm.invoice = invoice;
-        return Patients.search({ debtor_uuid : invoice.debtor_uuid });
-      }).then(function (patients) {
+        return Invoices.balance(invoice.uuid);
+      })
+      .then(function (balance) {
+        vm.balance = balance;
+        return Patients.search({ debtor_uuid : vm.invoice.debtor_uuid });
+      })
+      .then(function (patients) {
 
         // de-structure search array
         var patient = patients[0];
 
         vm.patient = patient;
 
+        // emit the
+        RS.$broadcast('cash:configure', {
+          invoices: [vm.balance],
+          patient: vm.patient,
+          description : vm.invoice.serviceName
+        });
+
         vm.step = vm.READ_SUCCESS;
+
+        // close the modal after a timeout
+        $timeout(function () {
+          Instance.close();
+        }, MODAL_CLOSE_TIMEOUT, false);
       })
       .catch(function (error) {
         vm.step = vm.READ_ERROR;

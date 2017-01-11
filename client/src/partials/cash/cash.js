@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
   'SessionService', 'ModalService', 'NotifyService', '$state',
-  'ReceiptModal', 'CashFormService', '$q'
+  'ReceiptModal', 'CashFormService', '$q', '$rootScope'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q, RS) {
   var vm = this;
 
   var cacheKey = 'CashPayments';
@@ -53,6 +53,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   // fired when the bhFindPatient API becomes available
   function onRegisterApiCallback(api) {
     vm.bhFindPatient = api;
+    vm.Payment.bindPatientApi(api);
   }
 
   // fired on controller start or form refresh
@@ -170,6 +171,14 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     // clear the form
     form.$setPristine();
   }
+
+  function configureCashPaymentsForm(event, data) {
+    vm.Payment.setInvoices(data.invoices);
+    vm.Payment.details.description = data.description;
+    vm.Payment.setPatient(data.patient, true);
+  }
+
+  RS.$on('cash:configure', configureCashPaymentsForm);
 
   // start up the module
   startup();

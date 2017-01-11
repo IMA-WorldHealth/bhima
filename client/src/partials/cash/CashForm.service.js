@@ -89,11 +89,15 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * This method takes in a patient and sets the form's debtor_uuid as needed.
    * It also looks up to confirm if the patient has a caution to alert the user.
    */
-  CashForm.prototype.setPatient = function setPatient(patient) {
+  CashForm.prototype.setPatient = function setPatient(patient, searchByUuid) {
     var self = this;
 
     this.patient = patient;
     this.details.debtor_uuid = patient.debtor_uuid;
+
+    if (this.patientApi && searchByUuid) {
+      this.patientApi.searchByUuid(patient.uuid);
+    }
 
     return Patients.balance(patient.debtor_uuid)
       .then(function (balance) {
@@ -107,6 +111,17 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
 
         self.digest();
       });
+  };
+
+  /**
+   * @method bindPatientApi
+   *
+   * @description
+   * This binds the bhFindPatient's API to re-search for a patient.
+   * @todo -- this feels really strictly tied ... can we do better?
+   */
+  CashForm.prototype.bindPatientApi = function bindPatientApi(api) {
+    this.patientApi = api;
   };
 
   /**

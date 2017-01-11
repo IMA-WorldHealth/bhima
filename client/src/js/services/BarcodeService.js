@@ -11,7 +11,7 @@ function BarcodeService($http, util) {
 
   service.search = function search(code) {
     return $http.get('/barcode/'.concat(code))
-      .then(util.unwrapHTTPResponse);
+      .then(util.unwrapHttpResponse);
   };
 
   return service;

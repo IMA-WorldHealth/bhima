@@ -358,7 +358,7 @@ function constantConfig() {
       ROW_INVALID_FLAG : '_invalid'
     },
     barcodes : {
-      LENGTH : 0
+      LENGTH : 10
     },
     transactionType : {
       GENERIC_INCOME     : 1,

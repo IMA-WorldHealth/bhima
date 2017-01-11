@@ -26,7 +26,7 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a href ui-sref="cash.scan({ id: CashCtrl.cashbox.id })" data-action="scan-barcode">
+              <a href ui-sref="cash.scan({ id: CashCtrl.cashbox.id, CashFormInstance: CashCtrl.Payment })" data-action="scan-barcode">
                 <i class="fa fa-barcode"></i> <span translate>CASH.VOUCHER.BARCODE.SCAN</span>
               </a>
             </li>
@@ -110,7 +110,7 @@
                     <tbody>
 
                       <!-- show a list of previous invoices to pay again -->
-                      <tr ng-repeat="invoice in CashCtrl.Payment.details.invoices | orderBy:'date' track by invoice.uuid">
+                      <tr ng-repeat="invoice in CashCtrl.Payment.details.invoices | orderBy:'date'">
                         <td>{{ invoice.reference }}</td>
                         <td>{{ invoice.date | date }}</td>
                         <td class="text-right">{{ invoice.balance | currency:CashCtrl.enterprise.currency_id }}</td>
@@ -174,7 +174,6 @@
                 </div>
 
                 <div class="form-group" ng-if="CashCtrl.Payment.messages.hasPositiveAccountBalance">
-
                   <div class="alert alert-info">
                     <i class="fa fa-info-circle"></i> <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
                     {{ CashCtrl.Payment.messages.patientAccountBalance | currency:CashCtrl.enterprise.currency_id }}
