@@ -144,7 +144,7 @@ class ReportManager {
         let translatedName = translate(this.options.filename);
         let fileDate = (new Date()).toLocaleDateString();
         let formattedName = `${translatedName} ${fileDate}`;
-        renderHeaders['Content-Disposition'] = `attachment; filename=${formattedName}${renderer.extension}`;
+        renderHeaders['Content-Disposition'] = `filename=${formattedName}${renderer.extension}`;
       }
 
       // FIXME this branching logic should be promised based

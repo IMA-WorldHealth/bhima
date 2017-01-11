@@ -13,7 +13,7 @@
 
 <h2 style="margin-bottom : 0px">{{recipient.display_name}}</h2>
 ({{recipient.reference}}) - {{recipient.debtor_group_name}}
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 <table style="width : 100%">
   <thead>
     <tr>
@@ -32,7 +32,7 @@
     {{/each}}
   </tbody>
 </table>
-<p>----------------------------------------------------------------</p>
+{{> underline}}
 <h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{currency cost metadata.enterprise.currency_id}}</b></h2>
 
 <!-- Bill exchange -->
