@@ -33,12 +33,14 @@ function list(req, res, next) {
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cc_id,
-        s.pc_id, e.name AS enterprise_name, e.abbr, fc.id AS cc_id,
-        fc.text AS cost_center_name, fc.id AS pc_id, fc.text AS profit_center_name
-      FROM service AS s
-      JOIN enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN fee_center AS fc ON s.cc_id = fc.id OR s.pc_id = fc.id`;
+      SELECT 
+s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id, e.name AS enterprise_name, 
+e.abbr, cc.id AS cc_id, cc.cost_center_name, pc.id AS pc_id, pc.profit_center_name 
+
+FROM service AS s
+JOIN enterprise AS e ON s.enterprise_id = e.id
+LEFT JOIN (SELECT fee_center.label AS cost_center_name, id FROM fee_center WHERE fee_center.is_cost = 1) AS cc ON s.cc_id = cc.id 
+LEFT JOIN (SELECT fee_center.label AS profit_center_name, id FROM fee_center WHERE fee_center.is_cost = 0) AS pc ON s.pc_id = pc.id`;
   }
 
   sql += ' ORDER BY s.name;';
@@ -84,7 +86,7 @@ function create(req, res, next) {
 *
 * @param {object} req The express request object
 * @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
+* @param {object} next The express object to pass the control to the next middleware
 *
 * @example
 * // PUT /services : update a service

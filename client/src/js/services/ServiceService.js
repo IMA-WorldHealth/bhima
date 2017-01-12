@@ -26,8 +26,6 @@ function ServiceService ($http, util) {
   function update(id, service) {
     delete service.abbr;
     delete service.enterprise_name;
-    delete service.cc_id;
-    delete service.pc_id;
     delete service.cost_center_name;
     delete service.profit_center_name;
 
