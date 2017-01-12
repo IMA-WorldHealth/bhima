@@ -98,14 +98,14 @@ describe('(/fee_centers) The fee center API', function () {
 
 
   /* @todo - should this return a simple number? */
-  it.skip('GET /cost_centers/:id/cost returns the cost of a provided cost center', function () {
-    return agent.get('/cost_centers/:id/cost'.replace(':id', FETCHABLE_FEE_CENTER_ID))
+  it('GET /fee_centers/:id/value returns the value of a provided fee center', function () {
+    return agent.get('/fee_centers/:id/value'.replace(':id', FETCHABLE_FEE_CENTER_ID))
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('cost');
-        expect(res.body.cost).to.satisfy(function (cost) { return cost >= 0;});
+        expect(res.body).to.have.all.keys('value');
+        expect(res.body.value).to.satisfy(function (value) { return value >= 0;});
       })
       .catch(helpers.handler);
   });

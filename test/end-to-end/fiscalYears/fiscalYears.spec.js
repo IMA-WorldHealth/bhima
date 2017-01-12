@@ -64,7 +64,6 @@ describe('Fiscal Year', function () {
     FU.input('FiscalManageCtrl.fiscal.note', 'Test 2018 (update)');
 
     FU.buttons.submit();
-    browser.pause();
     components.notification.hasSuccess();
   });
 
