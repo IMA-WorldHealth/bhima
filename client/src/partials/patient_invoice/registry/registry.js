@@ -165,6 +165,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     if (vm.filters && vm.filters.patientUuid) {
       delete vm.filters.patientUuid;
     }
+
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
 
     load(vm.filters);

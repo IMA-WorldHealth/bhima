@@ -9,6 +9,7 @@ const helpers = require('../../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../../shared/FormUtils');
+const components = require('../../shared/components');
 
 const InvoiceRegistryPage = require('./registry.page.js');
 
@@ -56,7 +57,7 @@ function InvoiceRegistrySearch() {
 
     // set the date inputs manually
     FU.buttons.search();
-    FU.input('ModalCtrl.params.billingDateTo', '2015-01-30');
+    components.dateInterval.dateTo('30-01-2015');
     FU.modal.submit();
 
     expectNumberOfGridRows(0);

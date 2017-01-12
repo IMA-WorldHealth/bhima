@@ -39,10 +39,10 @@ function bhDateInterval(Dates, moment) {
   vm.$onInit = function () {
 
     vm.options = [
-      { translateKey : 'FORM.LABELS.TODAY', fn : day },
-      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week },
-      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
-      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
+      { translateKey : 'FORM.LABELS.TODAY', fn : day, range: 'day' },
+      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week, range: 'week' },
+      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month, range: 'month' },
+      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year, range: 'year' }
     ];
 
     vm.pickerOptions = { showWeeks : false };

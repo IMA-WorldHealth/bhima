@@ -28,5 +28,4 @@ module.exports = {
     this.dateFrom(start);
     this.dateTo(end);
   }
-
 };

@@ -50,7 +50,24 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var parameters = vm.params;
+    var parameters = angular.copy(vm.params);
+
+    // convert dates to strings
+    if (parameters.dateRegistrationFrom) {
+      parameters.dateRegistrationFrom = Dates.util.str(parameters.dateRegistrationFrom);
+    }
+
+    if (parameters.dateRegistrationTo) {
+      parameters.dateRegistrationTo = Dates.util.str(parameters.dateRegistrationTo);
+    }
+
+    if (parameters.dateBirthFrom) {
+      parameters.dateBirthFrom = Dates.util.str(parameters.dateBirthFrom);
+    }
+
+    if (parameters.dateBirthTo) {
+      parameters.dateBirthTo = Dates.util.str(parameters.dateBirthTo);
+    }
 
     // make sure we don't have any undefined or empty parameters
     angular.forEach(parameters, function (value, key) {

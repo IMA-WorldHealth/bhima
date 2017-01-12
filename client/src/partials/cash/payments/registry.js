@@ -60,7 +60,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
     field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-    cellTemplate : 'partials/cash/payments/templates/amount.grid.html'
+    cellTemplate : 'partials/cash/payments/templates/amount.grid.html',
+
+    // @TODO(jniles): This is temporary, as it doesn't take into account USD payments
+    aggregationType: uiGridConstants.aggregationTypes.sum, aggregationHideLabel : true,
+    footerCellFilter: 'currency:' + Session.enterprise.currency_id
   }, {
     field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
   }, {
