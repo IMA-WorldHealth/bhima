@@ -221,6 +221,8 @@ function listPayment(params) {
     sql += ' 1 ';
   }
 
+  sql += ' ORDER BY cash.date DESC ';
+
   // finally, apply the LIMIT query
   if (!isNaN(limit)) {
     sql += ' LIMIT ?;';
