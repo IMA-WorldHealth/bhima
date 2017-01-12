@@ -452,17 +452,20 @@ function find(options) {
   sql = query.query;
   let parameters = conditions.parameters.concat(query.conditions);
 
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    parameters.push(limit);
-  }
-
   // if nothing was submitted to the search, get all records
   if (!parameters.length) {
 
     // this writes in WHERE 1; to the SQL query
-    sql += ' 1;';
+    sql += ' 1 ';
+  }
+
+  // add the ordering query
+  sql += ' ORDER BY q.registration_date DESC ';
+
+  // finally, apply the LIMIT query
+  if (!isNaN(limit)) {
+    sql += 'LIMIT ?;';
+    parameters.push(limit);
   }
 
   return db.exec(sql, parameters);
