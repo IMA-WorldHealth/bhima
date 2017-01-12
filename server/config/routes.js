@@ -153,6 +153,7 @@ exports.configure = function configure(app) {
   // API for fee center routes CRUD
   app.get('/fee_centers', feeCenter.list);
   app.get('/fee_centers/:id', feeCenter.detail);
+  app.get('/fee_centers/:id/value/', feeCenter.getFeeValue);
   app.post('/fee_centers', feeCenter.create);
   app.put('/fee_centers/:id', feeCenter.update);
 
