@@ -229,6 +229,8 @@ function getVouchers(uuid, request) {
 
   sql += !detailed ? ' GROUP BY v.uuid ' : '';
 
+  sql += ' ORDER BY v.date ';
+
   return db.exec(sql, sqlParams);
 }
 
@@ -236,7 +238,7 @@ function getSql(detailed) {
   let sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name,
-      CONCAT_WS('.', '${identifiers.VOUCHER}', p.abbr, v.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference,
       BUID(vi.document_uuid) AS document_uuid
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
@@ -249,7 +251,7 @@ function getSql(detailed) {
       v.description, v.user_id, v.type_id, BUID(vi.document_uuid) as document_uuid,
       BUID(vi.uuid) AS voucher_item_uuid, vi.account_id, vi.debit,
       vi.credit, a.number, a.label, u.display_name,
-      CONCAT_WS('.', '${identifiers.VOUCHER}', p.abbr, v.reference) AS reference
+      CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
