@@ -87,6 +87,12 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     // set up the inventory
     Inventory.read(null, { detailed : 1 })
       .then(function (data) {
+
+        // make sure both the label and code is searchable
+        data.forEach(function (item) {
+          item.hrlabel = item.code + ' ' + item.label;
+        });
+
         this.inventory.initialize('uuid', data);
       }.bind(this));
 
