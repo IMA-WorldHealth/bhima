@@ -100,8 +100,33 @@
                 </div>
               </div>
 
-              <!-- Cost Center Assignment - not yet implemented in 2.x -->
-              <!-- Profit Center Assignment - not yet implemented in 2.x -->
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
+                <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cost_center_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
+                <div>
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'" >
+                    <option value="" disabled> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.profit_center_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
+                <div>
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'" >
+                    <option value="" disabled> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-service" type="submit" data-method="submit">
@@ -128,8 +153,33 @@
                 </div>
               </div>
 
-              <!-- Cost Center Assignment - not yet implemented in 2.x -->
-              <!-- Profit Center Assignment - not yet implemented in 2.x -->
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
+                <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cost_center_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
+                <div>
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'">
+                    <option value=""> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.profit_center_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
+                <div>
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'">
+                    <option value=""> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
 
               <div class="form-group">
                   <button class="btn btn-default" id="change_service" type="submit" data-method="submit">

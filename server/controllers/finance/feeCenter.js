@@ -44,18 +44,18 @@ function list (req, res, next) {
     filter += ' fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) ';
   }
 
-  if(req.query.is_cost === '1'){
+  if(req.query.is_cost){
     if(filter !== ''){
       filter += ' AND ';
     }
-    filter += 'fc.is_cost = 1 ';
+    filter += `fc.is_cost = ${req.query.is_cost} `;
   }
 
-  if(req.query.is_principal === '1'){
+  if(req.query.is_principal){
     if(filter !== ''){
       filter += ' AND ';
     }
-    filter += 'fc.is_principal = 1 ';
+    filter += `fc.is_principal = ${req.query.is_cost} `;
   }
 
   sql = filter === '' ? sql + ordering : sql + 'WHERE ' + filter + ordering;
@@ -218,7 +218,7 @@ function lookupFeeCenter(id) {
 * @example
 * // GET /fee_centers/:id/value : returns a value of the fee center
 * var feeCenters = require('finance/fee_centers');
-* feeCenters.detail(req, res, next);
+* feeCenters.getFeeValue(req, res, next);
 */
 
 function getFeeValue (req, res, next){
@@ -240,7 +240,7 @@ function getFeeValue (req, res, next){
       }
 
       sql =
-        `SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS cost
+        `SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS value 
         FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN
         fee_center AS fc ON gl.fc_id = fc.id WHERE gl.fc_id=? '${optionalCondition}')
         AS t`;
