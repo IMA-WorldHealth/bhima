@@ -404,7 +404,6 @@
       "FOUND"                : "Found",
       "GROUPS_DEBTOR"        : "Assign a new debtor group from the options below. Press 'confirm' to permanently update the patient's debtor group",
       "GROUPS_PATIENT"       : "Assign the patient to patient groups from the options below. Press 'confirm' to permanently update the patient's subscribed groups.",
-      "INVOICES"             : "Invoices",
       "ITEMS_FULL"           : "There are no additional inventory items that be assigned to this invoice.",
       "IMPORT_SUCCESS"       : "Successfully Imported",
       "LOADING"              : "Loading",
@@ -551,6 +550,7 @@
       "INTL"                   : "International",
       "INVENTORY"              : "Inventory",
       "INVOICE"                : "Invoice",
+      "INVOICES"               : "Invoices",
       "INVOICES_DETAILS"       : "Invoices Details",
       "INVOICE_PAYMENT"        : "Invoice Payment",
       "IS_ASSET"               : "Asset ?",
@@ -1276,6 +1276,7 @@
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
+      "CREATED_BY"         : "Created by",
       "CURRENCY"           : "Currency",
       "DATA_SOURCE"        : "Data Source",
       "DATE"               : "Date",
@@ -1387,6 +1388,16 @@
       "VALUE"              : "Value",
       "VILLAGE"            : "Village/Township",
       "QUANTITY"           : "Quantity"
+    },
+    "AGGREGATES"         : {
+      "NUMBER_OF_DAYS" : "Number of Days",
+      "TOTAL_COST" : "Total Cost",
+      "TOTAL_AMOUNT" : "Total Amount",
+      "NUM_USERS" : "Number of Users",
+      "NUM_SERVICES" : "Number of Services",
+      "NUM_PROJECTS" : "Number of Projects",
+      "NUM_PAYMENTS" : "Number of Payments",
+      "NUM_INVOICES" : "Number of Invoices"
     }
   },
   "TRANSACTION_TYPE" : {
