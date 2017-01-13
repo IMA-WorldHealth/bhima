@@ -155,11 +155,13 @@ function listPayment(params) {
       CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, v.type_id
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
+      v.type_id, p.display_name AS patientName
     FROM cash
       LEFT JOIN voucher v ON v.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
+      JOIN patient p on p.debtor_uuid = d.uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
     WHERE
@@ -340,8 +342,7 @@ function checkInvoicePayment(req, res, next) {
   const REVERSAL_TYPE_ID = 10;
 
   const sql = `
-    SELECT cash_item.cash_uuid, cash_item.invoice_uuid
-      FROM cash_item
+    SELECT cash_item.cash_uuid, cash_item.invoice_uuid FROM cash_item
     WHERE cash_item.invoice_uuid = ?
     AND cash_item.cash_uuid NOT IN (
       SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSAL_TYPE_ID}

@@ -55,7 +55,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {
-    field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
+    field : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
   }, {
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
