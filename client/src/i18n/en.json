@@ -1397,7 +1397,10 @@
       "NUM_SERVICES" : "Number of Services",
       "NUM_PROJECTS" : "Number of Projects",
       "NUM_PAYMENTS" : "Number of Payments",
-      "NUM_INVOICES" : "Number of Invoices"
+      "NUM_INVOICES" : "Number of Invoices",
+      "NUM_CAUTIONS" : "Number of PrePayments",
+      "NUM_CASHBOXES" : "Number of Cashboxes",
+      "NUM_CLIENTS" : "Number of Unique Clients"
     }
   },
   "TRANSACTION_TYPE" : {
