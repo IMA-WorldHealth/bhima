@@ -117,7 +117,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cost_center_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
                 <div>
-                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'" >
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'" >
                     <option value="" disabled> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
                   </select>
                 </div>
@@ -126,7 +126,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.profit_center_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
                 <div>
-                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'" >
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'" >
                     <option value="" disabled> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
                   </select>
                 </div>
@@ -170,7 +170,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cost_center_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
                 <div>
-                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'">
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'">
                     <option value=""> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
                   </select>
                 </div>
@@ -179,7 +179,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.profit_center_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
                 <div>
-                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'">
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'">
                     <option value=""> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
                   </select>
                 </div>

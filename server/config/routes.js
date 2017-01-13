@@ -62,8 +62,7 @@ const cash             = require('../controllers/finance/cash');
 const priceList        = require('../controllers/finance/priceList');
 const billingServices  = require('../controllers/finance/billingServices');
 const accounts         = require('../controllers/finance/accounts');
-const costCenter       = require('../controllers/finance/costCenter');
-const profitCenter     = require('../controllers/finance/profitCenter');
+const feeCenter        = require('../controllers/finance/feeCenter');
 const reference        = require('../controllers/finance/reference');
 const subsidies        = require('../controllers/finance/subsidies');
 const patientInvoice   = require('../controllers/finance/patientInvoice');
@@ -151,13 +150,12 @@ exports.configure = function configure(app) {
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
 
-  // API for cost_center routes CRUD
-  app.get('/cost_centers', costCenter.list);
-  app.get('/cost_centers/:id', costCenter.detail);
-  app.get('/cost_centers/:id/cost', costCenter.getCostValue);
-  app.post('/cost_centers', costCenter.create);
-  app.put('/cost_centers/:id', costCenter.update);
-  app.delete('/cost_centers/:id', costCenter.remove);
+  // API for fee center routes CRUD
+  app.get('/fee_centers', feeCenter.list);
+  app.get('/fee_centers/:id', feeCenter.detail);
+  app.get('/fee_centers/:id/value/', feeCenter.getFeeValue);
+  app.post('/fee_centers', feeCenter.create);
+  app.put('/fee_centers/:id', feeCenter.update);
 
   // API for service routes
   app.post('/services', services.create);
@@ -165,14 +163,6 @@ exports.configure = function configure(app) {
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
-
-  // API for profit_center routes crud
-  app.get('/profit_centers', profitCenter.list);
-  app.get('/profit_centers/:id', profitCenter.detail);
-  app.get('/profit_centers/:id/profit', profitCenter.getProfitValue);
-  app.post('/profit_centers', profitCenter.create);
-  app.put('/profit_centers/:id', profitCenter.update);
-  app.delete('/profit_centers/:id', profitCenter.remove);
 
   // API for reference routes crud
   app.get('/references', reference.list);

@@ -82,19 +82,19 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
     setState('default');
     vm.service= data;
     vm.choosen.service = data.name;
-    var ccId = data.cost_center_id;
-    var pcId = data.profit_center_id;
+    var ccId = data.cc_id;
+    var pcId = data.pc_id;
 
     // load Cost Center value for a specific service
-    FinancialService.getCost(vm.projectId,ccId).
+    FinancialService.getFeeValue(ccId).
     then(function (data) {
-      vm.choosen.charge = data.cost;
+      vm.choosen.charge = data.value;
     }).catch(handler);
 
     // load Profit Center value for a specific service
-    FinancialService.getProfit(vm.projectId,pcId).
+    FinancialService.getFeeValue(pcId).
     then(function (data) {
-      vm.choosen.profit = data.profit;
+      vm.choosen.profit = data.value;
     }).catch(handler);
 
     vm.view = 'more';

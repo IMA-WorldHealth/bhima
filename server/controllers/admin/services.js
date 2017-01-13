@@ -29,17 +29,18 @@ const Topic = require('../../lib/topic');
  */
 function list(req, res, next) {
   let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id FROM service AS s';
+    'SELECT s.id, s.name, s.cc_id, s.pc_id FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id,
-        s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
-      FROM service AS s
-      JOIN enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
-      LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
+      SELECT 
+s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id, e.name AS enterprise_name, 
+e.abbr, cc.id AS cc_id, cc.cost_center_name, pc.id AS pc_id, pc.profit_center_name 
+
+FROM service AS s
+JOIN enterprise AS e ON s.enterprise_id = e.id
+LEFT JOIN (SELECT fee_center.label AS cost_center_name, id FROM fee_center WHERE fee_center.is_cost = 1) AS cc ON s.cc_id = cc.id 
+LEFT JOIN (SELECT fee_center.label AS profit_center_name, id FROM fee_center WHERE fee_center.is_cost = 0) AS pc ON s.pc_id = pc.id`;
   }
 
   sql += ' ORDER BY s.name;';
@@ -85,7 +86,7 @@ function create(req, res, next) {
 *
 * @param {object} req The express request object
 * @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
+* @param {object} next The express object to pass the control to the next middleware
 *
 * @example
 * // PUT /services : update a service
@@ -179,7 +180,7 @@ function detail(req, res, next) {
  */
 function lookupService(id) {
   const sql =`
-    SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
+    SELECT s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id
     FROM service AS s WHERE s.id = ?;
   `;
 
