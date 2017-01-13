@@ -1,5 +1,4 @@
 -- bhima test database
-
 -- locations (enterprise location only)
 INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'Democratiq Republic of Congo'),(HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a51'), 'Test Hook Country');
 INSERT INTO `province` VALUES (HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'),'Bas Congo', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')), (HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a21'), 'Test Hook Province', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a51'));
@@ -60,6 +59,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Account Management
 (6,1),
+
+-- Fee center
+
+(7, 1),
 
 -- Posting Journal Management
 (9,1),
