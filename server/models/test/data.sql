@@ -14,6 +14,7 @@ INSERT INTO unit VALUES
   (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/users/','/users'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',5,'/partials/accounts/','/accounts'),
+  (7,   'Fee center Management','TREE.FEE_CENTER','Fee center management', 5,'/partials/fee_center/','/fee_center'),
   (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,'/partials/journal/','/journal'),
   (10,  'General Ledger','TREE.GENERAL_LEDGER','Posted Journal Data', 5,'/partials/general_ledger/','/general_ledger'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
@@ -135,6 +136,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Account Management
 (6,1),
+
+-- Fee center
+
+(7, 1),
 
 -- Posting Journal Management
 (9,1),
