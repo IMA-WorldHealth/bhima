@@ -91,12 +91,12 @@
           {{ 'FORM.LABELS.NAME' | translate }}
         </label>
         <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('name')" tabindex="-1">
+          <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
             <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
           </a>
         </span>
-        <input type="text" class="form-control" name="name" ng-model="ModalCtrl.params.name">
-        <div class="help-block" ng-messages="ModalForm.name.$error" ng-show="ModalForm.$submitted">
+        <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
+        <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
         </div>
       </div>
