@@ -1412,6 +1412,24 @@
       "USER"               : "Utilisateur",
       "VALUE"              : "Valeur",
       "VILLAGE"            : "Village/Commune"
+    },
+    "AGGREGATES"         : {
+      "NUMBER_OF_DAYS" : "Nombre des Jours",
+      "TOTAL_COST" : "Cout Totale",
+      "TOTAL_AMOUNT" : "Mountant Totale",
+      "NUM_USERS" : "Nombre des Utilisateurs",
+      "NUM_SERVICES" : "Nombre des Services",
+      "NUM_PROJECTS" : "Nombre des Projets",
+      "NUM_PAYMENTS" : "Nombre des Paiements",
+      "NUM_INVOICES" : "Nombre des Factures",
+      "NUM_CAUTIONS" : "Nombre des Cautions",
+      "NUM_CASHBOXES" : "Nombres des Caisses",
+      "NUM_CLIENTS" : "Nombre des Clients Unique",
+      "NUM_MEN" : "Nombre des Hommes",
+      "NUM_WOMEN" : "Nombre des Femmes",
+      "NUM_PATIENTS" : "Nombre des Patients",
+      "NUM_DISTINCT_RESIDENCES" : "Nombres des Residences Unique",
+      "NUM_DEBTOR_GROUPS" : "Nombre des Groups de Debiteur"
     }
   },
   "TRANSACTION_TYPE" : {

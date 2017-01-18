@@ -1400,7 +1400,12 @@
       "NUM_INVOICES" : "Number of Invoices",
       "NUM_CAUTIONS" : "Number of PrePayments",
       "NUM_CASHBOXES" : "Number of Cashboxes",
-      "NUM_CLIENTS" : "Number of Unique Clients"
+      "NUM_CLIENTS" : "Number of Unique Clients",
+      "NUM_MEN" : "Number of Men",
+      "NUM_WOMEN" : "Number of Women",
+      "NUM_PATIENTS" : "Number of Patients",
+      "NUM_DISTINCT_RESIDENCES" : "Number of Distinct Residences",
+      "NUM_DEBTOR_GROUPS" : "Number of Debtor Groups"
     }
   },
   "TRANSACTION_TYPE" : {
