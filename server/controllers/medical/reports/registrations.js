@@ -73,7 +73,9 @@ function build(req, res, next) {
 
   // set up the report with report manager
   try {
+    options.orientation = 'landscape';
     report = new ReportManager(TEMPLATE, req.session, options);
+    delete options.orientation;
   } catch (e) {
     return next(e);
   }
