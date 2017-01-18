@@ -6,16 +6,16 @@
     <!-- headings  -->
     <div class="row">
       <div class="col-xs-6">
-  			<h3 style="margin: 0px;">{{enterprise.name}}</h3>
-  			<p>
-  				<span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-  				<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-  				<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-  			</p>
-  		</div>
-  		<div class="col-xs-6 text-right">
-  			<h3 style="margin: 0px;">
-  				<span class="text-uppercase">
+        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
+        <p>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
+        </p>
+      </div>
+      <div class="col-xs-6 text-right">
+        <h3 style="margin: 0px;">
+          <span class="text-uppercase">
             {{#with payment}}
               {{#if is_caution}}
                 {{translate "CASH.CAUTION_PAYMENT"}}
@@ -24,28 +24,28 @@
               {{/if}}
             {{/with}}
           </span> <br>
-  				<strong>{{payment.reference}}</strong> <br>
-  				<small>{{date payment.date}}</small> <br>
-  			</h3>
-  		</div>
+          <strong>{{payment.reference}}</strong> <br>
+          <small>{{date payment.date}}</small> <br>
+        </h3>
+      </div>
     </div>
 
     <!-- client and user details  -->
-		<div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
-			<div class="col-xs-6">
-				<span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{patient.reference}}</strong> <br>
-				<span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{patient.display_name}} <br>
-				<span class="text-capitalize">{{translate 'FORM.LABELS.GROUP'}}</span>: {{patient.debtor_group_name}} <br>
-				<span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{patient.hospital_no}}</strong>
-			</div>
-			<div class="col-xs-6">
-				<span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{patient.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{patient.display_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.GROUP'}}</span>: {{patient.debtor_group_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{patient.hospital_no}}</strong>
+      </div>
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
-				<span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
         {{#if hasRate}} <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}} <br>{{/if}}
-				<span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{user.display_name}}
-			</div>
-		</div>
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{user.display_name}}
+      </div>
+    </div>
   </header>
 
   <!-- list of items paid -->
