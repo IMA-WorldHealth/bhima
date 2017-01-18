@@ -17,7 +17,7 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhCons
   var vm = this;
   var id = $state.params.id;
 
-  var MODAL_CLOSE_TIMEOUT = 500;
+  var MODAL_CLOSE_TIMEOUT = 0;
 
   vm.triggerBarcodeRead = triggerBarcodeRead;
   vm.dismiss = dismiss;
