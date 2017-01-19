@@ -368,7 +368,7 @@ exports.configure = function configure(app) {
   app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
-  app.get('/reports/inventory/items', inventory.getInventoryItemReport);
+  app.get('/reports/inventory/items', inventoryReports.reports.prices);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);

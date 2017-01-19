@@ -871,6 +871,7 @@
     "EDIT_TYPE"     : "Modifier Types d'inventaires",
     "EDIT_UNIT"     : "Modifier Forme d'inventaires",
     "ELEMENT"       : "Élément",
+    "PRICES"        : "Tarification",
     "LIST"          : "Liste des données d'inventaire",
     "LIST_METADATA" : "Inventaires",
     "LIST_GROUP"    : "Groupes d'inventaires",
