@@ -47,17 +47,16 @@
       </div>
     </div>
 
-
     <div class="form-group" ng-class="{ 'has-error' : FeeCenterForm.$submitted && FeeCenterForm.typeFee.$invalid }">
       <div class="radio-inline">
         <label>
-          <input type="radio" name="typeFee" ng-value="1" ng-model="FeeCenterModalCtrl.feeCenter.is_cost" required>
+          <input id="cost-radio" type="radio" name="typeFee" ng-value="1" ng-model="FeeCenterModalCtrl.feeCenter.is_cost" required>
           {{"FEE_CENTER.COST_CENTER" | translate}}
         </label>
       </div>
       <div class="radio-inline">
         <label>
-          <input type="radio" name="typeFee" ng-value="0" ng-model="FeeCenterModalCtrl.feeCenter.is_cost" ng-change="FeeCenterModalCtrl.updatePrincipal()" required>
+          <input id="profit-radio" type="radio" name="typeFee" ng-value="0" ng-model="FeeCenterModalCtrl.feeCenter.is_cost" ng-change="FeeCenterModalCtrl.updatePrincipal()" required>
           {{"FEE_CENTER.PROFIT_CENTER" | translate}}
         </label>
       </div>
@@ -66,7 +65,7 @@
     <div class="form-group">
       <div class="checkbox-inline">
         <label>
-          <input type="checkbox" name="principal" ng-model="FeeCenterModalCtrl.feeCenter.is_principal" ng-true-value="1" ng-false-value="0">
+          <input id="principal-id" type="checkbox" name="principal" ng-model="FeeCenterModalCtrl.feeCenter.is_principal" ng-true-value="1" ng-false-value="0">
           {{"FEE_CENTER.PRINCIPAL" | translate}}
         </label>
       </div>

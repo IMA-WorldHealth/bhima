@@ -6,12 +6,10 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 feeCenterController.$inject = [
-  'FeeCenterService', 'NotifyService',
-  'ModalService', '$translate', '$state'
-];
+  'FeeCenterService', 'NotifyService','$state'];
 
 /** Transaction Type Controller  */
-function feeCenterController(FeeCenterService, Notify, Modal, $translate, $state) {
+function feeCenterController(FeeCenterService, Notify, $state) {
   var vm = this;
 
   // edit button template
@@ -62,68 +60,6 @@ function feeCenterController(FeeCenterService, Notify, Modal, $translate, $state
     columnDefs : columns
   };
   vm.loading = true;
-
-  //
-  //
-  // // global variables
-  // vm.gridOptions = {};
-  // vm.gridApi = {};
-  //
-  //
-  //
-  // // grid default options
-  // vm.gridOptions.appScopeProvider = vm;
-  // vm.gridOptions.columnDefs       =
-  //   [
-  //
-  //   ];
-  //
-  // // register API
-  // vm.gridOptions.onRegisterApi = onRegisterApi;
-  //
-  // // expose to the view
-  // vm.editFeeCenter = editFeeCenter;
-  // vm.addFeeCenter = addFeeCenter;
-  //
-  // // message for fixed transaction type
-  // vm.notAllowed = function (fixed) {
-  //   if (!fixed) { return ; }
-  //   return 'TRANSACTION_TYPE.FIXED_INFO';
-  // };
-  //
-  // /** API register function */
-  // function onRegisterApi(gridApi) {
-  //   vm.gridApi = gridApi;
-  // }
-  //
-  // // add new transaction type
-  // function addFeeCenter() {
-  //   var request = { action : 'create' };
-  //
-  //   return Modal.openTransactionTypeActions(request)
-  //   .then(function (res) {
-  //     if (!res) { return; }
-  //     startup();
-  //     Notify.success('FORM.INFO.SAVE_SUCCESS');
-  //   })
-  //   .catch(Notify.handleError);
-  // }
-  //
-  // // edit en existing transaction type
-  // function editFeeCenter(feeCenter) {
-  //   if (transactionType.fixed) { return ; }
-  //
-  //   var request = { action : 'edit', identifier : transactionType.id };
-  //
-  //   return Modal.openTransactionTypeActions(request)
-  //   .then(function (res) {
-  //     if (!res) { return; }
-  //     startup();
-  //     Notify.success('FORM.INFO.UPDATE_SUCCESS');
-  //   })
-  //   .catch(Notify.handleError);
-  // }
-  //
 
   function edit(feeCenter) {
     $state.go('feeCenter.edit', {id : feeCenter.id, creating : false}, {reload : false});
