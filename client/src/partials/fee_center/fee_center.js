@@ -6,111 +6,147 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 feeCenterController.$inject = [
-  'TransactionTypeService', 'TransactionTypeStoreService', 'NotifyService',
-  'ModalService', '$translate'
+  'FeeCenterService', 'NotifyService',
+  'ModalService', '$translate', '$state'
 ];
 
 /** Transaction Type Controller  */
-function feeCenterController(TransactionType, TransactionTypeStore, Notify, Modal, $translate) {
+function feeCenterController(FeeCenterService, Notify, Modal, $translate, $state) {
   var vm = this;
 
-  // global variables
-  vm.gridOptions = {};
-  vm.gridApi = {};
-
   // edit button template
-  var editTemplate = '<div class="ui-grid-cell-contents">' +
-    '<a href="" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ' +
-    'ng-click="grid.appScope.editType(row.entity)" ' +
-    'uib-popover="{{grid.appScope.notAllowed(row.entity.fixed) | translate }}" ' +
+  var actionTemplate = '<div class="ui-grid-cell-contents">' +
+    '<a href="" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ng-click="grid.appScope.edit(row.entity)"> ' +
+    '<i class="fa fa-edit"></i>{{ "FORM.LABELS.EDIT" | translate }}</a>|' +
+    '<a ng-if="row.entity.is_principal !==1" href="" title="{{ \'FORM.LABELS.ASSIGN\' | translate }}" ng-click="grid.appScope.editFeeCenter(row.entity)"> ' +
+    '<i class="fa fa-share-alt"></i>{{ "FORM.LABELS.ASSIGN" | translate }}</a>' +
+    '</div>';
+
+  var infoTemplate = '<div class="ui-grid-cell-contents">' +
+    '<a href="" uib-popover="{{grid.appScope.showNote(row.entity.note)}}" ' +
     'popover-placement="left"' +
     'popover-trigger="\'mouseenter\'"' +
     'popover-append-to-body="true"' +
-    'data-edit-type="{{ row.entity.text }}">' +
-    '<i class="fa" ng-class="{\'fa-info-circle\': row.entity.fixed === 1, \'fa-edit\': row.entity.fixed !== 1}"></i> ' +
+    'data-edit-type="{{ row.entity.label }}">' +
+    '<i class="fa fa-info-circle" aria-hidden="true"></i>' +
     '</a></div>';
 
-  // grid default options
-  vm.gridOptions.appScopeProvider = vm;
-  vm.gridOptions.columnDefs       =
-    [
-      { field : 'text', displayName : 'FORM.LABELS.TEXT',
+  var columns = [
+      { field : 'label', displayName : 'FORM.LABELS.TEXT',
         headerCellFilter: 'translate', cellFilter: 'translate'},
 
-      { field : 'description', displayName : 'FORM.LABELS.DESCRIPTION',
-        headerCellFilter: 'translate'},
-
-      { field : 'type', displayName : 'FORM.LABELS.TYPE',
+      { field : 'is_cost', displayName : 'FORM.LABELS.TYPE',
         headerCellFilter: 'translate',
-        cellTemplate: 'partials/templates/grid/transactionType.tmpl.html'},
+        cellTemplate: 'partials/templates/grid/feeCenterType.tmpl.html'},
 
-      { field : 'prefix', displayName : 'FORM.LABELS.PREFIX',
+      { field : 'principalState', displayName : 'FORM.LABELS.PRINCIPAL',
         headerCellFilter: 'translate'},
+
+      { field : 'name', displayName : 'FORM.LABELS.PROJECT',
+        headerCellFilter: 'translate'},
+
+      { field : 'info', displayName : 'TABLE.COLUMNS.NOTE', headerCellFilter: 'translate',
+        cellTemplate : infoTemplate},
 
       { field : 'action', displayName : '...',
-        width: 25,
-        cellTemplate: editTemplate,
+        cellTemplate: actionTemplate,
         enableFiltering: false,
         enableColumnMenu: false
       }
-    ];
+  ];
 
-  // register API
-  vm.gridOptions.onRegisterApi = onRegisterApi;
-
-  // expose to the view
-  vm.addType = addType;
-  vm.editType = editType;
-
-  // message for fixed transaction type
-  vm.notAllowed = function (fixed) {
-    if (!fixed) { return ; }
-    return 'TRANSACTION_TYPE.FIXED_INFO';
+  vm.gridOptions = {
+    enableColumnMenus: false,
+    treeRowHeaderAlwaysVisible: false,
+    appScopeProvider: vm,
+    columnDefs : columns
   };
+  vm.loading = true;
 
-  /** API register function */
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
+  //
+  //
+  // // global variables
+  // vm.gridOptions = {};
+  // vm.gridApi = {};
+  //
+  //
+  //
+  // // grid default options
+  // vm.gridOptions.appScopeProvider = vm;
+  // vm.gridOptions.columnDefs       =
+  //   [
+  //
+  //   ];
+  //
+  // // register API
+  // vm.gridOptions.onRegisterApi = onRegisterApi;
+  //
+  // // expose to the view
+  // vm.editFeeCenter = editFeeCenter;
+  // vm.addFeeCenter = addFeeCenter;
+  //
+  // // message for fixed transaction type
+  // vm.notAllowed = function (fixed) {
+  //   if (!fixed) { return ; }
+  //   return 'TRANSACTION_TYPE.FIXED_INFO';
+  // };
+  //
+  // /** API register function */
+  // function onRegisterApi(gridApi) {
+  //   vm.gridApi = gridApi;
+  // }
+  //
+  // // add new transaction type
+  // function addFeeCenter() {
+  //   var request = { action : 'create' };
+  //
+  //   return Modal.openTransactionTypeActions(request)
+  //   .then(function (res) {
+  //     if (!res) { return; }
+  //     startup();
+  //     Notify.success('FORM.INFO.SAVE_SUCCESS');
+  //   })
+  //   .catch(Notify.handleError);
+  // }
+  //
+  // // edit en existing transaction type
+  // function editFeeCenter(feeCenter) {
+  //   if (transactionType.fixed) { return ; }
+  //
+  //   var request = { action : 'edit', identifier : transactionType.id };
+  //
+  //   return Modal.openTransactionTypeActions(request)
+  //   .then(function (res) {
+  //     if (!res) { return; }
+  //     startup();
+  //     Notify.success('FORM.INFO.UPDATE_SUCCESS');
+  //   })
+  //   .catch(Notify.handleError);
+  // }
+  //
+
+  function edit(feeCenter) {
+    $state.go('feeCenter.edit', {id : feeCenter.id, creating : false}, {reload : false});
   }
 
-  // add new transaction type
-  function addType() {
-    var request = { action : 'create' };
-
-    return Modal.openTransactionTypeActions(request)
-    .then(function (res) {
-      if (!res) { return; }
-      startup();
-      Notify.success('FORM.INFO.SAVE_SUCCESS');
-    })
-    .catch(Notify.handleError);
-  }
-
-  // edit en existing transaction type
-  function editType(transactionType) {
-    if (transactionType.fixed) { return ; }
-
-    var request = { action : 'edit', identifier : transactionType.id };
-
-    return Modal.openTransactionTypeActions(request)
-    .then(function (res) {
-      if (!res) { return; }
-      startup();
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
-    })
-    .catch(Notify.handleError);
+  function showNote(note) {
+    return note;
   }
 
   function startup() {
-    TransactionType.read()
+    FeeCenterService.fullRead()
     .then(function (list) {
-      vm.gridOptions.data = list;
-      TransactionTypeStore.refresh();
+      vm.gridOptions.data = FeeCenterService.formatRecord(list);;
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(function(){
+      vm.loading = false;
+    });
   }
 
   // startup the module
   startup();
 
+  vm.showNote = showNote;
+  vm.edit = edit;
 }

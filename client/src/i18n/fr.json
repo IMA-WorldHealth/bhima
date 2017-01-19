@@ -306,6 +306,16 @@
     "SET_AS"              : "Defini comme",
     "ON"                  : "sur"
   },
+  "FEE_CENTER" : {
+    "ADDING_FEE_CENTER" : "Ajout Centre Frais",
+    "COST_CENTER" : "Centre de cout",
+    "CREATE"        : "Creer",
+    "PRINCIPAL"     : "Principal",
+    "PROFIT_CENTER" : "Centre de profit",
+    "RECORD_SAME"   : "Aucune donnee n'a ete modifiee",
+    "UPDATE"        : "Modifier",
+    "UPDATING_FEE_CENTER" : "Modification"
+  },
   "FISCAL": {
     "ALREADY_CLOSED"        : "A déjà été cloturé",
     "CAN_NOT_DELETE_FY"     : "Impossible de supprimer cette année fiscale car il en existe des transanctions qui ont été faite",
@@ -475,6 +485,7 @@
       "APPLY_SUBSIDIES"        : "Appliquer subvention",
       "ASSET"                  : "Actif",
       "AUTHOR"                 : "Auteur",
+      "ASSIGN"                 : "Assigner",
       "AUXILIARY"              : "Auxilliaire",
       "BALANCE"                : "Balance",
       "BALANCE_SECTION"        : "Section du Bilan",
@@ -617,8 +628,9 @@
       "NB_MONTH"               : "Nombre de mois",
       "NB_SPOUSE"              : "Nombre epoux (se)",
       "NO"                     : "Non",
+      "NOTE"                   : "Note",
       "NOTES"                  : "Note(s)",
-      "NO_DEBTOR_GROUPS"      : "Aucun groupes débiteurs",
+      "NO_DEBTOR_GROUPS"       : "Aucun groupes débiteurs",
       "NO_DISTRIBUTABLE"       : "Non distribuable",
       "OF"                     : "De",
       "ON_DELIVERY"            : "Lors de la delivarance",
@@ -1546,6 +1558,7 @@
     "EMPLOYEE"                   : "Gestion Employés",
     "ENTERPRISE"                 : "Entreprise",
     "EXCHANGE"                   : "Taux de change",
+    "FEE_CENTER"                 : "Centres des Frais",
     "FINANCE"                    : "Finances",
     "FISCAL_YEAR"                : "Année Fiscale",
     "FONCTION"                   : "Gestion Fonctions",

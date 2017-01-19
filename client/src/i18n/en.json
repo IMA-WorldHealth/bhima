@@ -304,6 +304,16 @@
     "SET_AS"              : "Set as",
     "ON"                  : "on"
   },
+  "FEE_CENTER" : {
+    "ADDING_FEE_CENTER" : "Adding Fee Center",
+    "COST_CENTER" : "Cost center",
+    "CREATE"        : "Create",
+    "PRINCIPAL"     : "Main",
+    "PROFIT_CENTER" : "Profit center",
+    "RECORD_SAME"   : "No edited data",
+    "UPDATE"        : "Update",
+    "UPDATING_FEE_CENTER" : "Updating"
+  },
   "FISCAL": {
     "ALREADY_CLOSED"        : "Already closed",
     "CAN_NOT_DELETE_FY"     : "Can not delete this fiscal year because there are transactions of which were made",
@@ -474,6 +484,7 @@
       "APPLY_SUBSIDIES"        : "Apply subsidies",
       "ASSET"                  : "Asset",
       "AUTHOR"                 : "Author",
+      "ASSIGN"                 : "Assign",
       "AUXILIARY"              : "Auxiliary",
       "BALANCE"                : "Balance",
       "BALANCE_SECTION"        : "Balance Sheet Section",
@@ -618,6 +629,7 @@
       "NO"                     : "No",
       "NO_DEBTOR_GROUPS"      : "No debtor groups",
       "NOTES"                  : "Note(s)",
+      "NOTE"                  : "Note",
       "NO_DISTRIBUTABLE"       : "Not distributable",
       "OF"                     : "Of",
       "OPTIONAL_INFO"          : "Optional Information",
@@ -1526,6 +1538,7 @@
     "EMPLOYEE"                   : "Employee",
     "ENTERPRISE"                 : "Enterprise",
     "EXCHANGE"                   : "Exchange Rate",
+    "FEE_CENTER"                 : "Fee Center",
     "FINANCE"                    : "Finance",
     "FISCAL_YEAR"                : "Fiscal Year",
     "FONCTION"                   : "Job titles management",
