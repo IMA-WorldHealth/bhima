@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "TREE.TRANSACTION_TYPE" | translate }}</li>
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "TREE.FEE_CENTER" | translate }}</li>
     </ol>
 
     <div class="toolbar">
@@ -10,7 +10,7 @@
         <button type="button"
           class="btn btn-default"
           data-method="create"
-          ng-click="TypeCtrl.addType()">
+          ui-sref="feeCenter.create">
           <i class="fa fa-plus-circle"></i> {{ 'FORM.LABELS.ADD' | translate }}
         </button>
       </div>
@@ -20,10 +20,9 @@
 
 <div class="flex-content">
   <div class="container-fluid">
-    <!-- inventory list of items  -->
-    <div id="transactionTypeListGrid"
+    <div id="feeCenterListGrid"
       class="grid-full-height"
-      ui-grid="TypeCtrl.gridOptions"
+      ui-grid="feeCenterCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns>
     </div>
