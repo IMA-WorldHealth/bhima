@@ -234,6 +234,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
       .then(function (result) {
         Receipts.voucher(result.uuid, true);
         vm.Voucher.clear();
+        form.$setPristine();
       })
       .catch(Notify.handleError);
   }
