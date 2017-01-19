@@ -23,7 +23,7 @@ BEGIN
   SELECT NULL FROM `stage_invoice` LIMIT 0;
 
   IF (`no_invoice_stage` = 1) THEN
-    CREATE temporary table stage_invoice
+    CREATE TEMPORARY TABLE stage_invoice
     (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
   ELSE
     INSERT INTO stage_invoice
@@ -50,12 +50,12 @@ BEGIN
 
   IF (`no_invoice_item_stage` = 1) THEN
     -- tables does not exist - create and enter data
-    create temporary table stage_invoice_item
+    CREATE TEMPORARY TABLE stage_invoice_item
       (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   ELSE
     -- table exists - only enter data
-    insert into stage_invoice_item
-      (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+    INSERT INTO stage_invoice_item
+      (SELECT uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   END IF;
 END $$
 
@@ -67,8 +67,8 @@ CREATE PROCEDURE StageBillingService(
 BEGIN
   CALL VerifyBillingServiceStageTable();
 
-   insert into stage_billing_service
-  (select id, invoice_uuid);
+   INSERT INTO stage_billing_service
+  (SELECT id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -78,8 +78,8 @@ CREATE PROCEDURE StageSubsidy(
 BEGIN
   CALL VerifySubsidyStageTable();
 
-  insert into stage_subsidy
-  (select id, invoice_uuid);
+  INSERT INTO stage_subsidy
+  (SELECT id, invoice_uuid);
 END $$
 
 -- create a temporary staging table for the subsidies, this is done via a helper
@@ -87,12 +87,12 @@ END $$
 -- optional entity that may or may not have been called for staging)
 CREATE PROCEDURE VerifySubsidyStageTable()
 BEGIN
-  create table if not exists stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
 END $$
 
 CREATE PROCEDURE VerifyBillingServiceStageTable()
 BEGIN
-  create table if not exists stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
 END $$
 
 CREATE PROCEDURE WriteInvoice(
@@ -115,7 +115,7 @@ BEGIN
 
   -- invoice details
   INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description)
-  SELECT * from stage_invoice where stage_invoice.uuid = uuid;
+  SELECT * FROM stage_invoice WHERE stage_invoice.uuid = uuid;
 
   -- invoice item details
   INSERT INTO invoice_item (uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid)
@@ -147,7 +147,7 @@ BEGIN
   WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
+  SELECT items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
 END $$
 
 CREATE PROCEDURE PostInvoice(
