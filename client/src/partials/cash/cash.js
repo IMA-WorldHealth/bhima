@@ -124,7 +124,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
       return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
     }
 
-    var promise = $q.resolve()
+    return $q.resolve()
       .then(function () {
         return hasCaution ?
           Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
