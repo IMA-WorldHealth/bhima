@@ -2,19 +2,18 @@
 
 // controller definition
 angular.module('bhima.controllers')
-.controller('feeCenterController', feeCenterController);
+.controller('FeeCenterController', FeeCenterController);
 
 // dependencies injection
-feeCenterController.$inject = [
-  'FeeCenterService', 'NotifyService','$state'];
+FeeCenterController.$inject = ['FeeCenterService', 'NotifyService','$state'];
 
 /** Transaction Type Controller  */
-function feeCenterController(FeeCenterService, Notify, $state) {
+function FeeCenterController(FeeCenterService, Notify, $state) {
   var vm = this;
 
   // edit button template
   var actionTemplate = '<div class="ui-grid-cell-contents">' +
-    '<a href="" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ng-click="grid.appScope.edit(row.entity)"> ' +
+    '<a href="" id="edit-link" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ng-click="grid.appScope.edit(row.entity)"> ' +
     '<i class="fa fa-edit"></i>{{ "FORM.LABELS.EDIT" | translate }}</a>|' +
     '<a ng-if="row.entity.is_principal !==1" href="" title="{{ \'FORM.LABELS.ASSIGN\' | translate }}" ng-click="grid.appScope.editFeeCenter(row.entity)"> ' +
     '<i class="fa fa-share-alt"></i>{{ "FORM.LABELS.ASSIGN" | translate }}</a>' +
@@ -72,7 +71,7 @@ function feeCenterController(FeeCenterService, Notify, $state) {
   function startup() {
     FeeCenterService.fullRead()
     .then(function (list) {
-      vm.gridOptions.data = FeeCenterService.formatRecord(list);;
+      vm.gridOptions.data = FeeCenterService.formatRecord(list);
     })
     .catch(Notify.handleError)
     .finally(function(){

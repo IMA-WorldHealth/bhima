@@ -6,7 +6,7 @@ angular.module('bhima.routes')
       .state('feeCenter', {
         abstract : true,
         url : '/fee_center',
-        controller : 'feeCenterController as feeCenterCtrl',
+        controller : 'FeeCenterController as FeeCenterCtrl',
         templateUrl : 'partials/fee_center/fee_center.html'
       })
       .state('feeCenter.create', {
