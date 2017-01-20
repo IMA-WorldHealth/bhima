@@ -34,7 +34,7 @@ function FeeCenterPage() {
    *  listed in the grid to show the dialog for editing
    **/
   function editFeeCenter(n) {
-    const editLinkColumn = 2; //column indexing begin with 0
+    const editLinkColumn = 5; //column indexing begin with 0
 
     const row = feeCenterGrid
       .$('.ui-grid-render-container-body')
@@ -44,7 +44,7 @@ function FeeCenterPage() {
     row
       .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid')
       .row(editLinkColumn))
-      .element(by.css('[data-method="edit"]'))
+      .element(by.id('edit-link'))
       .click();
   }
 

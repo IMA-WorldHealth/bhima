@@ -13,7 +13,7 @@ helpers.configure(chai);
 
 const expect = chai.expect;
 
-describe.only('Fee Center Management Page', function () {
+describe('Fee Center Management Page', function () {
   'use strict';
 
   const path = '#/fee_center';
@@ -28,7 +28,7 @@ describe.only('Fee Center Management Page', function () {
     note : 'end to end test mock for fee center'
   };
 
-  const mockUserEdit = {
+  const mockFeeCenterEdit = {
     label : 'Fee Center test edit',
     project : 'Test Project B',
     note : 'end to end test mock for fee center'
@@ -37,6 +37,17 @@ describe.only('Fee Center Management Page', function () {
 
   before(function () {
     return helpers.navigate(path);
+  });
+
+  it('validates form on creation', function () {
+    feeCenterPage.createFeeCenter();
+    feeCenterCreateUpdatePage.submitFeeCenter();
+    expect(feeCenterCreateUpdatePage.isFeeCenterLabelInvalid()).to.eventually.equal(true);
+    expect(feeCenterCreateUpdatePage.isProjectInvalid()).to.eventually.equal(true);
+    expect(feeCenterCreateUpdatePage.isCostRadioInvalid()).to.eventually.equal(true);
+    expect(feeCenterCreateUpdatePage.isProfitRadioInvalid()).to.eventually.equal(true);
+
+    feeCenterCreateUpdatePage.close();
   });
 
   it('displays all fee center loaded from the database', function () {
@@ -54,75 +65,22 @@ describe.only('Fee Center Management Page', function () {
     expect(feeCenterPage.getFeeCenterCount()).to.eventually.equal(feeCenterCount + 1);
   });
 
-  it.skip('edits a user successfully without changing the password', function () {
-    userPage.editUser(4);
-    userCreateUpdatePage.setUserName(mockUserEdit.userName);
-    userCreateUpdatePage.setLogin(mockUserEdit.login);
-    userCreateUpdatePage.setEmail(mockUserEdit.email);
+  it('edits a fee center successfully', function () {
+    feeCenterPage.editFeeCenter(4);
+    feeCenterCreateUpdatePage.setFeeCenterLabel(mockFeeCenterEdit.label);
+    feeCenterCreateUpdatePage.setProjectValue(mockFeeCenterEdit.project);
+    feeCenterCreateUpdatePage.chooseCostCenter();
+    feeCenterCreateUpdatePage.checkPrincipal();
+    feeCenterCreateUpdatePage.setFeeCenterNote(mockFeeCenterEdit.note);
 
-    userCreateUpdatePage.setProjectValue(mockUserEdit.project, true);
-
-    userCreateUpdatePage.submitUser();
-    /**
-     * TODO : Use the page object correctly for the login page
-     * to help us access the application with the edited user information
-     * from this test
-     **/
-    expect(userCreateUpdatePage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
+    feeCenterCreateUpdatePage.submitFeeCenter();
+    expect(feeCenterCreateUpdatePage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
   });
 
-  it.skip('edits a user password successfully', function () {
-    userPage.editUser(4);
-    userCreateUpdatePage.editPassword();
-    editPasswordPage.setPassword(mockUserEdit.password);
-    editPasswordPage.setPasswordConfirm(mockUserEdit.password);
-    editPasswordPage.submitPassword();
-    /**
-     * TODO : Use the page object correctly for the login page
-     * to help us access the application with the edited user information
-     * from this test
-     **/
-    expect(editPasswordPage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
-    userCreateUpdatePage.close();
-  });
-
-  it.skip('refuses to update a user when no changes have been made', function () {
-    userPage.editUser(3);
-    userCreateUpdatePage.submitUser();
-    expect(userCreateUpdatePage.isSameUser()).to.eventually.equal(true);
-    userCreateUpdatePage.close();
-  });
-
-  it.skip('validates from on editing password', function () {
-    userPage.editUser(3);
-
-    // check that an empty form is not allowed
-    userCreateUpdatePage.editPassword();
-    editPasswordPage.submitPassword();
-
-    editPasswordPage.expectPasswordInvalid();
-    editPasswordPage.expectPasswordConfirmInvalid();
-
-    // check that the passwords must be equal
-    editPasswordPage.setPassword('1');
-    editPasswordPage.setPasswordConfirm('2');
-    editPasswordPage.submitPassword();
-    editPasswordPage.expectPasswordMismatch();
-
-    editPasswordPage.cancelEditing();
-    userCreateUpdatePage.close();
-  });
-
-  it.skip('validates form on creation', function () {
-    userPage.createUser();
-    userCreateUpdatePage.submitUser();
-    expect(userCreateUpdatePage.isUserNameInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isLoginInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isEmailInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isProjectInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isPasswordInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isPasswordConfirmInvalid()).to.eventually.equal(true);
-
-    userCreateUpdatePage.close();
+  it('refuses to update a fee center when no changes have been made', function () {
+    feeCenterPage.editFeeCenter(3);
+    feeCenterCreateUpdatePage.submitFeeCenter();
+    expect(feeCenterCreateUpdatePage.isSameFeeCenter()).to.eventually.equal(true);
+    feeCenterCreateUpdatePage.close();
   });
 });
