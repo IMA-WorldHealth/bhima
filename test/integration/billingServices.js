@@ -26,7 +26,7 @@ describe('(/billing_services) Billing Services API', function () {
 
   var responseKeys = [
     'id', 'account_id', 'label', 'description', 'value',
-    'number', 'created_at', 'updated_at'
+    'accountNumber', 'created_at', 'updated_at', 'accountLabel'
   ];
 
   it('GET /billing_services should return a list of two billing service', function () {

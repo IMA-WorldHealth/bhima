@@ -111,7 +111,7 @@ function BillingServicesController($state, BillingServices, Accounts, Notify, bh
 
         // make a pretty human readable account label
         billingServices.forEach(function (service) {
-          service.account = Accounts.label(service);
+          service.account = service.accountNumber + ' - '  + service.accountLabel;
         });
 
         // populate the grid

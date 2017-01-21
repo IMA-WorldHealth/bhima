@@ -3,13 +3,13 @@
  *       data is fetched per page load
  */
 angular.module('bhima.controllers')
-.controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
+  .controller('DebtorGroupUpdateController', DebtorGroupUpdateController);
 
-DebtorGroupsUpdateController.$inject = [
+DebtorGroupUpdateController.$inject = [
   '$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService'
 ];
 
-function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify) {
+function DebtorGroupUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify) {
   var vm = this;
   var target = $state.params.uuid;
 
@@ -20,6 +20,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.$loading = true;
   vm.$loaded = false;
+
+  vm.setAccount = setAccount;
 
   // reset name attribute to ensure no UI glitch
   $state.current.data.label = null;
@@ -79,7 +81,6 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     var modal = DebtorGroups.manageBillingServices(vm.group);
     modal.result
       .then(function (results) {
-        // update UI
         vm.group.billingServices = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       });
@@ -89,9 +90,12 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     var modal = DebtorGroups.manageSubsidies(vm.group);
     modal.result
       .then(function (results) {
-        // update UI
         vm.group.subsidies = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       });
+  }
+
+  function setAccount(account) {
+    vm.group.account_id = account.id;
   }
 }

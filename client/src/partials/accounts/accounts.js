@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('AccountsController', AccountsController);
+  .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',

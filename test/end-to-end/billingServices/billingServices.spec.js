@@ -26,7 +26,8 @@ describe('Billing Services', function () {
     // anticipate that the form should come up
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
 
-    FU.uiSelect('BillingServicesFormCtrl.model.account', '57000');
+    components.accountSelect.set('account_id', '57003');
+
     FU.input('BillingServicesFormCtrl.model.label', 'Value Added Tax');
     FU.input('BillingServicesFormCtrl.model.description', 'A tax added for people who want value!');
     FU.input('BillingServicesFormCtrl.model.value', 25);

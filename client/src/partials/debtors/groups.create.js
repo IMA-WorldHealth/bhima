@@ -26,6 +26,8 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   vm.$loading = true;
   vm.$loaded = false;
 
+  vm.setAccount = setAccount;
+
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.read()
     .then(function (accounts) {
@@ -104,5 +106,10 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
         }
       })
       .catch(Notify.handleError);
+  }
+
+  // sets the account
+  function setAccount(account) {
+    vm.group.account_id = account.id;
   }
 }

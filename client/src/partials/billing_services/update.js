@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesUpdateController', BillingServicesUpdateController);
 
 BillingServicesUpdateController.$inject = [
-  '$state', 'BillingServicesService', 'AccountService', '$uibModalInstance', 'util'
+  '$state', 'BillingServicesService', '$uibModalInstance', 'util', 'NotifyService'
 ];
 
 /**
@@ -12,7 +12,7 @@ BillingServicesUpdateController.$inject = [
  * Importantly, both this controller and the BillingServicesCreateController
  * use the same template, billing_services/form.html.
  */
-function BillingServicesUpdateController($state, BillingServices, Accounts, ModalInstance, util) {
+function BillingServicesUpdateController($state, BillingServices, ModalInstance, util, Notify) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
@@ -27,6 +27,7 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
   // the submit method to POST data to the server
   vm.submit = submit;
   vm.dismiss = ModalInstance.dismiss;
+  vm.onUpdateAccount = onUpdateAccount;
 
   vm.length200 = util.length200;
   vm.maxLength = util.maxTextLength;
@@ -36,36 +37,17 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
 
     // load the billing service by id
     BillingServices.read($state.params.id)
-    .then(function (service) {
+      .then(function (service) {
 
-      // set the label to the label of the fetched service
-      vm.label = service.label;
+        // set the label to the label of the fetched service
+        vm.label = service.label;
 
-      // bind the fetched data to the form for editing
-      vm.model = service;
-
-      // load the accounts
-      return Accounts.read();
-    })
-    .then(function (accounts) {
-
-      // bind the accounts to the view
-      vm.accounts = accounts;
-
-      // loop through the accounts and select the correct account to display
-      // in the ui-select
-      vm.model.account = accounts.reduce(function (value, account) {
-
-        // if the value is not false, we have found the account, so return it
-        if (value) { return value; }
-
-        // if the ids match, return the account, otherwise false
-        return (account.id === vm.model.account_id) ? account : value;
-      }, false);
-    })
-    .catch(function (response) {
-      vm.error = response.data;
-    });
+        // bind the fetched data to the form for editing
+        vm.model = service;
+      })
+      .catch(function (response) {
+        vm.error = response.data;
+      });
   }
 
   /**
@@ -82,18 +64,30 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
     delete vm.error;
 
     // exit immediately if the form is not valid
-    if (form.$invalid) {
+    if (form.$invalid) { return; }
+
+    // if no change in the form, just dismiss the modal
+    if (form.$pristine) {
+      Notify.warn('FORM.ERRORS.NO_CHANGE');
+      ModalInstance.dismiss();
       return;
-   }
+    }
+
+    var fields = util.filterFormElements(form, true);
 
     // submit data to the server
-    return BillingServices.update($state.params.id, vm.model)
-    .then(function (data) {
-      ModalInstance.close(data.id);
-    })
-    .catch(function (response) {
-      vm.error = response.data;
-    });
+    return BillingServices.update($state.params.id, fields)
+      .then(function (data) {
+        ModalInstance.close(data.id);
+      })
+      .catch(function (response) {
+        vm.error = response.data;
+      });
+  }
+
+  // fires when the account changes
+  function onUpdateAccount(account) {
+    vm.model.account_id = account.id;
   }
 
   // load initial data from the server

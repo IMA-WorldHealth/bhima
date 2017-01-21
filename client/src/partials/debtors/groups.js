@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-.controller('DebtorGroupController', DebtorGroupController);
+  .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'NotifyService'];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic
@@ -13,7 +13,7 @@ DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval) {
+function DebtorGroupController($state, DebtorGroups, Notify) {
   var vm = this;
 
   // pagination configuration
@@ -35,18 +35,11 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
     { attribute : 'total_debtors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true }
   ];
 
-  /** @todo rename read method */
   DebtorGroups.read(null, { detailed : 1 })
-    .then(function (result) {
-      vm.debtorGroups = result;
+    .then(function (debtorGroups) {
+      vm.debtorGroups = debtorGroups;
     })
-    .catch(handleException);
-
-  function handleException(error) {
-
-    // expose error to view
-    vm.exception = error;
-  }
+    .catch(Notify.handleError);
 
   // Naive filter toggle - performance analysis should be done on this
   function toggleFilter() {
