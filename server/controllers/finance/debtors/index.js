@@ -258,35 +258,39 @@ function balance(req, res, next) {
 
 
 /**
- * @method financial Patient
+ * @method financialPatient
  *
  * @description
  * This function allows to know the reports' Patient Financial Activity
  * matching parameters provided in the debtorUuid parameter.
+ *
+ * @todo - move the LEFT JOIN outside the UNION
  */
 function financialPatient(debtorUuid) {
   const buid = db.bid(debtorUuid);
 
   // build the main part of the SQL query
   let sql = `
-    SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit,
-    transaction.reference, transaction.abbr
+    SELECT transaction.trans_id, BUID(transaction.entity_uuid) as entity_uuid, transaction.description,
+      BUID(transaction.record_uuid) AS record_uuid, transaction.trans_date,
+      SUM(transaction.credit_equiv) AS credit, SUM(transaction.debit_equiv) AS debit,
+      IF(ISNULL(transaction.reference), '', CONCAT_WS('.', '${identifiers.INVOICE.key}', transaction.abbr, transaction.reference)) AS reference
     FROM (
-      SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
-      FROM posting_journal
-      LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
-      LEFT JOIN project ON invoice.project_id = project.id
-      WHERE posting_journal.entity_uuid = ?
+        SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.description, posting_journal.record_uuid,
+          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
+        FROM posting_journal
+          LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
+          LEFT JOIN project ON invoice.project_id = project.id
+        WHERE posting_journal.entity_uuid = ?
       UNION
-      SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
-      FROM general_ledger
-      LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
-      LEFT JOIN project ON invoice.project_id = project.id
-      WHERE general_ledger.entity_uuid = ?
-    ) as transaction
-    GROUP BY transaction.trans_id
+        SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.description, general_ledger.record_uuid,
+          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
+        FROM general_ledger
+          LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
+          LEFT JOIN project ON invoice.project_id = project.id
+        WHERE general_ledger.entity_uuid = ?
+    ) AS transaction
+    GROUP BY transaction.record_uuid
     ORDER BY transaction.trans_date ASC, transaction.trans_id;`;
 
   return db.exec(sql, [buid, buid]);
