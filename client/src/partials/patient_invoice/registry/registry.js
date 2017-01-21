@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService'
+  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -39,7 +39,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       headerCellFilter: 'translate',
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
-      footerCellClass : 'text-center'
+      footerCellClass : 'text-center',
+      sortingAlgorithm : Sorting.algorithms.sortByReference
     },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', type: 'date' },
     { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },

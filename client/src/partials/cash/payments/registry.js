@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
-  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService'
+  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
+  'GridSortingService'
 ];
 
 /**
@@ -13,7 +14,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry.`j
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting) {
   var vm = this;
 
   var cache = AppCache('CashRegistry');
@@ -51,7 +52,8 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   vm.gridOptions.columnDefs = [{
     field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
-    headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
+    headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true, sortingAlgorithm : Sorting.algorithms.sortByReference
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {

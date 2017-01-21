@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService', 'GridFilteringService',
   'uiGridGroupingConstants', 'uiGridConstants', 'ModalService', 'DateService',
-  'bhConstants', 'ReceiptModal'
+  'bhConstants', 'ReceiptModal', 'GridSortingService'
 ];
 
 /**
@@ -14,7 +14,7 @@ VoucherController.$inject = [
  * @description
  * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts, Sorting) {
   var vm = this;
 
   /* global variables */
@@ -60,8 +60,9 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // grid default options
   vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
-      groupingShowAggregationMenu: false,
-      aggregationType: uiGridConstants.aggregationTypes.count
+      treeAggregationType: uiGridGroupingConstants.aggregation.COUNT,
+      sortingAlgorithm : Sorting.algorithms.sortByReference,
+      treeAggregationLabel: '', footerCellClass : 'text-center',
     },
     { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
       sort: { priority: 0, direction : 'asc' },
@@ -69,12 +70,14 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn: typeAggregation,
+      treeAggregationLabel : '',
       groupingShowAggregationMenu: false
     },
     { field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate',
-      cellFilter : 'date:"mediumDate"',
+      cellFilter : 'date',
       filter : { condition : filtering.byDate },
       customTreeAggregationFinalizerFn: timeAggregation,
+      treeAggregationLabel : '', type : 'date',
       groupingShowAggregationMenu: false
     },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate',
@@ -82,7 +85,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     },
     { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-      groupingShowAggregationMenu: false
+      treeAggregationLabel : '', footerCellClass : 'text-center',
+      type: 'number', groupingShowAggregationMenu: false
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
       groupingShowAggregationMenu: false
@@ -166,7 +170,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
         Notify.handleError(err);
       })
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
       });
   }
 
