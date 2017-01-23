@@ -39,6 +39,10 @@ describe('Fee Center Management Page', function () {
     return helpers.navigate(path);
   });
 
+  it('displays all fee center loaded from the database', function () {
+    expect(feeCenterPage.getFeeCenterCount()).to.eventually.equal(feeCenterCount);
+  });
+
   it('validates form on creation', function () {
     feeCenterPage.createFeeCenter();
     feeCenterCreateUpdatePage.submitFeeCenter();
@@ -48,10 +52,6 @@ describe('Fee Center Management Page', function () {
     expect(feeCenterCreateUpdatePage.isProfitRadioInvalid()).to.eventually.equal(true);
 
     feeCenterCreateUpdatePage.close();
-  });
-
-  it('displays all fee center loaded from the database', function () {
-    expect(feeCenterPage.getFeeCenterCount()).to.eventually.equal(feeCenterCount);
   });
 
   it('creates a fee center successfully', function () {

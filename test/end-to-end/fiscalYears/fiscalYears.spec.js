@@ -22,6 +22,7 @@ describe('Fiscal Year', () => {
   };
 
   it('blocks invalid form submission with relevant error classes', () => {
+
     // switch to the create form
     FU.buttons.create();
 
@@ -54,6 +55,7 @@ describe('Fiscal Year', () => {
 
   it('edits a fiscal Year', () => {
     const updateButton = element.all(by.css('[data-fiscal-entry]'));
+
     updateButton.all(by.css('[data-method="update"]')).first().click();
 
     // modify the fiscal year label and note
