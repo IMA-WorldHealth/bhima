@@ -17,10 +17,46 @@ describe('Fiscal Year', function () {
   before(() => helpers.navigate(path));
 
   const fiscalYear = {
-    label : 'A Special Fiscal Year',
+    label : 'A Special Fiscal Year 2018',
     note : 'Note for the new fiscal Year',
-    previous : 'Test Fiscal Year 2016'
+    previous : 'Test Fiscal Year 2017'
   };
+
+    it('closing a fiscal year in normal way', () => {
+      helpers.navigate(path);
+
+    // the last in the list is the oldest
+    let updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // this fix multiple element found take first
+    let submitButton = element.all(by.css('[data-method="submit"]')).first();
+
+    // click on the opening balance button
+    element(by.css('[data-action="closing-fiscal-year"]')).click();
+
+    // inner variables
+    let resultAccount = 'Test Capital One';
+    let fiscalYearPattern = 'Test Fiscal Year 2015';
+
+    // set the result account
+    FU.uiSelect('$ctrl.resultAccount', resultAccount);
+
+    // submit to next step
+    submitButton.click()
+
+    // submit to confirm info
+    submitButton.click()
+
+    // set the pattern to confirm
+    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
+
+    // submit to confirm the action
+    submitButton.click()
+
+    // check notification
+    components.notification.hasSuccess();
+  });
 
   it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
@@ -42,6 +78,7 @@ describe('Fiscal Year', function () {
   });
 
   it('creates a new fiscalYear', function () {
+
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
@@ -52,7 +89,6 @@ describe('Fiscal Year', function () {
 
     components.notification.hasSuccess();
   });
-
 
   it('edits a fiscal Year', function () {
     var updateButton = element.all(by.css('[data-fiscal-entry]'));
@@ -156,43 +192,6 @@ describe('Fiscal Year', function () {
     FU.buttons.submit();
     components.notification.hasDanger();
     expect(element(by.css('[data-status="not-positive"]')).isPresent()).to.eventually.equal(true);
-
-  });
-
-  it('closing a fiscal year in normal way', () => {
-    helpers.navigate(path);
-
-    // the last in the list is the oldest
-    let updateButton = element.all(by.css('[data-fiscal-entry]'));
-    updateButton.all(by.css('[data-method="update"]')).last().click();
-
-    // this fix multiple element found take first
-    let submitButton = element.all(by.css('[data-method="submit"]')).first();
-
-    // click on the opening balance button
-    element(by.css('[data-action="closing-fiscal-year"]')).click();
-
-    // inner variables
-    let resultAccount = 'Test Capital One';
-    let fiscalYearPattern = 'Test Fiscal Year 2015';
-
-    // set the result account
-    FU.uiSelect('$ctrl.resultAccount', resultAccount);
-
-    // submit to next step
-    submitButton.click()
-
-    // submit to confirm info
-    submitButton.click()
-
-    // set the pattern to confirm
-    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
-
-    // submit to confirm the action
-    submitButton.click()
-
-    // check notification
-    components.notification.hasSuccess();
 
   });
 
