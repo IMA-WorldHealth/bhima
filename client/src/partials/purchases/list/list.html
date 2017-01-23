@@ -1,0 +1,22 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path    ="PurchaseListCtrl.bcPaths"
+  button  ="PurchaseListCtrl.bcButtons"
+  print   ="PurchaseListCtrl.buttonPrint"
+>
+</bh-breadcrumb>
+
+<!-- grid content  -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <!-- Purchase list of items  -->
+    <div id="PurchaseListGrid"
+      class="grid-full-height"
+      ui-grid="PurchaseListCtrl.gridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-grouping>
+    </div>
+  </div>
+</div>

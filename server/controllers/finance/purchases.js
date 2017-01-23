@@ -85,10 +85,11 @@ function lookupPurchaseOrder(uid) {
   let sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
-      BUID(p.supplier_uuid) as supplier_uuid, p.note
+      BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author 
     FROM purchase AS p
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
+    JOIN user AS u ON u.id = p.user_id 
     WHERE p.uuid = ?;
   `;
 
@@ -201,10 +202,11 @@ function list(req, res, next) {
     sql = `
       SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
-        BUID(p.supplier_uuid) as supplier_uuid
+        BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author 
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
-      JOIN project AS pr ON p.project_id = pr.id;
+      JOIN project AS pr ON p.project_id = pr.id
+      JOIN user AS u ON u.id = p.user_id;
     `;
   }
 

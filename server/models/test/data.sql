@@ -55,7 +55,10 @@ INSERT INTO unit VALUES
   (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense'),
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
-  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts');
+  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
+  (153, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
+  (154, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 153, '/partials/purchase_order/purchase', '/purchases/create'),
+  (155, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 153, '/partials/purchase_order/registry', '/purchases/list');
 
 
 -- Reserved system account type
@@ -271,7 +274,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 
 -- Report Customer Debts
-(151,1);
+(151,1),
+
+-- purchase order folder 
+(153, 1), (154, 1), (155, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
