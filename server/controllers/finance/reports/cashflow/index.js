@@ -26,12 +26,17 @@ const util       = require('../../../../lib/util');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
+const identifiers = require('../../../../config/identifiers');
+
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
+const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/reportByService.handlebars';
 
 // expose to the API
 exports.report = report;
 exports.weeklyReport = weeklyReport;
 exports.document = document;
+
+exports.byService = reportByService;
 
 /**
  * @function report
@@ -94,7 +99,8 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
     params.dateFrom = dateFrom;
     params.dateTo = dateTo;
   }
-  var requette = `
+
+  let requette = `
       SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
         SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
         t.debit, t.credit, t.currency_id, t.description, t.comment,
@@ -273,8 +279,8 @@ function closingBalance(accountId, periodStart) {
  */
 function getFiscalYear(date) {
   var query =
-    `SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy 
-     JOIN period p ON p.fiscal_year_id = fy.id 
+    `SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy
+     JOIN period p ON p.fiscal_year_id = fy.id
      WHERE ? BETWEEN p.start_date AND p.end_date`;
   return db.exec(query, [date]);
 }
@@ -286,10 +292,10 @@ function getFiscalYear(date) {
  */
 function getPeriods(dateFrom, dateTo) {
   var query =
-    `SELECT id, number, start_date, end_date 
-     FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?)) 
-      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date)) 
-	    OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
+    `SELECT id, number, start_date, end_date
+     FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
   return db.exec(query, [dateFrom, dateTo, dateFrom, dateTo]);
 }
 
@@ -563,4 +569,122 @@ function document(req, res, next) {
       });
     }
   }
+}
+
+
+// the ID of a voucher for cash return
+const CASH_RETURN_ID = 8;
+
+/**
+ * This function creates a cashflow report by service, reporting the realized income
+ * for the hospital services.
+ *
+ * @todo - factor in cash reversals.
+ * @todo - factor in posting journal balances
+ */
+function reportByService(req, res, next) {
+
+  const dateFrom = new Date(req.query.dateFrom);
+  const dateTo = new Date(req.query.dateTo);
+
+  let report;
+
+  const options = _.clone(req.query);
+  _.extend(options, { orientation : 'landscape' });
+
+  try {
+    report = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);
+  } catch (e) {
+    return next(e);
+  }
+
+  const data = {};
+
+  // get the cash flow data
+  const cashflowByServiceSql = `
+    SELECT BUID(cash.uuid) AS uuid, CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
+      cash.date, cash.amount AS cashAmount, invoice.cost AS invoiceAmount, cash.currency_id, service.id AS service_id,
+      patient.display_name, service.name
+    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+      JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
+      JOIN project ON cash.project_id = project.id
+      JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
+      JOIN service ON invoice.service_id = service.id
+    WHERE cash.is_caution = 0
+      AND cash.date >= DATE(?) AND cash.date <= DATE(?)
+      AND cash.uuid NOT IN
+        (SELECT DISTINCT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CASH_RETURN_ID})
+    ORDER BY cash.date;
+  `;
+
+  // get all service names in alphabetical order
+  const serviceSql = `
+    SELECT DISTINCT service.name FROM service WHERE service.id IN (?) ORDER BY name;
+  `;
+
+  // get the totals of the captured records
+  const serviceAggregationSql = `
+    SELECT service.name, SUM(cash.amount) AS totalCashIncome, SUM(invoice.cost) AS totalAcruelIncome
+    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+      JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
+      JOIN service ON invoice.service_id = service.id
+    WHERE cash.uuid IN (?)
+    GROUP BY service.name
+    ORDER BY service.name;
+  `;
+
+  db.exec(cashflowByServiceSql, [dateFrom, dateTo])
+    .then(rows => {
+      data.rows = rows;
+
+      // get a list of unique service ids
+      let serviceIds = rows
+        .map(row => row.service_id)
+        .filter((id, index, array) => array.indexOf(id) === index);
+
+      // execute the service SQL
+      return db.exec(serviceSql, [serviceIds]);
+    })
+    .then(services => {
+
+      let rows = data.rows;
+      let uuids = rows.map(row => db.bid(row.uuid));
+      delete data.rows;
+
+      // map services to their service names
+      data.services = services.map(service => service.name);
+
+      let xAxis = data.services.length;
+
+      // file the matrix with nulls except the correct columns
+      let matrix = rows.map(row => {
+
+        // fill with each service + two lines for cash payment identifier and patient name
+        let line = _.fill(Array(xAxis + 2), null);
+
+        // each line has the cash payment reference and then the patient name
+        line[0] = row.reference;
+        line[1] = row.display_name;
+
+        // get the index of the service name and fill in the correct cell in the matrix
+        const idx = data.services.indexOf(row.name) + 2;
+        line[idx] = row.cashAmount;
+        return line;
+      });
+
+      // bind to the view
+      data.matrix = matrix;
+
+      // query the aggregates
+      return db.exec(serviceAggregationSql, [uuids]);
+    })
+    .then(aggregates => {
+      data.aggregates = aggregates;
+      return report.render(data);
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }

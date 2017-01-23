@@ -1,0 +1,51 @@
+{{> head title="CASHFLOW.BY_SERVICE" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'CASHFLOW.BY_SERVICE'}}
+      </h2>
+
+      <table class="table table-bordered table-condensed"  style="font-size:0.75em;">
+        <thead>
+          <tr>
+            <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
+            {{#each services as |service| }}
+              <th>{{ service }}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each matrix as | row |}}
+            <tr>
+              {{#each row as |value |}}
+                <td {{#unless @first}}class="text-right"{{/unless}}>
+                  {{#if value}}
+                    {{value}}
+                  {{/if}}
+                </td>
+              {{/each}}
+            </tr>
+          {{/each}}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
+            {{#each aggregates as | aggregate |}}
+              <th class="text-right">{{currency aggregate.totalCashIncome ../metadata.enterprise.currency_id }}</th>
+            {{/each}}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</body>
