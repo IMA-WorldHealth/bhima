@@ -38,6 +38,9 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     }
   ];
 
+  /** print button */
+  vm.bcPrint = { pdfUrl: '/' };
+
   var columnDefs  = [
     { 
         field : 'reference', 
@@ -127,6 +130,7 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     Modal.openSearchPurchaseOrder()
       .then(function (filters) {
         if (!filters) { return; }
+        console.log(filters)
         reload(filters);
       })
       .catch(Notify.handleError);
@@ -145,7 +149,7 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
   // edit status 
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
-    .then(startup)
+    .then(load)
     .catch(Notify.handleError);
   }
 

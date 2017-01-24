@@ -35,12 +35,18 @@ function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance) 
   .catch(Notify.handleError);
 
   function init() {
-    vm.bundle = { dateFrom: new Date(), dateTo: new Date() };
+    vm.bundle = { 
+      dateFrom: new Date(), 
+      dateTo: new Date(),
+      is_confirmed: 0,
+      is_received: 0,
+      is_cancelled: 0
+    };
     validate();
   }
 
   function submit() {
-    var queryParam = formatFilterParameters(vm.bundle);
+    var queryParam = formatFilterParameters(vm.bundle, true);
     var params = formatFilterValues(queryParam);
     Instance.close(params);
   }
@@ -51,11 +57,13 @@ function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance) 
   }
 
   // clean bundle
-  function formatFilterParameters() {
+  function formatFilterParameters(element, WITH_NULL_VALUES) {
     var out = {};
-    for (var i in vm.bundle) {
-      if (vm.bundle[i]) {
-        out[i] = vm.bundle[i];
+    for (var i in element) {
+      if (WITH_NULL_VALUES) {
+        out[i] = element[i];
+      } else if (element[i]) {
+        out[i] = element[i];
       }
     }
     return out;
