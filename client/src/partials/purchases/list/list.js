@@ -37,9 +37,6 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     }
   ];
 
-  /** print button */
-  vm.bcPrint = { pdfUrl: '/' };
-
   var columnDefs  = [
     { 
         field : 'reference', 
