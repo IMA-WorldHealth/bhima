@@ -1,0 +1,98 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="purchase-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">{{ "PURCHASES.ORDER" | translate }}</li>
+      <li class="title">{{ "FORM.LABELS.SEARCH" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <bh-date-interval
+      validation-trigger="!$ctrl.validDateRange"
+      on-change="$ctrl.validate()"
+      required="true"
+      date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo">
+    </bh-date-interval>
+
+
+    <fieldset>
+      <legend>
+        {{ "FORM.LABELS.DETAILS" | translate }}
+      </legend>
+
+      <!-- reference  -->
+      <div class="form-group">
+        <label class="control-label">
+          {{ 'FORM.LABELS.REFERENCE' | translate }}
+        </label>
+        <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
+      </div>
+
+      <!-- supplier -->
+      <div class="form-group">
+        <label class="control-label">{{ "FORM.LABELS.SUPPLIER" | translate }}</label>
+
+        <ui-select name="supplier" ng-model="$ctrl.bundle.supplier_uuid" theme="bootstrap">
+          <ui-select-match>
+            <span>{{$select.selected.display_name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="supplier as supplier in $ctrl.suppliers | filter:$select.search">
+            <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <!-- user -->
+      <div class="form-group">
+        <label class="control-label">{{ "FORM.LABELS.USER" | translate }}</label>
+
+        <ui-select name="user" ng-model="$ctrl.bundle.user_id" theme="bootstrap">
+          <ui-select-match>
+            <span>{{$select.selected.display_name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="user as user in $ctrl.users | filter:$select.search">
+            <span ng-bind-html="user.display_name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <!-- status -->
+      <div class="form-group">
+          <fieldset>
+            <legend translate>FORM.LABELS.STATUS</legend>
+            <label>
+                <input type="checkbox" name="is_confirmed" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_confirmed">
+                {{ "PURCHASES.STATUS.CONFIRMED" | translate }}
+            </label><br>
+
+            <label>
+                <input type="checkbox" name="is_received" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_received">
+                {{ "PURCHASES.STATUS.RECEIVED" | translate }}
+            </label><br>
+
+            <label>
+                <input type="checkbox" name="is_cancelled" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_cancelled">
+                {{ "PURCHASES.STATUS.CANCELLED" | translate }}
+            </label>
+          </fieldset>
+      </div>
+    </fieldset>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel">
+      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

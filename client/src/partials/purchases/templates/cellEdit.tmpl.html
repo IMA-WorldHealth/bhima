@@ -1,0 +1,13 @@
+<div class="ui-grid-cell-contents">
+  <span ng-hide="row.groupHeader">
+    <a 
+      class="text-action"
+      title="{{ 'FORM.LABELS.EDIT_STATUS' | translate }}"
+      href
+      ng-click="grid.appScope.editStatus(row.entity)"
+      data-edit-metadata="{{ row.entity.uuid }}">
+      <i class="fa fa-edit"></i> 
+      <span translate>FORM.LABELS.EDIT_STATUS</span>
+    </a>
+  </span>
+</div>
