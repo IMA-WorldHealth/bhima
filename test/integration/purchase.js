@@ -32,7 +32,8 @@ describe('(/purchases) Purchases', () => {
   };
 
   const responseKeys = [
-    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note'
+    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note', 
+    'is_confirmed', 'is_received', 'is_cancelled'
   ];
 
   it('POST /purchases should create a new purchase order', () => {

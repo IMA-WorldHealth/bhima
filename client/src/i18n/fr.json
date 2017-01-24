@@ -488,6 +488,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Editer",
+      "EDIT_STATUS"            : "Modifier Etat",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
@@ -1089,7 +1090,8 @@
     "TITLE"         : "GESTION DES PROVINCES"
   },
   "PURCHASES" : {
-    "PAGE_TITLE" : "Achats",
+    "ORDER"          : "Ordre d'achat",
+    "PAGE_TITLE"     : "Achats",
     "PAYMENT_METHOD" : "Mode de paiement",
     "PAYMENT_METHOD_EXPLANATION" : "Ce champ fournit les conditions de paiement de l'ordre d'achat convenu. Un achat peut être payée à l'avant, à la livraison, ou dans une autre combinaison de paiements.",
     "ERRORS" : {
@@ -1098,6 +1100,18 @@
     "RECEIPT" : {
       "TITLE" : "Bon de commande",
       "SUCCESS" : "Bon de commande créé."
+    },
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmé",
+      "CONFIRMED_DESC"            : "La commande a été confirmée par le fournisseur qu'elle pourra être livrée",
+      "WAITING_CONFIRMATION"      : "En Attente de confirmation",
+      "WAITING_CONFIRMATION_DESC" : "Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande",
+      "RECEIVED"                  : "Reçu en Stock",
+      "RECEIVED_DESC"             : "La commande a été reçu et se trouve dans le stock",
+      "NOT_RECEIVED"              : "Non Reçu",
+      "NOT_RECEIVED_DESC"         : "La commande n'a pas encore été reçu",
+      "CANCELLED"                 : "Annulé",
+      "CANCELLED_DESC"            : "La commande a été annulée suite à une raison quelconque"
     }
   },
   "REFERENCE": {

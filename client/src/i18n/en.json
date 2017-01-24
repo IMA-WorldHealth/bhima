@@ -483,6 +483,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Edit",
+      "EDIT_STATUS"            : "Edit Status",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
@@ -1065,6 +1066,7 @@
     "TITLE"         : "Province Manager"
   },
   "PURCHASES" : {
+    "ORDER" : "Purchase order",
     "PAGE_TITLE" : "Purchases",
     "PAYMENT_METHOD" : "Payment Method",
     "PAYMENT_METHOD_EXPLANATION" : "This field provides the agreed the payment conditions of the purchase order.  A purchase can either be paid up front, at delivery, or in some other combination of payments.",
@@ -1074,6 +1076,18 @@
     "RECEIPT" : {
       "TITLE" : "Purchase Order Receipt",
       "SUCCESS" : "Purchase Order created."
+    }, 
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmed",
+      "CONFIRMED_DESC"            : "The purchase order has been confirmed by the supplier that it can be delivered",
+      "WAITING_CONFIRMATION"      : "Waiting confirmation",
+      "WAITING_CONFIRMATION_DESC" : "The supplier doesn't confirm that the purchase order can be delivered",
+      "RECEIVED"                  : "Received in Stock",
+      "RECEIVED_DESC"             : "The purchase order has been completed and products are in the stock",
+      "NOT_RECEIVED"              : "Not Received",
+      "NOT_RECEIVED_DESC"         : "The purchase order products are not yet in the stock",
+      "CANCELLED"                 : "Cancelled",
+      "CANCELLED_DESC"            : "The purchase order has been cancelled"
     }
   },
   "REFERENCE": {

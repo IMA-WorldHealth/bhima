@@ -85,7 +85,8 @@ function lookupPurchaseOrder(uid) {
   let sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
-      BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author 
+      BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
+      p.is_confirmed, p.is_received, p.is_cancelled  
     FROM purchase AS p
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
@@ -192,7 +193,8 @@ function list(req, res, next) {
 
   sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-      p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid
+      p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid,
+      p.is_confirmed, p.is_received, p.is_cancelled
     FROM purchase AS p
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id;
@@ -202,7 +204,8 @@ function list(req, res, next) {
     sql = `
       SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
-        BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author 
+        BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
+        p.is_confirmed, p.is_received, p.is_cancelled  
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
