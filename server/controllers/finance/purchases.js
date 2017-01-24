@@ -10,6 +10,7 @@
  * @requires db
  * @requires NotFound
  * @requires BadRequest
+ * @requires util
  */
 
 'use strict';
@@ -17,6 +18,7 @@
 const q = require('q');
 const uuid = require('node-uuid');
 const db = require('./../../lib/db');
+const util = require('./../../lib/util');
 const NotFound = require('./../../lib/errors/NotFound');
 const BadRequest = require('./../../lib/errors/BadRequest');
 
@@ -34,6 +36,9 @@ exports.update = update;
 
 // allows other controller to benefit from the lookup method
 exports.lookup = lookupPurchaseOrder;
+
+// search purchases 
+exports.search = search;
 
 
 /**
@@ -264,4 +269,72 @@ function update(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+/**
+ * @method search
+ * @description search purchases by some filters given
+ */
+ function search(req, res, next) {
+   'use strict';
+
+   listPurchases(req.query)
+     .then(function (rows) {
+       res.status(200).json(rows);
+     })
+     .catch(next)
+     .done();
+ }
+
+/**
+ * @method listPurchases
+ * @description get list of purchase orders 
+ */
+function listPurchases(params) {
+  'use strict';
+
+  const sql = `
+    SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
+        p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
+        BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
+        p.is_confirmed, p.is_received, p.is_cancelled  
+      FROM purchase AS p
+      JOIN supplier AS s ON s.uuid = p.supplier_uuid
+      JOIN project AS pr ON p.project_id = pr.id
+      JOIN user AS u ON u.id = p.user_id 
+  `;
+
+  if (params) {
+    let reference = params.reference;
+    let userId = params.user_id;
+    let supplierUuid = params.supplier_uuid;
+
+    if (reference) {
+      delete params.reference;
+    }
+
+    if (userId) {
+      params[`u.id`] = userId;
+      delete params.user_id;
+    }
+
+    if (supplierUuid) {
+      params[`s.uuid`] = supplierUuid;
+      delete params.supplier_uuid;
+    }
+
+    let qc =
+      params.dateFrom && params.dateTo ?
+      util.queryCondition(sql, params, null, 'DATE(p.date) BETWEEN DATE(?) AND DATE(?)') :
+      util.queryCondition(sql, params);
+
+    if (reference) {
+      qc.query += ' HAVING reference = ? ';
+      qc.conditions.push(reference);
+    }
+
+    return db.exec(qc.query, qc.conditions);
+  }
+
+  return db.exec(sql);
 }

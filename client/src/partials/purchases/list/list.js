@@ -14,6 +14,8 @@ PurchaseListController.$inject = [
 function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConstants, uiGridGroupingConstants, Modal, $state, Receipts, Session, Languages) {
   var vm = this;
 
+  var initFilter = { identifiers: {}, display: {} };
+
   /** gobal variables */
   vm.filters         = { lang: Languages.key };
   vm.formatedFilters = [];
@@ -114,20 +116,18 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
   }
 
   /** expose to the view */
-  vm.toggleFilter = toggleFilter;
+  vm.onRemoveFilter = onRemoveFilter;
   vm.getDocument = getDocument;
   vm.editStatus = editStatus;
   vm.search = search;
-
-  /** initial setting start */
-  startup();
+  vm.clearFilters = clearFilters;
 
   // search
   function search() {
     Modal.openSearchPurchaseOrder()
       .then(function (filters) {
         if (!filters) { return; }
-        vm.filters = filters;
+        reload(filters);
       })
       .catch(Notify.handleError);
   }
@@ -167,24 +167,26 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-   
+    reload(initFilter);
   }
 
-
-  /** enable filter */
-  function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[0].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+  // reload purchases with filters
+  function reload(filters) {
+    vm.filters = filters;
+    vm.formatedFilters = PurchaseOrder.formatFilterParameters(filters.display);
+    load(filters.identifiers);
   }
 
-  /** startup */
-  function startup() {
-    PurchaseOrder.read(null, { detailed: 1 })
+  /** load purchase orders */
+  function load(filters) {
+    PurchaseOrder.search(filters)
       .then(function (purchases) {
         vm.gridOptions.data = purchases;
       })
       .catch(Notify.handleError);
   }
+
+  /** initial setting start */
+  load();
+
 }
