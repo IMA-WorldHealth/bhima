@@ -4,17 +4,16 @@ angular.module('bhima.controllers')
 // dependencies injection
 PurchaseListController.$inject = [
   '$translate', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants', 'uiGridGroupingConstants',
-  'ModalService', '$state', 'ReceiptModal', 'SessionService', 'LanguageService'
+  'ModalService', '$state', 'ReceiptModal', 'SessionService', 'LanguageService',
+  'SearchFilterFormatService'
 ];
 
 /**
  * Purchase Order List Controllers
  * This controller is responsible of the purchase list module
  */
-function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConstants, uiGridGroupingConstants, Modal, $state, Receipts, Session, Languages) {
+function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConstants, uiGridGroupingConstants, Modal, $state, Receipts, Session, Languages, SearchFilterFormat) {
   var vm = this;
-
-  var initFilter = { identifiers: {}, display: {} };
 
   /** gobal variables */
   vm.filters         = { lang: Languages.key };
@@ -130,7 +129,6 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     Modal.openSearchPurchaseOrder()
       .then(function (filters) {
         if (!filters) { return; }
-        console.log(filters)
         reload(filters);
       })
       .catch(Notify.handleError);
@@ -155,29 +153,18 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
 
    // on remove one filter
   function onRemoveFilter(key) {
-    if (key === 'dateFrom' ||  key === 'dateTo') {
-      // remove all dates filters if one selected
-      delete vm.filters.identifiers.dateFrom;
-      delete vm.filters.identifiers.dateTo;
-      delete vm.filters.display.dateFrom;
-      delete vm.filters.display.dateTo;
-    } else {
-      // remove the key
-      delete vm.filters.identifiers[key];
-      delete vm.filters.display[key];
-    }
-    reload(vm.filters);
+    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
   }
 
-  // remove a filter with from the filter object, save the filters and reload
+  // clear all filters 
   function clearFilters() {
-    reload(initFilter);
+    SearchFilterFormat.clearFilters(reload);
   }
 
   // reload purchases with filters
   function reload(filters) {
     vm.filters = filters;
-    vm.formatedFilters = PurchaseOrder.formatFilterParameters(filters.display);
+    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
     load(filters.identifiers);
   }
 
