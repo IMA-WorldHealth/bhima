@@ -881,7 +881,9 @@
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Registre des Factures",
-    "RECEIPT_CURRENCY" : "Monnaie du reçu"
+    "RECEIPT_CURRENCY" : "Monnaie du reçu",
+    "EXCLUDE_REVERSE" : "Exclure toutes les factures inversees",
+    "INCLUDE_REVERSE" : "Inclure uniquement les factures inversees"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",

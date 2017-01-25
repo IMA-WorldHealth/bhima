@@ -869,7 +869,9 @@
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Invoice Registry",
-    "RECEIPT_CURRENCY" : "Receipt Currency"
+    "RECEIPT_CURRENCY" : "Receipt Currency",
+    "EXCLUDE_REVERSE" : "Exclude all reversed invoices",
+    "INCLUDE_REVERSE" : "Include only reversed invoices"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",

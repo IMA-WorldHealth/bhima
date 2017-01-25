@@ -45,6 +45,29 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('reversed')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="0" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.EXCLUDE_REVERSE</span>
+          </label>
+        </div>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="1" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.INCLUDE_REVERSE</span>
+          </label>
+        </div>
+      </div>
+
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
         <label class="control-label">{{ 'FORM.LABELS.SERVICE' | translate }}</label>
         <span style="display:inline-block;" class="pull-right">
