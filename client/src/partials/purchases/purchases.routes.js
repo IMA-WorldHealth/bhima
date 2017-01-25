@@ -13,5 +13,5 @@ angular.module('bhima.routes')
             url : '/purchases/list',
             controller : 'PurchaseListController as PurchaseListCtrl',
             templateUrl : 'partials/purchases/list/list.html'
-        })
+        });
   }]);

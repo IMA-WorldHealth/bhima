@@ -276,7 +276,6 @@ function update(req, res, next) {
  * @description search purchases by some filters given
  */
  function search(req, res, next) {
-   'use strict';
 
    listPurchases(req.query)
      .then(function (rows) {
@@ -291,7 +290,6 @@ function update(req, res, next) {
  * @description get list of purchase orders 
  */
 function listPurchases(params) {
-  'use strict';
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,

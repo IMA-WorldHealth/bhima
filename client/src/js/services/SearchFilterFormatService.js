@@ -28,7 +28,7 @@ function SearchFilterFormatService() {
     function formatFilter(element, WITH_NULL_VALUES) {
       var queryParam = formatFilterParameters(element, true);
       var params = formatFilterValues(queryParam);
-      return params
+      return params;
     }
 
     /**

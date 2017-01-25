@@ -19,20 +19,21 @@ function PurchaseOrderStatusModalController(Instance, Notify, PurchaseOrder, Dat
 
     // submit the choice 
     function submit(status) {
-        
+        var data;
+
         switch(status) {
             case 'confirmed' : 
-                var data = { is_confirmed: 1 };
+                data = { is_confirmed: 1 };
                 updateOrder(vm.purchase.uuid, data);
             break;
 
             case 'not_confirmed' : 
-                var data = { is_confirmed: 0 };
+                data = { is_confirmed: 0 };
                 updateOrder(vm.purchase.uuid, data);
             break;
-        };
+        }
 
-        var data = { is_cancelled: vm.purchase.is_cancelled };
+        data = { is_cancelled: vm.purchase.is_cancelled };
         updateOrder(vm.purchase.uuid, data);
     }
 

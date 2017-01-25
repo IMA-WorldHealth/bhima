@@ -23,14 +23,14 @@ function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance, 
   // load users 
   Users.read(null, { detailled: 1 })
   .then(function (users) {
-      vm.users = users
+      vm.users = users;
   })
   .catch(Notify.handleError);
 
   // load suppliers 
   Suppliers.read(null, { detailled: 1 })
   .then(function (suppliers) {
-      vm.suppliers = suppliers
+      vm.suppliers = suppliers;
   })
   .catch(Notify.handleError);
 
