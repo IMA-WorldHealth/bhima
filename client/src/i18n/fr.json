@@ -200,7 +200,7 @@
         "INFO"  : "Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
         "LABEL"   : "Ce groupe est qualifié pour les subventions",
         "UPDATE"  : "Mettre à jour les subventions",
-        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"        
+        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"
       },
       "DISCOUNTS" : {
         "TITLE" : "Réductions",
@@ -220,7 +220,7 @@
     "SUBSCRIPTIONS"  : "Abonnements",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
   },
-  "DOWNLOADS" : { 
+  "DOWNLOADS" : {
     "JSON" : "Télécharger en JSON",
     "PDF" : "Télécharger en PDF",
     "CSV" : "Télécharger en CSV"
@@ -521,7 +521,7 @@
       "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTER_BIRTH_YEAR"       : "Entrez seulement l'année de naissance",
-      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",      
+      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
       "ENTITY"                 : "Entité",
@@ -851,7 +851,7 @@
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
     "TODAY"          : "Date du jour",
-    "DEBTORS" : { 
+    "DEBTORS" : {
       "TITLE"    : "Debiteurs de l'entreprise",
       "BALANCED" : "Toutes les dettes sont reglées",
       "CACHED"   : "Données à jour"
@@ -880,7 +880,9 @@
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Registre des Factures",
-    "RECEIPT_CURRENCY" : "Monnaie du reçu"
+    "RECEIPT_CURRENCY" : "Monnaie du reçu",
+    "EXCLUDE_REVERSE" : "Exclure toutes les factures inversees",
+    "INCLUDE_REVERSE" : "Inclure uniquement les factures inversees"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
@@ -973,7 +975,7 @@
       "BY" : "par",
       "SUCCESS" : "Confirmation de la visite du patient avec succes"
     },
-    "VISITS" : { 
+    "VISITS" : {
       "TITLE" : "Visites des patients",
       "ADMIT" : "Admission à l'hôpital",
       "ADMISSION_DIAGNOSIS" : "Diagnostic Admission",

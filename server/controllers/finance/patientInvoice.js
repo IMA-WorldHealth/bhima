@@ -267,6 +267,28 @@ function find(options) {
     delete options.user_id;
   }
 
+  if (options.reversed) {
+    // @TODO All constant definitions for types on the server should be centralised
+    const CREDIT_NOTE_VOUCHER_ID = 10;
+    let includeCreditNotes = Boolean(Number(options.reversed));
+
+    if (includeCreditNotes) {
+      // only return invoices that have been reversed
+      conditions.statements.push(`voucher.type_id = ?`);
+
+    } else {
+      // only return invoices that have not been reversed
+      // NULL type id means no vouchers reference this invoice
+      conditions.statements.push(`voucher.type_id IS NULL OR voucher.type_id <> ?`);
+    }
+
+    // using the reversal voucher id as the parameter is a hack, this will be
+    // addressed in standardising filters on the server and the client
+    conditions.parameters.push(CREDIT_NOTE_VOUCHER_ID);
+
+    delete options.reversed;
+  }
+
 
   sql += conditions.statements.join(' AND ');
   if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
