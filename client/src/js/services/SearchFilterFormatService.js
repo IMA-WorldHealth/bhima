@@ -39,14 +39,12 @@ function SearchFilterFormatService() {
      */
     function formatFilterParameters(element, WITH_NULL_VALUES) {
         var out = {};
-        for (var i in element) {
-            if (WITH_NULL_VALUES) {
-            out[i] = element[i];
-            } else if (element[i]) {
-            out[i] = element[i];
-            }
-        }
-        return out;
+        angular.forEach(element, function (value, key) {
+          if (WITH_NULL_VALUES || value) {
+            out[key] = value;
+          }
+        });
+        return out
     }
 
   /**
@@ -57,19 +55,34 @@ function SearchFilterFormatService() {
    */
   function formatFilterValues(formatedFilters) {
     var out = { identifiers: {}, display: {} };
+
     for (var key in formatedFilters) {
 
       if (!formatedFilters.hasOwnProperty(key)) { continue; }
 
       // get identifiers
-      out.identifiers[key] = typeof(formatedFilters[key]) === 'object' ?
-        formatedFilters[key].uuid || formatedFilters[key].id || formatedFilters[key] : formatedFilters[key];
+      out.identifiers[key] = getFormattedFilterIdentifier(formatedFilters, key);
 
       // get value to display
-      out.display[key] = typeof(formatedFilters[key]) === 'object' ?
-        formatedFilters[key].text || formatedFilters[key].label || formatedFilters[key].display_name || formatedFilters[key] : formatedFilters[key];
+      out.display[key] = getFormattedFilterIdentifier(formatedFilters, key, true);
     }
+
     return out;
+  }
+
+  /**
+   * @function getFormattedFilterIdentifier
+   * @description takes in an object of filter and key and returns the identifier or the name for dispay for the filter.
+   * @param {boolean} is_display the type of output
+   */
+  function getFormattedFilterIdentifier(formattedFilters, key, is_display) {
+    var filter = formattedFilters[key]; 
+
+    if (is_display) {
+      return angular.isObject(filter) ? filter.text || filter.label || filter.display_name || filter : filter;
+    }
+
+    return angular.isObject(filter) ? filter.uuid || filter.id || filter : filter;
   }
 
   /**
@@ -109,7 +122,11 @@ function SearchFilterFormatService() {
    * @param {function} reload A reload function 
    */
   function onRemoveFilter(key, filters, reload) {
-    if ((filters && !filters.display && !filters.identifiers) || (!filters) || !reload) { return; }
+    var noIdentifiers = (filters && !filters.display && !filters.identifiers);
+    var noFilters = !filters;
+    var noReload  = !reload;
+
+    if (noIdentifiers || noFilters || noReload) { return; }
     
     if (key === 'dateFrom' ||  key === 'dateTo') {
       // remove all dates filters if one selected

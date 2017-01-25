@@ -42,7 +42,8 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
         field : 'reference', 
         displayName : 'FORM.LABELS.REFERENCE', 
         headerCellFilter : 'translate', 
-        aggregationType: uiGridConstants.aggregationTypes.count },
+        aggregationType: uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel: true },
 
     { 
         field : 'date', 
@@ -67,7 +68,7 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
         headerCellFilter : 'translate', 
         footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
         aggregationType : uiGridConstants.aggregationTypes.sum,
-        treeAggregationType: uiGridGroupingConstants.aggregation.sum },
+        aggregationHideLabel: true },
 
     { 
         field : 'author', 
@@ -131,14 +132,9 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
       .catch(Notify.handleError);
   }
 
-  // add purchase order 
-  function addPurchaseOrder() {
-    $state.go('/purchases/create');
-  }
-
   // get document 
   function getDocument(uuid) {
-    Receipts.purchase(uuid, true);
+    Receipts.purchase(uuid);
   }
 
   // edit status 
