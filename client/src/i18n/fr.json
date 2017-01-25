@@ -688,6 +688,7 @@
       "TOOLS"                  : "Utils",
       "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
+      "TOTAL_BALANCE_REMAINING" : "Solde Total Restant",
       "TOTAL_BILLED"           : "Total Facture",
       "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_PAID"             : "Total paye",

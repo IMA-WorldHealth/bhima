@@ -13,7 +13,7 @@ describe('Villages Management', function () {
   before(() => helpers.navigate(path));
 
   const village = {
-    country: 'République Démocratique du Congo',
+    country: 'Democratiq Republic of Congo',
     province: 'Bas Congo',
     sector: 'Tshikapa',
     name: 'New Village'

@@ -77,6 +77,11 @@
         <th>{{translate "FORM.LABELS.TOTAL"}}</th>
         <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
       </tr>
+
+      <tr>
+        <th>{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+        <th class="text-right">{{currency debtorTotalBalance payment.currency_id}}</th>
+      </tr>
     </tfoot>
   </table>
 

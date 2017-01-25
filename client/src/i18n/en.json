@@ -684,6 +684,7 @@
       "TODAY"                  : "Today",
       "TOOLS"                  : "Tools",
       "TOTAL"                  : "Total",
+      "TOTAL_BALANCE_REMAINING" : "Total Balance Remaining",
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_DEBT"             : "Total of Debts",
       "TOTAL_PAID"             : "Total Paid",

@@ -86,16 +86,16 @@ function receipt(req, res, next) {
 
       // lookup balances on all invoices
       let invoices = payment.items.map(invoices => invoices.invoice_uuid);
-
       return q.all([
         Users.lookup(payment.user_id),
         Patients.lookupByDebtorUuid(payment.debtor_uuid),
         Enterprises.lookupByProjectId(payment.project_id),
-        Debtors.invoiceBalances(payment.debtor_uuid, invoices)
+        Debtors.invoiceBalances(payment.debtor_uuid, invoices),
+        Debtors.balance(payment.debtor_uuid)
       ]);
     })
-    .spread((user, patient, enterprise, invoices) => {
-      _.assign(data, { user, patient, enterprise, invoices });
+    .spread((user, patient, enterprise, invoices, totalInvoices) => {
+      _.assign(data, { user, patient, enterprise, invoices, totalInvoices });
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
     .then(exchange => {
@@ -107,6 +107,8 @@ function receipt(req, res, next) {
         aggregate[invoice.uuid] = invoice.balance;
         return aggregate;
       }, {});
+
+      data.debtorTotalBalance = data.totalInvoices.balance;
 
       data.payment.items.forEach(invoiceItem => {
         invoiceItem.balance = data.balances[invoiceItem.invoice_uuid];
