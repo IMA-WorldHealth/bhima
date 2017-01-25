@@ -62,6 +62,13 @@
     "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
   },
+  "BARCODE" : {
+    "SCAN" : "Scan Invoice Barcode",
+    "AWAITING_INPUT" : "Waiting for Input",
+    "AWAITING_HTTP" : "Barcode Read!  Looking up Invoice...",
+    "READ_SUCCESS" : "Found Invoice",
+    "READ_ERROR" : "Unreadable Barcode!  Please enter the barcode manually."
+  },
   "BALANCE" : {
     "ACCOUNT_CHOICE"  : "Accounts choice",
     "ALL_ACCOUNT"     : "All accounts",
@@ -125,13 +132,6 @@
         "NO_INVOICES_ASSIGNED" : "You have not assigned any invoices. Please assign at least one invoice to the payment.",
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
         "SELECTED"        : "Selected cash"
-      },
-      "BARCODE" : {
-        "SCAN" : "Scan Invoice Barcode",
-        "AWAITING_INPUT" : "Waiting for Input",
-        "AWAITING_HTTP" : "Barcode Read!  Looking up Invoice...",
-        "READ_SUCCESS" : "Found Invoice",
-        "READ_ERROR" : "Unreadable Barcode!  Please enter the barcode manually."
       },
       "SCAN_BARCODE"    : "Scan Invoice Barcode",
       "OPEN_BARCODE_MODAL" : "Scan another barcode on successful payment.",
@@ -669,6 +669,7 @@
       "TITLE"                  : "Title",
       "TITLE_ACCOUNT"          : "Title Account",
       "TODAY"                  : "Today",
+      "TOOLS"                  : "Tools",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_DEBT"             : "Total of Debts",
@@ -964,7 +965,7 @@
       "REPORT_TITLE" : "Patient Checkin Report",
       "SUCCESS" : "Patient has been checked in"
     },
-    "VISITS" : { 
+    "VISITS" : {
       "TITLE" : "Patient Visits",
       "ADMIT" : "Admit Patient",
       "ADMISSION_DIAGNOSIS" : "Admission Diagnosis",
@@ -1547,9 +1548,16 @@
       "PURCHASES"          : "Purchases",
       "SUPPORT_INCOME"     : "Support Incomes",
       "TITLE"              : "Simple Voucher",
-      "TRANSFER"           : "Money Transfer"
+      "TRANSFER"           : "Money Transfer",
+      "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
     },
     "REPORT": "Report"
+  },
+  "TRANSACTIONS" :  {
+    "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
+    "MISSING_TRANSACTION_TYPE" : "Transactions involving cash accounts (banks or cashboxes) must have a transaction type specified to differentiate them in the cashflow report. Please select a transaction type.",
+    "IMBALANCED_TRANSACTION" : "This transaction's debits and credits must balance.  Please correct the imbalances before submitting.",
+    "SINGLE_ROW_TRANSACTION" : "This transaction only has a single row, but two rows are required.  Please add one or more lines."
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Patient Registrations",

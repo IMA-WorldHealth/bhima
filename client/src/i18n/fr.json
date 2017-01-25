@@ -61,6 +61,13 @@
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
+  "BARCODE" : {
+    "SCAN" : "Scanner le Code à Barres",
+    "AWAITING_INPUT" : "En Attente d'Entrée",
+    "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
+    "READ_SUCCESS" : "Facture Trouvée",
+    "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
+  },
   "BALANCE" : {
     "ACCOUNT_CHOICE"  : "Choix des comptes",
     "ALL_ACCOUNT"     : "Tous les comptes",
@@ -130,13 +137,6 @@
         "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
-      "BARCODE" : {
-        "SCAN" : "Scanner le Code à Barres",
-        "AWAITING_INPUT" : "En Attente d'Entrée",
-        "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
-        "READ_SUCCESS" : "Facture Trouvée",
-        "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
-      },
       "OPEN_BARCODE_MODAL" : "Numériser un autre code à barres lors d'un paiement réussi.",
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
@@ -200,7 +200,7 @@
         "INFO"  : "Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
         "LABEL"   : "Ce groupe est qualifié pour les subventions",
         "UPDATE"  : "Mettre à jour les subventions",
-        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"        
+        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"
       },
       "DISCOUNTS" : {
         "TITLE" : "Réductions",
@@ -220,7 +220,7 @@
     "SUBSCRIPTIONS"  : "Abonnements",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
   },
-  "DOWNLOADS" : { 
+  "DOWNLOADS" : {
     "JSON" : "Télécharger en JSON",
     "PDF" : "Télécharger en PDF",
     "CSV" : "Télécharger en CSV"
@@ -521,7 +521,7 @@
       "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTER_BIRTH_YEAR"       : "Entrez seulement l'année de naissance",
-      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",      
+      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
       "ENTITY"                 : "Entité",
@@ -674,6 +674,7 @@
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
       "TO"                     : "à",
+      "TOOLS"                  : "Utils",
       "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Facture",
@@ -851,7 +852,7 @@
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
     "TODAY"          : "Date du jour",
-    "DEBTORS" : { 
+    "DEBTORS" : {
       "TITLE"    : "Debiteurs de l'entreprise",
       "BALANCED" : "Toutes les dettes sont reglées",
       "CACHED"   : "Données à jour"
@@ -973,7 +974,7 @@
       "BY" : "par",
       "SUCCESS" : "Confirmation de la visite du patient avec succes"
     },
-    "VISITS" : { 
+    "VISITS" : {
       "TITLE" : "Visites des patients",
       "ADMIT" : "Admission à l'hôpital",
       "ADMISSION_DIAGNOSIS" : "Diagnostic Admission",
@@ -1571,9 +1572,16 @@
       "PURCHASES"          : "Achats",
       "SUPPORT_INCOME"     : "Paiement Prise en charge",
       "TITLE"              : "Bordereau de transfert",
-      "TRANSFER"           : "Transfert d'argent"
+      "TRANSFER"           : "Transfert d'argent",
+      "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Prise en Charge de Facture de Patient"
     },
     "REPORT" : "Rapport"
+  },
+  "TRANSACTIONS" :  {
+    "SINGLE_ACCOUNT_TRANSACTION" : "Cette transaction contient un seul compte.  Veuillez sélectionner plusieurs comptes pour compléter la transaction.",
+    "MISSING_TRANSACTION_TYPE" : "Les transactions impliquant des comptes de trésorerie (banques ou caisses) doivent avoir un type de transaction spécifié pour les différencier dans le rapport de trésorerie. Veuillez sélectionner un type de transaction.",
+    "IMBALANCED_TRANSACTION" : "Les débits et les crédits de cette transaction doivent être équilibrés. Veuillez corriger les déséquilibres avant de les soumettre.",
+    "SINGLE_ROW_TRANSACTION" : "Cette transaction ne comporte qu'une seule ligne, mais deux lignes sont nécessaires. Veuillez ajouter une ou plusieurs lignes."
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement des patients",

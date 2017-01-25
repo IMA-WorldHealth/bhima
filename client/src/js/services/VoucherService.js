@@ -10,7 +10,8 @@ VoucherService.$inject = [
  * @extends PrototypeApiService
  *
  * @description
- * This service manages posting data to the database via the /vouchers/ URL.
+ * This service manages posting data to the database via the /vouchers/ URL.  It also
+ * includes some utilities that are useful for voucher pages.
  */
 function VoucherService(Api, $http, util, TransactionTypeStore) {
   var service = new Api('/vouchers/');
@@ -18,7 +19,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
   // @tdoo - remove this reference to baseUrl
   var baseUrl = '/journal/';
 
-  service.createSimple = createSimple;
   service.create = create;
   service.reverse = reverse;
   service.transactionType = transactionType;
@@ -64,43 +64,13 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
       return escapedItem;
     });
 
-    return Api.create.call(service, { voucher : voucher });
-  }
+    // we pick either the debit or the credit side to assign as the total amount
+    // of the voucher
+    v.amount = v.items.reduce(function (sum, row) {
+      return sum + row.debit;
+    }, 0);
 
-  /**
-   * @method createSimple
-   *
-   * @description
-   * Creates a simple journal voucher, transforming the object into double-entry
-   * accounting.
-   *
-   * @param {object} voucher - the raw journal voucher
-   * @returns {Promise} - the $http promise object
-   */
-  function createSimple(voucher) {
-
-    // create a local working copy for manipulation
-    var clean = angular.copy(voucher);
-
-    // in a simple journal voucher, there are two items
-    var items = [{
-      debit : clean.amount,
-      credit: 0,
-      account_id : clean.fromAccount.id
-    }, {
-      debit : 0,
-      credit : clean.amount,
-      account_id : clean.toAccount.id
-    }];
-
-    // clean up the voucher by removing view properties
-    delete clean.toAccount;
-    delete clean.fromAccount;
-
-    // bind the voucher items
-    clean.items = items;
-
-    return Api.create.call(service, { voucher : clean });
+    return Api.create.call(service, { voucher : v });
   }
 
   /**
