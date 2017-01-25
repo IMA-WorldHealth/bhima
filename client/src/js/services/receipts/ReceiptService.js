@@ -42,6 +42,7 @@ function ReceiptService($http, util, Language, AppCache) {
   service.voucher = voucher;
   service.transaction = transaction;
   service.payroll = payroll;
+  service.creditNote = creditNote;
 
   service.setPosReceipt = setPosReceipt;
   service.setSimplified = setSimplified;
@@ -114,6 +115,12 @@ function ReceiptService($http, util, Language, AppCache) {
   // print a complex voucher receipt
   function voucher(uuid, options) {
     var route = '/reports/finance/vouchers/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // print a credit note for an invoice 
+  function creditNote(uuid, options) {
+    var route = '/reports/finance/invoices/'.concat(uuid, '/creditNote');
     return fetch(route, options);
   }
 

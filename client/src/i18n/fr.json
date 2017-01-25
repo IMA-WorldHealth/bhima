@@ -105,8 +105,9 @@
       "TITLE" : "Facture(s) debiteur"
     },
     "PAYMENT"         : "Paiement",
-    "RECEIPT"         : {
-      "SUCCESS" : "Succes"
+    "RECEIPT": {
+      "TITLE"   : "Recu",
+      "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
@@ -121,10 +122,6 @@
       "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
       "SUCCESS" : "Transfer effectué vers le compte de transfer."
     },
-    "RECEIPT": {
-      "TITLE"   : "Recu",
-      "SUCCESS" : "Créé avec succès un paiement en espèces"
-    },
     "VOUCHER": {
       "CASHBOXES": {
         "AVAILABLE"       : "Caisse disponibles",
@@ -137,6 +134,14 @@
         "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
+      "BARCODE" : {
+        "SCAN" : "Scanner le Code à Barres",
+        "AWAITING_INPUT" : "En Attente d'Entrée",
+        "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
+        "READ_SUCCESS" : "Facture Trouvée",
+        "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
+      },
+      "SCAN_BARCODE"    : "Scanner le code bare de la facture",
       "OPEN_BARCODE_MODAL" : "Numériser un autre code à barres lors d'un paiement réussi.",
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
@@ -312,6 +317,7 @@
   },
   "FORM": {
     "BUTTONS": {
+      "ACTIONS"               : "Actions",
       "ADD"                   : "Ajouter",
       "BACK"                  : "Précédent",
       "CANCEL"                : "Annuler",
@@ -400,6 +406,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
+      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -455,6 +462,7 @@
       "APPLY_DISCOUNTS"        : "Appliquer réduction",
       "APPLY_SUBSIDIES"        : "Appliquer subvention",
       "ASSET"                  : "Actif",
+      "AUTHOR"                 : "Auteur",
       "AUXILIARY"              : "Auxilliaire",
       "BALANCE"                : "Balance",
       "BALANCE_SECTION"        : "Section du Bilan",
@@ -468,7 +476,7 @@
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
       "CANCELED"               : "Annulée",
-      "CHARACTERISTICS"         : "Caractéristiques",
+      "CHARACTERISTICS"        : "Caractéristiques",
       "CASHBOX"                : "Caisse",
       "CASHIER"                : "Caissier",
       "CASH_ACCOUNT"           : "Compte caisse",
@@ -486,7 +494,9 @@
       "COUNTRY"                : "Pays",
       "CONSUMABLE"             : "Consommable",
       "CREATE"                 : "CRÉATION",
+      "CREATE_CREDIT_NOTE"     : "Emettre Note de Credit",
       "CREATED"                : "Crée",
+      "CREATED_BY"             : "Crée par",
       "CREDIT"                 : "Crédit",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
       "CREDITOR_SUBCRIBED"     : "Crediteur souscris",
@@ -556,6 +566,7 @@
       "INTL"                   : "Internationale",
       "INVENTORY"              : "Inventaire",
       "INVOICE"                : "Facture",
+      "INVOICES"               : "Factures",
       "INVOICES_DETAILS"       : "Details Factures",
       "INVOICE_PAYMENT"        : "Paiement facture",
       "IS_ASSET"               : "Actif ?",
@@ -1176,8 +1187,6 @@
   "REPORT" : {
     "ACCOUNT"       : "Rapport du Compte",
     "BALANCE"       : "Rapport de la Balance",
-    "DOWNLOAD"      : "Telecharger",
-    "DELETE"        : "Supprimer rapport",
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Moins de 30 jours",
@@ -1204,7 +1213,9 @@
     "REPORT_ACCOUNTS"  : "Rapport de comptes",
     "INCOME_REPORT"    : "Rapport des recettes",
     "EXPENSE_REPORT"   : "Rapport des dépenses",
-    "SINCE"            : "Depuis"
+    "SINCE"            : "Depuis",
+    "VIEW_RECEIPT"     : "Voir le document",
+    "VIEW_CREDIT_NOTE" : "Voir la note de credit"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
@@ -1303,6 +1314,7 @@
       "COST"               : "Cout",
       "COST_CENTER"        : "Centre de cout",
       "COUNTRY"            : "Pays",
+      "CREATED_BY"         : "Crée par",
       "CREDIT"             : "Credit",
       "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
@@ -1408,7 +1420,6 @@
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
       "TYPE"               : "Type",
-      "USER"               : "Utilisateur",
       "UNIT"               : "Unité",
       "UNIT_PRICE"         : "Prix unitaire",
       "UNPAID_INVOICE_1"   : "Cette facture n'a pas été compensée en ",
@@ -1418,22 +1429,24 @@
       "VILLAGE"            : "Village/Commune"
     },
     "AGGREGATES"         : {
-      "NUMBER_OF_DAYS" : "Nombre des Jours",
-      "TOTAL_COST" : "Cout Totale",
-      "TOTAL_AMOUNT" : "Mountant Totale",
-      "NUM_USERS" : "Nombre des Utilisateurs",
-      "NUM_SERVICES" : "Nombre des Services",
-      "NUM_PROJECTS" : "Nombre des Projets",
-      "NUM_PAYMENTS" : "Nombre des Paiements",
-      "NUM_INVOICES" : "Nombre des Factures",
-      "NUM_CAUTIONS" : "Nombre des Cautions",
-      "NUM_CASHBOXES" : "Nombres des Caisses",
-      "NUM_CLIENTS" : "Nombre des Clients Unique",
-      "NUM_MEN" : "Nombre des Hommes",
-      "NUM_WOMEN" : "Nombre des Femmes",
-      "NUM_PATIENTS" : "Nombre des Patients",
+      "NUM_USERS"      : "Nombre des Utilisateurs",
+      "NUM_SERVICES"   : "Nombre des Services",
+      "NUM_PROJECTS"   : "Nombre des Projets",
+      "NUM_PAYMENTS"   : "Nombre des Paiements",
+      "NUM_INVOICES"   : "Nombre des Factures",
+      "NUM_CAUTIONS"   : "Nombre des Cautions",
+      "NUM_CASHBOXES"  : "Nombres des Caisses",
+      "NUM_CLIENTS"    : "Nombre des Clients Unique",
+      "NUM_MEN"        : "Nombre des Hommes",
+      "NUM_WOMEN"      : "Nombre des Femmes",
+      "NUM_PATIENTS"   : "Nombre des Patients",
       "NUM_DISTINCT_RESIDENCES" : "Nombres des Residences Unique",
-      "NUM_DEBTOR_GROUPS" : "Nombre des Groups de Debiteur"
+      "NUM_DEBTOR_GROUPS"       : "Nombre des Groups de Debiteur",
+      "NUM_RECORDS"    : "Nombre des enregistrements",
+      "NUMBER_OF_DAYS" : "Nombre des Jours",
+      "RECORDS"        : "Données",
+      "TOTAL_COST"     : "Cout Totale",
+      "TOTAL_AMOUNT"   : "Mountant Totale"
     }
   },
   "TRANSACTION_TYPE" : {

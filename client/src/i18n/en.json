@@ -133,6 +133,13 @@
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
         "SELECTED"        : "Selected cash"
       },
+      "BARCODE" : {
+        "SCAN" : "Scan the barcode",
+        "AWAITING_INPUT" : "Waiting input",
+        "AWAITING_HTTP" : "Barcode done! search invoice...",
+        "READ_SUCCESS" : "Invoice found",
+        "READ_ERROR" : "Can't read barcode! Please enter code manually"
+      },
       "SCAN_BARCODE"    : "Scan Invoice Barcode",
       "OPEN_BARCODE_MODAL" : "Scan another barcode on successful payment.",
       "DEBTOR_INVOICES" : "Debtor Invoices",
@@ -308,6 +315,7 @@
   },
   "FORM": {
     "BUTTONS": {
+      "ACTIONS"               : "Actions",
       "ADD"                   : "Add",
       "BACK"                  : "Back",
       "CANCEL"                : "Cancel",
@@ -397,6 +405,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
+      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -406,6 +415,7 @@
       "GROUPS_PATIENT"       : "Assign the patient to patient groups from the options below. Press 'confirm' to permanently update the patient's subscribed groups.",
       "ITEMS_FULL"           : "There are no additional inventory items that be assigned to this invoice.",
       "IMPORT_SUCCESS"       : "Successfully Imported",
+      "INVOICES"             : "Invoices",
       "LOADING"              : "Loading",
       "MANY_TRYS"            : "Many tries",
       "NOT_CONFIGURED"       : "The accounts for this currency have not been configured yet.",
@@ -450,6 +460,7 @@
       "APPLY_DISCOUNTS"        : "Apply discounts",
       "APPLY_SUBSIDIES"        : "Apply subsidies",
       "ASSET"                  : "Asset",
+      "AUTHOR"                 : "Author",
       "AUXILIARY"              : "Auxiliary",
       "BALANCE"                : "Balance",
       "BALANCE_SECTION"        : "Balance Sheet Section",
@@ -481,7 +492,9 @@
       "CONVENTION"             : "Convention",
       "COUNTRY"                : "Country",
       "CREATE"                 : "Create",
+      "CREATE_CREDIT_NOTE"     : "Issue Credit Note",
       "CREATED"                : "Created",
+      "CREATED_BY"             : "Created by",
       "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
       "CREDITOR_SUBCRIBED"     : "Subscribed Creditors",
@@ -1167,7 +1180,6 @@
     "CHART_OF_ACCOUNTS" : "Chart of Accounts",
     "CLOSING_BALANCE"  : "Closing Balance",
     "CONFIGURATION"    : "Report Configuration",
-    "INCOME_EXPENSE"   : "Incomes and Expenses Report",
     "GENERATED"        : "Generated Report",
     "MONTHLY_BALANCE"  : "Monthly Balance",
     "OPENNING_BALANCE" : "Opening Balance",
@@ -1180,7 +1192,9 @@
     "INCOME_REPORT"    : "Incomes Report",
     "EXPENSE_REPORT"   : "Expenses Report",
     "SINCE"            : "Since",
-    "INCOME_EXPENSE" : "Income Expense Report"
+    "INCOME_EXPENSE"   : "Income Expense Report",
+    "VIEW_RECEIPT"     : "View Receipt",
+    "VIEW_CREDIT_NOTE" : "View Credit Note"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",

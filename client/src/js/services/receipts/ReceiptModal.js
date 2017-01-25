@@ -31,6 +31,7 @@ function ReceiptModal(Modal, Receipts) {
   service.transaction = transaction;
   service.payroll = payroll;
   service.voucher = voucher;
+  service.creditNote = creditNote;
 
   /**
    * Invokes a patient invoice receipt
@@ -189,6 +190,42 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * Invokes an invoice's credit note 
+   *
+   * @param {String} uuid             Target invoice UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
+  function creditNote(uuid, notifyCreated, userOptions) {
+
+    /** @todo Discuss if these should be overridable from the controller or if the config should be set here */
+    var options = {
+      title         : 'TREE.CREDIT_NOTE',
+      createdKey    : 'PATIENT_INVOICE.SUCCESS',
+      identifier    : 'reference',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var receiptOptions = {
+      renderer      : Receipts.renderers.PDF
+    };
+
+    angular.extend(receiptOptions, userOptions);
+
+    var creditNoteRequest = Receipts.creditNote(uuid, receiptOptions);
+    var creditNoteProvider = {
+      resolve : {
+        receipt       : function receiptProvider() { return { promise : creditNoteRequest }; },
+        options       : function optionsProvider() { return options; },
+      }
+    };
+
+    var configuration = angular.extend(modalConfiguration, creditNoteProvider);
     var instance = Modal.open(configuration);
     return instance.result;
   }

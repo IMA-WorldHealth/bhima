@@ -2,10 +2,11 @@ angular.module('bhima.controllers')
   .controller('ModalCreditNoteController', ModalCreditNoteController);
 
 ModalCreditNoteController.$inject = [
-  '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService', 'NotifyService'
+  '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService', 'NotifyService',
+  '$translate'
 ];
 
-function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify) {
+function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $translate) {
   var vm = this;
 
   vm.creditNote = {};
@@ -25,6 +26,10 @@ function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify) {
 
      // stop submission if the form is invalid
     if (form.$invalid) { return; }
+
+    var creditNoteMessage = $translate.instant('FORM.INFO.CREDIT_NOTE_INVOICE');
+    creditNoteMessage = creditNoteMessage.replace('%FAC%', vm.patientInvoice.reference);
+    vm.creditNote.description += ' -- '.concat(creditNoteMessage) ;
 
     return Vouchers.reverse(vm.creditNote)
       .then(function () {

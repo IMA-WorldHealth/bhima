@@ -13,7 +13,11 @@ function InvoiceRegistryPage() {
     return GU.getRows(gridId).count();
   }
 
-  function showInvoiceProof(n) {
+  /**
+   * @param {number} n the index of the row 
+   * @param {string} actionType invoiceReceipt|creditNoteReceipt|createCreditNote
+   */
+  function clickOnMethod(n, actionType) {
     const receiptColumnNumber = 6;
 
     const row = GU.getGrid(gridId)
@@ -23,12 +27,14 @@ function InvoiceRegistryPage() {
     // click the <a> tag within the cell
     row
       .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(receiptColumnNumber))
-      .element(by.css('[data-method="receipt"]'))
+      .element(by.css('[data-method="action"]'))
       .click();
+
+    $(`[data-method="${actionType}"]`).click();
   }
 
   page.getInvoiceNumber = getInvoiceNumber;
-  page.showInvoiceProof = showInvoiceProof;
+  page.clickOnMethod = clickOnMethod;
 }
-
+  
 module.exports = InvoiceRegistryPage;

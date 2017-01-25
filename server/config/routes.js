@@ -372,6 +372,7 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
+  app.get('/reports/finance/invoices/:uuid/creditNote', financeReports.invoices.creditNote);
   app.get('/reports/finance/cash', financeReports.cash.report);
   app.get('/reports/finance/cash/:uuid', financeReports.cash.receipt);
   app.get('/reports/finance/debtors/aged', financeReports.debtors.aged);

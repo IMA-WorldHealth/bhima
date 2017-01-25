@@ -1,17 +1,10 @@
-{{> head title="TREE.PATIENT_INVOICE"}}
+{{> head title="TREE.CREDIT_NOTE"}}
 
 <div class="container" style="font-size: 0.9em;">
 
   <header>
     <!-- headings  -->
     <div class="row">
-      {{#if isCreditNoted}}
-        <div class="text-center" style="position: absolute; border: 5px solid red; -webkit-transform: rotate(10deg); transform: rotate(10deg); left: 35%; top: 20px;">
-          <span style="font-size: 24px; color: red;">
-            {{translate 'FORM.INFO.CREDIT_NOTE'}}
-          </span><br>{{creditNoteReference}}
-        </div>
-      {{/if}}
       <div class="col-xs-6">
         <h3 style="margin: 0px;">{{enterprise.name}}</h3>
         <p>
@@ -22,15 +15,15 @@
       </div>
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
-          <strong>{{reference}}</strong> <br>
-          <small>{{date date}}</small> <br>
+          <span class="text-uppercase">{{translate 'FORM.INFO.CREDIT_NOTE'}}</span> <br>
+          <strong>{{creditNote.reference}}</strong> <br>
+          <small>{{date creditNote.date}}</small> <br>
         </h3>
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;margin-top: 5px;">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{recipient.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{recipient.display_name}} <br>
@@ -38,6 +31,10 @@
         <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{recipient.hospital_no}}</strong>
       </div>
       <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.INFO.CREDIT_NOTE'}}</span>: <strong>{{creditNote.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date creditNote.date}} <br> 
+        <span class="text-capitalize">{{translate "TREE.CREDIT_NOTE"}} {{translate "FORM.LABELS.CREATED_BY"}}</span>: {{creditNote.display_name}}
+        <hr>
         <span class="text-capitalize">{{translate 'FORM.LABELS.INVOICE'}}</span>: <strong>{{reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency cost metadata.enterprise.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date date}} <br>
@@ -50,7 +47,7 @@
   <h4>
     <u>{{translate 'FORM.LABELS.DESCRIPTION'}}</u>
   </h4>
-  <p>{{description}}</p>
+  <p>{{creditNote.description}}</p>
 
   <!-- invoice details  -->
   {{#if items.length}}

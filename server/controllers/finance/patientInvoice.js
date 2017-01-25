@@ -29,6 +29,8 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
 
+const CREDIT_NOTE_ID = 10;
+
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
 
@@ -48,6 +50,9 @@ exports.find = find;
 
 /** find the balance on an invoice due the particular debtor */
 exports.balance = balance;
+
+/** Expose lookup invoice credit note for other controllers to use internally */
+exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
 
 /**
  * list
@@ -329,4 +334,28 @@ function search(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * CreditNote for an invoice 
+ */
+function lookupInvoiceCreditNote(invoiceUuid) {
+  let buid = db.bid(invoiceUuid);
+  const sql = `
+    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference, 
+      v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name 
+    FROM voucher v 
+    JOIN project p ON p.id = v.project_id 
+    JOIN user u ON u.id = v.user_id 
+    JOIN invoice i ON i.uuid = v.reference_uuid
+    WHERE v.type_id = ${CREDIT_NOTE_ID} AND v.reference_uuid = ?`;
+  return db.one(sql, [buid])
+    .then(creditNote => {
+      return creditNote;
+    })
+    .catch(err => {
+      // db.one throw a critical error when there is not any record 
+      // and it must be handled
+      return null;
+    });
 }

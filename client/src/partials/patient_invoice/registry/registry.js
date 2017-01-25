@@ -23,6 +23,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
+  vm.creditNoteReceipt = Receipt.creditNote;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.creditNote = creditNote;
@@ -55,7 +56,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     },
     { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-    { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html', enableSorting: false },
     { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
   ];
 
@@ -110,6 +110,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       invoices.forEach(function (invoice) {
         invoice._backgroundColor =
           (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+
+        invoice._is_cancelled = (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE);
       });
 
       // put data in the grid
