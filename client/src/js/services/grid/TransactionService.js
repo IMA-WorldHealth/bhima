@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid'];
+TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store'];
 
 /**
  * Transactions Service
@@ -19,7 +19,7 @@ TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyS
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
+function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store) {
 
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
@@ -48,6 +48,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
    * @private
    */
   function indexBy(array, property) {
+
+    console.log('calculating indexes');
     return array.reduce(function (aggregate, row, index) {
       var key = row.entity[property];
 
@@ -134,6 +136,19 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
     }.bind(this));
   }
 
+  Transactions.prototype.removeRows = function removeRows() {
+    var selectedRows = this.gridApi.selection.getSelectedRows();
+
+    selectedRows.forEach(function (row) {
+
+      if (row.record_uuid === this._entity.record_uuid) {
+        this._entity.removedRows.push(row);
+        this.removeRowIfExists(row);
+
+      }
+    }.bind(this));
+  }
+
   Transactions.prototype.addRow = function addRow() {
 
     var transactionRow = {};
@@ -161,11 +176,15 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
     if (oldValue !== newValue) {
       this._changes[rowEntity.uuid] = this._changes[rowEntity.uuid] || {};
       this._changes[rowEntity.uuid][colDef.field] = newValue;
+
+      // @fixme
+      this._entity.data.get(rowEntity.uuid)[colDef.field] = newValue;
     }
     // this._changes[rowEntity.uuid][colDef] = newValue;
 
     // console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
-    console.log(this._changes);
+    console.log('_changes', this._changes);
+    console.log('_entity', this._entity);
   }
 
   /**
@@ -211,6 +230,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
    */
   function createTransactionIndexMap() {
     var rows = this.gridApi.grid.rows;
+
+    console.log('createTransactionIndexMap');
     this.transactionIndices = indexBy(rows, 'record_uuid');
   }
 
@@ -293,6 +314,8 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
     console.log('setting property');
     // loop through all rows to set the transactions
     rows.forEach(function (row, index) {
+
+      console.log('trying to update row', row);
       if (row.entity.record_uuid === uuid) {
 
         console.log('setting child property');
@@ -368,33 +391,47 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
       uuid = getChildRecordUuid(uuid);
     }
 
-    if (!this._cellNavEnabled) {
-      this.enableCellNavigation();
-    }
+    // fetch the transaction from the server
+    Journal.grid(uuid)
+      .then(function (result) {
+        var transactionData = new Store({identifier : 'uuid'});
+        transactionData.setData(result);
 
-    // @todo create template row for addRow to use
-    setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
-    this.scrollIntoView(uuid);
-    this._entity = {
-      uuid : uuid,
-      rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
-      aggregates : {},
-      newRows : []
-    };
-    this._entity.trans_id = this._entity.rows[0].entity.trans_id;
-    this._entity.transaction = this._entity.rows[0].entity.transaction;
-    this._entity.date = this._entity.rows[0].entity.trans_date;
-    this._entity.record_uuid = this._entity.rows[0].entity.record_uuid;
-    this._entity.hrRecord = this._entity.rows[0].entity.hrRecord;
+        console.log('journal has fetched', result);
 
-    this.digestAggregates();
+        if (!this._cellNavEnabled) {
+          this.enableCellNavigation();
+        }
 
-    // @sfount proposal
-    // 1. Download transaction information seperate from current view
-    // 2. Show entity information in edit bar
-    // 3. Ensure whenever filters or searches are applied that styles and edit classes are updated
+        // @todo create template row for addRow to use
+        setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
+        this.scrollIntoView(uuid);
+        this._entity = {
+          uuid : uuid,
+          data : transactionData,
+          rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
+          aggregates : {},
+          newRows : [],
+          removedRows : []
+        };
+        this._entity.trans_id = this._entity.rows[0].entity.trans_id;
+        this._entity.transaction = this._entity.rows[0].entity.transaction;
+        this._entity.date = this._entity.rows[0].entity.trans_date;
+        this._entity.record_uuid = this._entity.rows[0].entity.record_uuid;
+        this._entity.hrRecord = this._entity.rows[0].entity.hrRecord;
 
-    console.log('editing with', this._entity);
+        this.applyEdits();
+        this.digestAggregates();
+
+        // @sfount proposal
+        // 1. Download transaction information seperate from current view
+        // 2. Show entity information in edit bar
+        // 3. Ensure whenever filters or searches are applied that styles and edit classes are updated
+
+        console.log('editing with', this._entity);
+
+      }.bind(this));
+
 
 
   };
@@ -420,20 +457,62 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid) {
   // uniform user experience.
   // - local filters will still be applied to new and updated rows.
   Transactions.prototype.applyEdits = function applyEdits () {
+    var gridData = this.gridApi.grid.options.data;
     this.transactionIndices = {};
 
-    console.log(this.transactionIndices);
+    console.log('applyEdits');
     if (this._entity) {
       // apply edits - ensure current rows are shown
 
+      console.log('editing exists');
+      console.log('mapping');
+      //@fixme
+      this._entity.data.data.map(this.removeRowIfExists.bind(this));
+      // this._entity.rows.forEach(function (row) {
+        // data items are kept up to date with the latest changes, these
+        // replace the latest server rows
+        // this.removeRowIfExists(row);
+      // });
+
+
+      // introduce theory data
+      this._entity.data.data.forEach(function (row) {
+        gridData.push(row);
+      }.bind(this));
+
       // include new rows
       this._entity.newRows.forEach(function (row) {
-        this.gridApi.grid.options.data.push(row);
+        gridData.push(row);
+        // this.gridApi.grid.options.data.push(row);
       }.bind(this));
 
       // ensure removal of old rows
+
     }
   }
+
+  Transactions.prototype.removeRowIfExists = function removeRowIfExists(row) {
+    var uuid = row.uuid;
+    console.log('removing row if it exists', row);
+    console.log('rowdata', this.gridApi.grid.options.data);
+    console.log(':', this.gridApi.grid.options.data.indexOf(row.entity));
+
+    var dataIndex;
+    var index = this.gridApi.grid.options.data.some(function (journalRow, index) {
+      // console.log('comparing', journalRow.uuid, uuid);
+      if (journalRow.uuid === uuid) {
+        dataIndex = index;
+        return true;
+      }
+      return false;
+    });
+
+    if (dataIndex) {
+      console.log('removed', dataIndex);
+      this.gridApi.grid.options.data.splice(dataIndex, 1);
+      createTransactionIndexMap.bind(this)();
+    }
+  };
 
 
 
