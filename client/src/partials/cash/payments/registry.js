@@ -73,10 +73,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
   }, {
     field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/cash/payments/templates/action.grid.html'
-  }, {
-    field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/cash/payments/templates/cancelCash.action.tmpl.html'
+    cellTemplate: 'partials/cash/payments/templates/action.cell.html'
   }];
 
   function handleError(error) {
