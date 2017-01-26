@@ -34,6 +34,13 @@
         </bh-pdf-print>
       </div>
 
+      <!-- dropdown download  -->
+      <div class="toolbar-item btn-group btn-group-sm">
+        <bh-renderer-dropdown
+          report-url="{{ vm.dropdownDownload.reportUrl }}">
+        </bh-renderer-dropdown>
+      </div>
+
       <!-- buttons -->
       <div ng-show="vm.bcButtons.length">
         <button class="toolbar-item btn"

@@ -143,7 +143,7 @@ function report(req, res, next) {
   let hasFilter = false;
 
   let report;
-  let lang = req.query.lang;
+  let optionReport =  _.extend(req.query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', orientation : 'landscape'});
 
   // set up the report with report manager
   try {
@@ -153,7 +153,7 @@ function report(req, res, next) {
       hasFilter = Object.keys(display).length > 0;
     }
 
-    report = new ReportManager(REPORT_TEMPLATE, req.session, req.query);
+    report = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
   } catch (e) {
     return next(e);
   }

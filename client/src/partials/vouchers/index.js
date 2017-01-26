@@ -42,6 +42,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   /** button Print */
   vm.buttonPrint = { pdfUrl: '/reports/finance/vouchers' };
 
+
   /** search filters */
   vm.searchFilter = [
     { displayName: 'FORM.LABELS.DATE_FROM', values: vm.dateInterval ? vm.dateInterval.dateFrom : null, filter: 'moment' },
@@ -50,6 +51,9 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // init the filter service
   var filtering  = new Filtering(vm.gridOptions);
+
+  /** dropdown download */
+  vm.dropdownDownload = { reportUrl : '/reports/finance/vouchers' };
 
   vm.gridOptions = {
     appScopeProvider : vm,

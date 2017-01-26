@@ -48,7 +48,7 @@ function report(req, res, next) {
   let report;
 
   const query = _.clone(req.query);
-  _.extend(query, { csvKey : 'rows' });
+  _.extend(query, { filename : 'INVOICE_REGISTRY.TITLE', csvKey : 'rows'});
 
   try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, query);
