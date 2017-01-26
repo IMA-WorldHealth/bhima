@@ -23,6 +23,8 @@ const util   = require('../../lib/util');
 const db     = require('../../lib/db');
 const barcode = require('../../lib/barcode');
 
+const FilterParser = require('../../lib/filter');
+
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
@@ -166,18 +168,10 @@ function create(req, res, next) {
 }
 
 function find(options) {
+  let filters = new FilterParser(options, { tableAlias : 'q' });
 
-  // remove the limit first thing, if it exists
-  let limit = Number(options.limit);
-  delete options.limit;
+  // @FIXME Remove this with client side filter design
   delete options.patientNames;
-
-  // support flexible queries by keeping a growing list of conditions and
-  // statements
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
 
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
@@ -192,8 +186,9 @@ function find(options) {
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
-    WHERE
   `;
+
+  db.convert(options, ['debtor_uuid', 'uuid']);
 
   if (options.debtor_uuid) {
     options.debtor_uuid = db.bid(options.debtor_uuid);
