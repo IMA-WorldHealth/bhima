@@ -1,0 +1,13 @@
+<div class="ui-grid-cell-contents">
+  <span uib-dropdown dropdown-append-to-body>
+
+    <span uib-dropdown-toggle class="text-action">
+      <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+      <span class="caret"></span>
+    </span>
+    <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+      <li><a data-method="edit" ng-click="grid.appScope.edit(row.entity)" href><i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span></a></li>
+      <li><a data-method="permission" ng-click="grid.appScope.editPermissions(row.entity)" href><i class="fa fa-key"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span></a></li>
+    </ul>
+  </span>
+</div>
