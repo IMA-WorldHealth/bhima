@@ -7,6 +7,7 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const GU = require('../shared/GridUtils');
+const GA = require('../shared/GridAction');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -40,8 +41,7 @@ describe('Billing Services', function () {
   it('can update a billing service', function () {
 
     // get the cell with the update button and click it
-    var cell = GU.getCell(gridId, 0, 6);
-    cell.element(by.css('[data-method="update"]')).click();
+    GA.clickOnMethod(0, 6, 'edit', 'BillingServicesGrid');
 
     // expect to find the update form has loaded
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
@@ -57,8 +57,7 @@ describe('Billing Services', function () {
   it('can delete a billing service', function () {
 
     // get the cell with the delete button and click it
-    var cell = GU.getCell(gridId, 0, 7);
-    cell.element(by.css('[data-method="delete"]')).click();
+    GA.clickOnMethod(0, 6, 'delete', 'BillingServicesGrid');
 
     // expect the modal to appear
     FU.exists(by.css('[data-confirm-modal]'), true);
