@@ -69,8 +69,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       treeAggregationLabel: '', footerCellClass : 'text-center',
     },
     { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
-      sort: { priority: 0, direction : 'asc' },
-      grouping: { groupPriority: 0},
+      sort: { priority: 0, direction : 'asc' },  
       cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn: typeAggregation,
@@ -96,7 +95,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       groupingShowAggregationMenu: false
     },
     { field : 'action', displayName : '...', enableFiltering: false, enableColumnMenu: false,
-      enableSorting: false, cellTemplate: 'partials/templates/grid/linkFilePDF.tmpl.html',
+      enableSorting: false, cellTemplate: 'partials/vouchers/templates/action.cell.html'
     }
   ];
 
