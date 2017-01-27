@@ -80,8 +80,10 @@ describe('Inventory List', () => {
   });
 
   it('successfully updates an existing inventory item (metadata)', () => {
-    element(by.css(`[data-action-metadata="${metadata.code}"]`)).click();
+    let row = $(`[data-row-item="${metadata.code}"]`);
+    row.$('[data-method="action"]').click();
     element(by.css(`[data-edit-metadata="${metadata.code}"]`)).click();
+
     FU.input('$ctrl.item.label', metadataUpdate.text);
     FU.input('$ctrl.item.code', metadataUpdate.code);
     element(by.model('$ctrl.item.consumable')).click();

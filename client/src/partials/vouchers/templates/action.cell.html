@@ -12,7 +12,7 @@
           ng-if="row.entity.uuid"
           ng-click="grid.appScope.showReceipt(row.entity.uuid)"
           data-link-receipt="{{ ::row.entity.uuid }}">
-          <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
+          <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
         </a>
       </li>
     </ul>
