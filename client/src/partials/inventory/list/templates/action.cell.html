@@ -1,0 +1,19 @@
+<div class="ui-grid-cell-contents">
+  <span uib-dropdown dropdown-append-to-body>
+
+    <span uib-dropdown-toggle class="text-action">
+      <span data-action-metadata="{{ row.entity.code }}" data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+      <span class="caret"></span>
+    </span>
+    <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+      <li>
+        <a href
+            data-method="edit"
+            data-edit-metadata="{{ row.entity.code }}"
+            ng-hide="row.groupHeader" ui-sref="inventory.update({uuid : row.entity.uuid })">
+            <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+        </a>
+      </li>
+    </ul>
+  </span>
+</div>
