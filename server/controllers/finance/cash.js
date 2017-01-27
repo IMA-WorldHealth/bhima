@@ -82,11 +82,12 @@ function lookup(id) {
   `;
 
   const cashItemsRecordSql = `
-    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid, s.name AS serviceName, 
       CONCAT_WS('.', '${identifiers.INVOICE.key}', p.abbr, i.reference) AS reference
     FROM cash_item AS ci
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
+      LEFT JOIN service AS s ON i.service_id = s.id
     WHERE ci.cash_uuid = ?;
   `;
 
