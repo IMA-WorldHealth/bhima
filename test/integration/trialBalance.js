@@ -26,8 +26,8 @@ describe('(/trial) API endpoint', function () {
   const NUM_ROWS_UNKNOWN_TRANSACTIONS = 0;
 
   it('GET /trial_balance/data_per_account : it returns data grouped by account ', function () {
-    return agent.get('/trial_balance/data_per_account')
-      .query(transactionParameter.goodTransaction.params)
+    return agent.post('/trial_balance/data_per_account')
+      .send(transactionParameter.goodTransaction.params)
       .then(function (res) {
         helpers.api.listed(res, NUM_ROWS_GOOD_TRANSACTION);
       })
@@ -35,8 +35,8 @@ describe('(/trial) API endpoint', function () {
   });
 
   it('GET /trial_balance/data_per_account : it returns an empty array when there is no transaction matching ', function () {
-    return agent.get('/trial_balance/data_per_account')
-      .query(transactionParameter.unknownTransactions.params)
+    return agent.post('/trial_balance/data_per_account')
+      .send(transactionParameter.unknownTransactions.params)
       .then(function (res) {
         helpers.api.listed(res, NUM_ROWS_UNKNOWN_TRANSACTIONS);
       })
@@ -44,8 +44,8 @@ describe('(/trial) API endpoint', function () {
   });
 
   it('GET /trial_balance/data_per_account : it returns an error message and 400 code if the request parameter is null or undefined ', function () {
-    return agent.get('/trial_balance/data_per_account')
-      .query(transactionParameter.emptyParam.params)
+    return agent.post('/trial_balance/data_per_account')
+      .send(transactionParameter.emptyParam.params)
       .then(function (res) {
         helpers.api.errored(res, 400);
       })
@@ -55,7 +55,7 @@ describe('(/trial) API endpoint', function () {
   it('POST /trial_balance/checks : it returns an array of object containing one warning object', function () {
     return agent.post('/trial_balance/checks')
       .send(transactionParameter.warningTransaction.params)
-      .then(function (res) {        
+      .then(function (res) {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -77,7 +77,7 @@ describe('(/trial) API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-  
+
   it('POST /trial_balance/post_transactions : it posts the a transaction to general_ledger and remove it form the posting_general', function () {
     return agent.post('/trial_balance/post_transactions')
       .send(transactionParameter.postingTransaction.params)

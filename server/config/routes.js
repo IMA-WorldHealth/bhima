@@ -219,7 +219,7 @@ exports.configure = function configure(app) {
   app.get('/general_ledger', generalLedger.list);
 
   //API for trial balance
-  app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
+  app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
   app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
 
