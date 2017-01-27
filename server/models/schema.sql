@@ -967,26 +967,6 @@ CREATE TABLE `mod_snis_zs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `movement`;
-
-CREATE TABLE `movement` (
-  `uuid` BINARY(16) NOT NULL,
-  `document_id` BINARY(16) NOT NULL,
-  `depot_entry` BINARY(16) DEFAULT NULL,
-  `depot_exit` BINARY(16) DEFAULT NULL,
-  `tracking_number` char(50) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 0,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `tracking_number` (`tracking_number`),
-  KEY `depot_exit` (`depot_exit`),
-  KEY `depot_entry` (`depot_entry`),
-  FOREIGN KEY (`tracking_number`) REFERENCES `stock` (`tracking_number`),
-  FOREIGN KEY (`depot_exit`) REFERENCES `depot` (`uuid`),
-  FOREIGN KEY (`depot_entry`) REFERENCES `depot` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `offday`;
 
 CREATE TABLE `offday` (
@@ -1632,24 +1612,6 @@ CREATE TABLE `service` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `stock`;
-CREATE TABLE `stock` (
-  `inventory_uuid` BINARY(16) NOT NULL,
-  `tracking_number` char(50) NOT NULL,
-  `expiration_date` date NOT NULL,
-  `entry_date` date NOT NULL,
-  `lot_number` varchar(70) NOT NULL,
-  `purchase_order_uuid` BINARY(16) DEFAULT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`tracking_number`),
-  UNIQUE KEY `stock_1` (`inventory_uuid`, `purchase_order_uuid`),
-  KEY `inventory_uuid` (`inventory_uuid`),
-  KEY `purchase_order_uuid` (`purchase_order_uuid`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
-  FOREIGN KEY (`purchase_order_uuid`) REFERENCES `purchase` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `subsidy`;
 CREATE TABLE subsidy (
   `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1849,3 +1811,50 @@ CREATE VIEW combined_ledger AS
   FROM general_ledger;
 
 SET foreign_key_checks = 1;
+
+
+-- stock tables 
+
+DROP TABLE IF EXISTS `flux`;
+CREATE TABLE `flux` (
+  `id` INT(11) NOT NULL,
+  `label` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `lot`;
+CREATE TABLE `lot` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` BINARY(16) NOT NULL,
+  `initial_quantity` INT(11) NOT NULL DEFAULT 0,
+  `quantity` INT(11) NOT NULL DEFAULT 0,
+  `unit_cost` DECIMAL(19, 4) UNSIGNED NOT NULL,
+  `expiration_date` DATE NOT NULL,
+  `inventory_uuid` BINARY(16) NOT NULL,
+  `purchase_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `purchase_uuid` (`purchase_uuid`),
+  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
+  FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `stock_movement`;
+CREATE TABLE `stock_movement` (
+  `uuid` BINARY(16) NOT NULL,
+  `document_uuid` BINARY(16) NOT NULL,
+  `depot_uuid` BINARY(16) NOT NULL,
+  `lot_uuid` BINARY(16) NOT NULL,
+  `entity_uuid` BINARY(16) NULL,
+  `flux_id` INT(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 0,
+  `is_exit` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY `lot_uuid` (`lot_uuid`),
+  KEY `flux_id` (`flux_id`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
