@@ -158,6 +158,4 @@ describe('Account Management', function () {
     components.modalAction.confirm();
     expect(element.all(by.css('[alert alert-danger]')));
   });
-
-
 });
