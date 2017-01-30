@@ -1,0 +1,6 @@
+<div
+  ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name"
+  class="ui-grid-cell"
+  ui-grid-cell
+  ng-dblClick="grid.appScope.patientCard(row.entity.uuid)">
+</div>
