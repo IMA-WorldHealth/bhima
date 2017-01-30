@@ -14,11 +14,8 @@ BillingServicesController.$inject = [
 function BillingServicesController($state, BillingServices, Accounts, Notify, bhConstants, $timeout) {
   var vm = this;
 
-  var editActionTemplate =
-    'partials/billing_services/templates/actions.edit.html';
-
-  var deleteActionTemplate =
-    'partials/billing_services/templates/actions.delete.html';
+  var actionTemplate =
+    'partials/billing_services/templates/action.cell.html';
 
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.grid.ROW_HIGHLIGHT_FLAG;
 
@@ -59,13 +56,9 @@ function BillingServicesController($state, BillingServices, Accounts, Notify, bh
       headerCellFilter: 'translate',
       cellFilter:'date',
     }, {
-      field : 'edit_action',
+      field : 'action',
       displayName: '',
-      cellTemplate : editActionTemplate
-    }, {
-      field : 'delete_action',
-      displayName: '',
-      cellTemplate : deleteActionTemplate
+      cellTemplate : actionTemplate
     }]
   };
 

@@ -57,7 +57,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     },
     { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-    { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
+    { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/action.cell.html', enableSorting: false }
   ];
 
   //setting columns names

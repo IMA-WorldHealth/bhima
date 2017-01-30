@@ -3,6 +3,7 @@
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
+const GA = require('../shared/GridAction');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
@@ -118,7 +119,8 @@ function CashPaymentsRegistryTests() {
   });
 
   it('successfully Cancel a Cash Payment', () => {
-    element(by.id('CP.TPA.2')).click();
+    // element(by.id('CP.TPA.2')).click();
+    GA.clickOnMethod(0, 7, 'cancel', 'payment-registry');
     FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
     FU.modal.submit();
     components.notification.hasSuccess();
