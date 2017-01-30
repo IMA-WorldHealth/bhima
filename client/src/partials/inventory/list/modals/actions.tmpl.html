@@ -20,6 +20,7 @@
         class="form-control"
         type="text"
         name="code"
+        autocomplete="off"
         placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
@@ -34,6 +35,7 @@
         class="form-control"
         type="text"
         name="text"
+        autocomplete="off"
         placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
@@ -55,6 +57,7 @@
         type="number"
         ng-min="0"
         name="price"
+        autocomplete="off"
         ng-model="$ctrl.item.price"
         placeholder="{{ 'FORM.PLACEHOLDERS.PRICE' | translate }}..."
         required>
@@ -74,6 +77,7 @@
         type="number"
         ng-min="1"
         name="default_quantity"
+        autocomplete="off"
         ng-model="$ctrl.item.default_quantity"
         placeholder="{{ 'FORM.PLACEHOLDERS.QUANTITY' | translate }}...">
       <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">

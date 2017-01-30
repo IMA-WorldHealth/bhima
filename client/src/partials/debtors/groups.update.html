@@ -24,7 +24,7 @@
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
             <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-            <input name="name" ng-model="GroupUpdateCtrl.group.name" class="form-control" required>
+            <input name="name" ng-model="GroupUpdateCtrl.group.name" autocomplete="off" class="form-control" required>
 
             <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -80,7 +80,7 @@
 
             <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
             <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ "FORM.LABELS.MAX_CREDIT_INFO" | translate }}</p>
-            <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" name="max_credit" class="form-control" bh-integer required>
+            <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" autocomplete="off" name="max_credit" class="form-control" bh-integer required>
 
             <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -94,14 +94,14 @@
 
           <div class="form-group">
             <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
-            <input name="phone" ng-model="GroupUpdateCtrl.group.phone" class="form-control">
+            <input name="phone" ng-model="GroupUpdateCtrl.group.phone" autocomplete="off" class="form-control">
           </div>
 
           <div
             class="form-group"
             ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
             <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-            <input name="email" ng-model="GroupUpdateCtrl.group.email" type="email" class="form-control">
+            <input name="email" ng-model="GroupUpdateCtrl.group.email" type="email" autocomplete="off" class="form-control">
 
             <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

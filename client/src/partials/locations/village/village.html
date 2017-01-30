@@ -139,7 +139,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.village.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" autocomplete="off" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
                 <div class="help-block" ng-messages="CreateForm.village.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -221,7 +221,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.village.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" autocomplete="off" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
                 <div class="help-block" ng-messages="UpdateForm.village.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
