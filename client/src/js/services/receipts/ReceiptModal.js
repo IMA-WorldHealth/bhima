@@ -39,7 +39,7 @@ function ReceiptModal(Modal, Receipts) {
    * @param {String} uuid             Target invoice UUID
    * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
    */
-  function invoice(uuid, notifyCreated, userOptions) {
+  function invoice(uuid, notifyCreated) {
 
     /** @todo Discuss if these should be overridable from the controller or if the config should be set here */
     var options = {
@@ -51,10 +51,9 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var receiptOptions = {
-      renderer      : Receipts.renderers.PDF
+      renderer      : Receipts.renderers.PDF,
+      currency : Receipts.receiptCurrency
     };
-
-    angular.extend(receiptOptions, userOptions);
 
     var invoiceRequest = Receipts.invoice(uuid, receiptOptions);
     var invoiceProvider = {

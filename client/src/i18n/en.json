@@ -564,6 +564,7 @@
       "INVENTORY"              : "Inventory",
       "INVOICE"                : "Invoice",
       "INVOICES"               : "Invoices",
+      "INVOICE_CURRENCY_SETTING" : "Invoice Currency Setting",
       "INVOICES_DETAILS"       : "Invoices Details",
       "INVOICE_PAYMENT"        : "Invoice Payment",
       "IS_ASSET"               : "Asset ?",

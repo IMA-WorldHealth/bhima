@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('ReceiptService', ReceiptService);
 
-ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache'];
+ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache', 'SessionService'];
 
 /**
  * Receipts Service
@@ -18,7 +18,7 @@ ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache'];
  *
  * @module services/receipts/ReciptService
  */
-function ReceiptService($http, util, Language, AppCache) {
+function ReceiptService($http, util, Language, AppCache, Session) {
   var service = this;
   var renderers = {
     PDF  : 'pdf',
@@ -30,6 +30,7 @@ function ReceiptService($http, util, Language, AppCache) {
 
   service.posReceipt = cache.posReceipt || '0';
   service.simplified = cache.simplified || '0';
+  service.invoiceCurrency = cache.invoiceCurrency || Session.enterprise.currency_id;
 
   // expose data
   service.renderers = renderers;
@@ -46,6 +47,7 @@ function ReceiptService($http, util, Language, AppCache) {
 
   service.setPosReceipt = setPosReceipt;
   service.setSimplified = setSimplified;
+  service.setReceiptCurrency = setReceiptCurrency;
 
   /**
    * @method fetch
@@ -141,6 +143,10 @@ function ReceiptService($http, util, Language, AppCache) {
 
   function setSimplified(simplifiedEnabled) {
     service.simplified = cache.simplified = simplifiedEnabled;
+  }
+  
+  function setReceiptCurrency(currency) {
+    service.receiptCurrency = cache.receiptCurrency = currency;
   }
 
   return service;

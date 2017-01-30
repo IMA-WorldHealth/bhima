@@ -72,13 +72,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
 
-  vm.receiptOptions = {};
-
-  // receiptOptions are used in the bh-print directive under the receipt-action template
-  vm.setReceiptCurrency = function setReceiptCurrency(currencyId) {
-    vm.receiptOptions.currency = currencyId;
-  };
-
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
