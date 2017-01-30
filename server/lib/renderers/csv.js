@@ -19,7 +19,7 @@ const converter = require('json-2-csv');
 const moment = require('moment');
 
 // @TODO Discuss if this should be moved into its own library
-const DATE_FORMAT = 'DD/MM/YYYY';
+const DATE_FORMAT = 'DD/MM/YYYY H:mm:s';
 const SUPPRESS_DEFAULT_FORMATTING = false;
 const SUPPRESS_DEFAULT_FILTERING = false;
 
