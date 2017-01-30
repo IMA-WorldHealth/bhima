@@ -52,15 +52,16 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>
+
           {{#with payment}}
             {{#if is_caution}}
-              {{translate "CASH.CAUTION"}}
+              <th>{{translate "CASH.CAUTION"}}</th>
             {{else}}
-              {{translate "FORM.LABELS.INVOICE"}}
+              <th>{{translate "FORM.LABELS.INVOICE"}}</th>
+              <th>{{translate "FORM.LABELS.SERVICE"}}</th>
             {{/if}}
           {{/with}}
-        </th>
+
         <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
       </tr>
     </thead>
@@ -68,19 +69,30 @@
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>
+          {{#unless  ../payment.is_caution}}
+            <td>{{item.serviceName}}</td>
+          {{/unless }}
           <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
         </tr>
       {{/each}}
     </tbody>
     <tfoot>
       <tr>
-        <th>{{translate "FORM.LABELS.TOTAL"}}</th>
-        <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
+        {{#if payment.is_caution}}
+          <th>{{translate "FORM.LABELS.TOTAL"}}</th>
+        {{else}}
+          <th colspan="2">{{translate "FORM.LABELS.TOTAL"}}</th>
+        {{/if }}
+          <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
       </tr>
 
       <tr>
-        <th>{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
-        <th class="text-right">{{currency debtorTotalBalance payment.currency_id}}</th>
+        {{#if payment.is_caution}}
+          <th>{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+        {{else}}
+          <th colspan="2">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+        {{/if }}
+        <th class="text-right">{{currency debtorTotalBalance enterprise.currency_id}}</th>
       </tr>
     </tfoot>
   </table>

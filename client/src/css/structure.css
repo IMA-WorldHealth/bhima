@@ -877,3 +877,9 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .ui-grid-footer-panel {
   border-bottom: none;
 }
+
+.bh-filter-bar {
+  min-height : 35px;
+  padding-top : 7px;
+  max-height: initial;
+}

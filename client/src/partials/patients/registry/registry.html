@@ -41,8 +41,7 @@
   </div>
 </div>
 
-<!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-show="PatientRegistryCtrl.filtersFmt.length > 0">
+<div class="flex-util bh-filter-bar" ng-show="PatientRegistryCtrl.filtersFmt.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="PatientRegistryCtrl.filtersFmt"
@@ -74,8 +73,7 @@
       <bh-grid-loading-indicator
         loading-state="PatientRegistryCtrl.loading"
         empty-state="PatientRegistryCtrl.uiGridOptions.data.length === 0"
-        error-state="PatientRegistryCtrl.hasError"
-        >
+        error-state="PatientRegistryCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
   </div>

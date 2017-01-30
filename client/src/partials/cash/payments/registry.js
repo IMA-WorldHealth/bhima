@@ -106,6 +106,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   function reload(filters) {
     vm.filters = filters;
     vm.formatedFilters = Cash.formatFilterParameters(filters.display);
+
+    // show filter bar as needed
+    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?
+      { 'height' : 'calc(100vh - 105px)' } : {};
+
     load(filters.identifiers);
   }
 

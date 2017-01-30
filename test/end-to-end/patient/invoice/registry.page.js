@@ -14,7 +14,7 @@ function InvoiceRegistryPage() {
   }
 
   /**
-   * @param {number} n the index of the row 
+   * @param {number} n the index of the row
    * @param {string} actionType invoiceReceipt|creditNoteReceipt|createCreditNote
    */
   function clickOnMethod(n, actionType) {
@@ -36,5 +36,5 @@ function InvoiceRegistryPage() {
   page.getInvoiceNumber = getInvoiceNumber;
   page.clickOnMethod = clickOnMethod;
 }
-  
+
 module.exports = InvoiceRegistryPage;
