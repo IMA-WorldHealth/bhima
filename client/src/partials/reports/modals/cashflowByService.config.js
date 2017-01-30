@@ -9,8 +9,8 @@ CashflowByServiceConfigController.$inject = [
  * CashflowByService
  *
  * @description
- * This controller is responsible of Aged Debtors report, that report include
- * all incomes minus all depenses
+ * This controller is responsible for setting up the Cashflow by Service report
+ * in the standard report controller.
  */
 function CashflowByServiceConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails) {
   var vm = this;

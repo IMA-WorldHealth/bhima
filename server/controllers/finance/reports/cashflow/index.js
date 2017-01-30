@@ -599,6 +599,7 @@ function reportByService(req, res, next) {
   }
 
   const data = {};
+  let emptyCashValues = false;
 
   // get the cash flow data
   const cashflowByServiceSql = `
@@ -637,6 +638,12 @@ function reportByService(req, res, next) {
     .then(rows => {
       data.rows = rows;
 
+      // return an empty array if no rows
+      if (!rows.length) {
+        emptyCashValues = true;
+        return [];
+      }
+
       // get a list of unique service ids
       let serviceIds = rows
         .map(row => row.service_id)
@@ -647,6 +654,11 @@ function reportByService(req, res, next) {
     })
     .then(services => {
 
+      // if nothing matches the selection criteria, continue with nothing
+      if (emptyCashValues) {
+        return [];
+      }
+
       let rows = data.rows;
       let uuids = rows.map(row => db.bid(row.uuid));
       delete data.rows;
@@ -656,10 +668,10 @@ function reportByService(req, res, next) {
 
       let xAxis = data.services.length;
 
-      // file the matrix with nulls except the correct columns
+      // fill the matrix with nulls except the correct columns
       let matrix = rows.map(row => {
 
-        // fill with each service + two lines for cash payment identifier and patient name
+        // fill line with each service + two lines for cash payment identifier and patient name
         let line = _.fill(Array(xAxis + 2), null);
 
         // each line has the cash payment reference and then the patient name
