@@ -59,6 +59,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     appScopeProvider : vm,
     showColumnFooter : true,
     enableFiltering : vm.filterEnabled,
+    rowTemplate: '/partials/templates/grid/voucher.row.html'
   };
 
   // grid default options

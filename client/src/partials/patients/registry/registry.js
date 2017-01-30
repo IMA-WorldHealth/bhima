@@ -56,7 +56,9 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch: true,
-    columnDefs : columnDefs
+    columnDefs : columnDefs,
+    rowTemplate: '/partials/templates/grid/patient.row.html'
+    
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
