@@ -7,7 +7,8 @@
  * @description
  * This controller is responsible for implementing all crud and others custom request
  * on the services table through the `/services` endpoint.
- *
+ * 
+ * @requires node-uuid
  * @requires db
  * @requires NotFound
  * @requires BadRequest
@@ -16,6 +17,7 @@
 
 'use strict';
 
+const uuid = require('node-uuid');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -63,6 +65,9 @@ function create(req, res, next) {
   let sql = 'INSERT INTO service SET ?';
 
   delete record.id;
+
+  // service unique uuid as entity uuid 
+  record.uuid = db.bid(uuid.v4());
 
   db.exec(sql, [record])
     .then(function (result) {

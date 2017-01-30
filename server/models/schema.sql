@@ -1596,11 +1596,13 @@ CREATE TABLE `sector` (
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
   `id` smallint(5) unsigned not null auto_increment,
+  `uuid` BINARY(16) NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `cost_center_id` SMALLINT(6) DEFAULT NULL,
   `profit_center_id` SMALLINT(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `service_0` (`uuid`),
   UNIQUE KEY `service_1` (`name`),
   UNIQUE KEY `service_2` (`cost_center_id`, `profit_center_id`),
   KEY `enterprise_id` (`enterprise_id`),
@@ -1817,21 +1819,22 @@ SET foreign_key_checks = 1;
 
 DROP TABLE IF EXISTS `flux`;
 CREATE TABLE `flux` (
-  `id` INT(11) NOT NULL,
+  `id`    INT(11) NOT NULL,
   `label` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `lot`;
 CREATE TABLE `lot` (
-  `uuid` BINARY(16) NOT NULL,
-  `label` BINARY(16) NOT NULL,
-  `initial_quantity` INT(11) NOT NULL DEFAULT 0,
-  `quantity` INT(11) NOT NULL DEFAULT 0,
-  `unit_cost` DECIMAL(19, 4) UNSIGNED NOT NULL,
-  `expiration_date` DATE NOT NULL,
-  `inventory_uuid` BINARY(16) NOT NULL,
-  `purchase_uuid` BINARY(16) NOT NULL,
+  `uuid`              BINARY(16) NOT NULL,
+  `label`             BINARY(16) NOT NULL,
+  `initial_quantity`  INT(11) NOT NULL DEFAULT 0,
+  `quantity`          INT(11) NOT NULL DEFAULT 0,
+  `unit_cost`         DECIMAL(19, 4) UNSIGNED NOT NULL,
+  `expiration_date`   DATE NOT NULL,
+  `inventory_uuid`    BINARY(16) NOT NULL,
+  `purchase_uuid`     BINARY(16) NOT NULL,
+  `delay`             INT(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),
@@ -1841,20 +1844,23 @@ CREATE TABLE `lot` (
 
 DROP TABLE IF EXISTS `stock_movement`;
 CREATE TABLE `stock_movement` (
-  `uuid` BINARY(16) NOT NULL,
-  `document_uuid` BINARY(16) NOT NULL,
-  `depot_uuid` BINARY(16) NOT NULL,
-  `lot_uuid` BINARY(16) NOT NULL,
-  `entity_uuid` BINARY(16) NULL,
-  `flux_id` INT(11) NOT NULL,
-  `date` DATE NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 0,
-  `is_exit` TINYINT(1) NOT NULL,
+  `uuid`            BINARY(16) NOT NULL,
+  `document_uuid`   BINARY(16) NOT NULL,
+  `depot_uuid`      BINARY(16) NOT NULL,
+  `lot_uuid`        BINARY(16) NOT NULL,
+  `entity_uuid`     BINARY(16) NULL,
+  `flux_id`         INT(11) NOT NULL,
+  `date`            DATE NOT NULL,
+  `quantity`        int(11) NOT NULL DEFAULT 0,
+  `is_exit`         TINYINT(1) NOT NULL,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `depot_uuid` (`depot_uuid`),
   KEY `lot_uuid` (`lot_uuid`),
   KEY `flux_id` (`flux_id`),
+  KEY `user_id` (`user_id`),
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`)
+  FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
