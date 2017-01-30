@@ -142,7 +142,6 @@
         "READ_SUCCESS" : "Facture Trouvée",
         "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
       },
-      "SCAN_BARCODE"    : "Scanner le code bare de la facture",
       "OPEN_BARCODE_MODAL" : "Numériser un autre code à barres lors d'un paiement réussi.",
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
