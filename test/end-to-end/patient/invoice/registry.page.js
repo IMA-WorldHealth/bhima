@@ -20,17 +20,14 @@ function InvoiceRegistryPage() {
   function clickOnMethod(n, actionType) {
     const receiptColumnNumber = 6;
 
-    const row = GU.getGrid(gridId)
-      .$('.ui-grid-render-container-body')
-      .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(n));
+    // get the proper cell
+    const cell = GU.getCell(gridId, n, receiptColumnNumber);
 
-    // click the <a> tag within the cell
-    row
-      .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(receiptColumnNumber))
-      .element(by.css('[data-method="action"]'))
-      .click();
+    // click the dropdown toggle
+    cell.element(by.css('[uib-dropdown-toggle]')).click();
 
-    $(`[data-method="${actionType}"]`).click();
+    // find the correct list and select the correct method
+    $(`[data-list="${n}"]`).$(`[data-method="${actionType}"]`).click();
   }
 
   page.getInvoiceNumber = getInvoiceNumber;
