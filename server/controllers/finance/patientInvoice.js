@@ -168,7 +168,10 @@ function create(req, res, next) {
 }
 
 function find(options) {
-  let filters = new FilterParser(options, { tableAlias : 'q' });
+  // ensure expected options are parsed as binary
+  db.convert(options, ['patientUuid']);
+
+  let filters = new FilterParser(options, { tableAlias : 'invoice' });
 
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
@@ -188,80 +191,20 @@ function find(options) {
     JOIN enterprise ON enterprise.id = project.enterprise_id
   `;
 
-  db.convert(options, ['debtor_uuid', 'uuid']);
+  filters.equals('patientUuid', 'uuid', 'patient');
+  filters.dateFrom('billingDateFrom', 'date');
+  filters.dateTo('billingDateTo', 'date');
 
-  if (options.debtor_uuid) {
-    options.debtor_uuid = db.bid(options.debtor_uuid);
-  }
+  let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
+  filters.custom('reference', referenceStatement);
 
-  if (options.uuid) {
-    options.uuid = db.bid(options.uuid);
-  }
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
 
-  if (options.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`);
-    conditions.parameters.push(options.reference);
-    delete options.reference;
-  }
+  // @TODO Support ordering query (reference support for limit)?
+  query = query.concat(' ORDER BY invoice.date DESC, invoice.reference DESC ');
 
-  if (options.debtor_uuid) {
-    options.debtor_uuid = db.bid(options.debtor_uuid);
-    conditions.statements.push('invoice.debtor_uuid = ?');
-    conditions.parameters.push(options.debtor_uuid);
-    delete options.debtor_uuid;
-  }
-
-  if (options.billingDateFrom) {
-    conditions.statements.push('DATE(invoice.date) >= DATE(?)');
-    conditions.parameters.push(options.billingDateFrom);
-    delete options.billingDateFrom;
-  }
-
-  if (options.billingDateTo) {
-    conditions.statements.push('DATE(invoice.date) <= DATE(?)');
-    conditions.parameters.push(options.billingDateTo);
-    delete options.billingDateTo;
-  }
-
-  if (options.patientUuid) {
-    options.patientUuid = db.bid(options.patientUuid);
-    conditions.statements.push('patient.uuid = ?');
-    conditions.parameters.push(options.patientUuid);
-    delete options.patientUuid;
-  }
-
-  if (options.user_id) {
-    conditions.statements.push('invoice.user_id = ?');
-    conditions.parameters.push(options.user_id);
-    delete options.user_id;
-  }
-
-
-  sql += conditions.statements.join(' AND ');
-  if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
-  let query = util.queryCondition(sql, options, true);
-
-  sql = query.query;
-  let parameters = conditions.parameters.concat(query.conditions);
-
-  // if nothing was submitted to the search, get all records
-  // this writes in WHERE 1; to the SQL query
-  if (!parameters.length) {
-    sql += ' 1';
-  }
-
-  // add in the ORDER BY date DESC
-  sql += ' ORDER BY invoice.date DESC, invoice.reference DESC ';
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    parameters.push(limit);
-  }
-
-  parameters = parameters.concat(conditions.parameters);
-
-  return db.exec(sql, parameters);
+  return db.exec(query, parameters);
 }
 
 /**

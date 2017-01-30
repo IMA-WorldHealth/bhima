@@ -123,7 +123,7 @@ function FindPatientComponent(Patients, AppCache, Notify) {
 
     // format query string parameters
     var options = {
-      name : text.toLowerCase(),
+      display_name : text.toLowerCase(),
       limit : LIMIT
     };
 

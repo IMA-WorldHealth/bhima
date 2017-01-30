@@ -19,27 +19,27 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
  * to be formatted for tasks that are frequently required.
  *
  * Supported Filter Types:
+ * * equals - a direct comparison
  * * text - search for text contained within a text field
  * * dateFrom - limit the querry to records from a date
  * * dateTo - limit the querry to records up until a date
- *
  *
  * @requires lodash
  * @requires db
  */
 class FilterParser {
   // options that are used by all routes that shouldn't be considered unique filters
+  constructor(filters, filterOptions) {
+    let options = filterOptions || {};
 
-  // potentially take in config -> { tableAlias : 'q' }; defaults to q or something
-  constructor(filters, options) {
     // stores for processing options
     this._statements = [];
     this._parameters = [];
 
-    this._filters = _.clone(filters);
+    this._filters = _.clone(filters) || {};
 
     // configure default options
-    this._tableAlias = options.tableAlias || '';
+    this._tableAlias = options.tableAlias || null;
     this._limitKey = options.limitKey || DEFAULT_LIMIT_KEY;
     this._parseUuids = options.parseUuids || true;
   }
@@ -51,75 +51,109 @@ class FilterParser {
    * filter by text value, searches for value anywhere in the database attribute
    * alias for _addFilter method
    *
-   * @param {String} column column name to search on
-   * @param {String} value value to search for
+   * @param {String} filterKey    key attribute on filter object to be used in filter
+   * @param {String} columnAlias  column to be used in filter query. This will default to
+   *                              the filterKey if not set
+   * @param {String} tableAlias   table to be used in filter query. This will default to
+   *                              the object table alias if it exists
    */
-  fullText(column, filterKey) {
-    let valueKey = filterKey || column;
+  fullText(filterKey, columnAlias, tableAlias) {
+    let column = columnAlias || filterKey;
+    let table = tableAlias || this._tableAlias;
+    let tableString = this._formatTableAlias(table);
 
-    if (this._filters[valueKey]) {
-      let searchString = `%${this._filters[valueKey]}%`;
-      let preparedStatement = `LOWER(${this._tableAlias}.${column}) LIKE ? `;
+    if (this._filters[filterKey]) {
+      let searchString = `%${this._filters[filterKey]}%`;
+      let preparedStatement = `LOWER(${tableString}${column}) LIKE ? `;
 
       this._addFilter(preparedStatement, searchString);
-      delete this._filters[valueKey];
+      delete this._filters[filterKey];
     }
   }
 
   /**
    * @method dateFrom
    *
-   * @description
-   *
-   * An filterKey can be used to override what the method expects to recieve, this
-   * will default to the column name.
-   *
-   * if the value must be used again the removal can be enabled/ suppressed with the
-   * removeValue flag.
+   * @param {String} filterKey    key attribute on filter object to be used in filter
+   * @param {String} columnAlias  column to be used in filter query. This will default to
+   *                              the filterKey if not set
+   * @param {String} tableAlias   table to be used in filter query. This will default to
+   *                              the object table alias if it exists
    */
-  dateFrom(column, filterKey) {
-    let valueKey = filterKey || column;
+  dateFrom(filterKey, columnAlias, tableAlias) {
+    let column = columnAlias || filterKey;
+    let table = tableAlias || this._tableAlias;
+    let tableString = this._formatTableAlias(table);
 
-    if (this._filters[valueKey]) {
-      let preparedStatement = `DATE(${this._tableAlias}.${column}) >= DATE(?)`;
-      this._addFilter(preparedStatement, this._filters[valueKey]);
+    if (this._filters[filterKey]) {
+      let preparedStatement = `DATE(${tableString}${column}) >= DATE(?)`;
+      this._addFilter(preparedStatement, this._filters[filterKey]);
 
-      delete this._filters[valueKey];
+      delete this._filters[filterKey];
     }
   }
 
-  dateTo(column, filterKey) {
-    let valueKey = filterKey || column;
+  /**
+   * @method dateTo
+   *
+   * @param {String} filterKey    key attribute on filter object to be used in filter
+   * @param {String} columnAlias  column to be used in filter query. This will default to
+   *                              the filterKey if not set
+   * @param {String} tableAlias   table to be used in filter query. This will default to
+   *                              the object table alias if it exists
+   */
+  dateTo(filterKey, columnAlias, tableAlias) {
+    let column = columnAlias || filterKey;
+    let table = tableAlias || this._tableAlias;
+    let tableString = this._formatTableAlias(table);
 
-    if (this._filters[valueKey]) {
-      let preparedStatement = `DATE(${this._tableAlias}.${column}) <= DATE(?)`;
+    if (this._filters[filterKey]) {
+      let preparedStatement = `DATE(${tableString}${column}) <= DATE(?)`;
 
-      this._addFilter(preparedStatement, this._filters[valueKey]);
-      delete this._filters[valueKey];
+      this._addFilter(preparedStatement, this._filters[filterKey]);
+      delete this._filters[filterKey];
     }
   }
 
-  custom(column, preparedStatement, preparedValue) {
-    if (this._filters[column]) {
-      let searchValue = preparedValue || this._filters[column];
+  equals(filterKey, columnAlias, tableAlias) {
+    let column = columnAlias || filterKey;
+    let table = tableAlias || this._tableAlias;
+    let tableString = this._formatTableAlias(table);
+
+    if (this._filters[filterKey]) {
+      let preparedStatement = `${tableString}${column} = ?`;
+
+      this._addFilter(preparedStatement, this._filters[filterKey]);
+      delete this._filters[filterKey];
+    }
+  }
+
+  custom(filterKey, preparedStatement, preparedValue) {
+    if (this._filters[filterKey]) {
+      let searchValue = preparedValue || this._filters[filterKey];
 
       this._addFilter(preparedStatement, searchValue);
-      delete this._filters[column];
+      delete this._filters[filterKey];
     }
   }
 
   applyQuery(sql) {
     // optionally call utility method to parse all remaining options as simple
     // equality filters into `_statements`
+    let limitCondition = this._parseLimit();
     this._parseDefaultFilters();
     let conditionStatements = this._parseStatements();
-    let limitCondition = this._parseLimit();
 
     return `${sql} WHERE ${conditionStatements} ${limitCondition}`;
   }
 
   parameters() {
     return this._parameters;
+  }
+
+  // this method only applies a table alias if it exists
+  _formatTableAlias(table) {
+    return table ? `${table}.` : '';
   }
 
   /**
@@ -147,6 +181,7 @@ class FilterParser {
 
     _.each(this._filters, (value, key) => {
       let valueString = '?';
+      let tableString = this._formatTableAlias(this._tableAlias);
 
       if (this._parseUuids) {
         // check to see if key contains the text uuid - if it does and parseUuids has
@@ -155,8 +190,7 @@ class FilterParser {
           valueString = 'HUID(?)';
         }
       }
-
-     this._addFilter(`${this._tableAlias}.${key} = ${valueString}`, value);
+      this._addFilter(`${tableString}${key} = ${valueString}`, value);
     });
   }
 

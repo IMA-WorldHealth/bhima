@@ -350,10 +350,10 @@ function find(options) {
   let sql = patientEntityQuery(options.detailed);
 
   filters.fullText('display_name');
-  filters.dateFrom('registration_date', 'dateRegistrationFrom');
-  filters.dateTo('registration_date', 'dateRegistrationTo');
-  filters.dateFrom('dob', 'dateBirthFrom');
-  filters.dateTo('dob', 'dateBirthTo');
+  filters.dateFrom('dateRegistrationFrom', 'registration_date');
+  filters.dateTo('dateRegistrationTo', 'registration_date');
+  filters.dateFrom('dateBirthFrom', 'dob');
+  filters.dateTo('dateBirthTo', 'dob');
 
   let patientGroupStatement = '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
@@ -378,6 +378,8 @@ function patientEntityQuery(detailed) {
       `;
   }
 
+  // @TODO Investigate if this origin alias table as 'q' does JOINs on every single patient row
+  //       _before_selecting.
   // build the main part of the SQL query
   let sql = `
     SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
