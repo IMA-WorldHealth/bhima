@@ -82,7 +82,7 @@
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
                   </label>
-                  <input class="form-control" name="name" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <input class="form-control" name="name" autocomplete="off" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
                   <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -141,7 +141,7 @@
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
                   </label>
-                  <input class="form-control" name="name" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <input class="form-control" name="name" autocomplete="off" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
                   <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>

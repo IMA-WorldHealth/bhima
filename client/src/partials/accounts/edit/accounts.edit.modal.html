@@ -33,7 +33,7 @@
     <div ng-if="AccountEditCtrl.isCreateState" class="form-group"
          ng-class="{'has-error' : AccountForm.number.$invalid && AccountForm.$submitted}">
       <label class="control-label" translate>ACCOUNT.NUMBER</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number" bh-integer required>
+      <input class="form-control" ng-model="AccountEditCtrl.account.number" autocomplete="off" name="number" bh-integer required>
       <div class="help-block" ng-messages="AccountForm.number.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
@@ -41,7 +41,7 @@
     <div class="form-group"
          ng-class="{'has-error' : AccountForm.label.$invalid && AccountForm.$submitted}">
       <label class="control-label" translate>ACCOUNT.LABEL</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.label" name="label" required>
+      <input class="form-control" autocomplete="off" ng-model="AccountEditCtrl.account.label" name="label" required>
       <div class="help-block" ng-messages="AccountForm.label.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>

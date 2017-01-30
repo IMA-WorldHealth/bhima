@@ -7,7 +7,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.label.$invalid }">
       <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
-      <input type="text" class="form-control" name="label" ng-maxlength="ModalCtrl.length250" ng-model="ModalCtrl.data.label" required>
+      <input type="text" class="form-control" name="label" ng-maxlength="ModalCtrl.length250" autocomplete="off" ng-model="ModalCtrl.data.label" required>
       <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
@@ -15,7 +15,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && (ModalForm.value.$invalid || ModalCtrl.error) }">
       <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
-      <input type="number" class="form-control" name="value" ng-model="ModalCtrl.data.value" required>
+      <input type="number" class="form-control" autocomplete="off" name="value" ng-model="ModalCtrl.data.value" required>
       <div class="help-block" ng-messages="ModalForm.value.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
