@@ -1,46 +1,39 @@
+'use strict';
+
 /**
  * The trial balance provides a description of what the general
  * ledger would look like after posting data from the
  * posting journal to the general ledger.
  * It also submit errors back to the client.
- *
  */
 
-var q = require('q'),
-    db = require('../../../lib/db'),
-    uuid = require('node-uuid'),
-    util = require('../../../lib/util'),
-    NotFound   = require('../../../lib/errors/NotFound'),
-    BadRequest = require('../../../lib/errors/BadRequest');
-
-// utility function to sum an array of objects on a particular property
-function aggregate(property, array) {
-  return array.reduce(function (s, row) {
-    return s + row[property];
-  }, 0);
-}
+const q = require('q');
+const uuid = require('node-uuid');
+const _ = require('lodash');
+const db = require('../../../lib/db');
+const util = require('../../../lib/util');
+const NotFound   = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 
 // creates an error report for a given code
 function createErrorReport(code, isFatal, rows) {
   return {
     code : code,
     fatal : isFatal,
-    transactions : rows.map(function (row) { return row.trans_id; }),
-    affectedRows : aggregate('count', rows)
+    transactions : rows.map((row) => row.trans_id),
+    affectedRows : _.sumBy(rows, 'count')
   };
 }
 
 // Warning if the entity is null and entity_type is null also
 function checkEntityIsAlwaysDefined(transactions) {
-
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid, pj.entity_type FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) AND pj.entity_type IS NULL
     GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (!rows.length) { return; }
 
@@ -51,14 +44,12 @@ function checkEntityIsAlwaysDefined(transactions) {
 
 // make sure that a entity_uuid exists for each deb_cred_type
 function checkDescriptionExists(transactions) {
-
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.description FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) GROUP BY trans_id HAVING pj.description IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
-
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
@@ -69,15 +60,13 @@ function checkDescriptionExists(transactions) {
 
 // make sure that a entity_uuid exists for each deb_cred_type
 function checkEntityExists(transactions) {
-
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) AND (pj.entity_type = 'D' OR pj.entity_type = 'C')
     GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (!rows.length) { return; }
 
@@ -88,13 +77,12 @@ function checkEntityExists(transactions) {
 
 // make sure that the record Id exist in each line of the transaction
 function checkRecordUuidExists(transactions) {
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.record_uuid, pj.trans_id FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) GROUP BY pj.trans_id HAVING pj.record_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
-
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
@@ -105,7 +93,7 @@ function checkRecordUuidExists(transactions) {
 
 // make sure dates are in their correct period
 function checkDateInPeriod(transactions) {
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.start_date, p.end_date
     FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
     WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND
@@ -124,7 +112,7 @@ function checkDateInPeriod(transactions) {
 
 // make sure fiscal years and periods exist for all transactions
 function checkPeriodAndFiscalYearExists(transactions) {
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL)
@@ -132,7 +120,6 @@ function checkPeriodAndFiscalYearExists(transactions) {
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (!rows.length) { return; }
 
@@ -143,7 +130,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
 
 // make sure there are no missing accounts in the transactions
 function checkMissingAccounts(transactions) {
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj LEFT JOIN account ON
       pj.account_id = account.id
@@ -152,7 +139,6 @@ function checkMissingAccounts(transactions) {
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (!rows.length) { return; }
 
@@ -163,7 +149,7 @@ function checkMissingAccounts(transactions) {
 
 // Ensure no accounts are locked in the transactions
 function checkAccountsLocked(transactions) {
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj LEFT JOIN account
       ON pj.account_id = account.id
@@ -172,7 +158,6 @@ function checkAccountsLocked(transactions) {
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (!rows.length) { return; }
 
@@ -183,8 +168,7 @@ function checkAccountsLocked(transactions) {
 
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
-
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
     FROM posting_journal AS pj
     WHERE pj.trans_id IN (?)
@@ -192,7 +176,6 @@ function checkTransactionsBalanced(transactions) {
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (rows.length === 0) { return; }
 
@@ -203,14 +186,13 @@ function checkTransactionsBalanced(transactions) {
 
 //Check if there is no transaction with one line to avoid single line with ero in debit and credit which is valuable
 function checkSingleLineTransaction (transactions){
-  var sql =
+  let sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id FROM posting_journal AS pj
     WHERE pj.trans_id IN (?)
     GROUP BY trans_id HAVING count = 1;`;
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-
       // if nothing is returned, skip error report
       if (rows.length === 0) { return; }
 
@@ -220,11 +202,13 @@ function checkSingleLineTransaction (transactions){
 }
 
 exports.getDataPerAccount = function (req, res, next) {
-  var transactions = req.query.transactions;
+  let transactions = req.body.transactions;
 
-  var requestString =
+  // @FIXME This could use a lot of comments
+  let requestString =
     `SELECT pt.debit_equiv, pt.credit_equiv,
-      pt.account_id, pt.balance_before, account.number AS account_number
+      pt.account_id, pt.balance_before, account.number AS account_number,
+      (pt.balance_before + (pt.debit_equiv - pt.credit_equiv)) as balance_final
       FROM  account JOIN (
         SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
         posting_journal.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) AS balance_before
@@ -235,16 +219,15 @@ exports.getDataPerAccount = function (req, res, next) {
         ) AS pt
       ON account.id = pt.account_id;`;
 
-  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
+  if (!transactions) {
+    return next(new BadRequest('The transaction list is null or undefined'));
+  }
 
-  db.exec(requestString, [req.query.transactions])
+  db.exec(requestString, [transactions])
     .then(function (data) {
-      data.forEach(function (item) {item.balance_final = item.balance_before + (item.debit_equiv - item.credit_equiv);});
       res.status(200).json(data);
     })
-    .catch(function (error) {
-      next(error);
-    });
+    .catch(next);
 };
 
 /**
@@ -274,11 +257,13 @@ exports.getDataPerAccount = function (req, res, next) {
  *   }]
  **/
 exports.checkTransactions = function (req, res, next) {
-  var transactions =  req.body.transactions;
+  let transactions =  req.body.transactions;
 
-  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
+  if (!transactions) {
+    return next(new BadRequest('The transaction list is null or undefined'));
+  }
 
-  if(!Array.isArray(transactions)){
+  if (!Array.isArray(transactions)) {
     return next(new BadRequest('The query is bad formatted'));
   }
 
@@ -289,14 +274,12 @@ exports.checkTransactions = function (req, res, next) {
     checkDescriptionExists(transactions)
   ])
   .then(function (errorReports){
-    var errors = errorReports.filter(function (errorReport) {
+    let errors = errorReports.filter(function (errorReport) {
       return errorReport;
     });
     res.status(201).json(errors);
   })
-  .catch(function (error) {
-     next(error);
-  });
+  .catch(next);
 };
 
 /**
@@ -306,16 +289,16 @@ exports.checkTransactions = function (req, res, next) {
  * It posts data to the general ledger.
  **/
 exports.postToGeneralLedger = function (req, res, next) {
-  var transaction =  db.transaction();
+  let transaction =  db.transaction();
+  let transactions = req.body.transactions;
 
-  var transactions = req.body.transactions;
-
-  if(!transactions || !Array.isArray(transactions)){ return next(new BadRequest('The transaction list is null or undefined otherwise The query is bad formatted'));}
+  if (!transactions || !Array.isArray(transactions)) {
+    return next(new BadRequest('The transaction list is null or undefined otherwise The query is bad formatted'));
+  }
 
   //Just a workaround because mysql does not have a type for array
-  var transactionString = transactions.map(function (trans_id) {
-    return '"' + trans_id + '"';
-  }).join(',');
+  let transactionString =
+    transactions.map((trans_id) => `"${trans_id}"`).join(',');
 
   transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
   transaction.addQuery('CALL writePeriodTotals(?)', [transactionString]);
@@ -325,8 +308,5 @@ exports.postToGeneralLedger = function (req, res, next) {
     .then(function () {
       res.status(201).json({});
     })
-    .catch(function(err){
-      next(err);
-    })
-    .done();
+    .catch(next);
 };
