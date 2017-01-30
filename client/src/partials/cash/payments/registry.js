@@ -122,9 +122,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
     Cash.search(filters)
       .then(function (rows) {
+
         rows.forEach(function (row) {
           var hasCreditNote = (row.type_id === bhConstants.transactionType.CREDIT_NOTE);
           row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
+          row._hasCreditNote = hasCreditNote;
         });
 
         vm.gridOptions.data = rows;

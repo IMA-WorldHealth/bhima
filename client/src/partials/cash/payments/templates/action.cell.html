@@ -1,24 +1,27 @@
-<div class="ui-grid-cell-contents">
-  <span uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
 
-    <span uib-dropdown-toggle class="text-action">
-      <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
-      <span class="caret"></span>
-    </span>
-    <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
-      <li><a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)" data-link-receipt="{{ ::row.entity.uuid }}" href><i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span></a></li>
-      <li>
-        <a href id="{{row.entity.reference}}" 
-            data-method="cancel"
-            ng-click="grid.appScope.cancelCash(row.entity)" 
-            ng-hide="{{row.entity.type_id === grid.appScope.bhConstants.transactionType.CREDIT_NOTE}}">
-            <span class="text-danger"><i class="fa fa-clone"></i> <span translate>TABLE.COLUMNS.CANCEL_CASH</span></span>
-        </a>
-        <a ng-show="{{row.entity.type_id === grid.appScope.bhConstants.transactionType.CREDIT_NOTE}}"
-            class="text-danger text-action" href>
-            <span class="text-danger"><i class="fa fa-ban"></i> <span translate>FORM.LABELS.CANCELED</span></span>
-        </a>
-      </li>
-    </ul>
-  </span>
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)" data-link-receipt="{{ ::row.entity.uuid }}" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
+      </a>
+    </li>
+    <li>
+      <a href
+        id="{{row.entity.reference}}"
+        data-method="cancel"
+        ng-click="grid.appScope.cancelCash(row.entity)"
+        ng-hide="row.entity._hasCreditNote">
+        <span class="text-danger"><i class="fa fa-clone"></i> <span translate>TABLE.COLUMNS.CANCEL_CASH</span></span>
+      </a>
+
+      <a ng-show="row.entity._hasCreditNote" href>
+        <span class="text-danger"><i class="fa fa-ban"></i> <span translate>FORM.LABELS.CANCELED</span></span>
+      </a>
+    </li>
+  </ul>
 </div>
