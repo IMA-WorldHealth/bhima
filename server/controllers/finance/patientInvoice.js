@@ -232,12 +232,11 @@ function find(options) {
   let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
+
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
-
-  // @TODO Support ordering query (reference support for limit)?
-  query = query.concat(' ORDER BY invoice.date DESC, invoice.reference DESC ');
-
   return db.exec(query, parameters);
 }
 

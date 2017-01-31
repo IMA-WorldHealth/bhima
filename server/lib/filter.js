@@ -41,6 +41,7 @@ class FilterParser {
     // configure default options
     this._tableAlias = options.tableAlias || null;
     this._limitKey = options.limitKey || DEFAULT_LIMIT_KEY;
+    this._order = '';
     this._parseUuids = options.parseUuids || true;
   }
 
@@ -169,14 +170,25 @@ class FilterParser {
     }
   }
 
+  /**
+   * @TODO
+   * @description
+   * Temporary solution to setting ordering on complex querries - this should be
+   * exposed through the same interface as all other filters.
+   */
+  setOrder(orderString) {
+    this._order = orderString;
+  }
+
   applyQuery(sql) {
     // optionally call utility method to parse all remaining options as simple
     // equality filters into `_statements`
     let limitCondition = this._parseLimit();
     this._parseDefaultFilters();
     let conditionStatements = this._parseStatements();
+    let order = this._order;
 
-    return `${sql} WHERE ${conditionStatements} ${limitCondition}`;
+    return `${sql} WHERE ${conditionStatements} ${order} ${limitCondition}`;
   }
 
   parameters() {
@@ -233,7 +245,7 @@ class FilterParser {
   }
 
   _parseLimit() {
-    let limitString = ''
+    let limitString = '';
     let limit = Number(this._filters[this._limitKey]);
 
     if (limit) {

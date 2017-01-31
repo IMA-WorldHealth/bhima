@@ -177,12 +177,11 @@ function listPayment(options) {
   let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY cash.date DESC');
+
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
-
-  // @TODO Support ordering query (reference support for limit)?
-  query = query.concat(' ORDER BY cash.date DESC');
-
   return db.exec(query, parameters);
 }
 

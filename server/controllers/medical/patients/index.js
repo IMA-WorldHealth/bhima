@@ -358,13 +358,12 @@ function find(options) {
   let patientGroupStatement = '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
 
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY q.registration_date DESC');
+
   // applies filters and limits to defined sql, get parameters in correct order
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
-
-  // @TODO Support ordering query (reference support for limit)?
-  query = query.concat(' ORDER BY q.registration_date DESC');
-
   return db.exec(query, parameters);
 }
 
