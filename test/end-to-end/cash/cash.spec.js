@@ -25,6 +25,16 @@ describe('Cash Payments', function () {
     text : 'Test Aux Cashbox B'
   };
 
+  // this is a shortcut function for clicking an action in the cash page
+  function selectDropdownAction(action) {
+
+    // open the dropdown menu
+    $('[data-action="open-tools"]').click();
+
+    // get the action and click it
+    $(`[data-action="${action}"]`).click();
+  }
+
   describe('Cashbox Select Interface', function () {
 
     it('navigating to /cash/:unknown should send a notification error ', function () {
@@ -76,7 +86,7 @@ describe('Cash Payments', function () {
       var targetAuxiliary2 = path.concat('/' + cashboxB.id);
 
       // use the button to navigate back to the cashbox select module
-      element(by.css('[data-change-cashbox]')).click();
+      selectDropdownAction('change-cashbox');
 
       // select the auxiliary cashbox B displayed
       element(by.id('cashbox-' + cashboxB.id)).click();
@@ -165,6 +175,10 @@ describe('Cash Payments', function () {
     });
 
     it('should make a payment against previous invoices', function () {
+
+      // @fixme - why is this better?
+      browser.refresh();
+
       var gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
@@ -226,9 +240,11 @@ function CashTransfer() {
 
   it('should make a transfer between accounts', () => {
 
-    // click the transfer button
-    const transferBtn = element(by.css('[data-perform-transfer]'));
-    transferBtn.click();
+    // open the dropdown menu
+    $('[data-action="open-tools"]').click();
+
+    // get the transfer button and click it
+    $('[data-action="transfer"]').click();
 
     // choose CDF as transfer currency
     components.currencySelect.set(1, 'transfer-currency-select');

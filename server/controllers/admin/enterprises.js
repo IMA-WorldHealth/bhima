@@ -27,6 +27,7 @@ exports.list = function list(req, res, next) {
       FROM enterprise;`;
   }
 
+  //FIX ME : why not use db.one()?
   db.exec(sql)
   .then(function (rows) {
     res.status(200).json(rows);

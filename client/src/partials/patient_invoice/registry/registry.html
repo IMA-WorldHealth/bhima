@@ -20,18 +20,17 @@
         </bh-pdf-print>
       </div>
 
-
       <div class="toolbar-item">
-        <bh-receipt-currency
-          on-update="InvoiceRegistryCtrl.setReceiptCurrency(currencyId)">
-        </bh-receipt-currency>
+        <bh-renderer-dropdown
+          report-url="/reports/finance/invoices"
+          report-options="CPRCtrl.filters">
+        </bh-renderer-dropdown>
       </div>
     </div>
   </div>
 </div>
 
-<!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0">
+<div class="flex-util bh-filter-bar" ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="InvoiceRegistryCtrl.filtersFmt"
@@ -62,8 +61,7 @@
       <bh-grid-loading-indicator
         loading-state="InvoiceRegistryCtrl.loading"
         empty-state="InvoiceRegistryCtrl.uiGridOptions.data.length === 0"
-        error-state="InvoiceRegistryCtrl.hasError"
-      >
+        error-state="InvoiceRegistryCtrl.hasError">
       </bh-grid-loading-indicator>
   </div>
   </div>

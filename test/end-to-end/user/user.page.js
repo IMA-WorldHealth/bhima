@@ -6,6 +6,9 @@
  * behaviour so it is a user page object
  **/
 
+/** loading grid actions **/
+const GA = require('../shared/GridAction');
+
 function UserPage() {
   'use strict';
 
@@ -13,6 +16,7 @@ function UserPage() {
 
   var userGrid = element(by.id('users-grid'));
   var addUserButon = element(by.css('[data-method="create"]'));
+  var actionLinkColumn = 2;
 
   /** send back the number of user in the grid**/
   function getUserCount() {
@@ -34,37 +38,14 @@ function UserPage() {
    *  listed in the grid to show the dialog for an editing
    **/
   function editUser(n) {
-    const editLinkColumn = 2; //column indexing begin with 0
-
-    const row = userGrid
-      .$('.ui-grid-render-container-body')
-      .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index')
-        .row(n));
-
-    row
-      .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid')
-      .row(editLinkColumn))
-      .element(by.css('[data-method="edit"]'))
-      .click();
+    GA.clickOnMethod(n, actionLinkColumn, 'edit', 'users-grid');
   }
 
   /**
    * simulte a link clicking on the grid to show permission dialog
    **/
   function editUserPermission(n) {
-
-    const editUserPermissionLinkColumn = 3;
-
-    const row = userGrid
-      .$('.ui-grid-render-container-body')
-      .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index')
-      .row(n));
-
-    row
-      .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid')
-      .row(editUserPermissionLinkColumn))
-      .element(by.css('[data-method="permission"]'))
-      .click();
+    GA.clickOnMethod(n, actionLinkColumn, 'permission', 'users-grid');
   }
 
   page.getUserCount = getUserCount;

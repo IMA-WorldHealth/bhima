@@ -361,6 +361,10 @@ function find(options) {
   // applies filters and limits to defined sql, get parameters in correct order
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
+
+  // @TODO Support ordering query (reference support for limit)?
+  query = query.concat(' ORDER BY q.registration_date DESC');
+
   return db.exec(query, parameters);
 }
 

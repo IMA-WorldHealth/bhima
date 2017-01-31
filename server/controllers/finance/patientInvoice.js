@@ -29,6 +29,9 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const createInvoice = require('./invoice/patientInvoice.create');
+const Debtors = require('./debtors');
+
+const CREDIT_NOTE_ID = 10;
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -47,6 +50,12 @@ exports.lookupInvoice = lookupInvoice;
 
 exports.find = find;
 
+/** find the balance on an invoice due the particular debtor */
+exports.balance = balance;
+
+/** Expose lookup invoice credit note for other controllers to use internally */
+exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
+
 /**
  * list
  *
@@ -56,6 +65,27 @@ function list(req, res, next) {
   find({})
     .then(function (invoices) {
       res.status(200).json(invoices);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method balance
+ *
+ * @description
+ * This uses the lookupInvoice() and the invoiceBalances methods to find the
+ * balance on a single invoice due to a debtor.
+ *
+ * @todo(jniles) write tests!
+ */
+function balance(req, res, next) {
+  lookupInvoice(req.params.uuid)
+    .then(invoice => {
+      return Debtors.invoiceBalances(invoice.debtor_uuid, [req.params.uuid]);
+    })
+    .then(rows => {
+      res.status(200).json(rows[0]);
     })
     .catch(next)
     .done();
@@ -78,10 +108,11 @@ function lookupInvoice(invoiceUuid) {
     `SELECT BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, user.display_name,
+      invoice.user_id, invoice.date, user.display_name, invoice.service_id, service.name AS serviceName,
       enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
+    JOIN service ON invoice.service_id = service.id
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
@@ -195,6 +226,9 @@ function find(options) {
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
 
+  // support credit note toggle
+  filters.reversed('reversed');
+
   let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
@@ -219,4 +253,28 @@ function search(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * CreditNote for an invoice
+ */
+function lookupInvoiceCreditNote(invoiceUuid) {
+  let buid = db.bid(invoiceUuid);
+  const sql = `
+    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference,
+      v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name
+    FROM voucher v
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
+    JOIN invoice i ON i.uuid = v.reference_uuid
+    WHERE v.type_id = ${CREDIT_NOTE_ID} AND v.reference_uuid = ?`;
+  return db.one(sql, [buid])
+    .then(creditNote => {
+      return creditNote;
+    })
+    .catch(err => {
+      // db.one throw a critical error when there is not any record
+      // and it must be handled
+      return null;
+    });
 }

@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService'
+  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal',
+  'uiGridConstants', '$translate', 'GridColumnService', 'GridSortingService'
 ];
 
 /**
@@ -10,32 +11,11 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns, Sorting) {
   var vm = this;
 
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
-
-  var patientDetailActionTemplate =
-    '<div class="ui-grid-cell-contents text-action" ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
-      '<a href> ' +
-        '<span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span> ' +
-      '</a>' +
-    '</div>';
-
-  var patientEditActionTemplate =
-    '<div class="ui-grid-cell-contents text-action" ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
-      '<a href> ' +
-        '<span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span> ' +
-      '</a> ' +
-    '</div>';
-
-  var patientCardActionTemplate =
-    '<div class="ui-grid-cell-contents text-action" ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
-      '<a href> ' +
-        '<span class="fa fa-user"></span> <span translate>PATIENT_REGISTRY.CARD</span> ' +
-      '</a>' +
-    '</div>';
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
@@ -52,7 +32,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
       displayName : 'TABLE.COLUMNS.REFERENCE',
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true, headerCellFilter: 'translate',
-      footerCellClass : 'text-center'
+      footerCellClass : 'text-center',
+      sortingAlgorithm : Sorting.algorithms.sortByReference
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
     { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate', type: 'number' },
@@ -64,9 +45,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
     { field : 'originVillageName', displayName : 'FORM.LABELS.ORIGIN_VILLAGE', headerCellFilter: 'translate', visible: false },
     { field : 'originSectorName', displayName : 'FORM.LABELS.ORIGIN_SECTOR', headerCellFilter: 'translate', visible: false },
-    { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
-    { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
-    { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate, enableSorting: false }
+    { name : 'actions', displayName : '', cellTemplate : '/partials/patients/templates/action.cell.html', enableSorting: false }
   ];
 
   /** TODO manage column : last_transaction */
@@ -77,7 +56,9 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch: true,
-    columnDefs : columnDefs
+    columnDefs : columnDefs,
+    rowTemplate: '/partials/templates/grid/patient.row.html'
+    
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);

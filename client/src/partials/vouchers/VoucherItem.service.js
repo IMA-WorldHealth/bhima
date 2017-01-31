@@ -127,7 +127,11 @@ function VoucherItemService(uuid, Constants, util) {
    * the ui-select.
    */
   VoucherItem.prototype.configure = function configure(item) {
-    this.account_id = item.account_id;
+
+    if (item.account_id) {
+      this.account_id = item.account_id;
+    }
+
     this._initialized = true;
 
     if (angular.isDefined(item.debit)) {

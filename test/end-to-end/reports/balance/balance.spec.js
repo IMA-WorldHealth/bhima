@@ -16,8 +16,8 @@ describe('Balance Report Generation', () => {
 
   const annualReport = {
     title: 'Balance Annuelle 2016',
-    dateFrom: '01/01/2016',
-    dateTo: '31/12/2016',
+    dateFrom: '01-01-2016',
+    dateTo: '31-12-2016',
     dateOption: 0,
     classe: '*'
   };
@@ -38,7 +38,7 @@ describe('Balance Report Generation', () => {
     FU.buttons.create();
 
     // set report title
-    FU.input('ReportConfigCtrl.label', annualReport.title)
+    FU.input('ReportConfigCtrl.label', annualReport.title);
 
     // set the report classe
     FU.uiSelect('ReportConfigCtrl.classe', annualReport.classe);
@@ -61,7 +61,7 @@ describe('Balance Report Generation', () => {
     FU.buttons.create();
 
     // set report title
-    FU.input('ReportConfigCtrl.label', report.title)
+    FU.input('ReportConfigCtrl.label', report.title);
 
     // set the report classe
     FU.uiSelect('ReportConfigCtrl.classe', report.classe);

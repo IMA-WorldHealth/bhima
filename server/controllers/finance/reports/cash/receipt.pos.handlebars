@@ -14,9 +14,11 @@
 
 <br />
 
-<pre style="text-align:left; white-space: pre-wrap; padding-top: 5px;">
-  {{payment.description}}
-</pre>
+{{#if payment.renderedDescription}}
+  <pre style="text-align:left; white-space: pre-wrap; padding-top: 5px; font-size:1.5em; padding-left:0; margin-left:0;font-weight:bold; margin-bottom:0; padding-bottom:0">
+{{translate "CASH.MOTIVE"}}: {{payment.renderedDescription}}
+  </pre>
+{{/if}}
 
 {{> underline}}
 {{#if hasRate}}
@@ -33,7 +35,7 @@
 <!-- if !payment.is_caution -->
 {{#each payment.items as |item| }}
 
-<p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">{{translate "FORM.LABELS.INVOICE"}} {{item.reference}}</p>
+<p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">{{translate "FORM.LABELS.INVOICE"}} {{item.reference}} / {{translate "FORM.LABELS.SERVICE"}} {{item.serviceName}}</p>
 <table style="width : 100%">
   <thead>
     <tr>
@@ -68,6 +70,7 @@
 <!-- /if -->
 
 <h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_PAID"}}: {{currency payment.amount payment.currency_id}}</h2>
+<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}} : {{currency debtorTotalBalance enterprise.currency_id}}</h2>
 
 <script>JsBarcode('.barcode').init();</script>
 </body>

@@ -59,7 +59,7 @@ describe('(/patients) Patients', function () {
   };
 
   var simultaneousPatient = {
-    first_name:          'Simultaneous Patient Last',
+    display_name:        'Simultaneous Patient Mocks',
     dob:                 new Date('1993-06-01'),
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -124,6 +124,16 @@ describe('(/patients) Patients', function () {
           helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
           expect(res.body[0].reference).to.be.equals(conditions.reference);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /patients/search with debtor_uuid retrieves the patients with that debtor_uuid', function () {
+      let conditions = { debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107' };
+      return agent.get('/patients/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
@@ -224,17 +234,17 @@ describe('(/patients) Patients', function () {
     // Custom timeout
     this.timeout(30000);
 
-    var patientQuery = [];
+    let patientQuery = [];
 
     // Extreme case
     // var NUMBER_OF_PATIENTS = 200;
     // var timeoutInterval = 30;
 
-    var NUMBER_OF_PATIENTS = 7;
-    var timeoutInterval = 0;
+    let NUMBER_OF_PATIENTS = 100;
+    let timeoutInterval = 0;
 
-    var timeout = 0;
-    var baseHospitalNo = 1000;
+    let timeout = 0;
+    let baseHospitalNo = 300;
 
     // Setup all patient write requests
     for (var i = 0; i < NUMBER_OF_PATIENTS; i++) {
@@ -293,7 +303,10 @@ describe('(/patients) Patients', function () {
     setTimeout(function () {
 
       simultaneousRequest.medical.hospital_no = hospitalNo;
-      simultaneousRequest.medical.display_name += hospitalNo;
+
+      let name = 'Patient ';
+      let randomSuffix = (Math.random()*1.31).toString().slice(2, 10);
+      simultaneousRequest.medical.display_name = name + randomSuffix;
 
       agent.post('/patients')
         .send(simultaneousRequest)

@@ -84,9 +84,11 @@ function report(req, res, next) {
   const options = _.clone(req.query);
   _.extend(options, { csvKey : 'rows' });
 
+  let optionReport =  _.extend(options, { filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape'});
+
   let report;
   try  {
-    report = new ReportManager(REPORT_TEMPLATE, req.session, options);
+    report = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
   } catch(e) {
     return next(e);
   }

@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService'
+  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -23,6 +23,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
+  vm.creditNoteReceipt = Receipt.creditNote;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.creditNote = creditNote;
@@ -39,7 +40,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       headerCellFilter: 'translate',
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
-      footerCellClass : 'text-center'
+      footerCellClass : 'text-center',
+      sortingAlgorithm : Sorting.algorithms.sortByReference
     },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', type: 'date' },
     { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
@@ -55,8 +57,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     },
     { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-    { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html', enableSorting: false },
-    { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html', enableSorting: false }
+    { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/action.cell.html', enableSorting: false }
   ];
 
   //setting columns names
@@ -69,13 +70,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     flatEntityAccess : true,
     columnDefs : columnDefs,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
-  };
-
-  vm.receiptOptions = {};
-
-  // receiptOptions are used in the bh-print directive under the receipt-action template
-  vm.setReceiptCurrency = function setReceiptCurrency(currencyId) {
-    vm.receiptOptions.currency = currencyId;
   };
 
   function handler(error) {
@@ -110,6 +104,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       invoices.forEach(function (invoice) {
         invoice._backgroundColor =
           (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
+
+        invoice._is_cancelled = (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE);
       });
 
       // put data in the grid
@@ -165,6 +161,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     if (vm.filters && vm.filters.patientUuid) {
       delete vm.filters.patientUuid;
     }
+
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
 
     load(vm.filters);

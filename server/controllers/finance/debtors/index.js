@@ -32,7 +32,8 @@ exports.update = update;
 exports.invoices = invoices;
 exports.invoiceBalances = invoiceBalances;
 exports.financialPatient = financialPatient;
-exports.balance = function() { /** @todo - noop */ };
+exports.getDebtorInvoices = getDebtorInvoices;
+exports.balance = balance;
 
 /**
  * List of debtors
@@ -135,24 +136,10 @@ function lookupDebtor(uid) {
  * procedures.sql for easy lookup
  */
 function invoices(req, res, next) {
-  let uid = db.bid(req.params.uuid);
   const options = req.query;
-  const reversalVoucherType = 10;
 
-  // get the debtor invoice uuids from the invoice table
-  let sql =`
-    SELECT BUID(invoice.uuid) as uuid
-    FROM invoice
-    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
-    ORDER BY invoice.date ASC, invoice.reference;
-  `;
-
-  db.exec(sql, [uid, reversalVoucherType])
-    .then(function (uuids) {
-
-      // if nothing found, return an empty array
-      if (!uuids.length) { return []; }
-      uuids = uuids.map(item => item.uuid);
+  getDebtorInvoices(req.params.uuid)
+    .then(function (uuids){      
       return invoiceBalances(req.params.uuid, uuids, options);
     })
     .then(function (invoices) {
@@ -162,7 +149,32 @@ function invoices(req, res, next) {
     .done();
 }
 
-function invoiceBalances(debtorUuid, uuids, paramOptions) {
+/**
+ * This function sends back a list of invoices uuids 
+ * which belong to a particular debtor
+ **/
+
+function getDebtorInvoices (debtorUid){
+  debtorUid = db.bid(debtorUid);
+  const reversalVoucherType = 10;
+  
+  // get the debtor invoice uuids from the invoice table
+  let sql =`
+    SELECT BUID(invoice.uuid) as uuid
+    FROM invoice
+    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
+    ORDER BY invoice.date ASC, invoice.reference;
+  `;
+  return db.exec(sql, [debtorUid, reversalVoucherType])
+    .then(function (uuids) {
+      // if nothing found, return an empty array
+      if (!uuids.length) { return []; }
+      uuids = uuids.map(item => item.uuid);
+      return uuids;
+    });
+}
+
+function invoiceBalances(debtorUuid, uuids, paramOptions){
   let debtorUid = db.bid(debtorUuid);
   let options = paramOptions || {};
 
@@ -218,75 +230,73 @@ function invoiceBalances(debtorUuid, uuids, paramOptions) {
  * @todo - this function should be replaced by an SQL function stored in
  * procedures.sql for easy lookup
  */
-function balance(req, res, next) {
-  const uid = db.bid(req.params.uuid);
-  var options = req.query;
+function balance(debtorUid) {
+  debtorUid = db.bid(debtorUid);
 
   // make sure the debtor exists
   var sql =
     'SELECT BUID(uuid) as uuid FROM debtor WHERE uuid = ?;';
 
-  db.exec(sql, [uid])
+  return db.exec(sql, [debtorUid])
   .then(function (rows) {
 
     // if the debtor doesn't exist, throw an error
     if (!rows.length) {
       throw new NotFound(
-        `Could not find a debtor with uuid ${req.params.uuid}`
+        `Could not find a debtor with uuid ${debtorUid}`
       );
     }
 
     // select all invoice and payments against invoices from the combined ledger
     sql = `
-      SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, BUID(entity_uuid) as entity_uuid
+      SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
-        SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
+        SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
         FROM combined_ledger
         WHERE entity_uuid = ?
       ) AS ledger
-      GROUP BY entity_uuid;
+      GROUP BY ledger.entity_uuid;
     `;
 
-    return db.exec(sql, [uid, uid]);
-  })
-  .then(function (invoices) {
-    res.status(200).send(invoices);
-  })
-  .catch(next)
-  .done();
+    return db.one(sql, [debtorUid]);
+  });
 }
 
 
 /**
- * @method financial Patient
+ * @method financialPatient
  *
  * @description
  * This function allows to know the reports' Patient Financial Activity
  * matching parameters provided in the debtorUuid parameter.
+ *
+ * @todo - move the LEFT JOIN outside the UNION
  */
 function financialPatient(debtorUuid) {
   const buid = db.bid(debtorUuid);
 
   // build the main part of the SQL query
   let sql = `
-    SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit,
-    transaction.reference, transaction.abbr
+    SELECT transaction.trans_id, BUID(transaction.entity_uuid) as entity_uuid, transaction.description,
+      BUID(transaction.record_uuid) AS record_uuid, transaction.trans_date,
+      SUM(transaction.credit_equiv) AS credit, SUM(transaction.debit_equiv) AS debit,
+      IF(ISNULL(transaction.reference), '', CONCAT_WS('.', '${identifiers.INVOICE.key}', transaction.abbr, transaction.reference)) AS reference
     FROM (
-      SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
-      FROM posting_journal
-      LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
-      LEFT JOIN project ON invoice.project_id = project.id
-      WHERE posting_journal.entity_uuid = ?
+        SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.description, posting_journal.record_uuid,
+          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
+        FROM posting_journal
+          LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
+          LEFT JOIN project ON invoice.project_id = project.id
+        WHERE posting_journal.entity_uuid = ?
       UNION
-      SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
-      FROM general_ledger
-      LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
-      LEFT JOIN project ON invoice.project_id = project.id
-      WHERE general_ledger.entity_uuid = ?
-    ) as transaction
-    GROUP BY transaction.trans_id
+        SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.description, general_ledger.record_uuid,
+          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
+        FROM general_ledger
+          LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
+          LEFT JOIN project ON invoice.project_id = project.id
+        WHERE general_ledger.entity_uuid = ?
+    ) AS transaction
+    GROUP BY transaction.record_uuid
     ORDER BY transaction.trans_date ASC, transaction.trans_id;`;
 
   return db.exec(sql, [buid, buid]);

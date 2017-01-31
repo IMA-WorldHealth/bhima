@@ -24,14 +24,12 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.enterprise = Session.enterprise;
   vm.Invoice = new PatientInvoiceForm('PatientInvoiceForm');
   vm.ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
-  vm.receiptOptions = {};
 
   // application constants
   vm.maxLength = util.maxTextLength;
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
-  vm.setReceiptCurrency = setReceiptCurrency;
 
   translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value;});
 
@@ -80,12 +78,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       vm.patientBalance = balance;
     });
   }
-
-  // this sets the receipt currency on printing
-  function setReceiptCurrency(currencyId) {
-    vm.receiptOptions.currency = currencyId;
-  }
-
+  
   // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
     vm.Invoice.writeCache();
@@ -151,7 +144,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   function handleCompleteInvoice(invoice) {
     vm.Invoice.clearCache();
 
-    Receipts.invoice(invoice.uuid, true, vm.receiptOptions)
+    Receipts.invoice(invoice.uuid, true)
       .then(function () { clear(); });
   }
 

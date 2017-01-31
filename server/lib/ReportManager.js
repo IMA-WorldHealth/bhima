@@ -89,6 +89,7 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
+
       throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
     }
 

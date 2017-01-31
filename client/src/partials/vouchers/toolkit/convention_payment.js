@@ -53,7 +53,7 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     .catch(Notify.handleError);
 
   // load conventions
-  DebtorGroup.read(null, { is_convention: 1})
+  DebtorGroup.read()
     .then(function (list) {
       vm.conventionGroupList = list;
     })

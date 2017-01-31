@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
-  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService'
+  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
+  'GridSortingService'
 ];
 
 /**
@@ -13,7 +14,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry.`j
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting) {
   var vm = this;
 
   var cache = AppCache('CashRegistry');
@@ -51,26 +52,28 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   vm.gridOptions.columnDefs = [{
     field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
-    headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count, aggregationHideLabel : true
+    headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true, sortingAlgorithm : Sorting.algorithms.sortByReference
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {
-    field : 'debtor_name', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
+    field : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate'
   }, {
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
     field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-    cellTemplate : 'partials/cash/payments/templates/amount.grid.html'
+    cellTemplate : 'partials/cash/payments/templates/amount.grid.html', type: 'number',
+
+    // @TODO(jniles): This is temporary, as it doesn't take into account USD payments
+    aggregationType: uiGridConstants.aggregationTypes.sum, aggregationHideLabel : true,
+    footerCellFilter: 'currency:' + Session.enterprise.currency_id
   }, {
     field : 'cashbox_label', displayName : 'TABLE.COLUMNS.CASHBOX', headerCellFilter: 'translate'
   }, {
     field : 'display_name', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate'
   }, {
     field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/cash/payments/templates/action.grid.html'
-  }, {
-    field : 'action', displayName : '', enableFiltering: false, enableSorting: false,
-    cellTemplate: 'partials/cash/payments/templates/cancelCash.action.tmpl.html'
+    cellTemplate: 'partials/cash/payments/templates/action.cell.html'
   }];
 
   function handleError(error) {
@@ -103,6 +106,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   function reload(filters) {
     vm.filters = filters;
     vm.formatedFilters = Cash.formatFilterParameters(filters.display);
+
+    // show filter bar as needed
+    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?
+      { 'height' : 'calc(100vh - 105px)' } : {};
+
     load(filters.identifiers);
   }
 

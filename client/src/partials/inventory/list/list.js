@@ -49,7 +49,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   }, {
     field : 'action',
     displayName : '',
-    cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
+    cellTemplate: '/partials/inventory/list/templates/action.cell.html',
     enableFiltering: false,
     enableSorting: false,
     enableColumnMenu: false,

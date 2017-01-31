@@ -13,16 +13,16 @@
         {{translate 'INVOICE_REGISTRY.TITLE'}}
       </h2>
 
-      <!-- list of data  -->
+      <!-- invoices listed  -->
       <table class="table table-condensed table-bordered table-striped">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
             <th>{{translate 'TABLE.COLUMNS.BILLING_DATE'}}</th>
             <th>{{translate 'TABLE.COLUMNS.PATIENT'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.AMOUNT'}}</th>
             <th>{{translate 'TABLE.COLUMNS.SERVICE'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.USER'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CREATED_BY'}}</th>
           </tr>
         </thead>
         <tbody>
@@ -35,9 +35,58 @@
               <td>{{serviceName}}</td>
               <td>{{display_name}}</td>
             </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
           {{/each}}
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3">{{ translate 'TABLE.AGGREGATES.NUM_INVOICES' }}: {{ aggregates.numInvoices }} </th>
+            <th class="text-right">{{currency aggregates.amount metadata.enterprise.currency_id }}</th>
+            <th colspan="2"></th>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
+
+  {{#if aggregates}}
+    <div class="row">
+      <div class="col-xs-6">
+
+        <!-- summary table -->
+        <table class="table table-condensed table-bordered table-striped">
+          <tbody>
+            <tr>
+              <th colspan="2" class="text-center">
+                {{ translate 'FORM.LABELS.SUMMARY' }} ({{date aggregates.minDate }} - {{date aggregates.maxDate}})
+              </th>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_INVOICES' }}</th>
+              <td class="text-right">{{ aggregates.numInvoices }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.TOTAL_AMOUNT' }}</th>
+              <td class="text-right">{{currency aggregates.amount metadata.enterprise.currency_id}}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUMBER_OF_DAYS' }}</th>
+              <td class="text-right">{{ aggregates.numDays }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_SERVICES' }}</th>
+              <td class="text-right">{{ aggregates.numServices }}</td>
+            </tr>
+            {{#if hasMultipleProjects }}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_PROJECTS' }}</th>
+                <td class="text-right">{{ aggregates.numProjects }}</td>
+              </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {{/if}}
 </body>

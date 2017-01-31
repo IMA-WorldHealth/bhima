@@ -19,6 +19,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
   service.openSearchModal = openSearchModal;
   service.formatFilterParameters = formatFilterParameters;
   service.openCreditNoteModal = openCreditNoteModal;
+  service.balance = balance;
 
   /**
    * @method create
@@ -50,6 +51,21 @@ function PatientInvoiceService(Modal, util, Session, Api) {
     });
 
     return Api.create.call(this, { invoice: invoice });
+  }
+
+  /**
+   * @method balance
+   *
+   * @description
+   * This method returns the balance on an invoice due to a debtor.
+   *
+   * @param {String} uuid - the invoice uuid
+   * @param {String} debtorUuid - the amount due to the debtor
+   */
+  function balance(uuid) {
+    var url = '/invoices/'.concat(uuid).concat('/balance');
+    return this.$http.get(url)
+      .then(this.util.unwrapHttpResponse);
   }
 
   // utility methods
@@ -107,6 +123,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
       { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
       { field: 'patientNames', displayName : 'FORM.LABELS.PATIENT_NAME'},
+      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' }
     ];
 
     // returns columns from filters

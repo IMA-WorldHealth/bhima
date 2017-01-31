@@ -1,21 +1,21 @@
 <ng-form name="DateIntervalForm" bh-form-defaults novalidate>
 
-<div class="form-group">
-  <label class="control-label">
-    <i class="fa fa-calendar-plus-o"></i> {{ 'FORM.SELECT.DATE_INTERVAL' | translate }}
-    <span ng-if="$ctrl.selected" class="label label-warning">{{ $ctrl.selected | translate }}</span>
-  </label>
-</div>
+  <div class="form-group" style="margin-bottom:0">
+    <label class="control-label">
+      <span translate>FORM.SELECT.DATE_INTERVAL</span>
+      <span ng-if="$ctrl.selected" class="label label-warning" translate>{{ $ctrl.selected }}</span>
+    </label>
+  </div>
 
   <ul class="list-inline">
-    <li ng-repeat="(key, view) in $ctrl.options track by key">
-      <a ng-click="$ctrl.search(view)" data-date-range="{{ key }}" href>
-        {{ ::view.translateKey | translate }}
+    <li ng-repeat="view in $ctrl.options">
+      <a ng-click="$ctrl.search(view)" data-date-range="{{ ::view.range }}" href>
+        <span translate>{{ ::view.translateKey }}</span>
       </a>
     </li>
     <li class="pull-right">
       <a href ng-click="$ctrl.clear()" tabindex="-1">
-        <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+        <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
       </a>
     </li>
   </ul>
@@ -29,7 +29,7 @@
           name="dateFrom"
           type="text"
           class="form-control"
-          uib-datepicker-popup="dd/MM/yyyy"
+          uib-datepicker-popup="dd-MM-yyyy"
           datepicker-options="$ctrl.pickerOptions"
           is-open="$ctrl.dateFromIsOpen"
           show-button-bar="false"
@@ -59,7 +59,7 @@
           name="dateTo"
           type="text"
           class="form-control"
-          uib-datepicker-popup="dd/MM/yyyy"
+          uib-datepicker-popup="dd-MM-yyyy"
           datepicker-options="$ctrl.pickerOptions"
           is-open="$ctrl.dateToIsOpen"
           show-button-bar="false"
@@ -78,5 +78,4 @@
       </div>
     </div>
   </div>
-
 </ng-form>

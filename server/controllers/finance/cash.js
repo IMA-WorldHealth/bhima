@@ -84,11 +84,12 @@ function lookup(id) {
   `;
 
   const cashItemsRecordSql = `
-    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid, s.name AS serviceName,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', p.abbr, i.reference) AS reference
     FROM cash_item AS ci
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
+      LEFT JOIN service AS s ON i.service_id = s.id
     WHERE ci.cash_uuid = ?;
   `;
 
@@ -159,11 +160,13 @@ function listPayment(options) {
       CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, v.type_id
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
+      v.type_id, p.display_name AS patientName
     FROM cash
       LEFT JOIN voucher v ON v.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
+      JOIN patient p on p.debtor_uuid = d.uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
   `;
@@ -176,6 +179,10 @@ function listPayment(options) {
 
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
+
+  // @TODO Support ordering query (reference support for limit)?
+  query = query.concat(' ORDER BY cash.date DESC');
+
   return db.exec(query, parameters);
 }
 
@@ -287,8 +294,7 @@ function checkInvoicePayment(req, res, next) {
   const REVERSAL_TYPE_ID = 10;
 
   const sql = `
-    SELECT cash_item.cash_uuid, cash_item.invoice_uuid
-      FROM cash_item
+    SELECT cash_item.cash_uuid, cash_item.invoice_uuid FROM cash_item
     WHERE cash_item.invoice_uuid = ?
     AND cash_item.cash_uuid NOT IN (
       SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSAL_TYPE_ID}

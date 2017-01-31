@@ -20,6 +20,7 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
   vm.back = function back() { $window.history.back(); };
   vm.cachePosReceipt = cachePosReceipt;
   vm.cacheSimplified = cacheSimplified;
+  vm.cacheInvoiceCurrency = cacheInvoiceCurrency;
 
   // load settings from services
   vm.settings = { language : Languages.key, posReceipt : Receipts.posReceipt, simplified : Receipts.simplified };
@@ -69,6 +70,9 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
     Receipts.setSimplified(value);
   }
 
+  function cacheInvoiceCurrency(value) {
+    Receipts.setReceiptCurrency(value);
+  }
 
   // initialize with data
   loadSystemInformation();

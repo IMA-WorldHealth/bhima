@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'DebtorService', 'debtorId', 'invoices', '$uibModalInstance', 'SessionService',
-  '$timeout', 'NotifyService'
+  'DebtorService', 'SessionService', '$timeout', 'NotifyService', '$state',
+  '$rootScope'
 ];
 
 /**
@@ -13,19 +13,20 @@ CashInvoiceModalController.$inject = [
  * This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, Session, $timeout, Notify) {
+function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, $rootScope) {
   var vm = this;
 
-  // we start in a neutral state
-  vm.loading = false;
-  vm.hasError = false;
+  var debtorId = $state.params.debtor_uuid;
+  var invoices = $state.params.invoices;
+
+  vm.$params = $state.params;
 
   // defaults to value
-  vm.missingId = !debtorId ;
+  vm.missingId = !angular.isDefined(debtorId);
 
   // bind methods
-  vm.cancel = ModalInstance.dismiss;
   vm.submit = submit;
+  vm.cancel = dismiss;
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -70,7 +71,6 @@ function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, 
     // loop through each invoice id passed in and reselect those that have
     // previously been selected
     rows.forEach(function (row) {
-      console.log('row', row);
       if (invoices.indexOf(row.entity.uuid) > -1) {
         vm.gridApi.selection.selectRow(row.entity);
       }
@@ -108,20 +108,20 @@ function CashInvoiceModalController(Debtors, debtorId, invoices, ModalInstance, 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
 
+    // we start in a neutral state
+    vm.loading = false;
+    vm.hasError = false;
+
     // retrieve the outstanding patient invoices from the ui grid
     var invoices = vm.getSelectedRows();
 
-    // block the submission if there are no values selected
-    vm.empty = (invoices.length === 0);
-    if (vm.empty) { return; }
+    $rootScope.$broadcast('cash:configure', { invoices : invoices });
 
-    // sum up the total cost of the selected rows
-    var total = invoices.reduce(function (aggregate, invoice) {
-      return aggregate + invoice.balance;
-    }, 0);
+    $state.go('^.window', $state.params);
+  }
 
-    // return both values to CashController
-    ModalInstance.close({ invoices : invoices, total : total });
+  function dismiss() {
+    $state.go('^.window', $state.params);
   }
 
   // start up the module

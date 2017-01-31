@@ -10,18 +10,21 @@ VoucherFormService.$inject = [
  * @class VoucherFormService
  *
  * @description
- * This wraps the journal voucher form
+ * This wraps the journal voucher form and provides additional validators
+ * customized for the rules of double entry accounting.  It also provides
+ * functionality for efficiently calculating totals.
  *
+ * @todo - finish the caching implementation
  */
 function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts) {
 
   var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
 
   // Error Flags
-  var ERROR_MISSING_TRANSACTION_TYPE = 'VOUCHERS.COMPLEX.ERROR_TYPE'; // must have transaction_type for certain cases
-  var ERROR_IMBALANCED_TRANSACTION = 'VOUCHERS.COMPLEX.IMBALANCED_TRANSACTION'; // must have sum(debits) === sum(credits)
-  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'VOUCHERS.COMPLEX.SINGLE_ACCOUNT_TRANSACTION'; // must have > 1 unique accounts
-  var ERROR_SINGLE_ROW_TRANSACTION = 'VOUCHERS.COMPLEX.SINGLE_ROW_TRANSACTION'; // must have > 1 rows
+  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE'; // must have transaction_type for certain cases
+  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION'; // must have sum(debits) === sum(credits)
+  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION'; // must have > 1 unique accounts
+  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION'; // must have > 1 rows
 
   // applied to the reduce
   function sumDebitsAndCredits(aggregates, row) {
@@ -41,30 +44,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    */
   function calculateItemTotals(items) {
     return items.reduce(sumDebitsAndCredits, { debit : 0, credit : 0 });
-  }
-
-  /**
-   * @function buildDescription
-   * @param {Object} voucher - the voucher object.
-   *
-   * @description
-   * This method builds the voucher description based on whether it has a type
-   * set or not.  The type is factored in it if exists.
-   */
-  function buildDescription(voucher) {
-    var type = voucher.type_id,
-        date = voucher.date,
-        description = String(Session.project.abbr).concat('/VOUCHER');
-
-    // if there is a journal voucher type, note it.
-    if (type) {
-      type = JSON.parse(type);
-      description = description.concat('/', type.prefix);
-    }
-
-    description = description.concat('/', date.toDateString());
-
-    return description;
   }
 
   /** @constructor */

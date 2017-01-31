@@ -51,7 +51,6 @@ exports.createInventoryItems    = createInventoryItems;
 exports.updateInventoryItems    = updateInventoryItems;
 exports.getInventoryItems       = getInventoryItems;
 exports.getInventoryItemsById   = getInventoryItemsById;
-exports.getInventoryItemReport  = getInventoryItemReport;
 
 // expose inventory group methods
 exports.createInventoryGroups  = createInventoryGroups;
@@ -166,34 +165,8 @@ function getInventoryItemsById(req, res, next) {
     .done();
 }
 
-/**
-* GET /reports/inventory/imtes
-* Returns a pdf file for inventory metadata
-*
-* @function getInventoryItemReport
-*/
-function getInventoryItemReport(req, res, next) {
-  const template = './server/controllers/inventory/reports/items.handlebars';
-  let report;
-
-  const context = _.defaults({orientation : 'landscape' }, req.query);
-
-  try {
-    report = new ReportManager(template, req.session, context);
-  } catch(e) {
-    return next(e);
-  }
-
-  core.getItemsMetadata()
-    .then(rows => report.render({ rows }))
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
-}
-
 // ======================= inventory group =============================
+
 /**
  * POST /inventory/groups
  * Create a new inventory group

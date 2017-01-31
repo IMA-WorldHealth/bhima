@@ -129,21 +129,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
   })
-  .state('simpleVouchers', {
-    url : '/vouchers/simple',
-    controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
-    templateUrl: 'partials/vouchers/simple.html'
-  })
-  .state('vouchersComplex', {
-    url : '/vouchers/complex',
-    controller: 'ComplexJournalVoucherController as ComplexVoucherCtrl',
-    templateUrl: 'partials/vouchers/complex.html'
-  })
-  .state('vouchers', {
-    url : '/vouchers',
-    controller: 'VoucherController as VoucherCtrl',
-    templateUrl: 'partials/vouchers/index.html'
-  })
 
   /** General ledger routes**/
   .state('generalLedger', {
@@ -356,6 +341,9 @@ function constantConfig() {
       ROW_EDIT_FLAG : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
+    },
+    barcodes : {
+      LENGTH : 10
     },
     transactionType : {
       GENERIC_INCOME     : 1,

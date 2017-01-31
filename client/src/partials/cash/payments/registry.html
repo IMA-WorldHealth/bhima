@@ -21,11 +21,18 @@
           disable-cache="true">
         </bh-pdf-print>
       </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/finance/cash"
+          report-options="CPRCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+<div class="flex-util bh-filter-bar" ng-show="CPRCtrl.formatedFilters.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="CPRCtrl.formatedFilters"
@@ -34,10 +41,10 @@
 
   <a href
     ng-click="CPRCtrl.clearFilters()"
-    ng-show="CPRCtrl.formatedFilters.length > 0"
     class="text-danger"
     data-method="clear">
-    <i class="fa fa-ban text-danger"></i> <span translate>FORM.INFO.CLEAR_FILTERS</span>
+    <i class="fa fa-ban text-danger"></i>
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
 </div>
 
@@ -46,8 +53,9 @@
   <div class="container-fluid">
     <div
       id="payment-registry"
+      class="grid-full-height"
+      ng-style="CPRCtrl.filterBarHeight"
       ui-grid="CPRCtrl.gridOptions"
-      style="height : calc(100vh - 102px)"
       ui-grid-auto-resize
       ui-grid-resize-columns>
 

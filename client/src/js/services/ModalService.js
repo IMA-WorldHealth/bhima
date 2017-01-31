@@ -35,8 +35,6 @@ function ModalService(Modal) {
   service.alert = alert;
   service.confirm = confirm;
   service.openSelectCashbox = openSelectCashbox;
-  service.openDebtorInvoices = openDebtorInvoices;
-  service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
   // modal for reporting
   service.openReports = openReports;
@@ -124,38 +122,6 @@ function ModalService(Modal) {
     });
 
     return Modal.open(params).result;
-  }
-
-  /**
-   * Debtor invoices Modal
-   */
-  function openDebtorInvoices(request) {
-    var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/invoices.modal.html',
-      controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
-      resolve     : {
-        debtorId : function debtorIdProvider() { return request.debtorUuid; },
-        invoices : function invoicesProvider() { return request.invoices; }
-      }
-    });
-
-    var instance = Modal.open(params);
-    return instance.result;
-  }
-
-  /**
-   * Transfer Modal
-   */
-  function openTransfer(request) {
-    var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/transfer.modal.html',
-      controller  : 'CashTransferModalController as CashTransferModalCtrl',
-      resolve     : {
-        cashBox:  function transferProvider() { return request.cashbox; }
-      }
-    });
-
-    var instance = Modal.open(params);
   }
 
   /**

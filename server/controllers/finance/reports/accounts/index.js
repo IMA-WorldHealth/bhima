@@ -23,7 +23,7 @@ function chart(req, res, next) {
 
   params.user = req.session.user;
 
-  const options = _.extend(req.query, { csvKey : 'accounts' });
+  const options = _.extend(req.query, { csvKey : 'accounts', filename : 'REPORT.CHART_OF_ACCOUNTS', orientation : 'landscape' });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, options);

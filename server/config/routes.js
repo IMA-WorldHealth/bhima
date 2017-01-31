@@ -358,6 +358,7 @@ exports.configure = function configure(app) {
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
   app.get('/invoices/:uuid', patientInvoice.detail);
+  app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
   // route for invoice Report
 
@@ -367,10 +368,11 @@ exports.configure = function configure(app) {
   app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
-  app.get('/reports/inventory/items', inventory.getInventoryItemReport);
+  app.get('/reports/inventory/items', inventoryReports.reports.prices);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
+  app.get('/reports/finance/invoices/:uuid/creditNote', financeReports.invoices.creditNote);
   app.get('/reports/finance/cash', financeReports.cash.report);
   app.get('/reports/finance/cash/:uuid', financeReports.cash.receipt);
   app.get('/reports/finance/debtors/aged', financeReports.debtors.aged);
