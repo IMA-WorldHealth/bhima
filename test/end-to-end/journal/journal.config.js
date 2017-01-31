@@ -42,6 +42,9 @@ function JournalConfigurationModal() {
 
     FU.modal.submit();
 
+    // sleep for a second to let angular adjust the grid's columns
+    browser.sleep(1000);
+
     page.expectColumnCount(defaultVisibleColumnCount);
   });
 }
