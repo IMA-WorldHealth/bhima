@@ -47,6 +47,7 @@ const medicalReports = require('../controllers/medical/reports');
 const inventory            = require('../controllers/inventory');
 const depots               = require('../controllers/inventory/depots');
 const inventoryReports     = require('../controllers/inventory/reports');
+const stock                = require('../controllers/stock');
 
 // finance routes
 const trialBalance     = require('../controllers/finance/trialBalance');
@@ -574,5 +575,8 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+
+  // stock management API 
+  app.get('/stock/create', stock.createNewStock);
 
 };

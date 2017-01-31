@@ -512,3 +512,19 @@ INSERT INTO `purchase_item` VALUES
   (4, 'balance', 'REPORT.BALANCE'),
   (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS');
+
+
+  -- Stock Movement Flux 
+  INSERT INTO `flux` VALUES 
+    (1,  'FROM_PURCHASE'),
+    (2,  'FROM_OTHER_DEPOT'),
+    (3,  'FROM_ADJUSTMENT'),
+    (4,  'FROM_PATIENT'),
+    (5,  'FROM_SERVICE'),
+    (6,  'FROM_DONATION'),
+    (7,  'FROM_LOSS'),
+    (8,  'TO_OTHER_DEPOT'),
+    (9,  'TO_PATIENT'),
+    (10, 'TO_SERVICE'),
+    (11, 'TO_LOSS'),
+    (12, 'TO_ADJUSTMENT');
