@@ -167,6 +167,7 @@ function create(req, res, next) {
 
   // delete the purchase order items
   delete data.items;
+  delete data.reference;
 
   const transaction = db.transaction();
 

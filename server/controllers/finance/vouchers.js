@@ -118,6 +118,7 @@ function create(req, res, next) {
   // remove the voucher items from the request before insertion into the
   // database
   delete voucher.items;
+  delete voucher.reference;
 
   // convert dates to a date objects
   voucher.date = voucher.date ? new Date(voucher.date) : new Date();
