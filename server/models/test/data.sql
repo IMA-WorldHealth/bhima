@@ -504,8 +504,8 @@ INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
 
- -- core BHIMA reports
- INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+-- core BHIMA reports
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (1, 'cashflow', 'TREE.CASHFLOW'),
   (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
   (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
@@ -514,17 +514,32 @@ INSERT INTO `purchase_item` VALUES
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS');
 
 
-  -- Stock Movement Flux 
-  INSERT INTO `flux` VALUES 
-    (1,  'FROM_PURCHASE'),
-    (2,  'FROM_OTHER_DEPOT'),
-    (3,  'FROM_ADJUSTMENT'),
-    (4,  'FROM_PATIENT'),
-    (5,  'FROM_SERVICE'),
-    (6,  'FROM_DONATION'),
-    (7,  'FROM_LOSS'),
-    (8,  'TO_OTHER_DEPOT'),
-    (9,  'TO_PATIENT'),
-    (10, 'TO_SERVICE'),
-    (11, 'TO_LOSS'),
-    (12, 'TO_ADJUSTMENT');
+-- Stock Movement Flux 
+INSERT INTO `flux` VALUES 
+  (1,  'FROM_PURCHASE'),
+  (2,  'FROM_OTHER_DEPOT'),
+  (3,  'FROM_ADJUSTMENT'),
+  (4,  'FROM_PATIENT'),
+  (5,  'FROM_SERVICE'),
+  (6,  'FROM_DONATION'),
+  (7,  'FROM_LOSS'),
+  (8,  'TO_OTHER_DEPOT'),
+  (9,  'TO_PATIENT'),
+  (10, 'TO_SERVICE'),
+  (11, 'TO_LOSS'),
+  (12, 'TO_ADJUSTMENT');
+
+-- default depots
+SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
+SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");
+INSERT INTO `depot` VALUES 
+  (@depot_uuid, 'Depot Principal', 1, 1),
+  (@second_depot_uuid, 'Depot Secondaire', 1, 0);
+
+-- stock lots 
+INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `purchase_uuid`) VALUES 
+(HUID('00219063-5010-462f-ac64-9e024416a2f4'), 'QNN-A', 100, 100, 1.2000, '2018-04-30', HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588')),
+(HUID('14bd524d-649f-4c81-ba49-2db6b76182ba'), 'VIT-A', 100, 100, 1.2000, '2019-04-30', HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588')),
+(HUID('44d76d54-4b75-498c-8d37-d6f756a845c6'), 'VIT-B', 20, 20, 0.5000, '2020-04-30', HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588')),
+(HUID('aee7c2f7-8833-42ed-8041-0b74d35606d5'), 'QNN-B', 200, 200, 0.8000, '2018-04-30', HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588')),
+(HUID('d35b49ac-975d-4a00-b465-cfa1ee897c97'), 'QNN-C', 50, 50, 2.0000, '2017-04-30', HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'));

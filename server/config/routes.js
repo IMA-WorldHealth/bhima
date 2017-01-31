@@ -577,6 +577,7 @@ exports.configure = function configure(app) {
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
   // stock management API 
-  app.get('/stock/create', stock.createNewStock);
+  app.post('/stock/lots', stock.createStock);
+  app.post('/stock/lots/movements', stock.createMovement);
 
 };

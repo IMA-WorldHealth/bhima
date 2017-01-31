@@ -1827,7 +1827,7 @@ CREATE TABLE `flux` (
 DROP TABLE IF EXISTS `lot`;
 CREATE TABLE `lot` (
   `uuid`              BINARY(16) NOT NULL,
-  `label`             BINARY(16) NOT NULL,
+  `label`             VARCHAR(255) NOT NULL,
   `initial_quantity`  INT(11) NOT NULL DEFAULT 0,
   `quantity`          INT(11) NOT NULL DEFAULT 0,
   `unit_cost`         DECIMAL(19, 4) UNSIGNED NOT NULL,
@@ -1852,6 +1852,7 @@ CREATE TABLE `stock_movement` (
   `flux_id`         INT(11) NOT NULL,
   `date`            DATE NOT NULL,
   `quantity`        int(11) NOT NULL DEFAULT 0,
+  `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),

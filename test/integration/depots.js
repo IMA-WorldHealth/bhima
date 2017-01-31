@@ -92,7 +92,7 @@ describe('(/depots) The depots API ', function () {
   it('GET /depots should returns the list of depots', function () {
     return agent.get('/depots')
     .then(function (res) {
-      helpers.api.listed(res, 2);
+      helpers.api.listed(res, 4);
     })
     .catch(helpers.handler);
   });

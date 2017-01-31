@@ -35,31 +35,50 @@ const topic  = require('../../lib/topic');
 const BadRequest  = require('../../lib/errors/BadRequest');
 const NotFound    = require('../../lib/errors/NotFound');
 
+const flux = {
+    'FROM_PURCHASE'    : 1,
+    'FROM_OTHER_DEPOT' : 2,
+    'FROM_ADJUSTMENT'  : 3,
+    'FROM_PATIENT'     : 4,
+    'FROM_SERVICE'     : 5,
+    'FROM_DONATION'    : 6,
+    'FROM_LOSS'        : 7,
+    'TO_OTHER_DEPOT'   : 8,
+    'TO_PATIENT'       : 9,
+    'TO_SERVICE'       : 10,
+    'TO_LOSS'          : 11,
+    'TO_ADJUSTMENT'    : 12
+};
+
 
 // expose to the API 
-exports.createNewStock = createNewStock;
+exports.createStock = createStock;
+exports.createMovement = createMovement;
 
 
 /**
- * POST /stock/create
- * Create a new stock entry
+ * POST /stock/lots
+ * Create a new stock lots entry
  */
-function createNewStock(req, res, next) {
-    let params = req.query;
+function createStock(req, res, next) {
+    let params = req.body;
 
-    let createLotQuery, createLotObject, createMovementQuery, createMovementObject;
+    let createLotQuery, createLotObject, createMovementQuery, createMovementObject, date;
 
     const transaction  = db.transaction();
 
-    const documentUuid = uuid.v4();
-
-    const documentDate = moment(new Date(params.date)).format('YYYY-MM-DD').toString();
-
-    const documentUser = req.session.user.id;
+    const document = {
+        uuid: uuid.v4(),
+        date: moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+        user: req.session.user.id
+    };
 
     params.lots.forEach(lot => {
 
-        // lot prepare query 
+        // lot expiration date 
+        date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD').toString();
+
+        // lot prepare query
         createLotQuery = `INSERT INTO lot SET ?`;
         createLotObject = {
             uuid:             db.bid(uuid.v4()),
@@ -67,9 +86,9 @@ function createNewStock(req, res, next) {
             initial_quantity: lot.quantity,
             quantity:         lot.quantity,
             unit_cost:        lot.unit_cost,
-            expiration_date:  lot.expiration_date,
-            inventory_uuid:   lot.inventory_uuid,
-            purchase_uuid:    lot.purchase_uuid,
+            expiration_date:  date,
+            inventory_uuid:   db.bid(lot.inventory_uuid),
+            purchase_uuid:    db.bid(lot.purchase_uuid),
             delay:            0
         };
 
@@ -78,13 +97,14 @@ function createNewStock(req, res, next) {
         createMovementObject = {
             uuid:             db.bid(uuid.v4()),
             lot_uuid:         createLotObject.uuid,
-            depot_uuid:       params.depot_uuid,
-            document_uuid:    db.bid(documentUuid),
+            depot_uuid:       db.bid(params.depot_uuid),
+            document_uuid:    db.bid(document.uuid),
             flux_id:          params.flux_id,
-            date:             documentDate,
+            date:             document.date,
             quantity:         lot.quantity,
+            unit_cost:        lot.unit_cost,
             is_exit:          0,
-            user_id:          documentUser
+            user_id:          document.user
         };
 
         // transaction - add lot 
@@ -96,8 +116,116 @@ function createNewStock(req, res, next) {
 
     transaction.execute()
     .then(() => {
-        res.status(200).json({ uuid: documentUuid })
+        res.status(201).json({ uuid: document.uuid });
     })
     .catch(next)
     .done();
+}
+
+/**
+ * POST /stock/movement
+ * Create a new stock movement 
+ */
+function createMovement(req, res, next) {
+    let params = req.body;
+
+    const document = {
+        uuid: uuid.v4(),
+        date: moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+        user: req.session.user.id
+    };
+
+    let process = (params.from_depot && params.to_depot) ? depotMovement : normalMovement;
+
+    process(document, params)
+    .then(rows => {
+        res.status(201).json({ uuid: document.uuid });
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @function normalMovement
+ * @description there are only lines for IN or OUT
+ */
+function normalMovement(document, params) {
+    let createMovementQuery, createMovementObject;
+
+    const transaction  = db.transaction();
+
+    params.entity_uuid = params.entity_uuid ? db.bid(params.entity_uuid) : null;
+
+    params.lots.forEach(lot => {
+        createMovementQuery = `INSERT INTO stock_movement SET ?`;
+        createMovementObject = {
+            uuid:             db.bid(uuid.v4()),
+            lot_uuid:         db.bid(lot.uuid),
+            depot_uuid:       db.bid(params.depot_uuid),
+            document_uuid:    db.bid(document.uuid),
+            quantity:         lot.quantity,
+            unit_cost:        lot.unit_cost,
+            date:             document.date,
+            entity_uuid:      params.entity_uuid,
+            is_exit:          params.is_exit,
+            flux_id:          params.flux_id,
+            user_id:          document.user
+        };
+
+        // transaction - add movement 
+        transaction.addQuery(createMovementQuery, [createMovementObject]);
+    });
+
+    return transaction.execute();
+}
+
+/**
+ * @function depotMovement
+ * @description movement between depots, there are two lines for IN and OUT
+ */
+function depotMovement(document, params) {
+
+    let paramIn, paramOut;
+
+    const transaction  = db.transaction();
+
+    params.enity_uuid = params.enity_uuid ? db.bid(params.enity_uuid) : null;
+
+    params.lots.forEach(lot => {
+
+        // OUT: 
+        paramOut = {
+            uuid:             db.bid(uuid.v4()),
+            lot_uuid:         db.bid(lot.uuid),
+            depot_uuid:       db.bid(params.from_depot),
+            document_uuid:    db.bid(document.uuid),
+            quantity:         lot.quantity,
+            unit_cost:        lot.unit_cost,
+            date:             document.date,
+            entity_uuid:      null,
+            is_exit:          1,
+            flux_id:          flux.TO_OTHER_DEPOT,
+            user_id:          document.user
+        };
+
+        // IN: 
+        paramIn = {
+            uuid:             db.bid(uuid.v4()),
+            lot_uuid:         db.bid(lot.uuid),
+            depot_uuid:       db.bid(params.to_depot),
+            document_uuid:    db.bid(document.uuid),
+            quantity:         lot.quantity,
+            unit_cost:        lot.unit_cost,
+            date:             document.date,
+            entity_uuid:      null,
+            is_exit:          0,
+            flux_id:          flux.FROM_OTHER_DEPOT,
+            user_id:          document.user
+        };
+        
+        transaction.addQuery('INSERT INTO stock_movement SET ?', [paramOut]);
+        transaction.addQuery('INSERT INTO stock_movement SET ?', [paramIn]);
+    });
+
+    return transaction.execute();
 }
