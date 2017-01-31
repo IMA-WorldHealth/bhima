@@ -1,5 +1,4 @@
 /* global element, by, browser */
-
 'use strict';
 
 const chai = require('chai');
@@ -35,7 +34,8 @@ describe('Account Management', function () {
       number : 40000
     }
   };
-  const deletingAccount = "3647";
+
+  const deletingAccount = '3647';
 
   const page = new AccountsPage();
 
@@ -143,18 +143,18 @@ describe('Account Management', function () {
   }
 
   // Delete a specific Account
-  it('Delete specific account', function () {
+  it('can delete a specific account', function () {
     page.openEdit(deletingAccount);
-    element(by.id('delete_account')).click();
+
+    FU.buttons.delete();
     components.modalAction.confirm();
 
     components.notification.hasSuccess();
   });
 
-  // Delete a specific Account
-  it('Impossible to remove an account parent who have children', function () {
+  it('cannot delete an account with children', function () {
     page.openEdit(accountGroup.id);
-    element(by.id('delete_account')).click();
+    FU.buttons.delete();
     components.modalAction.confirm();
     expect(element.all(by.css('[alert alert-danger]')));
   });
