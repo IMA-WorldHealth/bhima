@@ -17,7 +17,6 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   vm.state = $state;
   vm.billingServiceSubscriptions = billingServiceSubscriptions;
   vm.subsidySubscriptions = subsidySubscriptions;
-  vm.onSelectAccountCallback = onSelectAccountCallback;
 
   vm.$loading = true;
   vm.$loaded = false;
@@ -94,9 +93,5 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
         vm.group.subsidies = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       });
-  }
-
-  function onSelectAccountCallback(account) {
-    console.log('account:', account);
   }
 }

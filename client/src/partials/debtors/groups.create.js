@@ -25,6 +25,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
   vm.$loading = true;
   vm.$loaded = false;
+  vm.onSelectAccountCallback = onSelectAccount;
 
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.read()
@@ -45,9 +46,9 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   // expose state for optional view elements
   vm.state = $state;
 
-  settupDefaults();
+  setupDefaults();
 
-  function settupDefaults() {
+  function setupDefaults() {
     vm.createSessionId = Uuid();
 
     /* object to collect all form model values */
@@ -64,6 +65,11 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     vm.group.max_credit = 0;
     vm.submit = submit;
+  }
+
+  // attached the account as needed
+  function onSelectAccount(account) {
+    vm.group.account_id = account.id;
   }
 
   function submit(groupForm) {
@@ -89,7 +95,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
         if (vm.resetOnCompletion) {
 
           // reset module state (model + form)
-          settupDefaults();
+          setupDefaults();
           groupForm.$setUntouched();
           groupForm.$setPristine();
 
