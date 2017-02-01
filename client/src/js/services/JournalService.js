@@ -14,6 +14,7 @@ function JournalService(Api) {
 
   service.formatFilterParameters = formatFilterParameters;
   service.grid = grid;
+  service.saveChanges = saveChanges;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -22,6 +23,18 @@ function JournalService(Api) {
   function grid(id, parameters) {
     var gridOptions = angular.extend({aggregates : 1}, parameters);
     return this.read(id, gridOptions);
+  }
+
+  function saveChanges(entity, changes) {
+    // format request for server
+    var saveRequest = {
+      changed : changes,
+      added : entity.newRows,
+      removed : entity.removedRows
+    };
+
+    return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
+      .then(service.util.unwrapHttpRequest);
   }
 
   /**

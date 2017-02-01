@@ -72,9 +72,6 @@
       <button ng-click="JournalCtrl.transactions.save()" class="btn btn-sm btn-default">Save Transaction</button>
     </div>
   </div>
-  <!-- <button class="btn btn-sm btn-default">BUTTON</button> -->
-  <!-- <button class="btn btn-sm btn-default">BUTTON</button> -->
-
 </div>
 
 <!-- Overflow stops the scroll bar from pushing the screen on grid size change -->
@@ -100,8 +97,7 @@
           <bh-grid-loading-indicator
             loading-state="JournalCtrl.loading"
             empty-state="JournalCtrl.gridOptions.data.length === 0"
-            error-state="JournalCtrl.hasError"
-          >
+            error-state="JournalCtrl.hasError">
           </bh-grid-loading-indicator>
 
         </div>

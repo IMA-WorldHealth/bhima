@@ -206,12 +206,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.hasError = false;
 
     // @fixme
-    window.store = Store;
     Journal.grid(null, options)
       .then(function (records) {
 
         // pre process data - this should be done in a more generic way in a service
-        vm.gridOptions.data = preprocessJournalData(records);
+        vm.gridOptions.data = transactions.preprocessJournalData(records);
 				transactions.applyEdits();
 
         // try to unfold groups

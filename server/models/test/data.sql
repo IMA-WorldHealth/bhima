@@ -353,18 +353,18 @@ SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
 
-INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  -- vouchers data
-  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
+/* INSERT INTO `posting_journal` VALUES */
+/*   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL), */
+/*   -- vouchers data */
+/*   (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,'D',NULL,'Sample voucher data three',1,2,1,NULL), */
+/*   (HUID(UUID()),1,1,16,'TRANS5','2016-02-09 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL); */
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES

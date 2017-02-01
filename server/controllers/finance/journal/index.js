@@ -34,6 +34,8 @@ exports.reverse = reverse;
 exports.find = find;
 exports.journalEntryList = journalEntryList;
 
+exports.editTransaction = editTransaction;
+
 /**
  * Looks up a transaction by record_uuid.
  *
@@ -43,34 +45,40 @@ exports.journalEntryList = journalEntryList;
 function lookupTransaction(record_uuid) {
 
   let sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-      p.description, p.account_id, p.debit, p.credit,
-      p.debit_equiv, p.credit_equiv, p.currency_id,
-      BUID(p.entity_uuid) AS entity_uuid,
-      BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
-      p.user_id, p.cc_id, p.pc_id,
-      pro.abbr, pro.name AS project_name,
-      per.start_date AS period_start, per.end_date AS period_end,
-      a.number AS account_number, u.display_name AS user
-    FROM posting_journal p
-      JOIN project pro ON pro.id = p.project_id
-      JOIN period per ON per.id = p.period_id
-      JOIN account a ON a.id = p.account_id
-      JOIN user u ON u.id = p.user_id
-    WHERE p.record_uuid = ?
-    ORDER BY p.trans_date DESC;
-  `;
+      SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+        p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
+        dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
+        p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
+        BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
+        BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
+        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+        pro.name AS project_name, per.start_date AS period_start,
+        per.end_date AS period_end, a.number AS account_number, u.display_name
+      FROM posting_journal p
+        JOIN project pro ON pro.id = p.project_id
+        JOIN period per ON per.id = p.period_id
+        JOIN account a ON a.id = p.account_id
+        JOIN user u ON u.id = p.user_id
+        JOIN currency c ON c.id = p.currency_id
+        LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
+        LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
+        LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
+      WHERE p.record_uuid = ?
+      ORDER BY p.trans_date DESC
+    `;
 
   return db.exec(sql, [ db.bid(record_uuid) ])
     .then(function (rows) {
+      return addAggregateData(rows);
+    })
+    .then(function (result) {
 
       // if no records matching, throw a 404
-      if (rows.length === 0) {
+      if (result.journal.length === 0) {
         throw new NotFound(`Could not find a transaction with record_uuid ${record_uuid}.`);
       }
 
-      return rows;
+      return result;
     });
 }
 
@@ -355,6 +363,33 @@ function getTransaction (req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function editTransaction(req, res, next) {
+  const uuid = req.params.record_uuid;
+
+  let transaction = db.transaction();
+
+  let rowsChanged = req.body.changed;
+  let rowsAdded = req.body.added;
+  let rowsRemoved = req.body.removed;
+
+
+  rowsRemoved.forEach((row) => transaction.addQuery(removeJournalRow(), [row.uuid]));
+
+
+
+  // 1. make changes with update methods ('SET ?') etc.
+  // 2. run changes through trial balance
+  // 3. roll back transaction
+
+  // edit transaction with uuid - uuid
+  res.status(200).json({ uuid });
+}
+
+// creates the required db query for removing an individual transaction row
+function removeJournalRow() {
+  return 'DELETE FROM posting_journal WHERE uuid = ?';
 }
 
 /**
