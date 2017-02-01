@@ -1127,7 +1127,6 @@ CREATE TABLE `patient` (
   `email`                VARCHAR(40),
   `address_1`            VARCHAR(100),
   `address_2`            VARCHAR(100),
-  `renewal`              TINYINT(1) NOT NULL DEFAULT 0,
   `origin_location_id`   BINARY(16) NOT NULL,
   `current_location_id`  BINARY(16) NOT NULL,
   `registration_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
