@@ -2,9 +2,8 @@ angular.module('bhima.controllers')
 .controller('InvoiceRegistrySearchModalController', InvoiceRegistrySearchModalController);
 
 InvoiceRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'PatientInvoiceService', 'PatientService',
-  'ProjectService', 'UserService', 'ServiceService', 'DateService', 'filters',
-  'NotifyService', 'moment'
+  '$uibModalInstance', 'UserService', 'ServiceService', 'DateService', 'filters',
+  'NotifyService'
 ];
 
 /**
@@ -15,7 +14,7 @@ InvoiceRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients, Projects, Users, Services, Dates, filters, Notify, moment) {
+function InvoiceRegistrySearchModalController(ModalInstance, Users, Services, Dates, filters, Notify) {
   var vm = this;
 
   // set controller data
@@ -27,28 +26,10 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
   vm.submit = submit;
   vm.clear = clear;
   vm.cancel = function () { ModalInstance.close(); };
-  vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
-  vm.setPatient = setPatient;
 
-  initialise();
-
-  function initialise() {
-    // ensure patient uuid is correctly assigned at startup
-    if (vm.params.patientUuid) {
-      // @TODO Until `find-patient` exposes method to set patient by default, this ensures the UI
-      // is up to date with the values.
-      delete vm.params.patientUuid;
-    }
-
-    fetchDependencies();
-  }
+  fetchDependencies();
 
   function fetchDependencies() {
-    Projects.read()
-      .then(function (projects) {
-        vm.projects = projects;
-      })
-      .catch(Notify.handleError);
 
     Services.read()
       .then(function (services) {
@@ -67,6 +48,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
   function submit(form) {
     if (form.$invalid) { return; }
 
+    //to get it deleted at the for loop below
     var parameters = angular.copy(vm.params);
 
     // convert dates to strings
@@ -97,15 +79,5 @@ function InvoiceRegistrySearchModalController(ModalInstance, Invoices, Patients,
     } else {
       delete vm.params[value];
     }
-  }
-
-  // register the patient search api
-  function onPatientSearchApiCallback(api) {
-    vm.patientSearchApi = api;
-  }
-
-  function setPatient(patient) {
-    vm.params.patientUuid = patient.uuid;
-    vm.params.patientNames = patient.display_name;
   }
 }

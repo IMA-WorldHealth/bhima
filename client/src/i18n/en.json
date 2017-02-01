@@ -643,6 +643,7 @@
       "PROVINCE"               : "Province",
       "RECIPIENT"              : "Recipient",
       "REFERENCE"              : "Reference",
+      "REFERENCE_PATIENT"      : "Patient Reference",
       "REFERENCE_GROUP"        : "Reference Group",
       "RELIGION"               : "Religion",
       "RESULT"                 : "Results",

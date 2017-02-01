@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
-  'SessionService', 'util', 'ReceiptModal', 'appcache',
+  'SessionService', 'ReceiptModal', 'appcache',
   'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
 ];
 
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -89,10 +89,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    if (parameters) {
-      delete parameters.patientNames;
-    }
-
     // if we have search parameters, use search.  Otherwise, just read all
     // invoices.
     var request = angular.isDefined(parameters) ?
@@ -156,11 +152,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     vm.filters = cache.filters;
-
-    // @TODO work around for not caching patient name
-    if (vm.filters && vm.filters.patientUuid) {
-      delete vm.filters.patientUuid;
-    }
 
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
 

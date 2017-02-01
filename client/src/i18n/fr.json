@@ -646,6 +646,7 @@
       "PROVINCE"               : "Province",
       "RECIPIENT"              : "Facture de ",
       "REFERENCE"              : "Référence",
+      "REFERENCE_PATIENT"      : "Référence Patient",
       "REFERENCE_GROUP"        : "Groupe de référence",
       "RELIGION"               : "Religion",
       "RESULT"                 : "Resultats",

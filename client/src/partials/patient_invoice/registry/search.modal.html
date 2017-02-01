@@ -101,11 +101,8 @@
       </div>
 
       <div class="form-group">
-        <bh-find-patient
-          on-search-complete="ModalCtrl.setPatient(patient)"
-          on-register-api="ModalCtrl.onPatientSearchApiCallback(api)"
-          validation-trigger="ModalForm.$submitted">
-        </bh-find-patient>
+        <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+        <input type="text" class="form-control" ng-model="ModalCtrl.params.patientReference"/>
       </div>
     </fieldset>
   </div>

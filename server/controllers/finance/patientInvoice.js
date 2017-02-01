@@ -197,7 +197,6 @@ function create(req, res, next) {
 }
 
 function find(options) {
-
   // remove the limit first thing, if it exists
   let limit = Number(options.limit);
   delete options.limit;
@@ -214,6 +213,7 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
       invoice.user_id
     FROM invoice
@@ -238,6 +238,12 @@ function find(options) {
     conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`);
     conditions.parameters.push(options.reference);
     delete options.reference;
+  }
+
+  if (options.patientReference) {
+    conditions.statements.push(`CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`);
+    conditions.parameters.push(options.patientReference);
+    delete options.patientReference;
   }
 
   if (options.debtor_uuid) {
