@@ -5,11 +5,13 @@ angular.module('bhima.controllers')
 .controller('FeeCenterController', FeeCenterController);
 
 // dependencies injection
-FeeCenterController.$inject = ['FeeCenterService', 'NotifyService','$state'];
+FeeCenterController.$inject = ['FeeCenterService', 'NotifyService','$state', 'SessionService'];
 
 /** Transaction Type Controller  */
-function FeeCenterController(FeeCenterService, Notify, $state) {
+function FeeCenterController(FeeCenterService, Notify, $state, Session) {
   var vm = this;
+
+  vm.enterprise = Session.enterprise;
 
   // edit button template
   var actionTemplate = '<div class="ui-grid-cell-contents">' +
@@ -35,6 +37,10 @@ function FeeCenterController(FeeCenterService, Notify, $state) {
       { field : 'is_cost', displayName : 'FORM.LABELS.TYPE',
         headerCellFilter: 'translate',
         cellTemplate: 'partials/templates/grid/feeCenterType.tmpl.html'},
+
+      { field : 'value', displayName : 'FORM.LABELS.VALUE',
+        headerCellFilter: 'translate', 
+        cellTemplate : '/partials/templates/grid/fee_center_value.cell.html'},
 
       { field : 'principalState', displayName : 'FORM.LABELS.PRINCIPAL',
         headerCellFilter: 'translate'},

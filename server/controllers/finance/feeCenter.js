@@ -28,7 +28,6 @@ function list (req, res, next) {
   const ordering = 'ORDER BY fc.label';
   const is_detailed = Boolean(Number(req.query.detailed));
   const detailed = is_detailed ? ', fc.note, fc.is_principal, fc.project_id, fc.is_cost, p.name, p.abbr, p.enterprise_id, p.zs_id ' : '';
-
   const sql =
     `SELECT fc.id, fc.label, fc.is_cost ${detailed} FROM fee_center AS fc JOIN project as p on fc.project_id = p.id`;
 
