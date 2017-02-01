@@ -35,8 +35,28 @@ function list (req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      `SELECT fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
-      FROM fee_center AS fc JOIN project AS p ON fc.project_id = p.id `;
+      `
+        SELECT 
+	        fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id, tt.value
+        FROM
+	        fee_center AS fc
+        JOIN
+	        project AS p ON fc.project_id = p.id
+        LEFT JOIN
+	        (
+		        SELECT 
+			        IFNULL(IF(t.is_cost = 1, SUM(t.debit_equiv - t.credit_equiv), SUM(t.credit_equiv - t.debit_equiv)), 0) AS value, t.id 
+            FROM 
+			        (
+				        SELECT 
+					        gl.debit_equiv, gl.credit_equiv, f.is_cost, f.id 
+				        FROM 
+					        general_ledger AS gl 
+				        JOIN
+					        fee_center AS f ON gl.fc_id = f.id 
+			        ) AS t
+	        ) AS tt ON tt.id = fc.id
+      `;
   }
 
 
@@ -64,7 +84,9 @@ function list (req, res, next) {
   .then(function (rows) {
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (err) {
+    console.log('******* erreur', err);
+  })
   .done();
 }
 
