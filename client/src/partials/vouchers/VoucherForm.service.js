@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
-  'CashboxService', 'AppCache', 'Store', 'AccountService'
+  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout'
 ];
 
 /**
@@ -16,7 +16,7 @@ VoucherFormService.$inject = [
  *
  * @todo - finish the caching implementation
  */
-function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts) {
+function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout) {
 
   var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
 
@@ -140,9 +140,12 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
         err = item._error;
       }
 
-      // if there unique accounts array does not have this account, add it.
-      if (uniqueAccountsArray.indexOf(item.account_id) === -1) {
-        uniqueAccountsArray.push(item.account_id);
+      // only test for unique accounts if there are valid accounts selected
+      if (item.account_id) {
+        // if there unique accounts array does not have this account, add it.
+        if (uniqueAccountsArray.indexOf(item.account_id) === -1) {
+          uniqueAccountsArray.push(item.account_id);
+        }
       }
 
       if (cashAccounts.indexOf(item.account_id) !== -1) {
@@ -240,9 +243,21 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * This method clears the entire grid, removing all items from the grid.
    */
   VoucherForm.prototype.clear = function clear() {
+
     this.store.clear();
-    this.setup();
-    this.validate();
+
+    // directly running setup after clear adds the voucher items that have been
+    // removed from the store, wrapping these methods in a timeout ensures they
+    // are no longer in use by the ui-grid data object
+    $timeout(function () {
+      this.setup();
+
+      // validate() is only set up to test on submission as it checks the validity
+      // of individual items which will not have been configured, manually
+      // reset error state
+      delete this._error;
+      this.hasCashboxAccount = false;
+    }.bind(this));
   };
 
   /**

@@ -32,8 +32,9 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
   vm.Voucher = new VoucherForm('ComplexVouchers');
 
   // fired to clear the grid
-  vm.clear = function clear() {
+  vm.clear = function clear(form) {
     vm.Voucher.clear();
+    form.$setPristine();
   };
 
   // fired on changes

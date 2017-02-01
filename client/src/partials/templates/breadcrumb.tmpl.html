@@ -35,7 +35,7 @@
       </div>
 
       <!-- dropdown download  -->
-      <div class="toolbar-item btn-group btn-group-sm">
+      <div class="toolbar-item btn-group btn-group-sm" ng-if="vm.dropdownDownload.reportUrl">
         <bh-renderer-dropdown
           report-url="{{ vm.dropdownDownload.reportUrl }}">
         </bh-renderer-dropdown>
