@@ -33,7 +33,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
       return Prices.read();
     })
   /* @todo This controller should not be concerned about individual price lists */
-  /* @todo All read/ list API methods should be uniform on the client */
     .then(function (priceLists) {
       vm.priceLists = priceLists;
       vm.$loaded = true;
