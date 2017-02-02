@@ -1835,6 +1835,7 @@ CREATE TABLE `lot` (
   `inventory_uuid`    BINARY(16) NOT NULL,
   `purchase_uuid`     BINARY(16) NOT NULL,
   `delay`             INT(11) NOT NULL DEFAULT 0,
+  `entry_date`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),

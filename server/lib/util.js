@@ -11,6 +11,7 @@
 
 const _ = require('lodash');
 const q = require('q');
+const moment = require('moment');
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
@@ -21,6 +22,7 @@ module.exports.isFalsy = isFalsy;
 module.exports.uniquelize = uniquelize;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 exports.resolveObject = resolveObject;
+exports.dateString    = dateString;
 
 /**
  * @function queryCondition
@@ -205,4 +207,19 @@ function resolveObject(object) {
       _.keys(object).forEach((key, index) => settled[key] = results[index]);
       return settled;
     });
+}
+
+/**
+ * @function dateString
+ * 
+ * @description returns a formated date string 
+ * 
+ * @param {date} date - A date 
+ * 
+ * @param {string} format - A date format 
+ * 
+ * @return {string} - A date string 
+ */
+function dateString(date, format) {
+  return moment(new Date(date)).format(format || 'YYYY-MM-DD').toString();
 }

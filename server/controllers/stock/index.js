@@ -52,8 +52,12 @@ const flux = {
 
 
 // expose to the API 
-exports.createStock = createStock;
-exports.createMovement = createMovement;
+exports.createStock        = createStock;
+exports.createMovement     = createMovement;
+exports.listLots           = listLots;
+exports.listLotsDepot      = listLotsDepot;
+exports.listInventoryDepot = listInventoryDepot;
+exports.listLotsMovements  = listLotsMovements;
 
 
 /**
@@ -228,4 +232,212 @@ function depotMovement(document, params) {
     });
 
     return transaction.execute();
+}
+
+/**
+ * @function getLots
+ * 
+ * @description returns a list of lots 
+ * 
+ * @param {string} sql - An optional sql script of selecting in lot
+ * @param {object} params - A request query object 
+ * @param {string} final_clause - An optional final clause (GROUP BY, HAVING, ...) to add to query built
+ */
+function getLots(sql, params, final_clause) {
+    sql = sql || `
+        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost,
+            l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
+            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
+        FROM lot l 
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
+        JOIN depot d ON d.uuid = m.depot_uuid 
+    `;
+
+    let queryExpiration, paramExpiration, queryEntry, paramEntry, 
+        queryArray = [], paramArray = [];
+
+    if (params.uuid) {
+        params['l.uuid'] = params.uuid;
+        delete params.uuid;
+    }
+
+    if (params.depot_text) {
+        params['d.text'] = params.depot_text;
+        delete params.depot_text;
+    }
+
+    if (params.text) {
+        params['i.text'] = params.text;
+        delete params.text;
+    }
+
+    if (params.expiration_date_from && params.expiration_date_to) {
+        queryExpiration = ` DATE(l.expiration_date) BETWEEN DATE(?) AND DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.expiration_date_from), 
+            util.dateString(params.expiration_date_to),
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.expiration_date_from;
+        delete params.expiration_date_to;
+    }
+
+    if (params.entry_date_from && params.entry_date_to) {
+        queryEntry = ` DATE(l.entry_date) BETWEEN DATE(?) AND DATE(?) `;
+        paramEntry = [
+            util.dateString(params.entry_date_from), 
+            util.dateString(params.entry_date_to),
+        ];
+
+        queryArray.push(queryEntry);
+        paramArray.push(paramEntry);
+
+        delete params.entry_date_from;
+        delete params.entry_date_to;
+    }
+
+    // build query and parameters correctly
+    let builder = util.queryCondition(sql, params);
+
+    // dates queries and parameters  
+    let hasOtherParams = (Object.keys(params).length > 0);
+    
+    if (paramArray.length) {
+
+        builder.query += hasOtherParams ? ' AND ' + queryArray.join(' AND ') : ' WHERE ' + queryArray.join(' AND ');
+        builder.conditions = _.concat(builder.conditions, paramArray);
+        builder.conditions = _.flattenDeep(builder.conditions);
+    }
+
+    // finalize the query 
+    builder.query += final_clause || '';
+
+    return db.exec(builder.query, builder.conditions);
+}
+
+/**
+ * GET /stock/lots
+ * this function helps to list lots 
+ */
+function listLots(req, res, next) {
+    let params = req.query;
+    
+    getLots(null, params)
+    .then(rows => {
+        res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @function getLotsDepot
+ * 
+ * @description returns lots with their real quantity in each depots 
+ * 
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot 
+ * 
+ * @param {object} params - A request query object 
+ * 
+ * @param {string} final_clause - An optional final clause (GROUP BY, ...) to add to query built
+ */
+function getLotsDepot(depot_uuid, params, final_clause) {
+
+    if (depot_uuid) {
+        params.depot_uuid = depot_uuid;
+    }
+
+    const sql = `
+        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, 
+            SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, d.text AS depot_text,
+            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
+            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid 
+        FROM stock_movement m 
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid 
+    `;
+
+    final_clause = final_clause || ` GROUP BY l.uuid, m.depot_uuid `;
+
+    return getLots(sql, params, final_clause);
+}
+
+/**
+ * @function getLotsMovements
+ * 
+ * @description returns lots movements for each depots 
+ * 
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot 
+ * 
+ * @param {object} params - A request query object 
+ */
+function getLotsMovements(depot_uuid, params) {
+
+    if (depot_uuid) {
+        params.depot_uuid = depot_uuid;
+    }
+
+    const sql = `
+        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
+            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
+            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, m.is_exit  
+        FROM stock_movement m 
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid  
+    `;
+
+    return getLots(sql, params);
+}
+
+/**
+ * GET /stock/lots/movements 
+ * returns list of stock movements 
+ */
+function listLotsMovements(req, res, next) {
+    let params = req.query;
+
+    getLotsMovements(null, params)
+    .then(rows => {
+        res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /stock/lots/depots/
+ * returns list of each lots in each depots with their quantities
+ */
+function listLotsDepot(req, res, next) {
+    let params = req.query;
+
+    getLotsDepot(null, params)
+    .then(rows => {
+        res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /stock/inventory/depots/
+ * returns list of each inventory in a given depot with their quantities
+ * @todo process stock alert, rupture of stock
+ * @todo prevision for purchase 
+ */
+function listInventoryDepot(req, res, next) {
+    let params = req.query;
+
+    getLotsDepot(null, params, ' GROUP BY l.inventory_uuid, m.depot_uuid ')
+    .then(rows => {
+        res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
