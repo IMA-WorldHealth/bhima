@@ -44,7 +44,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       sortingAlgorithm : Sorting.algorithms.sortByReference
     },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', type: 'date' },
-    { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+    { name : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate', cellTemplate : '/partials/patients/templates/linkPatient.cell.html' },
     { field : 'cost',
       displayName : 'TABLE.COLUMNS.COST',
       headerCellFilter : 'translate',
