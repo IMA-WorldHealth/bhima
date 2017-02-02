@@ -13,8 +13,15 @@ const _    = require('lodash');
 const ReportManager  = require('../../../../lib/ReportManager');
 const NotFound = require('../../../../lib/errors/NotFound');
 const Vouchers = require('../../vouchers');
+const pdf = require('../../../../lib/renderers/pdf');
+
+// dependencies for barcode translation
+const barcode = require('../../../../lib/barcode');
+const identifiers = require('../../../../config/identifiers');
+const entityIdentifier = identifiers.VOUCHER.key;
 
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/vouchers/receipt.handlebars';
+const POS_TEMPLATE = './server/controllers/finance/reports/vouchers/receipt.pos.handlebars';
 const REPORT_TEMPLATE = './server/controllers/finance/reports/vouchers/report.handlebars';
 
 exports.receipt = receipt;
@@ -39,24 +46,33 @@ function receipt(req, res, next) {
   let data = {};
   let record = {};
 
+  let template = RECEIPT_TEMPLATE;
+
+  if (Boolean(Number(options.posReceipt))) {
+    template = POS_TEMPLATE;
+    _.extend(options, pdf.posReceiptOptions);
+  }
+
   try {
-    report = new ReportManager(RECEIPT_TEMPLATE, req.session, options);
+    report = new ReportManager(template, req.session, options);
   } catch (e) {
     return next(e);
   }
 
   // request for detailed receipt
-  req.query.detailed = true;
+  options.detailed = true;
 
   Vouchers.getVouchers(req.params.uuid, options)
     .then(rows => {
 
       if (!rows.length) {
-        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
+        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}.`);
       }
 
       // voucher details
       record.details = rows[0];
+
+      record.details.barcode = barcode.generate(entityIdentifier, record.details.uuid);
 
       // voucher transaction rows
       record.rows = rows;

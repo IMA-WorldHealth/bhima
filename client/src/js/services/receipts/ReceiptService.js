@@ -116,6 +116,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
 
   // print a complex voucher receipt
   function voucher(uuid, options) {
+    options.posReceipt = service.posReceipt;
     var route = '/reports/finance/vouchers/'.concat(uuid);
     return fetch(route, options);
   }

@@ -313,10 +313,10 @@ SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
 SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
 
-INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, description, user_id) VALUES
-  (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1),
-  (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1),
-  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1);
+INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, description, user_id, type_id) VALUES
+  (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1, 1),
+  (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, NULL),
+  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, NULL);
 
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
