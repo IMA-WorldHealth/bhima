@@ -186,7 +186,9 @@
     "DEBTOR"         : {
       "SUBSCRIBED"    : "Subcribed debtor(s)"
     },
+    "DELETE"         : "Delete a Debtor Group",
     "EDIT"           : "Edit Debtor Group",
+    "FAILURE_DELETE" : "Failure of the deletion of the debtor group",
     "GROUPS"         : "Debtor Groups",
     "HELP_TXT_1"     : "This interface allows you to review, find, and configure debtor groups",
     "HELP_TXT_2"     : "Edit selected debtor group",

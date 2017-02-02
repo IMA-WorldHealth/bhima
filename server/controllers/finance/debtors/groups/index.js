@@ -20,12 +20,16 @@ const uuid = require('node-uuid');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const NotFound = require('../../../../lib/errors/NotFound');
+const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /** Create a new debtor group */
 exports.create = create;
 
 /** Update a debtor group */
 exports.update = update;
+
+/** Delete a debtor group */
+exports.delete = remove;
 
 /** Get debtor group details */
 exports.detail = detail;
@@ -294,4 +298,25 @@ function loadInvoices(params) {
       let uuids = result.map(item => item.uuid);
       return db.exec(sqlInvoices, [uuids]);
     });
+}
+
+/**
+ * @method delete
+ *
+ * @description
+ * This method removes the debtor group from the system.
+ */
+function remove(req, res, next) {
+  const sql = 'DELETE FROM debtor_group WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
+  db.exec(sql, [uid])
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new BadRequest(`Cannot delete the debtor group with id ${req.params.uuid}`, 'DEBTOR_GROUP.FAILURE_DELETE');
+      }
+
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }

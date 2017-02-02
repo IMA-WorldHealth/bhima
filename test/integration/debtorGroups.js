@@ -297,6 +297,19 @@ describe('(/debtor_groups) The debtor groups API', function () {
     .catch(helpers.handler);
   });
 
+  it('DELETE /debtor_groups/:uuid should delete an existing debtor group', function () {
+    return agent.delete('/debtor_groups/' + lockedConventionGroup.uuid)
+      .then(function (res) {
+        helpers.api.deleted(res);
+        return agent.get('/debtor_groups/' + lockedConventionGroup.uuid);
+      })
+      .then(function (res) {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });  
+
+
   /**
    * @todo: Need to be implemented at the server side in
    * /server/controllers/debtors/groups/index.js  #function invoices

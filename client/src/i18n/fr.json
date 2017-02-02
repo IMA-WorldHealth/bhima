@@ -188,7 +188,9 @@
     "DEBTOR"         : {
      "SUBSCRIBED"    : "Debiteurs souscris"
     },
+    "DELETE"         : "Supprimer un groupe débiteur",
     "EDIT"           : "Editer le groupe debiteur",
+    "FAILURE_DELETE" : "Echec de suppression du groupe débiteurs",
     "GROUPS"         : "Groupes Débiteurs",
     "HELP_TXT_1"     : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
     "HELP_TXT_2"     : "Editer le Groupe de debiteur Sélectionnée",

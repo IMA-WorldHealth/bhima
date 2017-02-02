@@ -22,7 +22,7 @@ describe('Debtor Groups Management', function () {
   it('creates a debtor group', function () {
     FU.buttons.create();
 
-    FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
+    FU.input('GroupUpdateCtrl.group.name', 'AE2E Debtor Group');
     FU.uiSelect('GroupUpdateCtrl.group.account_id', '47001');
     FU.input('GroupUpdateCtrl.group.max_credit', '1200');
     FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');
@@ -38,6 +38,17 @@ describe('Debtor Groups Management', function () {
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups + 1);
   });
 
+  it('Delete a debtor group', function () {
+
+    let deleteGroup = element.all(by.css('[data-group-entry]'));
+    deleteGroup.all(by.css('[data-method="delete"]')).get(2).click();
+
+    FU.buttons.submit();
+
+    components.notification.hasSuccess();
+  });
+
+
   it('updates a debtor group', function () {
 
     let updateGroup = element.all(by.css('[data-group-entry]'));
@@ -50,6 +61,7 @@ describe('Debtor Groups Management', function () {
 
     components.notification.hasSuccess();
   });
+
 
   it('updates debtor group billing service subscriptions', function () {
     let updateGroup = element.all(by.css('[data-group-entry]'));
@@ -67,4 +79,5 @@ describe('Debtor Groups Management', function () {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
+
 });

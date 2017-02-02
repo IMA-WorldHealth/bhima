@@ -459,6 +459,7 @@ exports.configure = function configure(app) {
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
+  app.delete('/debtor_groups/:uuid', debtorGroups.delete);
 
 
   // users controller

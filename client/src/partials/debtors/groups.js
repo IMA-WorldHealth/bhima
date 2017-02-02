@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'ModalService', 'NotifyService'];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic
@@ -13,7 +13,7 @@ DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval) {
+function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval, Modal, Notify) {
   var vm = this;
 
   // pagination configuration
@@ -26,6 +26,7 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
   vm.setOrder = setOrder;
 
   vm.state = $state;
+  vm.deleteGroup = deleteGroup;
 
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
@@ -59,6 +60,24 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
 
       vm.filterActive = true;
     }
+  }
+
+  /**
+   * @function deleteGroup
+   * @description delete a creditor group
+   */
+  function deleteGroup(groupUuid) {
+    Modal.confirm()
+    .then(function (ans) {
+      if (!ans) { return false; }
+
+      return DebtorGroups.remove(groupUuid);
+    })
+    .then(function (ans) {
+      Notify.success('FORM.INFO.DELETE_SUCCESS');
+      $state.go('debtorGroups.list', null, {reload : true});
+    })
+    .catch(Notify.handleError);
   }
 
   function setOrder(attribute) {
