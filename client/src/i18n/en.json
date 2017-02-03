@@ -1107,7 +1107,9 @@
       "MISSING_ENTITY"           : "Record without entity ID",
       "MISSING_FISCAL_OR_PERIOD" : "Fiscal year or period omitted",
       "MULTIPLE_CANCELLING"      : "Multiple Cancelling. This transaction has been already cancelled",
-      "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line"
+      "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line",
+
+      "EDIT_INVALID_ACCOUNT"     : "Transaction contains invalid account(s)"
     },
     "WARNINGS" : {
       "MISSING_ENTITY" : "Record without entity type and entity ID"

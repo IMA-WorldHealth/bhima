@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store'];
+TransactionService.$inject = ['$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store'];
 
 /**
  * Transactions Service
@@ -19,7 +19,7 @@ TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants', 'NotifyS
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store) {
+function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store) {
 
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
@@ -145,11 +145,17 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
     selectedRows.forEach(function (row) {
 
       if (row.record_uuid === this._entity.record_uuid) {
-        this._entity.removedRows.push(row);
+        var originalRecord = this._entity.data.get(row.uuid);
 
-        console.log('removeRowIfExists', row);
+        if (originalRecord) {
+          // only remove rows that haven't been added in this session
+          this._entity.removedRows.push(row);
+          console.log('removeRowIfExists', row);
+        } else {
+          // directly delete from rows that have been added
+          this._entity.newRows.remove(row.uuid);
+        }
         this.removeRowIfExists(row);
-
       }
     }.bind(this));
   }
@@ -165,10 +171,19 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
     transactionRow.trans_id = this._entity.trans_id;
     transactionRow.trans_date = this._entity.date;
     transactionRow.record_uuid = this._entity.record_uuid;
+    transactionRow.project_id = this._entity.project_id;
+    transactionRow.period_id = this._entity.period_id;
+    transactionRow.fiscal_year_id = this._entity.fiscal_year_id;
+    transactionRow.currency_id = this._entity.currency_id;
+    transactionRow.user_id = this._entity.user_id;
+    transactionRow.project_name = this._entity.project_name;
+
     transactionRow.hrRecord = this._entity.hrRecord;
+    transactionRow.currencyName = this._entity.currencyName;
+
     console.log(transactionRow, this._entity);
 
-    this._entity.newRows.push(transactionRow);
+    this._entity.newRows.post(transactionRow);
 
     this.gridApi.grid.options.data.push(transactionRow);
     setPropertyOnTransaction.call(this, transactionRow.uuid, ROW_EDIT_FLAG, true);
@@ -179,13 +194,15 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
   // tied to afterCellEdit event
   function editCell(rowEntity, colDef, newValue, oldValue) {
     if (oldValue !== newValue) {
-      this._changes[rowEntity.uuid] = this._changes[rowEntity.uuid] || {};
-      this._changes[rowEntity.uuid][colDef.field] = newValue;
+      var originalRecord = this._entity.data.get(rowEntity.uuid);
 
       // @fixme
       // keep data up to date with changes
-      var originalRecord = this._entity.data.get(rowEntity.uuid);
       if (originalRecord) {
+        // only keep track of changes if this is a new row
+        this._changes[rowEntity.uuid] = this._changes[rowEntity.uuid] || {};
+        this._changes[rowEntity.uuid][colDef.field] = newValue;
+
         // if this doesn't exist - this could be a new row
         this._entity.data.get(rowEntity.uuid)[colDef.field] = newValue;
       }
@@ -222,11 +239,20 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
    *
    */
   Transactions.prototype.disableCellNavigation = function disableCellNavigation() {
-    this._cellNavEnabled = false;
-    registerCellNavChange.call(this);
 
     // clear the focused element for a better UX
     this.gridApi.grid.cellNav.clearFocus();
+
+    this._cellNavEnabled = false;
+    registerCellNavChange.call(this)
+
+    // $timeout(function () {
+    //   console.log('clearing cellnav enabled');
+    //   this.gridApi.grid.cellNav.clearFocus();
+    //   setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
+    //   this._entity = null;
+    // }.bind(this), 2000);
+
   };
 
   /**
@@ -426,14 +452,27 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
           data : transactionData,
           rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
           aggregates : {},
-          newRows : [],
+          newRows : new Store({ identifier : 'uuid' }),
           removedRows : []
         };
+
+        console.log('ROWS FOR EDIT');
+        console.log(this._entity.rows);
+
+        // shared data needed for all rows
         this._entity.trans_id = this._entity.rows[0].entity.trans_id;
         this._entity.transaction = this._entity.rows[0].entity.transaction;
         this._entity.date = this._entity.rows[0].entity.trans_date;
         this._entity.record_uuid = this._entity.rows[0].entity.record_uuid;
+        this._entity.period_id = this._entity.rows[0].entity.period_id;
+        this._entity.project_id = this._entity.rows[0].entity.project_id;
+        this._entity.fiscal_year_id = this._entity.rows[0].entity.fiscal_year_id;
+        this._entity.currency_id = this._entity.rows[0].entity.currency_id;
+        this._entity.user_id = this._entity.rows[0].entity.user_id;
+        this._entity.project_name = this._entity.rows[0].entity.project_name;
+
         this._entity.hrRecord = this._entity.rows[0].entity.hrRecord;
+        this._entity.currencyName = this._entity.rows[0].entity.currencyName;
 
         this.applyEdits();
         this.digestAggregates();
@@ -498,7 +537,7 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
       }.bind(this));
 
       // include new rows
-      this._entity.newRows.forEach(function (row) {
+      this._entity.newRows.data.forEach(function (row) {
         gridData.push(row);
         // this.gridApi.grid.options.data.push(row);
       }.bind(this));
@@ -552,21 +591,23 @@ function TransactionService(util, uiGridConstants, bhConstants, Notify, uuid, Jo
       .then(function () {
         // successful save - exit edit mode
 
+        this.disableCellNavigation();
+        setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
         // set the edits length to 0
         // this._edits.length = 0;
         this._entity = null;
         // disable cell navigation
-        this.disableCellNavigation();
       }.bind(this))
       .catch(function (error) {
-
+        Notify.handleError(error);
 
       });
     // remove the ROW_EDIT_FLAG property on all transactions
     // this._edits.forEach(function (uuid) {
-    setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
     // }.bind(this));
 
+
+    // setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
 
   };
 

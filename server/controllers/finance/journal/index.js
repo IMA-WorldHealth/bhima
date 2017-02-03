@@ -368,29 +368,118 @@ function getTransaction (req, res, next) {
 function editTransaction(req, res, next) {
   const uuid = req.params.record_uuid;
 
+  const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?';
+  const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?';
+  const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?';
+
   let transaction = db.transaction();
 
   let rowsChanged = req.body.changed;
   let rowsAdded = req.body.added;
   let rowsRemoved = req.body.removed;
 
+  rowsRemoved.forEach((row) => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
+  _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
 
-  rowsRemoved.forEach((row) => transaction.addQuery(removeJournalRow(), [row.uuid]));
 
+  transformColumns(rowsAdded, true)
+    .then((result) => {
 
+      console.log('got transformed columns', result);
+      result.forEach((row) => {
+        db.convert(row, ['uuid', 'record_uuid']);
+        // row = transformColumns(row);
+        transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
+      });
+
+      return transaction.execute();
+    })
+    .then((result) => {
+      res.status(200).json(result);
+
+    })
+    .catch(next);
 
   // 1. make changes with update methods ('SET ?') etc.
   // 2. run changes through trial balance
   // 3. roll back transaction
 
   // edit transaction with uuid - uuid
-  res.status(200).json({ uuid });
 }
 
-// creates the required db query for removing an individual transaction row
-function removeJournalRow() {
-  return 'DELETE FROM posting_journal WHERE uuid = ?';
+// converts all valid posting journal editable columns into data representations
+// returns valid errors for incorrect data
+function transformColumns(rows, newRecord) {
+  const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
+
+  let databaseRequests = [];
+  let databaseValues = [];
+  let assignments = [];
+
+  let promises = [];
+
+  rows.forEach(function (row) {
+  // supports specific columns that can be eddited on the client
+
+  // accounts are required on new rows, business logic should be moved elsewhere
+  if (newRecord && !row.account_number) {
+    throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+  }
+
+  if (row.account_number) {
+
+    databaseRequests.push(ACCOUNT_NUMBER_QUERY);
+    databaseValues.push([row.account_number]);
+    assignments.push((result) => {
+
+      if (!result.length) {
+        throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+      }
+      console.log('assignment got results', result);
+      console.log('assignment running pre assignment');
+      row.account_id = result[0].id;
+      console.log('assignment running', row);
+      return result;
+    });
+    delete row.account_number;
+  }
+
+  if (row.hrEntity) {
+    // reverse barcode lookup entity
+  }
+
+  if (row.hrReference) {
+    // reverse barcode lookup entity
+  }
+
+  // in the future this could factor in the currency ID. Right now there is no way
+  // of viewing or editing the debit and credit columns on the client
+  if (row.debit_equiv) {
+    row.debit = row.debit_equiv;
+  }
+
+  if (row.credit_equiv) {
+    row.credit = row.credit_equiv;
+  }
+
+  });
+
+  promises = databaseRequests.map((request, index) => {
+    return db.exec(request, databaseValues[index])
+      .then((results) => {
+        return assignments[index](results);
+      });
+  });
+
+  return q.all(promises)
+    .then(function (results) {
+
+      // throw new BadRequest('THIS FAILED MAN', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+      console.log('got all results', results);
+      return rows;
+    });
 }
+
 
 /**
  * @method reverse

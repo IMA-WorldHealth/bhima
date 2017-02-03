@@ -26,15 +26,29 @@ function JournalService(Api) {
   }
 
   function saveChanges(entity, changes) {
+    var added = angular.copy(entity.newRows);
+
     // format request for server
     var saveRequest = {
       changed : changes,
-      added : entity.newRows,
+      added : sanitiseNewRows(added),
       removed : entity.removedRows
     };
 
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpRequest);
+  }
+
+  function sanitiseNewRows(rows) {
+    rows.data.forEach(function (row) {
+      // delete view data required by journal grid
+      delete row.transaction;
+      delete row.hrRecord;
+      delete row.currencyName;
+      delete row.project_name;
+    });
+
+    return rows.data;
   }
 
   /**

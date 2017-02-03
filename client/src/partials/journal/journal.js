@@ -123,7 +123,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       enableCellEdit: true,
       footerCellTemplate:'<i></i>'
     },
-    { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true },
+    { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true, enableCellEdit : false },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
     { field : 'debit_equiv',
