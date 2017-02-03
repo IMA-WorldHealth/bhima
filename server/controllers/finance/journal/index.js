@@ -26,6 +26,7 @@ const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const NotFound  = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
+const barcode = require('../../../lib/db');
 
 // expose to the api
 exports.list = list;
@@ -379,12 +380,11 @@ function editTransaction(req, res, next) {
   let rowsRemoved = req.body.removed;
 
   rowsRemoved.forEach((row) => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
-  _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
+  // _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
 
 
   transformColumns(rowsAdded, true)
     .then((result) => {
-
       console.log('got transformed columns', result);
       result.forEach((row) => {
         db.convert(row, ['uuid', 'record_uuid']);
@@ -392,6 +392,11 @@ function editTransaction(req, res, next) {
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
 
+      return transformColumns(rowsChanged, false);
+    })
+    .then((result) => {
+
+      _.each(result, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
       return transaction.execute();
     })
     .then((result) => {
@@ -411,6 +416,8 @@ function editTransaction(req, res, next) {
 // returns valid errors for incorrect data
 function transformColumns(rows, newRecord) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
+  const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
+  const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
 
   let databaseRequests = [];
   let databaseValues = [];
@@ -418,49 +425,76 @@ function transformColumns(rows, newRecord) {
 
   let promises = [];
 
-  rows.forEach(function (row) {
-  // supports specific columns that can be eddited on the client
+  // this works on both the object provided from changes and the array from new
+  // rows - that might be a hack
+  _.each(rows, function (row) {
+    // supports specific columns that can be eddited on the client
+    // accounts are required on new rows, business logic should be moved elsewhere
+    if (newRecord && !row.account_number) {
+      throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+    }
 
-  // accounts are required on new rows, business logic should be moved elsewhere
-  if (newRecord && !row.account_number) {
-    throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
-  }
+    if (row.account_number) {
 
-  if (row.account_number) {
+      databaseRequests.push(ACCOUNT_NUMBER_QUERY);
+      databaseValues.push([row.account_number]);
+      assignments.push((result) => {
 
-    databaseRequests.push(ACCOUNT_NUMBER_QUERY);
-    databaseValues.push([row.account_number]);
-    assignments.push((result) => {
+        if (!result.length) {
+          throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+        }
+        console.log('assignment got results', result);
+        console.log('assignment running pre assignment');
+        row.account_id = result[0].id;
+        console.log('assignment running', row);
+        return result;
+      });
+      delete row.account_number;
+    }
 
-      if (!result.length) {
-        throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
-      }
-      console.log('assignment got results', result);
-      console.log('assignment running pre assignment');
-      row.account_id = result[0].id;
-      console.log('assignment running', row);
-      return result;
-    });
-    delete row.account_number;
-  }
+    if (row.hrEntity) {
+      // reverse barcode lookup entity
+      databaseRequests.push(ENTITY_QUERY);
+      databaseValues.push([row.hrEntity]);
 
-  if (row.hrEntity) {
-    // reverse barcode lookup entity
-  }
+      assignments.push((result) => {
 
-  if (row.hrReference) {
-    // reverse barcode lookup entity
-  }
+        if (!result.length) {
+          throw new BadRequest('Invalid entity for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ENTITY');
+        }
 
-  // in the future this could factor in the currency ID. Right now there is no way
-  // of viewing or editing the debit and credit columns on the client
-  if (row.debit_equiv) {
-    row.debit = row.debit_equiv;
-  }
+        row.entity_uuid = result[0].uuid;
+        return result;
+      });
+      delete row.hrEntity;
+    }
 
-  if (row.credit_equiv) {
-    row.credit = row.credit_equiv;
-  }
+    if (row.hrReference) {
+      // reverse barcode lookup entity
+      databaseRequests.push(REFERENCE_QUERY);
+      databaseValues.push([row.hrReference]);
+
+      assignments.push((result) => {
+
+        if (!result.length) {
+          throw new BadRequest('Invalid reference for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_REFERENCE');
+        }
+
+        row.reference_uuid = result[0].uuid;
+        return result;
+      });
+      delete row.hrReference;
+    }
+
+    // in the future this could factor in the currency ID. Right now there is no way
+    // of viewing or editing the debit and credit columns on the client
+    if (row.debit_equiv) {
+      row.debit = row.debit_equiv;
+    }
+
+    if (row.credit_equiv) {
+      row.credit = row.credit_equiv;
+    }
 
   });
 
@@ -475,7 +509,6 @@ function transformColumns(rows, newRecord) {
     .then(function (results) {
 
       // throw new BadRequest('THIS FAILED MAN', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
-      console.log('got all results', results);
       return rows;
     });
 }
