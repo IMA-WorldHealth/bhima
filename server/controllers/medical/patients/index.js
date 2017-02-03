@@ -377,7 +377,7 @@ function find(options) {
       q.originVillageName, q.originSectorName ${detailedColumns}
     FROM (
       SELECT p.uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
-        p.display_name, p.debtor_uuid AS debtor_uuid, p.sex, p.dob, p.father_name, p.mother_name, p.profession,
+        p.reference As ID,  p.display_name, p.debtor_uuid AS debtor_uuid, p.sex, p.dob, p.father_name, p.mother_name, p.profession,
         p.employer, p.spouse, p.spouse_profession, p.spouse_employer, p.religion, p.marital_status, p.phone,
         p.email, p.address_1, p.address_2, p.origin_location_id, p.current_location_id,
         p.registration_date, p.title, p.notes, p.hospital_no, p.user_id, d.text, proj.abbr, dg.account_id,
@@ -475,7 +475,9 @@ function find(options) {
     parameters.push(limit);
   }
 
-  return db.exec(sql, parameters);
+  let promise = options.ID ? db.one(sql, parameters) : db.exec(sql, parameters);
+
+  return promise;
 }
 
 /**

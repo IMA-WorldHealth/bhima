@@ -125,7 +125,7 @@ class DatabaseConnector {
           throw new BadRequest(`
             Expected ${entity || 'record'} to contain a single record with id ${id},
             but found ${rows.length} records!
-          `);
+          `, `FORM.ERRORS.AMBIGIOUS_ID`);
         }
 
         return rows[0];

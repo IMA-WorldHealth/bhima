@@ -397,7 +397,8 @@
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
       "REQUIRED"           : "Cette valeur est requise.",
-      "INVALID"            : "Donnees Invalides"
+      "INVALID"            : "Donnees Invalides",
+      "AMBIGIOUS_ID"    : "Identifiant ambigue, taper l'identifiant complet svp"
     },
     "INFO": {
       "BY"                   : "Par",

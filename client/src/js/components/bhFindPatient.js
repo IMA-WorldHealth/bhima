@@ -114,16 +114,22 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   function searchByReference(reference) {
     vm.loadStatus = 'loading';
 
-    var options = {
-      reference : reference,
-      limit : 1
-    };
+    var options = {};
+
+    if(reference.indexOf('.') === -1 ){
+      options.ID = reference;
+    }else{
+      options.reference = reference;
+      options.limit = 1;
+    }
+
+
 
     // query the patient's search endpoint for the
     // reference
     Patients.search(options)
       .then(function (patients) {
-        selectPatient(patients[0]);
+        selectPatient(Array.isArray(patients) ? patients[0] : patients);
       })
       .catch(Notify.handleError);
   }

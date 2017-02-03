@@ -395,7 +395,8 @@
       "MISSING_DEBTOR_ID"   : "Identifying missing Debtor",
       "RECORD_ERROR"        : "Please resolve any errors on the form (marked in red).",
       "REQUIRED"            : "This value is required.",
-      "INVALID"             : "invalid data"
+      "INVALID"             : "invalid data",
+      "AMBIGIOUS_ID"    : "ambiguous identifier - please type the full identifier into the input"
     },
     "INFO": {
       "BY"                   : "by",
