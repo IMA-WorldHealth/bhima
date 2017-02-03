@@ -81,7 +81,7 @@ function InvoiceRegistrySearch() {
 
   it('filters by reference of patient should get no result', () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.2');
+    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.3');
     FU.modal.submit();
 
     expectNumberOfGridRows(0);
@@ -96,20 +96,20 @@ function InvoiceRegistrySearch() {
     FU.input('ModalCtrl.params.patientReference', 'PA.TPA.1');
     FU.modal.submit();
 
-    expectNumberOfGridRows(5);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(1);
 
     // make sure to clear the filters for the next test
     FU.buttons.clear();
   });
 
-  it('filters by <select> should return two results', () => {
+  it('filters by <select> should return three results', () => {
     FU.buttons.search();
-    FU.select('ModalCtrl.params.service_id', 'Test Service');
+    FU.select('ModalCtrl.params.service_id', 'Administration');
     FU.select('ModalCtrl.params.user_id', 'Super User');
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(2);
 
     // make sure to clear the filters for the next test
@@ -118,7 +118,7 @@ function InvoiceRegistrySearch() {
 
   it('clear filters should remove all filters on the registry', () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.reference', 'IV.TPA.2');
+    FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
     FU.modal.submit();
 
     expectNumberOfGridRows(1);

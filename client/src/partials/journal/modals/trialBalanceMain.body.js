@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 TrialBalanceMainBodyController.$inject = [
   'SessionService', 'TrialBalanceService', 'GridGroupingService', 'GridColumnService',
-  'NotifyService', '$state', '$timeout'
+  'NotifyService', '$state', '$timeout', 'uiGridConstants'
 ];
 
 /**
@@ -13,7 +13,7 @@ TrialBalanceMainBodyController.$inject = [
  * This controller provides a tool to view the main state of trial balance
  * The main state let you post transaction into the general ledger
  */
-function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, Columns, Notify, $state, $timeout) {
+function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, Columns, Notify, $state, $timeout, uiGridConstants) {
   var vm = this;
   var columns = [
     { field : 'trans_id', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter: 'translate', visible : false},
@@ -48,6 +48,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
 
   vm.enterprise = Session.enterprise;
   vm.dataByTrans = records;
+  vm.hasError = false;
 
   vm.viewDetail = {
     'trans' : transactionView,
@@ -60,7 +61,8 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
     enableColumnMenus: false,
     treeRowHeaderAlwaysVisible: false,
     appScopeProvider: vm,
-    columnDefs : columns
+    columnDefs : columns,
+    onRegisterApi: function(gridApi){ vm.gridApi = gridApi;}
   };
 
   vm.grouping = new Grouping(vm.gridOptions, false);
@@ -199,12 +201,23 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
     vm.viewDetail[newView]();
   }
 
+  /**
+   *  @function errorHandler
+   * @description
+   * This method handle correctly error by notifying the user through
+   * the NotifyService and by setting to true the error flag
+   **/
+  function errorHandler(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
+
   trialBalanceService.checkTransactions(vm.dataByTrans)
     .then(function(error) {
       var cssClass = null;
-
       errorList = error.data;
       vm.feedBack = trialBalanceService.getFeedBack(errorList); //getting a feedback object to customize the grid
+      vm.isInvalid = vm.feedBack.hasError || vm.feedBack.hasWarning;
       cssClass = trialBalanceService.getCSSClass(vm.feedBack);
       $state.current.data.checkingData = {errors : errorList, feedBack : vm.feedBack, cssClass : cssClass};
       $state.current.data.checked = true;
@@ -212,10 +225,12 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       columns.forEach(function (col) {
         col.headerCellClass = cssClass;
       });
+      vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     })
-    .catch(Notify.handleError)
+    .catch(errorHandler)
     .finally(function () {
       vm.loading = false;
+      vm.showErrorButton = vm.isInvalid && !vm.loading;
     });
 
   fetchDataByAccount()
