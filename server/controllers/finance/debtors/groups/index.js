@@ -198,7 +198,7 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-  var sql =
+   let sql =
     'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
 
   if (req.query.detailed === '1') {
@@ -216,15 +216,15 @@ function list(req, res, next) {
       FROM debtor_group
       LEFT JOIN debtor
       ON debtor.group_uuid = debtor_group.uuid
-      GROUP BY debtor_group.uuid
-      `;
+      GROUP BY debtor_group.uuid `;
 
     delete req.query.detailed;
   }
 
-  var queryObject = util.queryCondition(sql, req.query);
+  let queryObject = util.queryCondition(sql, req.query);
+  sql = queryObject.query + ' ORDER BY name;' ;
 
-  db.exec(queryObject.query, queryObject.conditions)
+  db.exec(sql, queryObject.conditions)
   .then(function (rows) {
     res.status(200).json(rows);
   })

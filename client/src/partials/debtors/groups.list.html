@@ -3,11 +3,15 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default" style="margin-bottom : 0px;">
         <div class="panel-heading clearfix" style="text-align : left">
-          <a href ng-click="GroupCtrl.toggleFilter()"><span translate> TABLE.COLUMNS.FILTERING.LABEL </span> <span class="caret" ng-class="{'rotate' : GroupCtrl.filterActive}"></span></a>
+
+          <a href ng-click="GroupCtrl.toggleFilter()">
+            <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : GroupCtrl.filterActive}"></span>
+          </a>
+
           <div class="pull-right">
             <span class="label label-primary" translate> {{GroupCtrl.sort.key }} </span>
             <span uib-dropdown>
-              <a href uib-dropdown-toggle> <span translate> TABLE.COLUMNS.SORTING.LABEL </span> <span class="caret"></span></a>
+              <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
               <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
                 <li ng-repeat="option in GroupCtrl.sortOptions">
                   <a href ng-click="GroupCtrl.setOrder(option)"><span translate>{{ option.key }}</span></a>
@@ -26,9 +30,10 @@
         "debtorGroup in GroupCtrl.debtorGroups
           | filter    : {name : GroupCtrl.filter}
           | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
-          | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize ">
+          | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize
+          track by debtorGroup.uuid ">
 
-        <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry>
+        <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry="{{ debtorGroup.uuid }}">
           <div class="panel-body text-left">
             <div class="row">
               <div class="col-md-6">
@@ -36,7 +41,9 @@
               </div>
               <div class="col-md-6 text-float-util">
                 <a data-method="update" ui-sref="debtorGroups.update({uuid : debtorGroup.uuid})" class=""><span class="fa fa-pencil-square-o" aria-hidden="true"></span> <span translate>DEBTOR_GROUP.EDIT</span></a><br>
-                <a data-method="delete" ng-click="GroupCtrl.deleteGroup(debtorGroup.uuid)" class="text-action text-danger"><span class="fa fa-trash" aria-hidden="true"></span><span translate>DEBTOR_GROUP.DELETE</span></a>                
+                <a data-method="delete" ng-click="GroupCtrl.deleteGroup(debtorGroup.uuid)" class="text-action text-danger">
+                  <span class="fa fa-trash" aria-hidden="true"></span><span translate>DEBTOR_GROUP.DELETE</span>
+                </a>
               </div>
             </div>
 
@@ -60,7 +67,14 @@
 
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-        <uib-pagination total-items="GroupCtrl.debtorGroups.length" max-size="GroupCtrl.pageSize" ng-model="GroupCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;"></uib-pagination>
+        <uib-pagination
+          total-items="GroupCtrl.debtorGroups.length"
+          max-size="GroupCtrl.pageSize"
+          ng-model="GroupCtrl.currentPage"
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          boundary-link-numbers="true">
+        </uib-pagination>
       </div>
     </div>
   </div>

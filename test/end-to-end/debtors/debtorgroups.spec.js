@@ -10,10 +10,14 @@ const FU = require('../shared/FormUtils');
 describe('Debtor Groups Management', function () {
   'use strict';
 
-  let initialGroups = 2;
+  let initialGroups = 3;
+  const DELETEABLE_DEBTOR_GROUP = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
 
   const root = '#/debtors/groups';
   before(() => helpers.navigate(root));
+
+  // helper to quickly get a group by uuid
+  const getGroupRow = (uuid) => $(`[data-group-entry="${uuid}"]`);
 
   it('lists base test debtor groups', function () {
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups);
@@ -22,7 +26,7 @@ describe('Debtor Groups Management', function () {
   it('creates a debtor group', function () {
     FU.buttons.create();
 
-    FU.input('GroupUpdateCtrl.group.name', 'AE2E Debtor Group');
+    FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
     FU.uiSelect('GroupUpdateCtrl.group.account_id', '47001');
     FU.input('GroupUpdateCtrl.group.max_credit', '1200');
     FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');
@@ -38,12 +42,16 @@ describe('Debtor Groups Management', function () {
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups + 1);
   });
 
-  it('Delete a debtor group', function () {
+  it('deletes a debtor group', function () {
 
-    let deleteGroup = element.all(by.css('[data-group-entry]'));
-    deleteGroup.all(by.css('[data-method="delete"]')).get(2).click();
+    // find the group by uuid
+    const group = getGroupRow(DELETEABLE_DEBTOR_GROUP);
 
-    FU.buttons.submit();
+    // delete the group
+    group.$('[data-method="delete"]').click();
+
+    // submit the confirmation modal
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
@@ -62,10 +70,10 @@ describe('Debtor Groups Management', function () {
     components.notification.hasSuccess();
   });
 
-
   it('updates debtor group billing service subscriptions', function () {
-    let updateGroup = element.all(by.css('[data-group-entry]'));
-    updateGroup.all(by.css('[data-method="update"]')).first().click();
+    let updateGroup = element.all(by.css('[data-group-entry]')).first();
+
+    updateGroup.$('[data-method="update"]').click();
 
     element(by.css('#billingServiceSubscription')).click();
     element.all(by.css('[data-group-option]')).get(1).click();
@@ -79,5 +87,4 @@ describe('Debtor Groups Management', function () {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
-
 });
