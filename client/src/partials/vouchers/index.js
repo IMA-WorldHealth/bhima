@@ -22,26 +22,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.transactionTypes = {};
   vm.gridApi = {};
   vm.gridOptions = {};
-
-  /* paths in the headercrumb */
-  vm.bcPaths = [
-    { label : 'TREE.FINANCE' },
-    { label : 'TREE.VOUCHER_REGISTRY' }
-  ];
-
-  /** buttons in the headercrumb */
-  vm.bcButtons = [
-    { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
-      action: search, color: 'btn-default'
-    },
-    { icon: 'fa fa-filter', color: 'btn-default',
-      action: toggleFilter,
-    }
-  ];
-
-  /** button Print */
-  vm.buttonPrint = { pdfUrl: '/reports/finance/vouchers' };
-
+  vm.search = search;
+  vm.toggleFilter = toggleFilter;
 
   /** search filters */
   vm.searchFilter = [
@@ -51,9 +33,6 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // init the filter service
   var filtering  = new Filtering(vm.gridOptions);
-
-  /** dropdown download */
-  vm.dropdownDownload = { reportUrl : '/reports/finance/vouchers' };
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -70,7 +49,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       treeAggregationLabel: '', footerCellClass : 'text-center',
     },
     { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
-      sort: { priority: 0, direction : 'asc' },  
+      sort: { priority: 0, direction : 'asc' },
       cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn: typeAggregation,
@@ -115,12 +94,6 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    vm.gridApi.grid.registerDataChangeCallback(expandAllRows);
-  }
-
-  // expand all rows
-  function expandAllRows() {
-    vm.gridApi.treeBase.expandAllRows();
   }
 
   // Grid Aggregation
@@ -149,10 +122,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // enable filter
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[1].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+    vm.gridOptions.enableFiltering = vm.filterEnabled = !vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // search voucher
@@ -166,8 +137,9 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
         toggleLoadingIndicator();
         return Vouchers.read(null, vm.dateInterval);
       })
-      .then(function (list) {
-        vm.gridOptions.data = list;
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(function (err) {
         if (err && !err.code) { return; }
@@ -175,7 +147,10 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       })
       .finally(function () {
         toggleLoadingIndicator();
-      });
+
+        vm.filterBarHeight = (vm.dateInterval) ?
+          { 'height' : 'calc(100vh - 105px)' } : {};
+        });
   }
 
   // showReceipt
@@ -212,14 +187,14 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     toggleLoadingIndicator();
 
     Vouchers.transactionType()
-      .then(function (result) {
-        vm.transactionTypes = result;
+      .then(function (store) {
+        vm.transactionTypes = store;
       })
       .catch(Notify.handleError);
 
     Vouchers.read()
-      .then(function (list) {
-        vm.gridOptions.data = list;
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
