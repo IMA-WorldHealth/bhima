@@ -25,6 +25,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.search = search;
   vm.toggleFilter = toggleFilter;
 
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+
   /** search filters */
   vm.searchFilter = [
     { displayName: 'FORM.LABELS.DATE_FROM', values: vm.dateInterval ? vm.dateInterval.dateFrom : null, filter: 'moment' },
@@ -147,10 +149,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       })
       .finally(function () {
         toggleLoadingIndicator();
-
-        vm.filterBarHeight = (vm.dateInterval) ?
-          { 'height' : 'calc(100vh - 105px)' } : {};
-        });
+        vm.filterBarHeight = (vm.dateInterval) ? FILTER_BAR_HEIGHT : {};
+      });
   }
 
   // showReceipt

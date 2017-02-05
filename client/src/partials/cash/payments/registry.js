@@ -22,6 +22,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   // Background color for make the difference between the valid and cancel paiement
   var reversedBackgroundColor = { 'background-color': '#ffb3b3' };
   var regularBackgroundColor = { 'background-color': 'none' };
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   // global variables
   vm.filters = { lang: Languages.key };
@@ -57,7 +58,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {
-    name : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate', cellTemplate : '/partials/patients/templates/linkPatient.cell.html' 
+    name : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate', cellTemplate : '/partials/patients/templates/linkPatient.cell.html'
   }, {
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
@@ -108,8 +109,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     vm.formatedFilters = Cash.formatFilterParameters(filters.display);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
 
     load(filters.identifiers);
   }

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal',
-  'uiGridConstants', '$translate', 'GridColumnService', 'GridSortingService'
+  'uiGridConstants', '$translate', 'GridColumnService', 'GridSortingService', 'bhConstants'
 ];
 
 /**
@@ -11,11 +11,12 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns, Sorting) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns, Sorting, bhConstants) {
   var vm = this;
 
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
@@ -58,7 +59,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     fastWatch: true,
     columnDefs : columnDefs,
     rowTemplate: '/partials/templates/grid/patient.row.html'
-    
+
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -124,9 +125,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Patients.formatFilterParameters(filters);
 
-    // check if there are filters applied
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    // check if there are filters applied and show the filter bar
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
   // remove a filter with from the filter object, save the filters and reload

@@ -20,6 +20,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
   // Background color for make the difference betwen the valid and cancel invoice
   var reversedBackgroundColor = {'background-color': '#ffb3b3' };
   var regularBackgroundColor = { 'background-color': 'none' };
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
@@ -132,8 +133,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     vm.filtersFmt = Invoices.formatFilterParameters(filters);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
   }
 
   // remove a filter with from the filter object, save the filters and reload

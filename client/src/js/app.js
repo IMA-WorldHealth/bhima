@@ -333,7 +333,8 @@ function constantConfig() {
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG : '_error'
+      ROW_ERROR_FLAG : '_error',
+      FILTER_BAR_HEIGHT : { height : 'calc(100vh - 105px)' }
     },
     transactions : {
       ROW_EDIT_FLAG : '_edit',
@@ -402,7 +403,7 @@ function animateConfig($animateProvider) {
 function compileConfig($compileProvider) {
 
   // switch this variable when going into production for an easy performance win.
-  var PRODUCTION = false;
+  var PRODUCTION = true;
 
   if (PRODUCTION) {
     $compileProvider.debugInfoEnabled(false);
