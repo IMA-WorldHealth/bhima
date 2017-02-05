@@ -19,7 +19,7 @@
 
       <!-- list of data  -->
       <!-- voucher info  -->
-      <table class="table table-condensed">
+      <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
             <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
@@ -35,8 +35,8 @@
               <td>{{reference}}</td>
               <td>{{date date}}</td>
               <td>{{description}}</td>
-              <td class="text-right">{{currency amount}}</td>
-              <td>{{user}}</td>
+              <td class="text-right">{{currency amount this.currency_id}}</td>
+              <td>{{this.display_name}}</td>
             </tr>
           {{/each}}
         </tbody>
