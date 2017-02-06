@@ -44,7 +44,7 @@ function SearchFilterFormatService() {
             out[key] = value;
           }
         });
-        return out
+        return out;
     }
 
   /**
