@@ -59,9 +59,9 @@ describe('Fiscal Year', function () {
     updateButton.all(by.css('[data-method="update"]')).first().click();
 
     // modify the fiscal year label and note
-    FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2018 (update)');
-    components.dateInterval.range('01/01/2018', '31/12/2018');
-    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2018 (update)');
+    FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
+    components.dateInterval.range('01/01/2017', '31/12/2017');
+    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
 
     FU.buttons.submit();
     components.notification.hasSuccess();

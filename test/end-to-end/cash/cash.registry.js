@@ -20,7 +20,7 @@ function CashPaymentsRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/12/2016');
     FU.modal.submit();
-    GU.expectRowCount('payment-registry', 2);
+    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment of january 2016 */
     FU.buttons.search();
