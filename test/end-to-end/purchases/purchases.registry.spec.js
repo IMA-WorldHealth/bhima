@@ -12,7 +12,7 @@ function PurchasesRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/purchases/list'));
 
-  const PURCHASES_INSIDE_REGISTRY = 2;
+  const PURCHASES_INSIDE_REGISTRY = 1;
 
   const page = new PurchasesRegistryPage();
 
@@ -22,7 +22,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/12/2016');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 2);
+    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
     /** Get all purchase of january 2016 */
     FU.buttons.search();
@@ -34,7 +34,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('01/02/2016', '28/02/2016');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 2);
+    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
     /** Get all purchase of the year 2017 */
     FU.buttons.search();
@@ -70,7 +70,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.supplier_uuid', 'Test Supplier');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 2);
+    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
     // clear filters
     FU.buttons.clear();
@@ -89,7 +89,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Super User');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 2);
+    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
     // clear filters
     FU.buttons.clear();
