@@ -71,7 +71,11 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
   .state('invoiceRegistry', {
     url  : '/invoices',
     controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
-    templateUrl: '/partials/patient_invoice/registry/registry.html'
+    templateUrl: '/partials/patient_invoice/registry/registry.html',
+    params : {
+      filters : null,
+      display : null
+    }     
   })
   .state('configBilan', {
     url: '/section_bilan',

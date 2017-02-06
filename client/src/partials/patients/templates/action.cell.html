@@ -22,7 +22,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
+      <a data-method="card"  ui-sref="invoiceRegistry({ filters : { debtor_uuid : row.entity.debtor_uuid }, display : {debtor_uuid : row.entity.display_name}})" href>
         <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
       </a>
     </li>

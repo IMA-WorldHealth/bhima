@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
+  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService', '$state'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting, $state) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -89,6 +89,18 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
+
+    parameters = $state.params.filters ? $state.params.filters : parameters;
+
+    if($state.params.display){ 
+      const display = $state.params.display;
+      vm.filtersFmt = Invoices.formatFilterParameters(display);
+      // show filter bar as needed
+      vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+        { 'height' : 'calc(100vh - 105px)' } : {};
+
+    }
+
 
     // if we have search parameters, use search.  Otherwise, just read all
     // invoices.
