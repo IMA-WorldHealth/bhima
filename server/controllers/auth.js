@@ -46,7 +46,7 @@ function login(req, res, next) {
   let projectId = req.body.project;
 
   let sql = `
-    SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
+    SELECT user.id, user.username, user.display_name, user.email, user.deactivated, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
     WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;
@@ -58,6 +58,10 @@ function login(req, res, next) {
       // if no data found, we return a login error
       if (rows.length === 0) {
         throw new Unauthorized('Bad username and password combination.');
+      }
+
+      if(rows[0].deactivated === 1){
+        throw new Unauthorized("The user is not activated, contact the administrator", "FORM.ERRORS.LOCKED_USER");
       }
 
       return loadSessionInformation(rows[0]);

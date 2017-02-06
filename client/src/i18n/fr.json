@@ -397,7 +397,8 @@
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
       "REQUIRED"           : "Cette valeur est requise.",
-      "INVALID"            : "Donnees Invalides"
+      "INVALID"            : "Donnees Invalides",
+      "LOCKED_USER"        : "Votre compte a ete bloque, contacter votre administrateur"
     },
     "INFO": {
       "BY"                   : "Par",
@@ -451,6 +452,7 @@
       "ACCOUNT_NUMBER"         : "Numéro de Compte",
       "ACCOUNT_TITLE"          : "Libelle de Compte",
       "ACCOUNT_TYPE"           : "Type de Compte",
+      "ACTIVE"                 : "Actif",
       "ADD"                    : "Ajouter",
       "ADDRESS"                : "Adresse",
       "ADDRESS1"               : "Adresse",

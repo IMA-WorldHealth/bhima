@@ -46,6 +46,7 @@ function UserService($http, util) {
     // delete properties that should not be updated
     delete user.lastLogin;
     delete user.id;
+    delete user.active;
 
     return $http.put('/users/' + id, user)
     .then(util.unwrapHttpResponse);

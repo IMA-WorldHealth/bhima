@@ -207,7 +207,6 @@ function update(req, res, next) {
   // clean default properties before the record is updated
   delete data.projects;
   delete data.id;
-  delete data.active;
 
   let transaction = db.transaction();
 

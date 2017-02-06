@@ -73,7 +73,6 @@ function LoginController(AppCache, Session, Languages, Projects, Notify) {
       cache.project = session.project;
     })
     .catch(function (response) {
-
       // if the user has tried too many times, display a fatal error working for
       // ten seconds.
       if (maxAttempts <= attempts++) {
