@@ -16,8 +16,8 @@ services:
 
 language: node_js
 node_js:
-  - node
-  - '4'
+  - "6"
+  - "7"
 
 before_script:
   - "export DISPLAY=:99.0"
@@ -31,11 +31,11 @@ script:
   - ./node_modules/.bin/karma start --single-run
   - sh sh/install.sh
   - ./node_modules/.bin/webdriver-manager update
-  - sleep 3
+  - sleep 8
   - ./node_modules/.bin/protractor protractor.conf.js
 
 git:
-  depth: 1
+  depth: 3
 
 before_cache:
   - rm -f npm-debug.log

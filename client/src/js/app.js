@@ -171,18 +171,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : 'partials/purchases/create/create.html'
   })
 
-  /* cashbox routes */
-  // .state('cashboxes', {
-  //   url : '/cashboxes',
-  //   controller : 'CashboxController as CashCtrl',
-  //   templateUrl : 'partials/cash/cashboxes/cashboxes.html'
-  // })
-  // .state('cashboxes.currencies', {
-  //   url : '/cashboxes/:uuid/currencies',
-  //   controller : 'cash.cashbox_account',
-  //   templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
-  // })
-
   /* transaction type */
   .state('transactionType', {
     url: '/admin/transaction_type',
@@ -223,11 +211,17 @@ function localeConfig(tmhDynamicLocaleProvider) {
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
 
+  var loginStateRegexp = /#\/login$/;
+  var rootStateRegexp = /#\/$|\/$|#$/;
+
+
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
-    var isLoginState = next.indexOf('#/login') !== -1;
+
+    var isLoginState = loginStateRegexp.test(next);
+    var isRootState = rootStateRegexp.test(next);
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
@@ -241,7 +235,11 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // to the login page.
     } else if (!isLoggedIn && !isLoginState) {
       event.preventDefault();
-      Notify.warn('AUTH.UNAUTHENTICATED');
+
+      if (!isRootState) {
+        Notify.warn('AUTH.UNAUTHENTICATED');
+      }
+
       $state.go('login');
     }
 
@@ -335,7 +333,8 @@ function constantConfig() {
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG : '_error'
+      ROW_ERROR_FLAG : '_error',
+      FILTER_BAR_HEIGHT : { height : 'calc(100vh - 105px)' }
     },
     transactions : {
       ROW_EDIT_FLAG : '_edit',
@@ -404,7 +403,7 @@ function animateConfig($animateProvider) {
 function compileConfig($compileProvider) {
 
   // switch this variable when going into production for an easy performance win.
-  var PRODUCTION = false;
+  var PRODUCTION = true;
 
   if (PRODUCTION) {
     $compileProvider.debugInfoEnabled(false);

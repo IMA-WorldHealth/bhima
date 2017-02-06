@@ -20,12 +20,16 @@ const uuid = require('node-uuid');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const NotFound = require('../../../../lib/errors/NotFound');
+const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /** Create a new debtor group */
 exports.create = create;
 
 /** Update a debtor group */
 exports.update = update;
+
+/** Delete a debtor group */
+exports.delete = remove;
 
 /** Get debtor group details */
 exports.detail = detail;
@@ -194,7 +198,7 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-  var sql =
+   let sql =
     'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
 
   if (req.query.detailed === '1') {
@@ -212,15 +216,15 @@ function list(req, res, next) {
       FROM debtor_group
       LEFT JOIN debtor
       ON debtor.group_uuid = debtor_group.uuid
-      GROUP BY debtor_group.uuid
-      `;
+      GROUP BY debtor_group.uuid `;
 
     delete req.query.detailed;
   }
 
-  var queryObject = util.queryCondition(sql, req.query);
+  let queryObject = util.queryCondition(sql, req.query);
+  sql = queryObject.query + ' ORDER BY name;' ;
 
-  db.exec(queryObject.query, queryObject.conditions)
+  db.exec(sql, queryObject.conditions)
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -294,4 +298,25 @@ function loadInvoices(params) {
       let uuids = result.map(item => item.uuid);
       return db.exec(sqlInvoices, [uuids]);
     });
+}
+
+/**
+ * @method delete
+ *
+ * @description
+ * This method removes the debtor group from the system.
+ */
+function remove(req, res, next) {
+  const sql = 'DELETE FROM debtor_group WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
+  db.exec(sql, [uid])
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new BadRequest(`Cannot delete the debtor group with id ${req.params.uuid}`, 'DEBTOR_GROUP.FAILURE_DELETE');
+      }
+
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }

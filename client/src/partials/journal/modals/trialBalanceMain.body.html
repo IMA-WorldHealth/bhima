@@ -3,7 +3,7 @@
     <div class="col-xs-4 pull-left">
       <button
         type="button"
-        ng-show="TrialBalanceMainBodyCtrl.feedBack.hasError || TrialBalanceMainBodyCtrl.feedBack.hasWarning"
+        ng-show="TrialBalanceMainBodyCtrl.showErrorButton"
         ng-class="
           { 'btn btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
             'btn btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
@@ -17,6 +17,7 @@
 
     <div class="col-xs-3 pull-right">
       <button
+        ng-if="!TrialBalanceMainBodyCtrl.loading"
         id="switchViewID"
         type="button"
         class="btn btn-default"
@@ -29,11 +30,20 @@
   </div>
 </p>
 
-<div ng-if="!TrialBalanceMainBodyCtrl.loading">
+<div>
+  <div>
+
+  </div>
   <div
     id="main-grid"
     ui-grid="TrialBalanceMainBodyCtrl.gridOptions"
     ui-grid-auto-resize
     ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="TrialBalanceMainBodyCtrl.loading"
+        empty-state="TrialBalanceMainBodyCtrl.gridOptions.data.length === 0"
+        error-state="TrialBalanceMainBodyCtrl.hasError"
+      >
+      </bh-grid-loading-indicator>
   </div>
 </div>

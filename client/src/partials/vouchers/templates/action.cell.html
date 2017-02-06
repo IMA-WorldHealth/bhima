@@ -1,20 +1,18 @@
-<div class="ui-grid-cell-contents">
-  <span uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
 
-    <span uib-dropdown-toggle class="text-action">
-      <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
-      <span class="caret"></span>
-    </span>
-    <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
-      <li>
-        <a href 
-          data-method="receipt"
-          ng-if="row.entity.uuid"
-          ng-click="grid.appScope.showReceipt(row.entity.uuid)"
-          data-link-receipt="{{ ::row.entity.uuid }}">
-          <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
-        </a>
-      </li>
-    </ul>
-  </span>
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a href
+        data-method="receipt"
+        ng-if="row.entity.uuid"
+        ng-click="grid.appScope.showReceipt(row.entity.uuid)"
+        data-link-receipt="{{ ::row.entity.uuid }}">
+        <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
+      </a>
+    </li>
+  </ul>
 </div>

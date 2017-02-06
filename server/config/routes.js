@@ -219,7 +219,7 @@ exports.configure = function configure(app) {
   app.get('/general_ledger', generalLedger.list);
 
   //API for trial balance
-  app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
+  app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
   app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
 
@@ -380,6 +380,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
+  app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
@@ -458,6 +459,7 @@ exports.configure = function configure(app) {
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
+  app.delete('/debtor_groups/:uuid', debtorGroups.delete);
 
 
   // users controller

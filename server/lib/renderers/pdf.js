@@ -47,12 +47,12 @@ exports.posReceiptOptions  = {
 
 // smaller format for providing identifications/ receipts with reduced information
 exports.reducedCardOptions = {
-  pageWidth : '75mm',
-  pageHeight : '125mm',
-  marginLeft : '5mm',
-  marginRight : '5mm',
-  marginTop : '5mm',
-  marginBottom : '5mm',
+  pageWidth : '75mm',       // 2.95in
+  pageHeight : '125mm',     // 4.92.in
+  marginLeft : '5mm',       // 0.20in
+  marginRight : '5mm',      // 0.20in
+  marginTop : '5mm',        // 0.20in
+  marginBottom : '5mm',     // 0.20in
   orientation : 'landscape'
 };
 

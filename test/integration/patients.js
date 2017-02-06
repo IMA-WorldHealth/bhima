@@ -147,7 +147,7 @@ describe('(/patients) Patients', function () {
           var expected = [
             'father_name', 'mother_name', 'profession', 'employer', 'spouse', 'spouse_employer',
             'spouse_profession', 'religion', 'marital_status', 'phone', 'email', 'address_1',
-            'address_2', 'renewal', 'origin_location_id', 'current_location_id', 'registration_date',
+            'address_2', 'origin_location_id', 'current_location_id', 'registration_date',
             'title', 'notes', 'hospital_no', 'abbr', 'text', 'account_id', 'price_list_uuid',
             'is_convention', 'locked'
           ];

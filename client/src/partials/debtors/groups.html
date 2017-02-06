@@ -2,12 +2,15 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
 
-      <li ng-class="{'static' : GroupCtrl.state.current.name==='debtorGroups.update', 'title' : GroupCtrl.state.current.name!=='debtorGroups.update'}">{{ "DEBTOR_GROUP.TITLE" | translate }}</li>
-      <li class="title" ng-if="!GroupCtrl.state.current.data.label && GroupCtrl.state.current.name==='debtorGroups.update'"><i class="fa fa-spin fa-circle-o-notch"></i></li>
+      <li ng-class="{'static' : GroupCtrl.state.current.name==='debtorGroups.update', 'title' : GroupCtrl.state.current.name!=='debtorGroups.update'}">
+        <span translate>DEBTOR_GROUP.TITLE</span>
+      </li>
+      <li class="title" ng-if="!GroupCtrl.state.current.data.label && GroupCtrl.state.current.name==='debtorGroups.update'">
+        <i class="fa fa-spin fa-circle-o-notch"></i>
+      </li>
       <li class="title" ng-if="GroupCtrl.state.current.data.label">{{GroupCtrl.state.current.data.label | translate}}</li>
-      <!-- <span class="label label-warning">{{GroupCtrl.state.current.data.label | translate}}</span> -->
     </ol>
 
 
@@ -19,7 +22,7 @@
           ui-sref="debtorGroups.create"
           class="btn btn-default">
           <span class="fa fa-plus"></span>
-          Create Debtor Group
+          <span translate>DEBTOR_GROUP.CREATE</span>
         </a>
       </div>
     </div>

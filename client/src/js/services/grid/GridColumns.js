@@ -61,7 +61,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
     }
   }
 
-
   /**
    * @method cacheColumnVisibility
    *

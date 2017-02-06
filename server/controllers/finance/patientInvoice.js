@@ -211,6 +211,7 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
       service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
       invoice.user_id
     FROM invoice
@@ -231,6 +232,9 @@ function find(options) {
 
   let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
+
+  let patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
+  filters.custom('patientReference', patientReferenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');

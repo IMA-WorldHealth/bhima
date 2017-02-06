@@ -21,7 +21,7 @@
     "angular-messages": "1.5.9",
     "angular-bootstrap": "^2.5.0",
     "angular-ui-router": "^0.2.18",
-    "angular-ui-grid": "^3.2.7",
+    "angular-ui-grid": "^4.0.0",
     "angular-translate": "^2.11.1",
     "angular-translate-loader-static-files": "^2.11.1",
     "angular-translate-loader-url": "^2.11.1",
@@ -37,7 +37,8 @@
     "components-font-awesome": "^4.6.3",
     "angular-ui-select": "^0.17.1",
     "JsBarcode": "jsbarcode#^3.5.8",
-    "angular-touch": "1.5.9"
+    "angular-touch": "1.5.9",
+    "angular-growl-notifications": "^2.5.0"
   },
   "devDependencies": {
     "angular-mocks": "1.5.9"

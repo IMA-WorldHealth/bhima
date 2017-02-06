@@ -89,6 +89,7 @@ function processInvoice(invoiceUuid, invoice) {
   delete invoice.items;
   delete invoice.billingServices;
   delete invoice.subsidies;
+  delete invoice.reference;
 
   const keys = [
     'date', 'cost', 'description', 'service_id',

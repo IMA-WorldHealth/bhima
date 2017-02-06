@@ -22,6 +22,7 @@ function DebtorGroupService($http, Modal, util, SessionService) {
 
   service.manageBillingServices = manageBillingServices;
   service.manageSubsidies = manageSubsidies;
+  service.remove = remove;
 
   /**
   * @method read
@@ -65,6 +66,17 @@ function DebtorGroupService($http, Modal, util, SessionService) {
     return $http.put(url, debtorGroup)
     .then(util.unwrapHttpResponse);
   }
+
+  /**
+  * @method remove
+  * @param {string} uuid The debtor group uuid
+  * @description This function is responsible for deleting a debtor group
+  */  
+  function remove(uuid) {
+    return $http.delete(baseUrl.concat(uuid))
+    .then(util.unwrapHttpResponse);
+  }
+
 
   /**
    * @function updateBillingServices

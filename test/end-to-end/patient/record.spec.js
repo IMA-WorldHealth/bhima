@@ -20,7 +20,7 @@ describe('Patient Record', function () {
 
   const patient = {
     name : 'Test 2 Patient',
-    id : 'PA.TPA.1',
+    id : 'PA.TPA.2',
     hospital_no : '110',
     age : '26',
     gender : 'M'

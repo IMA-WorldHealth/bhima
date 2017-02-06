@@ -58,14 +58,12 @@ class FilterParser {
    * @param {String} tableAlias   table to be used in filter query. This will default to
    *                              the object table alias if it exists
    */
-  fullText(filterKey, columnAlias, tableAlias) {
-    let column = columnAlias || filterKey;
-    let table = tableAlias || this._tableAlias;
-    let tableString = this._formatTableAlias(table);
+  fullText(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+    let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
       let searchString = `%${this._filters[filterKey]}%`;
-      let preparedStatement = `LOWER(${tableString}${column}) LIKE ? `;
+      let preparedStatement = `LOWER(${tableString}${columnAlias}) LIKE ? `;
 
       this._addFilter(preparedStatement, searchString);
       delete this._filters[filterKey];
@@ -81,13 +79,11 @@ class FilterParser {
    * @param {String} tableAlias   table to be used in filter query. This will default to
    *                              the object table alias if it exists
    */
-  dateFrom(filterKey, columnAlias, tableAlias) {
-    let column = columnAlias || filterKey;
-    let table = tableAlias || this._tableAlias;
-    let tableString = this._formatTableAlias(table);
+  dateFrom(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+    let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      let preparedStatement = `DATE(${tableString}${column}) >= DATE(?)`;
+      let preparedStatement = `DATE(${tableString}${columnAlias}) >= DATE(?)`;
       this._addFilter(preparedStatement, this._filters[filterKey]);
 
       delete this._filters[filterKey];
@@ -103,26 +99,22 @@ class FilterParser {
    * @param {String} tableAlias   table to be used in filter query. This will default to
    *                              the object table alias if it exists
    */
-  dateTo(filterKey, columnAlias, tableAlias) {
-    let column = columnAlias || filterKey;
-    let table = tableAlias || this._tableAlias;
-    let tableString = this._formatTableAlias(table);
+  dateTo(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+    let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      let preparedStatement = `DATE(${tableString}${column}) <= DATE(?)`;
+      let preparedStatement = `DATE(${tableString}${columnAlias}) <= DATE(?)`;
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];
     }
   }
 
-  equals(filterKey, columnAlias, tableAlias) {
-    let column = columnAlias || filterKey;
-    let table = tableAlias || this._tableAlias;
-    let tableString = this._formatTableAlias(table);
+  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+    let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      let preparedStatement = `${tableString}${column} = ?`;
+      let preparedStatement = `${tableString}${columnAlias} = ?`;
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];
