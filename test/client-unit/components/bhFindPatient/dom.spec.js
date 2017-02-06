@@ -25,7 +25,7 @@ function DomTests() {
   // test patient to search for
   const patient = {
     uuid: '234c51ae-efcc-4238-98c6-f402bfb39866',
-    reference:'TPA1',
+    reference:'PA.TPA.1',
     dob: '1990-03-31T23:00:00.000Z',
     first_name: 'Gorgia',
     middle_name: 'Faith',
@@ -47,31 +47,31 @@ function DomTests() {
 
     // setup initial imports
     $scope = _$rootScope_.$new();
-    $compile = _$compile_;
-    $httpBackend = _$httpBackend_;
-    $document = _$document_;
+  $compile = _$compile_;
+  $httpBackend = _$httpBackend_;
+  $document = _$document_;
 
-    // bindings refreshed every time
-    bindings = {
-      onSearchComplete : chai.spy(),
-      onRegisterApi : chai.spy()
-    };
+  // bindings refreshed every time
+  bindings = {
+    onSearchComplete : chai.spy(),
+    onRegisterApi : chai.spy()
+  };
 
-    // compile the element and grab it's controller
-    element = $compile(angular.element(template))($scope);
-    controller = _$componentController_('bhFindPatient', {
-      $scope : $scope,
-    }, bindings);
+  // compile the element and grab it's controller
+  element = $compile(angular.element(template))($scope);
+  controller = _$componentController_('bhFindPatient', {
+    $scope : $scope,
+  }, bindings);
 
-    // trigger a digest
-    $scope.$digest();
-  }));
+  // trigger a digest
+  $scope.$digest();
+}));
 
   // make sure $httpBackend is clean after each test completes
   afterEach(() => {
     $httpBackend.verifyNoOutstandingExpectation();
-    $httpBackend.verifyNoOutstandingRequest();
-  });
+  $httpBackend.verifyNoOutstandingRequest();
+});
 
   // click an item in the dropdown menu
   function clickDropdownMenuOption(element, option) {
@@ -87,35 +87,35 @@ function DomTests() {
 
   it('calls the onRegisterApi() callback on component initialisation', () => {
     expect(bindings.onRegisterApi).to.have.been.called();
-    expect(bindings.onSearchComplete).to.not.have.been.called();
-  });
+  expect(bindings.onSearchComplete).to.not.have.been.called();
+});
 
   it('defaults to finding by id', () => {
     expect(controller.selected.label).to.equal(FIND_BY_ID);
-  });
+});
 
   it('$ctrl.findBy(key) sets the selected property', () => {
     controller.findBy('findByName');
-    $scope.$apply();
-    expect(controller.selected.label).to.equal(FIND_BY_NAME);
+  $scope.$apply();
+  expect(controller.selected.label).to.equal(FIND_BY_NAME);
 
-    controller.findBy('findById');
-    $scope.$apply();
-    expect(controller.selected.label).to.equal(FIND_BY_ID);
-  });
+  controller.findBy('findById');
+  $scope.$apply();
+  expect(controller.selected.label).to.equal(FIND_BY_ID);
+});
 
   it.skip('switches between "find by id" and "find by name" states', () => {
 
     $scope.$digest();
 
-    // FIND BY ID OPTION SELECTION
-    clickDropdownMenuOption(element, FIND_BY_ID);
-    expect(controller.selected.label).to.equal(FIND_BY_ID);
+  // FIND BY ID OPTION SELECTION
+  clickDropdownMenuOption(element, FIND_BY_ID);
+  expect(controller.selected.label).to.equal(FIND_BY_ID);
 
-    // FIND BY NAME OPTION SELECTION
-    clickDropdownMenuOption(element, FIND_BY_NAME);
-    expect(controller.selected.label).to.equal(FIND_BY_NAME);
-  });
+  // FIND BY NAME OPTION SELECTION
+  clickDropdownMenuOption(element, FIND_BY_NAME);
+  expect(controller.selected.label).to.equal(FIND_BY_NAME);
+});
 
 
   it.skip('finds a patient by name', () => {
@@ -123,9 +123,9 @@ function DomTests() {
     // fake array of patient responses
     const response = [patient];
 
-    $httpBackend.expect('GET', '/patients/search?limit=10&reference=TPA1')
-      .respond(response);
-  });
+  $httpBackend.expect('GET', '/patients/search?limit=10&reference=TPA1')
+    .respond(response);
+});
 
   it('allows the reset method to reset the component');
 
