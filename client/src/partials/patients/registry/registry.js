@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants', '$translate'
+  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal',
+  'uiGridConstants', '$translate', 'GridColumnService', 'GridSortingService', 'bhConstants'
 ];
 
 /**
@@ -10,36 +11,19 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate) {
+function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns, Sorting, bhConstants) {
   var vm = this;
 
-  var cache = AppCache('PatientRegistry');
-
-  var patientDetailActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
-          '<span class="fa fa-book"></span> {{ ::"PATIENT_REGISTRY.RECORD" | translate }} ' +
-        '</a>' +
-      '</div>';
-
-  var patientEditActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
-          '<span class="fa fa-edit"></span> {{ ::"TABLE.COLUMNS.EDIT" | translate }} ' +
-        '</a> ' +
-      '</div>';
-
-  var patientCardActionTemplate =
-      '<div class="ui-grid-cell-contents"> ' +
-        '<a href ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
-          '<span class="fa fa-user"></span> {{ ::"PATIENT_REGISTRY.CARD" | translate }} ' +
-        '</a>' +
-      '</div>';
+  var cacheKey = 'PatientRegistry';
+  var cache = AppCache(cacheKey);
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.patientCard = patientCard;
+  vm.filterBarHeight = {};
+  vm.openColumnConfiguration = openColumnConfiguration;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -48,18 +32,21 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     { field : 'reference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       aggregationType: uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true
+      aggregationHideLabel : true, headerCellFilter: 'translate',
+      footerCellClass : 'text-center',
+      sortingAlgorithm : Sorting.algorithms.sortByReference
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
-    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate' },
+    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate', type: 'number' },
     { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter: 'translate' },
-    { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate'  },
+    { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate' },
     { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter: 'translate' },
-    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate' },
-    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate' },
-    { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate, enableSorting: false },
-    { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate, enableSorting: false },
-    { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate, enableSorting: false }
+    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate', type: 'date' },
+    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate', type: 'date' },
+    { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
+    { field : 'originVillageName', displayName : 'FORM.LABELS.ORIGIN_VILLAGE', headerCellFilter: 'translate', visible: false },
+    { field : 'originSectorName', displayName : 'FORM.LABELS.ORIGIN_SECTOR', headerCellFilter: 'translate', visible: false },
+    { name : 'actions', displayName : '', cellTemplate : '/partials/patients/templates/action.cell.html', enableSorting: false }
   ];
 
   /** TODO manage column : last_transaction */
@@ -70,8 +57,12 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch: true,
-    columnDefs : columnDefs
+    columnDefs : columnDefs,
+    rowTemplate: '/partials/templates/grid/patient.row.html'
+
   };
+
+  var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
 
   // error handler
   function handler(error) {
@@ -99,7 +90,6 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
 
     // hook the returned patients up to the grid.
     request.then(function (patients) {
-
       patients.forEach(function (patient) {
         patient.patientAge = util.getMomentAge(patient.dob, 'years');
       });
@@ -126,10 +116,17 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
       });
   }
 
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
+  }
+
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Patients.formatFilterParameters(filters);
+
+    // check if there are filters applied and show the filter bar
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -166,6 +163,10 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     vm.filters = cache.filters;
     vm.filtersFmt = Patients.formatFilterParameters(cache.filters || {});
     load(vm.filters);
+
+    // check if there are filters applied
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+      { 'height' : 'calc(100vh - 105px)' } : {};
   }
 
   // fire up the module

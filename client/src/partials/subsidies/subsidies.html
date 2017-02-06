@@ -97,7 +97,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
+                <input type="text" class="form-control" name="label" autocomplete="off" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -105,7 +105,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
-                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+                <input type="number" class="form-control" autocomplete="off" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
                 <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -159,7 +159,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
+                <input type="text" class="form-control" name="label" autocomplete="off" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -167,7 +167,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
-                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+                <input type="number" class="form-control" name="value" autocomplete="off" ng-model="SubsidyCtrl.subsidy.value" required>
                 <div class="help-block" ng-messages="UpdateForm.value.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

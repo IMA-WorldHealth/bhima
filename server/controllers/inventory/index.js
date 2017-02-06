@@ -51,7 +51,6 @@ exports.createInventoryItems    = createInventoryItems;
 exports.updateInventoryItems    = updateInventoryItems;
 exports.getInventoryItems       = getInventoryItems;
 exports.getInventoryItemsById   = getInventoryItemsById;
-exports.getInventoryItemReport  = getInventoryItemReport;
 
 // expose inventory group methods
 exports.createInventoryGroups  = createInventoryGroups;
@@ -99,15 +98,14 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
  * Create a new inventory data entry
  */
 function createInventoryItems(req, res, next) {
-
   core.createItemsMetadata(req.body, req.session)
-  .then((identifier) => {
-    res.status(201).json({ uuid: identifier });
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((identifier) => {
+      res.status(201).json({ uuid: identifier });
+    })
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -115,15 +113,14 @@ function createInventoryItems(req, res, next) {
  * Update an inventory data entry
  */
 function updateInventoryItems(req, res, next) {
-
   core.updateItemsMetadata(req.body, req.params.uuid)
-  .then((metadata) => {
-    res.status(200).json(metadata);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(metadata => {
+      res.status(200).json(metadata);
+    })
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -159,47 +156,17 @@ function getInventoryItemsById(req, res, next) {
   var uuid = req.params.uuid;
 
   core.getItemsMetadataById(uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEM;
-    }
-
-    res.status(200).json(rows[0]);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
-}
-
-/**
-* GET /reports/inventory/imtes
-* Returns a pdf file for inventory metadata
-*
-* @function getInventoryItemReport
-*/
-function getInventoryItemReport(req, res, next) {
-  const template = './server/controllers/inventory/reports/items.handlebars';
-  let report;
-
-  const context = _.defaults({orientation : 'landscape' }, req.query);
-
-  try {
-    report = new ReportManager(template, req.session, context);
-  } catch(e) {
-    return next(e);
-  }
-
-  core.getItemsMetadata()
-    .then(rows => report.render({ rows }))
-    .then(result => {
-      res.set(result.headers).send(result.report);
+    .then(function (row) {
+      res.status(200).json(row);
     })
-    .catch(next)
+    .catch(function (error) {
+      core.errorHandler(error, req, res, next);
+    })
     .done();
 }
 
 // ======================= inventory group =============================
+
 /**
  * POST /inventory/groups
  * Create a new inventory group

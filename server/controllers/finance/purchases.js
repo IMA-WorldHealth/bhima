@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module controllers/finance/purchases
  *
@@ -12,13 +14,15 @@
  * @requires BadRequest
  */
 
-'use strict';
-
 const q = require('q');
 const uuid = require('node-uuid');
-const db = require('./../../lib/db');
-const NotFound = require('./../../lib/errors/NotFound');
-const BadRequest = require('./../../lib/errors/BadRequest');
+
+const db = require('../../lib/db');
+
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+
+const identifiers = require('../../config/identifiers');
 
 // create a new purchase order
 exports.create = create;
@@ -83,7 +87,8 @@ function lookupPurchaseOrder(uid) {
   let record;
 
   let sql = `
-    SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
+    SELECT BUID(p.uuid) AS uuid,
+      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note
     FROM purchase AS p
@@ -162,6 +167,7 @@ function create(req, res, next) {
 
   // delete the purchase order items
   delete data.items;
+  delete data.reference;
 
   const transaction = db.transaction();
 
@@ -170,7 +176,7 @@ function create(req, res, next) {
     .addQuery(itemSql, [items]);
 
   transaction.execute()
-    .then(function () {
+    .then(() => {
       res.status(201).json({ uuid : puid });
     })
     .catch(next)
@@ -190,7 +196,8 @@ function list(req, res, next) {
   let sql;
 
   sql = `
-    SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
+    SELECT BUID(p.uuid) AS uuid,
+      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid
     FROM purchase AS p
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -199,7 +206,8 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
+      SELECT BUID(p.uuid) AS uuid,
+        CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid
       FROM purchase AS p
@@ -209,11 +217,11 @@ function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -226,11 +234,11 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupPurchaseOrder(req.params.uuid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -251,12 +259,8 @@ function update(req, res, next) {
   delete data.uuid;
 
   db.exec(sql, [req.body, db.bid(req.params.uuid)])
-  .then(function () {
-    return lookupPurchaseOrder(req.params.uuid);
-  })
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => lookupPurchaseOrder(req.params.uuid))
+    .then(record => res.status(200).json(record))
+    .catch(next)
+    .done();
 }

@@ -63,11 +63,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
     </button>
+
     <bh-loading-button loading-state="ModalForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT_CREDIT_NOTE" | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT_CREDIT_NOTE</span>
     </bh-loading-button>
   </div>
 </form>

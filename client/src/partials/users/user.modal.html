@@ -16,7 +16,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.USERNAME" | translate }}</label>
-      <input name="display_name" ng-model="UserModalCtrl.user.display_name" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
+      <input name="display_name" ng-model="UserModalCtrl.user.display_name" autocomplete="off" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
       <div class="help-block" ng-messages="UserForm.display_name.$error" ng-show="UserForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
@@ -24,7 +24,7 @@
 
     <div class="form-group"  ng-class="{ 'has-error' : UserForm.$submitted && UserForm.username.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.LOGIN" | translate }}</label>
-      <input name="username" ng-maxlength="UserModalCtrl.userName" ng-model="UserModalCtrl.user.username" class="form-control" required>
+      <input name="username" ng-maxlength="UserModalCtrl.userName" autocomplete="off" ng-model="UserModalCtrl.user.username" class="form-control" required>
       <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
@@ -32,7 +32,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.email.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-      <input name="email" ng-maxlength="UserModalCtrl.length100" ng-model="UserModalCtrl.user.email" class="form-control" type="email" required>
+      <input name="email" ng-maxlength="UserModalCtrl.length100" ng-model="UserModalCtrl.user.email" autocomplete="off" class="form-control" type="email" required>
       <div class="help-block" ng-messages="UserForm.email.$error" ng-show="UserForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>

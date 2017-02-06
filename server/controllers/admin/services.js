@@ -62,6 +62,9 @@ function create(req, res, next) {
   let record = req.body;
   let sql = 'INSERT INTO service SET ?';
 
+  // add contextual information
+  record.enterprise_id = req.session.enterprise.id;
+
   delete record.id;
 
   db.exec(sql, [record])

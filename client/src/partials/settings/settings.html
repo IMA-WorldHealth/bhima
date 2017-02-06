@@ -24,11 +24,52 @@
         </div>
 
         <div class="form-group">
-          <label for="select-default" translate>FORM.LABELS.HOME_PAGE</label>
-          <select id="select-default" class="form-control">
-            <option selected translate>FORM.SELECT.LAST_PAGE</option>
-          </select>
+          <label translate>FORM.LABELS.INVOICE_CURRENCY_SETTING</label>
+          <p>
+            <bh-receipt-currency
+              on-update="SettingsCtrl.cacheInvoiceCurrency(currencyId)">
+            </bh-receipt-currency>
+          </p>
         </div>
+
+        <div class="form-group">
+          <label for="receipt-type" translate>FORM.LABELS.USE_POS_RECEIPT</label>
+          <p class="text-info">
+            <i class="fa fa-info-circle"></i>
+            <span translate>SETTINGS.POS_RECEIPT_INFO</span>
+          </p>
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="posReceipt" ng-change="SettingsCtrl.cachePosReceipt(SettingsCtrl.settings.posReceipt)" id="pos-enabled" value="1" ng-model="SettingsCtrl.settings.posReceipt">
+              <span translate>FORM.LABELS.ENABLED</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" name="posReceipt" ng-change="SettingsCtrl.cachePosReceipt(SettingsCtrl.settings.posReceipt)" id="pos-disabled" value="0" ng-model="SettingsCtrl.settings.posReceipt">
+              <span translate>FORM.LABELS.DISABLED</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label translate>FORM.LABELS.USE_SIMPLIFIED_CARD</label>
+          <p class="text-info">
+            <i class="fa fa-info-circle"></i>
+            <span translate>SETTINGS.SIMPLIFIED_CARD_INFO</span>
+          </p>
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="simplified" ng-change="SettingsCtrl.cacheSimplified(SettingsCtrl.settings.simplified)" id="simplified-enabled" value="1" ng-model="SettingsCtrl.settings.simplified">
+              <span translate>FORM.LABELS.ENABLED</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" name="simplified" ng-change="SettingsCtrl.cacheSimplified(SettingsCtrl.settings.simplified)" id="simplified-disabled" value="0" ng-model="SettingsCtrl.settings.simplified">
+              <span translate>FORM.LABELS.DISABLED</span>
+            </label>
+          </div>
+        </div>
+
 
         <button
           class="btn btn-default"

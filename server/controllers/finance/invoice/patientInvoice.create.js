@@ -89,9 +89,10 @@ function processInvoice(invoiceUuid, invoice) {
   delete invoice.items;
   delete invoice.billingServices;
   delete invoice.subsidies;
+  delete invoice.reference;
 
   const keys = [
-    'is_distributable', 'date', 'cost', 'description', 'service_id',
+    'date', 'cost', 'description', 'service_id',
     'debtor_uuid', 'project_id', 'user_id', 'uuid'
   ];
 

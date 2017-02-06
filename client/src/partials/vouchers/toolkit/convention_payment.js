@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 // DI definition
 ConventionPaymentKitController.$inject = [
   '$uibModalInstance', 'DebtorGroupService', 'NotifyService',
-  'CashboxService', 'SessionService', 'data',
+  'CashboxService', 'SessionService', 'data', 'bhConstants',
   'AccountStoreService', 'DebtorService', 'PatientInvoiceService'
 ];
 
 // Import transaction rows for a convention payment
-function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, Session, Data, AccountStore, Debtors, Invoices) {
+function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, Session, Data, bhConstants, AccountStore, Debtors, Invoices) {
   var vm = this;
 
   // global variables
@@ -17,101 +17,112 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   vm.gridOptions = {};
   vm.tool = Data;
 
+  var MAX_DECIMAL_PRECISION = bhConstants = bhConstants.precision.MAX_DECIMAL_PRECISION;
+
   // expose to the view
   vm.selectGroupInvoices = selectGroupInvoices;
   vm.close = Instance.close;
   vm.import = submit;
 
   // accounts from store
-  AccountStore.accounts().then(function (data) {
-    vm.accounts = data;
-  })
-  .catch(Notify.handleError);
+  AccountStore.accounts()
+    .then(function (data) {
+      vm.accounts = data;
+    })
+    .catch(Notify.handleError);
 
   // debtors from store
-   Debtors.store()
-   .then(function (data) {
-     vm.debtors = data;
-   })
-   .catch(Notify.handleError);
+  Debtors.store()
+    .then(function (data) {
+      vm.debtors = data;
+    })
+    .catch(Notify.handleError);
 
   //  optimization with `Store` will be well
-   Invoices.read()
-   .then(function (data) {
-     vm.invoices = data;
-   })
-   .catch(Notify.handleError);
+  Invoices.read()
+  .then(function (data) {
+    vm.invoices = data;
+  })
+  .catch(Notify.handleError);
 
   // load debtors
   Debtors.read()
-  .then(function (list) {
-    vm.debtorList = list;
-  })
-  .catch(Notify.handleError);
+    .then(function (list) {
+      vm.debtorList = list;
+    })
+    .catch(Notify.handleError);
 
   // load conventions
-  DebtorGroup.read(null, { is_convention: 1})
-  .then(function (list) {
-    vm.conventionGroupList = list;
-  })
-  .catch(Notify.handleError);
+  DebtorGroup.read()
+    .then(function (list) {
+      vm.conventionGroupList = list;
+    })
+    .catch(Notify.handleError);
 
   // load cashboxes
-  Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
-  .then(function (list) {
-    vm.cashboxList = list;
-  })
-  .catch(Notify.handleError);
+  Cashbox.read(null, { detailed: 1 })
+    .then(function (cashboxes) {
+      vm.cashboxList = cashboxes;
+    })
+    .catch(Notify.handleError);
 
   // get debtor group invoices
   function selectGroupInvoices(convention) {
     DebtorGroup.invoices(convention.uuid, { is_convention: 1})
-    .then(function (list) {
-      // invoices
-      vm.gridOptions.data = list || [];
+      .then(function (list) {
 
-      // total amount
-      vm.totalInvoices = vm.gridOptions.data.reduce(function (current, previous) {
-        return current + previous.balance;
-      }, 0);
-    })
-    .catch(Notify.handleError);
+        // invoices
+        vm.gridOptions.data = list || [];
+
+        // total amount
+        vm.totalInvoices = vm.gridOptions.data.reduce(function (current, previous) {
+          return current + previous.balance;
+        }, 0);
+
+        // make sure we are always within precision
+        vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
+      })
+      .catch(Notify.handleError);
   }
 
   // generate transaction rows
   function generateTransactionRows(result) {
-    vm.rows = [];
+    var rows = [];
 
-    var cashboxAccount = vm.accounts.get(result.cashbox.account_id);
-    var conventionAccount = vm.accounts.get(result.convention.account_id);
-    var entityAccount;
-    var invoiceReference;
-    var index;
+    var cashboxAccountId = result.cashbox.account_id;
+    var conventionAccountId = result.convention.account_id;
+    var invoices = result.invoices;
 
-    // cashbox row
-    vm.rows.push(generateRow());
-    vm.rows[0].account = cashboxAccount;
-    vm.rows[0].debit = vm.totalSelected;
-    vm.rows[0].credit = 0;
+    // first, generate a cashbox row
+    var cashboxRow = generateRow();
+    cashboxRow.account_id = cashboxAccountId;
+    cashboxRow.debit = vm.totalSelected;
+    cashboxRow.credit = 0;
+    rows.push(cashboxRow);
 
-    // cashbox and invoices rows
-    for (var i = 0; i < result.invoices.length; i++) {
-      entityAccount = formatEntity(result.invoices[i].entity_uuid);
-      invoiceReference = getInvoiceReference(result.invoices[i].uuid);
+    // then loop through each selected item and credit it with the convention account
+    invoices.forEach(function (invoice) {
+      var row = generateRow();
 
-      index = i + 1;
-      vm.rows.push(generateRow());
-      vm.rows[index].account = conventionAccount;
-      vm.rows[index].debit = 0;
-      vm.rows[index].credit = result.invoices[i].balance;
-      vm.rows[index].entity = entityAccount;
-      vm.rows[index].reference = invoiceReference;
-    }
+      row.account_id = conventionAccountId;
+      row.reference_uuid = invoice.uuid;
+      row.entity_uuid = invoice.entity_uuid;
+      row.credit = invoice.balance;
 
-    return vm.rows;
+      // this is needed for a nice display in the grid
+      row.entity = formatEntity(invoice.entity_uuid);
+
+      // this is need to display references in the grid nicely
+      row.reference = getInvoiceReference(invoice.uuid);
+
+      // add the row in to the
+      rows.push(row);
+    });
+
+    return rows;
   }
 
-  // foramt entity
+  // format entity
   function formatEntity(uuid) {
     var entity = vm.debtors.get(uuid);
     return {
@@ -134,16 +145,13 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     return invoice;
   }
 
-  // FIXME: duplicated function
   // generate row element
   function generateRow() {
-    var index = vm.rows.length || 0;
     return {
-      index         : index,
       account_id    : undefined,
       debit         : 0,
       credit        : 0,
-      document_uuid : undefined,
+      reference_uuid : undefined,
       entity_uuid   : undefined
     };
   }
@@ -152,6 +160,8 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.enableFiltering  = true;
   vm.gridOptions.onRegisterApi    = onRegisterApi;
+  vm.gridOptions.fastWatch = true;
+  vm.gridOptions.flatEntityAccess = true;
 
   vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
@@ -173,7 +183,10 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     vm.totalSelected = vm.selectedRows.reduce(function (current, previous) {
       return current + previous.balance;
     }, 0);
+
+    vm.totalSelected = Number.parseFloat(vm.totalSelected.toFixed(MAX_DECIMAL_PRECISION));
   }
+
   /* ================ End Invoice grid parameters ===================== */
 
   // submission
@@ -185,6 +198,7 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
       convention: vm.convention,
       invoices: vm.selectedRows
     });
+
     Instance.close({ rows: bundle, convention: vm.convention });
   }
 }

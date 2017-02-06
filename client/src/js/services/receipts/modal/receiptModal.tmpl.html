@@ -22,7 +22,7 @@
 
 <!-- Temporary Loading State -->
 <div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt" class="text-center">
-  <p class="text-info"><span class="fa fa-hourglass-end fa-spin"></span> {{ "RECEIPTS.LOADING" | translate }}</p>
+  <p class="text-info"><span class="fa fa-hourglass-end fa-spin"></span> <span translate>FORM.INFO.LOADING</span></p>
 </div>
 
 <!-- ng-if used in favour of ng-switch to allow dynamic states -->
@@ -53,10 +53,10 @@
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-default btn-sm" ng-click="ReceiptCtrl.close()" data-action="close" data-method="close">
-    {{ "FORM.BUTTONS.CLOSE" | translate }}
+  <button type="button" class="btn btn-default btn-sm" ng-click="ReceiptCtrl.close()" data-action="close" data-method="close" translate>
+    FORM.BUTTONS.CLOSE
   </button>
   <button class="btn btn-primary btn-sm" ng-click="ReceiptCtrl.print()" data-action="print">
-    <span class="fa fa-print"></span> {{ "FORM.BUTTONS.PRINT" | translate }}
+    <span class="fa fa-print"></span> <span translate>FORM.BUTTONS.PRINT</span>
   </button>
 </div>

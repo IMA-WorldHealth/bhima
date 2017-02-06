@@ -18,12 +18,18 @@
 
        <a class="btn btn-default" data-method="create" ui-sref="accounts.create">
          <i class="fa fa-plus-square"></i>
-         {{ "ACCOUNT.CREATE" | translate }}
+         {{ "ACCOUNT.ADD" | translate }}
        </a>
        <bh-pdf-print
         pdf-url="/reports/finance/accounts/chart"
         options="AccountsCtrl.parameter">
       </bh-pdf-print>
+      
+      <bh-renderer-dropdown
+        report-url="/reports/finance/accounts/chart"
+        report-options="AccountsCtrl.parameter">
+      </bh-renderer-dropdown>
+
      </div>
    </div>
   </div>

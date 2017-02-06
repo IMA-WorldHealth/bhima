@@ -1,10 +1,17 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="static">{{ "TREE.LOCATION" | translate }}</li>
-      <li class="active">{{ "COUNTRY.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+      <li class="title" translate>COUNTRY.TITLE</li>
     </ol>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="CountryCtrl.create()" data-method="create">
+          <i class="fa fa-plus-square"></i> <span translate>COUNTRY.NEW_COUNTRY</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -13,10 +20,6 @@
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
   </a>
-
-  <button class="btn btn-sm btn-default" id="create" ng-click="CountryCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{'COUNTRY.NEW_COUNTRY' | translate}}
-  </button>
 </div>
 
 
@@ -84,7 +87,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" autocomplete="off" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -109,7 +112,7 @@
             <form name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" autocomplete="off" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

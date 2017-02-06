@@ -22,6 +22,8 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/triggers.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/icd10.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
 
 echo "Building server ...."

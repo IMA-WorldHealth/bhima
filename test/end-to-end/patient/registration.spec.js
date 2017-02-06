@@ -24,7 +24,7 @@ describe('Patient Registration', function () {
 
   const uniqueHospitalNumber = 1020;
 
-  it('registers a valid patient', function (done) {
+  it('registers a valid patient', function () {
 
     // patient name
     FU.input('PatientRegCtrl.medical.display_name', mockPatient.display_name);
@@ -46,7 +46,6 @@ describe('Patient Registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
     FU.exists(by.id('receipt-confirm-created'), true);
-    done();
   });
 
   // This test group assumes the previous mock patient has been successfully registered

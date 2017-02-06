@@ -67,7 +67,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" ng-maxlength="PriceListCtrl.length250" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <input type="text" class="form-control" ng-maxlength="PriceListCtrl.length250" autocomplete="off" name="label" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -129,7 +129,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-maxlength="PriceListCtrl.length250" ng-model="PriceListCtrl.priceList.label" required>
+                <input type="text" class="form-control" name="label" ng-maxlength="PriceListCtrl.length250" autocomplete="off" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -142,7 +142,6 @@
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
-
 
               <hr>
               <div class="form-group">

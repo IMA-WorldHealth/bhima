@@ -5,7 +5,8 @@ angular.module('bhima.components')
     button: '<',
     label: '<',
     dropdown: '<',
-    print : '<'
+    print : '<',
+    download : '<'
   },
   templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
   controller   : BreadcrumbController,
@@ -26,6 +27,7 @@ angular.module('bhima.components')
  *   - button : which takes an array of button objects
  *   - dropdown : which takes an array of object as dropdown
  *   - label : which takes an array of label objects
+ *   - download : which takes element on <bh-renderer-dropdown>
  *
  * @example
  * <!-- Simple breadcrumb navigation in the view -->
@@ -33,7 +35,8 @@ angular.module('bhima.components')
  *   path="MyCtrl.bcPaths"
  *   button="MyCtrl.bcButtons"
  *   dropdown="MyCtrl.bcDropdowns"
- *   Label="MyCtrl.bcLabels">
+ *   Label="MyCtrl.bcLabels"
+ *   download = "MyCtrl.dropdownDownload">
  * </bh-breadcrumb>
 */
 function BreadcrumbController() {
@@ -99,8 +102,9 @@ function BreadcrumbController() {
    */
   vm.bcDropdowns = vm.dropdown || [];
 
-
   vm.buttonPrint = vm.print || [];
+
+  vm.dropdownDownload = vm.download || [];
 
 
   /** call the appropriate function and update the dropdown label **/

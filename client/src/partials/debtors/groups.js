@@ -1,19 +1,19 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'ModalService', 'NotifyService'];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic
- * sorting/ filtering utilites.
+ * sorting/ filtering utilities.
  *
- * @todo  Pass debtor groups into create/ update states to reduce the number of
+ * @todo  Pass debtor groups into create/update states to reduce the number of
  *        HTTP requests made - these pages should also link back to this controller
  *        without calling refresh : true and just passing back the object that changed
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval) {
+function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval, Modal, Notify) {
   var vm = this;
 
   // pagination configuration
@@ -27,6 +27,8 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
 
   vm.state = $state;
 
+  vm.deleteGroup = deleteGroup;
+
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true },
@@ -35,10 +37,9 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
     { attribute : 'total_debtors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true }
   ];
 
-  /** @todo rename read method */
   DebtorGroups.read(null, { detailed : 1 })
-    .then(function (result) {
-      vm.debtorGroups = result;
+    .then(function (debtorGroups) {
+      vm.debtorGroups = debtorGroups;
     })
     .catch(handleException);
 
@@ -56,9 +57,25 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
       vm.filterActive = false;
       vm.filter = '';
     } else {
-
       vm.filterActive = true;
     }
+  }
+
+  /**
+   * @function deleteGroup
+   * @description delete a creditor group
+   */
+  function deleteGroup(groupUuid) {
+    Modal.confirm()
+      .then(function (ans) {
+        if (!ans) { return false; }
+        return DebtorGroups.remove(groupUuid);
+      })
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
+        $state.go('debtorGroups.list', null, {reload : true});
+      })
+      .catch(Notify.handleError);
   }
 
   function setOrder(attribute) {

@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>PATIENT_INVOICE.PAGE_TITLE</li>
       <li class="title" ng-show="PatientInvoiceCtrl.Invoice.recipient">{{ PatientInvoiceCtrl.Invoice.recipient.display_name }}</li>
     </ol>
   </div>
@@ -23,8 +23,7 @@
                     suppress-reset="true"
                     on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
                     on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)"
-                    validation-trigger="detailsForm.$submitted"
-                    >
+                    validation-trigger="detailsForm.$submitted">
                   </bh-find-patient>
                 </div>
 
@@ -45,30 +44,9 @@
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
-
-                <label class="control-label">
-                  {{ "FORM.LABELS.TYPE" | translate }}
-                  <bh-info template="typePopover.tmpl.html" direction="right"></bh-info>
-                </label>
-
-                <!-- TODO distributable vs. non distributable sales or invoices should be designed/reviewed carefully -->
-                <div class="form-group">
-                  <label class="radio-inline">
-                    <input type="radio" name="serviceType" id="distributable" value="1" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" checked required>
-                    {{ "FORM.LABELS.DISTRIBUTABLE" | translate }}
-                  </label>
-                  <label class="radio-inline">
-                    <input type="radio" name="serviceType" id="not-distributable" value="0" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" required>
-                    {{ "FORM.LABELS.NO_DISTRIBUTABLE" | translate }}
-                  </label>
-                  <div class="help-block" ng-messages="detailsForm.serviceType.$error" ng-show="detailsForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
               </div>
 
               <div class="col-md-6">
-
                 <!--
                   @todo - since we know this is a financial date, we could set min and max for periods etc.
                 -->
@@ -79,8 +57,7 @@
                   max-date="PatientInvoiceCtrl.timestamp">
                 </bh-date-editor>
 
-                <div
-                  class="form-group"
+                <div class="form-group"
                   ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid }">
                   <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
                   <textarea
@@ -326,8 +303,8 @@
 </script>
 
 <script type="text/ng-template" id="typePopover.tmpl.html">
-  <dl>
-    <dt>{{ "PATIENT_INVOICE.DISTRIBUTION_TYPE" | translate }}</dt>
-    <dd>{{ "PATIENT_INVOICE.DISTRIBUTION_TYPE_EXPLANATION" | translate }}</dd>
+  <dl style="margin-bottom: 0; padding-bottom:0">
+    <dt translate>PATIENT_INVOICE.DISTRIBUTION_TYPE</dt>
+    <dd translate>PATIENT_INVOICE.DISTRIBUTION_TYPE_EXPLANATION</dd>
   </dl>
 </script>

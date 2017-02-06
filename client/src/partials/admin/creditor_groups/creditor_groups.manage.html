@@ -27,7 +27,7 @@
               <!-- name  -->
               <div class="form-group" ng-class="{ 'has-error' : CreditorGroupManager.$submitted && CreditorGroupManager.name.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-                <input class="form-control" name="name" type="text" ng-model="CreditorGroupCtrl.bundle.name" required>
+                <input class="form-control" name="name" type="text" autocomplete="off" ng-model="CreditorGroupCtrl.bundle.name" required>
 
                 <div class="help-block" ng-messages="CreditorGroupManager.name.$error" ng-show="CreditorGroupManager.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

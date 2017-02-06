@@ -45,18 +45,21 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
 
     angular.forEach(this.gridOptions.columnDefs, function (defn) {
       var field = defn.field;
-      var column = api.grid.getColumn(field);
 
-      // cache the default visible value
-      defaults[field] = column.visible;
+      // only use the fields have usable names
+      if (field) {
+        var column = api.grid.getColumn(field);
+
+        // cache the default visible value
+        defaults[field] = column.visible;
+      }
     });
 
     // if there is a cache defined, load it into the current view
-    if(cache && Object.keys(cache).length > 0){
+    if (cache && Object.keys(cache).length > 0) {
       this.setVisibleColumns(cache);
     }
   }
-
 
   /**
    * @method cacheColumnVisibility
@@ -84,7 +87,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
   function Columns(gridOptions, cacheKey) {
 
     // set up local storage for selected grid columns
-    if(cacheKey){
+    if (cacheKey) {
       this.cache = AppCache(cacheKey + serviceKey);
     }
 
@@ -125,7 +128,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
     });
 
     // store the selected columns in the cache
-    if(this.cache){
+    if (this.cache) {
       cacheColumnVisibility.call(this, columns);
     }
 
@@ -172,6 +175,27 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
       map[column.field] = column.visible;
       return map;
     }, {});
+  };
+
+  /**
+   * @method openConfigurationModal
+   *
+   * @description
+   * This class method allows any module to open a column configuration modal in
+   * the context of their grid's column configuration.
+   *
+   * @returns {Promise} - resolve the modal's close/open state
+   */
+  Columns.prototype.openConfigurationModal = function openConfigurationModal() {
+    var self = this;
+    return Modal.open({
+      templateUrl: 'partials/templates/modals/columnConfig.modal.html',
+      controller:  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
+      size : 'lg',
+      resolve : {
+        Columns : function columnsProvider() { return self; }
+      }
+    });
   };
 
   return Columns;

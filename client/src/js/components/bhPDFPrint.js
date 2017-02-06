@@ -23,7 +23,7 @@ angular.module('bhima.components')
     options : '<'
   },
   transclude : true,
-  template : 
+  template :
     '<a href ng-click="$ctrl.print()">' +
       '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
       '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
@@ -33,7 +33,7 @@ angular.module('bhima.components')
 });
 
 
-bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'LanguageService'];
+bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService'];
 
 /**
  * @class bhPDFPrintController
@@ -61,7 +61,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'Languag
  *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
+function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages) {
   var cachedRequest;
   var component = this;
 
@@ -76,6 +76,7 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
     renderer : 'pdf',
     lang : Languages.key
   };
+
   var responseType = 'arraybuffer';
   var pdfType = 'application/pdf';
 
@@ -112,6 +113,16 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
         // expose the stored pdf to the hidden view
         // the print method is automatically called with the load listener on the $window option
         component.src = $sce.trustAsResourceUrl(fileURL);
+
+        // ensure the blob is cleared when this $scope is cleaned up
+        var cleanupListener = $scope.$on('$destroy', function () {
+          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency is updated this
+          // should be re-written to use the latest $transition standards
+          URL.revokeObjectURL(fileURL);
+
+          // de-register event listener
+          cleanupListener();
+        });
       })
       .finally(function () {
         $timeout(toggleLoading, loadingIndicatorDelay);
@@ -141,7 +152,6 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages) {
   function toggleLoading() {
     component.$loading = !component.$loading;
   }
-
 
   // ensure that the template/ iframe element is available
   // both the $onInit and $postLink methods are fired before guaranteeing the

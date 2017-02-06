@@ -1,9 +1,12 @@
 /* global expect, chai, agent */
 /* jshint expr : true */
 
+'use strict';
+
 const helpers = require('./helpers');
 const uuid = require('node-uuid');
 
+const _ = require('lodash');
 
 /*
  * The /locations API endpoint
@@ -194,6 +197,28 @@ describe('(/locations) Locations Interface', function () {
   it('POST /locations/villages should create a village', function () {
     return agent.post('/locations/villages')
       .send(village)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/villages should not create the same village twice in the same sector', function () {
+    return agent.post('/locations/villages')
+      .send(village)
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/villages should create the same village name in a different sector', function () {
+    let copy = _.clone(village);
+    copy.sector_uuid = sectorUuid;
+    copy.uuid = uuid.v4();
+
+    return agent.post('/locations/villages')
+      .send(copy)
       .then(function (res) {
         helpers.api.created(res);
       })

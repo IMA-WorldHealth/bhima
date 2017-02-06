@@ -38,7 +38,7 @@
                 <label class="control-label">
                   {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
-                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" ng-maxlength="EnterpriseCtrl.maxLength" required>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" autocomplete="off" ng-maxlength="EnterpriseCtrl.maxLength" required>
                 <div class="help-block" ng-messages="EnterpriseForm.name.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -48,7 +48,7 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.ABBREVIATION" | translate }}
                 </label>
-                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" ng-maxlength="EnterpriseCtrl.length50" required >
+                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required >
                 <div class="help-block" ng-messages="EnterpriseForm.abbr.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -63,7 +63,6 @@
                 <ui-select
                   name="gain_account"
                   ng-model="EnterpriseCtrl.enterprise.gain_account_id"
-                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
@@ -91,7 +90,6 @@
                 <ui-select
                   name="loss_account"
                   ng-model="EnterpriseCtrl.enterprise.loss_account_id"
-                  ng-model-options="{ 'debounce' : 250 }"
                   required>
                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
@@ -133,7 +131,7 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.PO_BOX" | translate }}
                 </label>
-                <input type="text" class="form-control" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
                 <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -143,7 +141,7 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.EMAIL" | translate }}
                 </label>
-                <input type="email" class="form-control" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
+                <input type="email" class="form-control" autocomplete="off" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="EnterpriseForm.email.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -153,7 +151,7 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.PHONE" | translate }}
                 </label>
-                <input type="tel" class="form-control" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

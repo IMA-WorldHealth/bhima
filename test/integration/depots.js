@@ -71,7 +71,7 @@ describe('(/depots) The depots API ', function () {
     .send(badDepot)
     .then(function (res) {
       helpers.api.errored(res, 400);
-      expect(res.body.code).to.be.equal('ERRORS.BAD_REQUEST');
+      expect(res.body.code).to.be.equal('ERRORS.ER_NO_DEFAULT_FOR_FIELD');
     })
     .catch(helpers.handler);
   });

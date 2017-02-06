@@ -2,9 +2,7 @@
 
 const accountingjs = require('accounting-js');
 
-const USD_FMT = {
-  precision: 2
-};
+const USD_FMT = { precision: 2 };
 
 const FC_FMT = {
   symbol: 'FC',
@@ -22,6 +20,8 @@ function currency(value, currencyId) {
   return accountingjs.formatMoney(value || 0, fmt);
 }
 
+const INDENTATION_STEP = 40;
+
 /**
  * @function indentAccount
  * @description indent with 40px accounts based on the account depth for the chart of accounts
@@ -30,7 +30,6 @@ function currency(value, currencyId) {
  */
 function indentAccount(depth) {
   // indentation step is fixed arbitrary to 40 (40px)
-  const INDENTATION_STEP = 40;
   let number = Number(depth);
   return number ? number * INDENTATION_STEP : 0;
 }

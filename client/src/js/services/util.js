@@ -177,13 +177,30 @@ function UtilService(moment) {
    * @description return an array which contain only unique values
    */
   service.uniquelize = function uniquelize (array) {
-    // the second param is the next value in the array.
-    return array.reduce(function (uniq, value) {
+    return array.filter(function (value, idx, array) {
+      return array.indexOf(value) === idx;
+    });
+  };
 
-      // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
-      if (uniq.indexOf(value) === -1) { uniq.push(value); }
-      return uniq;
+  service.isEmptyObject = function isEmptyObject(object) {
+    return Object.keys(object).length === 0;
+  };
 
-    }, []);  // initialize with an empty array
+
+  /**
+   * @function xor
+   *
+   * @description
+   * Returns the logical XOR of two booleans.
+   *
+   * @param {Boolean} a - a boolean value to XOR with b
+   * @param {Boolean} b - a boolean value to XOR with a
+   *
+   * @returns {Boolean} - the result
+   */
+  service.xor = function xor(a, b) {
+    /*jshint -W018 */
+     return !a !== !b;
+    /*jshint +W018 */
   };
 }

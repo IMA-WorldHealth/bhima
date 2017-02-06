@@ -71,11 +71,15 @@ function financialActivities(patientUuid) {
         debit : 0,
         balance: 0
       };
+
+      // why does this loop through patients?
       patients.forEach(function (patient) {
         sum.debit += patient.debit;
         sum.credit += patient.credit;
         sum.balance = sum.debit - sum.credit;
+        sum.hasDebitBalance = sum.balance > 0;
       });
+
       const debtor = glb.debtor;
       return { patients, debtor, sum };
     });
