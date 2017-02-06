@@ -123,8 +123,6 @@ function FindPatientComponent(Patients, AppCache, Notify) {
       options.limit = 1;
     }
 
-
-
     // query the patient's search endpoint for the
     // reference
     Patients.search(options)
