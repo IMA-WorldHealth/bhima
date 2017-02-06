@@ -33,7 +33,8 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
   /** buttons in the headercrumb */
   vm.bcButtons = [
     { icon: 'fa fa-search', label: $translate.instant('FORM.BUTTONS.SEARCH'),
-      action: search, color: 'btn-default'
+      action: search, color: 'btn-default',
+      dataMethod: 'search'
     }
   ];
 

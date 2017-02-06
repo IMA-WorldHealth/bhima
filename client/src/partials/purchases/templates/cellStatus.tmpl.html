@@ -1,14 +1,12 @@
 <div class="ui-grid-cell-contents">
-    <div ng-if="row.entity.is_confirmed === 1 && row.entity.is_cancelled === 0 && row.entity.is_received === 0" class="label label-primary" translate>
-       PURCHASES.STATUS.CONFIRMED
+    <div ng-if="row.entity.is_confirmed === 1 && row.entity.is_cancelled === 0">
+        <div ng-if="row.entity.is_received === 0" class="label label-primary" translate>PURCHASES.STATUS.CONFIRMED</div>
+
+        <div ng-if="row.entity.is_received === 1" class="label label-success" translate>PURCHASES.STATUS.RECEIVED</div>
     </div>
 
     <div ng-if="row.entity.is_confirmed === 0 && row.entity.is_cancelled === 0" class="label label-default" translate>
        PURCHASES.STATUS.WAITING_CONFIRMATION
-    </div>
-
-    <div ng-if="row.entity.is_confirmed === 1 && row.entity.is_cancelled === 0 && row.entity.is_received === 1" class="label label-success" translate>
-       PURCHASES.STATUS.RECEIVED
     </div>
 
     <div ng-if="row.entity.is_cancelled === 1" class="label label-danger" translate>
