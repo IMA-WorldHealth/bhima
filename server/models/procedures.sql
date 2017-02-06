@@ -546,6 +546,11 @@ BEGIN
   DECLARE remainder DECIMAL(19,4);
   DECLARE lastInvoiceUuid BINARY(16);
 
+  DECLARE cashPaymentOriginId SMALLINT(5);
+
+  -- set origin to the CASH_PAYMENT transaction type 
+  SET cashPaymentOriginId = 2;
+
   -- copy cash payment values into working variables
   SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id, cash.is_caution
     INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId, isCaution
@@ -575,10 +580,10 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, user_id
+    credit_equiv, currency_id, user_id, origin_id
   ) SELECT
     HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-    cb.account_id, c.amount, 0, (c.amount / currentExchangeRate), 0, c.currency_id, c.user_id
+    cb.account_id, c.amount, 0, (c.amount / currentExchangeRate), 0, c.currency_id, c.user_id, cashPaymentOriginId
   FROM cash AS c
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
   WHERE c.uuid = cashUuid;
