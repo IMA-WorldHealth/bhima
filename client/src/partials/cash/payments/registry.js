@@ -100,6 +100,8 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
+    $state.params.filters = {};
+    $state.params.display = {};
     reload({ display : [], identifiers : {} });
   }
 
@@ -123,7 +125,6 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     if($state.params.display){ 
       const display = $state.params.display;
       vm.formatedFilters = Cash.formatFilterParameters(display);
-
       // show filter bar as needed
       vm.filterBarHeight = (vm.formatedFilters.length > 0) ?
         { 'height' : 'calc(100vh - 105px)' } : {};
