@@ -35,7 +35,7 @@ function JournalConfigurationModal() {
     page.expectColumnCount(modifiedVisibleColumnCount);
   });
 
-  it('resets the columns to the defaults', () => {
+  it.skip('resets the columns to the defaults', () => {
     page.openGridConfigurationModal();
 
     page.setDefaultColumnCheckboxes();

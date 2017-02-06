@@ -35,7 +35,7 @@
             <span translate>VOUCHERS.SIMPLE.TITLE</span>
           </div>
 
-          <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" bh-form-defaults novalidate>
+          <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" bh-form-defaults novalidate ng-disabled="SimpleVoucherForm.$loading">
             <div class="panel-body">
 
               <bh-date-editor
