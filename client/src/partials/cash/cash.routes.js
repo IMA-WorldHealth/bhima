@@ -5,7 +5,11 @@ angular.module('bhima.routes')
       .state('cashRegistry', {
         url : '/payments',
         controller: 'CashPaymentRegistryController as CPRCtrl',
-        templateUrl: 'partials/cash/payments/registry.html'
+        templateUrl: 'partials/cash/payments/registry.html',
+        params : {
+          filters : null,
+          display : null
+        }        
       })
 
       .state('cash', {

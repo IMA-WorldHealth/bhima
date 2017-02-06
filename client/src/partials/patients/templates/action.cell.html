@@ -20,5 +20,16 @@
         <span class="fa fa-user"></span> <span translate>PATIENT_REGISTRY.CARD</span>
       </a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
+        <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="card" ui-sref="cashRegistry({ filters : { debtor_uuid : row.entity.debtor_uuid }, display : {debtor_uuid : row.entity.display_name}})" href>
+        <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
+      </a>
+    </li>        
   </ul>
 </div>
