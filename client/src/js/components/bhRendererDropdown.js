@@ -21,7 +21,6 @@ function bhRendererController(AppCache) {
 
   $ctrl.$onInit = function () {
     $ctrl.options = [
-      { icon : 'file-code-o', key : 'DOWNLOADS.JSON', parameters : { renderer: 'json'}, type : 'application/json' },
       { icon : 'file-excel-o', key : 'DOWNLOADS.CSV', parameters : { renderer: 'csv'}, type : 'application/csv' },
       { icon : 'file-pdf-o', key : 'DOWNLOADS.PDF', parameters : { renderer: 'pdf'}, type : 'application/pdf' }
     ];
@@ -36,6 +35,12 @@ function bhRendererController(AppCache) {
   $ctrl.select = function (option) {
     $ctrl.selection = cache.selection = option;
   };
+
+  /*
+  $ctrl.$onChanges = function (changes) {
+    console.log('changes:', changes);
+  };
+  */
 
   /**
    * @method toggleLoading
