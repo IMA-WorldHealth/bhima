@@ -1,5 +1,5 @@
 <div class="btn-group" uib-dropdown>
-  <a class="btn btn-default" ng-href="{{::$ctrl.reportUrl}}?renderer={{::$ctrl.selection.parameters.renderer}}" download>
+  <a class="btn btn-default" ng-href="{{::$ctrl.reportUrl}}?{{$ctrl.params}}" download>
     <span ng-show="$ctrl.loading">
       <i class="fa fa-circle-notch-o"></i> <span translate>FORM.INFO.LOAING</span>
     </span>
