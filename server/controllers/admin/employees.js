@@ -18,11 +18,13 @@
 
 'use strict';
 
-const db = require('./../../lib/db');
 const uuid = require('node-uuid');
+
+const db = require('./../../lib/db');
+const Topic = require('../../lib/topic');
+
 const NotFound = require('./../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
-const Topic = require('../../lib/topic');
 
 exports.list = list;
 exports.create = create;

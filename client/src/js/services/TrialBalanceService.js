@@ -38,7 +38,7 @@ function TrialBalanceService(util, $http, $translate) {
 
     return list;
   }
- 
+
   function  getCSSClass (feedBack) {
     return feedBack.hasError ? 'grid-error' : feedBack.hasWarning ? 'grid-warning' : 'grid-success';
   }
@@ -111,8 +111,8 @@ function TrialBalanceService(util, $http, $translate) {
     var url = baseUrl.concat('data_per_account/');
     var transactions = getTransactionList(lines);
 
-    /** Querying the database to get the data grouped per account**/    
-    return $http.get(url, { params : {transactions : transactions}})
+    /** Querying the database to get the data grouped per account**/
+    return $http.post(url, { transactions : transactions })
       .then(util.unwrapHttpResponse);
   }
 

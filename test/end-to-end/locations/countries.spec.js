@@ -1,4 +1,5 @@
 /* global element, by, browser */
+
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -41,8 +42,9 @@ describe('Countries Management', function () {
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
+
     // switch to the create form
-    element(by.id('create')).click();
+    FU.buttons.create();
 
     // verify form has not been successfully submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);

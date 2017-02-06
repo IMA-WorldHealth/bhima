@@ -1,7 +1,7 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">{{ ToolCtrl.tool.label | translate }}</li>
-    <li class="title">{{ "VOUCHERS.GLOBAL.IMPORT_TRANSACTION" | translate }}</li>
+    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
   </ol>
 </div>
 
@@ -12,14 +12,13 @@
     <div
       class="form-group"
       ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.cashbox.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.CASHBOX" | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.CASHBOX
       </label>
 
       <ui-select
         name="cashbox"
         ng-model="ToolCtrl.cashbox"
-        theme="bootstrap"
         required>
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CASHBOX' | translate }}">
           <span>{{$select.selected.label}} ({{$select.selected.symbol}})</span>
@@ -39,8 +38,8 @@
     <div
       class="form-group"
       ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.convention.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.CONVENTION" | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.CONVENTION
       </label>
 
       <ui-select
@@ -75,9 +74,9 @@
       </div>
     </div>
 
-    <div ng-show="ToolCtrl.convention" class="form-group">
-      <span>{{ 'FORM.LABELS.TOTAL_BILLED' | translate }}: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span><br>
-      <span>{{ 'FORM.LABELS.TOTAL_SELECTED_INVOICES' | translate }}: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong></span>
+    <div ng-show="ToolCtrl.convention" class="text-right">
+      <span translate>FORM.LABELS.TOTAL_BILLED</span>: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong><br>
+      <span translate>FORM.LABELS.TOTAL_SELECTED_INVOICES</span>: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong>
     </div>
   </div>
 
@@ -86,13 +85,13 @@
       type="button"
       class="btn btn-default"
       ng-click="ToolCtrl.close()"
-      data-method="close">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
-    <bh-loading-button loading-state="ToolCtrl.$loading"
-      disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
-      {{ "FORM.BUTTONS.GENERATE" | translate }}
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

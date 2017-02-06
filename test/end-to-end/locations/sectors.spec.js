@@ -47,8 +47,9 @@ describe('Sectors Management', function () {
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
+
     // switch to the create form
-    element(by.id('create')).click();
+    FU.buttons.create();
 
     // Verify form has not been successfully submitted
     expect(helpers.getCurrentPath()).to.eventually.equal('#/locations/sector');

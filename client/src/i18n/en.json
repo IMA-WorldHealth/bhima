@@ -40,6 +40,7 @@
     "TITLE_ACCOUNT"  : "Title Account",
     "SET_ROOT"       : "Set as root account",
     "ROOT_PARENT"    : "This account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.",
+    "RECORDING"      : "Create",
     "RECORD_SAME"    : "No changes have been made to the form. Update the account details and then press submit.",
     "SELECT_PARENT"  : "Select parent account...",
     "SUBMIT_CREATE"  : "Create Account",
@@ -61,6 +62,13 @@
     "LOGIN"                      : "Login",
     "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
+  },
+  "BARCODE" : {
+    "SCAN" : "Scan Invoice Barcode",
+    "AWAITING_INPUT" : "Waiting for Input",
+    "AWAITING_HTTP" : "Barcode Read!  Looking up Invoice...",
+    "READ_SUCCESS" : "Found Invoice",
+    "READ_ERROR" : "Unreadable Barcode!  Please enter the barcode manually."
   },
   "BALANCE" : {
     "ACCOUNT_CHOICE"  : "Accounts choice",
@@ -93,7 +101,7 @@
     "CAUTION_COVER"   : "Invoice(s) covered by the caution",
     "CAUTION_PAYMENT" : "Caution Payment",
     "CAUTION_REMAINING" : "Remaining Caution",
-    "CONFIRM_PAYMENT_WHEN_CAUTION" : "Proceed payment when client has a caution",
+    "CONFIRM_PAYMENT_WHEN_CAUTION" : "The debtor has a positive balance with the hospital.  Accepting cash from the debtor will increase their credit with the hospital.  Are you sure you want to accept payment?",
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
@@ -103,6 +111,7 @@
       "TITLE"              : "Select a Cashbox"
     },
     "TITLE"           : "Cash Window",
+    "TOOLS"         : "Tools",
     "RECEIPT": {
       "TITLE" : "Cash Receipt",
       "SUCCESS" : "Successfully created a Cash Payment"
@@ -110,7 +119,8 @@
     "TRANSFER": {
       "TITLE" : "New Cash Transfer",
       "ACTION" : "You are transferring funds out of the cashbox.",
-      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below."
+      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below.",
+      "SUCCESS" : "Successfully transferred money out of the cash window."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -120,17 +130,26 @@
         "LINK"            : "Click here to add it.",
         "MISSING"         : "Don't see your cashbox?",
         "TRANSFER"        : "Transfer Funds",
-        "NO_INVOICES_ASSIGNED" : "You have not assigned any invoices!  Please assign at least one invoice to the payment.",
+        "NO_INVOICES_ASSIGNED" : "You have not assigned any invoices. Please assign at least one invoice to the payment.",
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue.",
         "SELECTED"        : "Selected cash"
       },
+      "BARCODE" : {
+        "SCAN" : "Scan the barcode",
+        "AWAITING_INPUT" : "Waiting input",
+        "AWAITING_HTTP" : "Barcode done! search invoice...",
+        "READ_SUCCESS" : "Invoice found",
+        "READ_ERROR" : "Can't read barcode! Please enter code manually"
+      },
+      "OPEN_BARCODE_MODAL" : "Scan another barcode on successful payment.",
       "DEBTOR_INVOICES" : "Debtor Invoices",
       "RECEIPTS_TITLE"  : "Cash Payment Receipt",
       "REPORT"          : "Report",
       "SLIP"            : "Cash Voucher",
       "TITLE"           : "Cash Window",
       "SELECTED"        : "Selected Invoices"
-    }
+    },
+    "MOTIVE" : "Notes"
   },
   "CASHBOX": {
     "ACTIONS"         : "Cashbox Actions",
@@ -159,9 +178,6 @@
     "UPDATE"         : "Update a creditor group",
     "FAILURE_DELETE" : "Failure of the deletion of the creditor group"
   },
-  "DB": {
-    "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
-  },
   "DEBTOR_GROUP": {
     "BACK"           : "Back to Debtor Groups",
     "CREATE"         : "Create Debtor Group",
@@ -170,7 +186,9 @@
     "DEBTOR"         : {
       "SUBSCRIBED"    : "Subcribed debtor(s)"
     },
+    "DELETE"         : "Delete a Debtor Group",
     "EDIT"           : "Edit Debtor Group",
+    "FAILURE_DELETE" : "Failure of the deletion of the debtor group",
     "GROUPS"         : "Debtor Groups",
     "HELP_TXT_1"     : "This interface allows you to review, find, and configure debtor groups",
     "HELP_TXT_2"     : "Edit selected debtor group",
@@ -206,6 +224,11 @@
     "UPDATED"        : "Debtor group record updated",
     "LOADING"        : "Fetching Debtor Group",
     "SUBSCRIPTIONS"  : "Subscriptions"
+  },
+  "DOWNLOADS" : {
+    "JSON" : "Download as JSON",
+    "PDF" : "Download as PDF",
+    "CSV" : "Download as CSV"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
@@ -245,7 +268,18 @@
     "NOT_ALLOWED"      : "You are not allowed to perform this action",
     "NOT_FOUND"        : "This record could not be found",
     "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
-    "UNKNOWN"          : "An error occurred."
+    "UNKNOWN"          : "An error occurred.",
+    "OVERPAID_INVOICE" : "You have overpaid the invoices.",
+    "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
+    "ER_DUP_ENTRY" : "You have duplicated a value in a unique field!  Please make sure that the necessary values are unique.",
+    "ER_BAD_FIELD_ERROR" : "Column does not exist in database.",
+    "ER_ROW_IS_REFERENCED" : "Cannot delete entity because entity is used in another table.",
+    "ER_ROW_IS_REFERENCED_2" : "Cannot delete entity because entity is used in another table.",
+    "ER_BAD_NULL_ERROR" : "A column was left NULL that cannot be NULL.",
+    "ER_PARSE_ERROR" : "Your request could not  be translated into valid SQL.  Please modify your request and try again.",
+    "ER_EMPTY_QUERY" : "Your request seems empty. Are you sure you filled everything in?",
+    "ER_NO_DEFAULT_FOR_FIELD" : "You did not include enough information in your submission!  Please check your errors and try again.",
+    "ER_DATA_TOO_LONG" : "One of your form values is too long! Please shorten it and resubmit."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
@@ -283,6 +317,7 @@
   },
   "FORM": {
     "BUTTONS": {
+      "ACTIONS"               : "Actions",
       "ADD"                   : "Add",
       "BACK"                  : "Back",
       "CANCEL"                : "Cancel",
@@ -363,7 +398,7 @@
       "INVALID"             : "invalid data"
     },
     "INFO": {
-      "BY"                   : "By",
+      "BY"                   : "by",
       "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
@@ -372,6 +407,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
+      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -379,9 +415,10 @@
       "FOUND"                : "Found",
       "GROUPS_DEBTOR"        : "Assign a new debtor group from the options below. Press 'confirm' to permanently update the patient's debtor group",
       "GROUPS_PATIENT"       : "Assign the patient to patient groups from the options below. Press 'confirm' to permanently update the patient's subscribed groups.",
-      "INVOICES"             : "Invoices",
       "ITEMS_FULL"           : "There are no additional inventory items that be assigned to this invoice.",
+      "INVOICES"             : "Invoices",
       "IMPORT_SUCCESS"       : "Successfully Imported",
+      "INVOICES"             : "Invoices",
       "LOADING"              : "Loading",
       "MANY_TRYS"            : "Many tries",
       "NOT_CONFIGURED"       : "The accounts for this currency have not been configured yet.",
@@ -396,7 +433,7 @@
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Found",
       "PATIENT_NOT_FOUND"           : "Patient Not Found",
-      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully transferred",
+      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully uploaded.",
       "PREVIOUS"                    : "Previous",
       "SALE_DETAILS"                : "Sale Details",
       "SAVE_SUCCESS"                : "Save success",
@@ -426,6 +463,7 @@
       "APPLY_DISCOUNTS"        : "Apply discounts",
       "APPLY_SUBSIDIES"        : "Apply subsidies",
       "ASSET"                  : "Asset",
+      "AUTHOR"                 : "Author",
       "AUXILIARY"              : "Auxiliary",
       "BALANCE"                : "Balance",
       "BALANCE_SECTION"        : "Balance Sheet Section",
@@ -433,7 +471,8 @@
       "BANK_ACCOUNT"           : "Bank Account",
       "BILLING_DATE"           : "Billing Date",
       "BILLING_SERVICES"       : "Billing Services Applied",
-      "BY"                     : "By",
+      "BY"                     : "by",
+      "ON"                     : "On",
       "BY_ID"                  : "By Id",
       "BY_NAME"                : "By Name",
       "CANCEL"                 : "Cancel",
@@ -456,7 +495,9 @@
       "CONVENTION"             : "Convention",
       "COUNTRY"                : "Country",
       "CREATE"                 : "Create",
+      "CREATE_CREDIT_NOTE"     : "Issue Credit Note",
       "CREATED"                : "Created",
+      "CREATED_BY"             : "Created by",
       "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
       "CREDITOR_SUBCRIBED"     : "Subscribed Creditors",
@@ -472,11 +513,14 @@
       "DEBTOR_GROUP"           : "Debtor Group",
       "DEBTOR_GROUP_FORM"      : "Form debtor group record",
       "DEFINE_UNTIL_DATE"      : "Define a limit date",
+      "DEFAULT_QUANTITY"       : "Default Quantity",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
       "DETAILS"                : "Details",
       "DEBTOR_CREDITOR"        : "Debtor/Creditor",
       "DISTRIBUTABLE"          : "Distributable",
+      "DISABLED"               : "Disabled",
+      "DIAGNOSIS"              : "Diagnosis",
       "DOB"                    : "Date of Birth",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -484,6 +528,7 @@
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
+      "ENABLED"                : "Enabled",
       "END"                    : "End",
       "END_DATE"               : "End Date",
       "ENTERPRISE"             : "Enterprise",
@@ -521,6 +566,8 @@
       "INTL"                   : "International",
       "INVENTORY"              : "Inventory",
       "INVOICE"                : "Invoice",
+      "INVOICES"               : "Invoices",
+      "INVOICE_CURRENCY_SETTING" : "Invoice Currency Setting",
       "INVOICES_DETAILS"       : "Invoices Details",
       "INVOICE_PAYMENT"        : "Invoice Payment",
       "IS_ASSET"               : "Asset ?",
@@ -560,7 +607,9 @@
       "NO_DISTRIBUTABLE"       : "Not distributable",
       "OF"                     : "Of",
       "OPTIONAL_INFO"          : "Optional Information",
-      "ORIGIN_LOCATION"        : "Origin Location",
+      "ORIGIN_LOCATION"        : "Location of Origin",
+      "ORIGIN_VILLAGE"         : "Village of Origin",
+      "ORIGIN_SECTOR"          : "Sector of Origin",
       "ON_DELIVERY"            : "On Delivery",
       "ON_PURCHASE"            : "On Purchase",
       "OTHER"                  : "Other",
@@ -596,6 +645,7 @@
       "PROVINCE"               : "Province",
       "RECIPIENT"              : "Recipient",
       "REFERENCE"              : "Reference",
+      "REFERENCE_PATIENT"      : "Patient Reference",
       "REFERENCE_GROUP"        : "Reference Group",
       "RELIGION"               : "Religion",
       "RESULT"                 : "Results",
@@ -637,7 +687,9 @@
       "TITLE"                  : "Title",
       "TITLE_ACCOUNT"          : "Title Account",
       "TODAY"                  : "Today",
+      "TOOLS"                  : "Tools",
       "TOTAL"                  : "Total",
+      "TOTAL_BALANCE_REMAINING" : "Total Balance Remaining",
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_DEBT"             : "Total of Debts",
       "TOTAL_PAID"             : "Total Paid",
@@ -648,6 +700,7 @@
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
+      "TRANSACTION_TYPE"       : "Transaction Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UNDEFINED"              : "Undefined",
@@ -656,9 +709,12 @@
       "UPDATE_GROUP_DEBTOR"    : "Update Debtor Group",
       "UPDATE_PATIENT_GROUP"   : "Update Patient Group Subscription",
       "USE"                    : "Use",
-      "USER"                   : "Utilisateur",
+      "USE_POS_RECEIPT"        : "POS Receipts",
+      "USE_SIMPLIFIED_CARD"    : "Use simple patient identity",
+      "USER"                   : "User",
       "USERNAME"               : "Username",
       "UNIT"                   : "Galenique form",
+      "UNIT_PRICE"             : "Unit Price",
       "UNIT_WEIGHT"            : "Weight",
       "UNIT_VOLUME"            : "Volume",
       "VALUE"                  : "Value",
@@ -684,7 +740,7 @@
       "PROJECT_NAME"     : "the project name"
     },
     "PLACEHOLDERS": {
-      "ACCOUNT"      : "Enter account",
+      "ACCOUNT"      : "Enter an account",
       "CASHBOX"      : "Enter the cashbox",
       "CODE"         : "Enter code",
       "COUNTRY"      : "Enter country",
@@ -695,12 +751,12 @@
       "DOCUMENT_NAME": "Enter document name",
       "EMAIL"        : "Enter email",
       "MAX_CREDIT"   : "Enter max credit",
-      "NAME"         : "Enter name",
+      "NAME"         : "Enter a name",
       "NOTES"        : "Enter any additional information",
       "PATIENT_ID"   : "Enter Patient ID",
-      "PATIENT_NAME" : "Enter Patient Name",
-      "PHONE"        : "Enter Phone number",
-      "PRICE"        : "Enter price",
+      "PATIENT_NAME" : "Enter a Patient Name",
+      "PHONE"        : "Enter a Phone number",
+      "PRICE"        : "Enter a price",
       "PROVINCE"     : "Enter province",
       "SECTOR"       : "Enter sector",
       "UNIT_WEIGHT"  : "Enter weight",
@@ -713,7 +769,8 @@
       "FILTER_NAME"  : "Filter by name...",
       "FILTER_BY"    : "Filter by" ,
       "SEARCH_NAME"        : "Search by Name",
-      "SEARCH_PATIENT_ID"  : "Search by Patient ID"
+      "SEARCH_PATIENT_ID"  : "Search by Patient ID",
+      "QUANTITY" : "Enter a quantity"
     },
     "SELECT": {
       "EMPTY"              : "Empty",
@@ -742,6 +799,7 @@
       "PROJECT"            : "Select a Project",
       "PROJECTS"           : "Select Projects",
       "PROVINCE"           : "Select a Province",
+      "PATIENT_GROUP"      : "Select a Patient Group",
       "REFERENCE"          : "Select a Reference",
       "REFERENCE_GROUP"    : "Select a Reference Group",
       "REPORT_TYPE"        : "Select a Report Type",
@@ -791,6 +849,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA FINANCE",
     "CONNECTED_USER" : "User Connected",
     "EXCHANGE_RATE"  : "Exchange Rate",
     "EXCHANGE_SET"   : "Set on",
@@ -800,33 +859,38 @@
     "TODAY"          : "Date of day",
     "FISCAL_YEAR_INFO" : "Fiscal Year Timeline",
     "FISCAL_YEAR_DESCRIPTION" : "This timeline shows progress made through the current fiscal year.",
-    "DEBTORS" : { 
+    "DEBTORS" : {
       "TITLE" : "Enterprise Debtors",
       "BALANCED" : "All debts to the enterprise are balanced",
       "CACHED"  : "Data refreshed"
     }
   },
   "INVENTORY" : {
-    "ADD_GROUP"     : "Add inventory group",
-    "ADD_METADATA"  : "Add inventory",
-    "ADD_TYPE"      : "Add inventory type",
-    "ADD_UNIT"      : "Add inventory unit form",
+    "ADD_GROUP"     : "Add Inventory Group",
+    "ADD_METADATA"  : "Add Inventory Item",
+    "ADD_TYPE"      : "Add Inventory Type",
+    "ADD_UNIT"      : "Add Inventory unit form",
     "CONFIGURATION" : "Configurations",
     "CONTAINS"      : "Contains",
+    "CREATE_ANOTHER" : "Create another inventory item",
     "EDIT_GROUP"    : "Edit inventory group",
     "EDIT_METADATA" : "Edit inventory",
     "EDIT_TYPE"     : "Edit inventory type",
     "EDIT_UNIT"     : "Edit inventory unit form",
     "ELEMENT"       : "Element",
+    "PRICES"        : "Inventory Prices",
     "LIST"          : "Inventory Data List",
     "LIST_METADATA" : "Inventory",
     "LIST_GROUP"    : "Inventory Groups",
     "LIST_TYPE"     : "Inventory Types",
-    "LIST_UNIT"     : "Inventory Unit form"
+    "LIST_UNIT"     : "Inventory Unit form",
+    "DEFAULT_QUANTITY_DEFINITION" : "The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time."
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Invoice Registry",
-    "RECEIPT_CURRENCY" : "Receipt Currency"
+    "RECEIPT_CURRENCY" : "Receipt Currency",
+    "EXCLUDE_REVERSE" : "Exclude all reversed invoices",
+    "INCLUDE_REVERSE" : "Include only reversed invoices"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -840,7 +904,8 @@
     "MANAGE_SECTOR"         : "Manage Sector",
     "MANAGE_VILLAGE"        : "Manage Village/Township",
     "REGISTERED"            : "Registered Locations",
-    "TITLE"                 : "Location Manager"
+    "TITLE"                 : "Location Manager",
+    "REGISTER_AGAIN"        : "Register another Location"
   },
   "LOGIN": {
     "TITLE" : "Authentication"
@@ -899,6 +964,7 @@
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",
     "STAT_TOTAL_INVOICE" : "Total Invoices",
+    "LABEL_PAID"         : "Invoice has been paid in full",
     "STAT_PAID"          : "Paid",
     "STAT_NOT_PAID"      : "Waiting Payment",
     "SUBSIDY_BREAKDOWN"  : "Subsidy Breakdown",
@@ -920,6 +986,17 @@
       "REPORT_TITLE" : "Patient Checkin Report",
       "SUCCESS" : "Patient has been checked in"
     },
+    "VISITS" : {
+      "TITLE" : "Patient Visits",
+      "ADMIT" : "Admit Patient",
+      "ADMISSION_DIAGNOSIS" : "Admission Diagnosis",
+      "ADMISSION" : "Admission",
+      "DISCHARGE" : "Discharge Patient",
+      "ORIGINAL" : "This patient has no logged visits.",
+      "RECENT" : "Recent Visits",
+      "IN_PROGRESS" : "In Progress",
+      "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed."
+    },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Account Number",
       "DEBTOR_GROUP"  : "Debtor Group",
@@ -933,7 +1010,8 @@
     "PAGE_TITLE"           : "Patient Registration",
     "PATIENT_DETAILS"      : "Patient Details",
     "SUCCESS" : "Patient Registered Successfully",
-    "CARD" : "Patient Card"
+    "CARD" : "Patient Card",
+    "IDENTITY" : "Patient Identity"
   },
   "PATIENT_REGISTRY" : {
     "CARD"                  : "Card",
@@ -1105,10 +1183,11 @@
     },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
+    "CASHFLOW"         : "Cashflow",
+    "CASHFLOW_BY_SERVICE" : "Cashflow By Service",
     "CHART_OF_ACCOUNTS" : "Chart of Accounts",
     "CLOSING_BALANCE"  : "Closing Balance",
     "CONFIGURATION"    : "Report Configuration",
-    "INCOME_EXPENSE"   : "Incomes and Expenses Report",
     "GENERATED"        : "Generated Report",
     "MONTHLY_BALANCE"  : "Monthly Balance",
     "OPENNING_BALANCE" : "Opening Balance",
@@ -1121,7 +1200,9 @@
     "INCOME_REPORT"    : "Incomes Report",
     "EXPENSE_REPORT"   : "Expenses Report",
     "SINCE"            : "Since",
-    "INCOME_EXPENSE" : "Income Expense Report"
+    "INCOME_EXPENSE"   : "Income Expense Report",
+    "VIEW_RECEIPT"     : "View Receipt",
+    "VIEW_CREDIT_NOTE" : "View Credit Note"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",
@@ -1163,7 +1244,9 @@
   "SETTINGS": {
     "TITLE" : "Settings",
     "BUG_LINK" : "Report an Issue",
-    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO" : "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format",
+    "SIMPLIFIED_CARD_INFO" : "Simple patient identifiers have a width of 75mm, height of 125mm are in 'Landscape' orientation. Standard identities are 'A6'."
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",
@@ -1209,7 +1292,7 @@
       "BILL"               : "Bill",
       "BILLED_BY"          : "Billed by",
       "BILLING_DATE"       : "Billing Date",
-      "BY"                 : "By",
+      "BY"                 : "by",
       "CASHBOX"            : "Cashbox",
       "CANCEL_CASH"        : "Cancel Cash Payment",
       "CHARGE"             : "Charge",
@@ -1219,6 +1302,7 @@
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
+      "CREATED_BY"         : "Created by",
       "CURRENCY"           : "Currency",
       "DATA_SOURCE"        : "Data Source",
       "DATE"               : "Date",
@@ -1330,6 +1414,26 @@
       "VALUE"              : "Value",
       "VILLAGE"            : "Village/Township",
       "QUANTITY"           : "Quantity"
+    },
+    "AGGREGATES"         : {
+      "NUMBER_OF_DAYS" : "Number of Days",
+      "TOTAL_COST" : "Total Cost",
+      "TOTAL_AMOUNT" : "Total Amount",
+      "RECORDS" : "Records",
+      "NUM_USERS" : "Number of Users",
+      "NUM_SERVICES" : "Number of Services",
+      "NUM_PROJECTS" : "Number of Projects",
+      "NUM_PAYMENTS" : "Number of Payments",
+      "NUM_INVOICES" : "Number of Invoices",
+      "NUM_RECORDS" : "Number of Records",
+      "NUM_CAUTIONS" : "Number of PrePayments",
+      "NUM_CASHBOXES" : "Number of Cashboxes",
+      "NUM_CLIENTS" : "Number of Unique Clients",
+      "NUM_MEN" : "Number of Men",
+      "NUM_WOMEN" : "Number of Women",
+      "NUM_PATIENTS" : "Number of Patients",
+      "NUM_DISTINCT_RESIDENCES" : "Number of Distinct Residences",
+      "NUM_DEBTOR_GROUPS" : "Number of Debtor Groups"
     }
   },
   "TRANSACTION_TYPE" : {
@@ -1342,7 +1446,6 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Billing Services",
     "CASHBOX_MANAGEMENT"         : "Cashbox Management",
-    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Cash Payment Registry",
     "CASH_WINDOW"                : "Cash Window",
     "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
@@ -1468,9 +1571,16 @@
       "PURCHASES"          : "Purchases",
       "SUPPORT_INCOME"     : "Support Incomes",
       "TITLE"              : "Simple Voucher",
-      "TRANSFER"           : "Money Transfer"
+      "TRANSFER"           : "Money Transfer",
+      "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
     },
     "REPORT": "Report"
+  },
+  "TRANSACTIONS" :  {
+    "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
+    "MISSING_TRANSACTION_TYPE" : "Transactions involving cash accounts (banks or cashboxes) must have a transaction type specified to differentiate them in the cashflow report. Please select a transaction type.",
+    "IMBALANCED_TRANSACTION" : "This transaction's debits and credits must balance.  Please correct the imbalances before submitting.",
+    "SINGLE_ROW_TRANSACTION" : "This transaction only has a single row, but two rows are required.  Please add one or more lines."
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Patient Registrations",

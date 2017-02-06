@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
 ReceiptModalController.$inject = [
-  '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'
+  '$scope', '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'
 ];
 
 /**
@@ -15,9 +15,8 @@ ReceiptModalController.$inject = [
  * @param {String} template  Path to the template or resource to load
  * @param {String} render    Render target used to generate report
  */
-function ReceiptModalController($modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
+function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
   var vm = this;
-
 
   // expose available receipt renderers to view
   vm.renderers = Receipts.renderers;
@@ -41,6 +40,17 @@ function ReceiptModalController($modalInstance, $window, $sce, Receipts, Notify,
 
         // trust and expose the file to the view to embed the PDF
         vm.receipt = $sce.trustAsResourceUrl(fileURL);
+
+        // ensure the blob is cleared when this $scope is cleaned up
+        var cleanupListener = $scope.$on('$destroy', function () {
+          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency is updated this
+          // should be re-written to use the latest $transition standards
+          URL.revokeObjectURL(fileURL);
+
+          // de-register event listener
+          cleanupListener();
+        });
+
       } else {
         // simply expose receipt object to view
         vm.receipt = result;

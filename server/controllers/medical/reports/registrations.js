@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview reports/registrations
  *
@@ -6,14 +8,16 @@
  * matching query conditions passed from the patient registry UI grid.
  *
  * @requires lodash
+ * @requires moment
  * @requires Patients
  * @requires ReportManager
  */
-'use strict';
 
 const _ = require('lodash');
+const moment = require('moment');
 
 const ReportManager = require('../../../lib/ReportManager');
+const db = require('../../../lib/db');
 
 const Patients = require('../patients');
 
@@ -32,7 +36,10 @@ function formatFilters(qs) {
     { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', isDate: true },
     { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate: true },
     { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', isDate: true },
-    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true }
+    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true },
+    { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
+    { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
+    { field: 'user_id', displayName: 'FORM.LABELS.USER' }
   ];
 
   return columns.filter(column => {
@@ -58,13 +65,17 @@ function formatFilters(qs) {
  * GET /reports/patient/registrations
  */
 function build(req, res, next) {
-  const options = req.query;
-
+  const options = _.extend(req.query, { csvKey : 'patients' });
   let report;
+
+  // for now ReportManager will translate any key provided for filename as well as add a uniform timestamp
+  options.filename = 'PATIENT_REG.PAGE_TITLE';
 
   // set up the report with report manager
   try {
+    options.orientation = 'landscape';
     report = new ReportManager(TEMPLATE, req.session, options);
+    delete options.orientation;
   } catch (e) {
     return next(e);
   }
@@ -74,9 +85,39 @@ function build(req, res, next) {
   // enforce detailed columns
   options.detailed = 1;
 
+  const sql = `
+    SELECT COUNT(patient.uuid) AS numPatients, MIN(patient.created_at) AS minDate, MAX(patient.created_at) AS maxDate,
+      COUNT(DISTINCT(DATE(patient.created_at))) AS numDays,
+      SUM(sex = 'F') AS numFemales, ROUND(SUM(sex = 'F') / COUNT(patient.uuid) * 100) AS percentFemales,
+      SUM(sex = 'M') AS numMales, ROUND(SUM(sex = 'M') / COUNT(patient.uuid) * 100) AS percentMales,
+      COUNT(DISTINCT(patient.current_location_id)) AS numDistinctResidences,
+      COUNT(DISTINCT(debtor.group_uuid)) AS numDebtorGroups
+    FROM patient JOIN debtor ON patient.debtor_uuid = debtor.uuid
+    WHERE patient.uuid IN (?);
+  `;
+
+  const data = { filters };
+
   Patients.find(options)
     .then(patients => {
-      return report.render({ patients, filters });
+
+      // calculate ages with moment
+      patients.forEach(patient => patient.age = moment().diff(patient.dob, 'years'));
+
+      data.patients = patients;
+
+      // if no patients matched the previous query, set the promise value to false
+      // and skip rendering aggregates in the handlbars view
+      if (!patients) { return false; }
+
+      // gather the uuids for the aggregate queries
+      let uuids = patients.map(p => db.bid(p.uuid));
+
+      return db.one(sql, [uuids]);
+    })
+    .then(aggregates => {
+      data.aggregates = aggregates;
+      return report.render(data);
     })
     .then(result => {
       res.set(result.headers).send(result.report);

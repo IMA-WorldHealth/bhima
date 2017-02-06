@@ -1,5 +1,7 @@
 angular.module('bhima.services')
-.service('DateService', DateService);
+  .service('DateService', DateService);
+
+DateService.$inject = [ 'moment' ];
 
 /**
  * @class DateService
@@ -44,7 +46,7 @@ angular.module('bhima.services')
  * *NEW*
  *  Provides a generic date-to-string function that returns a same date string
  */
-function DateService() {
+function DateService(moment) {
   var service = this;
 
   // set up namespaces for date operations
@@ -249,19 +251,7 @@ function DateService() {
   // yet another javascript date string function
   // expects a date object
   // return 'YYYY-MM-DD' format
-  service.util.str = function (date) {
-
-    // if we pass in a string, return it right away
-    if (typeof date === 'string') { return date; }
-
-    var d     = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day   = '' + d.getDate(),
-        year  = d.getFullYear();
-
-    if (month.length < 2) { month = '0' + month; }
-    if (day.length < 2) { day = '0' + day; }
-
-    return [year, month, day].join('-');
+  service.util.str = function (date, format) {
+    return moment(date).format(format || 'YYYY-MM-DD');
   };
 }

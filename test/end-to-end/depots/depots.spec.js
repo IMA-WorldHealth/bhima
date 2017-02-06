@@ -6,7 +6,7 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Depots Management', function () {
+describe.skip('Depots Management', function () {
 
   // navigate to the page
   before(() => helpers.navigate('#/depots'));

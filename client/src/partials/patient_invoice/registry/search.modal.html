@@ -7,88 +7,36 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "FORM.INFO.INVOICES" | translate }}</li>
-      <li class="title">{{ "FORM.INFO.SEARCH" | translate }}</li>
+      <li class="static" translate>FORM.INFO.INVOICES</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow: auto; max-height: 80vh;">
+  <div class="modal-body" style="overflow: auto; max-height: 400px;">
 
     <!-- billing date fieldset -->
     <fieldset>
-      <legend>
-        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.BILLING_DATE" | translate }}
-      </legend>
+      <legend translate>FORM.LABELS.BILLING_DATE</legend>
 
-      <ul class="list-inline" data-invoice-date>
-        <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
-          <a ng-click="ModalCtrl.setDateRange(view.cacheKey)" data-date-range="{{ key }}" href>
-            {{ ::view.translateKey | translate }}
-          </a>
-        </li>
-        <li class="pull-right">
-          <a href ng-click="ModalCtrl.clear('date')" tabindex="-1">
-            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-          </a>
-        </li>
-      </ul>
-
-      <div class="row">
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.billingDateFrom"
-              uib-datepicker-popup="yyyy-MM-dd"
-              is-open="ModalCtrl.billingDateFromIsOpen"
-              show-button-bar="false"
-              >
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.billingDateFromIsOpen =! ModalCtrl.billingDateFromIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-
-        <div class="col-md-2 text-center">
-          <hr />
-        </div>
-
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.billingDateTo"
-              uib-datepicker-popup="yyyy-MM-dd"
-              is-open="ModalCtrl.billingDateToIsOpen"
-              show-button-bar="false"
-              >
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.billingDateToIsOpen =! ModalCtrl.billingDateToIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-      </div>
+      <bh-date-interval
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.billingDateFrom"
+        date-to="ModalCtrl.params.billingDateTo"
+        mode="clean">
+      </bh-date-interval>
     </fieldset>
 
     <br />
 
     <!-- invoice details fieldset -->
     <fieldset>
-      <legend>
-        <i class="fa fa-list-alt"></i> {{ "FORM.LABELS.INVOICES_DETAILS" | translate }}
-      </legend>
+      <legend translate> FORM.LABELS.INVOICES_DETAILS </legend>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
         <label class="control-label">{{ 'FORM.LABELS.REFERENCE' | translate }}</label>
         <span style="display:inline-block;" class="pull-right">
           <a href ng-click="ModalCtrl.clear('reference')" tabindex="-1">
-            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
           </a>
         </span>
         <input type="text" class="form-control" name="reference"ng-model="ModalCtrl.params.reference">
@@ -97,11 +45,34 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('reversed')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="0" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.EXCLUDE_REVERSE</span>
+          </label>
+        </div>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="1" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.INCLUDE_REVERSE</span>
+          </label>
+        </div>
+      </div>
+
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
         <label class="control-label">{{ 'FORM.LABELS.SERVICE' | translate }}</label>
         <span style="display:inline-block;" class="pull-right">
           <a href ng-click="ModalCtrl.clear('service_id')" tabindex="-1">
-            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
           </a>
         </span>
         <select
@@ -117,7 +88,7 @@
         <label class="control-label">{{ 'FORM.LABELS.USER' | translate }}</label>
         <span style="display:inline-block;" class="pull-right">
           <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
-            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
           </a>
         </span>
         <select
@@ -125,55 +96,23 @@
           name="user"
           ng-model="ModalCtrl.params.user_id"
           ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
-          <option value="" disabled>{{ 'FORM.SELECT.USER' | translate }}</option>
+          <option value="" disabled translate>FORM.SELECT.USER</option>
         </select>
       </div>
 
       <div class="form-group">
-        <bh-find-patient
-          suppress-reset="true"
-          on-search-complete="ModalCtrl.setPatient(patient)"
-          on-register-api="ModalCtrl.onPatientSearchApiCallback(api)"
-          validation-trigger="ModalForm.$submitted"
-          >
-        </bh-find-patient>
-      </div>
-
-      <div class="radio"
-        ng-class="{ 'has-error' : ModalForm.distributableOptions.$invalid && ModalForm.$submitted }">
-        <p class="control-label">
-          <strong>{{ "FORM.LABELS.DISTRIBUTABLE" | translate }}</strong>
-          <span style="display:inline-block;" class="pull-right">
-            <a href ng-click="ModalCtrl.clear('is_distributable')" tabindex="-1">
-              <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-            </a>
-          </span>
-        </p>
-
-        <label>
-          <input type="radio" name="distributable" id="yes" value="1" ng-model="ModalCtrl.params.is_distributable">
-          {{ "FORM.LABELS.YES" | translate }}
-        </label>
-      </div>
-
-      <div class="radio">
-        <label>
-          <input type="radio" name="distributable" id="no" value="0" ng-model="ModalCtrl.params.is_distributable">
-          {{ "FORM.LABELS.NO" | translate }}
-        </label>
-        <div class="help-block" ng-messages="ModalForm.distributableOptions.$error" ng-show="ModalForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+        <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+        <input type="text" class="form-control" ng-model="ModalCtrl.params.patientReference"/>
       </div>
     </fieldset>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
     </button>
-    <button class="btn btn-default" type="submit" data-method="submit">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    <button class="btn btn-primary" type="submit" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
     </button>
   </div>
 </form>

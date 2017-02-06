@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('SimpleJournalVoucherController', SimpleJournalVoucherController);
 
 SimpleJournalVoucherController.$inject = [
-  'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService',  'ReceiptModal','bhConstants'
+  'VoucherService', 'AccountService', 'SessionService', 'util',
+  'NotifyService',  'ReceiptModal','bhConstants', '$rootScope', 'VoucherForm', '$translate'
 ];
 
 /**
@@ -14,54 +14,44 @@ SimpleJournalVoucherController.$inject = [
  * Posting Journal lines.  It allows users to quickly create transactions by
  * specifying two accounts and an amount to transfer between them.
  *
- * @todo - Implement caching mechanism for incomplete forms (via AppCache)
+ * CONVENTION:
+ *  First line (index 0) is the DEBIT side
+ *  Second line (index 1) is the CREDIT side
+ *
  * @todo - Implement Voucher Templates to allow users to save pre-selected
+ * @todo - use VoucherForm
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Receipts, bhConstants) {
+function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notify, Receipts, bhConstants, RS, VoucherForm, $translate) {
   var vm = this;
-
-  // cache to save work-in-progress data and pre-fabricated templates
-  var cache = AppCache('JournalVouchers');
 
   vm.bhConstants = bhConstants;
 
+  // bind the voucher form to the view
+  vm.Voucher = new VoucherForm('SimpleVoucher');
+
   // global variables
   vm.maxLength = util.maxTextLength;
-  vm.paths = [
-    { label : 'TREE.FINANCE' },
-    { label : 'VOUCHERS.SIMPLE.TITLE' }
-  ];
 
   // expose methods to the view
   vm.submit = submit;
-  vm.buildDescription = buildDescription;
+  vm.clear = clear;
 
-  /* run the module on startup and refresh */
-  function startup() {
+  // format voucher types and bind to the view
+  Vouchers.transactionType()
+    .then(function (list) {
 
-    // current timestamp to limit date
-    vm.timestamp = new Date();
+      // make sure that the items are translated
+      list.data.forEach(function (item) {
+        item.hrText = $translate.instant(item.text);
+      });
 
-    // set up default voucher values
-    vm.voucher = {};
-    vm.voucher.date = new Date();
-    vm.voucher.currency_id = Session.enterprise.currency_id;
+      // bind to the view
+      vm.types = list.data;
+    })
+    .catch(Notify.handleError);
 
-    // transaction type
-    Vouchers.transactionType()
-      .then(function (list) {
-        groupType(list.data);
-      })
-      .catch(Notify.handleError);
-
-    // load the list of accounts
-    Accounts.read()
-      .then(function (accounts) {
-        vm.accounts = accounts;
-      })
-      .catch(Notify.handleError);
-  }
+  vm.timestamp = new Date();
 
   function submit(form) {
 
@@ -71,57 +61,65 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
       return;
     }
 
-    // description prefix
-    vm.voucher.description =  String(vm.descriptionPrefix).concat('/', vm.voucher.description);
+    // CONVENTION: 0 is debit, 1 is credit
+    var debitRow = vm.Voucher.store.data[0];
+    var creditRow = vm.Voucher.store.data[1];
 
-    // transfer type
-    vm.voucher.type_id = vm.selectedType ? JSON.parse(vm.selectedType).id : null;
+    // configure as needed
+    debitRow.configure({ debit : vm.amount});
+    creditRow.configure({ credit : vm.amount });
 
-    // make sure we are not using the same accounts for both fields
-    if (vm.voucher.toAccount.id === vm.voucher.fromAccount.id) {
-      Notify.danger('VOUCHERS.GLOBAL.ERROR_SAME_ACCOUNT');
+    var valid = vm.Voucher.validate();
+
+    if (!valid) {
+      Notify.danger(vm.Voucher._error);
       return;
     }
 
+    var voucher = vm.Voucher.details;
+    voucher.items = vm.Voucher.store.data;
+
     // submit the voucher
-    return Vouchers.createSimple(vm.voucher)
+    return Vouchers.create(voucher)
       .then(function (res) {
-        return Receipts.voucher(res.uuid, true);
-      })
-      .then(function () {
+        Receipts.voucher(res.uuid, true);
+
+        // clear the form to refresh it.
+        clear();
 
         // setup the voucher object to init state
         form.$setPristine();
-        vm.type = undefined;
-        vm.descriptionPrefix = undefined;
-        vm.selectedType = undefined;
-
-        // rerun the startup script
-        startup();
       })
       .catch(Notify.handleError);
   }
 
-  function groupType(array) {
-    vm.incomes = array.filter(function (item) {
-      return item.type === 'income';
-    });
-    vm.expenses = array.filter(function (item) {
-      return item.type === 'expense';
-    });
+  function clear() {
+
+    // current timestamp to limit date
+    vm.timestamp = new Date();
+
+    // clear the voucher
+    vm.Voucher.clear();
   }
 
-  function buildDescription() {
-    if (!vm.selectedType) { return; }
+  RS.$on('voucher:configure', function (evt, data) {
 
-    var current = new Date();
-    var selected = JSON.parse(vm.selectedType);
-    vm.type = selected.type;
+    // configure the basics of the transaction type.
+    vm.Voucher.details.description = data.description;
+    vm.Voucher.details.type_id = data.type_id;
+    vm.amount = data.amount;
 
-    vm.descriptionPrefix = String(Session.project.abbr)
-      .concat('/', selected.prefix, '/')
-      .concat(current.toDateString());
-  }
+    var debitRow = vm.Voucher.store.data[0];
+    var creditRow = vm.Voucher.store.data[1];
 
-  startup();
+    if (data.debit) {
+      debitRow.configure(data.debit);
+    }
+
+    if (data.credit) {
+      creditRow.configure(data.credit);
+    }
+
+    vm.Voucher.validate();
+  });
 }

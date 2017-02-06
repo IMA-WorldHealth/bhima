@@ -1,0 +1,49 @@
+<form name="BarcodeForm" bh-form-defaults novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title" translate>BARCODE.SCAN</li>
+    </ol>
+  </div>
+
+  <div class="modal-body text-center" style="min-height:300px;">
+
+    <!-- state: awaiting barcode input -->
+    <h2 translate>BARCODE.SCAN</h2>
+
+    <h1>
+      <i class="fa fa-barcode fa-3x"></i>
+    </h1>
+
+    <p ng-class="{ 'animate-flicker' : BarcodeModalCtrl.flicker }">
+      <span class="text-muted" ng-if="BarcodeModalCtrl.step === BarcodeModalCtrl.INITIALIZED">
+        <span translate>BARCODE.AWAITING_INPUT</span>
+      </span>
+
+      <span class="text-primary" ng-if="BarcodeModalCtrl.step === BarcodeModalCtrl.LOADING">
+        <i class="fa fa-info-circle"></i>
+        <span translate>BARCODE.AWAITING_HTTP</span>
+      </span>
+
+      <span class="text-success" ng-if="BarcodeModalCtrl.step === BarcodeModalCtrl.READ_SUCCESS">
+        <i class="fa fa-check-circle-o"></i> <span translate>BARCODE.READ_SUCCESS</span> {{ ::BarcodeModalCtrl.invoice.reference }}
+      </span>
+
+      <span class="text-danger" ng-if="BarcodeModalCtrl.step === BarcodeModalCtrl.READ_ERROR">
+        <i class="fa fa-danger-sign"></i> <span translate>BARCODE.READ_ERROR</span>
+      </span>
+    </p>
+
+    <!-- hidden barcode input -->
+    <!-- TODO(@jniles): use ng-model-options to delay the $digest() loop and validate that a full barcode was inputted -->
+    <div style="width:0; overflow: hidden;">
+      <input ng-model="BarcodeModalCtrl.barcode" ng-change="BarcodeModalCtrl.triggerBarcodeRead()" bh-focus-on="true">
+    </div>
+  </div>
+
+  <div class="modal-footer text-right">
+    <button type="button" class="btn btn-default" ng-click="BarcodeModalCtrl.dismiss()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+  </div>
+</form>

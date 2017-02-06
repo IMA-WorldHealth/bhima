@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
-  'ExchangeRateService', 'SessionService', 'ModalService',
-  'NotifyService', '$state', 'ReceiptModal', 'PatientService'
+  'SessionService', 'ModalService', 'NotifyService', '$state',
+  'ReceiptModal', 'CashFormService', '$q', '$rootScope'
 ];
 
 /**
@@ -16,31 +16,40 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts, Patient) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q, RS) {
   var vm = this;
 
+  var cacheKey = 'CashPayments';
   // persist cash data across sessions
-  var cache = AppCache('CashPayments');
+  var cache = AppCache(cacheKey);
 
   /* id of the currently select cashbox */
-  var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id) || null;
+  var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id);
 
   // if no id, re-route to 'cash.select'
   if (!cashboxId) {
     $state.go('^.select', {}, { notify : false });
 
   // if there is no URL id but one in localstorage, update the state with the
-  // localstorage params
+  // localstorage params.  This doesn't actually reload anything .. it just changes
+  // the URL.
   } else if (cashboxId && !$state.params.id) {
     $state.go('^.window', { id : cashboxId }, { location: 'replace'});
   }
 
+  // this is the cache payment form
+  vm.Payment = new CashForm(cacheKey);
+
+  vm.timestamp = new Date();
+  vm.enterprise = Session.enterprise;
+
+  // this toggles whether the form should re-enter the checkbox state
+  var DEFAULT_BARCODE_CHECKBOX_STATE = true;
+
   // bind methods
-  vm.openInvoicesModal = openInvoicesModal;
-  vm.usePatient = usePatient;
-  vm.digestExchangeRate = digestExchangeRate;
-  vm.togglePaymentType = togglePaymentType;
   vm.submit = submit;
+  vm.clear = clear;
+  vm.openInvoicesModal = openInvoicesModal;
   vm.onRegisterApiCallback = onRegisterApiCallback;
 
   // fired when the bhFindPatient API becomes available
@@ -50,14 +59,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   // fired on controller start or form refresh
   function startup() {
-
-    /* This is the actual payment form */
-    vm.payment = { date : new Date() };
-
-    // timestamp to compare date values
-    vm.timestamp = new Date();
-    vm.enterprise = Session.enterprise;
-    vm.payment.currency_id = vm.enterprise.currency_id;
+    vm.openBarcodeModalOnSuccess = (cache.openBarcodeModalOnSuccess || DEFAULT_BARCODE_CHECKBOX_STATE);
 
     Currencies.read()
       .then(function (currencies) {
@@ -71,38 +73,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       })
       .catch(function (error) {
 
-        Notify.handleError(error);
-
-        // if we hit a 404 error, we don't have a valid cashbox.
+        // if we hit a 404 error, we don't have a valid cashbox and do not show
+        // the error.
         if (error.status === 404) {
           $state.go('^.select', {}, { notify: false});
+          return;
         }
+
+        Notify.handleError(error);
       });
-
-    // make sure we have exchange rate (no need to do anything with it)
-    Exchange.read()
-      .catch(Notify.handleError);
-  }
-
-  // clears the invoices field whenever the voucher type changes for a better UX
-  function togglePaymentType() {
-    delete vm.payment.invoices;
-  }
-
-  // fired after a patient is found via the find-patient directive
-  function usePatient(patient) {
-    vm.payment.debtor_uuid = patient.debtor_uuid;
-    vm.patient = patient;
-
-    Patient.balance(vm.patient.debtor_uuid)
-      .then(function (balance) {
-        /**
-         * balance < 0 means that enterprise must money to the patient (creditor balance)
-         * multiply by -1 means we want work with positive value if the patient has a creditor balance
-         */
-        vm.patientBalance = balance * -1;
-      })
-      .catch(Notify.handleError);
   }
 
   // caches the cashbox
@@ -110,49 +89,34 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.cashbox = cashbox;
     cache.cashbox = cashbox;
     vm.disabledCurrencyIds = Cash.calculateDisabledIds(vm.cashbox, vm.currencies);
+    vm.Payment.setCashbox(cashbox);
   }
 
   /* Debtor Invoices Modal */
   function openInvoicesModal() {
-    Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
-      .then(function (result) {
-
-        // bind the selected invoices
-        vm.payment.invoices = result.invoices;
-
-        // the table of invoices shown to the client is name-spaced by 'slip'
-        vm.slip = {};
-        vm.slip.rawTotal = result.total;
-        digestExchangeRate(vm.payment.currency_id);
-      });
-  }
-
-  // exchanges the payment at the bottom of the previous invoice slip.
-  function digestExchangeRate(currencyId) {
-
-    // make sure we have all the required data before attempting to exchange
-    // any values
-    if (!(vm.slip && currencyId)) { return; }
-
-    // bind the correct exchange rate
-    vm.slip.rate = Exchange.getCurrentRate(currencyId);
-
-    // bind the correct exchanged total
-    vm.slip.total =
-      Exchange.convertFromEnterpriseCurrency(currencyId, vm.payment.date, vm.slip.rawTotal);
+    $state.go('cash.debtors', {
+      id : vm.cashbox.id,
+      debtor_uuid : vm.Payment.details.debtor_uuid,
+      invoices: vm.Payment.details.invoices
+        .map(function (invoice) {
+          return invoice.uuid;
+        })
+    });
   }
 
   // submits the form to the server
   function submit(form) {
     if (form.$invalid) { return; }
 
-    // add in the cashbox id
-    vm.payment.cashbox_id = vm.cashbox.id;
+    // be sure the cashbox is set
+    vm.Payment.setCashbox(vm.cashbox);
+
+    cache.openBarcodeModalOnSuccess = vm.openBarcodeModalOnSuccess;
 
     // patient invoices are covered by caution
-    var hasCaution = vm.slip && vm.patientBalance > 0;
-    var isCaution = Number(vm.payment.is_caution);
-    var hasInvoices = vm.payment.invoices && vm.payment.invoices.length > 0;
+    var hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
+    var isCaution = vm.Payment.isCaution();
+    var hasInvoices = vm.Payment.details.invoices && vm.Payment.details.invoices.length > 0;
 
     // if the this is not a caution payment, but no invoices are selected,
     // raise an error.
@@ -160,44 +124,64 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
     }
 
-    // format the cash payment description
-    vm.payment.description = Cash.formatCashDescription(vm.patient, vm.payment);
-
-    // submit the cash payment
-    if (hasCaution) {
-      return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
-        .then(function (ans) {
-          if (!ans) { return; }
+    return $q.resolve()
+      .then(function () {
+        return hasCaution ?
+          Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
+      })
+      .then(function (allowPaymentWithCaution) {
+        if (allowPaymentWithCaution) {
           return submitPayment(form);
-        })
-        .catch(Notify.handleError);
-    } else {
-      return submitPayment(form);
-    }
-
+        }
+      });
   }
 
   // submit payment
   function submitPayment(form) {
-    return Cash.create(vm.payment)
+
+    // make a copy of the data before submitting
+    var copy = angular.copy(vm.Payment.details);
+
+    // format the cash payment description
+    var cachedPaymentDescription = copy.description;
+
+    // TODO - find a much better way of doing this.  This seems quite ... hacky
+    copy.description = Cash.formatCashDescription(vm.Payment.patient, copy)
+      .concat(' -- ', cachedPaymentDescription);
+
+    return Cash.create(copy)
       .then(function (response) {
         return Receipts.cash(response.uuid, true);
       })
       .then(function () {
+        // clear and refresh the form
+        clear(form);
 
-        // reset the data
-        vm.payment = { date : new Date() };
-
-        // reset the bhFindPatient component
-        vm.bhFindPatient.reset();
-
-        // make sure the form is pristine
-        form.$setPristine();
-
-        delete vm.slip;
+        if (vm.openBarcodeModalOnSuccess) {
+          $state.go('^.scan', { id : vm.cashbox.id });
+        }
       })
       .catch(Notify.handleError);
   }
+
+  function clear(form) {
+    vm.Payment.setup();
+
+    // clear the patient selection
+    vm.bhFindPatient.reset();
+
+    // clear the form
+    form.$setPristine();
+  }
+
+  RS.$on('cash:configure', function (event, data) {
+    vm.Payment.configure(data);
+
+    // if the patient UUID is provided, search by that patient
+    if (data.patient) {
+      vm.bhFindPatient.searchByUuid(data.patient.uuid);
+    }
+  });
 
   // start up the module
   startup();

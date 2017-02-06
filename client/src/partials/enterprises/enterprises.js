@@ -76,7 +76,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
     return promise
       .then(function () {
-        Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
   }
@@ -125,7 +125,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
       if (!value) { return; }
 
       refreshProjects();
-      Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .catch(Notify.handleError);
   }
@@ -144,7 +144,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
       if (!value) { return; }
 
       refreshProjects();
-      Notify.success('FORM.INFOS.CREATE_SUCCESS');
+      Notify.success('FORM.INFO.CREATE_SUCCESS');
     })
     .catch(Notify.handleError);
   }
@@ -166,7 +166,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
       Projects.delete(id)
         .then(function () {
-          Notify.success('FORM.INFOS.DELETE_SUCCESS');
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
           return refreshProjects();
         })
         .catch(Notify.handleError);

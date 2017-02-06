@@ -14,6 +14,7 @@
         class="form-control"
         type="text"
         name="name"
+        autocomplete="off"
         placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
@@ -28,6 +29,7 @@
         class="form-control"
         type="text"
         name="code"
+        autocomplete="off"
         placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">

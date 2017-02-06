@@ -30,7 +30,7 @@ describe('Fiscal Year', function () {
     expect(helpers.getCurrentPath()).to.eventually.equal(pathNew);
 
     // set invalid date range to test `number_of_months`
-    components.dateInterval.range('01/02/2016', '01/01/2016');
+    components.dateInterval.range('01-02-2016', '01-01-2016');
 
     FU.buttons.submit();
 
@@ -45,7 +45,7 @@ describe('Fiscal Year', function () {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateInterval.range('01/01/2018', '31/12/2018');
+    components.dateInterval.range('01-01-2018', '31-12-2018');
     FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
@@ -59,9 +59,8 @@ describe('Fiscal Year', function () {
     updateButton.all(by.css('[data-method="update"]')).first().click();
 
     // modify the fiscal year label and note
-    FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2018 (update)');
-    components.dateInterval.range('01/01/2018', '31/12/2018');
-    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2018 (update)');
+    FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
+    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -180,16 +179,16 @@ describe('Fiscal Year', function () {
     FU.uiSelect('$ctrl.resultAccount', resultAccount);
 
     // submit to next step
-    submitButton.click()
+    submitButton.click();
 
     // submit to confirm info
-    submitButton.click()
+    submitButton.click();
 
     // set the pattern to confirm
     element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
 
     // submit to confirm the action
-    submitButton.click()
+    submitButton.click();
 
     // check notification
     components.notification.hasSuccess();

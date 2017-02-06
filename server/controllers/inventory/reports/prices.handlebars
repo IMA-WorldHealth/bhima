@@ -1,0 +1,64 @@
+{{> head title="INVENTORY.PRICE_LIST_REPORT" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center">{{translate "INVENTORY.PRICES"}}</h3>
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr>
+            <th class="text-center">{{translate "TREE.INVENTORY"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.TYPE"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.DEFAULT_QUANTITY"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.UNIT_PRICE"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- for each inventory group -->
+          {{#each groups as | items name |}}
+
+            <!-- this is the inventory group header -->
+            <tr style="border:none">
+              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+                {{ name }}
+              </th>
+
+              <th colspan="3" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+              </th>
+            </tr>
+
+            <!-- these are the items for each group -->
+            {{#each items as | item | }}
+              <tr>
+                <td style="text-overflow:ellipsis">
+                  <span style="margin-left: 10px;">{{ item.text }}</span>
+                </td>
+                <td>{{ item.typeName }}</td>
+                <td class="text-right">{{ item.default_quantity }}</td>
+                <td class="text-right" style="min-width:150px;">
+                  {{currency item.price ../../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+            {{/each}}
+
+            {{#unless @last }}
+              <!-- blank line -->
+              <tr style="border:none;">
+                <th style="border:none;"></th>
+              </tr>
+            {{/unless}}
+
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

@@ -53,12 +53,13 @@ function GridSortingService(util) {
     } else {
 
       // reference value is passed in the row - simply use this
+      // FIXME(@jniles) we rarely pass the numeric reference value...
       first = Number(rowA.entity.reference);
       second = Number(rowB.entity.reference);
     }
 
-    // This (standard method) casuses transaction groups to be sorted incorrectly - why has not been demonstrated
-    // Standard integer compare sort: retrun first - second;
+    // This (standard method) causes transaction groups to be sorted incorrectly - why has not been demonstrated
+    // Standard integer compare sort: return first - second;
     if (first > second) {
       return 1;
     }
@@ -88,6 +89,33 @@ function GridSortingService(util) {
       this.transactionIds = transactionIds.bind(this);
     }.bind(this));
   }
+
+  /**
+   * @function sortByReferece
+   *
+   * @description
+   * Sorts references as if they were numerical values.
+   *
+   * @public
+   */
+  function sortByReference(a, b) {
+
+    // get the last index of the dot in the reference (plus offset)
+    var aIdx = a.lastIndexOf('.') + 1,
+      bIdx = b.lastIndexOf('.') + 1;
+
+    // get the numerical value
+    var aReference = parseInt(a.slice(aIdx)),
+      bReference = parseInt(b.slice(bIdx));
+
+    // return the correct numerical value
+    return aReference - bReference;
+  }
+
+  // bind all algorithms for public consumption
+  GridSorting.algorithms = {
+    sortByReference : sortByReference
+  };
 
   return GridSorting;
 }

@@ -18,7 +18,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
 
   // templates for descriptions
   var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :name';
-  var PAYMENT_DESCRIPTION = 'Cash Payment/ :date / :name';
+  var PAYMENT_DESCRIPTION = 'Cash Payment / :date / :name \n ';
   var CAUTION_DESCRIPTION = 'Caution Payment / :date / :name';
 
   // custom methods
@@ -92,7 +92,8 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
 
     return tmpl
       .replace(':date', moment(date).format('YYYY-MM-DD'))
-      .replace(':name', patient.display_name);
+      .replace(':name', patient.display_name)
+      .trim();
   }
 
   /**
@@ -172,6 +173,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
       { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+      { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' }
     ];
 
     // returns columns from filters
@@ -187,13 +189,13 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
     });
   }
 
-  //open a dialog box to Cancel Cash Paiement
+  //open a dialog box to Cancel Cash Payment
   function openCancelCashModal(invoice) {
     return Modal.open({
       templateUrl : 'partials/cash/modals/modalCancelCash.html',
       resolve : { data : { invoice : invoice } },
       size : 'md',
-      animation : true,
+      animation : false,
       keyboard  : false,
       backdrop : 'static',
       controller : 'ModalCancelCashController as ModalCtrl',
@@ -201,7 +203,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   }
 
   /**
-   * @desc It checkCashPayment the invoice from the database
+   * @desc checkCashPayment the invoice from the database
    * @param {String} invoiceUuid, is the uuid of invoice
    * @example
    * service.checkCashPayment(invoiceUuid)

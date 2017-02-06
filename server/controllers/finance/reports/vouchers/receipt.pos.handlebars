@@ -1,0 +1,46 @@
+<head>
+ <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
+<body>
+<p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
+<h2 style="text-align : left; margin : 0px">{{details.reference}}</h2>
+<p style="margin-top : 0px">{{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.display_name}}</p>
+
+<div style="text-align : center;">{{> barcode value=details.barcode}}</div>
+
+<h2 style="margin-bottom : 0px">{{translate details.text}}</h2>
+
+<p style="margin-bottom : 0px;">
+  {{details.description}}
+</p>
+
+<p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">
+  {{details.reference}}
+</p>
+
+<table style="width : 100%">
+  <thead>
+    <tr>
+      <th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each rows as |item| }}
+      <tr>
+        <td>{{item.label}}</td>
+        <th style="text-align : right;">
+          {{#if item.credit}} {{currency item.credit ../details.currency_id}}{{/if}}
+          {{#if item.debit}} ({{currency item.debit ../details.currency_id}}){{/if}}
+        </th>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+{{> underline}}
+
+<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL"}}: {{currency details.amount details.currency_id}}</h2>
+
+<script>JsBarcode('.barcode').init();</script>
+</body>

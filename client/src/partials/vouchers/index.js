@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService', 'GridFilteringService',
   'uiGridGroupingConstants', 'uiGridConstants', 'ModalService', 'DateService',
-  'bhConstants', 'ReceiptModal'
+  'bhConstants', 'ReceiptModal', 'GridSortingService'
 ];
 
 /**
@@ -14,7 +14,7 @@ VoucherController.$inject = [
  * @description
  * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts, Sorting) {
   var vm = this;
 
   /* global variables */
@@ -22,25 +22,10 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.transactionTypes = {};
   vm.gridApi = {};
   vm.gridOptions = {};
+  vm.search = search;
+  vm.toggleFilter = toggleFilter;
 
-  /* paths in the headercrumb */
-  vm.bcPaths = [
-    { label : 'TREE.FINANCE' },
-    { label : 'TREE.VOUCHER_REGISTRY' }
-  ];
-
-  /** buttons in the headercrumb */
-  vm.bcButtons = [
-    { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
-      action: search, color: 'btn-default'
-    },
-    { icon: 'fa fa-filter', color: 'btn-default',
-      action: toggleFilter, 
-    }
-  ];
-
-  /** button Print */
-  vm.buttonPrint = { pdfUrl: '/reports/finance/vouchers' };
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   /** search filters */
   vm.searchFilter = [
@@ -55,26 +40,29 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     appScopeProvider : vm,
     showColumnFooter : true,
     enableFiltering : vm.filterEnabled,
+    rowTemplate: '/partials/templates/grid/voucher.row.html'
   };
 
   // grid default options
   vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
-      groupingShowAggregationMenu: false,
-      aggregationType: uiGridConstants.aggregationTypes.count
+      treeAggregationType: uiGridGroupingConstants.aggregation.COUNT,
+      sortingAlgorithm : Sorting.algorithms.sortByReference,
+      treeAggregationLabel: '', footerCellClass : 'text-center',
     },
     { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
       sort: { priority: 0, direction : 'asc' },
-      grouping: { groupPriority: 0},
       cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn: typeAggregation,
+      treeAggregationLabel : '',
       groupingShowAggregationMenu: false
     },
     { field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate',
-      cellFilter : 'date:"mediumDate"',
+      cellFilter : 'date',
       filter : { condition : filtering.byDate },
       customTreeAggregationFinalizerFn: timeAggregation,
+      treeAggregationLabel : '', type : 'date',
       groupingShowAggregationMenu: false
     },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate',
@@ -82,13 +70,14 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     },
     { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-      groupingShowAggregationMenu: false
+      treeAggregationLabel : '', footerCellClass : 'text-center',
+      type: 'number', groupingShowAggregationMenu: false
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
       groupingShowAggregationMenu: false
     },
     { field : 'action', displayName : '...', enableFiltering: false, enableColumnMenu: false,
-      enableSorting: false, cellTemplate: 'partials/templates/grid/linkFilePDF.tmpl.html',
+      enableSorting: false, cellTemplate: 'partials/vouchers/templates/action.cell.html'
     }
   ];
 
@@ -107,12 +96,6 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    vm.gridApi.grid.registerDataChangeCallback(expandAllRows);
-  }
-
-  // expand all rows
-  function expandAllRows() {
-    vm.gridApi.treeBase.expandAllRows();
   }
 
   // Grid Aggregation
@@ -141,10 +124,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // enable filter
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[1].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+    vm.gridOptions.enableFiltering = vm.filterEnabled = !vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // search voucher
@@ -158,15 +139,17 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
         toggleLoadingIndicator();
         return Vouchers.read(null, vm.dateInterval);
       })
-      .then(function (list) {
-        vm.gridOptions.data = list;
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(function (err) {
         if (err && !err.code) { return; }
         Notify.handleError(err);
       })
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
+        vm.filterBarHeight = (vm.dateInterval) ? FILTER_BAR_HEIGHT : {};
       });
   }
 
@@ -204,14 +187,14 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     toggleLoadingIndicator();
 
     Vouchers.transactionType()
-      .then(function (result) {
-        vm.transactionTypes = result;
+      .then(function (store) {
+        vm.transactionTypes = store;
       })
       .catch(Notify.handleError);
 
     Vouchers.read()
-      .then(function (list) {
-        vm.gridOptions.data = list;
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);

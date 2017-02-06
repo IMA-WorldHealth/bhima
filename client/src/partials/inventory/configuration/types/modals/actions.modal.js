@@ -20,33 +20,25 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) {
-      return;
-    }
-    
+    if (form.$invalid) { return; }
+
     var record = cleanForSubmit(vm.session);
     map[vm.action](record, vm.identifier)
-    .then(function (res) {
-      Instance.close(res);
-    });
+      .then(function (res) {
+        Instance.close(res);
+      });
   }
 
   /** add inventory type */
   function addType(record) {
     return InventoryType.create(record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.handleError);
+      .catch(Notify.handleError);
   }
 
   /** edit inventory type */
   function editType(record, uuid) {
     return InventoryType.update(uuid, record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.handleError);
+      .catch(Notify.handleError);
   }
 
   /** cancel action */

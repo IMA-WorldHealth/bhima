@@ -59,7 +59,7 @@ describe('(/patients) Patients', function () {
   };
 
   var simultaneousPatient = {
-    first_name:          'Simultaneous Patient Last',
+    display_name:        'Simultaneous Patient Mocks',
     dob:                 new Date('1993-06-01'),
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -78,23 +78,18 @@ describe('(/patients) Patients', function () {
   // HTTP API Test for /patients/search/ routes
   describe('(/search) Patient Search', function () {
 
-    it('GET /patients/search with missing necessary parameters', function () {
+    it('GET /patients/search with missing necessary parameters should succeed', function () {
       return agent.get('/patients/search/?')
         .then(function (res) {
-          helpers.api.errored(res, 400);
-
-          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
-          return agent.get('/patients/search');
-        })
-        .then(function (res) {
-          helpers.api.errored(res, 400);
-          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
+          helpers.api.listed(res, 3);
         })
         .catch(helpers.handler);
     });
 
     it('GET /patients/search with \'reference\' parameter', function () {
-      return agent.get('/patients/search/?reference=TPA1')
+      let conditions = { reference : 'PA.TPA.1' };
+      return agent.get('/patients/search')
+        .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
         })
@@ -122,13 +117,23 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
-      let conditions = { name : 'Test', reference : 'TPA1' };
+      let conditions = { name : 'Test', reference : 'PA.TPA.1' };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
-          expect(res.body[0].reference).to.be.equals('TPA1');
+          expect(res.body[0].reference).to.be.equals(conditions.reference);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /patients/search with debtor_uuid retrieves the patients with that debtor_uuid', function () {
+      let conditions = { debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107' };
+      return agent.get('/patients/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
@@ -142,7 +147,7 @@ describe('(/patients) Patients', function () {
           var expected = [
             'father_name', 'mother_name', 'profession', 'employer', 'spouse', 'spouse_employer',
             'spouse_profession', 'religion', 'marital_status', 'phone', 'email', 'address_1',
-            'address_2', 'renewal', 'origin_location_id', 'current_location_id', 'registration_date',
+            'address_2', 'origin_location_id', 'current_location_id', 'registration_date',
             'title', 'notes', 'hospital_no', 'abbr', 'text', 'account_id', 'price_list_uuid',
             'is_convention', 'locked'
           ];
@@ -229,17 +234,17 @@ describe('(/patients) Patients', function () {
     // Custom timeout
     this.timeout(30000);
 
-    var patientQuery = [];
+    let patientQuery = [];
 
     // Extreme case
     // var NUMBER_OF_PATIENTS = 200;
     // var timeoutInterval = 30;
 
-    var NUMBER_OF_PATIENTS = 7;
-    var timeoutInterval = 0;
+    let NUMBER_OF_PATIENTS = 100;
+    let timeoutInterval = 0;
 
-    var timeout = 0;
-    var baseHospitalNo = 1000;
+    let timeout = 0;
+    let baseHospitalNo = 300;
 
     // Setup all patient write requests
     for (var i = 0; i < NUMBER_OF_PATIENTS; i++) {
@@ -298,7 +303,10 @@ describe('(/patients) Patients', function () {
     setTimeout(function () {
 
       simultaneousRequest.medical.hospital_no = hospitalNo;
-      simultaneousRequest.medical.display_name += hospitalNo;
+
+      let name = 'Patient ';
+      let randomSuffix = (Math.random()*1.31).toString().slice(2, 10);
+      simultaneousRequest.medical.display_name = name + randomSuffix;
 
       agent.post('/patients')
         .send(simultaneousRequest)

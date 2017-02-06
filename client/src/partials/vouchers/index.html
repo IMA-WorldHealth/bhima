@@ -1,15 +1,55 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path   = "VoucherCtrl.bcPaths"
-  button = "VoucherCtrl.bcButtons"
-  print  = "VoucherCtrl.buttonPrint">
-</bh-breadcrumb>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>TREE.VOUCHER_REGISTRY</li>
+    </ol>
 
-<div class="flex-util">
-  <label class="label label-primary" ng-show="VoucherCtrl.dateInterval">
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="VoucherCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/reports/finance/vouchers"
+          options="VoucherCtrl.dateInterval"
+          disable-cache="true">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/finance/vouchers"
+          report-options="VoucherCtrl.dateInterval">
+        </bh-renderer-dropdown>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="VoucherCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : VoucherCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util" ng-if="VoucherCtrl.dateInterval">
+  <label class="label label-primary">
     <i class="fa fa-filter"></i>
-    {{ VoucherCtrl.dateInterval.dateFrom | date: 'dd MMM yyyy' }} -
-    {{ VoucherCtrl.dateInterval.dateTo | date: 'dd MMM yyyy' }}
+    {{ VoucherCtrl.dateInterval.dateFrom | date }} -
+    {{ VoucherCtrl.dateInterval.dateTo | date }}
   </label>
 </div>
 
@@ -19,19 +59,17 @@
     <!-- vouchers list  -->
     <div
       id="voucherGrid"
-      class="grid-util-full-height"
+      class="grid-full-height"
+      ng-style="VoucherCtrl.filterBarHeight"
       ui-grid="VoucherCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-grouping>
-    </div>
 
     <bh-grid-loading-indicator
       loading-state="VoucherCtrl.loading"
       empty-state="VoucherCtrl.gridOptions.data.length === 0"
-      error-state="VoucherCtrl.hasError"
-      >
+      error-state="VoucherCtrl.hasError">
     </bh-grid-loading-indicator>
-
   </div>
 </div>

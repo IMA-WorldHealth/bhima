@@ -67,7 +67,7 @@ function FindPatientComponent(Patients, AppCache, Notify) {
 
     // call the onRegisterApi() callback with the
     vm.onRegisterApi({
-      api : { reset : vm.reset }
+      api : { reset : vm.reset, searchByUuid : searchByUuid }
     });
   };
 
@@ -82,6 +82,26 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   vm.findBy             = findBy;
   vm.reset              = reset;
   vm.onKeyPress         = onKeyPress;
+
+  /**
+   * @method searchByUuid
+   *
+   * @public
+   *
+   * @param {String} uuid - the patient's UUID to be loaded programmatically from by an
+   *    API call.
+   *
+   * @description
+   * This method exists to be called from the bhFindPatient API, initializing the component
+   * with a patient's uuid.
+   */
+  function searchByUuid(uuid) {
+    Patients.read(uuid)
+      .then(function (patient) {
+        selectPatient(patient);
+      })
+      .catch(Notify.handleError);
+  }
 
   /**
    * @method searchByReference
@@ -102,10 +122,10 @@ function FindPatientComponent(Patients, AppCache, Notify) {
     // query the patient's search endpoint for the
     // reference
     Patients.search(options)
-    .then(function (patients) {
-      selectPatient(patients[0]);
-    })
-    .catch(Notify.handleError);
+      .then(function (patients) {
+        selectPatient(patients[0]);
+      })
+      .catch(Notify.handleError);
   }
 
   /**

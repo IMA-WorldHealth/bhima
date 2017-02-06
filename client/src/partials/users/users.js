@@ -17,8 +17,7 @@ function UsersController($state, Users, Notify) {
     columnDefs : [
       { field : 'display_name', name : 'Display Name' },
       { field : 'username', name : 'User Name' },
-      { name : 'edit', displayName : '', cellTemplate: '/partials/users/templates/grid/edit.cell.html', enableSorting : false },
-      { name : 'permission', displayName : '', cellTemplate: '/partials/users/templates/grid/permissions.cell.html', enableSorting : false }
+      { name : 'action', displayName : '', cellTemplate: '/partials/users/templates/grid/action.cell.html', enableSorting : false }
     ],
     enableSorting : true
   };

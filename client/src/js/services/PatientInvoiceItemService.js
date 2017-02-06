@@ -109,9 +109,12 @@ function PatientInvoiceItemService(uuid) {
     try {
       this.code = inventoryItem.code;
       this.description = inventoryItem.label;
-      this.transaction_price = inventoryItem.price;
-      this.inventory_price = inventoryItem.price;
+      this.transaction_price = Number(inventoryItem.price);
+      this.inventory_price = Number(inventoryItem.price);
       this.inventory_uuid = inventoryItem.uuid;
+
+      // set the quantity to the default quantity
+      this.quantity = Number(inventoryItem.default_quantity);
 
       // special binding to make sure inventory items have a sales_account
       this._salesAccount = inventoryItem.sales_account;

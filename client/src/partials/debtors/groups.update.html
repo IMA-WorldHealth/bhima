@@ -24,36 +24,18 @@
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
             <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-            <input name="name" ng-model="GroupUpdateCtrl.group.name" class="form-control" required>
+            <input name="name" ng-model="GroupUpdateCtrl.group.name" autocomplete="off" class="form-control" required>
 
             <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
-          <!-- @todo this should be a directive - this controller should not have to consider accounts -->
-          <div
-            class="form-group has-feedback"
-            ng-class="{'has-error' : debtorGroup.account_id.$invalid && debtorGroup.$submitted}">
-
-            <label class="control-label">{{ "TABLE.COLUMNS.ACCOUNT" | translate }}</label>
-            <ui-select
-              name="account_id"
-              ng-model="GroupUpdateCtrl.group.account_id"
-              theme="bootstrap">
-              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="account.id as account in  GroupUpdateCtrl.accounts | filter:$select.search">
-                <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                <span ng-bind-html="account.label | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-
-            <div class="help-block" ng-messages="debtorGroup.account_id.$error" ng-show="debtorGroup.$submitted">
-              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
+          <bh-account-select
+            name="account_id"
+            account-id="GroupUpdateCtrl.group.account_id"
+            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)">
+          </bh-account-select>
 
           <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
           <div
@@ -80,7 +62,7 @@
 
             <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
             <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ "FORM.LABELS.MAX_CREDIT_INFO" | translate }}</p>
-            <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" name="max_credit" class="form-control" bh-integer required>
+            <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" autocomplete="off" name="max_credit" class="form-control" bh-integer required>
 
             <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -94,14 +76,14 @@
 
           <div class="form-group">
             <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
-            <input name="phone" ng-model="GroupUpdateCtrl.group.phone" class="form-control">
+            <input name="phone" ng-model="GroupUpdateCtrl.group.phone" autocomplete="off" class="form-control">
           </div>
 
           <div
             class="form-group"
             ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
             <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-            <input name="email" ng-model="GroupUpdateCtrl.group.email" type="email" class="form-control">
+            <input name="email" ng-model="GroupUpdateCtrl.group.email" type="email" autocomplete="off" class="form-control">
 
             <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

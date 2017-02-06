@@ -19,6 +19,7 @@ describe('Provinces Management', function () {
   };
 
   it('creates a new province', function () {
+
     // switch to the create form
     FU.buttons.create();
 
@@ -45,7 +46,9 @@ describe('Provinces Management', function () {
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
-    element(by.id('create')).click();
+
+    // switch to the create form
+    FU.buttons.create();
 
     // verify form has not been successfully submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
