@@ -1,9 +1,0 @@
-.dash-panel {
-  max-height: 510px;
-  overflow : hidden;
-}
-
-.dash-panel-table {
-  max-height: 510px;
-  overflow-y: scroll; 
-}
