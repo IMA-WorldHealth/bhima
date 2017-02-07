@@ -123,11 +123,10 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     filters = $state.params.filters ? $state.params.filters : filters;
 
     if($state.params.display){ 
-      const display = $state.params.display;
+      var display = $state.params.display;
       vm.formatedFilters = Cash.formatFilterParameters(display);
       // show filter bar as needed
-      vm.filterBarHeight = (vm.formatedFilters.length > 0) ?
-        { 'height' : 'calc(100vh - 105px)' } : {};
+      vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
     }
 
     toggleLoadingIndicator();

@@ -93,11 +93,10 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     parameters = $state.params.filters ? $state.params.filters : parameters;
 
     if($state.params.display){ 
-      const display = $state.params.display;
+      var display = $state.params.display;
       vm.filtersFmt = Invoices.formatFilterParameters(display);
       // show filter bar as needed
-      vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-        { 'height' : 'calc(100vh - 105px)' } : {};
+      vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
 
     }
 
@@ -170,8 +169,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     load(vm.filters);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
  //Call the opening of Modal
