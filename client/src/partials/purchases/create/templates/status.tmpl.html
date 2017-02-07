@@ -1,0 +1,18 @@
+<div ng-hide="row.entity._valid" class="ui-grid-cell-contents text-center"
+  ng-class="{
+    'bg-warning text-warning' : !row.entity._initialised,
+    'bg-danger text-danger' : row.entity._initialised
+  }"
+  style="padding: 5px;">
+
+  <!-- warning state: invalid, but not initialised yet -->
+  <span ng-hide="row.entity._initialised" class="fa fa-circle-o"></span>
+
+  <!-- error state: invalid and initialised -->
+  <span ng-show="row.entity._initialised" class="fa fa-times-circle"></span>
+</div>
+
+<div ng-show="row.entity._valid" class="ui-grid-cell-contents bg-success text-center">
+  <!-- success state: valid and initialised -->
+  <span class="text-success fa fa-check-circle"></span>
+</div>

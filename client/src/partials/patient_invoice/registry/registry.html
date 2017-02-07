@@ -1,0 +1,69 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "INVOICE_REGISTRY.TITLE" | translate }}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="InvoiceRegistryCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <bh-pdf-print pdf-url="/reports/finance/invoices"
+          options="InvoiceRegistryCtrl.filters">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/finance/invoices"
+          report-options="CPRCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar" ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="InvoiceRegistryCtrl.filtersFmt"
+    on-remove-filter="InvoiceRegistryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="InvoiceRegistryCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
+  </a>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="invoice-registry"
+      class="grid-full-height"
+      ng-style="InvoiceRegistryCtrl.filterBarHeight"
+      ui-grid="InvoiceRegistryCtrl.uiGridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="InvoiceRegistryCtrl.loading"
+        empty-state="InvoiceRegistryCtrl.uiGridOptions.data.length === 0"
+        error-state="InvoiceRegistryCtrl.hasError">
+      </bh-grid-loading-indicator>
+  </div>
+  </div>
+</div>
+

@@ -1,0 +1,11 @@
+.flex-heading {
+  display: flex;
+  justify-content: space-between;
+  background-color: #337ab7;
+  color: #fff;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+.flex-heading > .flex-heading-label {
+  margin: 5px 10px;
+}

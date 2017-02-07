@@ -1,0 +1,80 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="title">{{ "PATIENT_REGISTRY.TITLE" | translate }}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="PatientRegistryCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          ng-click="PatientRegistryCtrl.openColumnConfiguration()"
+          data-method="config"
+          class="btn btn-default">
+          <i class="fa fa-cogs"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="reports/medical/patients"
+          options="PatientRegistryCtrl.filters">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="reports/medical/patients"
+          report-options="PatientRegistryCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar" ng-show="PatientRegistryCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="PatientRegistryCtrl.filtersFmt"
+    on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="PatientRegistryCtrl.clearFilters()"
+    ng-show="PatientRegistryCtrl.filtersFmt.length > 0"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+  </a>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="patient-registry"
+      ui-grid="PatientRegistryCtrl.uiGridOptions"
+      class="grid-full-height"
+      ng-style="PatientRegistryCtrl.filterBarHeight"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="PatientRegistryCtrl.loading"
+        empty-state="PatientRegistryCtrl.uiGridOptions.data.length === 0"
+        error-state="PatientRegistryCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

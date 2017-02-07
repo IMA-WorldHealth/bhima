@@ -1,0 +1,265 @@
+@import "bootstrap.less";
+
+/**
+ * gutter width halfed for container padding, odd values cause overflow scroll
+ * bars with current application structure
+ */
+@grid-gutter-width: 10px;
+
+@border-radius-base: 2px;
+
+@ima-green:           #77a13f;
+@ima-dark-orange:     #e57b14;
+@ima-dark-blue:       #085484;
+@ima-light-orange:    #fdba64;
+@ima-light-blue:      #6fbdee;
+
+/** @todo move all structure code into less with configurable variables */
+/**
+ * Application structure variables - these widths are used to determine how much
+ * space the tree navigation takes up in its `expanded` and `collapsed` states.
+ */
+@expanded-offset:  260px;
+@collapsed-offset: 56px;
+@nav-height:       51px;
+
+/* turn off horizontal resizing */
+textarea {
+  resize: vertical;
+  max-height: 250px;
+}
+
+/**
+ * Notifications
+ */
+growl-notifications {
+  width : 100%;
+  position : fixed;
+  top : 0px;
+  left : @collapsed-offset;
+  z-index : 1000;
+}
+
+.expanded > growl-notifications {
+  left : @expanded-offset;
+  width : calc(~'100% - (@{expanded-offset} - @{collapsed-offset})');
+}
+
+growl-notifications growl-notification {
+  background : #fff;
+  border-left : 5px solid #9A9A9A;
+  height : @nav-height;
+  padding : 15px 10px;
+  display : block;
+
+  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
+  width : calc(~'100% - @{collapsed-offset}');
+}
+
+@modal-title-padding : 8px;
+@modal-inner-padding : 10px;
+
+.modal-content {
+  border-radius : @border-radius-small;
+}
+/**
+ * Make sure the input groups have nice validation
+ */
+.has-success .btn.btn-default,
+.has-success .input-group-addon {
+  color : @state-success-text;
+  border-color: @state-success-text;
+}
+
+.has-error .btn.btn-default,
+.has-error .input-group-addon {
+  color: @state-danger-text;
+  border-color: @state-danger-text;
+}
+
+.has-warning .btn.btn-default,
+.has-warning .input-group-addon {
+  color: @state-warning-text;
+  border-color: @state-warning-text;
+  background-color: @state-warning-bg;
+}
+
+/**
+ * remove the spinners (arrows) in inputs in chrome and firefox
+ */
+::-webkit-inner-spin-button { -webkit-appearance: none;}
+::-webkit-outer-spin-button { -webkit-appearance: none;}
+input[type=number] {-moz-appearance: textfield;}
+
+/**
+ * This overrides the `width` specification added by bootstrap at different
+ * screen sizes for the .container class. As the Tree navigation pushes the view
+ * if it is expanded BHIMA cannot gaurantee there is enough space for these widths,
+ * overriding this with max-width doesn't force the container to the specified size
+ */
+@media (min-width: 768px) {
+  .container {
+    max-width : 730px;
+    width : auto;
+  }
+}
+
+@media (min-width : 992px) {
+  .container {
+    max-width : 950px;
+    width : auto;
+  }
+}
+
+@media (min-width : 1200px) {
+  .container {
+    max-width : 1150px;
+    width : auto;
+  }
+}
+
+/**
+ * Slightly pad the bottom of elements.  Useful for the floating columns on top
+ * of each other on small screens.
+ */
+.pad-bottom {
+  padding-bottom : @grid-gutter-width / 2;
+}
+
+/* expert mode */
+/* @padding-base-vertical: 3px; */
+/* @padding-base-horizontal: 6px; */
+
+/* badges additions */
+.badge.badge-primary {
+  background-color: @label-primary-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-danger {
+  background-color: @label-danger-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-warning {
+  background-color: @label-warning-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-success {
+  background-color: @label-success-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-info {
+  background-color: @label-info-bg;
+  border-radius: @border-radius-base;
+}
+
+/** transaction things */
+
+.ui-grid-row .ui-grid-cell.transaction-edit {
+  background-color: @state-info-bg;
+  border-color: @btn-primary-border;
+  color: @state-info-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-edit.transaction-edit-header  {
+  background-color: @btn-primary-bg;
+  border-color: @btn-primary-border;
+  color: @btn-primary-color;
+}
+
+.transaction-edit-header  a {
+  color: @btn-primary-color;
+}
+
+/* highlight */
+
+.ui-grid-row .ui-grid-cell.transaction-highlight {
+  border-color: @state-warning-border;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-highlight.transaction-highlight-header {
+  background-color: @state-warning-bg;
+  border-color: @state-warning-border;
+  color: @state-warning-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid {
+  background-color: @state-danger-bg;
+  border-color: @btn-danger-border;
+  color: @state-danger-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid.transaction-invalid-header  {
+  background-color: @btn-danger-bg;
+  border-color: @btn-danger-border;
+  color: @btn-danger-color;
+}
+
+.transaction-invalid-header  a {
+  color: @btn-danger-color;
+}
+
+
+/* PDF report styles */
+
+.table-report {
+  font-size: 0.9em;
+}
+
+.table-report > thead > th {
+  font-size: 1.2em;
+}
+
+.table-report > tbody > tr > td,
+.table-report > tbody > tr > th,
+.table-report > thead > tr > th,
+.table-report > tfoot > tr > th,
+.table-report > tfoot > tr > td {
+  padding: 2px;
+}
+
+.table-report {
+  margin-bottom : 0;
+}
+
+.table-report > tbody > tr > td,
+.table-report > tbody > tr > th {
+  border: 1px solid #ddd;
+}
+
+.table-report > thead > tr > th {
+  border-bottom: 1px solid #000;
+}
+
+.pills span {
+  margin : 1px 2px;
+}
+
+.pills span:first {
+  margin-left: 0;
+}
+
+/*  flash for newly edited or created rows */
+@keyframes highlight-flash {
+  from { background: @btn-info-bg; }
+  to { background: transparent; }
+}
+
+.ui-grid-row .ui-grid-cell.row-highlight {
+  animation-name: highlight-flash;
+  animation-duration: 1.5s;
+}
+
+/*  flash for error rows */
+@keyframes error-flash {
+  from { background: @btn-danger-bg; }
+  to { background: transparent; }
+}
+
+.ui-grid-row .ui-grid-cell.row-error {
+  animation-name: error-flash;
+  animation-duration: 2s;
+}

@@ -1,0 +1,57 @@
+<form name="ColumnConfigForm" bh-submit="ColumnsConfigModalCtrl.submit()" bh-form-defaults novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.BUTTONS.CONFIGURE</li>
+      <li class="title" translate>FORM.LABELS.COLUMNS</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-6">
+        <strong translate>FORM.LABELS.COLUMNS</strong>
+      </div>
+      <div class="col-xs-6 text-right text-capitalize">
+        <a href ng-click="ColumnsConfigModalCtrl.resetDefaults()" data-method="reset">
+          <i class="fa fa-retweet"></i>
+          <span translate>FORM.BUTTONS.RESET_DEFAULTS</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : 0 track by col.field">
+          <label>
+            <input type="checkbox" data-column="{{ ::col.field }}"
+              ng-model="ColumnsConfigModalCtrl.map[col.field]">
+              <span translate>{{ ::col.displayName }}</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="col-xs-6">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.columns.length : ColumnsConfigModalCtrl.middle track by col.field">
+          <label>
+            <input type="checkbox" data-column="{{ ::col.field }}"
+              ng-model="ColumnsConfigModalCtrl.map[col.field]">
+              <span translate>{{ ::col.displayName }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ColumnsConfigModalCtrl.cancel()"
+      translate>FORM.BUTTONS.CANCEL</button>
+
+    <bh-loading-button loading-state="ColumnConfigForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

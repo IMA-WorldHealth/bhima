@@ -1,0 +1,39 @@
+<div class="panel panel-default">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
+      <i class="fa fa-list"></i>
+      {{ 'INVENTORY.LIST_UNIT' | translate }} ({{ UnitsCtrl.unitList.length }})
+    </span>
+
+    <button
+      ng-click="UnitsCtrl.addInventoryUnit()"
+      class="btn btn-default btn-sm"
+      type="button"
+      data-create-unit><i class="fa fa-plus"></i>
+    </button>
+  </div>
+
+  <section style="height: 200px; overflow: auto;">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{{ 'FORM.LABELS.LABEL' | translate }}</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="unit in UnitsCtrl.unitList | orderBy: 'text' track by unit.id">
+          <td>{{ $index + 1 }}</td>
+          <td>{{ unit.text }}</td>
+          <td>
+            <a href ng-click="UnitsCtrl.editInventoryUnit(unit.id)" data-edit-unit="{{ unit.text }}">
+              <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

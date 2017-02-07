@@ -1,0 +1,6 @@
+<div class="ui-grid-cell-contents">
+  {{ row.entity.patientName }}
+  <a data-method="record" ui-sref="patientRegistry({ filters : { name : row.entity.patientName }})" href>
+    <span class="fa fa-link"></span>
+  </a>
+</div>

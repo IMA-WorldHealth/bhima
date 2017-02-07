@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ "CASH.TITLE" | translate }}</li>
+    <li class="title">
+      {{ "CASH.VOUCHER.DEBTOR_INVOICES" | translate }}
+      <span class="badge badge-success" ng-show="CashInvoiceModalCtrl.rows.length">
+        {{ "CASH.VOUCHER.SELECTED" | translate }} {{ CashInvoiceModalCtrl.rows.length }}
+      </span>
+    </li>
+  </ol>
+</div>
+
+<div class="modal-body" data-debtor-invoices-modal>
+
+  <!-- warn the client if not debtor id has been passed in -->
+  <p ng-show="CashInvoiceModalCtrl.missingId" class="text-danger text-center">
+    <i class="fa fa-warning"></i> {{ ::"FORM.ERRORS.MISSING_DEBTOR_ID" | translate }}
+  </p>
+
+  <!-- ui-grid to select debtor invoices -->
+  <div ng-if="!CashInvoiceModalCtrl.missingId">
+    <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid" id="debtorInvoicesGrid">
+
+      <bh-grid-loading-indicator
+        loading-state="CashInvoiceModalCtrl.loading"
+        empty-state="CashInvoiceModalCtrl.gridOptions.data.length === 0"
+        error-state="CashInvoiceModalCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+
+  <div ng-show="CashInvoiceModalCtrl.empty" class="text-warning">
+    <i class="fa fa-info-circle"></i> {{ ::"FORM.WARNINGS.EMPTY_SELECTION" | translate }}
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="CashInvoiceModalCtrl.cancel()"
+    data-method="cancel">
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-click="CashInvoiceModalCtrl.submit()"
+    ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.hasError)"
+    data-method="submit">
+    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+  </button>
+</div>

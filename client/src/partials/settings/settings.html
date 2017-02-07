@@ -1,0 +1,126 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>HOME.BHIMA</li>
+      <li class="title" translate>SETTINGS.TITLE</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5" style="margin-bottom : 10px;">
+        <div class="form-group">
+          <label for="select-language" translate>FORM.LABELS.LANGUAGE</label>
+          <select
+            id="select-language"
+            ng-model="SettingsCtrl.settings.language"
+            ng-change="SettingsCtrl.languageService.set(SettingsCtrl.settings.language)"
+            ng-options="key as lang.name for (key, lang) in SettingsCtrl.languages"
+            class="form-control">
+            <option value="" disabled="disabled" translate>FORM.SELECT.LANGUAGE</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label translate>FORM.LABELS.INVOICE_CURRENCY_SETTING</label>
+          <p>
+            <bh-receipt-currency
+              on-update="SettingsCtrl.cacheInvoiceCurrency(currencyId)">
+            </bh-receipt-currency>
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="receipt-type" translate>FORM.LABELS.USE_POS_RECEIPT</label>
+          <p class="text-info">
+            <i class="fa fa-info-circle"></i>
+            <span translate>SETTINGS.POS_RECEIPT_INFO</span>
+          </p>
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="posReceipt" ng-change="SettingsCtrl.cachePosReceipt(SettingsCtrl.settings.posReceipt)" id="pos-enabled" value="1" ng-model="SettingsCtrl.settings.posReceipt">
+              <span translate>FORM.LABELS.ENABLED</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" name="posReceipt" ng-change="SettingsCtrl.cachePosReceipt(SettingsCtrl.settings.posReceipt)" id="pos-disabled" value="0" ng-model="SettingsCtrl.settings.posReceipt">
+              <span translate>FORM.LABELS.DISABLED</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label translate>FORM.LABELS.USE_SIMPLIFIED_CARD</label>
+          <p class="text-info">
+            <i class="fa fa-info-circle"></i>
+            <span translate>SETTINGS.SIMPLIFIED_CARD_INFO</span>
+          </p>
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="simplified" ng-change="SettingsCtrl.cacheSimplified(SettingsCtrl.settings.simplified)" id="simplified-enabled" value="1" ng-model="SettingsCtrl.settings.simplified">
+              <span translate>FORM.LABELS.ENABLED</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" name="simplified" ng-change="SettingsCtrl.cacheSimplified(SettingsCtrl.settings.simplified)" id="simplified-disabled" value="0" ng-model="SettingsCtrl.settings.simplified">
+              <span translate>FORM.LABELS.DISABLED</span>
+            </label>
+          </div>
+        </div>
+
+
+        <button
+          class="btn btn-default"
+          ng-click="SettingsCtrl.back()"
+          data-back-button>
+          <i class="fa fa-arrow-left"></i>
+          <span translate>FORM.BUTTONS.BACK</span>
+        </button>
+
+        <button
+          class="btn btn-default"
+          ng-click="SettingsCtrl.logout()"
+          data-logout-button>
+          <i class="fa fa-sign-out"></i>
+          <span translate>FORM.BUTTONS.LOGOUT</span>
+        </button>
+
+        <a ng-href="mailto:{{SettingsCtrl.bugLink}}" class="btn btn-default" data-bug-report-button>
+          <span class="text-danger">
+            <i class="fa fa-bug"></i> <span translate>SETTINGS.BUG_LINK</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- system information panel -->
+      <div class="col-md-6 col-md-offset-1">
+        <div class="panel panel-default">
+          <div class="panel-heading" translate> SYSTEM.INFORMATION </div>
+          <div class="panel-body">
+            <dl class="dl-horizontal">
+              <dt translate>SYSTEM.PLATFORM</dt>
+              <dd>{{ SettingsCtrl.system.platform }}</dd>
+
+              <dt translate>SYSTEM.CPUS</dt>
+              <dd>{{ SettingsCtrl.system.numCPUs }}</dd>
+
+              <dt translate>SYSTEM.MACHINE_UPTIME</dt>
+              <dd>{{ SettingsCtrl.system.machineUptime | amDurationFormat }}</dd>
+
+              <dt translate>SYSTEM.PROCESS_UPTIME</dt>
+              <dd>{{ SettingsCtrl.system.processUptime | amDurationFormat }}</dd>
+
+              <dt translate>SYSTEM.MEMORY_USAGE</dt>
+              <dd>{{ SettingsCtrl.system.memoryUsage | number }}%</dd>
+
+              <dt translate>SYSTEM.VERSION</dt>
+              <dd>{{ SettingsCtrl.system.version }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+{{> head title="CASH.TITLE" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'TREE.CASH_PAYMENT_REGISTRY'}}
+      </h2>
+
+      <!-- filters  -->
+      {{#if hasFilter}}
+      <br />
+        <div>
+          <i class="fa fa-filter"></i>
+          {{#if display.reference}}{{translate 'TABLE.COLUMNS.REFERENCE'}}: {{look display 'reference'}} /{{/if}}
+          {{#if display.dateFrom}} {{translate 'TABLE.COLUMNS.DATE'}}: {{date (look display 'dateFrom')}} - {{date (look display 'dateTo')}} /{{/if}}
+          {{#if display.debtor_uuid}} {{translate 'TABLE.COLUMNS.PATIENT'}}: {{look display 'debtor_uuid'}} /{{/if}}
+          {{#if display.cashbox_id}} {{translate 'TABLE.COLUMNS.CASHBOX'}}: {{look display 'cashbox_id'}} /{{/if}}
+          {{#if display.user_id}}{{translate 'TABLE.COLUMNS.USER'}}: {{look display 'user_id'}}/{{/if}}
+          {{#if display.is_caution}}{{translate 'FORM.LABELS.CAUTION'}}: <i class="fa fa-check"></i> {{/if}}
+        </div>
+        <br />
+      {{/if}}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.PATIENT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.AMOUNT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CASHBOX'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CREATED_BY'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{reference}}</td>
+              <td class="text-right">{{date date}}</td>
+              <td>{{debtor_name}}</td>
+              <td class="text-right">{{currency amount currency_id}}</td>
+              <td>{{cashbox_label}}</td>
+              <td>{{display_name}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {{#if aggregates}}
+    <div class="row">
+      <div class="col-xs-6">
+
+        <!-- summary table -->
+        <table class="table table-condensed table-bordered table-striped">
+          <tbody>
+            <tr>
+              <th colspan="2" class="text-center">
+                {{ translate 'FORM.LABELS.SUMMARY' }} ({{date aggregates.minDate }} - {{date aggregates.maxDate}})
+              </th>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_PAYMENTS' }}</th>
+              <td class="text-right">{{ aggregates.numPayments }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_CAUTIONS' }}</th>
+              <td class="text-right">{{ aggregates.numCautions }}</td>
+            </tr>
+
+            {{! loop through the currency amounts and print them out }}
+            {{#each amounts}}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.TOTAL_AMOUNT' }} ({{ symbol }})</th>
+                <td class="text-right">{{currency amount currency_id}}</td>
+              </tr>
+            {{/each}}
+
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUMBER_OF_DAYS' }}</th>
+              <td class="text-right">{{ aggregates.numDays }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_CLIENTS' }}</th>
+              <td class="text-right">{{ aggregates.numDebtors }}</td>
+            </tr>
+
+            {{#if hasMultipleCashboxes }}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_CASHBOXES' }}</th>
+                <td class="text-right">{{ aggregates.numCashboxes }}</td>
+              </tr>
+            {{/if}}
+
+            {{#if hasMultipleProjects }}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_PROJECTS' }}</th>
+                <td class="text-right">{{ aggregates.numProjects }}</td>
+              </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {{/if}}
+</body>

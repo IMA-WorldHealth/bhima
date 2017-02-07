@@ -1,0 +1,76 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>TREE.LOCATION</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Menu to manage the various locations -->
+<div class="flex-util">
+  <a href="#/locations/village/" id="village" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-home"></span> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}
+  </a>
+
+  <a href="#/locations/sector/" id="sector" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-th"></span> {{ 'LOCATION.MANAGE_SECTOR' | translate }}
+  </a>
+
+  <a href="#/locations/province/" id="province"  class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-map-marker"></span> {{ 'LOCATION.MANAGE_PROVINCE' | translate }}
+  </a>
+
+  <a href="#/locations/country/" id="country" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_COUNTRY' | translate }}
+  </a>
+
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+    <!-- Complete list of existing locations -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "LOCATION.REGISTERED" | translate }}
+          </div>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ 'TABLE.COLUMNS.VILLAGE' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.SECTOR' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.PROVINCE' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.COUNTRY' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="LocationCtrl.session.loading" class="text-center">
+                <td colspan="4"><loading-indicator></loading-indicator></td>
+              </tr>
+
+              <tr ng-repeat="location in LocationCtrl.locations | orderBy:'village' | orderBy:'sector' | orderBy:'province' | orderBy:'country'">
+                <td>{{ location.village }}</td>
+                <td>{{ location.sector }}</td>
+                <td>{{ location.province }}</td>
+                <td>{{ location.country }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-xs-6">
+        <div class="alert alert-info" id="default">
+          <h4>{{ 'LOCATION.MANAGER_CONFIGURATION' | translate }}</h4>
+          <p>
+            {{ 'LOCATION.DESCRIPTION' | translate }}
+            <b>{{ 'LOCATION.DESCRIPTION_2' | translate }}</b>,
+            {{ 'LOCATION.LOCATION' | translate }}.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

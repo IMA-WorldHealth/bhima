@@ -1,0 +1,49 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">
+        {{ "TREE.FISCAL_YEAR" | translate }}
+
+        <span class="label label-success" ng-show="FiscalCtrl.state.current.name==='fiscal.create'">
+          {{ "FORM.LABELS.CREATE" | translate }}
+        </span>
+
+        <span class="label label-info" ng-show="FiscalCtrl.state.current.name==='fiscal.update'">
+          {{ "FORM.LABELS.UPDATE" | translate }}
+        </span>
+      </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <a
+          ng-if="FiscalCtrl.state.current.name==='fiscal.list'"
+          class="btn btn-default"
+          data-method="create"
+          ui-sref="fiscal.create">
+          <i class="fa fa-plus"></i>
+          {{ 'FISCAL.CREATE_FISCAL_YEAR' | translate }}
+        </a>
+      </div>
+      <div
+        class="toolbar-item"
+        ng-if="FiscalCtrl.state.current.name !== 'fiscal.list'">
+        <button
+          class="btn btn-default"
+          ng-click="FiscalCtrl.back()">
+          <i class="fa fa-arrow-circle-left"></i> {{ "FISCAL.BACK" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container">
+
+    <ui-view></ui-view>
+
+  </div>
+</div>

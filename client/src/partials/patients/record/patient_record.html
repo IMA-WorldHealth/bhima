@@ -1,0 +1,129 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="static">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
+      <li class="title">{{ PatientRecordCtrl.patient.name }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+
+  <!-- Unknown patient state -->
+  <div class="container-fluid" ng-if="!PatientRecordCtrl.patient && PatientRecordCtrl.loading===false">
+    <div class="alert alert-danger" id="nopatient">
+      <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.NOT_FOUND" | translate }}
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div ng-if="PatientRecordCtrl.patient">
+      <!-- Patient details row -->
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="panel panel-primary">
+            <div class="panel-heading clearfix">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+            </div>
+
+            <div class="panel-body">
+              <div class="col-sm-4">
+                <div>
+
+                  <dl>
+                    <dt>{{"FORM.LABELS.NAME" | translate}}</dt>
+                    <dd id="name">{{::PatientRecordCtrl.patient.name}}</dd>
+
+                    <dt>{{"FORM.LABELS.PATIENT_ID" | translate}}</dt>
+                    <dd id="patientID">{{::PatientRecordCtrl.patient.reference}}</dd>
+
+                    <dt>{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</dt>
+                    <dd id="hospitalNo">{{::PatientRecordCtrl.patient.hospital_no}}</dd>
+
+                    <dt>{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</dt>
+                    <dd><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></dd>
+                  </dl>
+
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+
+                <dl>
+                  <dt>{{ "TABLE.COLUMNS.AGE" | translate }}</dt>
+                  <dd id="age">{{::PatientRecordCtrl.patient.age}}</dd>
+
+                  <dt>{{ "TABLE.COLUMNS.GENDER" | translate }}</dt>
+                  <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
+                </dl>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="avatar-thumbnail">
+                  <div class="crop" ng-if="!PatientRecordCtrl.patient.avatar">
+                    <span class="glyphicon glyphicon-picture"></span>
+                  </div>
+                  <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}">
+                  </div>
+                </div>
+
+                <label class="btn btn-default btn-block">
+                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
+                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
+                </label>
+
+                <a
+                  data-method="edit"
+                  ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
+                  class="btn btn-default btn-block">
+                  <span class="glyphicon glyphicon-edit"></span>
+                  {{ "PATIENT_EDIT.EDIT_DETAILS" | translate }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- End patient details row -->
+
+      <div class="row">
+
+        <div class="col-sm-6">
+          <!-- find document  -->
+          <bh-find-document
+            patient-uuid="PatientRecordCtrl.patient.uuid"
+            enable-patient-details="false"
+            enable-search="false"
+            enable-option-bar="true"
+            display="default"
+            height="250px">
+          </bh-find-document>
+          <!-- end find document  -->
+        </div>
+
+        <!-- Patient Bill Panel -->
+        <div class="col-sm-6">
+          <bh-visits patient-uuid="PatientRecordCtrl.patient.uuid"></bh-visits>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <!-- Patient Bill Panel -->
+        <div class="col-sm-12">
+          <!-- Latest Invoice  -->
+          <bh-latest-invoice
+            debtor-uuid="PatientRecordCtrl.patient.debtor_uuid"
+          >
+          </bh-latest-invoice>
+          <!-- end Latest Invoice  -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

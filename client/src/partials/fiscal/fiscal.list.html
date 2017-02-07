@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize track by fiscal.id" data-row="{{ $index }}" class="text-left">
+        <div class="panel panel-default" style="margin-bottom : 3px;" data-fiscal-entry>
+          <div class="panel-body">
+            <h4 style="margin-top : 0px;">
+              <strong>
+                <a style="text-decoration: none; color: #333; " href ui-sref="fiscal.update({id : fiscal.id})">
+                  {{fiscal.label}}
+                </a>
+              </strong>
+              <span ng-show="fiscal.locked" style="color : #ABABAB;">[{{ "FORM.INFO.CLOSED" | translate }}]</span>
+
+              <span ng-if="fiscal.id === FiscalCtrl.previousFiscalYearId" class="label label-warning">
+                {{ "FORM.INFO.PREVIOUS" | translate }}
+              </span>
+
+              <span ng-if="fiscal.id === FiscalCtrl.currentFiscalYearId" class="label label-primary">
+                {{ "FORM.INFO.CURRENT" | translate }}
+              </span>
+
+
+              <span class="pull-right">
+                <a style="text-decoration: none; " href data-method="update" ui-sref="fiscal.update({id : fiscal.id})">
+                  <span class="fa fa-pencil-square-o"></span>
+                </a>
+
+                <a href data-method="delete" ng-click="FiscalCtrl.del(fiscal)" class="text-danger">
+                  <span class="fa fa-trash-o"></span>
+                </a>
+              </span>
+            </h4>
+
+            <div class="row">
+              <span class="fa fa-calendar"></span>
+              {{ fiscal.start_date | date }} - {{ fiscal.end_date | date }} ({{ fiscal.number_of_months }}
+              {{ "FORM.LABELS.PERIODS" | translate }})
+            </div>
+
+            <div class="row text-lowercase">
+              <i class="fa fa-clock-o"></i> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
+              {{ "FORM.INFO.BY" | translate }}
+              <a href="">
+                <i class="fa fa-user"></i> {{ fiscal.display_name }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <uib-pagination
+          total-items="FiscalCtrl.fiscalYears.length"
+          ng-model='FiscalCtrl.currentPage'
+          items-per-page='FiscalCtrl.pageSize'
+          next-text="&rsaquo;"
+          previous-text="&lsaquo;"
+          first-text="&lsaquo;&lsaquo;"
+          last-text="&rsaquo;&rsaquo;"
+          boundary-links="true">
+        </uib-pagination>
+      </div>
+    </div>
+  </div>
+</div>

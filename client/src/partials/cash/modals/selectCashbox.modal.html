@@ -1,0 +1,60 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ "TREE.CASH_WINDOW" | translate }}</li>
+    <li class="title">{{ "CASH.SELECTION.TITLE" | translate }}</li>
+  </ol>
+</div>
+
+<div class="modal-body" data-cashbox-modal>
+
+  <!-- link to cashboxes page if cashboxes not found -->
+  <p class="text-info">
+    <i class="fa fa-question-circle-o"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+
+    <a href ui-sref="cashboxes.create">
+      <i class="fa fa-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+    </a>
+  </p>
+
+  <!-- list of cashboxes -->
+  <ul class="list-group">
+    <li
+      class="list-group-item"
+      ng-repeat="cashbox in $ctrl.cashboxes"
+      ng-class="{'active' : $ctrl.selectedCashbox.id === cashbox.id}"
+      ng-click="$ctrl.selectCashbox(cashbox.id)"
+      style="cursor:pointer;"
+      >
+
+      <span id="cashbox-{{ cashbox.id }}">
+        <i class="fa fa-inbox"></i> {{ cashbox.label }}
+      </span>
+
+      <span ng-show="$ctrl.selectedCashbox.id === cashbox.id" class="badge">
+        <i class="fa fa-check"></i>
+      </span>
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
+    ui-sref-opts="{ reload : true }"
+    ng-disabled="!$ctrl.cashboxId"
+    data-cashbox-modal-cancel>
+    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
+    ui-sref-opts="{ reload : true }"
+    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id"
+    data-cashbox-modal-submit>
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+  </button>
+</div>

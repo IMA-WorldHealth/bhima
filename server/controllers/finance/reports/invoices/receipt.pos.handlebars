@@ -1,0 +1,48 @@
+<head>
+  <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
+<body>
+<p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
+<h2 style="text-align : left; margin : 0px">{{reference}}</h2>
+<p style="margin-top : 0px">
+  {{date date}} {{translate 'FORM.LABELS.BY'}} {{display_name}}
+</p>
+
+<div style="text-align : center;">{{> barcode value=barcode}}</div>
+
+<h2 style="margin-bottom : 0px">{{recipient.display_name}}</h2>
+({{recipient.reference}}) - {{recipient.debtor_group_name}}
+{{> underline}}
+<table style="width : 100%">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each items}}
+    <tr>
+      <td>{{quantity}} x {{this.text}}</td>
+    </tr>
+    <tr>
+      <td style="text-align : right;">{{currency (multiply this.transaction_price quantity) ../metadata.enterprise.currency_id}}</td>
+    </td>
+    {{/each}}
+  </tbody>
+</table>
+{{> underline}}
+<h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{currency cost metadata.enterprise.currency_id}}</b></h2>
+
+<!-- Bill exchange -->
+{{#if exchange}}
+<span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>
+<br>
+<span>{{{translate 'EXCHANGE.SET_AS'}}} 1:{{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}</span>
+<h2 style="text-align : right;">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{{currency exchangedTotal receiptCurrency}}}</b></h2>
+{{/if}}
+
+<script>JsBarcode('.barcode').init();</script>
+</body>
+

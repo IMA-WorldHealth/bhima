@@ -1,0 +1,24 @@
+<div ng-hide="$ctrl.filters" class="text-muted">
+  <i class="fa fa-filter"></i> {{ "FORM.INFO.NO_FILTERS_APPLIED" | translate }}
+</div>
+
+<ul ng-if="$ctrl.filters" class="list-inline" data-bh-filter-bar>
+
+  <li ng-repeat="filter in $ctrl.filters">
+    <!--
+      TODO: these should be a custom CSS class.  Label is just too small!
+    -->
+    <span class="label label-primary">
+      <i class="fa fa-filter"></i>
+      {{ filter.displayName | translate }}
+      {{ filter.comparitor ? " " + filter.comparitor : ":" }}
+      {{ filter.viewValue }}
+
+      <a href ng-click="$ctrl.onRemoveFilter({ filter : filter.field })"
+        style="color:#fff; margin-left:5px;">
+        <i class="fa fa-close"></i>
+      </a>
+    </span>
+  </li>
+
+</ul>

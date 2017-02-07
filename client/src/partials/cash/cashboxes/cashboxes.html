@@ -1,0 +1,24 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "CASHBOX.TITLE" | translate }}</li>
+      <!-- <span class="label label-warning">{{"BUTTON.CREATE" | translate}}</span> -->
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ui-sref="cashboxes.create" data-method="create">
+          <i class="fa fa-plus"></i>
+          {{ "FORM.BUTTONS.ADD" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cashbox mangement content -->
+<div class="flex-content">
+  <div ui-view autoscroll></div>
+ </div>

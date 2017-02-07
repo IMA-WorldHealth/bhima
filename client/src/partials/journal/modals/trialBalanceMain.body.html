@@ -1,0 +1,49 @@
+<p>
+  <div class="row">
+    <div class="col-xs-4 pull-left">
+      <button
+        type="button"
+        ng-show="TrialBalanceMainBodyCtrl.showErrorButton"
+        ng-class="
+          { 'btn btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
+            'btn btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
+            'btn btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess}"
+        ng-click="TrialBalanceMainBodyCtrl.viewErrorList()"
+        data-method="show-error">
+        <i class="fa fa-bars"></i>
+        {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
+      </button>
+    </div>
+
+    <div class="col-xs-3 pull-right">
+      <button
+        ng-if="!TrialBalanceMainBodyCtrl.loading"
+        id="switchViewID"
+        type="button"
+        class="btn btn-default"
+        ng-click="TrialBalanceMainBodyCtrl.switchView()"
+        data-method="switch">
+        <i class="fa fa-retweet"></i>
+        {{TrialBalanceMainBodyCtrl.viewDetail.key | translate }}
+      </button>
+    </div>
+  </div>
+</p>
+
+<div>
+  <div>
+
+  </div>
+  <div
+    id="main-grid"
+    ui-grid="TrialBalanceMainBodyCtrl.gridOptions"
+    ui-grid-auto-resize
+    ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="TrialBalanceMainBodyCtrl.loading"
+        empty-state="TrialBalanceMainBodyCtrl.gridOptions.data.length === 0"
+        error-state="TrialBalanceMainBodyCtrl.hasError"
+      >
+      </bh-grid-loading-indicator>
+  </div>
+</div>

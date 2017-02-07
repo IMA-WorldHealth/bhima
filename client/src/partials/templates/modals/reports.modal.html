@@ -1,0 +1,44 @@
+<div data-modal-box>
+  <div class="modal-body bh-print">
+
+    <!-- loading indicator  -->
+    <h4 class="text-center" ng-show="$ctrl.loading === true">
+      <i class="fa fa-spinner fa-pulse"></i> {{ 'FORM.INFO.LOADING' | translate }}
+    </h4>
+
+    <!-- PDF -->
+    <div ng-if="$ctrl.renderer === 'pdf'">
+      <iframe
+        id="pdf"
+        ng-src="{{$ctrl.report}}"
+        type="application/pdf"
+        style="width : 100%; height : 50vh; border : none;">
+      </iframe>
+    </div>
+
+    <!-- HTML -->
+    <div ng-if="$ctrl.renderer === 'html'">
+      <div class="bh-modal-content">
+        <div ng-bind-html="$ctrl.report"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      data-method="close"
+      ng-click="$ctrl.close()">
+      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-method="print"
+      ng-click="$ctrl.print()">
+      {{ "FORM.BUTTONS.PRINT" | translate }}
+    </button>
+  </div>
+</div>

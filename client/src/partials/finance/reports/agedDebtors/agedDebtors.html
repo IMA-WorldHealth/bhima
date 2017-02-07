@@ -1,0 +1,33 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="static">{{ "TREE.REPORTS" | translate }}</li>
+      <li class="title">{{ "TREE.AGED_DEBTORS" | translate }}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button type="button" class="btn btn-default" ng-click="AgedDebtorsCtrl.create()">
+          <i class="fa fa-plus"></i> {{ "FORM.BUTTONS.NEW_REPORT" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="report-grid"
+      class="grid-full-height"
+      ui-grid="AgedDebtorsCtrl.gridOptions">
+
+      <bh-grid-loading-indicator
+        loading-state="AgedDebtorsCtrl.loading"
+        empty-state="AgedDebtorsCtrl.gridOptions.data.length === 0"
+        error-state="AgedDebtorsCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,219 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="active">{{ "SUBSIDY.TITLE" | translate }}</li>
+    </ol>
+
+   <div class="toolbar">
+     <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="SubsidyCtrl.create()" data-method="create">
+          <span class="glyphicon glyphicon-plus-sign"></span> {{ "SUBSIDY.ADD_SUBSIDY" | translate }}
+        </button>
+     </div>
+   </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "SUBSIDY.ALL_SUBSIDIES" | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "TABLE.COLUMNS.NR" | translate}}</th>
+                <th>{{ "TABLE.COLUMNS.LABEL" | translate}}</th>
+                <th>{{ "TABLE.COLUMNS.VALUE" | translate}}</th>
+                <th>{{ "TABLE.COLUMNS.ACCOUNT" | translate}}</th>
+                <th colspan="2">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="subsidy in SubsidyCtrl.subsidies | orderBy:'text'" ng-class="{'rowSelected' : SubsidyCtrl.subsidy.id === subsidy.id}">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ subsidy.label }}</td>
+                <td>{{ subsidy.value }}</td>
+                <td>{{ subsidy.number }}</td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-upd-{{ $index + 1}}" ng-click="SubsidyCtrl.update(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-del-{{ $index + 1}}" ng-click="SubsidyCtrl.del(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              </tr>
+
+              <tr ng-if="!SubsidyCtrl.subsidies.length">
+                <td colspan="4">{{ "SUBSIDY.NO_SUBSIDY" | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-6" ng-switch="SubsidyCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
+            <p>{{ "SUBSIDY.DESCRIPTION" | translate }}</p>
+          </div>
+        </div>
+
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'SUBSIDY.ADDING_SUBSIDY' | translate }}</div>
+          <div class="panel-body">
+            <form name="CreateForm" ng-submit="SubsidyCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+                <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+                <input type="text" class="form-control" name="label" autocomplete="off" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
+                <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
+                <input type="number" class="form-control" autocomplete="off" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+                <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
+                <label class="col-md-3 control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
+                <ui-select
+                  name="account_id"
+                  ng-model="SubsidyCtrl.subsidy.account_id"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
+                <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" name="description" ng-maxlength="SubsidyCtrl.maxLength" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
+                <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-subsidy" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'SUBSIDY.UPDATING_SUBSIDY' | translate }}</div>
+          <div class="panel-body">
+            <form name="UpdateForm" ng-submit="SubsidyCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
+                <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+                <input type="text" class="form-control" name="label" autocomplete="off" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
+                <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
+                <input type="number" class="form-control" name="value" autocomplete="off" ng-model="SubsidyCtrl.subsidy.value" required>
+                <div class="help-block" ng-messages="UpdateForm.value.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
+                <ui-select
+                  name="account_id"
+                  ng-model="SubsidyCtrl.subsidy.account_id"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
+                <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" name="description" ng-maxlength="SubsidyCtrl.maxLength" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
+                <div class="help-block" ng-messages="UpdateForm.description.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_subsidy" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<form name="DateInterval" bh-form-defaults novalidate>
+
+  <div class="modal-body">
+
+    <bh-date-interval
+      date-from="$ctrl.dateFrom"
+      date-to="$ctrl.dateTo">
+    </bh-date-interval>
+
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      ng-click="$ctrl.close()"
+      class="btn btn-default">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-click="$ctrl.submit()"
+      data-method="submit">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,30 @@
+<div class="panel panel-default dash-panel-table" ng-controller="DebtorGroupListDashboardController as DebtorGroupListCtrl">
+   <div class="panel-heading">
+    {{ "DASHBOARD.FINANCE.TOP_DEBTOR_GROUPS" | translate }}
+    <span class="pull-right">
+      <select ng-model="DebtorGroupListCtrl.limit" ng-options="value as key for (key, value) in DebtorGroupListCtrl.limits" ng-change="DebtorGroupListCtrl.saveOptions()"></select>
+    </span>
+  </div>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th colspan="2">{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
+        <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
+        <th class="currency">{{ "COLUMNS.DEBT" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-if="DebtorGroupListCtrl.isLoading">
+        <td colspan="4" style="text-align:center;">
+          <loading-indicator></loading-indicator>
+        </td>
+      </tr>
+      <tr ng-repeat="group in DebtorGroupListCtrl.data | limitTo:DebtorGroupListCtrl.limit track by group.uuid ">
+        <th>{{ $index + 1 }}</th>
+        <td>{{ group.name }}</td>
+        <td>{{ group.number }}</td>
+        <td class="currency">{{ group.balance | currency }}</td>
+      <tr>
+    </tbody>
+  </table>
+</div

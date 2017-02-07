@@ -1,0 +1,89 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">
+        {{ "POSTING_JOURNAL.TITLE" | translate }}
+
+        <span class="badge badge-primary text-uppercase" ng-show="JournalCtrl.transactions.isEditing()">
+          <i class="fa fa-street-view"></i>
+          {{ "POSTING_JOURNAL.EDIT_MODE" | translate }}
+        </span>
+      </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" data-method="filter" ng-click="JournalCtrl.filtering.toggleInlineFiltering()">
+          <i class="fa fa-filter"></i>
+        </button>
+
+        <button class="btn btn-default" data-method="search" ng-click="JournalCtrl.openSearchModal()">
+          <i class="fa fa-search"></i> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+
+        <button class="btn btn-default" data-method="configure" ng-click="JournalCtrl.openColumnConfigModal()">
+          <i class="fa fa-cogs"></i> {{ "FORM.BUTTONS.CONFIGURE" | translate }}
+        </button>
+
+        <button class="btn btn-default" data-method="trial" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openTrialBalanceModal()">
+          <i class="fa fa-adjust"></i> {{ "FORM.BUTTONS.TRIAL_BALANCE" | translate }}
+        </button>
+
+        <button class="btn btn-default" data-method="print" id="print" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openJournalReport()">
+          <i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- @todo remove hardcoded styles -->
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-if="JournalCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="JournalCtrl.filtersFmt"
+    on-remove-filter="JournalCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="JournalCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+  </a>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <div
+          id="journal-grid"
+          class="grid-full-height"
+          ng-style="JournalCtrl.filterBarHeight"
+          ui-grid="JournalCtrl.gridOptions"
+          ui-grid-auto-resize
+          ui-grid-resize-columns
+          ui-grid-move-columns
+          ui-grid-selection
+          ui-grid-cellNav
+          ui-grid-edit
+          ui-grid-grouping>
+
+          <bh-grid-loading-indicator
+            loading-state="JournalCtrl.loading"
+            empty-state="JournalCtrl.gridOptions.data.length === 0"
+            error-state="JournalCtrl.hasError"
+          >
+          </bh-grid-loading-indicator>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

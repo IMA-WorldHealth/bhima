@@ -1,0 +1,19 @@
+<div class="ui-grid-cell-contents">
+  <!-- Clickable label area - on parent accounts expands/ collapses -->
+  <span
+    id="account-title-{{::row.entity.id}}"
+    ng-click="grid.api.treeBase.toggleRowTreeState(row)"
+    ng-class="{'text-action' : row.treeNode.children.length > 0}">
+
+    <!-- Indent accounts -->
+    <span style="padding-left : {{row.treeLevel * grid.appScope.indentTitleSpace}}px;"></span>
+    <i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}
+  </span>
+
+  <a
+    id="account-add-child-{{::row.entity.id}}"
+    ng-if="row.entity.type_id == grid.appScope.Constants.accounts.TITLE" ui-sref="accounts.create({ parentId : row.entity.id })">
+    <i class="fa fa-plus-square-o"></i>
+    {{ "ACCOUNT.ADD_CHILD" | translate }}
+  </a>
+</div>

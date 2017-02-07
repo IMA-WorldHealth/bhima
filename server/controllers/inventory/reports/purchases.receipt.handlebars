@@ -1,0 +1,40 @@
+{{> head title="PATIENT_REG.PATIENT_REGISTRATIONS"}}
+
+<body>
+  <h4 class="text-center">{{translate "PURCHASES.RECEIPT.TITLE" }}</h4>
+
+  <section>
+    <dl>
+      <dt>{{translate "FORM.LABELS.SUPPLIER"}}</dt><dd>{{purchase.supplier}}</dd>
+      <dt>{{translate "FORM.LABELS.DATE"}}</dt><dd>{{date purchase.date}}</dd>
+      <dt>{{translate "FORM.LABELS.REFERENCE"}}</dt><dd>{{purchase.reference}}</dd>
+      <dt>{{translate "FORM.LABELS.NOTES"}}</dt><dd>{{purchase.note}}</dd>
+    </dl>
+  </section>
+
+  <section>
+    <table class="table table-bordered table-condensed table-mini">
+      <thead>
+        <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
+        <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
+        <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
+        <th>{{translate "FORM.LABELS.TOTAL" }}</th>
+      </thead>
+      <tbody>
+        {{#each purchase.items}}
+          <tr>
+            <td>{{this.text}}</td>
+            <td class="text-right">{{currency this.quantity}}</td>
+            <td class="text-right">{{currency this.unit_price}}</td>
+            <td class="text-right">{{currency this.total}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr class="text-right">
+          <td colspan="4">{{translate "FORM.LABELS.COST"}} {{currency purchase.cost}}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</body>

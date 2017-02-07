@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+  <input
+    ng-model="row.entity.credit"
+    ng-change="grid.appScope.onChanges()"
+    ng-disabled="!row.entity._initialized"
+    type="number"
+    class="form-control text-right"
+    required>
+</div>

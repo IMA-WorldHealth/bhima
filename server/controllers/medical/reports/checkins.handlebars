@@ -1,0 +1,101 @@
+{{> head title="PATIENT_RECORDS.CHECK_IN.TITLE"}}
+
+<body>
+
+  <!-- patient header -->
+  <header>
+    <section class="row">
+      <!-- patient information -->
+      <div class="col-xs-6">
+        <div>
+          <strong>{{patient.display_name}}</strong>
+
+          <!-- patient age/sex symbol -->
+          <span>
+            {{#if patient.isMale}}
+              <i class="fa fa-mars"></i>
+            {{else}}
+              <i class="fa fa-venus"></i>
+            {{/if}}
+            {{age patient.dob}}
+          </span>
+
+          <!-- patient locked indicator -->
+          {{#if patient.locked}}
+            <i class="fa fa-locked"></i>
+          {{/if}}
+        </div>
+
+        <!-- patient identifier & registration date -->
+        <div>{{patient.reference}} <span class="text-lowercase">{{translate "REPORT.SINCE"}}</span> {{date patient.registration_date}}</div>
+        <div><i class="fa fa-h-square"></i> {{patient.hospital_no}}</div>
+
+        <!-- patient group information -->
+        <div><i class="fa fa-group"></i> {{patient.debtor_group_name}}</div>
+
+        <!-- patient origin location information -->
+        <div><i class="fa fa-home"></i> {{location.name}}, {{location.sector_name}}, {{location.province_name}}, {{location.country_name}}</div>
+      </div>
+
+      <!-- Report Metadata -->
+      <div class="col-xs-6 text-right">
+        <div><strong><i class="fa fa-hospital-o"></i> {{metadata.enterprise.name}}</strong></div>
+        <div>{{metadata.enterprise.location}}</div>
+        <div><i class="fa fa-calendar"></i> {{translate "REPORT.PRODUCED_ON"}} {{timestamp metadata.timestamp}}</div>
+        <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="text-center">
+    <h4>{{translate "PATIENT_RECORDS.CHECK_IN.REPORT_TITLE"}}</h4>
+  </section>
+
+  <section>
+    <table class="table table-condensed table-report">
+      <thead>
+        <tr class="text-capitalize">
+          <th class="text-center"><i class="fa fa-bookmark-o"></i></th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.DATE"}}</th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.ACTION"}}</th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.USER"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- initial patient registration -->
+        <tr>
+          <th class="text-center">{{patient.year}}</th>
+          <td class="text-center">{{date patient.registration_date}}</td>
+          <td class="text-center">{{translate "FORM.LABELS.DATE_REGISTRATION"}}</td>
+          <td class="text-center">{{patient.displayName}}</td>
+        </tr>
+
+        <!-- print a row for each checkin -->
+        {{#each checkins as |records year|}}
+          {{#each records}}
+            {{#if @first}}
+              <tr>
+                <th rowspan="{{records.length}}" class="text-center">{{year}}</th>
+                <td class="text-center">{{date this.start_date}}</td>
+                <td class="text-center">{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td class="text-center">{{this.displayName}}</td>
+              </tr>
+            {{else}}
+              <tr>
+                <td class="text-center">{{date this.start_date}}</td>
+                <td class="text-center">{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td class="text-center">{{this.displayName}}</td>
+              </tr>
+            {{/if}}
+          {{/each}}
+        {{else}}
+          <tr>
+            <td colspan="4" class="text-center">
+              <i class="fa fa-warning"></i> {{translate "TABLE.COLUMNS.EMPTY"}}
+            </td>
+          </tr>
+        {{/each}}
+    </table>
+  </section>
+</body>

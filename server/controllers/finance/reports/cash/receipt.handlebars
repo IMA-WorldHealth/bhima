@@ -1,0 +1,116 @@
+{{> head title="CASH.TITLE" }}
+
+<div class="container" style="font-size: 0.9em;">
+
+  <header>
+    <!-- headings  -->
+    <div class="row">
+      <div class="col-xs-6">
+        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
+        <p>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
+        </p>
+      </div>
+      <div class="col-xs-6 text-right">
+        <h3 style="margin: 0px;">
+          <span class="text-uppercase">
+            {{#with payment}}
+              {{#if is_caution}}
+                {{translate "CASH.CAUTION_PAYMENT"}}
+              {{else}}
+                {{translate "FORM.LABELS.INVOICE_PAYMENT"}}
+              {{/if}}
+            {{/with}}
+          </span> <br>
+          <strong>{{payment.reference}}</strong> <br>
+          <small>{{date payment.date}}</small> <br>
+        </h3>
+      </div>
+    </div>
+
+    <!-- client and user details  -->
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{patient.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{patient.display_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.GROUP'}}</span>: {{patient.debtor_group_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{patient.hospital_no}}</strong>
+      </div>
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
+        {{#if hasRate}} <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}} <br>{{/if}}
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{user.display_name}}
+      </div>
+    </div>
+  </header>
+
+  <!-- list of items paid -->
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+
+          {{#with payment}}
+            {{#if is_caution}}
+              <th>{{translate "CASH.CAUTION"}}</th>
+            {{else}}
+              <th>{{translate "FORM.LABELS.INVOICE"}}</th>
+              <th>{{translate "FORM.LABELS.SERVICE"}}</th>
+            {{/if}}
+          {{/with}}
+
+        <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payment.items as |item| }}
+        <tr>
+          <td>{{item.reference}}</td>
+          {{#unless  ../payment.is_caution}}
+            <td>{{item.serviceName}}</td>
+          {{/unless }}
+          <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        {{#if payment.is_caution}}
+          <th>{{translate "FORM.LABELS.TOTAL"}}</th>
+        {{else}}
+          <th colspan="2">{{translate "FORM.LABELS.TOTAL"}}</th>
+        {{/if }}
+          <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
+      </tr>
+
+      <tr>
+        {{#if payment.is_caution}}
+          <th>{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+        {{else}}
+          <th colspan="2">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+        {{/if }}
+        <th class="text-right">{{currency debtorTotalBalance enterprise.currency_id}}</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h4>
+    <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
+  </h4>
+
+  <div class="row">
+    <div class="col-xs-5">
+      {{translate "FORM.LABELS.CASHIER"}} <br />
+      <br />
+      <hr/>
+    </div>
+    <div class="col-xs-offset-2 col-xs-5">
+      {{translate "FORM.LABELS.CLIENT"}} <br />
+      <br />
+      <hr/>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<form name="PermissionForm" bh-submit="UserPermissionModalCtrl.submit()" bh-form-defaults>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title">
+        {{ "USERS.PERMISSIONS" | translate }}
+        <label class="badge badge-warning">{{ "USERS.PERMISSIONS" | translate }}</label>
+        <label class="badge badge-warning">{{ UserPermissionModalCtrl.user.display_name }} ({{ UserPermissionModalCtrl.user.username }})</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
+      <li class="list-group-item">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="UserPermissionModalCtrl.super" ng-change="UserPermissionModalCtrl.toggleSuperUserPermissions(UserPermissionModalCtrl.super)">
+            <b>{{ "USERS.SUPER" | translate }}</b>
+          </label>
+        </div>
+      </li>
+      <li ng-repeat="unit in UserPermissionModalCtrl.units" class="list-group-item">
+        <div style="margin:0" class="checkbox" ng-style="UserPermissionModalCtrl.checkboxOffset(unit.depth)">
+          <label>
+            <input type="checkbox" ng-model="unit.checked" ng-change="UserPermissionModalCtrl.toggleUnitChildren(unit, unit.children)">
+            {{ unit.key | translate }}
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="UserPermissionModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+    <bh-loading-button loading-state="PermissionForm.$loading">
+      <i class="fa fa-floppy-o"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

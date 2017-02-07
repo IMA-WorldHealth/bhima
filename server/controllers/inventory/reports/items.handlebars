@@ -1,0 +1,65 @@
+{{> head title="INVENTORY.LIST"}}
+
+<body>
+  <div class="container">
+
+    <!-- header  -->
+    <div class="row">
+      <div class="col-xs-4">
+        <h3 style="margin:2px;">{{metadata.enterprise.name}} ({{metadata.enterprise.abbr}})</h3>
+        <span>{{translate 'FORM.LABELS.PHONE'}}: {{metadata.enterprise.phone}}</span><br>
+        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{metadata.enterprise.email}}</span><br>
+      </div>
+      <div class="col-xs-offset-4 col-xs-4 text-right">
+        <small>{{metadata.project.name}} ({{metadata.project.abbr}})</small>
+      </div>
+    </div>
+
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- page title  -->
+        <h2 style="margin:15px; font-weight:bold" class="text-center text-capitalize">
+          {{translate 'FORM.LABELS.INVENTORY'}}
+        </h2>
+
+        <!-- list of data  -->
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>{{translate 'FORM.LABELS.CODE'}}</th>
+              <th>{{translate 'FORM.LABELS.LABEL'}}</th>
+              <th class+"text-center">{{translate 'FORM.LABELS.PRICE'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT'}}</th>
+              <th>{{translate 'FORM.LABELS.TYPE'}}</th>
+              <th>{{translate 'FORM.LABELS.GROUP'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT_WEIGHT'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT_VOLUME'}}</th>
+              <th>{{translate 'FORM.LABELS.CONSUMABLE'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each rows}}
+              <tr>
+                <td>{{code}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{currency price ../metadata.enterprise.currency_id }}</td>
+                <td>{{unit}}</td>
+                <td>{{type}}</td>
+                <td>{{groupName}}</td>
+                <td class="text-right">{{unit_weight}}</td>
+                <td class="text-right">{{unit_volume}}</td>
+                <td>
+                  {{#if consumable}}
+                    <i class="fa fa-check-circle-o"></i>
+                  {{/if}}
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>

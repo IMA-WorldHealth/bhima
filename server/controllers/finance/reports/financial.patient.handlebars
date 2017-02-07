@@ -1,0 +1,72 @@
+{{> head title="PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
+  <h4 class="text-center">{{ debtor.display_name }}</h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}} : {{ debtor.debtor_group_name }} </h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} : {{ debtor.number }} </h4>
+
+  <section>
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr class="text-capitalize text-center" style="background-color: #ccc;" >
+          <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th style="width: 5%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
+          <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.AMOUNT" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each patients}}
+          <tr>
+            <td>{{date this.trans_date}}</td>
+            <td class="text-right">{{this.reference}}</td>
+            <td class="text-right">{{this.trans_id}}</td>
+            <td>{{this.description}}</td>
+            <td class="text-right {{#if this.credit}}text-danger{{/if}}">
+              {{#if this.credit}}
+                ({{currency this.credit ../metadata.enterprise.currency_id}})
+              {{else}}
+                {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
+          </tr>
+        {{else}}
+          {{>emptyTable columns=5}}
+        {{/each}}
+      </tbody>
+      <tfoot style="background-color: #ededed;">
+        <tr>
+          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL_BILLED" }}</th>
+          <th class="text-right">
+            <span>{{currency sum.debit metadata.enterprise.currency_id}}</span>
+          </th>
+        </tr>
+        <tr>
+          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL_PAID" }}</th>
+          <th class="text-right">
+            <span class="text-danger">({{currency sum.credit metadata.enterprise.currency_id}})</span>
+          </th>
+        </tr>
+        <tr>
+          <th colspan="4" class="text-right">
+            {{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING" }}
+          </th>
+          <th class="text-right">
+            {{#unless sum.hasDebitBalance }}
+              <span class="text-danger">
+                ({{currency sum.balance metadata.enterprise.currency_id}})
+              </span>
+            {{else}}
+              {{currency sum.balance metadata.enterprise.currency_id}}
+            {{/unless}}
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</body>

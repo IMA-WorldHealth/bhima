@@ -1,0 +1,24 @@
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a data-method="record" ui-sref="patientRecord.details({patientID : row.entity.uuid})" href>
+        <span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit" ui-sref="patientEdit({uuid : row.entity.uuid})" href>
+        <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
+        <span class="fa fa-user"></span> <span translate>PATIENT_REGISTRY.CARD</span>
+      </a>
+    </li>
+  </ul>
+</div>
