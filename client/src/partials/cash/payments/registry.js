@@ -100,8 +100,8 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-    $state.params.filters = {};
-    $state.params.display = {};
+    $state.params.filters = null;
+    $state.params.display = null;
     reload({ display : [], identifiers : {} });
   }
 
