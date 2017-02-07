@@ -596,6 +596,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         // set the edits length to 0
         // this._edits.length = 0;
         this._entity = null;
+        this._changes = {};
         // disable cell navigation
       }.bind(this))
       .catch(function (error) {
@@ -609,6 +610,13 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
 
     // setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
 
+  };
+
+  Transactions.prototype.cancel = function cancel() {
+    this.disableCellNavigation();
+    setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, false);
+    this._entity = null;
+    this._changes = {};
   };
 
   /**

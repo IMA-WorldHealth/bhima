@@ -80,6 +80,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
 
+  vm.cancelEdit = cancelEdit;
+
 	// @todo move to cell template file
   var hideGroupsLabelCell = '<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div>';
 
@@ -290,12 +292,22 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     transactions.save();
   }
 
+  function cancelEdit() {
+    transactions.cancel();
+
+    // ensure data that has been changed is up to date from the server
+    // remove any additional or temporary rows
+    load(vm.filters);
+  }
+
   // runs on startup
   function startup() {
     vm.filters = cache.filters;
     vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
     load(vm.filters);
   }
+
+
 
   startup();
 }
