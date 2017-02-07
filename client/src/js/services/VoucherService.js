@@ -77,7 +77,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
    * This method facilitate annulling a transaction,
    * bhima should automatically be able to reverse
    * any transaction in the posting_journal by creating a
-   * new transaction that is an exact duplicate of the original transaction with sign minous.
+   * new transaction that is an exact duplicate of the original transaction with the
+   * debits and credits switched.
    */
   function reverse(creditNote) {
     return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
