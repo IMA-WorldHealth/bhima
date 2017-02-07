@@ -858,6 +858,8 @@ CREATE TABLE `inventory` (
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
   `origin_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `delay` INT(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delai de livraison', 
+  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Consommation moyenne' , 
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `inventory_1` (`text`),
   UNIQUE KEY `inventory_2` (`code`),

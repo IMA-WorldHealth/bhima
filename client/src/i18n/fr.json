@@ -1199,6 +1199,16 @@
     "TITLE"            : "Gestion des subventions",
     "UPDATING_SUBSIDY" : "Modification d'une subvention"
   },
+  "STOCK" : {
+    "CODE"            : "Code",
+    "DEPOT"           : "Depot",
+    "ENTRY_DATE"      : "Date d'entrée",
+    "EXPIRATION_DATE" : "Date d'expiration",
+    "INVENTORY"       : "Inventaire",
+    "LOT"             : "Lot",
+    "QUANTITY"        : "Quantité",
+    "SEARCH"          : "Chercher"
+  },
   "SUPPLIER": {
     "ADD_SUPPLIER"     : "Ajouter un fournisseur",
     "EDIT_SUPPLIER"    : "Formulaire de mise à jour des fournisseurs",
@@ -1409,7 +1419,6 @@
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
     "PATIENT_REGISTRY"           : "Registre des patients",
     "PAYROLL"                    : "Payroll",
-    "PHARMACY"                   : "Pharmacie",
     "POSTING_JOURNAL"            : "Journal de Saisie",
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",
@@ -1428,7 +1437,9 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
-    "SUBSIDY"                    : "Subvention",
+    "STOCK_INVENTORY"            : "Inventaire en stock",
+    "STOCK_LOTS"                 : "Lots en stock",
+    "STOCK_MOVEMENTS"            : "Mouvements des stocks",
     "TRANSACTION_TYPE"           : "Types de Transaction",
     "SUBSIDY"                    : "Gestion des subventions",
     "USERS"                      : "Utilisateurs",

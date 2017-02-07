@@ -1,0 +1,53 @@
+<!--<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_LOTS</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          type="button"
+          class="btn btn-default"
+          data-method="search">
+          <span class="fa fa-search"></span> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path   = "StockLotsCtrl.bcPaths"
+  button = "StockLotsCtrl.bcButtons"
+  print  = "StockLotsCtrl.buttonPrint">
+</bh-breadcrumb>
+
+<!-- util bar -->
+<div class="flex-util">
+  
+</div>
+
+<!--the grid -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <!-- vouchers list  -->
+    <div
+      id="stock-lots-grid"
+      ui-grid="StockLotsCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-resize-columns
+      ui-grid-auto-resize>
+    </div>
+
+    <bh-grid-loading-indicator
+      loading-state="StockLotsCtrl.loading"
+      empty-state="StockLotsCtrl.gridOptions.data.length === 0"
+      error-state="StockLotsCtrl.hasError">
+    </bh-grid-loading-indicator>
+
+  </div>
+</div>

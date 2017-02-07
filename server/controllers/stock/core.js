@@ -31,7 +31,8 @@ const flux = {
     'TO_ADJUSTMENT'    : 12
 };
 
-// exports functions 
+// exports 
+exports.flux = flux;
 exports.getLots = getLots;
 exports.getLotsDepot = getLotsDepot;
 exports.getLotsMovements = getLotsMovements;

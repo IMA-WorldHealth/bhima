@@ -31,22 +31,6 @@ const core        = require('./core');
 const BadRequest  = require('../../lib/errors/BadRequest');
 const NotFound    = require('../../lib/errors/NotFound');
 
-const flux = {
-    'FROM_PURCHASE'    : 1,
-    'FROM_OTHER_DEPOT' : 2,
-    'FROM_ADJUSTMENT'  : 3,
-    'FROM_PATIENT'     : 4,
-    'FROM_SERVICE'     : 5,
-    'FROM_DONATION'    : 6,
-    'FROM_LOSS'        : 7,
-    'TO_OTHER_DEPOT'   : 8,
-    'TO_PATIENT'       : 9,
-    'TO_SERVICE'       : 10,
-    'TO_LOSS'          : 11,
-    'TO_ADJUSTMENT'    : 12
-};
-
-
 // expose to the API 
 exports.createStock        = createStock;
 exports.createMovement     = createMovement;
@@ -204,7 +188,7 @@ function depotMovement(document, params) {
             date:             document.date,
             entity_uuid:      null,
             is_exit:          1,
-            flux_id:          flux.TO_OTHER_DEPOT,
+            flux_id:          core.flux.TO_OTHER_DEPOT,
             user_id:          document.user
         };
 
@@ -219,7 +203,7 @@ function depotMovement(document, params) {
             date:             document.date,
             entity_uuid:      null,
             is_exit:          0,
-            flux_id:          flux.FROM_OTHER_DEPOT,
+            flux_id:          core.flux.FROM_OTHER_DEPOT,
             user_id:          document.user
         };
         

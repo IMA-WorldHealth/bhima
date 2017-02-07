@@ -1165,6 +1165,16 @@
     "BUG_LINK" : "Report an Issue",
     "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
   },
+  "STOCK" : {
+    "CODE"            : "Code",
+    "DEPOT"           : "Depot",
+    "ENTRY_DATE"      : "Entry Date",
+    "EXPIRATION_DATE" : "Expiration Date",
+    "INVENTORY"       : "Inventory",
+    "LOT"             : "Lot",
+    "QUANTITY"        : "Quantity",
+    "SEARCH"          : "Search"
+  },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",
     "ADD_SUBSIDY"      : "Add Subsidy",
@@ -1401,6 +1411,9 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Simple Voucher",
     "STOCK"                      : "Stock",
+    "STOCK_INVENTORY"            : "Stock Inventory",
+    "STOCK_LOTS"                 : "Stock Lots",
+    "STOCK_MOVEMENTS"            : "Stock Movements",
     "SUBSIDY"                    : "Subsidy Management",
     "TRANSACTION_TYPE"           : "Transaction Types",
     "USERS"                      : "Users",
