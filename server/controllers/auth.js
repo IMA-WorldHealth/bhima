@@ -61,7 +61,7 @@ function login(req, res, next) {
       }
 
       if(rows[0].deactivated === 1){
-        throw new Unauthorized("The user is not activated, contact the administrator", "FORM.ERRORS.LOCKED_USER");
+        throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
       }
 
       return loadSessionInformation(rows[0]);
