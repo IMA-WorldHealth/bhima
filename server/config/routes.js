@@ -49,6 +49,7 @@ const inventory            = require('../controllers/inventory');
 const depots               = require('../controllers/inventory/depots');
 const inventoryReports     = require('../controllers/inventory/reports');
 const stock                = require('../controllers/stock');
+const stockReports         = require('../controllers/stock/reports');
 
 // finance routes
 const trialBalance     = require('../controllers/finance/trialBalance');
@@ -600,6 +601,9 @@ exports.configure = function configure(app) {
 
   app.get('/stock/lots/depots/', stock.listLotsDepot);
   app.get('/stock/inventory/depots', stock.listInventoryDepot);
+
+  // stock reports API 
+  app.get('/reports/stock/lots', stockReports.stockLotsReport);
 
   app.get('/diagnoses', diagnoses.list);
 };

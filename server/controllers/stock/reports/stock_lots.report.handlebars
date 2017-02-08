@@ -1,0 +1,63 @@
+{{> head title="TREE.STOCK_LOTS" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'TREE.STOCK_LOTS'}}
+      </h2>
+
+      <!-- filters  -->
+      {{#if hasFilter}}
+      <br />
+        <div>
+          <i class="fa fa-filter"></i>
+          {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
+          {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
+          {{#if display.label}}{{translate 'STOCK.LOT'}}: {{look display 'label'}} /{{/if}}
+          {{#if display.expiration_date_from}} {{translate 'STOCK.EXPIRATION_DATE'}}> {{date (look display 'expiration_date_from')}} /{{/if}}
+          {{#if display.expiration_date_to}} {{translate 'STOCK.EXPIRATION_DATE'}}< {{date (look display 'expiration_date_to')}} /{{/if}}
+          {{#if display.entry_date_from}} {{translate 'STOCK.ENTRY_DATE'}}> {{date (look display 'entry_date_from')}} /{{/if}}
+          {{#if display.entry_date_to}} {{translate 'STOCK.ENTRY_DATE'}}< {{date (look display 'entry_date_to')}} /{{/if}}
+        </div>
+        <br />
+      {{/if}}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'STOCK.CODE'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
+            <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
+            <th>{{translate 'STOCK.DEPOT'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{code}}</td>
+              <td>{{text}}</td>
+              <td>{{label}}</td>
+              <td>{{quantity}}</td>
+              <td class="text-right">{{date entry_date}}</td>
+              <td class="text-right">{{date expiration_date}}</td>
+              <td>{{depot_text}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=7}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

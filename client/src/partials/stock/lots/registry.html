@@ -1,9 +1,36 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path   = "StockLotsCtrl.bcPaths"
-  button = "StockLotsCtrl.bcButtons"
-  print  = "StockLotsCtrl.buttonPrint">
-</bh-breadcrumb>
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_LOTS</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="StockLotsCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/reports/stock/lots"
+          options="StockLotsCtrl.filters"
+          disable-cache="true">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/stock/lots"
+          report-options="StockLotsCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- util bar  -->
 <div class="flex-util">

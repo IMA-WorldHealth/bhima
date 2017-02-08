@@ -18,22 +18,6 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate,
   vm.filters         = { lang: Languages.key };
   vm.formatedFilters = [];
 
-  // headercrumb paths
-  vm.bcPaths = [
-    { label : 'TREE.STOCK' },
-    { label : 'TREE.STOCK_LOTS' }
-  ];
-
-  // headercrumb buttons
-  vm.bcButtons = [
-    { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
-      color: 'btn-default', action: search
-    }
-  ];
-
-  // headercrumb print 
-  vm.buttonPrint = { pdfUrl: '...' };
-
   // grid columns 
   var columns = [
       { field : 'code', 
@@ -63,6 +47,7 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate,
   };
 
   // expose to the view 
+  vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
 

@@ -103,6 +103,7 @@ function SearchFilterFormatService() {
       
       { field: 'depot_uuid', displayName: 'STOCK.DEPOT' },
       { field: 'inventory_uuid', displayName: 'STOCK.INVENTORY' },
+      { field: 'label', displayName: 'FORM.LABELS.LABEL' },
       { field: 'entry_date_from', displayName: 'STOCK.ENTRY_DATE', comparitor: '>', ngFilter:'date' },
       { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter:'date' },
       { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter:'date' },
