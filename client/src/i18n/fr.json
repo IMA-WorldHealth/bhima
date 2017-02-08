@@ -1337,6 +1337,7 @@
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
+      "DOCUMENT_ID"        : "ID Document",
       "DOB"                : "Date de naissance",
       "EDIT"               : "Editer",
       "EMAIL"              : "Email",
