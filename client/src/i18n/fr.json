@@ -1279,13 +1279,33 @@
   },
   "STOCK" : {
     "CODE"            : "Code",
+    "COST"            : "Cout",
     "DEPOT"           : "Depot",
     "ENTRY_DATE"      : "Date d'entrée",
     "EXPIRATION_DATE" : "Date d'expiration",
+    "FLUX"            : "Raison",
     "INVENTORY"       : "Inventaire",
+    "IO"              : "Entrée/Sortie",
+    "INPUT"           : "Entrée",
     "LOT"             : "Lot",
+    "OUTPUT"          : "Sortie",
     "QUANTITY"        : "Quantité",
-    "SEARCH"          : "Chercher"
+    "SEARCH"          : "Chercher",
+    "UNIT_COST"       : "Cout unitaire"
+  },
+  "STOCK_FLUX" : {
+    "FROM_PURCHASE"    : "Achat",
+    "FROM_OTHER_DEPOT" : "En provenance d'un depot",
+    "FROM_ADJUSTMENT"  : "En provenance d'un ajustement",
+    "FROM_PATIENT"     : "En provenance d'un patient",
+    "FROM_SERVICE"     : "En provenance d'un service",
+    "FROM_DONATION"    : "En provenance d'une donation",
+    "FROM_LOSS"        : "En provenance d'une perte",
+    "TO_OTHER_DEPOT"   : "Vers un depot",
+    "TO_PATIENT"       : "Vers un patient",
+    "TO_SERVICE"       : "Vers un service",
+    "TO_LOSS"          : "Vers une perte",
+    "TO_ADJUSTMENT"    : "Vers un ajustement"
   },
   "SUPPLIER": {
     "ADD_SUPPLIER"     : "Ajouter un fournisseur",

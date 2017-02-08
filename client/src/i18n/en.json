@@ -1250,13 +1250,33 @@
   },
   "STOCK" : {
     "CODE"            : "Code",
+    "COST"            : "Cost",
     "DEPOT"           : "Depot",
     "ENTRY_DATE"      : "Entry Date",
     "EXPIRATION_DATE" : "Expiration Date",
+    "FLUX"            : "Reason",
     "INVENTORY"       : "Inventory",
+    "INPUT"           : "Input",
+    "IO"              : "In/Out",
     "LOT"             : "Lot",
+    "OUTPUT"          : "Output",
     "QUANTITY"        : "Quantity",
-    "SEARCH"          : "Search"
+    "SEARCH"          : "Search",
+    "UNIT_COST"       : "Unit cost"
+  },
+  "STOCK_FLUX" : {
+    "FROM_PURCHASE"    : "From Purchase",
+    "FROM_OTHER_DEPOT" : "From Depot",
+    "FROM_ADJUSTMENT"  : "From Adjustment",
+    "FROM_PATIENT"     : "From Patient",
+    "FROM_SERVICE"     : "From Service",
+    "FROM_DONATION"    : "From Donation",
+    "FROM_LOSS"        : "From Loss",
+    "TO_OTHER_DEPOT"   : "To Depot",
+    "TO_PATIENT"       : "To Patient",
+    "TO_SERVICE"       : "To Service",
+    "TO_LOSS"          : "To Loss",
+    "TO_ADJUSTMENT"    : "To Adjustment"
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",

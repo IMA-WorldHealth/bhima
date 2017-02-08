@@ -358,6 +358,20 @@ function constantConfig() {
       INCOME             : 'income',
       EXPENSE            : 'expense'
     },
+    flux : {
+      FROM_PURCHASE: 1,
+      FROM_OTHER_DEPOT: 2,
+      FROM_ADJUSTMENT: 3,
+      FROM_PATIENT: 4,
+      FROM_SERVICE: 5,
+      FROM_DONATION: 6,
+      FROM_LOSS: 7,
+      TO_OTHER_DEPOT: 8,
+      TO_PATIENT: 9,
+      TO_SERVICE: 10,
+      TO_LOSS: 11,
+      TO_ADJUSTMENT: 12
+    },
     reports : {
       AGED_DEBTOR : 'AGED_DEBTOR',
       CASHFLOW : 'CASHFLOW',
