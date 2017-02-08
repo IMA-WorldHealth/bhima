@@ -97,7 +97,7 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with \'name\' parameter', function () {
-      let conditions = { name : 'Test' };
+      let conditions = { display_name : 'Test' };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
@@ -107,7 +107,7 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search should be composable', function () {
-      let conditions = { sex: 'M', name: 2 };
+      let conditions = { sex: 'M', display_name : 2 };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
@@ -117,7 +117,7 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
-      let conditions = { name : 'Test', reference : 'PA.TPA.1' };
+      let conditions = { display_name : 'Test', reference : 'PA.TPA.1' };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
@@ -139,7 +139,7 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with detailed and limit parameters', function () {
-      let conditions = { detailed: 1, limit: 5, name: 'Test' };
+      let conditions = { detailed: 1, limit: 5, display_name: 'Test' };
 
       return agent.get('/patients/search/')
         .query(conditions)
@@ -155,7 +155,7 @@ describe('(/patients) Patients', function () {
           helpers.api.listed(res, 2);
 
           expect(res.body[0]).to.contain.all.keys(expected);
-          return agent.get('/patients/search/?name=Test&limit=1');
+          return agent.get('/patients/search/?display_name=Test&limit=1');
         })
         .then(function (res) {
           helpers.api.listed(res, 1);
