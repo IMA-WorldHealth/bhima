@@ -1,0 +1,68 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_MOVEMENTS</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="StockCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/reports/stock/lots"
+          options="StockCtrl.filters"
+          disable-cache="true">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/stock/lots"
+          report-options="StockCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- util bar  -->
+<div class="flex-util">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="StockCtrl.formatedFilters"
+    on-remove-filter="StockCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="StockCtrl.clearFilters()"
+    ng-show="StockCtrl.formatedFilters.length > 0"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+  </a>
+</div>
+
+<!--the grid -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <!-- vouchers list  -->
+    <div
+      id="stock-movements-grid"
+      ui-grid="StockCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-resize-columns
+      ui-grid-auto-resize>
+    </div>
+
+  </div>
+</div>
