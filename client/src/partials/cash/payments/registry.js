@@ -87,7 +87,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     Modal.openSearchCashPayment()
       .then(function (filters) {
         if (!filters) { return; }
-        reload(filters);
+        load(filters);
       });
   }
 
@@ -95,32 +95,29 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   function onRemoveFilter(key) {
     delete vm.filters.identifiers[key];
     delete vm.filters.display[key];
-    reload(vm.filters);
+    load(vm.filters);
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-    reload({ display : [], identifiers : {} });
-  }
-
-  // reload with filter
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = Cash.formatFilterParameters(filters.display);
-
-    // show filter bar as needed
-    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
-
-    load(filters.identifiers);
+    load({ display : [], identifiers : {} });
   }
 
   // load cash
   function load(filters) {
     vm.hasError = false;
 
+    // cache filters
+    vm.filters = filters;
+    vm.formatedFilters = Cash.formatFilterParameters(filters.display);
+
+    // show filter bar as needed
+    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
+
+
     toggleLoadingIndicator();
 
-    Cash.search(filters)
+    Cash.search(filters.identifiers)
       .then(function (rows) {
 
         rows.forEach(function (row) {
