@@ -51,7 +51,11 @@ INSERT INTO unit VALUES
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
-  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService');
+  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
+  (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/partials/stock', '/stock'),
+  (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/partials/stock/lots', '/stock/lots'),
+  (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/partials/stock/movements', '/stock/movements'),
+  (163, 'Stock Inventory', 'TREE.STOCK_INVENTORY', 'The stock inventory registry', 160, '/partials/stock/inventories', '/stock/inventories');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -101,4 +105,19 @@ INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'Cash return transaction type', 'expense', 'PAYBACK', 1),
   (9, 'VOUCHERS.SIMPLE.PURCHASES', 'Purchase transaction type', 'expense', 'ACHAT', 1),
   (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'other', 'CREDIT NOTE', 1);
+
+-- Stock Movement Flux 
+INSERT INTO `flux` VALUES 
+  (1,  'FROM_PURCHASE'),
+  (2,  'FROM_OTHER_DEPOT'),
+  (3,  'FROM_ADJUSTMENT'),
+  (4,  'FROM_PATIENT'),
+  (5,  'FROM_SERVICE'),
+  (6,  'FROM_DONATION'),
+  (7,  'FROM_LOSS'),
+  (8,  'TO_OTHER_DEPOT'),
+  (9,  'TO_PATIENT'),
+  (10, 'TO_SERVICE'),
+  (11, 'TO_LOSS'),
+  (12, 'TO_ADJUSTMENT');
 
