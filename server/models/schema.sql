@@ -326,7 +326,8 @@ CREATE TABLE `fee_center` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`),
   KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  INDEX `fee_center_index_1` (`is_cost`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `cost_assignation`;
@@ -336,7 +337,6 @@ CREATE TABLE `cost_assignation` (
   `auxiliary_cost_id` smallint(6) NOT NULL,
   `cost` float DEFAULT 0,
   `period_id` mediumint(8) UNSIGNED NOT NULL,
-  `auxi_cc_id` smallint(6) NOT NULL,
   `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `note` text,
   PRIMARY KEY (`id`),

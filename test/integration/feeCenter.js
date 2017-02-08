@@ -35,8 +35,8 @@ describe('(/fee_centers) The fee center API', function () {
   });
 
   /* @todo - make this route ?detailed=1 to conform to standards */
-  it('GET /fee_centers?full=1 returns a full list of fee centers', function () {
-    return agent.get('/fee_centers?full=1')
+  it('GET /fee_centers?detailed=1 returns a detailed list of fee centers', function () {
+    return agent.get('/fee_centers?detailed=1')
       .then(function (res) {
         helpers.api.listed(res, 7);
       })
@@ -59,8 +59,8 @@ describe('(/fee_centers) The fee center API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /fee_centers?available=1&full=1 returns a full list of available fee centers', function () {
-    return agent.get('/fee_centers?available=1&full=1')
+  it('GET /fee_centers?available=1&detailed=1 returns a detailed list of available fee centers', function () {
+    return agent.get('/fee_centers?available=1&detailed=1')
       .then(function (res) {
         helpers.api.listed(res, 1);
       })
@@ -99,12 +99,12 @@ describe('(/fee_centers) The fee center API', function () {
 
   /* @todo - should this return a simple number? */
   it('GET /fee_centers/:id/value returns the value of a provided fee center', function () {
-    return agent.get('/fee_centers/:id/value'.replace(':id', FETCHABLE_FEE_CENTER_ID))
+    return agent.get(`/fee_centers/${FETCHABLE_FEE_CENTER_ID}/value`)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('value');
+        expect(res.body).to.have.all.keys('id', 'value');
         expect(res.body.value).to.satisfy(function (value) { return value >= 0;});
       })
       .catch(helpers.handler);
