@@ -16,10 +16,6 @@ var NotFound = require('../../lib/errors/NotFound');
 /**
 * Returns an array of fee centers
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
-*
 * @example
 * // GET /fee_centers : Get list of fee_centers
 * var feeCenters = require('finance/fee_centers');
@@ -33,7 +29,7 @@ function list (req, res, next) {
     'SELECT fc.id, fc.label, fc.is_cost FROM fee_center AS fc ';
   var filter = '', ordering = 'ORDER BY fc.label;';
 
-  if (req.query.full === '1') {
+  if (req.query.detailed === '1') {
     sql =
       `SELECT fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
       FROM fee_center AS fc JOIN project AS p ON fc.project_id = p.id `;
@@ -100,13 +96,9 @@ function create (req, res, next) {
 /**
 * Update a fee center in the database
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
-*
 * @example
 * // PUT /fee_centers : update a fee center
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/fee_center');
 * feeCenters.update(req, res, next);
 */
 
@@ -199,56 +191,52 @@ function lookupFeeCenter(id) {
   var sql =
     'SELECT fc.id, fc.label, fc.is_cost, fc.note, fc.is_principal, fc.project_id FROM fee_center AS fc WHERE fc.id = ?';
 
-  return db.exec(sql, id)
+  return db.one(sql, id)
     .then(function (rows) {
       if (rows.length === 0) {
         throw new NotFound(`Could not find a fee center with id ${id}`);
       }
-      return rows[0];
+      return rows;
     });
 }
 
 /**
 * Return a fee cost value by scanning the general ledger
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
 *
 * @example
 * // GET /fee_centers/:id/value : returns a value of the fee center
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/fee_center');
 * feeCenters.getFeeValue(req, res, next);
 */
 
 function getFeeValue (req, res, next){
-  var sql = null, optionalCondition = '';
+  var sql = null;
 
 
   lookupFeeCenter(req.params.id)
     .then(function (){
-      sql =
-        'SELECT ac.id FROM account AS ac WHERE ac.fc_id = ? AND ac.is_title=0';
-
-      return db.exec(sql, req.params.id);
-    })
-    .then(function (rows){
-
-      if (rows.length > 0) {
-        rows = rows.map(function (row) { return row.id;});
-        optionalCondition = ' OR gl.account_id IN (' + rows.join(',') + ')';
-      }
 
       sql =
-        `SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS value 
-        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN
-        fee_center AS fc ON gl.fc_id = fc.id WHERE gl.fc_id=? '${optionalCondition}')
-        AS t`;
+        `
+        SELECT
+          IFNULL(IF(t.is_cost = 1, SUM(t.debit_equiv - t.credit_equiv), SUM(t.credit_equiv - t.debit_equiv)), 0) AS value, t.id
+        FROM
+          (
+            SELECT
+              gl.debit_equiv, gl.credit_equiv, f.is_cost, f.id
+            FROM
+              general_ledger AS gl
+            JOIN
+              fee_center AS f ON gl.fc_id = f.id
+            WHERE gl.fc_id = ?
+          ) AS t;
+         `;
 
-      return db.exec(sql, req.params.id);
+      return db.one(sql, req.params.id);
     })
     .then(function (result){
-      res.status(200).json(result[0]);
+      res.status(200).json(result);
     })
     .catch(next)
     .done();
