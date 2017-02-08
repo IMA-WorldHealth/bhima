@@ -77,6 +77,12 @@ function financialActivities(patientUuid) {
         sum.credit += patient.credit;
         sum.balance = sum.debit - sum.credit;
         sum.hasDebitBalance = sum.balance > 0;
+        
+        // Set value for Document Id from Invoice, Cash or Voucher
+        patient.document = patient.reference ? patient.reference :
+          patient.referenceCash ? patient.referenceCash :
+          patient.referenceVoucher ? patient.referenceVoucher : null;  
+
       });
 
       const debtor = glb.debtor;
