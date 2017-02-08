@@ -3,15 +3,20 @@ angular.module('bhima.controllers')
 
 StockLotsController.$inject = [
     '$state', 'StockService', 'NotifyService',
-    'uiGridConstants', '$translate'
+    'uiGridConstants', '$translate', 'StockModalService',
+    'SearchFilterFormatService', 'LanguageService'
 ];
 
 /**
  * Stock lots Controller
  * This module is a registry page for stock lots 
  */
-function StockLotsController($state, Stock, Notify, uiGridConstants, $translate) {
+function StockLotsController($state, Stock, Notify, uiGridConstants, $translate, Modal, SearchFilterFormat, Languages) {
   var vm = this;
+
+  // global variables 
+  vm.filters         = { lang: Languages.key };
+  vm.formatedFilters = [];
 
   // headercrumb paths
   vm.bcPaths = [
@@ -22,7 +27,7 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate)
   // headercrumb buttons
   vm.bcButtons = [
     { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
-      color: 'btn-default'
+      color: 'btn-default', action: search
     }
   ];
 
@@ -57,13 +62,44 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate)
     showColumnFooter  : true
   };
 
+  // expose to the view 
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.clearFilters = clearFilters;
+
+  // on remove one filter
+  function onRemoveFilter(key) {
+    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
+  }
+
+  // clear all filters 
+  function clearFilters() {
+    SearchFilterFormat.clearFilters(reload);
+  }
+
   // load stock lots in the grid
-  function loadGrid() {
-    Stock.lots.read().then(function (lots) {
+  function load(filters) {
+    Stock.lots.read(null, filters).then(function (lots) {
       vm.gridOptions.data = lots;
     })
     .catch(Notify.handleError);
   }
 
-  loadGrid();
+  // search modal
+  function search() {
+    Modal.openSearchLots()
+    .then(function (filters) {
+      if (!filters) { return; }
+      reload(filters);
+    })
+    .catch(Notify.handleError);
+  }
+
+  // reload 
+  function reload(filters) {
+    vm.filters = filters;
+    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
+    load(filters.identifiers);
+  }
+
+  load();
 }

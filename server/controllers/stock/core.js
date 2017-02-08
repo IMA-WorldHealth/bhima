@@ -87,6 +87,29 @@ function getLots(sql, params, final_clause) {
 
         delete params.expiration_date_from;
         delete params.expiration_date_to;
+
+    } else if (params.expiration_date_from && !params.expiration_date_to) {
+        queryExpiration = ` DATE(l.expiration_date) >= DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.expiration_date_from)
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.expiration_date_from;
+
+    } else if (!params.expiration_date_from && params.expiration_date_to) {
+        queryExpiration = ` DATE(l.expiration_date) <= DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.expiration_date_to)
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.expiration_date_to;
+
     }
 
     if (params.entry_date_from && params.entry_date_to) {
@@ -100,6 +123,28 @@ function getLots(sql, params, final_clause) {
         paramArray.push(paramEntry);
 
         delete params.entry_date_from;
+        delete params.entry_date_to;
+
+    } else if (params.entry_date_from && !params.entry_date_to) {
+        queryEntry = ` DATE(l.entry_date) >= DATE(?) `;
+        paramEntry = [
+            util.dateString(params.entry_date_from)
+        ];
+
+        queryArray.push(queryEntry);
+        paramArray.push(paramEntry);
+
+        delete params.entry_date_from;
+        
+    } else if (!params.entry_date_from && params.entry_date_to) {
+        queryEntry = ` DATE(l.entry_date) <= DATE(?) `;
+        paramEntry = [
+            util.dateString(params.entry_date_to)
+        ];
+
+        queryArray.push(queryEntry);
+        paramArray.push(paramEntry);
+
         delete params.entry_date_to;
     }
 
