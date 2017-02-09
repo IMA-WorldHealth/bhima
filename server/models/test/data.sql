@@ -213,9 +213,9 @@ INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
 
 INSERT INTO `inventory` VALUES
-  (1, HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), 'INV0', 'First Test Inventory Item', 25.0, 1, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 0, CURRENT_TIMESTAMP, NULL),
-  (1, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 'INV1', 'Second Test Inventory Item', 10.0, 20, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 0, CURRENT_TIMESTAMP, NULL),
-  (1, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 'INV2', 'Third Test Inventory Item', 105.0, 1, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 0, CURRENT_TIMESTAMP, NULL);
+  (1, HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), 'INV0', 'First Test Inventory Item', 25.0, 1, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, NULL),
+  (1, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 'INV1', 'Second Test Inventory Item', 10.0, 20, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, NULL),
+  (1, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 'INV2', 'Third Test Inventory Item', 105.0, 1, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, NULL);
 
 INSERT INTO `debtor_group` VALUES
   (1,HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'First Test Debtor Group',3631,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,NULL,NULL,0,10,0,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

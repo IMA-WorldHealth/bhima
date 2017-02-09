@@ -12,12 +12,12 @@ function StockService(Api) {
     var movements = new Api('/stock/lots/movements');
 
     // API for stock inventory in depots 
-    var inventory = new Api('/stock/inventory/depots');
+    var inventories = new Api('/stock/inventories/depots');
 
     var service = {
-        lots      : lots,
-        movements : movements,
-        inventory : inventory
+        lots        : lots,
+        movements   : movements,
+        inventories : inventories
     };
 
     return service;

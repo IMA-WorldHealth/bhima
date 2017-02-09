@@ -50,7 +50,7 @@ function getLots(sql, params, final_clause) {
     sql = sql || `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost,
             l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
-            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
+            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
@@ -225,7 +225,8 @@ function getLotsDepot(depot_uuid, params, final_clause) {
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, 
             SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, d.text AS depot_text,
             l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
-            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid 
+            l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+            i.avg_consumption, i.purchase_interval, i.delay  
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -255,9 +256,9 @@ function getLotsMovements(depot_uuid, params) {
     const sql = `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
             l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
-            l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
+            l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
             m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
-            f.label AS flux_label      
+            f.label AS flux_label, i.delay      
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid

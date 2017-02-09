@@ -603,7 +603,7 @@ exports.configure = function configure(app) {
   app.get('/stock/lots', stock.listLots);
 
   app.get('/stock/lots/depots/', stock.listLotsDepot);
-  app.get('/stock/inventory/depots', stock.listInventoryDepot);
+  app.get('/stock/inventories/depots', stock.listInventoryDepot);
 
   // stock reports API 
   app.get('/reports/stock/lots', stockReports.stockLotsReport);

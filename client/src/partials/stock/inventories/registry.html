@@ -2,13 +2,13 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title" translate>TREE.STOCK_LOTS</li>
+      <li class="title" translate>TREE.STOCK_INVENTORY</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
         <button
-          ng-click="StockLotsCtrl.search()"
+          ng-click="StockCtrl.search()"
           data-method="search"
           class="btn btn-default">
           <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
@@ -16,16 +16,16 @@
       </div>
       <div class="toolbar-item">
         <bh-pdf-print
-          pdf-url="/reports/stock/lots"
-          options="StockLotsCtrl.filters"
+          pdf-url="/reports/stock/movements"
+          options="StockCtrl.filters"
           disable-cache="true">
         </bh-pdf-print>
       </div>
 
       <div class="toolbar-item">
         <bh-renderer-dropdown
-          report-url="/reports/stock/lots"
-          report-options="StockLotsCtrl.filters">
+          report-url="/reports/stock/movements"
+          report-options="StockCtrl.filters">
         </bh-renderer-dropdown>
       </div>
     </div>
@@ -36,14 +36,14 @@
 <div class="flex-util">
   <bh-filters-applied
     style="max-width:90%"
-    filters="StockLotsCtrl.formatedFilters"
-    on-remove-filter="StockLotsCtrl.onRemoveFilter(filter)">
+    filters="StockCtrl.formatedFilters"
+    on-remove-filter="StockCtrl.onRemoveFilter(filter)">
   </bh-filters-applied>
 
   <a
     href
-    ng-click="StockLotsCtrl.clearFilters()"
-    ng-show="StockLotsCtrl.formatedFilters.length > 0"
+    ng-click="StockCtrl.clearFilters()"
+    ng-show="StockCtrl.formatedFilters.length > 0"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-ban text-danger"></i>
@@ -56,8 +56,8 @@
   <div class="container-fluid">
 
     <div
-      id="stock-lots-grid"
-      ui-grid="StockLotsCtrl.gridOptions"
+      id="stock-inventory-grid"
+      ui-grid="StockCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-resize-columns
       ui-grid-auto-resize>

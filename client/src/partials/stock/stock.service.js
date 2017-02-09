@@ -16,6 +16,7 @@ function StockModalService(Modal) {
 
     service.openSearchLots = openSearchLots;
     service.openSearchMovements = openSearchMovements;
+    service.openSearchInventories = openSearchInventories;
 
     /** search stock lots */
     function openSearchLots(request) {
@@ -40,6 +41,24 @@ function StockModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/stock/movements/modals/search.modal.html',
         controller   : 'SearchMovementsModalController',
+        controllerAs : '$ctrl',
+        size         : 'md',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** search stock inventory */
+    function openSearchInventories(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/stock/inventories/modals/search.modal.html',
+        controller   : 'SearchInventoriesModalController',
         controllerAs : '$ctrl',
         size         : 'md',
         backdrop     : 'static',

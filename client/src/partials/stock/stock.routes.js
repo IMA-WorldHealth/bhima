@@ -16,8 +16,8 @@ angular.module('bhima.routes')
 
       .state('stockInventories', {
         url : '/stock/inventories',
-        controller: 'StockLotsController as StockLotsCtrl',
-        templateUrl: 'partials/stock/lots/registry.html'
+        controller: 'StockInventoriesController as StockCtrl',
+        templateUrl: 'partials/stock/inventories/registry.html'
       })
       ;
 

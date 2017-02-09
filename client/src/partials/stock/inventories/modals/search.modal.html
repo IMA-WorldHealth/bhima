@@ -1,0 +1,55 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-lots-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- depot -->
+    <div class="form-group">
+      <label class="control-label" translate>STOCK.DEPOT</label>
+
+      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid" theme="bootstrap">
+        <ui-select-match>
+          <span>{{$select.selected.text}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:$select.search">
+          <span ng-bind-html="depot.text | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- inventory -->
+    <div class="form-group">
+      <label class="control-label" translate>STOCK.INVENTORY</label>
+
+      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid" theme="bootstrap">
+        <ui-select-match>
+          <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:$select.search">
+          <span ng-bind-html="inventory.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
