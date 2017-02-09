@@ -1,40 +1,37 @@
 <div class="modal-header">
-  <h4>
-    <span ng-hide="$ctrl.documentTypeSelected">
-      <span class="glyphicon glyphicon-search"></span>
-      {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
-      <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
-    </span>
-
-    <span ng-show="$ctrl.documentTypeSelected">
-      <span class="glyphicon glyphicon-search"></span>
-      {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
-      {{ $ctrl.documentTypeLabel | translate }} /
-      <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
-
-      <div class="pull-right">
-        <span
+  <div class="bhima-title" style="height: 35px;">
+    <ol class="headercrumb">
+      <li ng-class="{ 'static' : $ctrl.documentTypeSelected, 'title' : !$ctrl.documentTypeSelected }" translate>
+        VOUCHERS.COMPLEX.REFERENCE
+      </li>
+      <li class="title" ng-if="$ctrl.documentTypeSelected">
+        <span translate>{{ $ctrl.documentTypeLabel }}</span>
+        <b class="label label-primary" ng-show="$ctrl.selectedEntity">{{ ::$ctrl.selectedEntity.label }}</b>
+      </li>
+    </ol>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button type="button"
           ng-click="$ctrl.toggleFilter()"
           class="btn btn-default">
           <span class="fa fa-search"></span>
-        </span>
+        </button>
 
-        <span
+        <button type="button"
           ng-click="$ctrl.refresh()"
           class="btn btn-default">
           <span class="fa fa-refresh"></span>
-        </span>
+        </button>
       </div>
-
-    </span>
-  </h4>
+    </div>
+  </div>
 </div>
 
 <div class="modal-body clearfix">
 
   <!-- select document type  -->
   <div ng-hide="$ctrl.documentTypeSelected">
-    <p class="text-center"><em>{{ 'VOUCHERS.COMPLEX.SELECT_DOCUMENT_TYPE' | translate }}</em></p>
+    <p class="text-center"><em translate>VOUCHERS.COMPLEX.SELECT_DOCUMENT_TYPE</em></p>
 
     <div class="btn-group btn-group-justified">
       <div class="btn-group">
@@ -43,7 +40,7 @@
           data-button-patient-invoice
           ng-click="$ctrl.selectDocType('patient_invoice')">
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
-          {{ 'VOUCHERS.COMPLEX.PATIENT_INVOICE' | translate }}
+          <span translate>VOUCHERS.COMPLEX.PATIENT_INVOICE</span>
         </button>
       </div>
 
@@ -53,7 +50,7 @@
           ng-click="$ctrl.selectDocType('cash_payment')"
           data-button-cash-payment>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
-          {{ 'VOUCHERS.COMPLEX.CASH_PAYMENT' | translate }}
+          <span translate>VOUCHERS.COMPLEX.CASH_PAYMENT</span>
         </button>
       </div>
 
@@ -63,14 +60,14 @@
           ng-click="$ctrl.selectDocType('voucher')"
           data-button-voucher>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
-          {{ 'VOUCHERS.COMPLEX.VOUCHER' | translate }}
+          <span translate>VOUCHERS.COMPLEX.VOUCHER</span>
         </button>
       </div>
     </div>
   </div>
 
   <!-- select references  -->
-  <div ng-show="$ctrl.documentTypeSelected">
+  <div class="row" ng-show="$ctrl.documentTypeSelected">
     <div class="col-xs-12">
       <div
         id="referenceGrid"
@@ -80,6 +77,11 @@
         ui-grid-resize-columns
         ui-grid-selection>
       </div>
+      <bh-grid-loading-indicator
+        loading-state="$ctrl.loading"
+        empty-state="$ctrl.gridOptions.data.length === 0"
+        error-state="$ctrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
   </div>
 </div>
@@ -90,7 +92,7 @@
     class="btn btn-default"
     ng-click="$ctrl.cancel()"
     data-method="cancel">
-    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    <span translate>FORM.BUTTONS.CANCEL</span>
   </button>
 
   <button
@@ -99,6 +101,6 @@
     ng-show="$ctrl.documentTypeSelected"
     ng-click="$ctrl.submit()"
     data-method="submit">
-    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    <span translate>FORM.BUTTONS.SUBMIT</span>
   </button>
 </div>
