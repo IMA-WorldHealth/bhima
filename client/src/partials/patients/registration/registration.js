@@ -39,17 +39,8 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
     minDate : bhConstants.dates.minDOB
   };
 
-  var yearOptions = {
-    format : 'yyyy',
-    datepickerMode : 'year',
-    minMode : 'year'
-  };
-
-  var dayOptions = {
-    format : 'dd-MM-yyyy',
-    datepickerMode : 'day',
-    minMode : 'day'
-  };
+  var yearOptions = bhConstants.yearOptions;
+  var dayOptions = bhConstants.dayOptions;
 
   setupRegistration();
 

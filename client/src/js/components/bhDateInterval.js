@@ -26,12 +26,14 @@ angular.module('bhima.components')
   });
 
 // dependencies injection
-bhDateInterval.$inject = ['DateService', 'moment'];
+bhDateInterval.$inject = ['DateService', 'moment', 'bhConstants'];
 
 // controller definition
-function bhDateInterval(Dates, moment) {
+function bhDateInterval(Dates, moment, bhConstants) {
   var vm = this;
 
+  vm.dateFormat = bhConstants.dayOptions.format;
+  
   // expose to the viewe
   vm.search = search;
   vm.clear  = clear;
