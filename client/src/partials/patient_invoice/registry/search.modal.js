@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 InvoiceRegistrySearchModalController.$inject = [
   '$uibModalInstance', 'UserService', 'ServiceService', 'DateService', 'filters',
-  'NotifyService', 'DebtorService'
+  'NotifyService'
 ];
 
 /**
@@ -14,7 +14,7 @@ InvoiceRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Users, Services, Dates, filters, Notify, Debtors) {
+function InvoiceRegistrySearchModalController(ModalInstance, Users, Services, Dates, filters, Notify) {
   var vm = this;
 
   // set controller data
@@ -43,13 +43,6 @@ function InvoiceRegistrySearchModalController(ModalInstance, Users, Services, Da
       })
       .catch(Notify.handleError);
   }
-
-  // client
-  Debtors.read()
-    .then(function (list) {
-      vm.debtors = list;
-    })
-    .catch(Notify.handleError);
 
   // submit the filter object to the parent controller.
   function submit(form) {
