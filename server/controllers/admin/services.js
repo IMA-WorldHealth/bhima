@@ -31,7 +31,7 @@ function list(req, res, next) {
   let sql =
     'SELECT s.id, s.name, s.cc_id, s.pc_id FROM service AS s';
 
-  if (req.query.full === '1') {
+  if (req.query.detailed === '1') {
     sql = `
       SELECT 
 s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id, e.name AS enterprise_name, 

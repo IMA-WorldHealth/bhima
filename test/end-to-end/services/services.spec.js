@@ -8,7 +8,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Services', function () {
+describe.only('Services', function () {
 
   // shared methods
   const path = '#/services';
