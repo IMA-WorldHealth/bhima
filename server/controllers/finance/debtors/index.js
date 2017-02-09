@@ -278,28 +278,32 @@ function financialPatient(debtorUuid) {
   let sql = `
     SELECT transaction.trans_id, BUID(transaction.entity_uuid) as entity_uuid, transaction.description,
       BUID(transaction.record_uuid) AS record_uuid, transaction.trans_date,
-      SUM(transaction.credit_equiv) AS credit, SUM(transaction.debit_equiv) AS debit,
-      IF(ISNULL(transaction.reference), '', CONCAT_WS('.', '${identifiers.INVOICE.key}', transaction.abbr, transaction.reference)) AS reference, 
-      IF(ISNULL(transaction.referenceCash), '', CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', transaction.abbr, transaction.referenceCash)) AS referenceCash,
-      IF(ISNULL(transaction.referenceVoucher), '', CONCAT_WS('.', '${identifiers.VOUCHER.key}', transaction.abbr, transaction.referenceVoucher)) AS referenceVoucher 
+      SUM(transaction.credit_equiv) AS credit, SUM(transaction.debit_equiv) AS debit, transaction.reference, transaction.referenceCash,
+      transaction.referenceVoucher 
     FROM (
         SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.description, posting_journal.record_uuid,
-          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr, cash.reference AS referenceCash,
-          voucher.reference AS referenceVoucher
+          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, doc1.text AS reference, project.abbr, doc2.text AS referenceCash,
+          doc3.text AS referenceVoucher
         FROM posting_journal
           LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
           LEFT JOIN cash ON cash.uuid = posting_journal.record_uuid
           LEFT JOIN voucher ON voucher.uuid = posting_journal.record_uuid
+          LEFT JOIN document_map doc1 ON doc1.uuid = invoice.uuid
+          LEFT JOIN document_map doc2 ON doc2.uuid = cash.uuid
+          LEFT JOIN document_map doc3 ON doc3.uuid = voucher.uuid
           JOIN project ON posting_journal.project_id = project.id
         WHERE posting_journal.entity_uuid = ?
       UNION
         SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.description, general_ledger.record_uuid,
-          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr, cash.reference AS referenceCash,
-          voucher.reference AS referenceVoucher
+          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, doc1.text AS reference, project.abbr, doc2.text AS referenceCash,
+          doc3.text AS referenceVoucher
         FROM general_ledger
           LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
           LEFT JOIN cash ON cash.uuid = general_ledger.record_uuid
           LEFT JOIN voucher ON voucher.uuid = general_ledger.record_uuid
+          LEFT JOIN document_map doc1 ON doc1.uuid = invoice.uuid
+          LEFT JOIN document_map doc2 ON doc2.uuid = cash.uuid
+          LEFT JOIN document_map doc3 ON doc3.uuid = voucher.uuid
           JOIN project ON general_ledger.project_id = project.id
         WHERE general_ledger.entity_uuid = ?
     ) AS transaction
