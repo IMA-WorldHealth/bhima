@@ -100,6 +100,7 @@ CREATE TABLE `cash` (
   `cashbox_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
   `description`     TEXT,
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
