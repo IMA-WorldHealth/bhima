@@ -13,7 +13,9 @@ angular.module('bhima.components')
 	}
 });
 
-
+dateEditorController.$inject = [
+  'bhConstants'
+];
 /**
  * bhDateEditor Component
  *
@@ -34,9 +36,11 @@ angular.module('bhima.components')
  *
  * @module components/bhDateEditor
  */
-function dateEditorController() {
+function dateEditorController(bhConstants) {
 	var ctrl = this;
 
+	ctrl.dateFormat = bhConstants.dayOptions.format;
+	
 	ctrl.editMode = false;
 	ctrl.toggleEditMode = toggleEditMode;
 

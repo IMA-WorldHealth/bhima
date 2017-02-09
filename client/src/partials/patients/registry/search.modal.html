@@ -40,7 +40,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateRegistrationFrom"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateRegistrationFromIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
@@ -63,7 +63,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateRegistrationTo"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateRegistrationToIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
