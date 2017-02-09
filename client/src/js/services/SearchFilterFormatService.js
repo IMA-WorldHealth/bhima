@@ -108,6 +108,9 @@ function SearchFilterFormatService() {
       { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter:'date' },
       { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter:'date' },
       { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter:'date' },
+
+      { field: 'flux_id', displayName: 'STOCK.FLUX' },
+      { field: 'is_exit', displayName: 'STOCK.OUTPUT' }
     ];
 
     // returns columns from filters

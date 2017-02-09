@@ -14,6 +14,28 @@
 
   <div class="modal-body">
 
+    <!-- lot number  -->
+    <div class="form-group">
+      <fieldset>
+        <legend translate>STOCK.MOVEMENTS</legend>
+
+        <label class="control-label">
+          <input type="radio" name="is_exit" ng-value="0" ng-model="$ctrl.bundle.is_exit"> 
+          <span translate>STOCK.INPUT</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="is_exit" ng-value="1" ng-model="$ctrl.bundle.is_exit"> 
+          <span translate>STOCK.OUTPUT</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="is_exit" ng-value="" ng-model="$ctrl.bundle.is_exit"> 
+          <span translate>STOCK.INPUT</span>/<span translate>STOCK.OUTPUT</span>
+        </label> 
+      </fieldset>
+    </div>
+
     <!-- depot -->
     <div class="form-group">
       <label class="control-label" translate>STOCK.DEPOT</label>
@@ -48,19 +70,25 @@
       <input type="text" class="form-control" name="label" ng-model="$ctrl.bundle.label">
     </div>
 
-    <!--entry date -->
+    <!-- movements flux -->
+    <div class="form-group">
+      <label class="control-label" translate>STOCK.FLUX</label>
+
+      <ui-select name="inventory" ng-model="$ctrl.bundle.flux_id" theme="bootstrap">
+        <ui-select-match>
+          <span translate>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:$select.search">
+          <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- date -->
     <fieldset>
-      <legend translate>STOCK.ENTRY_DATE</legend>
+      <legend translate>FORM.LABELS.DATE</legend>
       <bh-date-interval
-        date-from="$ctrl.bundle.entry_date_from" date-to="$ctrl.bundle.entry_date_to" mode="clean">
-      </bh-date-interval>
-    </fieldset>
-    
-    <!-- expiration date -->
-    <fieldset>
-      <legend translate>STOCK.EXPIRATION_DATE</legend>
-      <bh-date-interval
-        date-from="$ctrl.bundle.expiration_date_from" date-to="$ctrl.bundle.expiration_date_to" mode="clean">
+        date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
       </bh-date-interval>
     </fieldset>
 

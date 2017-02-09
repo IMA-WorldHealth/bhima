@@ -41,18 +41,13 @@ function StockMovementsController($state, Stock, Notify, uiGridConstants, $trans
       { field : 'unit_cost', 
         displayName : 'STOCK.UNIT_COST', 
         headerCellFilter: 'translate',
-        aggregationType : uiGridConstants.aggregationTypes.sum,
         cellFilter: 'currency:grid.appScope.enterprise.currency_id',
-        cellClass: 'text-right',
-        footerCellFilter: 'currency:grid.appScope.enterprise.currency_id',
-        footerCellClass: 'text-right'
+        cellClass: 'text-right'
       },
       { field : 'cost', 
         displayName : 'STOCK.COST', 
         headerCellFilter: 'translate',
-        aggregationType : function (agg, value) {
-          console.log(agg, value)
-        },
+        aggregationType : totalCost,
         cellClass: 'text-right',
         cellTemplate: 'partials/stock/movements/templates/cost.cell.html',
         footerCellFilter: 'currency:grid.appScope.enterprise.currency_id',
@@ -62,7 +57,10 @@ function StockMovementsController($state, Stock, Notify, uiGridConstants, $trans
       { field : 'flux_id', 
         displayName : 'STOCK.FLUX', 
         headerCellFilter: 'translate',
-        cellTemplate: 'partials/stock/movements/templates/flux.cell.html' }
+        cellTemplate: 'partials/stock/movements/templates/flux.cell.html' },
+      { field : 'action', displayName : '', 
+        enableFiltering: false, enableSorting: false, 
+        cellTemplate: 'partials/stock/movements/templates/action.cell.html' }
     ];
 
   // options for the UI grid
@@ -79,6 +77,14 @@ function StockMovementsController($state, Stock, Notify, uiGridConstants, $trans
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.getFluxName = getFluxName;
+
+  // aggregation total cost 
+  function totalCost(items, value) {
+    var total = items.reduce(function (previous, current) {
+      return current.entity.quantity * current.entity.unit_cost + previous;
+    }, 0);
+    return total;
+  }
 
   // on remove one filter
   function onRemoveFilter(key) {
@@ -100,7 +106,7 @@ function StockMovementsController($state, Stock, Notify, uiGridConstants, $trans
 
   // search modal
   function search() {
-    Modal.openSearchLots()
+    Modal.openSearchMovements()
     .then(function (filters) {
       if (!filters) { return; }
       reload(filters);

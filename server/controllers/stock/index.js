@@ -38,6 +38,7 @@ exports.listLots           = listLots;
 exports.listLotsDepot      = listLotsDepot;
 exports.listInventoryDepot = listInventoryDepot;
 exports.listLotsMovements  = listLotsMovements;
+exports.listStockFlux      = listStockFlux;
 
 
 /**
@@ -274,4 +275,16 @@ function listInventoryDepot(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * GET /stock/flux
+ * returns list of stock flux 
+ */
+function listStockFlux(req, res, next) {
+    db.exec('SELECT id, label FROM flux;')
+    .then(rows => {
+        res.status(200).json(rows);
+    })
+    .catch(next);
 }

@@ -148,6 +148,43 @@ function getLots(sql, params, final_clause) {
         delete params.entry_date_to;
     }
 
+    if (params.dateFrom && params.dateTo) {
+        queryExpiration = ` DATE(m.date) BETWEEN DATE(?) AND DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.dateFrom), 
+            util.dateString(params.dateTo),
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.dateFrom;
+        delete params.dateTo;
+
+    } else if (params.dateFrom && !params.dateTo) {
+        queryExpiration = ` DATE(m.date) >= DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.dateFrom)
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.dateFrom;
+
+    } else if (!params.dateFrom && params.dateTo) {
+        queryExpiration = ` DATE(m.date) <= DATE(?) `;
+        paramExpiration = [
+            util.dateString(params.dateTo)
+        ];
+
+        queryArray.push(queryExpiration);
+        paramArray.push(paramExpiration);
+
+        delete params.dateTo;
+
+    }
+
     // build query and parameters correctly
     let builder = util.queryCondition(sql, params);
 
@@ -219,11 +256,13 @@ function getLotsMovements(depot_uuid, params) {
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
             l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
             l.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
-            m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost     
+            m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+            f.label AS flux_label      
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN depot d ON d.uuid = m.depot_uuid  
+        JOIN depot d ON d.uuid = m.depot_uuid 
+        JOIN flux f ON f.id = m.flux_id  
     `;
 
     return getLots(sql, params);

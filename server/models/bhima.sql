@@ -108,16 +108,16 @@ INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `
 
 -- Stock Movement Flux 
 INSERT INTO `flux` VALUES 
-  (1,  'FROM_PURCHASE'),
-  (2,  'FROM_OTHER_DEPOT'),
-  (3,  'FROM_ADJUSTMENT'),
-  (4,  'FROM_PATIENT'),
-  (5,  'FROM_SERVICE'),
-  (6,  'FROM_DONATION'),
-  (7,  'FROM_LOSS'),
-  (8,  'TO_OTHER_DEPOT'),
-  (9,  'TO_PATIENT'),
-  (10, 'TO_SERVICE'),
-  (11, 'TO_LOSS'),
-  (12, 'TO_ADJUSTMENT');
+  (1,  'STOCK_FLUX.FROM_PURCHASE'),
+  (2,  'STOCK_FLUX.FROM_OTHER_DEPOT'),
+  (3,  'STOCK_FLUX.FROM_ADJUSTMENT'),
+  (4,  'STOCK_FLUX.FROM_PATIENT'),
+  (5,  'STOCK_FLUX.FROM_SERVICE'),
+  (6,  'STOCK_FLUX.FROM_DONATION'),
+  (7,  'STOCK_FLUX.FROM_LOSS'),
+  (8,  'STOCK_FLUX.TO_OTHER_DEPOT'),
+  (9,  'STOCK_FLUX.TO_PATIENT'),
+  (10, 'STOCK_FLUX.TO_SERVICE'),
+  (11, 'STOCK_FLUX.TO_LOSS'),
+  (12, 'STOCK_FLUX.TO_ADJUSTMENT');
 

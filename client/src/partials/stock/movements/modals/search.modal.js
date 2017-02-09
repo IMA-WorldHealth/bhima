@@ -1,12 +1,13 @@
 angular.module('bhima.controllers')
-.controller('SearchLotsModalController', SearchLotsModalController);
+.controller('SearchMovementsModalController', SearchMovementsModalController);
 
 // dependencies injections
-SearchLotsModalController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 'SearchFilterFormatService'
+SearchMovementsModalController.$inject = [
+  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 
+  'SearchFilterFormatService', 'FluxService', '$translate'
 ];
 
-function SearchLotsModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat) {
+function SearchMovementsModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat, Flux, $translate) {
   var vm = this;
 
   // gloabal variables 
@@ -34,12 +35,20 @@ function SearchLotsModalController(Depots, Inventory, Notify, Instance, SearchFi
   })
   .catch(Notify.handleError);
 
+  // load flux 
+  Flux.read()
+  .then(function (rows) {
+      vm.fluxes = rows.map(function (row) {
+        row.label = $translate.instant(row.label);
+        return row;
+      });
+  })
+  .catch(Notify.handleError);
+
   function init() {
     vm.bundle = { 
-      entry_date_from: new Date(), 
-      entry_date_to: new Date(),
-      expiration_date_from: new Date(),
-      expiration_date_to: new Date()
+      dateFrom: new Date(),
+      dateTo: new Date(),
     };
     validate();
   }
