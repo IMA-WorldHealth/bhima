@@ -45,24 +45,6 @@
         </div>
       </div>
 
-      <!-- client -->
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.CLIENT</label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('debtor_uuid')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
-        <ui-select name="debtor" ng-model="ModalCtrl.params.debtor_uuid">
-          <ui-select-match>
-            <span>{{$select.selected.text}}</span>
-          </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="debtor in ModalCtrl.debtors | filter:{ text : $select.search } track by debtor.uuid">
-            <span ng-bind-html="debtor.text | highlight:$select.search"></span>
-          </ui-select-choices>
-        </ui-select>
-      </div>
-
       <div class="form-group">
         <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
         <span style="display:inline-block;" class="pull-right">
