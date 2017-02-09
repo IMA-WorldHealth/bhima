@@ -410,30 +410,6 @@ CREATE TABLE `country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `credit_note`;
-CREATE TABLE `credit_note` (
-  `uuid`            BINARY(16) NOT NULL,
-  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cost`            DECIMAL(19,4) UNSIGNED NOT NULL,
-  `debtor_uuid`     BINARY(16) NOT NULL,
-  `seller_id`       SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
-  `invoice_uuid`    BINARY(36) NOT NULL,
-  `note_date`       DATE NOT NULL,
-  `description`     text NOT NULL,
-  `posted` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `credit_note_1` (`invoice_uuid`),
-  UNIQUE KEY `credit_note_2` (`project_id`, `reference`),
-  KEY `reference` (`reference`),
-  KEY `project_id` (`project_id`),
-  KEY `debtor_uuid` (`debtor_uuid`),
-  KEY `invoice_uuid` (`invoice_uuid`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `creditor`;
 
 CREATE TABLE `creditor` (
