@@ -745,7 +745,6 @@ CREATE TABLE `general_ledger` (
   `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
@@ -1284,7 +1283,6 @@ CREATE TABLE `posting_journal` (
   `credit_equiv`      DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,

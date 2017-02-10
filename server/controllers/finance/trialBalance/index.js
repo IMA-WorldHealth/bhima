@@ -24,23 +24,6 @@ function createErrorReport(code, isFatal, rows) {
   };
 }
 
-// Warning if the entity is null and entity_type is null also
-function checkEntityIsAlwaysDefined(transactions) {
-  let sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid, pj.entity_type FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND pj.entity_type IS NULL
-    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.WARNINGS.MISSING_ENTITY', false, rows);
-    });
-}
-
 // make sure that a entity_uuid exists for each deb_cred_type
 function checkDescriptionExists(transactions) {
   let sql =
@@ -253,8 +236,7 @@ exports.checkTransactions = function (req, res, next) {
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkRecordUuidExists(transactions), checkEntityIsAlwaysDefined(transactions),
-    checkDescriptionExists(transactions)
+    checkRecordUuidExists(transactions), checkDescriptionExists(transactions)
   ])
   .then(function (errorReports){
     let errors = errorReports.filter(function (errorReport) {

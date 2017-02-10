@@ -368,11 +368,11 @@ BEGIN
       INSERT INTO posting_journal
           (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
-          iaccountId, icost, 0, icost, 0, currencyId, ientityId, 'D', cid, iuserId, 1
+          iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 1
         );
 
       -- exit the loop
@@ -392,12 +392,12 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
-          currencyId, ientityId, 'D', cid, iuserId, 1
+          currencyId, ientityId, cid, iuserId, 1
         );
 
       END IF;
@@ -412,11 +412,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, origin_id
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
-      currencyId, ientityId, 'D', iuserId, 1
+      currencyId, ientityId, iuserId, 1
     );
   END IF;
 
@@ -471,10 +471,10 @@ CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
      "INSERT INTO general_ledger
      (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
       description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-       entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+       entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
          description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-          entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+          entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
      FROM posting_journal
      WHERE trans_id
      IN (", transactions, ")");
@@ -597,11 +597,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id
+      credit_equiv, currency_id, entity_uuid, user_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id
+      c.debtor_uuid, c.user_id
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -618,11 +618,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
+      c.debtor_uuid, c.user_id, ci.invoice_uuid
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -705,11 +705,11 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id,
-          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+          c.debtor_uuid, c.user_id, lastInvoiceUuid
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -1098,12 +1098,12 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    entity_type, reference_uuid, comment, origin_id, user_id)
+    reference_uuid, comment, origin_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
     vi.debit * current_exchange_rate, vi.credit * current_exchange_rate, v.currency_id,
-    vi.entity_uuid, NULL, vi.document_uuid, NULL, v.type_id, v.user_id
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
 
