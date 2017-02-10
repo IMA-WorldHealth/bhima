@@ -19,12 +19,12 @@ function PatientRegistrySearch() {
   const parameters = {
     name: 'Mock',
     name1: 'Patient',
-    dateRegistrationFrom: '2015-01-01',
-    dateRegistrationTo: '2015-04-01',
-    dateBirthFrom: '2016-05-01',
-    dateBirthTo: '2016-05-16',
-    dateBirthFrom2: '1960-06-30',
-    dateBirthTo2: '2016-05-16'
+    dateRegistrationFrom: '01/01/2015',
+    dateRegistrationTo: '01/04/2015',
+    dateBirthFrom: '01/05/2016',
+    dateBirthTo: '16/05/2016',
+    dateBirthFrom2: '30/01/1960',
+    dateBirthTo2: '16/05/2016'
   };
 
   const defaultVisibleRowNumber = 3;

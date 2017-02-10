@@ -16,8 +16,8 @@ describe('Balance Report Generation', () => {
 
   const annualReport = {
     title: 'Balance Annuelle 2016',
-    dateFrom: '01-01-2016',
-    dateTo: '31-12-2016',
+    dateFrom: '01/01/2016',
+    dateTo: '31/12/2016',
     dateOption: 0,
     classe: '*'
   };
