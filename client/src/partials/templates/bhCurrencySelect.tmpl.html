@@ -1,7 +1,7 @@
 <ng-form name="$ctrl.form">
   <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || !$ctrl.valid }" data-bh-currency-select>
     <p class="control-label" style="margin-bottom:5px;">
-      <strong>{{ "FORM.LABELS.CURRENCY" | translate }}</strong>
+      <strong translate>FORM.LABELS.CURRENCY</strong>
     </p>
 
     <!-- repeat each currency in the application -->
@@ -29,9 +29,9 @@
 
     <!-- show danger message if all currencies are disabled -->
     <p class="help-block" ng-hide="$ctrl.valid">
-      <i class="fa fa-exclamation-circle"></i> {{ "CASHBOX.NO_SUPPORTED_CURRENCIES" | translate }}
+      <i class="fa fa-exclamation-circle"></i> <span translate>CASHBOX.NO_SUPPORTED_CURRENCIES</span>
       <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}/edit" class="text-danger">
-        <strong><i class="fa fa-link"></i> {{ "CASHBOX.SET_CURRENCY_ACCOUNTS" | translate }}</strong>
+        <strong><i class="fa fa-link"></i> <span translate>CASHBOX.SET_CURRENCY_ACCOUNTS</span></strong>
       </a>
     </p>
   </div>

@@ -5,9 +5,7 @@
       <li class="static">
         {{::TransferCtrl.cashbox.label}}
       </li>
-      <li class="title">
-        {{ ::"CASH.TRANSFER.TITLE" | translate }}
-      </li>
+      <li class="title" translate>CASH.TRANSFER.TITLE</li>
     </ol>
   </div>
 
@@ -15,33 +13,36 @@
 
     <section ng-show="TransferCtrl.cashAccount.number">
       <p>
-        <i class="fa fa-info-circle text-primary"></i> {{ "CASH.TRANSFER.ACTION" | translate }}
+        <i class="fa fa-info-circle text-primary"></i> <span translate>CASH.TRANSFER.ACTION</span>
       </p>
       <dl class="dl-horizontal">
-        <dt>{{ "FORM.LABELS.FROM" | translate }}</dt>
-        <dd>[{{TransferCtrl.cashAccount.number}}] {{TransferCtrl.cashAccount.label }}</dd>
-        <dt>{{ "FORM.LABELS.TO" | translate }}</dt>
-        <dd>[{{TransferCtrl.transferAccount.number}}] {{TransferCtrl.transferAccount.label }}</dd>
+        <dt translate>FORM.LABELS.FROM</dt>
+        <dd>{{ TransferCtrl.cashAccount.hrlabel }}</dd>
+        <dt translate>FORM.LABELS.TO</dt>
+        <dd>{{ TransferCtrl.transferAccount.hrlabel }}</dd>
       </dl>
-      <p>{{ "CASH.TRANSFER.REMINDER" | translate }}</p>
+      <p translate>CASH.TRANSFER.REMINDER</p>
     </section>
 
     <bh-currency-select
       id="transfer-currency-select"
-      currency-id="TransferCtrl.record.currency_id"
+      currency-id="TransferCtrl.voucher.details.currency_id"
       validation-trigger="TransferForm.$submitted"
       disable-ids="TransferCtrl.disabledCurrencyIds"
-      on-change="TransferCtrl.loadAccountDetails()"
+      on-change="TransferCtrl.loadAccountDetails(currency)"
       cashbox-id="TransferCtrl.cashbox.id">
     </bh-currency-select>
 
     <bh-currency-input
       id="transfer-currency-input"
-      currency-id="TransferCtrl.record.currency_id"
-      model="TransferCtrl.record.amount"
-      form="TransferForm"
+      currency-id="TransferCtrl.voucher.details.currency_id"
+      model="TransferCtrl.amount"
       validation-trigger="TransferForm.$submitted">
     </bh-currency-input>
+
+    <p ng-show="TransferForm.$submitted && TransferCtrl.voucher._error" class="text-danger">
+      <i class="fa fa-exclamation-circle"></i> <span translate>{{ TransferCtrl.voucher._error }}</span>
+    </p>
   </div>
 
   <div class="modal-footer">
@@ -50,15 +51,13 @@
       class="btn btn-default"
       ui-sref="^.window({ id : TransferCtrl.cashbox.id })"
       data-modal-action="dismiss">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
     <bh-loading-button
       loading-state="TransferForm.$loading"
-      ng-disabled="!TransferCtrl.cashbox"
-      >
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+      ng-disabled="!TransferCtrl.cashbox">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
-
   </div>
 </form>
