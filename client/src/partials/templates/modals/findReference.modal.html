@@ -13,8 +13,9 @@
       <div class="toolbar-item">
         <button type="button"
           ng-click="$ctrl.toggleFilter()"
-          class="btn btn-default">
-          <span class="fa fa-search"></span>
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : $ctrl.filterEnabled }">
+          <span class="fa fa-filter"></span>
         </button>
 
         <button type="button"
