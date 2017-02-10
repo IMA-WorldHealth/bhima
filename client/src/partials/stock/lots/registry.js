@@ -34,6 +34,7 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate,
       },
       { field : 'entry_date', displayName : 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
       { field : 'expiration_date', displayName : 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
+      { field : 'delay_expiration', displayName : 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
       { field : 'depot_text', displayName : 'STOCK.DEPOT', headerCellFilter: 'translate'  }
     ];
 

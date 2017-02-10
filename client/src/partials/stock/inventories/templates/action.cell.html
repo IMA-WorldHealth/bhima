@@ -7,13 +7,7 @@
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
     <li>
       <a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.document_uuid)" data-link-receipt="{{ ::row.entity.document_uuid }}" href>
-        <i class="fa fa-file-text-o"></i> <span translate>STOCK.DETAILS</span>
-      </a>
-    </li>
-
-    <li>
-      <a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.document_uuid)" data-link-receipt="{{ ::row.entity.document_uuid }}" href>
-        <i class="fa fa-file-o"></i> <span translate>STOCK.FILE</span>
+        <i class="fa fa-file-text-o"></i> <span translate>STOCK.FILE</span>
       </a>
     </li>
   </ul>

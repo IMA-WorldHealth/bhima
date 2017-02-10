@@ -21,8 +21,8 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
 
   // grid columns 
   var columns = [
-      { field : 'depot_text', displayName : 'STOCK.DEPOT', headerCellFilter: 'translate',
-        aggregationType : uiGridConstants.aggregationTypes.count },
+      
+      { field : 'code', displayName : 'STOCK.CODE', headerCellFilter: 'translate' },
 
       { field : 'text', displayName : 'STOCK.INVENTORY', headerCellFilter: 'translate',
         width: '20%' },
@@ -64,14 +64,10 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
         cellClass: 'text-right',
         cellTemplate: '' },
 
-      { field : 'S_Q', displayName : 'Q', 
+      { field : 'S_Q', displayName : 'STOCK.ORDERS', headerCellFilter: 'translate',
         enableFiltering: false, enableSorting: false, 
         cellClass: 'text-right',
-        cellTemplate: 'partials/stock/inventories/templates/appro.cell.html' },
-
-      { field : 'action', displayName : '', 
-        enableFiltering: false, enableSorting: false, 
-        cellTemplate: 'partials/stock/inventories/templates/action.cell.html' }
+        cellTemplate: 'partials/stock/inventories/templates/appro.cell.html' }
     ];
 
   // options for the UI grid
@@ -109,7 +105,7 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
   // load stock lots in the grid
   function load(filters) {
     Stock.inventories.read(null, filters).then(function (rows) {
-      vm.gridOptions.data = stockManagementProcess(rows);
+      vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);
   }
@@ -129,37 +125,6 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
     vm.filters = filters;
     vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
     load(filters.identifiers);
-  }
-
-  // stock management 
-  function stockManagementProcess(inventories) {
-    var CM, Q;
-    return inventories.map(function (inventory) {
-      Q = inventory.quantity; // the quantity 
-      CM = inventory.avg_consumption; // consommation mensuelle
-      inventory.S_SEC = CM * inventory.delay; // stock de securite
-      inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-      inventory.S_MAX = CM * inventory.purchase_interval + inventory.S_MIN; // stock maximum 
-      inventory.S_MONTH = inventory.quantity / CM; // mois de stock 
-      inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement  
-      // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
-
-      if (Q <= 0) {
-        inventory.status = 'sold_out';
-      } else if (Q > 0 && Q <= inventory.S_SEC) {
-        inventory.status = 'security_reached';
-      } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {
-        inventory.status = 'minimum_reached';
-      } else if (Q > inventory.S_MIN && Q <= inventory.S_MAX) {
-        inventory.status = 'in_stock';
-      } else if (Q > inventory.S_MAX) {
-        inventory.status = 'over_maximum';
-      } else {
-        inventory.status = '';
-      }
-
-      return inventory;
-    });
   }
 
   load();

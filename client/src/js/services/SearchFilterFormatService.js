@@ -110,7 +110,9 @@ function SearchFilterFormatService() {
       { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter:'date' },
 
       { field: 'flux_id', displayName: 'STOCK.FLUX' },
-      { field: 'is_exit', displayName: 'STOCK.OUTPUT' }
+      { field: 'is_exit', displayName: 'STOCK.OUTPUT' },
+
+      { field: 'status', displayName: 'STOCK.STATUS.LABEL' }
     ];
 
     // returns columns from filters

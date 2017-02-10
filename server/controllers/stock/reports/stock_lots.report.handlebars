@@ -39,6 +39,7 @@
             <th>{{translate 'STOCK.QUANTITY'}}</th>
             <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
             <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
+            <th>{{translate 'STOCK.EXPIRATION'}}</th>
             <th>{{translate 'STOCK.DEPOT'}}</th>
           </tr>
         </thead>
@@ -51,6 +52,7 @@
               <td class="text-right">{{quantity}}</td>
               <td class="text-right">{{date entry_date}}</td>
               <td class="text-right">{{date expiration_date}}</td>
+              <td class="text-right">{{delay_expiration}}</td>
               <td>{{depot_text}}</td>
             </tr>
           {{else}}

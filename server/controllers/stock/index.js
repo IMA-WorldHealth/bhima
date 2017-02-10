@@ -269,7 +269,7 @@ function listLotsDepot(req, res, next) {
 function listInventoryDepot(req, res, next) {
     let params = req.query;
 
-    core.getLotsDepot(null, params, ' GROUP BY l.inventory_uuid, m.depot_uuid ')
+    core.getLotsDepot(null, params, ' GROUP BY l.inventory_uuid ')
     .then(rows => {
         res.status(200).json(rows);
     })

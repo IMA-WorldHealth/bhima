@@ -13,6 +13,7 @@
 'use strict';
 
 const _      = require('lodash');
+const moment = require('moment');
 const util   = require('../../lib/util');
 const db     = require('../../lib/db');
 
@@ -217,8 +218,15 @@ function getLots(sql, params, final_clause) {
  */
 function getLotsDepot(depot_uuid, params, final_clause) {
 
+    let status;
+
     if (depot_uuid) {
         params.depot_uuid = depot_uuid;
+    }
+
+    if (params.status) {
+        status = params.status;
+        delete params.status;
     }
 
     const sql = `
@@ -235,7 +243,16 @@ function getLotsDepot(depot_uuid, params, final_clause) {
 
     final_clause = final_clause || ` GROUP BY l.uuid, m.depot_uuid `;
 
-    return getLots(sql, params, final_clause);
+    return getLots(sql, params, final_clause)
+        .then(stockManagementProcess)
+        .then(rows => {
+            if (status) {
+                return rows.filter(row => {
+                    return row.status === status;
+                });
+            }
+            return rows;
+        });
 }
 
 /**
@@ -267,4 +284,45 @@ function getLotsMovements(depot_uuid, params) {
     `;
 
     return getLots(sql, params);
+}
+
+/**
+ * Stock Management Processing 
+ */
+function stockManagementProcess(inventories) {
+    const current = moment();
+    let CM, Q;
+    let delay;
+
+    return inventories.map(inventory => {
+        Q = inventory.quantity; // the quantity 
+        CM = inventory.avg_consumption; // consommation mensuelle
+        inventory.S_SEC = CM * inventory.delay; // stock de securite
+        inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
+        inventory.S_MAX = CM * inventory.purchase_interval + inventory.S_MIN; // stock maximum 
+        inventory.S_MONTH = inventory.quantity / CM; // mois de stock 
+        inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement  
+        // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
+
+        if (Q <= 0) {
+        inventory.status = 'sold_out';
+        } else if (Q > 0 && Q <= inventory.S_SEC) {
+        inventory.status = 'security_reached';
+        } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {
+        inventory.status = 'minimum_reached';
+        } else if (Q > inventory.S_MIN && Q <= inventory.S_MAX) {
+        inventory.status = 'in_stock';
+        } else if (Q > inventory.S_MAX) {
+        inventory.status = 'over_maximum';
+        } else {
+        inventory.status = '';
+        }
+
+        delay = moment(new Date(inventory.expiration_date)).diff(current, 'months');
+        inventory.S_RP = inventory.quantity - (delay * inventory.avg_consumption);
+
+        delay = moment(new Date(inventory.expiration_date)).diff(current);
+        inventory.delay_expiration = moment.duration(delay).humanize();
+        return inventory;
+    });
 }

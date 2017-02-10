@@ -42,6 +42,39 @@
       </ui-select>
     </div>
 
+    <!-- status -->
+    <div class="form-group">
+      <fieldset>
+        <legend translate>STOCK.STATUS.LABEL</legend>
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'sold_out'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.SOLD_OUT</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'in_stock'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.IN_STOCK</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'security_reached'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.SECURITY</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'minimum_reached'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.MINIMUM</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'over_maximum'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.OVER_MAX</span>
+        </label> &nbsp; 
+
+      </fieldset>
+    </div>
+
   </div>
 
   <div class="modal-footer">

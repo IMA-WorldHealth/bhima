@@ -53,7 +53,9 @@ function StockMovementsController($state, Stock, Notify, uiGridConstants, $trans
         footerCellFilter: 'currency:grid.appScope.enterprise.currency_id',
         footerCellClass: 'text-right'
       },
-      { field : 'date', displayName : 'FORM.LABELS.DATE', headerCellFilter: 'translate', cellFilter: 'date' },
+      { field : 'date', displayName : 'FORM.LABELS.DATE', headerCellFilter: 'translate', 
+        cellFilter: 'date', 
+        cellClass: 'text-right' },
       { field : 'flux_id', 
         displayName : 'STOCK.FLUX', 
         headerCellFilter: 'translate',
