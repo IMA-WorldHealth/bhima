@@ -17,7 +17,6 @@ describe('(/trial) API endpoint', function () {
     goodTransaction : { params : { transactions : ['TRANS1', 'TRANS2'] }},
     unknownTransactions : { params : { transactions : ['TS1', 'TS2'] }},
     emptyParam : { params : { transactions : null }},
-    warningTransaction : {params : {transactions : ['TRANS1']}},
     errorTransaction : {params : {transactions : ['TRANS5']}},
     postingTransaction : {params : {transactions : ['TRANS1']}}
   };
@@ -48,19 +47,6 @@ describe('(/trial) API endpoint', function () {
       .send(transactionParameter.emptyParam.params)
       .then(function (res) {
         helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('POST /trial_balance/checks : it returns an array of object containing one warning object', function () {
-    return agent.post('/trial_balance/checks')
-      .send(transactionParameter.warningTransaction.params)
-      .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(1);
-        expect(res.body[0].fatal).to.equal(false);
       })
       .catch(helpers.handler);
   });

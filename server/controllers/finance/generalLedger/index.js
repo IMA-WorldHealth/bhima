@@ -27,7 +27,7 @@ function list(req, res, next) {
       gl.trans_id, gl.trans_date, BUID(gl.record_uuid) AS record_uuid,
       gl.description, gl.account_id, gl.debit, gl.credit,
       gl.debit_equiv, gl.credit_equiv, gl.currency_id,
-      BUID(gl.entity_uuid) AS entity_uuid, gl.entity_type,
+      BUID(gl.entity_uuid) AS entity_uuid,
       BUID(gl.reference_uuid) AS reference_uuid, gl.comment, gl.origin_id,
       gl.user_id, gl.cc_id, gl.pc_id,
       pro.abbr, pro.name AS project_name,

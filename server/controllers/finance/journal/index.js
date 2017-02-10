@@ -48,7 +48,7 @@ function lookupTransaction(record_uuid) {
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       p.description, p.account_id, p.debit, p.credit,
       p.debit_equiv, p.credit_equiv, p.currency_id,
-      BUID(p.entity_uuid) AS entity_uuid, p.entity_type,
+      BUID(p.entity_uuid) AS entity_uuid,
       BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
       p.user_id, p.cc_id, p.pc_id,
       pro.abbr, pro.name AS project_name,
