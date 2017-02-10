@@ -6,7 +6,6 @@
  * posting journal to the general ledger.
  * It also submit errors back to the client.
  */
-
 const q = require('q');
 const uuid = require('node-uuid');
 const _ = require('lodash');
@@ -56,23 +55,6 @@ function checkDescriptionExists(transactions) {
     // returns a error report
     return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION', true, rows);
   });
-}
-
-// make sure that a entity_uuid exists for each deb_cred_type
-function checkEntityExists(transactions) {
-  let sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND (pj.entity_type = 'D' OR pj.entity_type = 'C')
-    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ENTITY', true, rows);
-    });
 }
 
 // make sure that the record Id exist in each line of the transaction
@@ -168,11 +150,12 @@ function checkAccountsLocked(transactions) {
 
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
-  let sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
+  let sql = `
+    SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
     FROM posting_journal AS pj
     WHERE pj.trans_id IN (?)
-    GROUP BY trans_id HAVING balance <> 0;`;
+    GROUP BY trans_id HAVING balance <> 0;
+  `;
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
@@ -270,7 +253,7 @@ exports.checkTransactions = function (req, res, next) {
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkRecordUuidExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions),
+    checkRecordUuidExists(transactions), checkEntityIsAlwaysDefined(transactions),
     checkDescriptionExists(transactions)
   ])
   .then(function (errorReports){

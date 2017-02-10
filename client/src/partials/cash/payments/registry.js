@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
-  'GridSortingService'
+  'GridSortingService', '$state'
 ];
 
 /**
@@ -14,7 +14,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry.`j
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting, $state) {
   var vm = this;
 
   var cache = AppCache('CashRegistry');
@@ -100,6 +100,8 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
+    $state.params.filters = null;
+    $state.params.display = null;
     reload({ display : [], identifiers : {} });
   }
 
@@ -116,7 +118,16 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // load cash
   function load(filters) {
+
     vm.hasError = false;
+    filters = $state.params.filters ? $state.params.filters : filters;
+
+    if($state.params.display){ 
+      var display = $state.params.display;
+      vm.formatedFilters = Cash.formatFilterParameters(display);
+      // show filter bar as needed
+      vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
+    }
 
     toggleLoadingIndicator();
 

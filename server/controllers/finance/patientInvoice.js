@@ -23,6 +23,8 @@ const util   = require('../../lib/util');
 const db     = require('../../lib/db');
 const barcode = require('../../lib/barcode');
 
+const FilterParser = require('../../lib/filter');
+
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
@@ -197,17 +199,13 @@ function create(req, res, next) {
 }
 
 function find(options) {
-  // remove the limit first thing, if it exists
-  let limit = Number(options.limit);
-  delete options.limit;
-  delete options.patientNames;
+  // ensure expected options are parsed as binary
+  db.convert(options, ['patientUuid']);
 
-  // support flexible queries by keeping a growing list of conditions and
-  // statements
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
+  let filters = new FilterParser(options, { tableAlias : 'invoice' });
+
+  // @FIXME Remove this with client side filter design
+  delete options.patientNames;
 
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
@@ -223,109 +221,27 @@ function find(options) {
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
-    WHERE
   `;
 
-  if (options.debtor_uuid) {
-    options.debtor_uuid = db.bid(options.debtor_uuid);
-  }
+  filters.equals('patientUuid', 'uuid', 'patient');
+  filters.dateFrom('billingDateFrom', 'date');
+  filters.dateTo('billingDateTo', 'date');
 
-  if (options.uuid) {
-    options.uuid = db.bid(options.uuid);
-  }
+  // support credit note toggle
+  filters.reversed('reversed');
 
-  if (options.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`);
-    conditions.parameters.push(options.reference);
-    delete options.reference;
-  }
+  let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
+  filters.custom('reference', referenceStatement);
 
-  if (options.patientReference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`);
-    conditions.parameters.push(options.patientReference);
-    delete options.patientReference;
-  }
+  let patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
+  filters.custom('patientReference', patientReferenceStatement);
 
-  if (options.debtor_uuid) {
-    options.debtor_uuid = db.bid(options.debtor_uuid);
-    conditions.statements.push('invoice.debtor_uuid = ?');
-    conditions.parameters.push(options.debtor_uuid);
-    delete options.debtor_uuid;
-  }
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
 
-  if (options.billingDateFrom) {
-    conditions.statements.push('DATE(invoice.date) >= DATE(?)');
-    conditions.parameters.push(options.billingDateFrom);
-    delete options.billingDateFrom;
-  }
-
-  if (options.billingDateTo) {
-    conditions.statements.push('DATE(invoice.date) <= DATE(?)');
-    conditions.parameters.push(options.billingDateTo);
-    delete options.billingDateTo;
-  }
-
-  if (options.patientUuid) {
-    options.patientUuid = db.bid(options.patientUuid);
-    conditions.statements.push('patient.uuid = ?');
-    conditions.parameters.push(options.patientUuid);
-    delete options.patientUuid;
-  }
-
-  if (options.user_id) {
-    conditions.statements.push('invoice.user_id = ?');
-    conditions.parameters.push(options.user_id);
-    delete options.user_id;
-  }
-
-  if (options.reversed) {
-    // @TODO All constant definitions for types on the server should be centralised
-    const CREDIT_NOTE_VOUCHER_ID = 10;
-    let includeCreditNotes = Boolean(Number(options.reversed));
-
-    if (includeCreditNotes) {
-      // only return invoices that have been reversed
-      conditions.statements.push(`voucher.type_id = ?`);
-
-    } else {
-      // only return invoices that have not been reversed
-      // NULL type id means no vouchers reference this invoice
-      conditions.statements.push(`voucher.type_id IS NULL OR voucher.type_id <> ?`);
-    }
-
-    // using the reversal voucher id as the parameter is a hack, this will be
-    // addressed in standardising filters on the server and the client
-    conditions.parameters.push(CREDIT_NOTE_VOUCHER_ID);
-
-    delete options.reversed;
-  }
-
-
-  sql += conditions.statements.join(' AND ');
-  if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
-  let query = util.queryCondition(sql, options, true);
-
-  sql = query.query;
-  let parameters = conditions.parameters.concat(query.conditions);
-
-  // if nothing was submitted to the search, get all records
-  // this writes in WHERE 1; to the SQL query
-  if (!parameters.length) {
-    sql += ' 1';
-  }
-
-  // add in the ORDER BY date DESC
-  sql += ' ORDER BY invoice.date DESC, invoice.reference DESC ';
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    parameters.push(limit);
-  }
-
-  parameters = parameters.concat(conditions.parameters);
-
-  return db.exec(sql, parameters);
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
 
 /**
@@ -343,16 +259,16 @@ function search(req, res, next) {
 }
 
 /**
- * CreditNote for an invoice 
+ * CreditNote for an invoice
  */
 function lookupInvoiceCreditNote(invoiceUuid) {
   let buid = db.bid(invoiceUuid);
   const sql = `
-    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference, 
-      v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name 
-    FROM voucher v 
-    JOIN project p ON p.id = v.project_id 
-    JOIN user u ON u.id = v.user_id 
+    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference,
+      v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name
+    FROM voucher v
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
     JOIN invoice i ON i.uuid = v.reference_uuid
     WHERE v.type_id = ${CREDIT_NOTE_ID} AND v.reference_uuid = ?`;
   return db.one(sql, [buid])
@@ -360,7 +276,7 @@ function lookupInvoiceCreditNote(invoiceUuid) {
       return creditNote;
     })
     .catch(err => {
-      // db.one throw a critical error when there is not any record 
+      // db.one throw a critical error when there is not any record
       // and it must be handled
       return null;
     });

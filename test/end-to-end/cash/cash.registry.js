@@ -64,18 +64,6 @@ function CashPaymentsRegistryTests() {
     FU.buttons.clear();
   });
 
-  it('find payment by client', () => {
-
-    /** Get all payment of Patient/2/Patient */
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.debtor_uuid', 'Patient/2/Patient');
-    FU.modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
-
-    // clear filters
-    FU.buttons.clear();
-  });
-
   it('find payment by cashbox', () => {
 
     /** Get all payment on Test Primary Cashbox A */

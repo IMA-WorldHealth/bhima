@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
+  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService', '$state'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting, $state) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -90,6 +90,17 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     vm.hasError = false;
     toggleLoadingIndicator();
 
+    parameters = $state.params.filters ? $state.params.filters : parameters;
+
+    if($state.params.display){ 
+      var display = $state.params.display;
+      vm.filtersFmt = Invoices.formatFilterParameters(display);
+      // show filter bar as needed
+      vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
+
+    }
+
+
     // if we have search parameters, use search.  Otherwise, just read all
     // invoices.
     var request = angular.isDefined(parameters) ?
@@ -158,8 +169,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     load(vm.filters);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
  //Call the opening of Modal

@@ -5,7 +5,7 @@
   {{> header }}
 
   <h3 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
-  <h4 class="text-center">{{ debtor.display_name }}</h4>
+  <h4 class="text-center"><strong>{{ debtor.reference }}</strong> | {{ debtor.display_name }} </h4>
   <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}} : {{ debtor.debtor_group_name }} </h4>
   <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} : {{ debtor.number }} </h4>
 

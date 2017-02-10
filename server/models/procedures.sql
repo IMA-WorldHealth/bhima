@@ -548,7 +548,7 @@ BEGIN
 
   DECLARE cashPaymentOriginId SMALLINT(5);
 
-  -- set origin to the CASH_PAYMENT transaction type 
+  -- set origin to the CASH_PAYMENT transaction type
   SET cashPaymentOriginId = 2;
 
   -- copy cash payment values into working variables
@@ -1128,7 +1128,7 @@ BEGIN
     SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[REVERSAL]', description, ' -- ', zz.description), user_id, 10, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.project_id, gl.description FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz
       JOIN project ON zz.project_id = project.id
@@ -1141,7 +1141,7 @@ BEGIN
     FROM (
       SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;

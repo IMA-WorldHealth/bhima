@@ -34,6 +34,8 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const identifiers = require('../../config/identifiers');
 const barcode = require('../../lib/barcode');
 
+const FilterParser = require('../../lib/filter');
+
 const cashCreate = require('./cash.create');
 
 const entityIdentifier = identifiers.CASH_PAYMENT.key;
@@ -82,7 +84,7 @@ function lookup(id) {
   `;
 
   const cashItemsRecordSql = `
-    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid, s.name AS serviceName, 
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid, s.name AS serviceName,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', p.abbr, i.reference) AS reference
     FROM cash_item AS ci
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
@@ -150,7 +152,9 @@ function list(req, res, next) {
  * @method listPayment
  * @description list all payment made
  */
-function listPayment(params) {
+function listPayment(options) {
+  let filters = new FilterParser(options, { tableAlias : 'cash' });
+
   let sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
       CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
@@ -165,74 +169,20 @@ function listPayment(params) {
       JOIN patient p on p.debtor_uuid = d.uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
-    WHERE
   `;
 
-  params = params || {};
+  filters.dateFrom('dateFrom', 'date');
+  filters.dateTo('dateTo', 'date');
 
-  // if the limit exists, remove it.
-  const limit = Number(params.limit);
-  delete params.limit;
+  let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
+  filters.custom('reference', referenceStatement);
 
-  const conditions = {
-    statements : [],
-    parameters : []
-  };
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY cash.date DESC');
 
-  if (params.reference) {
-    conditions.statements.push(`CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`);
-    conditions.parameters.push(params.reference);
-    delete params.reference;
-  }
-
-  // convert the uuid to binary if passed in
-  if (params.uuid) {
-    conditions.statements.push('cash.uuid = ?');
-    conditions.parameters.push(db.bid(params.uuid));
-    delete params.uuid;
-  }
-
-  // load all cash payments from (and including) a certain date
-  if (params.dateFrom) {
-    conditions.statements.push('DATE(cash.date) >= DATE(?)');
-    conditions.parameters.push(new Date(params.dateFrom));
-    delete params.dateFrom;
-  }
-
-  // load all cash payments up to (and including) a certain date
-  if (params.dateTo) {
-    conditions.statements.push('DATE(cash.date) <= DATE(?)');
-    conditions.parameters.push(new Date(params.dateTo));
-    delete params.dateTo;
-  }
-
-  if (params.debtor_uuid) {
-    conditions.statements.push('cash.debtor_uuid = ?');
-    conditions.parameters.push(db.bid(params.debtor_uuid));
-    delete params.debtor_uuid;
-  }
-
-  const queryParts = util.parseQueryStringToSQL(params, 'cash');
-
-  conditions.statements = conditions.statements.concat(queryParts.statements);
-  conditions.parameters = conditions.parameters.concat(queryParts.parameters);
-
-  sql += conditions.statements.join(' AND ');
-
-  // check if the query is empty and template in a final '1';
-  if (conditions.parameters.length === 0) {
-    sql += ' 1 ';
-  }
-
-  sql += ' ORDER BY cash.date DESC ';
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += ' LIMIT ?;';
-    conditions.parameters.push(limit);
-  }
-
-  return db.exec(sql, conditions.parameters);
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
 
 /**

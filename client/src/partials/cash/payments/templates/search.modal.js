@@ -3,13 +3,13 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'DebtorService', 'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance', 'CurrencyService'
+  'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance', 'CurrencyService'
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Instance, Currencies) {
+function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, Currencies) {
   var vm = this;
 
   // global variables
@@ -21,13 +21,6 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
   vm.validate = validate;
   vm.submit = submit;
   vm.cancel = Instance.close;
-
-  // client
-  Debtors.read()
-    .then(function (list) {
-      vm.debtors = list;
-    })
-    .catch(Notify.handleError);
 
   // cashboxes
   Cashboxes.read()

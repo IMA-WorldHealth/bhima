@@ -1,10 +1,9 @@
 angular.module('bhima.controllers')
-.controller('FindReferenceModalController', FindReferenceModalController);
+  .controller('FindReferenceModalController', FindReferenceModalController);
 
 FindReferenceModalController.$inject = [
-  '$uibModalInstance', 'DebtorService', 'CreditorService',
-  'VoucherService', 'CashService', 'GridFilteringService', 'entity',
-  'PatientInvoiceService', 'uiGridConstants'
+  '$uibModalInstance', 'VoucherService', 'CashService', 'GridFilteringService',
+  'entity', 'PatientInvoiceService', 'uiGridConstants', 'NotifyService'
 ];
 
 /**
@@ -13,10 +12,12 @@ FindReferenceModalController.$inject = [
  * This controller provides bindings for the find references modal.
  * @todo Implement the Cash Payment Data list for the references
  */
-function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash, Filtering, Entity, Invoices, uiGridConstants) {
+function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity, Invoices, uiGridConstants, Notify) {
   var vm = this;
 
   vm.result = {};
+
+  vm.loading = false;
 
   vm.documentType = {
     'patient_invoice' : {
@@ -73,92 +74,104 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash,
   startup();
 
   function referencePatientInvoice() {
+    toggleLoadingIndicator();
+
     Invoices.read()
-    .then(function (list) {
-      var costTemplate =
-        '<div class="ui-grid-cell-contents text-right">' +
-          '{{ row.entity.cost | currency: grid.appScope.enterprise.currency_id }}' +
-        '</div>';
+      .then(function (list) {
+        var costTemplate =
+          '<div class="ui-grid-cell-contents text-right">' +
+            '{{ row.entity.cost | currency: grid.appScope.enterprise.currency_id }}' +
+          '</div>';
 
-      vm.gridOptions.columnDefs = [
-        { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-        {
-          field : 'date',
-          cellFilter:'date',
-          filter : { condition : filtering.byDate },
-          displayName : 'TABLE.COLUMNS.BILLING_DATE',
-          headerCellFilter : 'translate',
-          sort : { priority : 0, direction : 'desc'}
-        },
-        { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
-        { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
-        { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
-        { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
-      ];
+        vm.gridOptions.columnDefs = [
+          { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+          {
+            field : 'date',
+            cellFilter:'date',
+            filter : { condition : filtering.byDate },
+            displayName : 'TABLE.COLUMNS.BILLING_DATE',
+            headerCellFilter : 'translate',
+            sort : { priority : 0, direction : 'desc'}
+          },
+          { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+          { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
+          { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
+          { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
+        ];
 
-      vm.gridOptions.data = list;
-    });
+        vm.gridOptions.data = list;
+      })
+      .catch(handler)
+      .finally(toggleLoadingIndicator);
   }
 
   function referenceCashPayment() {
+    toggleLoadingIndicator();
+
     Cash.read()
-    .then(function (list) {
-      var costTemplate =
-        '<div class="ui-grid-cell-contents text-right">' +
-          '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
-        '</div>';
+      .then(function (list) {
+        var costTemplate =
+          '<div class="ui-grid-cell-contents text-right">' +
+            '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
+          '</div>';
 
-      vm.gridOptions.columnDefs = [
-        { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-        {
-          field : 'date',
-          cellFilter:'date',
-          filter : { condition : filtering.byDate },
-          displayName : 'TABLE.COLUMNS.BILLING_DATE',
-          headerCellFilter : 'translate',
-          sort : { priority : 0, direction : 'desc'}
-        },
-        { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
-        { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
-      ];
+        vm.gridOptions.columnDefs = [
+          { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+          {
+            field : 'date',
+            cellFilter:'date',
+            filter : { condition : filtering.byDate },
+            displayName : 'TABLE.COLUMNS.BILLING_DATE',
+            headerCellFilter : 'translate',
+            sort : { priority : 0, direction : 'desc'}
+          },
+          { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
+          { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
+        ];
 
-      vm.gridOptions.data = list;
-    });
+        vm.gridOptions.data = list;
+      })
+      .catch(handler)
+      .finally(toggleLoadingIndicator);
   }
 
   function referenceVoucher() {
+    toggleLoadingIndicator();
+
     Voucher.read()
-    .then(function (list) {
-      var amountTemplate =
-        '<div class="ui-grid-cell-contents text-right">' +
-          '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
-        '</div>';
+      .then(function (list) {
+        var amountTemplate =
+          '<div class="ui-grid-cell-contents text-right">' +
+            '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
+          '</div>';
 
-      vm.gridOptions.columnDefs  = [
-        { field : 'reference', displayName : 'Reference'},
-        {
-          field : 'date',
-          displayName : 'Date',
-          cellFilter : 'date:"mediumDate"',
-          filter : { condition : filtering.byDate },
-          sort : { priority : 0, direction : 'desc'}
-        },
-        { field : 'description', displayName : 'Description'},
-        { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
-      ];
+        vm.gridOptions.columnDefs  = [
+          { field : 'reference', displayName : 'Reference'},
+          {
+            field : 'date',
+            displayName : 'Date',
+            cellFilter : 'date:"mediumDate"',
+            filter : { condition : filtering.byDate },
+            sort : { priority : 0, direction : 'desc'}
+          },
+          { field : 'description', displayName : 'Description'},
+          { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
+        ];
 
-      // format data for the grid
-      var data = list.map(function (item) {
-        return {
-          uuid          : item.uuid,
-          reference     : item.reference,
-          date          : item.date,
-          description   : item.description,
-          amount        : item.amount
-        };
-      });
-      vm.gridOptions.data = data;
-    });
+        // format data for the grid
+        var data = list.map(function (item) {
+          return {
+            uuid          : item.uuid,
+            reference     : item.reference,
+            date          : item.date,
+            description   : item.description,
+            amount        : item.amount
+          };
+        });
+        vm.gridOptions.data = data;
+      })
+      .catch(handler)
+      .finally(toggleLoadingIndicator);
   }
 
   function selectDocType(type) {
@@ -181,16 +194,14 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash,
 
   function startup() {
     vm.selectedEntity = Entity || {};
-
-    Debtor.read()
-    .then(function (list) {
-      vm.debtorList = list;
-    });
-
-    Creditor.read()
-    .then(function (list) {
-      vm.creditorList = list;
-    });
   }
 
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
+  function handler(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
 }

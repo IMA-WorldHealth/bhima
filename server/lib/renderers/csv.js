@@ -32,6 +32,8 @@ const defaults = {
   trimHeaderFields : true
 };
 
+const ID_KEYWORDS = ['_id', 'uuid'];
+
 // this field will tell the csv renderer what to render
 const DEFAULT_DATA_KEY = 'csv';
 
@@ -92,6 +94,20 @@ function dateFormatter(csvRow) {
   return _.mapValues(csvRow, convertIfDate);
 }
 
+
+/**
+ * @function containsIdKeyword
+ *
+ * @private
+ *
+ * @description
+ * Accepts in a columnName and returns true if it is included in the
+ * list of reserved identifiers
+ */
+function containsIdKeyword(columnName) {
+  return ID_KEYWORDS.some((keyword) => columnName.includes(keyword));
+}
+
 /**
  * @method idFilter
  *
@@ -100,12 +116,7 @@ function dateFormatter(csvRow) {
  * all columns that match a pre-defined list of keywords
  */
 function idFilter(csvRow) {
-  const ID_KEYWORDS = ['_id', 'uuid'];
   const invalidColumns = _.keys(csvRow).filter(containsIdKeyword);
-
-  function containsIdKeyword(columnName) {
-    return ID_KEYWORDS.some((keyword) => columnName.includes(keyword));
-  }
 
   invalidColumns.forEach((columnName) => delete csvRow[columnName]);
   return csvRow;
