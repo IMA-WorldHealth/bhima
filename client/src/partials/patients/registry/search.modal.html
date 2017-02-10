@@ -249,7 +249,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateBirthFrom"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateBirthFromIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
@@ -273,7 +273,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateBirthTo"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateBirthToIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
