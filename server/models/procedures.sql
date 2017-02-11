@@ -784,6 +784,22 @@ BEGIN
   END IF;
 END $$
 
+-- This makes sure the temporary tables exist before using them
+CREATE PROCEDURE VerifyCashTemporaryTables()
+BEGIN
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+  );
+END $$
+
 -- This calculates the amount due on previous invoices based on what is being paid
 CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
@@ -811,17 +827,7 @@ BEGIN
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
-    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
-  );
+  CALL VerifyCashTemporaryTables();
 
   INSERT INTO stage_cash_records
     SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
