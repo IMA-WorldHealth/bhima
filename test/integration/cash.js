@@ -1,7 +1,6 @@
 'use strict';
 
 /* global expect, chai, agent */
-/* jshint expr : true */
 
 const helpers = require('./helpers');
 const _ = require('lodash');

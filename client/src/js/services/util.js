@@ -199,8 +199,6 @@ function UtilService(moment) {
    * @returns {Boolean} - the result
    */
   service.xor = function xor(a, b) {
-    /*jshint -W018 */
      return !a !== !b;
-    /*jshint +W018 */
   };
 }

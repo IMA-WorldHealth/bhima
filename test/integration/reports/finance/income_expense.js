@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr: true */
 
 const RenderingTests = require('../rendering');
 const target = '/reports/finance/income_expense';

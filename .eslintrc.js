@@ -3,12 +3,15 @@ module.exports = {
   "plugins": [
     "import"
   ],
-  "parserOptions" : {
-    "sourceType": "module"
+  "env" : {
+    "browser" : true,
+    "node" : true,
+    "jquery" : true,
   },
   "rules" : {
     "padded-blocks": "warn",
     "array-bracket-spacing" : "warn",
+    "prefer-arrow-callback" : "warn",
     "indent": ["error", 2],
     "comma-dangle" : ["error", "always-multiline"],
     "key-spacing": ["warn", {
@@ -35,6 +38,5 @@ module.exports = {
   "globals" : {
     "Chart" : true,
     "angular" : true,
-    "$" : true,
   }
 };

@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr : true */
 
 const helpers = require('./helpers');
 const uuid = require('node-uuid');

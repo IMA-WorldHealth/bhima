@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global inject, expect, chai */
 
 describe('bhFindPatient Controller Tests', ControllerTests);

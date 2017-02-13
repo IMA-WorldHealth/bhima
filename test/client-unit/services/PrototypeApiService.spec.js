@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global inject, expect */
 describe('PrototypeApiService', () => {
   'use strict';
