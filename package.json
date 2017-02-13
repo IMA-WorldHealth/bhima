@@ -8,7 +8,7 @@
     "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
     "start": "sh/deploy.sh",
     "karma": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
-    "lint": "./node_modules/.bin/eslint server/ && ./node_modules/.bin/eslint client/src/js/ && ./node_modules/.bin/eslint client/src/partials/",
+    "lint": "./sh/lint.sh",
     "test:ends": "./sh/test-ends.sh",
     "test:integration": "./sh/integration-tests.sh",
     "build": "./node_modules/.bin/gulp build",
