@@ -67,7 +67,7 @@ describe('(/auth/login) The login API', function () {
       .send({ username : validUser.username, password : validUser.password })
       .then(function (res) {
         helpers.api.errored(res, 401);
-        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
+        expect(res.body.code).to.equal('ERRORS.NO_PROJECT');
       })
       .catch(helpers.handler);
   });
