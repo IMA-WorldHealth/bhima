@@ -50,8 +50,6 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
 
     if (form.$invalid) { return; }
 
-    vm.$loading = true;
-
     var options = {
       accountOption: vm.accountOption,
       label: vm.label,
@@ -69,7 +67,6 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
 
     return SavedReports.requestPDF(url, report, options)
       .then(function (result) {
-        vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
         Notify.success('FORM.INFO.CREATE_SUCCESS');
