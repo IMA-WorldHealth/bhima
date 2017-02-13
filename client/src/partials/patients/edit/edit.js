@@ -29,7 +29,8 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   // datepicker options
   vm.datePickerOptions = {
     maxDate : new Date(),
-    minDate : Constants.dates.minDob
+    minDate : Constants.dates.minDob,
+    popup : Constants.dayOptions.format
   };
 
   vm.datePickerIsOpen = false;

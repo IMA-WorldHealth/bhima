@@ -331,6 +331,16 @@ function constantConfig() {
     dates : {
       minDOB : new Date('1900-01-01'),
     },
+    yearOptions : {
+      format : 'yyyy',
+      datepickerMode : 'year',
+      minMode : 'year'
+    },
+    dayOptions : {
+      format : 'dd/MM/yyyy',
+      datepickerMode : 'day',
+      minMode : 'day'
+    },    
     lengths : {
       maxTextLength : 1000,
       minDecimalValue: 0.0001

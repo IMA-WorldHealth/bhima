@@ -21,9 +21,9 @@ module.exports = {
     elementClick = (elementClick || '.header-image');
 
     // fail hard if the user did not pass into
-    if (!(date instanceof Date)) {
+    /*if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
-    }
+    }*/
 
     // find the component in the DOM by its selector
     var root = element((id) ? by.id(id) : by.css(this.selector));
@@ -45,7 +45,7 @@ module.exports = {
     var day = (_day.length < 2) ? '0' + _day : _day;
 
     // set the date on the input
-    input.sendKeys([year, month, day].join('-'));
+    input.sendKeys([day, month, year].join('/'));
 
     // at this point, the datepicker is still open, and will intercept all
     // clicks that are made to any elements it is covering.  In order to make

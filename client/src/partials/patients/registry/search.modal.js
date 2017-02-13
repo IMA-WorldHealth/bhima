@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistryModalController.$inject = [
   '$uibModalInstance', 'DateService', 'params', 'DebtorGroupService', 'PatientGroupService',
-  'UserService'
+  'UserService', 'bhConstants'
 ];
 
 /**
@@ -14,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService, Users) {
+function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService, Users, bhConstants) {
   var vm = this;
 
   // bind period labels from the service
@@ -30,6 +30,7 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
   vm.cancel = cancel;
   vm.clear = clear;
   vm.setDateRange = setDateRange;
+  vm.dateFormat =  bhConstants.dayOptions.format;
 
   DebtorGroups.read()
     .then(function (result) {

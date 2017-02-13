@@ -472,6 +472,8 @@ function notNullBalance(array) {
 /**
  * @function closing
  * @description closing a fiscal year
+ *
+ * @todo - migrate this to a stored procedure
  */
 function closing(req, res, next) {
   let id = req.params.id,
@@ -547,11 +549,11 @@ function closing(req, res, next) {
       INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
         trans_id, trans_date, record_uuid, description, account_id, debit,
         credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-        entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+        reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
       SELECT
         HUID(UUID()), ?, ?, ?, @transId, ?,
         HUID(UUID()), ?, ?, ?, ?, ?, ?, ?,
-        NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL
+        NULL, NULL, NULL, NULL, ?, NULL, NULL
       `;
 
     // util variables

@@ -22,23 +22,23 @@ function CashPaymentsRegistryTests() {
     // TODO - why does this need to be tomorrow?
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    let tomorrowFmt = moment(tomorrow).format('DD-MM-YYYY');
+    let tomorrowFmt = moment(tomorrow).format('DD/MM/YYYY');
 
     /** Get all payment of the year 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2016', tomorrowFmt);
+    components.dateInterval.range('01/01/2016', tomorrowFmt);
     FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment of january 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2016', '31-01-2016');
+    components.dateInterval.range('01/01/2016', '31/01/2016');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Get all payment of the year 2015 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2015', '31-12-2015');
+    components.dateInterval.range('01/01/2015', '31/12/2015');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
