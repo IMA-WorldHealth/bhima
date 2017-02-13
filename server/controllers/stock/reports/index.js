@@ -153,7 +153,7 @@ function stockInventoriesReport(req, res, next) {
     return next(e);
   }
 
-  Stock.getLotsDepot(null, options, ' GROUP BY l.inventory_uuid, m.depot_uuid ')
+  Stock.getLotsDepot(null, options, ' GROUP BY l.inventory_uuid ')
     .then(rows => {
 
       data.rows = rows;

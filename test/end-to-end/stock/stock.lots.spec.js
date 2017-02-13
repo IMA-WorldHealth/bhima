@@ -11,7 +11,7 @@ function StockLotsRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/lots'));
 
-  const LOTS_INSIDE_REGISTRY = 12;
+  const LOTS_INSIDE_REGISTRY = 5;
   const gridId = 'stock-lots-grid';
 
   it('find lots by depot', () => {
@@ -19,12 +19,12 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2);
+    GU.expectRowCount(gridId, 0);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 10);
+    GU.expectRowCount(gridId, 5);
 
     // clear filters
     FU.buttons.clear();
@@ -35,7 +35,7 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 7);
+    GU.expectRowCount(gridId, 3);
 
     // clear filters
     FU.buttons.clear();
@@ -47,7 +47,7 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.input('$ctrl.bundle.label', 'VITAMINE-A');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2);
+    GU.expectRowCount(gridId, 1);
 
     // clear filters
     FU.buttons.clear();
@@ -56,12 +56,12 @@ function StockLotsRegistryTests() {
   it('find lots by entry date', () => {
 
     FU.buttons.search();
-    components.dateInterval.range('02-02-2017', '02-02-2017', 'entry-date');
+    components.dateInterval.range('02/02/2017', '02/02/2017', 'entry-date');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 7);
+    GU.expectRowCount(gridId, 5);
 
     FU.buttons.search();
-    components.dateInterval.range('01-01-2015', '30-01-2015', 'entry-date');
+    components.dateInterval.range('01/01/2015', '30/01/2015', 'entry-date');
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
 
@@ -72,9 +72,9 @@ function StockLotsRegistryTests() {
   it('find lots by expiration date', () => {
 
     FU.buttons.search();
-    components.dateInterval.range('01-01-2017', '31-12-2017', 'expiration-date');
+    components.dateInterval.range('01/01/2017', '31/12/2017', 'expiration-date');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2);
+    GU.expectRowCount(gridId, 1);
 
     // clear filters
     FU.buttons.clear();

@@ -108,15 +108,15 @@ function StockMovementsRegistryTests() {
     FU.buttons.clear();
   });
 
-  it('find lots by date', () => {
+  it('find lots by date - Fev 2017', () => {
 
     FU.buttons.search();
-    components.dateInterval.range('02-02-2017', '02-02-2017');
+    components.dateInterval.range('02/02/2017', '02/02/2017');
     FU.modal.submit();
     GU.expectRowCount(gridId, 5);
 
     FU.buttons.search();
-    components.dateInterval.range('01-01-2015', '30-01-2015');
+    components.dateInterval.range('01/01/2015', '30/01/2015');
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
 
