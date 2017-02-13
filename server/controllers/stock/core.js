@@ -76,6 +76,11 @@ function getLots(sql, params, final_clause) {
         delete params.text;
     }
 
+    if (params.label) {
+        params['l.label'] = params.label;
+        delete params.label;
+    }
+
     if (params.expiration_date_from && params.expiration_date_to) {
         queryExpiration = ` DATE(l.expiration_date) BETWEEN DATE(?) AND DATE(?) `;
         paramExpiration = [

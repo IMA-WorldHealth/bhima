@@ -20,17 +20,17 @@
         <legend translate>STOCK.MOVEMENTS</legend>
 
         <label class="control-label">
-          <input type="radio" name="is_exit" ng-value="0" ng-model="$ctrl.bundle.is_exit"> 
+          <input type="radio" name="is_exit" value="0" ng-model="$ctrl.bundle.is_exit"> 
           <span translate>STOCK.INPUT</span>
         </label> &nbsp; 
 
         <label class="control-label">
-          <input type="radio" name="is_exit" ng-value="1" ng-model="$ctrl.bundle.is_exit"> 
+          <input type="radio" name="is_exit" value="1" ng-model="$ctrl.bundle.is_exit"> 
           <span translate>STOCK.OUTPUT</span>
         </label> &nbsp; 
 
         <label class="control-label">
-          <input type="radio" name="is_exit" ng-value="" ng-model="$ctrl.bundle.is_exit"> 
+          <input type="radio" name="is_exit" value="" ng-model="$ctrl.bundle.is_exit"> 
           <span translate>STOCK.INPUT</span>/<span translate>STOCK.OUTPUT</span>
         </label> 
       </fieldset>
@@ -88,7 +88,7 @@
     <fieldset>
       <legend translate>FORM.LABELS.DATE</legend>
       <bh-date-interval
-        date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
+        date-id="date" date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
       </bh-date-interval>
     </fieldset>
 

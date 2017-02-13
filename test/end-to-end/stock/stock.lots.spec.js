@@ -42,7 +42,7 @@ function StockLotsRegistryTests() {
   });
 
 
-  it('find purchase by user', () => {
+  it('find lot by name', () => {
 
     FU.buttons.search();
     FU.input('$ctrl.bundle.label', 'VITAMINE-A');
@@ -53,6 +53,33 @@ function StockLotsRegistryTests() {
     FU.buttons.clear();
   });
 
+  it('find lots by entry date', () => {
+
+    FU.buttons.search();
+    components.dateInterval.range('02-02-2017', '02-02-2017', 'entry-date');
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 7);
+
+    FU.buttons.search();
+    components.dateInterval.range('01-01-2015', '30-01-2015', 'entry-date');
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 0);
+
+    // clear filters
+    FU.buttons.clear();
+  });
+
+  it('find lots by expiration date', () => {
+
+    FU.buttons.search();
+    components.dateInterval.range('01-01-2017', '31-12-2017', 'expiration-date');
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 2);
+
+    // clear filters
+    FU.buttons.clear();
+  });
+
 }
 
-describe.only('Stock Lots Registry', StockLotsRegistryTests);
+describe('Stock Lots Registry', StockLotsRegistryTests);
