@@ -1,7 +1,6 @@
 /**
  * Created by Dedrick Kitamuka on 15/06/2016.
  */
-/* jshint expr:true */
 /* global element, by, browser */
 
 function modalPage () {

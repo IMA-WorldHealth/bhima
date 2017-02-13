@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global inject, expect */
 describe('util', function () {
   'use strict';
