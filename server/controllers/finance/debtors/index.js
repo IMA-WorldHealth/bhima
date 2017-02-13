@@ -15,7 +15,6 @@
 * @requires lib/errors/BadRequest
 */
 
-'use strict';
 
 const q = require('q');
 const uuid = require('node-uuid');

@@ -27,7 +27,6 @@ var NotFound = require('../../lib/errors/NotFound');
 */
 
 function list (req, res, next) {
-  'use strict';
 
   var sql =
     'SELECT c.id, c.text FROM cost_center AS c';
@@ -66,7 +65,6 @@ function list (req, res, next) {
 */
 
 function create (req, res, next) {
-  'use strict';
 
   var record = req.body;
   var createCostCenterQuery = 'INSERT INTO cost_center SET ?';
@@ -95,7 +93,6 @@ function create (req, res, next) {
 */
 
 function update (req, res, next) {
-  'use strict';
 
   var queryData = req.body;
   var costCenterId = req.params.id;
@@ -160,7 +157,6 @@ function remove (req, res, next) {
 */
 
 function detail(req, res, next) {
-  'use strict';
 
   lookupCostCenter(req.params.id)
     .then(function (row) {
@@ -178,7 +174,6 @@ function detail(req, res, next) {
 */
 
 function lookupCostCenter(id) {
-  'use strict';
 
   var sql =
     'SELECT cc.id, cc.text, cc.note, cc.is_principal, cc.project_id FROM cost_center AS cc WHERE cc.id = ?';

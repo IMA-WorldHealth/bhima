@@ -16,7 +16,6 @@ exports.getInventoryStatusById = getInventoryStatusById;
 * @returns {Promise} The database query promise
 */
 function getInventoryStatusById(uuid) {
-  'use strict';
 
   var data;
 

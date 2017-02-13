@@ -3,7 +3,6 @@
  * This controller handle transaction type crud operations
  */
 
-'use strict';
 
 const db = require('../../lib/db');
 const util = require('../../lib/util');

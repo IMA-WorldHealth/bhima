@@ -15,7 +15,6 @@
  * in the HTTP query string.
  */
 
-'use strict';
 
 const _           = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');

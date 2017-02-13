@@ -12,7 +12,6 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
 
 // all donations for all inventory items
 function getInventoryDonations() {
-  'use strict';
 
   var sql;
 
@@ -30,7 +29,6 @@ function getInventoryDonations() {
 
 // returns all donations for a particular inventory uuid
 function getInventoryDonationsById(uuid) {
-  'use strict';
 
   var sql;
 

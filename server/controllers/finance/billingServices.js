@@ -26,7 +26,6 @@ const BadRequest = require('../../lib/errors/BadRequest');
  * service entity.
  */
 function lookupBillingService(id) {
-  'use strict';
 
   var sql =
     `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
@@ -60,7 +59,6 @@ function lookupBillingService(id) {
  * @description retrieve the details of a single billing service.
  */
 exports.detail = function detail(req, res, next) {
-  'use strict';
 
   // looks up the billing service by ID
   lookupBillingService(req.params.id)
@@ -79,7 +77,6 @@ exports.detail = function detail(req, res, next) {
  * levels of detail
  */
 exports.list = function list(req, res, next) {
-  'use strict';
 
   var sql =
     `SELECT bs.id, bs.label, bs.created_at
@@ -111,7 +108,6 @@ exports.list = function list(req, res, next) {
  * @desc creates a new billing service
  */
 exports.create = function create(req, res, next) {
-  'use strict';
 
   // cache posted data for easy lookup
   var data = req.body.billingService;
@@ -154,7 +150,6 @@ exports.create = function create(req, res, next) {
  * @desc updates an existing billing service with new information
  */
 exports.update = function update(req, res, next) {
-  'use strict';
 
   // cache the id
   var id = req.params.id;
@@ -190,7 +185,6 @@ exports.update = function update(req, res, next) {
  * @desc deletes a billing service in the database
  */
 exports.delete = function del(req, res, next) {
-  'use strict';
 
   var sql =
     'DELETE FROM billing_service WHERE id = ?;';

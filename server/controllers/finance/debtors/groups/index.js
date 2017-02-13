@@ -1,4 +1,3 @@
-'use strict';
 
 /**
 * The Debtor Groups Controllers

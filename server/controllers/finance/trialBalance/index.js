@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * The trial balance provides a description of what the general

@@ -1,4 +1,3 @@
-'use strict';
 
 const accountingjs = require('accounting-js');
 

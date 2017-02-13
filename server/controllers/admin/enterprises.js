@@ -6,7 +6,6 @@
  * location as well as a currency and it is not possible to remove an enterprise.
  */
 
-'use strict';
 
 const db       = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');

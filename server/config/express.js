@@ -4,7 +4,6 @@
  *
  * @todo - this could probably be separated by functionality.
  */
-'use strict';
 
 const express    = require('express');
 const compress   = require('compression');

@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @module medical/patients/visits

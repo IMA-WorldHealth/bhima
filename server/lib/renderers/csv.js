@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @overview lib/renderers/csv

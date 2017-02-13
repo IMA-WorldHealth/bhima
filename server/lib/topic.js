@@ -16,7 +16,6 @@
  * @requires ioredis
  * @requires winston
  */
-'use strict';
 
 const db = require('./db');
 const Redis = require('ioredis');

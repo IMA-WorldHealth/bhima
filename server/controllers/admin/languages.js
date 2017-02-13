@@ -8,7 +8,6 @@
  * @requires db
  */
 
-'use strict';
 
 const db = require('../../lib/db');
 

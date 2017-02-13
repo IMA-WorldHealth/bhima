@@ -12,7 +12,6 @@
  * @requires Cashboxes/Currencies
  */
 
-'use strict';
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');

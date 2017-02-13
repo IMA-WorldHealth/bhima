@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @module reports/patient.receipt
