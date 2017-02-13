@@ -18,6 +18,8 @@
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const Forbidden = require('../lib/errors/Forbidden');
+const NoProject = require('../lib/errors/NoProject');
+const NoPermission = require('../lib/errors/NoPermission');
 const InternalServerError = require('../lib/errors/InternalServerError');
 const Topic = require('../lib/topic');
 
@@ -43,6 +45,7 @@ function login(req, res, next) {
   let username = req.body.username;
   let password = req.body.password;
   let projectId = req.body.project;
+  let transaction;
 
   let sql = `
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
@@ -51,12 +54,48 @@ function login(req, res, next) {
     WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;
   `;
 
-  db.exec(sql, [username, password, projectId])
-    .then(function (rows) {
+  let sqlUser = `
+    SELECT user.id FROM user
+    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+
+  let sqlProject = `
+    SELECT project_permission.id FROM project_permission 
+    JOIN user ON user.id = project_permission.user_id
+    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+
+  let sqlPermission = `
+    SELECT permission.id FROM permission
+    JOIN user ON user.id = permission.user_id
+    WHERE user.username = ? AND user.password = PASSWORD(?)`;  
+
+  transaction = db.transaction();
+
+  transaction
+    .addQuery(sql, [username, password, projectId])
+    .addQuery(sqlUser, [username, password])
+    .addQuery(sqlProject, [username, password])
+    .addQuery(sqlPermission, [username, password]);
+
+  transaction.execute()
+    .then(function (results) {
+      
+      let rows = results[0];
+
+      let auth = results[0].length;
+      let loginPassWord = results[1].length;
+      let project = results[2].length;
+      let permission = results[3].length; 
 
       // if no data found, we return a login error
-      if (rows.length === 0) {
-        throw new Unauthorized('Bad username and password combination.');
+      if (auth === 0) {
+        if((loginPassWord === 0)){
+          throw new Unauthorized('Bad username and password combination.');  
+        } else {
+          throw new NoProject('No permissions for that project.');
+        }        
+      }
+      else if((auth === 1) && (permission === 0)){
+        throw new NoPermission('No permissions in the database.');
       }
 
       return loadSessionInformation(rows[0]);
@@ -136,8 +175,7 @@ function loadSessionInformation(user) {
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
-    WHERE user.id = ? AND project.id = ?;
-  `;
+    WHERE user.id = ? AND project.id = ?;`;
 
   return db.exec(sql, [user.id, user.project_id])
     .then(rows => {
@@ -154,8 +192,7 @@ function loadSessionInformation(user) {
       sql = `
         SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
         FROM unit LEFT JOIN permission
-          ON unit.id = permission.unit_id;
-      `;
+          ON unit.id = permission.unit_id;`;
 
       return db.exec(sql, [session.user.id]);
     })
