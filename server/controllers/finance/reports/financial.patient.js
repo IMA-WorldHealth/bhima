@@ -9,7 +9,6 @@
  * @requires ReportManager
  * @requires Debtors
  */
-'use strict';
 
 const _ = require('lodash');
 

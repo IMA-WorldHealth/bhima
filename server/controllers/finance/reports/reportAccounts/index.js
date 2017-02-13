@@ -1,4 +1,3 @@
-'use strict';
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db            = require('../../../../lib/db');

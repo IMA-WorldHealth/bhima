@@ -12,7 +12,6 @@ var NotFound = require('../../lib/errors/NotFound');
 
 /** list currencies in the database */
 exports.list = function list(req, res, next) {
-  'use strict';
 
   var sql =
     `SELECT currency.id, currency.name, currency.note, currency.format_key,

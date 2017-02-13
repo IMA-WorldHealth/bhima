@@ -1,4 +1,3 @@
-'use strict';
 
 const uuid = require('node-uuid');
 const _ = require('lodash');

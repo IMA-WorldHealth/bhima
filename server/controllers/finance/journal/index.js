@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-'use strict';
 
 // npm deps
 const q = require('q');

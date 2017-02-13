@@ -7,7 +7,6 @@
  * @requires lodash
  * @requires Patient
  */
-'use strict';
 
 const _ = require('lodash');
 

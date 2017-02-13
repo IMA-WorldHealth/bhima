@@ -12,7 +12,6 @@
  * @requires winston
  * @requires uploader
  */
-'use strict';
 
 const winston = require('winston');
 const upload  = require('../lib/uploader');

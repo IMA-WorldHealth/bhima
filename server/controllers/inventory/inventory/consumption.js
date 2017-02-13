@@ -22,7 +22,6 @@ exports.getAverageItemConsumption = getAverageItemConsumption;
 * @returns {Promise} Returns a database query
 */
 function getItemConsumption(uuid, options) {
-  'use strict';
 
   var sql, groupby, where,
       group = options.group,
@@ -87,7 +86,6 @@ function getItemConsumption(uuid, options) {
 * @returns {Promise} returns a database query
 */
 function getAverageItemConsumption(uuid, options) {
-  'use strict';
 
   var sql, difference, where, params,
       start = options.start,

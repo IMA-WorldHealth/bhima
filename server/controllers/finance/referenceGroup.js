@@ -2,7 +2,6 @@ var db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 function lookupReferenceGroup(id) {
-  'use strict';
 
   var sql =
     'SELECT id, reference_group, text, position, section_bilan_id FROM reference_group WHERE id = ?';
@@ -19,7 +18,6 @@ function lookupReferenceGroup(id) {
 }
 
 function detail(req, res, next) {
-  'use strict';
 
   lookupReferenceGroup(req.params.id)
   .then(function (row) {
@@ -30,7 +28,6 @@ function detail(req, res, next) {
 }
 
 function list(req, res, next) {
-  'use strict';
   var sql;
 
   if (req.query.detailed === '1') {
@@ -54,7 +51,6 @@ function list(req, res, next) {
 }
 
 function create (req, res, next) {
-  'use strict';
 
   var record = req.body;
   var sql = 'INSERT INTO reference_group SET ?';
@@ -70,7 +66,6 @@ function create (req, res, next) {
 }
 
 function update(req, res, next) {
-  'use strict';
 
   var queryData = req.body;
   var sectionBilanId = req.params.id;

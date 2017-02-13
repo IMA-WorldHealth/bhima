@@ -19,7 +19,6 @@ const db = require('../../lib/db');
  * @returns {Promise} record
  */
 function lookupDiscount(id) {
-  'use strict';
 
   var sql =
     `SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid,
@@ -48,7 +47,6 @@ function lookupDiscount(id) {
  * to respond with either HTTP status 404 or 200.
  */
 exports.detail = function detail(req, res, next) {
-  'use strict';
 
   lookupDiscount(req.params.id)
   .then(function (discount) {
@@ -65,7 +63,6 @@ exports.detail = function detail(req, res, next) {
  * Returns HTTP status code 200 with an array containing zero or more records.
  */
 exports.list = function list(req, res, next) {
-  'use strict';
 
   var sql =
     'SELECT d.id, d.label, d.value FROM discount AS d;';
@@ -85,7 +82,6 @@ exports.list = function list(req, res, next) {
  * is properly inserted, it returns a 201 CREATED status and the generated id.
  */
 exports.create = function create(req, res, next) {
-  'use strict';
 
   // expects the proposed record to be namespaced by "discount"
   var data = db.convert(req.body.discount, ['inventory_uuid']);
@@ -117,7 +113,6 @@ exports.create = function create(req, res, next) {
  * is sucessfully updated, we return the fully changed record (status 200).
  */
 exports.update = function update(req, res, next) {
-  'use strict';
 
   // no namespace necessary for updates -- allows middleware to catch empty
   // req.body's
@@ -164,7 +159,6 @@ exports.update = function update(req, res, next) {
  * a 204 NO CONTENT for a successfully deleted record.
  */
 exports.delete = function del(req, res, next) {
-  'use strict';
 
   var id = req.params.id;
   var sql =

@@ -1,4 +1,3 @@
-'use strict';
 
 const q       = require('q');
 const mysql   = require('mysql');

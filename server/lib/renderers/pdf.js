@@ -10,7 +10,6 @@
  * @requires q
  * @requires process
  */
-'use strict';
 const wkhtmltopdf     = require('wkhtmltopdf');
 const _               = require('lodash');
 const q               = require('q');

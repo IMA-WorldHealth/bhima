@@ -14,7 +14,6 @@
  * @requires BadRequest
  */
 
-'use strict';
 
 const db = require('../../../lib/db');
 const uuid = require('node-uuid');

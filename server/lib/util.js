@@ -7,7 +7,6 @@
  * @required lodash
  */
 
-'use strict';
 
 const _ = require('lodash');
 const q = require('q');

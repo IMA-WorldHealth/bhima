@@ -17,7 +17,6 @@ exports.getAverageStockLevelsById = getAverageStockLevelsById;
 * @returns {Promise} The database request promise
 */
 function getStockLevels(options) {
-  'use strict';
 
   var sql;
 
@@ -50,7 +49,6 @@ function getStockLevels(options) {
 * @returns {Promise} The database request promise
 */
 function getStockLevelsById(uuid, options) {
-  'use strict';
 
   var sql;
 
@@ -74,7 +72,6 @@ function getStockLevelsById(uuid, options) {
 * @returns {Promise} The database request promise
 */
 function getAverageStockLevels(options) {
-  'use strict';
 
   var sql;
 
@@ -101,7 +98,6 @@ function getAverageStockLevels(options) {
 * @returns {Promise} The database request promise
 */
 function getAverageStockLevelsById(uuid, options) {
-  'use strict';
 
   // TODO
 }

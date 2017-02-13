@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Dashboard Stats Controller

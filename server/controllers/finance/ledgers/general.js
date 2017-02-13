@@ -3,7 +3,6 @@ var db = require('../../../lib/db');
 /** queries the general ledger for all columns */
 // route: /ledgers/general?since={date}
 exports.route = function (req, res, next) {
-  'use strict';
 
   var sql =
     `SELECT gl.uuid, gl.fiscal_year_id, gl.period_id, gl.trans_id, gl.trans_date, gl.doc_num, gl.description,
