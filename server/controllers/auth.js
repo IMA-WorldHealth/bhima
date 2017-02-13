@@ -43,7 +43,7 @@ function login(req, res, next) {
   let username = req.body.username;
   let password = req.body.password;
   let projectId = req.body.project;
-  let transaction;
+  let param = {}; 
 
   let sql = `
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
@@ -56,47 +56,43 @@ function login(req, res, next) {
     SELECT user.id FROM user
     WHERE user.username = ? AND user.password = PASSWORD(?)`;
 
-  let sqlProject = `
-    SELECT project_permission.id FROM project_permission 
-    JOIN user ON user.id = project_permission.user_id
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;
-
   let sqlPermission = `
     SELECT permission.id FROM permission
     JOIN user ON user.id = permission.user_id
     WHERE user.username = ? AND user.password = PASSWORD(?)`;  
 
-  transaction = db.transaction();
 
-  transaction
-    .addQuery(sql, [username, password, projectId])
-    .addQuery(sqlUser, [username, password])
-    .addQuery(sqlProject, [username, password])
-    .addQuery(sqlPermission, [username, password]);
+  db.exec(sql, [username, password, projectId])
+    .then(function (rows) {
+      param.connect = rows;
 
-  transaction.execute()
-    .then(function (results) {
-      
-      let rows = results[0];
+      return db.exec(sqlUser, [username, password]);
+    })   
+    .then(function (rows) {
 
-      let auth = results[0].length;
-      let loginPassWord = results[1].length;
-      let project = results[2].length;
-      let permission = results[3].length; 
+      param.user = rows;
 
-      // if no data found, we return a login error
-      if (auth === 0) {
-        if((loginPassWord === 0)){
-          throw new Unauthorized('Bad username and password combination.');  
-        } else {
-          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
-        }        
-      }
-      else if((auth === 1) && (permission === 0)){
+      return db.exec(sqlPermission, [username, password]);
+    })   
+    .then(function (rows) {
+      param.permission = rows;
+      let connect = param.connect.length;
+      let permission = param.permission.length;
+      let user = param.user.length;
+
+      if((connect === 1) && (permission === 0)){
         throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
+      
+      } else if(connect === 0){
+
+        if(user === 0){
+          throw new Unauthorized('Bad username and password combination.');
+        } else {
+          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT'); 
+        }
       }
 
-      return loadSessionInformation(rows[0]);
+      return loadSessionInformation(param.connect[0]);
     })
     .then(session => {
 
