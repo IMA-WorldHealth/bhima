@@ -60,6 +60,18 @@
     </div>
 
     <div ng-if="!UserModalCtrl.isCreating" class="form-group">
+      <label class="control-label">
+        <input
+          type="checkbox"
+          name="is_active"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="UserModalCtrl.user.deactivated">
+        {{ "FORM.LABELS.LOCKED" | translate }}
+      </label>
+    </div>
+
+    <div ng-if="!UserModalCtrl.isCreating" class="form-group">
       <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.editPassword()">
         <i class="fa fa-lock"></i> {{ 'FORM.BUTTONS.UPDATE_PASSWORD' | translate }}
       </button>
