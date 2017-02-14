@@ -99,6 +99,7 @@ CREATE PROCEDURE zRepostCash(
 )
 BEGIN
   DELETE FROM posting_journal WHERE posting_journal.record_uuid = cUuid;
+  CALL VerifyCashTemporaryTables();
   CALL PostCash(cUuid);
 END $$
 
