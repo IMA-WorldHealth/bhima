@@ -26,11 +26,11 @@ function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedRepo
   // how the report should be ordered
   vm.orders = [
     { id: 'payment-date-asc', key: 'ORDER.PAYMENT_DATE_ASC' },
-    { id: 'payment-date-desc', key: 'ORDER.PAYMENT_DATE_ASC' },
-    { id: 'invoice-date-asc', key: 'ORDER.PAYMENT_DATE_ASC' },
-    { id: 'invoice-date-desc', key: 'ORDER.PAYMENT_DATE_ASC' },
-    { id: 'debt-desc', key: 'ORDER.PAYMENT_DATE_ASC' },
-    { id: 'debt-asc', key: 'ORDER.PAYMENT_DATE_ASC' }
+    { id: 'payment-date-desc', key: 'ORDER.PAYMENT_DATE_DESC' },
+    { id: 'invoice-date-asc', key: 'ORDER.INVOICE_DATE_ASC' },
+    { id: 'invoice-date-desc', key: 'ORDER.INVOICE_DATE_DESC' },
+    { id: 'debt-asc', key: 'ORDER.DEBT_ASC' },
+    { id: 'debt-desc', key: 'ORDER.DEBT_DESC' },
   ];
 
   // default order
@@ -45,8 +45,9 @@ function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedRepo
     var url = 'reports/finance/debtors/open';
 
     var options = {
-      label           : vm.label,
-      lang            : Languages.key,
+      label : vm.label,
+      lang  : Languages.key,
+      order : vm.order,
     };
 
     return SavedReports.requestPDF(url, report, options)

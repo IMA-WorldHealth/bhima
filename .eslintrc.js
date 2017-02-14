@@ -7,6 +7,7 @@ module.exports = {
     "browser" : true,
     "node" : true,
     "jquery" : true,
+    "mocha" : true
   },
   "rules" : {
     "padded-blocks": "warn",

@@ -615,6 +615,7 @@
       "ON_DELIVERY"            : "On Delivery",
       "ON_PURCHASE"            : "On Purchase",
       "OTHER"                  : "Other",
+      "ORDER"                  : "Order",
       "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
@@ -1187,7 +1188,8 @@
       "OVER_NINETY_DAYS" : "Over 90 Days"
     },
     "OPEN_DEBTORS" : {
-      "TITLE" : "Debtors with Unpaid Debts"
+      "TITLE" : "Debtors with Unpaid Debts",
+      "TREE" : "Open Debtors"
     },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
@@ -1285,6 +1287,14 @@
     "MEMORY_USAGE" : "Memory Usage",
     "VERSION": "Version",
     "EVENTS" : "System Events"
+  },
+  "ORDER" : {
+    "PAYMENT_DATE_ASC" : "+ Payment Date",
+    "PAYMENT_DATE_DESC" : "- Payment Date",
+    "INVOICE_DATE_ASC" : "+ Invoice Date",
+    "INVOICE_DATE_DESC" : "- Invoice Date",
+    "DEBT_ASC" : "+ Debts",
+    "DEBT_DESC" : "- Debts"
   },
   "TABLE": {
     "COLUMNS": {

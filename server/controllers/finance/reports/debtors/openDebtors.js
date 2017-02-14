@@ -11,64 +11,60 @@
  * in the HTTP query string.
  */
 
-const _           = require('lodash');
+const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
-const db          = require('../../../../lib/db');
+const db = require('../../../../lib/db');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
-const REPORT_KEY = 'OPEN_DEBTORS';
 
 /**
  * Actually builds the open debtor report.
  *
  * @todo - allow limiting by date
  */
-function report(req, res, next) {
-
-  const qs = _.extend(req.query, { csvKey : 'debtors' });
+function build(req, res, next) {
+  const qs = _.extend(req.query, { csvKey: 'debtors' });
   const metadata = _.clone(req.session);
 
   let report;
 
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
-  } catch(e) {
+  } catch (e) {
     return next(e);
   }
 
   let ordering;
 
-  console.log('qs.order', qs.order);
+  switch (qs.order) {
+  case 'payment-date-asc':
+    ordering = 'cash.date ASC';
+    break;
 
-  switch(qs.order) {
-    case 'payment-date-asc':
-      ordering = 'cash.date ASC';
-      break;
+  case 'payment-date-desc':
+    ordering = 'cash.date DESC';
+    break;
 
-    case 'payment-date-desc':
-      ordering = 'cash.date DESC';
-      break;
+  case 'invoice-date-asc':
+    ordering = 'invoice.date ASC';
+    break;
 
-    case 'invoice-date-asc':
-      ordering = 'invoice.date ASC';
-      break;
+  case 'invoice-date-desc':
+    ordering = 'invoice.date DESC';
+    break;
 
-    case 'invoice-date-desc':
-      ordering = 'invoice.date DESC';
-      break;
+  case 'debt-desc':
+    ordering = 'ledger.balance DESC';
+    break;
 
-    case 'debt-desc':
-      ordering = 'ledger.balance DESC';
-      break;
+  case 'debt-asc':
+    ordering = 'ledger.balance ASC';
+    break;
 
-    case 'debt-asc':
-      ordering = 'ledger.balance ASC';
-      break;
-
-    default:
-      ordering = 'cash.date ASC';
-      break;
+  default:
+    ordering = 'cash.date ASC';
+    break;
   }
 
   /*
@@ -83,7 +79,8 @@ function report(req, res, next) {
       JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
       JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
       JOIN (
-        SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, SUM(debit_equiv - credit_equiv) AS balance
+        SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
+          SUM(debit_equiv - credit_equiv) AS balance
         FROM combined_ledger
         WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
         GROUP BY entity_uuid
@@ -97,25 +94,27 @@ function report(req, res, next) {
    * Aggregate SQL for totalling all debts up to the present
    */
   const aggregateSql = `
-    SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, SUM(debit_equiv - credit_equiv) AS balance
+    SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) AS debit,
+      SUM(credit_equiv) AS credit, SUM(debit_equiv - credit_equiv) AS balance
     FROM combined_ledger
     WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
-  `
+  `;
+
   const data = {};
 
   // execute the query and build the report
-  db.exec(debtorsSql)
-    .then(debtors => {
+  return db.exec(debtorsSql)
+    .then((debtors) => {
       data.debtors = debtors;
       return db.one(aggregateSql);
     })
-    .then(aggregates => {
+    .then((aggregates) => {
       data.aggregates = aggregates;
       return report.render(data);
     })
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
-};
+}
 
-exports.report = report;
+exports.report = build;
