@@ -51,7 +51,8 @@ INSERT INTO unit VALUES
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
-  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService');
+  (153, 'Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
+  (154, 'Open Debtors', 'REPORT.OPEN_DEBTORS', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -68,7 +69,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (4, 'balance', 'REPORT.BALANCE'),
   (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS'),
-  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE');
+  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
+  (8, 'openDebtors', 'REPORT.OPEN_DEBTORS');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

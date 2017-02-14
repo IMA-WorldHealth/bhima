@@ -375,6 +375,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cash', financeReports.cash.report);
   app.get('/reports/finance/cash/:uuid', financeReports.cash.receipt);
   app.get('/reports/finance/debtors/aged', financeReports.debtors.aged);
+  app.get('/reports/finance/debtors/open', financeReports.debtors.open);
   app.get('/reports/finance/vouchers', financeReports.vouchers.report);
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);

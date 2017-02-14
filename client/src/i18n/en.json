@@ -1186,6 +1186,9 @@
       "SIXTY_TO_NINETY_DAYS" : "60 to 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
     },
+    "OPEN_DEBTORS" : {
+      "TITLE" : "Debtors with Unpaid Debts"
+    },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
     "CASHFLOW"         : "Cashflow",
@@ -1347,6 +1350,8 @@
       "LAST_NAME"          : "Last Name",
       "LAST_TRANSACTION"   : "Last Transactions",
       "LAST_VISIT"         : "Last Visit",
+      "LAST_INVOICE"       : "Last Invoice",
+      "LAST_PAYMENT"       : "Last Payment",
       "LISTS"              : "Registered price list",
       "LOADING"            : "Fetching data from the server.",
       "LOCKED"             : "Locked",
@@ -1408,6 +1413,7 @@
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
       "TOTAL_COST"         : "Total Cost",
+      "TOTAL_DEBT"         : "Total Debt",
       "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "Transaction ID",
       "TRANSACTION_PRICE"  : "Transaction Price",
