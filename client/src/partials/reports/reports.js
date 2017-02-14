@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
   .controller('ReportsController', ReportsController);
 
-ReportsController.$inject = ['$state', 'BaseReportService', '$uibModal', 'NotifyService'];
+ReportsController.$inject = [
+  '$state', 'BaseReportService', '$uibModal', 'NotifyService'
+];
 
 function ReportsController($state, SavedReports, Modal, Notify) {
   var vm = this;

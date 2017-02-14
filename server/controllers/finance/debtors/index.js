@@ -138,7 +138,7 @@ function invoices(req, res, next) {
   const options = req.query;
 
   getDebtorInvoices(req.params.uuid)
-    .then(function (uuids){      
+    .then(function (uuids){
       return invoiceBalances(req.params.uuid, uuids, options);
     })
     .then(function (invoices) {
@@ -149,14 +149,14 @@ function invoices(req, res, next) {
 }
 
 /**
- * This function sends back a list of invoices uuids 
+ * This function sends back a list of invoices uuids
  * which belong to a particular debtor
  **/
 
 function getDebtorInvoices (debtorUid){
   debtorUid = db.bid(debtorUid);
   const reversalVoucherType = 10;
-  
+
   // get the debtor invoice uuids from the invoice table
   let sql =`
     SELECT BUID(invoice.uuid) as uuid
@@ -164,8 +164,9 @@ function getDebtorInvoices (debtorUid){
     WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
     ORDER BY invoice.date ASC, invoice.reference;
   `;
+
   return db.exec(sql, [debtorUid, reversalVoucherType])
-    .then(function (uuids) {
+    .then(uuids => {
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
       uuids = uuids.map(item => item.uuid);
