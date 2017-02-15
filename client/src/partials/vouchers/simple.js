@@ -123,6 +123,9 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
       creditRow.configure(data.credit);
     }
 
+    // HACK to get this to work.  Why are vouchers so poorly designed?
+    creditRow.document_uuid = data.credit.reference.uuid;
+
     vm.Voucher.validate();
   });
 }

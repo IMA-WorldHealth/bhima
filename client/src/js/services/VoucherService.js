@@ -58,7 +58,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
       }
 
       if (escapedItem.reference) {
-        escapedItem.reference_uuid = escapedItem.reference.uuid;
+        escapedItem.document_uuid = escapedItem.reference.uuid;
       }
 
       return escapedItem;
