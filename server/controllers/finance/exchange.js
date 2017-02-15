@@ -4,7 +4,6 @@
  * This controller exposes an API to the client for reading and writing exchange
  * rates.
  */
-'use strict';
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');

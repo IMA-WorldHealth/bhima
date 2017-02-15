@@ -1,5 +1,4 @@
 
-/* jshint expr:true */
 /* global element, by, browser */
 
 /**

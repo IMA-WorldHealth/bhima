@@ -14,7 +14,6 @@
  * @requires lib/errors/Forbidden
  * @requires lib/errors/InternalServerError
  */
-'use strict';
 
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');

@@ -27,7 +27,6 @@
 * TODO: We should migrate the inventory to using the regular bhima 2.x guidelines.
 */
 
-'use strict';
 
 const q  = require('q');
 const ReportManager = require('../../lib/ReportManager');

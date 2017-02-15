@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @module controllers/finance/purchases

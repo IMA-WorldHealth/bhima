@@ -9,7 +9,6 @@
  * @requires lib/errors/NotFound
  */
 
-'use strict';
 
 const q  = require('q');
 const _ = require('lodash');

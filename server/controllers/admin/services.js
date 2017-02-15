@@ -15,7 +15,6 @@
  * @requires Topic
  */
 
-'use strict';
 
 const uuid = require('node-uuid');
 const db = require('../../lib/db');

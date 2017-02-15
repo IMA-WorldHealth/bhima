@@ -134,7 +134,6 @@ Plugin.prototype.register = function (event, callback) {
  * @param {Array} cfgArray - configuration array with plugins names and scripts
  */
 function PluginManager(cfgArray) {
-  'use strict';
 
   const plugins = this.plugins = {};
   const NAMESPACE = 'PluginManager';
@@ -199,7 +198,6 @@ function PluginManager(cfgArray) {
 
 /* expose routes to the greater bhima server */
 module.exports = function (app, pluginConfig) {
-  'use strict';
 
   var pm = new PluginManager(pluginConfig);
 

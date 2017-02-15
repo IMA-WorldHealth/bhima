@@ -16,7 +16,6 @@
  * @requires NotFound
  */
 
-'use strict';
 
 const uuid = require('node-uuid');
 

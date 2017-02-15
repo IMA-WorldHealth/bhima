@@ -9,7 +9,6 @@
  * @requires lib/db
  */
 
-'use strict';
 
 // module dependencies
 const db = require('../../../lib/db');

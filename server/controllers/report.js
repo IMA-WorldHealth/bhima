@@ -10,7 +10,6 @@
  * @requires fs
  * @requires db
  */
-'use strict';
 
 const path = require('path');
 const fs = require('fs');

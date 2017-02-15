@@ -9,7 +9,6 @@
  * The application routes are configured in {@link server/config/routes}, while
  * the middleware is configured in {@link server/config/express}.
  *
- * @requires fs
  * @requires http
  * @requires dotenv
  * @requires express
@@ -23,14 +22,13 @@
  * @copyright IMA World Health 2016
  */
 
-'use strict';
+require('use-strict');
 
-const fs = require('fs');
 const http = require('http');
 const express = require('express');
 const winston = require('winston');
 
-let app = express();
+const app = express();
 
 /**
  * @function configureEnvironmentVariables

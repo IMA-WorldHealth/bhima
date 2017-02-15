@@ -2,7 +2,6 @@ var db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 function lookupSectionResultat(id) {
-  'use strict';
 
   var sql =
     'SELECT id, text, position, is_charge FROM section_resultat WHERE id = ?';
@@ -19,7 +18,6 @@ function lookupSectionResultat(id) {
 }
 
 function detail(req, res, next) {
-  'use strict';
 
   lookupSectionResultat(req.params.id)
   .then(function (row) {
@@ -30,7 +28,6 @@ function detail(req, res, next) {
 }
 
 function list(req, res, next) {
-  'use strict';
   var sql;
 
   if (req.query.detailed === '1') {
@@ -50,7 +47,6 @@ function list(req, res, next) {
 }
 
 function create (req, res, next) {
-  'use strict';
 
   var record = req.body;
   var sql = 'INSERT INTO section_resultat SET ?';
@@ -66,7 +62,6 @@ function create (req, res, next) {
 }
 
 function update(req, res, next) {
-  'use strict';
 
   var queryData = req.body;
   var sectionResultatId = req.params.id;

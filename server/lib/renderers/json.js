@@ -9,7 +9,6 @@
  *
  * @module  lib/renderers/json
  */
-'use strict';
 
 const q = require('q');
 

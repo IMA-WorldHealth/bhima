@@ -1,4 +1,3 @@
-/* jshint expr:true */
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;

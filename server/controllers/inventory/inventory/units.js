@@ -15,14 +15,12 @@ exports.remove  = remove;
 
 /** list inventory unit */
 function list () {
-  'use strict';
 
   return getUnits();
 }
 
 /** details of inventory unit */
 function details (identifier) {
-  'use strict';
 
   return getUnits(identifier);
 }
@@ -31,7 +29,6 @@ function details (identifier) {
 
 /** create new inventory unit */
 function create (record) {
-  'use strict';
 
   let sql = `INSERT INTO inventory_unit (text) VALUES (?);`;
   /*
@@ -44,7 +41,6 @@ function create (record) {
 
 /** update an existing inventory unit */
 function update (record, id) {
-  'use strict';
 
   let sql = `UPDATE inventory_unit SET ? WHERE id = ?;`;
   /*
@@ -57,7 +53,6 @@ function update (record, id) {
 
 /** remove inventory unit */
 function remove (id) {
-  'use strict';
 
   let sql = 'DELETE FROM inventory_unit WHERE id = ?;';
   return db.exec(sql, [id]);
@@ -68,7 +63,6 @@ function remove (id) {
  * @param {string} uid the unit id is optional
  */
 function getUnits(id) {
-  'use strict';
 
   let sql = `SELECT id, text FROM inventory_unit `;
   sql += (id) ? ' WHERE id = ?;' : ';';

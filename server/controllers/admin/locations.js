@@ -14,7 +14,6 @@
  * Endpoints taking UUIDs return only the records matching the UUID
  */
 
-'use strict';
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
