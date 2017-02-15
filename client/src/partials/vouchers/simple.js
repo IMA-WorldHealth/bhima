@@ -100,6 +100,9 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
 
     // clear the voucher
     vm.Voucher.clear();
+
+    // amount is held outside of the voucher
+    delete vm.amount;
   }
 
   RS.$on('voucher:configure', function (evt, data) {
