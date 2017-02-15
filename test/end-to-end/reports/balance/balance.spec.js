@@ -38,7 +38,7 @@ describe('Balance Report Generation', () => {
     FU.buttons.create();
 
     // set report title
-    FU.input('ReportConfigCtrl.label', annualReport.title)
+    FU.input('ReportConfigCtrl.label', annualReport.title);
 
     // set the report classe
     FU.uiSelect('ReportConfigCtrl.classe', annualReport.classe);
@@ -61,7 +61,7 @@ describe('Balance Report Generation', () => {
     FU.buttons.create();
 
     // set report title
-    FU.input('ReportConfigCtrl.label', report.title)
+    FU.input('ReportConfigCtrl.label', report.title);
 
     // set the report classe
     FU.uiSelect('ReportConfigCtrl.classe', report.classe);

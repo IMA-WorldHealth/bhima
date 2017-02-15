@@ -15,7 +15,6 @@
  * in the HTTP query string.
  */
 
-'use strict';
 
 const _           = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -32,10 +31,11 @@ const REPORT_KEY = 'AGED_DEBTOR';
  * The HTTP interface which actually creates the report.
  */
 function agedDebtorReport(req, res, next) {
-  const qs = req.query;
+  const qs = _.extend(req.query, { csvKey : 'debtors' });
   const metadata = _.clone(req.session);
 
   let report;
+
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
   } catch(e) {

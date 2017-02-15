@@ -8,5 +8,8 @@
 module.exports = {
   receipts: {
     purchases: require('./purchases.receipt')
+  },
+  reports : {
+    prices : require('./prices')
   }
 };

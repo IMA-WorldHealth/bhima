@@ -29,7 +29,6 @@ const util = require('util');
  * @requires util
  */
 function InternalServerError(description) {
-  'use strict';
 
   // make sure we have a working stack trace
   Error.captureStackTrace(this, this.constructor);

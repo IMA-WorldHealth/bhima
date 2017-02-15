@@ -9,12 +9,16 @@
  *
  * @module  lib/renderers/json
  */
-'use strict';
 
 const q = require('q');
 
+const headers = {
+  'Content-Type' : 'application/json'
+};
+
 exports.render = renderJSON;
 exports.extension = '.json';
+exports.headers = headers;
 
 /**
  * JSON Render Method

@@ -24,7 +24,6 @@ const BadRequest = require('../../lib/errors/BadRequest');
  * GET /prices
  */
 exports.list = function list(req, res, next) {
-  'use strict';
 
   var sql;
 
@@ -66,7 +65,6 @@ exports.list = function list(req, res, next) {
  * @returns {Promise}
  */
 function lookupPriceList(uid) {
-  'use strict';
 
   var priceList;
   var sql =
@@ -104,7 +102,6 @@ function lookupPriceList(uid) {
  * GET /prices/:uuid
  */
 exports.details = function details(req, res, next) {
-  'use strict';
 
   const uid = db.bid(req.params.uuid);
 
@@ -159,7 +156,6 @@ exports.details = function details(req, res, next) {
  * @returns {Array} items
  */
 function formatPriceListItems(priceListUuid, items) {
-  'use strict';
 
   // format the price list items into a format that can be easily inserted into
   // the database
@@ -186,7 +182,6 @@ function formatPriceListItems(priceListUuid, items) {
  * POST /prices
  */
 exports.create = function create(req, res, next) {
-  'use strict';
 
   var items;
   var data = req.body.list;
@@ -235,7 +230,6 @@ exports.create = function create(req, res, next) {
  * PUT /prices/:uuid
  */
 exports.update = function update(req, res, next) {
-  'use strict';
 
   var items;
   var data = req.body.list;
@@ -301,7 +295,6 @@ exports.update = function update(req, res, next) {
  * DELETE /prices/:uuid
  */
 exports.delete = function del(req, res, next) {
-  'use strict';
 
   const uid = db.bid(req.params.uuid);
 

@@ -1,4 +1,4 @@
-'use strict';
+
 /**
 * The Debtor Groups Controllers
 *
@@ -19,12 +19,16 @@ const uuid = require('node-uuid');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const NotFound = require('../../../../lib/errors/NotFound');
+const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /** Create a new debtor group */
 exports.create = create;
 
 /** Update a debtor group */
 exports.update = update;
+
+/** Delete a debtor group */
+exports.delete = remove;
 
 /** Get debtor group details */
 exports.detail = detail;
@@ -128,11 +132,11 @@ function create(req, res, next) {
   data.uuid = db.bid(data.uuid || uuid.v4());
 
   db.exec(sql, data)
-  .then(function () {
-    res.status(201).json({ uuid: uuid.unparse(data.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      res.status(201).json({ uuid: uuid.unparse(data.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -193,7 +197,7 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-  var sql =
+   let sql =
     'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
 
   if (req.query.detailed === '1') {
@@ -211,15 +215,15 @@ function list(req, res, next) {
       FROM debtor_group
       LEFT JOIN debtor
       ON debtor.group_uuid = debtor_group.uuid
-      GROUP BY debtor_group.uuid
-      `;
+      GROUP BY debtor_group.uuid `;
 
     delete req.query.detailed;
   }
 
-  var queryObject = util.queryCondition(sql, req.query);
+  let queryObject = util.queryCondition(sql, req.query);
+  sql = queryObject.query + ' ORDER BY name;' ;
 
-  db.exec(queryObject.query, queryObject.conditions)
+  db.exec(sql, queryObject.conditions)
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -241,11 +245,11 @@ function invoices(req, res, next) {
   options.debtor_uuid = req.params.uuid;
 
   loadInvoices(options)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -258,6 +262,7 @@ function invoices(req, res, next) {
  * }
  */
 function loadInvoices(params) {
+
   // cancelled transaction type
   const CANCELED_TRANSACTION_TYPE = 10;
 
@@ -274,7 +279,7 @@ function loadInvoices(params) {
         entity_uuid, invoice.reference, invoice.project_id
       FROM combined_ledger
       JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
-      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
       GROUP BY uuid
     ) AS i
     JOIN project ON i.project_id = project.id
@@ -287,9 +292,30 @@ function loadInvoices(params) {
   let bid = db.bid(params.debtor_uuid);
 
   return db.exec(sqlDebtors, [bid])
-  .then(result => {
-    if (!result.length) { return []; }
-    let uuids = result.map(item => item.uuid);
-    return db.exec(sqlInvoices, [uuids]);
-  });
+    .then(result => {
+      if (!result.length) { return []; }
+      let uuids = result.map(item => item.uuid);
+      return db.exec(sqlInvoices, [uuids]);
+    });
+}
+
+/**
+ * @method delete
+ *
+ * @description
+ * This method removes the debtor group from the system.
+ */
+function remove(req, res, next) {
+  const sql = 'DELETE FROM debtor_group WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
+  db.exec(sql, [uid])
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new BadRequest(`Cannot delete the debtor group with id ${req.params.uuid}`, 'DEBTOR_GROUP.FAILURE_DELETE');
+      }
+
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }

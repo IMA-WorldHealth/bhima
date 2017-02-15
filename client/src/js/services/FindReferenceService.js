@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('FindReferenceService', FindReferenceService);
+  .service('FindReferenceService', FindReferenceService);
 
 FindReferenceService.$inject = ['$uibModal'];
 

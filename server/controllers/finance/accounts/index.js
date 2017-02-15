@@ -20,7 +20,6 @@
  * @requires accounts/types
  */
 
-'use strict';
 
 const lodash = require('lodash');
 const db = require('../../../lib/db');
@@ -281,6 +280,9 @@ function processAccountDepth(accounts) {
 
   // return a flattened tree (in order)
   accounts = flatten(tree);
+
+  // remove the children property after flattening to avoid recursive references
+  accounts.forEach(account => delete account.children);
 
   return accounts;
 }

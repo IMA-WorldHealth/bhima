@@ -1,13 +1,9 @@
-'use strict';
 
 const uuid = require('node-uuid');
 const _ = require('lodash');
 const db   = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const util = require('../../lib/util');
-
-// @fixme - only for testing purposes
-const q = require('q');
 
 module.exports = create;
 

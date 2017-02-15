@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.locked.$invalid }">
+    <div ng-if="$ctrl.showLock" class="form-group" ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.locked.$invalid }">
       <label class="control-label">
         <input
           type="checkbox"

@@ -8,7 +8,6 @@
  * @requires lib/ReportManager
  * @requires inventory/purchases
  */
-'use strict';
 
 const ReportManager = require('../../../lib/ReportManager');
 const Purchases = require('../../finance/purchases');

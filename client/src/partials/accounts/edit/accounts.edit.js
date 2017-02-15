@@ -2,11 +2,12 @@
 /** @todo server shouldn't allow bigger than an integer */
 /** @todo server should not allow updating fields that are not white listed */
 angular.module('bhima.controllers')
-.controller('AccountEditController', AccountEditController);
+  .controller('AccountEditController', AccountEditController);
 
-AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService'];
+AccountEditController.$inject = [
+  '$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService'
+];
 
-/** @todo use loading button */
 function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants, ModalService) {
   var accountStore, typeStore;
   var vm = this;
@@ -141,7 +142,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   // @todo form validation using validators on a component
   function titleChangedValidation(newAccountType) {
     var notTitleAccount = Number(newAccountType) !== Constants.accounts.TITLE;
-    var hasChildren = vm.account.children.length;
+    var hasChildren = vm.account.children && vm.account.children.length;
 
     if (notTitleAccount && hasChildren) {
       vm.invalidTitleAccount = true;
@@ -178,7 +179,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
 
     if (vm.isCreateState) {
 
-      Accounts.create(submit)
+      return Accounts.create(submit)
         .then(function (result) {
           vm.fetchError = null;
 
@@ -196,7 +197,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
         .catch(handleModalError);
 
     } else {
-      Accounts.update(vm.account.id, submit)
+      return Accounts.update(vm.account.id, submit)
         .then(function (result) {
           vm.fetchError = null;
           $rootScope.$broadcast('ACCOUNT_UPDATED', result);
@@ -211,24 +212,24 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   function deleteAccount(account){
 
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
-      // if the user clicked cancel, reset the view and return
-      if (!bool) {
-        return;
-      }
+      .then(function (bool){
+        // if the user clicked cancel, reset the view and return
+        if (!bool) {
+          return;
+        }
 
-      if (!account.id) {
-        return;
-      }
+        if (!account.id) {
+          return;
+        }
 
-      Accounts.delete(account.id)
-      .then(function (result){
-        $rootScope.$broadcast('ACCOUNT_DELETED', account);
-        Notify.success('ACCOUNT.DELETED');
-        close();
-      })
-      .catch(handleModalError);
-    });
+        return Accounts.delete(account.id)
+          .then(function (result){
+            $rootScope.$broadcast('ACCOUNT_DELETED', account);
+            Notify.success('ACCOUNT.DELETED');
+            close();
+          })
+          .catch(handleModalError);
+        });
   }
 
   function resetModal(accountForm) {
@@ -268,7 +269,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     throw error;
   }
 
-  // sipmly exposes the error to the view
+  // simply exposes the error to the view
   function handleModalError(error) {
     vm.fetchError = error;
   }

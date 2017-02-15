@@ -1,10 +1,10 @@
-{{> head title="PATIENT_REG.PATIENT_REGISTRATIONS" }}
+{{> head title="PATIENT_REG.PAGE_TITLE" }}
 
 <body>
 
   {{> header }}
 
-  <h4 class="text-center">{{translate "PATIENT_REG.PAGE_TITLE"}}</h4>
+  <h3 class="text-center">{{translate "PATIENT_REG.PAGE_TITLE"}}</h3>
 
   <p class="pills">
     {{#each filters}}
@@ -20,33 +20,35 @@
     {{/each}}
   </p>
 
-  <section>
-    <table class="table table-condensed table-report table-bordered ">
+  <section style="size: 0.75em;">
+    <table class="table table-condensed table-bordered ">
       <thead>
         <tr class="text-capitalize text-center">
           <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>
-          <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
-          <th>{{translate "TABLE.COLUMNS.DOB" }}</th>
-          <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
           <th>{{translate "TABLE.COLUMNS.HOSPITAL_FILE_NR" }}</th>
+          <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
+          <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
+          <th>{{translate "TABLE.COLUMNS.AGE" }} ({{translate "TABLE.COLUMNS.DOB"}})</th>
+          <th>{{translate "FORM.LABELS.ORIGIN_VILLAGE" }}</th>
+          <th>{{translate "FORM.LABELS.ORIGIN_SECTOR" }}</th>
           <th>{{translate "TABLE.COLUMNS.DATE_REGISTERED" }}</th>
-          <th>{{translate "TABLE.COLUMNS.LAST_VISIT" }}</th>
         </tr>
       </thead>
       <tbody>
         {{#each patients}}
           <tr>
             <td>{{this.reference}}</td>
-            <td>{{this.display_name}}</td>
-            <td>{{date this.dob}}</td>
-            <td>{{this.sex}}</td>
             <td>{{this.hospital_no}}</td>
+            <td>{{this.display_name}}</td>
+            <td>{{this.sex}}</td>
+            <td>{{this.age}} ({{date this.dob}})</td>
+            <td>{{this.originVillageName}}</td>
+            <td>{{this.originSectorName}}</td>
             <td>{{date this.registration_date}}</td>
-            <td>{{date this.last_visit}}</td>
           </tr>
         {{else}}
           <tr>
-            <td colspan="7" class="text-center">
+            <td colspan="8" class="text-center">
               {{translate "TABLE.COLUMNS.EMPTY"}}
             </td>
           </tr>
@@ -54,9 +56,58 @@
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="7" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ patients.length }}</th>
+          <th colspan="8" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ patients.length }}</th>
         </tr>
       </tfoot>
     </table>
+
+    {{#if aggregates}}
+      <div class="row">
+        <div class="col-xs-6">
+
+          <!-- summary table -->
+          <table class="table table-condensed table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th colspan="2" class="text-center">
+                  {{ translate 'FORM.LABELS.SUMMARY' }} ({{date aggregates.minDate }} - {{date aggregates.maxDate}})
+                </th>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_PATIENTS' }}</th>
+                <td class="text-right">{{ aggregates.numPatients}}</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_WOMEN' }}</th>
+                <td class="text-right">{{ aggregates.numFemales }} ({{ aggregates.percentFemales }}%)</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_MEN' }}</th>
+                <td class="text-right">{{ aggregates.numMales }} ({{ aggregates.percentMales }}%)</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_DISTINCT_RESIDENCES' }}</th>
+                <td class="text-right">{{ aggregates.numDistinctResidences}}</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUMBER_OF_DAYS' }}</th>
+                <td class="text-right">{{ aggregates.numDays }}</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_DEBTOR_GROUPS' }}</th>
+                <td class="text-right">{{ aggregates.numDebtorGroups }}</td>
+              </tr>
+              {{#if hasMultipleProjects }}
+                <tr>
+                  <th>{{ translate 'TABLE.AGGREGATES.NUM_PROJECTS' }}</th>
+                  <td class="text-right">{{ aggregates.numProjects }}</td>
+                </tr>
+              {{/if}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {{/if}}
+
   </section>
 </body>

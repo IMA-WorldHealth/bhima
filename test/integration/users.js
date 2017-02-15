@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr : true */
 
 const helpers = require('./helpers');
 
@@ -50,7 +49,7 @@ describe('(/users) Users and Permissions', function () {
     return agent.post('/users')
       .send(badUser)
       .then(function (res) {
-        helpers.api.errored(res, 400, 'ERRORS.BAD_REQUEST');
+        helpers.api.errored(res, 400, 'ERRORS.ER_BAD_NULL_ERROR');
       })
       .catch(helpers.handler);
   });
@@ -76,7 +75,7 @@ describe('(/users) Users and Permissions', function () {
     return agent.get('/users/' + newUser.id)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;      
+        expect(res).to.be.json;
         expect(res.body.email).to.equal(newUser.email);
         expect(res.body.display_name).to.equal(newUser.display_name);
       })

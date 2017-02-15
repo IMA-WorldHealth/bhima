@@ -1,19 +1,18 @@
 <div>
  <ui-select
-   ng-model="row.entity.account"
-   ng-change="grid.appScope.checkRowValidity(row.entity.index)"
+   ng-model="row.entity.account_id"
+   ng-change="grid.appScope.Voucher.configureRow(row.entity)"
    name="account"
-   style="width:100%;"
    append-to-body="true"
    required>
    <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
      <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
    </ui-select-match>
    <ui-select-choices
-     ui-select-focus-patch
      class="ui-grid-ui-select"
+     ui-select-focus-patch
      ui-disable-choice="account.type_id === grid.appScope.bhConstants.accounts.TITLE"
-     repeat="account in grid.appScope.accounts | filter:$select.search">
+     repeat="account.id as account in grid.appScope.Voucher.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
      <strong ng-bind-html="account.number | highlight:$select.search"></strong>
      <span ng-bind-html="account.label | highlight:$select.search"></span>
    </ui-select-choices>

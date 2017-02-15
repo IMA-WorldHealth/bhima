@@ -159,7 +159,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    Config.openColumnConfigModal(columnConfig);
+    columnConfig.openConfigurationModal();
   };
 
   //This function opens a modal, to let the user posting transaction to the general ledger

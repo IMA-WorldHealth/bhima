@@ -28,10 +28,6 @@ describe('Services', function () {
 
     FU.input('ServicesCtrl.service.name', SERVICE.name);
 
-    FU.select('ServicesCtrl.service.enterprise_id', 'Test Enterprise');
-    FU.select('ServicesCtrl.service.cost_center_id', 'cost center 2');
-    FU.select('ServicesCtrl.service.profit_center_id', 'profit center 1');
-
     // submit the page to the server
     FU.buttons.submit();
 
@@ -56,11 +52,6 @@ describe('Services', function () {
 
     // The following fields should be required
     FU.validation.error('ServicesCtrl.service.name');
-    FU.validation.error('ServicesCtrl.service.enterprise_id');
-
-    // The following fields is not required
-    FU.validation.ok('ServicesCtrl.service.cost_center_id');
-    FU.validation.ok('ServicesCtrl.service.profit_center_id');
   });
 
   it('successfully delete an service', function () {

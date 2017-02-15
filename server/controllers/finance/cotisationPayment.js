@@ -6,7 +6,6 @@ var uuid    = require('node-uuid');
 var journal = require('./journal');
 
 module.exports = function() {
-  'use strict';
 
   function execute(data, userId, callback) {
     return writePrimary(data.primary)

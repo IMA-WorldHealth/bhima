@@ -14,7 +14,6 @@
  * @requires Topic
  */
 
-'use strict';
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -61,6 +60,9 @@ function list(req, res, next) {
 function create(req, res, next) {
   let record = req.body;
   let sql = 'INSERT INTO service SET ?';
+
+  // add contextual information
+  record.enterprise_id = req.session.enterprise.id;
 
   delete record.id;
 

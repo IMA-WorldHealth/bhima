@@ -1,3 +1,4 @@
+
 /*
 * Inventory Core Functions
 *
@@ -5,10 +6,8 @@
 * handling.
 */
 
-'use strict';
-
-var uuid = require('node-uuid'),
-    db = require('../../../lib/db');
+const uuid = require('node-uuid');
+const db = require('../../../lib/db');
 
 // this should be a const in future ES versions
 var errors = {
@@ -76,15 +75,20 @@ function createItemsMetadata(record, session) {
 */
 function updateItemsMetadata(record, identifier) {
 
-  record.uuid = db.bid(identifier);
-  record.group_uuid = db.bid(record.group_uuid);
+  // remove the uuid if it exists
+  delete record.uuid;
+
+  if (record.group_uuid) {
+    record.group_uuid = db.bid(record.group_uuid);
+  }
+
   let sql = `UPDATE inventory SET ? WHERE uuid = ?;`;
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
-  return db.exec(sql, [record, record.uuid])
-  .then(() => getItemsMetadataById(identifier));
+  return db.exec(sql, [record, db.bid(identifier)])
+    .then(() => getItemsMetadataById(identifier));
 }
 
 /**
@@ -114,8 +118,8 @@ function getItemsMetadata() {
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
-      i.stock_max, i.origin_stamp AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account
+      i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
+      ig.sales_account, i.default_quantity
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
@@ -135,18 +139,18 @@ function getItemsMetadata() {
 */
 function getItemsMetadataById(uuid) {
 
-  var sql =
+  const sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
-      i.stock_max, i.origin_stamp AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account
+      i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
+      ig.sales_account, i.default_quantity
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
       i.unit_id = iu.id
     WHERE i.uuid = ?;`;
 
-  return db.exec(sql, [db.bid(uuid)]);
+  return db.one(sql, [db.bid(uuid), uuid, 'inventory']);
 }
 
 /**
@@ -159,7 +163,6 @@ function getItemsMetadataById(uuid) {
 * @return {Boolean} Returns true if m and n are both truthy or both falsey
 */
 function hasBoth(m, n) {
-  /* jshint -W018 */
   return !m === !n;
 }
 

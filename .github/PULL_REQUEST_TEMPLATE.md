@@ -1,7 +1,7 @@
 Thank you for contributing!
 
 Before submitting this pull request, please verify that you have:
- - [ ] Run your code through JSHint.  [Check out our styleguide](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/STYLEGUIDE.md).
+ - [ ] Run your code through ESLint.  [Check out our styleguide](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/STYLEGUIDE.md).
  - [ ] Run integration tests.
  - [ ] Run end-to-end tests.
  - [ ] Accurately described the changes your are making in this pull request.

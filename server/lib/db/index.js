@@ -1,4 +1,3 @@
-'use strict';
 
 const q       = require('q');
 const mysql   = require('mysql');
@@ -17,8 +16,6 @@ const NotFound = require('../errors/NotFound');
  * database.  The connector is mainly responsible for setting up the initial
  * connection based on parameters in the environment variables, and then wrapping
  * all database queries in promise calls.
- *
- * @todo implement db.one() that automatically generates 404 errors as necessary.
  *
  * @requires q
  * @requires mysql

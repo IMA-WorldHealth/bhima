@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-'use strict';
 
 // npm deps
 const q = require('q');
@@ -48,7 +47,7 @@ function lookupTransaction(record_uuid) {
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       p.description, p.account_id, p.debit, p.credit,
       p.debit_equiv, p.credit_equiv, p.currency_id,
-      BUID(p.entity_uuid) AS entity_uuid, p.entity_type,
+      BUID(p.entity_uuid) AS entity_uuid,
       BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
       p.user_id, p.cc_id, p.pc_id,
       pro.abbr, pro.name AS project_name,
@@ -197,7 +196,7 @@ function find(options) {
 * journalEntryList
 * Allows you to select which transactions to print
 */
-function journalEntryList(options) { 
+function journalEntryList(options) {
   let uuids =  options.uuids.map(function(uuid) {
     return db.bid(uuid);
   });
@@ -293,7 +292,7 @@ function getTransaction (req, res, next) {
  *
  * @description
  * This is a generic wrapper for reversing any transaction in the posting
- * journal or general ledger. 
+ * journal or general ledger.
  *
  * POST /journal/:uuid/reverse
  */
@@ -303,20 +302,20 @@ function reverse(req, res, next) {
   const recordUuid  = db.bid(req.params.uuid);
   const params = [ recordUuid, req.session.user.id, req.body.description, db.bid(voucherUuid) ];
 
-  /** 
-   * Check already cancelled 
+  /**
+   * Check already cancelled
    * Transaction type for cancelled operation is 10
    */
   const CANCELLED_ID = 10;
-  const query = 
-    `SELECT uuid FROM voucher 
+  const query =
+    `SELECT uuid FROM voucher
      WHERE voucher.type_id = ${CANCELLED_ID} AND voucher.reference_uuid = ?`;
 
-  // create and execute a transaction if necessary 
+  // create and execute a transaction if necessary
   db.exec(query, [recordUuid])
     .then(rows => {
       if (rows.length > 0) {
-        // transaction already cancelled 
+        // transaction already cancelled
         throw new BadRequest('The transaction has been already cancelled', 'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING');
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);

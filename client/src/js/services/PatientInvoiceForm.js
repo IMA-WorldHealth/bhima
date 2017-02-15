@@ -14,8 +14,6 @@ PatientInvoiceFormService.$inject = [
  * with the Patient PatientInvoiceForm module.  You must specify a cacheKey to enable the
  * class to be instantiated correctly.
  *
- * @todo (required) discuss if all subsidies/billings services are all
- *   percentages.  If so, the logic can be simplified.
  * @todo (required) only the maximum of the bill should be subsidised
  * @todo (required) billing services and subsidies should be ignored for
  *   specific debtors.
@@ -89,6 +87,12 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     // set up the inventory
     Inventory.read(null, { detailed : 1 })
       .then(function (data) {
+
+        // make sure both the label and code is searchable
+        data.forEach(function (item) {
+          item.hrlabel = item.code + ' ' + item.label;
+        });
+
         this.inventory.initialize('uuid', data);
       }.bind(this));
 
@@ -104,7 +108,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // the invoice details
     this.details = {
-      is_distributable : 1,
       date : new Date(),
       cost : 0,
       description : null

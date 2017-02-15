@@ -26,27 +26,32 @@ angular.module('bhima.components')
   });
 
 // dependencies injection
-bhDateInterval.$inject = ['DateService', 'moment'];
+bhDateInterval.$inject = ['DateService', 'moment', 'bhConstants'];
 
 // controller definition
-function bhDateInterval(Dates, moment) {
+function bhDateInterval(Dates, moment, bhConstants) {
   var vm = this;
 
-  vm.options = [
-    { translateKey : 'FORM.LABELS.TODAY', fn : day },
-    { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week },
-    { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
-    { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
-  ];
-
-  vm.pickerOptions = { showWeeks : false };
-
+  vm.dateFormat = bhConstants.dayOptions.format;
+  
   // expose to the viewe
   vm.search = search;
   vm.clear  = clear;
 
-  // start up the modal
-  startup();
+  vm.$onInit = function () {
+
+    vm.options = [
+      { translateKey : 'FORM.LABELS.TODAY', fn : day, range: 'day' },
+      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week, range: 'week' },
+      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month, range: 'month' },
+      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year, range: 'year' }
+    ];
+
+    vm.pickerOptions = { showWeeks : false };
+
+    // start up the modal
+    startup();
+  };
 
   function search(selection) {
     vm.selected = selection.translateKey;

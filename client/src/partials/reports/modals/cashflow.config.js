@@ -19,22 +19,21 @@ function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Langua
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
 
-  vm.$loading = false;
-
   Cashbox.read(null, { detailed: 1 })
-  .then(function (list) {
-    list.forEach(function (cashbox) {
-      cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
-    });
-    vm.cashboxes = list;
-  })
-  .catch(Notify.handleError);
+    .then(function (cashboxes) {
 
-  function generate() {
+      cashboxes.forEach(function (cashbox) {
+        cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
+      });
+
+      vm.cashboxes = cashboxes;
+    })
+    .catch(Notify.handleError);
+
+  function generate(form) {
+    if (form.$invalid) { return; }
+
     var url = 'reports/finance/cashflow';
-    if (!vm.cashbox || !vm.dateFrom || !vm.label || !vm.dateTo) { return ; }
-
-    vm.$loading = true;
 
     var options = {
       account_id: vm.cashbox.account_id,
@@ -45,16 +44,11 @@ function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Langua
       weekly : vm.weekly
     };
 
-    SavedReports.requestPDF(url, report, options)
+    return SavedReports.requestPDF(url, report, options)
       .then(function (result) {
         ModalInstance.dismiss();
         $state.reload();
       })
-      .catch(function (error) {
-        throw error;
-      })
-      .finally(function () {
-        vm.$loading = false;
-      });
+      .catch(Notify.handleError);
   }
 }

@@ -1,4 +1,5 @@
-/* jshint expr:true */
+'use strict';
+
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
@@ -7,19 +8,19 @@ const helpers = require('../../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../../shared/FormUtils');
+const components = require('../../shared/components');
 
 const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
-  'use strict';
+
+  const NUM_INVOICES = 5;
 
   const params = {
     monthBillNumber : 0,
-    referenceValue : 'TPA2',
+    referenceValue : 'IV.TPA.2',
     serviceValue : 'Test Service',
-    userValue : 'Super User',
-    distributableInvoiceNumber : 4,
-    noDistributableInvoiceNumber : 0
+    userValue : 'Super User'
   };
 
   const page = new InvoiceRegistryPage();
@@ -55,19 +56,7 @@ function InvoiceRegistrySearch() {
 
     // set the date inputs manually
     FU.buttons.search();
-    FU.input('ModalCtrl.params.billingDateTo', '2015-01-30');
-    FU.modal.submit();
-
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(1);
-
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
-  });
-
-  it('filters by radio buttons', () => {
-    FU.buttons.search();
-    element(by.id('no')).click();
+    components.dateInterval.dateTo('30/01/2015');
     FU.modal.submit();
 
     expectNumberOfGridRows(0);
@@ -79,7 +68,7 @@ function InvoiceRegistrySearch() {
 
   it('filters by reference should return a single result', () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.reference', 'TPA2');
+    FU.input('ModalCtrl.params.reference', 'IV.TPA.2');
     FU.modal.submit();
 
     expectNumberOfGridRows(1);
@@ -89,19 +78,56 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it('filters by <select> should return two results', () => {
+  it('filters by reference of patient should get no result', () => {
     FU.buttons.search();
-    FU.select('ModalCtrl.params.service_id', 'Test Service');
+    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.3');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(0);
+    expectNumberOfFilters(1);
+
+    // make sure to clear the filters for the next test
+    FU.buttons.clear();
+  });
+
+  it('filters by reference of patient should get some result', () => {
+    FU.buttons.search();
+    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.1');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(3);
+    expectNumberOfFilters(1);
+
+    // make sure to clear the filters for the next test
+    FU.buttons.clear();
+  });
+
+  it('filters by <select> should return three results', () => {
+    FU.buttons.search();
+    FU.select('ModalCtrl.params.service_id', 'Administration');
     FU.select('ModalCtrl.params.user_id', 'Super User');
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(2);
 
     // make sure to clear the filters for the next test
     FU.buttons.clear();
   });
 
+  it('clear filters should remove all filters on the registry', () => {
+    FU.buttons.search();
+    FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(1);
+    expectNumberOfFilters(1);
+
+    FU.buttons.clear();
+
+    expectNumberOfGridRows(NUM_INVOICES);
+    expectNumberOfFilters(0);
+  });
 }
 
 module.exports = InvoiceRegistrySearch;

@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr : true */
 
 const helpers = require('./helpers');
 
@@ -83,7 +82,6 @@ describe('(/services) The Service API', function () {
       .catch(helpers.handler);
   });
 
-
   it('PUT /services/:id updates the newly added services', function () {
     var updateInfo = {name : 'other'};
     return agent.put('/services/'+ newService.id)
@@ -96,7 +94,6 @@ describe('(/services) The Service API', function () {
       })
       .catch(helpers.handler);
   });
-
 
   it('PUT /services/:id refuses to update a service with a string as profit_center_id', function () {
     return agent.put('/services/' + newService.id)

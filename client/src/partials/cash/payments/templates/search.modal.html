@@ -1,0 +1,91 @@
+<form
+  name="ModalForm"
+  bh-submit="$ctrl.submit(ModalForm)"
+  data-modal="cash-payment-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.PAYMENT</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow : auto; max-height : 400px;">
+
+    <bh-date-interval
+      validation-trigger="!$ctrl.validDateRange"
+      on-change="$ctrl.validate()"
+      required="true"
+      date-from="$ctrl.bundle.dateFrom"
+      date-to="$ctrl.bundle.dateTo"
+      mode="clean">
+    </bh-date-interval>
+
+    <fieldset>
+      <legend>
+        <span translate>FORM.LABELS.PAYMENT_DETAILS</span>
+      </legend>
+
+      <!-- reference  -->
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+        <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
+          <span translate>FORM.LABELS.CAUTION</span>
+        </label>
+      </div>
+
+      <!-- cashbox -->
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.CASHBOX</label>
+
+        <ui-select name="cashbox" ng-model="$ctrl.bundle.cashbox_id">
+          <ui-select-match>
+            <span>{{$select.selected.label}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="cashbox in $ctrl.cashboxes | filter:$select.search track by cashbox.id">
+            <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <!-- user -->
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.USER
+        </label>
+
+        <ui-select name="user" ng-model="$ctrl.bundle.user_id">
+          <ui-select-match>
+            <span>{{$select.selected.display_name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="user in $ctrl.users | filter:$select.search track by user.id">
+            <span ng-bind-html="user.display_name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <bh-currency-select
+        currency-id="$ctrl.bundle.currency_id"
+        validation-trigger="CashVoucherForm.$submitted">
+      </bh-currency-select>
+
+    </fieldset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

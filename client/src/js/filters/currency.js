@@ -13,7 +13,7 @@
  */
 
 angular.module('bhima.filters')
-.filter('currency', CurrencyFilter);
+  .filter('currency', CurrencyFilter);
 
 CurrencyFilter.$inject = [
   'currencyFormat', 'SessionService'
@@ -72,20 +72,20 @@ function CurrencyFilter(CurrencyFormat, Session) {
   // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
   var DECIMAL_SEP = '.';
   function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-    if (angular.isObject(number)) return ''; // jshint ignore:line
+    if (angular.isObject(number)) return '';
 
     var isNegative = number < 0;
     number = Math.abs(number);
 
     var isInfinity = number === Infinity;
-    if (!isInfinity && !isFinite(number)) return '';// jshint ignore:line
+    if (!isInfinity && !isFinite(number)) return '';
 
     var numStr = number + '',
         formatedText = '',
         hasExponent = false,
         parts = [];
 
-    if (isInfinity) formatedText = '\u221e'; // jshint ignore:line
+    if (isInfinity) formatedText = '\u221e';
 
     if (!isInfinity && numStr.indexOf('e') !== -1) {
       var match = numStr.match(/([\d\.]+)e(-?)(\d+)/);

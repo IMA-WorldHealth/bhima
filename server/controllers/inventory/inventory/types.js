@@ -15,14 +15,12 @@ exports.remove  = remove;
 
 /** list inventory type */
 function list () {
-  'use strict';
 
   return getTypes();
 }
 
 /** details of inventory type */
 function details (identifier) {
-  'use strict';
 
   return getTypes(identifier);
 }
@@ -31,7 +29,6 @@ function details (identifier) {
 
 /** create new inventory type */
 function create (record) {
-  'use strict';
   
   let sql = `INSERT INTO inventory_type (text) VALUES (?);`;
   /*
@@ -44,7 +41,6 @@ function create (record) {
 
 /** update an existing inventory type */
 function update (record, id) {
-  'use strict';
 
   let sql = `UPDATE inventory_type SET ? WHERE id = ?;`;
   /*
@@ -60,7 +56,6 @@ function update (record, id) {
  * @param {string} uid the type id is optional
  */
 function getTypes(id) {
-  'use strict';
 
   let sql = `SELECT id, text FROM inventory_type `;
   sql += (id) ? ' WHERE id = ?;' : ';';
@@ -69,7 +64,6 @@ function getTypes(id) {
 
 /** remove inventory type */
 function remove (id) {
-  'use strict';
 
   let sql = 'DELETE FROM inventory_type WHERE id = ?;';
   return db.exec(sql, [id]);

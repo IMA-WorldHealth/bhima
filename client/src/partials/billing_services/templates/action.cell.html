@@ -1,0 +1,13 @@
+<div class="ui-grid-cell-contents">
+  <span uib-dropdown dropdown-append-to-body>
+
+    <span uib-dropdown-toggle class="text-action">
+      <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+      <span class="caret"></span>
+    </span>
+    <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+      <li><a data-method="edit" ui-sref="billingServices.update({id:row.entity.id})" ui-sref-opts="{ notify: false }" href><i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span></a></li>
+      <li><a data-method="delete" class="text-danger" ui-sref="billingServices.delete({id:row.entity.id})" ui-sref-opts="{ notify: false }" href><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE</span></a></li>
+    </ul>
+  </span>
+</div>

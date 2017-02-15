@@ -10,20 +10,22 @@
  * This controller encapsulates the HTTP API backing the patient documents feature
  * in the application.
  *
- * @requires multer
  * @requires db
  * @requires node-uuid
  * @requires BadRequest
  * @requires NotFound
  */
 
-'use strict';
+
+const uuid = require('node-uuid');
 
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
+const Topic = require('../../../lib/topic');
+
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
-const Topic = require('../../../lib/topic');
+
+const identifiers = require('../../../config/identifiers');
 
 exports.create = create;
 exports.list = list;

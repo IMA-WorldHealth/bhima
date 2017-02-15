@@ -15,14 +15,18 @@
  * @requires lib/errors/BadRequest
  */
 
-'use strict';
 
 const _    = require('lodash');
 const uuid = require('node-uuid');
+
 const util = require('../../lib/util');
 const db   = require('../../lib/db');
+
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
+
+const identifiers = require('../../config/identifiers');
+const entityIdentifier = identifiers.VOUCHER.key;
 
 /** Get list of vouchers */
 exports.list = list;
@@ -81,7 +85,10 @@ function detail(req, res, next) {
       if (!rows.length) {
         throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
       }
-      res.status(200).json(rows[0]);
+
+      let record = rows[0];
+
+      res.status(200).json(record);
     })
     .catch(next)
     .done();
@@ -114,6 +121,7 @@ function create(req, res, next) {
   // remove the voucher items from the request before insertion into the
   // database
   delete voucher.items;
+  delete voucher.reference;
 
   // convert dates to a date objects
   voucher.date = voucher.date ? new Date(voucher.date) : new Date();
@@ -225,33 +233,39 @@ function getVouchers(uuid, request) {
 
   sql += !detailed ? ' GROUP BY v.uuid ' : '';
 
+  sql += ' ORDER BY v.date ';
+
   return db.exec(sql, sqlParams);
 }
 
 function getSql(detailed) {
-  let sql =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, v.user_id, v.type_id, u.display_name,
-      CONCAT(p.abbr, v.reference) AS reference,
+  let sql = `
+    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
       BUID(vi.document_uuid) AS document_uuid
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id `;
+    JOIN user u ON u.id = v.user_id
+    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
+  `;
 
-  let detailedSql =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, v.user_id, v.type_id,
-      BUID(vi.document_uuid) as document_uuid,
-      BUID(vi.uuid) AS voucher_item_uuid,
-      vi.account_id, vi.debit, vi.credit,
-      a.number, a.label, u.display_name,
-      CONCAT(p.abbr, v.reference) AS reference
+  let detailedSql = `
+    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, v.user_id, v.type_id, BUID(vi.document_uuid) as document_uuid,
+      BUID(vi.uuid) AS voucher_item_uuid, vi.account_id, vi.debit, transaction_type.text,
+      vi.credit, a.number, a.label, u.display_name,
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
+      entity_map.text AS entity_reference, document_map.text AS document_reference
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
-    JOIN account a ON a.id = vi.account_id `;
+    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
+    JOIN account a ON a.id = vi.account_id
+    LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
+    LEFT JOIN document_map ON document_map.uuid = vi.document_uuid `;
 
   return !util.isFalsy(detailed) ? detailedSql : sql;
 }

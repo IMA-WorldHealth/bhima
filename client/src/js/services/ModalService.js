@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('ModalService', ModalService);
+  .service('ModalService', ModalService);
 
 ModalService.$inject = [ '$uibModal' ];
 
@@ -35,8 +35,6 @@ function ModalService(Modal) {
   service.alert = alert;
   service.confirm = confirm;
   service.openSelectCashbox = openSelectCashbox;
-  service.openDebtorInvoices = openDebtorInvoices;
-  service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
   // modal for reporting
   service.openReports = openReports;
@@ -130,43 +128,6 @@ function ModalService(Modal) {
     });
 
     return Modal.open(params).result;
-  }
-
-  /**
-   * Debtor invoices Modal
-   */
-  function openDebtorInvoices(request) {
-    var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/invoices.modal.html',
-      controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
-      resolve     : {
-        debtorId : function debtorIdProvider() { return request.debtorUuid; },
-        invoiceIds : function invoiceIdsProvider() {
-          if (!request.invoices) { return []; }
-          return request.invoices.map(function (invoice) {
-            return invoice.invoice_uuid;
-          });
-        }
-      }
-    });
-
-    var instance = Modal.open(params);
-    return instance.result;
-  }
-
-  /**
-   * Transfer Modal
-   */
-  function openTransfer(request) {
-    var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/transfer.modal.html',
-      controller  : 'CashTransferModalController as CashTransferModalCtrl',
-      resolve     : {
-        cashBox:  function transferProvider() { return request.cashbox; }
-      }
-    });
-
-    var instance = Modal.open(params);
   }
 
   /**
@@ -383,7 +344,7 @@ function ModalService(Modal) {
     /** searchCashPayment */
     function openSearchCashPayment(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/finance/reports/cash_payment/templates/search.modal.html',
+        templateUrl  : 'partials/cash/payments/templates/search.modal.html',
         controller   : 'SearchCashPaymentModalController',
         controllerAs : '$ctrl',
         size         : 'md',

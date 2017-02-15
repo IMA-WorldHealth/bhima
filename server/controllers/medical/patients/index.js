@@ -1,3 +1,4 @@
+
 /**
  * @module medical/patient
  *
@@ -20,36 +21,38 @@
  * @requires lib/errors/NotFound
  * @requires medical/patients/groups
  * @requires medical/patients/documents
- * @requires medical/patients/checkin
+ * @requires medical/patients/vists
  * @requires medical/patients/pictures
  *
  * @todo Review naming conventions
  * @todo Remove or refactor methods to fit new API standards
  */
 
-'use strict';
-
 const _      = require('lodash');
 const q      = require('q');
 const uuid   = require('node-uuid');
 const moment = require('moment');
 
+const identifiers = require('../../../config/identifiers');
+const barcode = require('../../../lib/barcode');
+
 const util   = require('../../../lib/util');
 const db     = require('../../../lib/db');
 const topic  = require('../../../lib/topic');
+const FilterParser = require('../../../lib/filter');
 
 const BadRequest  = require('../../../lib/errors/BadRequest');
 const NotFound    = require('../../../lib/errors/NotFound');
 
 const groups    = require('./groups');
 const documents = require('./documents');
-const checkin   = require('./checkin');
+const visits = require('./visits');
 const pictures  = require('./pictures');
 
 // bind submodules
 exports.groups    = groups;
 exports.documents = documents;
-exports.checkin   = checkin;
+exports.visits = visits;
 exports.pictures  = pictures;
 
 // create a new patient
@@ -228,8 +231,8 @@ function lookupPatient(patientUuid) {
 
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
-      p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id,
-      CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
+      p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
@@ -239,7 +242,11 @@ function lookupPatient(patientUuid) {
     WHERE p.uuid = ?;
   `;
 
-  return db.one(sql, buid, patientUuid, 'patient');
+  return db.one(sql, buid, patientUuid, 'patient')
+    .then(function (patient) {
+      patient.barcode = barcode.generate(identifiers.PATIENT.key, patient.uuid);
+      return patient;
+    });
 }
 
 /**
@@ -261,8 +268,8 @@ function lookupByDebtorUuid(debtorUuid) {
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name,
       p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
-      BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
-      p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
+      BUID(p.origin_location_id) as origin_location_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
+      p.title, p.address_1, p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
       dg.locked, dg.name as debtor_group_name, u.username, a.number
@@ -282,27 +289,12 @@ function lookupByDebtorUuid(debtorUuid) {
 }
 
 function list(req, res, next) {
-  var listPatientsQuery;
-
-  listPatientsQuery =
-    `SELECT BUID(p.uuid) AS uuid, p.display_name,
-      CONCAT(pr.abbr, p.reference) AS reference, p.dob, p.sex,
-      p.registration_date, p.hospital_no, MAX(pv.start_date) AS last_visit
-    FROM patient AS p
-    JOIN project AS pr ON p.project_id = pr.id
-    LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
-    GROUP BY p.uuid
-    ORDER BY p.registration_date DESC, p.display_name ASC
-  `;
-
-  db.exec(listPatientsQuery)
-  .then(function (result) {
-    var patients = result;
-
-    res.status(200).json(patients);
-  })
-  .catch(next)
-  .done();
+  find({})
+    .then(patients => {
+      res.status(200).json(patients);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -350,131 +342,72 @@ function hospitalNumberExists(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-  // remove the limit first thing, if it exists
-  let limit = Number(options.limit);
-  delete options.limit;
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['patient_group_uuid']);
 
-  // support flexible queries by keeping a growing list of conditions and
-  // statements
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
+  let filters = new FilterParser(options, { tableAlias : 'q' });
+  let sql = patientEntityQuery(options.detailed);
 
-  // if nothing is passed in as an option, throw an error
-  if (_.isEmpty(options)) {
-    return q.reject(
-      new BadRequest('The request requires at least one parameter.', 'ERRORS.PARAMETERS_REQUIRED')
-    );
-  }
+  filters.fullText('display_name');
+  filters.dateFrom('dateRegistrationFrom', 'registration_date');
+  filters.dateTo('dateRegistrationTo', 'registration_date');
+  filters.dateFrom('dateBirthFrom', 'dob');
+  filters.dateTo('dateBirthTo', 'dob');
 
+  let patientGroupStatement = '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
+  filters.custom('patient_group_uuid', patientGroupStatement);
+
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY q.registration_date DESC');
+
+  // applies filters and limits to defined sql, get parameters in correct order
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+  return db.exec(query, parameters);
+}
+
+function patientEntityQuery(detailed) {
   let detailedColumns = '';
 
   // if the find should included detailed results
-  if (options.detailed) {
+  if (detailed) {
       detailedColumns = `
         , q.abbr, q.father_name, q.mother_name, q.profession, q.employer, q.hospital_no,
         q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
-        q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
-        BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
-        q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked, q.last_visit
+        q.phone, q.email, q.address_1, q.address_2, BUID(q.origin_location_id) as origin_location_id,
+        BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.text,
+        q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked
       `;
-
-    // remove options.detailed so that it cannot be used again
-    delete options.detailed;
   }
 
+  // @TODO Investigate if this origin alias table as 'q' does JOINs on every single patient row
+  //       _before_selecting.
   // build the main part of the SQL query
   let sql = `
     SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
-      q.sex, q.dob, q.registration_date, q.debtor_group_uuid ${detailedColumns}
+      q.sex, q.dob, q.registration_date, BUID(q.debtor_group_uuid) as debtor_group_uuid, q.hospital_no, q.last_visit, q.userName,
+      q.originVillageName, q.originSectorName ${detailedColumns}
     FROM (
-      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.display_name, p.debtor_uuid AS debtor_uuid,
-        p.sex, p.dob, p.father_name, p.mother_name, p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
-        p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
-        p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
-        p.title, p.notes, p.hospital_no, d.text, proj.abbr,
-        dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.start_date) AS last_visit,
-        dg.uuid as debtor_group_uuid
+      SELECT p.uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
+        p.display_name, p.debtor_uuid AS debtor_uuid, p.sex, p.dob, p.father_name, p.mother_name, p.profession,
+        p.employer, p.spouse, p.spouse_profession, p.spouse_employer, p.religion, p.marital_status, p.phone,
+        p.email, p.address_1, p.address_2, p.origin_location_id, p.current_location_id,
+        p.registration_date, p.title, p.notes, p.hospital_no, p.user_id, d.text, proj.abbr, dg.account_id,
+        dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.start_date) AS last_visit,
+        dg.uuid AS debtor_group_uuid, u.display_name AS userName, originVillage.name AS originVillageName,
+        originSector.name AS originSectorName
         FROM patient AS p
         JOIN project AS proj ON p.project_id = proj.id
         JOIN debtor AS d ON p.debtor_uuid = d.uuid
         JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
+        JOIN sector AS originSector on originVillage.sector_uuid = originSector.uuid
+        JOIN user AS u ON p.user_id = u.id
         LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
         GROUP BY p.uuid
-      ) AS q WHERE
+      ) AS q
   `;
-
-  // this is every permutation of the first, last, and middle name combinations you can imagine.
-  if (options.name) {
-      let keyValue = '%' + options.name + '%';
-
-    conditions.statements.push('q.display_name LIKE  ? ');
-    conditions.parameters.push(keyValue);
-
-    // remove options.name so that it cannot be used again
-    delete options.name;
-  }
-
-  // impose lower limit on registration dates
-  if (options.dateRegistrationFrom) {
-    conditions.statements.push('DATE(q.registration_date) >= DATE(?)');
-    conditions.parameters.push(new Date(options.dateRegistrationFrom));
-    delete options.dateRegistrationFrom;
-  }
-
-  // impose upper limit on registration dates
-  if (options.dateRegistrationTo) {
-    conditions.statements.push('DATE(q.registration_date) <= DATE(?)');
-    conditions.parameters.push(new Date(options.dateRegistrationTo));
-    delete options.dateRegistrationTo;
-  }
-
-  // impose lower limit on birth dates
-  if (options.dateBirthFrom) {
-    conditions.statements.push('DATE(q.dob) >= DATE(?)');
-    conditions.parameters.push(new Date(options.dateBirthFrom));
-    delete options.dateBirthFrom;
-  }
-
-  // impose upper limit on birth dates
-  if (options.dateBirthTo) {
-    conditions.statements.push('DATE(q.dob) <= DATE(?)');
-    conditions.parameters.push(new Date(options.dateBirthTo));
-    delete options.dateBirthTo;
-  }
-
-  if (options.patient_group_uuid) {
-    conditions.statements.push('(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1');
-    conditions.parameters.push(db.bid(options.patient_group_uuid));
-    delete options.patient_group_uuid;
-  }
-
-  // use util.queryCondition to fill out the rest of the query
-  sql += conditions.statements.join(' AND ');
-
-  // @fixme HACK to add final AND
-  if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
-  let query = util.queryCondition(sql, options, true);
-
-  // destructure the query object from util.queryCondition
-  sql = query.query;
-  let parameters = conditions.parameters.concat(query.conditions);
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    parameters.push(limit);
-  }
-
-  // if nothing was submitted to the search, get all records
-  if (!parameters.length) {
-
-    // this writes in WHERE 1; to the SQL query
-    sql += ' 1;';
-  }
-
-  return db.exec(sql, parameters);
+  return sql;
 }
 
 /**
@@ -511,7 +444,7 @@ function billingServices(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs.
-  var patientsServiceQuery =
+  let patientsServiceQuery =
 
     // get the final information needed to apply billing services to an invoice
     'SELECT DISTINCT ' +
@@ -600,12 +533,12 @@ function subsidies(req, res, next) {
     .done();
 }
 
-function loadLatestInvoice (latestInvoice){
-  var debtorID = latestInvoice.debtor_uuid;
-  var invoiceID = latestInvoice.uuid;
+function loadLatestInvoice(latestInvoice) {
+  const debtorID = latestInvoice.debtor_uuid;
+  const invoiceID = latestInvoice.uuid;
 
-  var sql =
-    `SELECT BUID(i.uuid) as uid, CONCAT(project.abbr, invoice.reference) as reference,
+  const sql =
+    `SELECT BUID(i.uuid) as uid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, reference) AS reference,
         credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
@@ -622,7 +555,7 @@ function loadLatestInvoice (latestInvoice){
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
 
-  var sql2 =
+  const sql2 =
     `SELECT COUNT(i.uuid) as numberPayment
       FROM (
         SELECT uuid,  debit, credit, entity_uuid
@@ -638,7 +571,7 @@ function loadLatestInvoice (latestInvoice){
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
 
-  var sql3 =
+  const sql3 =
     `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
@@ -646,55 +579,57 @@ function loadLatestInvoice (latestInvoice){
        ORDER BY date DESC`;
 
 
-  var execSql = db.exec(sql, [invoiceID, debtorID, invoiceID, debtorID]);
-  var execSql2 = db.exec(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
-  var execSql3 = db.exec(sql3, [debtorID]);
+  const execSql = db.one(sql, [invoiceID, debtorID, invoiceID, debtorID]);
+  const execSql2 = db.one(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
+  const execSql3 = db.one(sql3, [debtorID]);
 
   return q.all([execSql, execSql2, execSql3])
-    .spread(function (invoices, payments, invoicesLength) {
-      var invoice = {
-        uuid            : latestInvoice.uuid,
-        debtor_uuid     : latestInvoice.debtor_uuid,
-        numberPayment   : payments[0].numberPayment,
-        date            : latestInvoice.date,
-        cost            : latestInvoice.cost,
-        display_name    : latestInvoice.display_name,
-        uid             : invoices[0].uid,
-        reference       : invoices[0].reference,
-        credit          : invoices[0].credit,
-        debit           : invoices[0].debit,
-        balance         : invoices[0].balance,
-        entity_uuid     : invoices[0].entity_uuid,
-        invoicesLength  : invoicesLength[0].invoicesLength
-      };
+    .spread(function (invoice, payment, invoicesLength) {
 
-      return q.when(invoice);
+      // collapse all returned values into a single object
+      const merged = _.assign({}, invoice, payment, invoicesLength);
+
+      // columns
+      const columns = [
+        'uuid', 'debitor_uuid', 'numberPayment', 'date', 'cost', 'display_name',
+        'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'invoicesLength',
+        'cost', 'debtor_uuid', 'uid'
+      ];
+
+      return _.pick(merged, columns);
     });
 }
+
 /*
  Search for information about the latest patient Invoice
  */
-function latestInvoice (req, res, next) {
-  const uid = db.bid(req.params.uuid);
+function latestInvoice(req, res, next) {
+  const uid = req.params.uuid;
 
-  let sql =
-    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
-     FROM invoice
-     JOIN user ON user.id = invoice.user_id
-     WHERE debtor_uuid = ?
-     AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
-     ORDER BY date DESC
-     LIMIT 1`;
+  const REVERSE_TYPE_ID = 10;
 
-  db.exec(sql, [uid])
-    .then(function (results){
+  const sql = `
+    SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
+    FROM invoice
+    JOIN user ON user.id = invoice.user_id
+    WHERE debtor_uuid = ?
+    AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSE_TYPE_ID})
+    ORDER BY date DESC
+    LIMIT 1;
+  `;
+
+  let latestInv;
+
+  db.exec(sql, [db.bid(uid)])
+    .then(results => {
       let hasLatestInvoice  = results.length > 0;
+      latestInv = results[0];
       let skip = q({}); // fake promise to simply skip the latest invoice loading.
-
-      return hasLatestInvoice ? loadLatestInvoice(results[0]) : skip;
+      return hasLatestInvoice ? loadLatestInvoice(latestInv) : skip;
     })
-    .then(function (invoice) {
-      res.status(200).send(invoice);
+    .then(invoice => {
+      latestInv = _.extend(latestInv, invoice);
+      res.status(200).json(latestInv);
     })
     .catch(next)
     .done();

@@ -14,7 +14,6 @@
  * @requires lib/errors/Forbidden
  * @requires lib/errors/InternalServerError
  */
-'use strict';
 
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
@@ -137,10 +136,10 @@ function loadSessionInformation(user) {
     SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
-    WHERE user.id = ?;
+    WHERE user.id = ? AND project.id = ?;
   `;
 
-  return db.exec(sql, [user.id])
+  return db.exec(sql, [user.id, user.project_id])
     .then(rows => {
 
       // if no data found, we return a login error

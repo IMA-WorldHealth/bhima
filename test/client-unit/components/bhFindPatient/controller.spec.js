@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global inject, expect, chai */
 
 describe('bhFindPatient Controller Tests', ControllerTests);
@@ -87,14 +86,14 @@ function ControllerTests() {
     $controller.submit();
 
     expect($controller.patient).to.deep.equal(model);
-    expect($controller.patient.name).to.be.defined;
+    expect($controller.patient.display_name).to.be.defined;
   });
 
   it('#searchByName() toggles the loading state', () => {
     const response = [patient];
     const name = 'junior';
 
-    $httpBackend.expect('GET', `/patients/search?limit=10&name=${name}`)
+    $httpBackend.expect('GET', `/patients/search?limit=10&display_name=${name}`)
       .respond(200, response);
 
     expect($controller.loadStatus).to.equal(null);

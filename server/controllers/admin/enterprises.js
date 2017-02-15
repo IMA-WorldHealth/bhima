@@ -6,7 +6,6 @@
  * location as well as a currency and it is not possible to remove an enterprise.
  */
 
-'use strict';
 
 const db       = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -27,6 +26,7 @@ exports.list = function list(req, res, next) {
       FROM enterprise;`;
   }
 
+  //FIX ME : why not use db.one()?
   db.exec(sql)
   .then(function (rows) {
     res.status(200).json(rows);

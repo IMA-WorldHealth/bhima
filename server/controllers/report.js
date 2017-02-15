@@ -10,16 +10,20 @@
  * @requires fs
  * @requires db
  */
-'use strict';
 
 const path = require('path');
 const fs = require('fs');
 const db = require('../lib/db');
+const barcode = require('../lib/barcode');
+const BadRequest = require('../lib/errors/BadRequest');
 
 exports.keys = keys;
 exports.list = list;
 exports.sendArchived = sendArchived;
 exports.deleteArchived = deleteArchived;
+
+exports.barcodeLookup = barcodeLookup;
+exports.barcodeRedirect = barcodeRedirect;
 
 // the global report path
 // @TODO This will have to factor in the type of report - report uuid can be looked up in `saved_report` table
@@ -136,6 +140,32 @@ function deleteArchived(req, res, next) {
         if (err) { return next(err); }
         res.sendStatus(204);
       });
+    })
+    .catch(next)
+    .done();
+}
+
+// Method to return the object
+// Method to redirect
+function barcodeLookup(req, res, next) {
+  let key = req.params.key;
+
+  barcode.reverseLookup(key)
+    .then(result => res.send(result))
+    .catch(next)
+    .done();
+}
+
+function barcodeRedirect(req, res, next) {
+  let key = req.params.key;
+
+  barcode.reverseLookup(key)
+    // populated by barcode controller
+    .then(result => {
+      if (!result._redirectPath) {
+        throw new BadRequest('This barcode document does not support redirect');
+      }
+      res.redirect(result._redirectPath);
     })
     .catch(next)
     .done();

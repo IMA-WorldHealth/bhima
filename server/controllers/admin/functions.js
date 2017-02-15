@@ -9,7 +9,6 @@ var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
 function lookupFunction(id) {
-  'use strict';
 
   var sql =
     `SELECT id, fonction_txt FROM fonction
@@ -29,7 +28,6 @@ function lookupFunction(id) {
 
 // Lists the functions of hospital employees
 function list(req, res, next) {
-  'use strict';
 
   var sql;
   
@@ -51,7 +49,6 @@ function list(req, res, next) {
 * Returns the detail of a single Function
 */
 function detail(req, res, next) {
-  'use strict';
 
   var id = req.params.id;
 
@@ -66,7 +63,6 @@ function detail(req, res, next) {
 
 // POST /Function
 function create(req, res, next) {
-  'use strict';
 
   var sql,
       data = req.body;
@@ -85,7 +81,6 @@ function create(req, res, next) {
 
 // PUT /Function /:id
 function update(req, res, next) {
-  'use strict';
 
   var sql;
 
@@ -106,7 +101,6 @@ function update(req, res, next) {
 
 // DELETE /function/:id
 function del(req, res, next) {
-  'use strict';
 
   var sql =
     'DELETE FROM fonction WHERE id = ?;';

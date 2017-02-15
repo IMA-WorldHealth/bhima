@@ -1,4 +1,3 @@
-/* jshint expr:true */
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
@@ -26,19 +25,24 @@ describe('Invoice Registry', () => {
   });
 
   it('shows the proof of the invoice correctly', () => {
-    page.showInvoiceProof(0);
+    page.clickOnMethod(0, 'invoiceReceipt');
     FU.exists(by.css('[data-modal="receipt"]'), true);
     FU.modal.close();
   });
 
-  describe('Searching functionnality of patient', Search);
+  describe('Search', Search);
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
-
-    element(by.id('TPA2')).click();
+    // element(by.id("IV.TPA.3")).click();
+    page.clickOnMethod(0, 'createCreditNote');
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();
+  });
+
+  it('shows the proof of the credit note correctly', () => {
+    page.clickOnMethod(0, 'creditNoteReceipt');
+    FU.modal.close();
   });
 
 });

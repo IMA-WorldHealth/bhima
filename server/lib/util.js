@@ -7,7 +7,6 @@
  * @required lodash
  */
 
-'use strict';
 
 const _ = require('lodash');
 const q = require('q');
@@ -75,6 +74,11 @@ function parseQueryStringToSQL(options, tablePrefix) {
     statements: [],
     parameters: []
   };
+
+  // exit early if an empty object is passed in.
+  if (_.isEmpty(options)) {
+    return conditions;
+  }
 
   tablePrefix = tablePrefix || '';
 

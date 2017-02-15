@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'DateService', 'params', 'DebtorGroupService', 'PatientGroupService'
+  '$uibModalInstance', 'DateService', 'params', 'DebtorGroupService', 'PatientGroupService',
+  'UserService', 'bhConstants'
 ];
 
 /**
@@ -13,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService) {
+function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService, Users, bhConstants) {
   var vm = this;
 
   // bind period labels from the service
@@ -29,6 +30,7 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
   vm.cancel = cancel;
   vm.clear = clear;
   vm.setDateRange = setDateRange;
+  vm.dateFormat =  bhConstants.dayOptions.format;
 
   DebtorGroups.read()
     .then(function (result) {
@@ -40,11 +42,33 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
       vm.patientGroups = result;
     });
 
+  Users.read()
+      .then(function (users) {
+        vm.users = users;
+      });
+
   // returns the parameters to the parent controller
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var parameters = vm.params;
+    var parameters = angular.copy(vm.params);
+
+    // convert dates to strings
+    if (parameters.dateRegistrationFrom) {
+      parameters.dateRegistrationFrom = Dates.util.str(parameters.dateRegistrationFrom);
+    }
+
+    if (parameters.dateRegistrationTo) {
+      parameters.dateRegistrationTo = Dates.util.str(parameters.dateRegistrationTo);
+    }
+
+    if (parameters.dateBirthFrom) {
+      parameters.dateBirthFrom = Dates.util.str(parameters.dateBirthFrom);
+    }
+
+    if (parameters.dateBirthTo) {
+      parameters.dateBirthTo = Dates.util.str(parameters.dateBirthTo);
+    }
 
     // make sure we don't have any undefined or empty parameters
     angular.forEach(parameters, function (value, key) {

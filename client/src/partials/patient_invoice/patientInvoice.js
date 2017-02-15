@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
-  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate'
+  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate',
+  'ExchangeRateService'
 ];
 
 /**
@@ -16,7 +17,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants, translate) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants, translate, Exchange) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -29,7 +30,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
-
 
   translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value;});
 
@@ -51,7 +51,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       { field: 'code', displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'partials/patient_invoice/templates/grid/code.tmpl.html' },
       { field: 'description', displayName: 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
       { field: 'quantity', displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
-      { field: 'transaction_price', displayName: 'TABLE.COLUMNS.TRANSACTION_PRICE', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
+      { field: 'transaction_price', displayName: 'FORM.LABELS.UNIT_PRICE', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
       { field: 'amount', displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
       { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
     ],
@@ -78,7 +78,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       vm.patientBalance = balance;
     });
   }
-
+  
   // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
     vm.Invoice.writeCache();
@@ -145,7 +145,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.Invoice.clearCache();
 
     Receipts.invoice(invoice.uuid, true)
-    .then(function () { clear(); });
+      .then(function () { clear(); });
   }
 
   // register the patient search api
@@ -154,6 +154,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   }
 
   function setDefaultService() {
+
     // select service based on criteria (currently 0th element)
     var SERVICE_INDEX = 0;
 

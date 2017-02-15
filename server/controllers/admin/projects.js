@@ -7,7 +7,6 @@
  * NOTE: this endpoint does not filter for enterprise ID.  We should probably
  * move to doing this in the future.
  */
-'use strict';
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');

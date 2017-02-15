@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr : true */
 
 const helpers = require('../../helpers');
 const RenderingTests = require('../rendering');
@@ -11,7 +10,7 @@ describe(`(${target}) Invoice Receipt`, function () {
   const validInvoice = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
   const keys = [
-    'billing', 'cost', 'date', 'debtor_name', 'debtor_uuid', 'description', 'display_name', 'is_distributable',
+    'billing', 'cost', 'date', 'debtor_name', 'debtor_uuid', 'description', 'display_name',
     'items', 'metadata', 'patient_uuid', 'recipient', 'reference', 'subsidy', 'user_id', 'uuid', 'currency_id'
   ];
 

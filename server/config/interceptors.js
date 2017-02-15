@@ -1,3 +1,4 @@
+
 /**
  * @overview interceptors
  * This modules defines a unified error handler for the server.
@@ -10,7 +11,6 @@
  * @requires winston
  * @requires BadRequest
  */
-'use strict';
 
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
@@ -21,11 +21,11 @@ const map = {
     `A key collided in a unique database field.  Please retry your action.  If
     the problem persists, contact the developers.`,
   ER_BAD_FIELD_ERROR : 'Column does not exist in database.',
+  ER_ROW_IS_REFERENCED :
+    'Cannot delete entity because entity is used in another table.',
   ER_ROW_IS_REFERENCED_2 :
     'Cannot delete entity because entity is used in another table.',
   ER_BAD_NULL_ERROR : 'A column was left NULL that cannot be NULL.',
-  ER_DUP_ENTRY :
-    'You cannot insert a duplicate record.  This record already exists.',
   ER_PARSE_ERROR :
     `Your request could not  be translated into valid SQL.  Please modify your
     request and try again.`,
@@ -66,7 +66,7 @@ exports.handler = function handler(error, req, res, next) {
       key = SQL_STATES[error.sqlState];
       description = error.toString();
     } else {
-      key = 'ERRORS.BAD_REQUEST';
+      key = `ERRORS.${error.code}`;
       description = map[error.code];
     }
 

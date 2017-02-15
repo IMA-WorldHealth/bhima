@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @overview finance/reports

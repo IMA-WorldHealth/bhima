@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('LocationModalController', LocationModalController);
 
 LocationModalController.$inject = [
-  'LocationService', '$uibModalInstance', 'appcache'
+  '$rootScope', 'LocationService', '$uibModalInstance', 'appcache', 'Store', 'NotifyService'
 ];
 
 /**
@@ -11,15 +11,18 @@ LocationModalController.$inject = [
  * This modal can be injected into any page, and is useful for creating
  * locations on the fly.  The user is asked to choose from countries,
  * provinces, and sectors as needed to create a new location.  It shares many
- * similarites with the bhLocationSelect component.
+ * similarities with the bhLocationSelect component.
  *
  * @class LocationModalController
  */
-function LocationModalController(Locations, Instance, AppCache) {
+function LocationModalController($rootScope, Locations, Instance, AppCache, Store, Notify) {
   var vm = this;
 
   /** caches the current view in local storage */
   var cache = AppCache('bh-location-select-modal');
+
+  // use to simply refresh the mdoal state
+  vm.registerMultiple = false;
 
   /**
    * This is not the best way to do states, but for such a complex component,
@@ -152,13 +155,13 @@ function LocationModalController(Locations, Instance, AppCache) {
   }
 
   /** creates a new location based on the selections made. */
-  function submit(invalid) {
+  function submit(form) {
 
     // delete the HTTP error if it exists
     delete vm.error;
 
     // reject an invalid form
-    if (invalid)  { return; }
+    if (form.$invalid)  { return; }
 
     var promise;
 
@@ -199,11 +202,35 @@ function LocationModalController(Locations, Instance, AppCache) {
         return;
     }
 
-    return promise.then(function (data) {
-      return Instance.close(data);
-    })
-    .catch(function (error) {
-      vm.error = error;
-    });
+    return promise
+      .then(function (data) {
+
+        // notify success
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
+        $rootScope.$broadcast('LOCATIONS_UPDATED', data);
+
+        if (vm.registerMultiple) {
+
+          // make the form pristine again
+          form.$setPristine();
+
+          if (vm.view === vm.views.country) {
+            delete vm.country;
+          } else if (vm.view === vm.views.province) {
+            delete vm.province;
+          } else if (vm.view === vm.views.sector) {
+            delete vm.sector;
+          } else {
+            delete vm.village;
+          }
+
+        } else {
+
+          return Instance.close(data);
+        }
+      })
+      .catch(function (error) {
+        vm.error = error;
+      });
   }
 }

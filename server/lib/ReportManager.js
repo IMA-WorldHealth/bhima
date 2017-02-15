@@ -17,7 +17,6 @@
  * @requires fs
  * @requires lib/errors/BadRequest
  */
-'use strict';
 
 const _ = require('lodash');
 const path = require('path');
@@ -25,6 +24,7 @@ const fs = require('fs');
 const q = require('q');
 const mkdirp = require('mkdirp');
 const uuid = require('node-uuid');
+const translateHelper = require('./helpers/translate');
 
 const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
@@ -34,7 +34,8 @@ const db = require('./db');
 const renderers = {
   json : require('./renderers/json'),
   html : require('./renderers/html'),
-  pdf  : require('./renderers/pdf')
+  pdf  : require('./renderers/pdf'),
+  csv  : require('./renderers/csv')
 };
 
 // default report configuration
@@ -87,6 +88,7 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
+
       throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
     }
 
@@ -99,11 +101,13 @@ class ReportManager {
 
     // remove render-specific options
     delete options.renderer;
+    delete options.csvKey;
+    delete options.filename;
     delete options.lang;
 
     // set the metadata
     this.metadata = metadata;
-    delete this.metadata.path; // @fixme - remove user paths that are annoying to print out
+    delete this.metadata.path;
   }
 
   /**
@@ -134,6 +138,14 @@ class ReportManager {
 
       let renderHeaders = renderer.headers;
       let report = reportStream;
+
+      if (this.options.filename) {
+        let translate = translateHelper(this.options.lang);
+        let translatedName = translate(this.options.filename);
+        let fileDate = (new Date()).toLocaleDateString();
+        let formattedName = `${translatedName} ${fileDate}`;
+        renderHeaders['Content-Disposition'] = `filename=${formattedName}${renderer.extension}`;
+      }
 
       // FIXME this branching logic should be promised based
       if (this.options.saveReport) {

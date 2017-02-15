@@ -35,7 +35,6 @@ CREATE TABLE `account` (
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -44,7 +43,6 @@ CREATE TABLE `account_type` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_type_1` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `assignation_patient`;
 CREATE TABLE `assignation_patient` (
@@ -102,6 +100,7 @@ CREATE TABLE `cash` (
   `cashbox_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
   `description`     TEXT,
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
@@ -412,30 +411,6 @@ CREATE TABLE `country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `credit_note`;
-CREATE TABLE `credit_note` (
-  `uuid`            BINARY(16) NOT NULL,
-  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cost`            DECIMAL(19,4) UNSIGNED NOT NULL,
-  `debtor_uuid`     BINARY(16) NOT NULL,
-  `seller_id`       SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
-  `invoice_uuid`    BINARY(36) NOT NULL,
-  `note_date`       DATE NOT NULL,
-  `description`     text NOT NULL,
-  `posted` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `credit_note_1` (`invoice_uuid`),
-  UNIQUE KEY `credit_note_2` (`project_id`, `reference`),
-  KEY `reference` (`reference`),
-  KEY `project_id` (`project_id`),
-  KEY `debtor_uuid` (`debtor_uuid`),
-  KEY `invoice_uuid` (`invoice_uuid`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `creditor`;
 
 CREATE TABLE `creditor` (
@@ -495,8 +470,6 @@ CREATE TABLE `debtor` (
   `group_uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `debtor_1` (`text`),
-  UNIQUE KEY `debtor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -772,7 +745,6 @@ CREATE TABLE `general_ledger` (
   `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
@@ -809,8 +781,6 @@ CREATE TABLE `grade` (
   UNIQUE KEY `grade_2` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
 DROP TABLE IF EXISTS `holiday`;
 
 CREATE TABLE `holiday` (
@@ -839,6 +809,15 @@ CREATE TABLE `holiday_paiement` (
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `icd10`;
+
+CREATE TABLE `icd10` (
+  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `code`  VARCHAR(8) NOT NULL,
+  `label` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `icd10_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `inventory`;
 
@@ -848,6 +827,7 @@ CREATE TABLE `inventory` (
   `code` varchar(30) NOT NULL,
   `text` varchar(100) NOT NULL,
   `price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   `unit_weight` MEDIUMINT(9) DEFAULT 0,
@@ -857,9 +837,10 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
-  `origin_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `inventory_1` (`text`),
+  UNIQUE KEY `inventory_1` (`group_uuid`, `text`),
   UNIQUE KEY `inventory_2` (`code`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `group_uuid` (`group_uuid`),
@@ -1122,7 +1103,6 @@ CREATE TABLE `patient` (
   `email`                VARCHAR(40),
   `address_1`            VARCHAR(100),
   `address_2`            VARCHAR(100),
-  `renewal`              TINYINT(1) NOT NULL DEFAULT 0,
   `origin_location_id`   BINARY(16) NOT NULL,
   `current_location_id`  BINARY(16) NOT NULL,
   `registration_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1209,7 +1189,6 @@ CREATE TABLE patient_group_subsidy (
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `patient_visit`;
 
 CREATE TABLE `patient_visit` (
@@ -1217,13 +1196,21 @@ CREATE TABLE `patient_visit` (
   `patient_uuid` BINARY(16) NOT NULL,
   `start_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL,
+  `start_notes` TEXT,
+  `end_notes` TEXT,
+  `start_diagnosis_id` INT(10) unsigned,
+  `end_diagnosis_id` INT(10) unsigned,
   `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
   KEY `user_id` (`user_id`),
+  KEY `start_diagnosis_id` (`start_diagnosis_id`),
+  KEY `end_diagnosis_id` (`end_diagnosis_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `period`;
@@ -1296,7 +1283,6 @@ CREATE TABLE `posting_journal` (
   `credit_equiv`      DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
@@ -1377,7 +1363,7 @@ CREATE TABLE `province` (
   `name` VARCHAR(100) NOT NULL,
   `country_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `province_1` (`name`),
+  UNIQUE KEY `province_1` (`name`, `country_uuid`),
   KEY `country_uuid` (`country_uuid`),
   FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1523,7 +1509,6 @@ CREATE TABLE `invoice` (
   `date`                DATETIME NOT NULL,
   `description`         TEXT NOT NULL,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_distributable`    TINYINT(1) NOT NULL ,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
   KEY `reference` (`reference`),
@@ -1610,7 +1595,7 @@ CREATE TABLE `sector` (
   `name` VARCHAR(80) NOT NULL,
   `province_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `sector_1` (`name`),
+  UNIQUE KEY `sector_1` (`name`, `province_uuid`),
   KEY `province_id` (`province_uuid`),
   FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1796,7 +1781,7 @@ CREATE TABLE `village` (
   `name`        VARCHAR(80) NOT NULL,
   `sector_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `village_1` (`name`),
+  UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

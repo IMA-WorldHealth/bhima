@@ -71,7 +71,11 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
   .state('invoiceRegistry', {
     url  : '/invoices',
     controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
-    templateUrl: '/partials/patient_invoice/registry/registry.html'
+    templateUrl: '/partials/patient_invoice/registry/registry.html',
+    params : {
+      filters : null,
+      display : null
+    }     
   })
   .state('configBilan', {
     url: '/section_bilan',
@@ -129,21 +133,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
   })
-  .state('simpleVouchers', {
-    url : '/vouchers/simple',
-    controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
-    templateUrl: 'partials/vouchers/simple.html'
-  })
-  .state('vouchersComplex', {
-    url : '/vouchers/complex',
-    controller: 'ComplexJournalVoucherController as ComplexVoucherCtrl',
-    templateUrl: 'partials/vouchers/complex.html'
-  })
-  .state('vouchers', {
-    url : '/vouchers',
-    controller: 'VoucherController as VoucherCtrl',
-    templateUrl: 'partials/vouchers/index.html'
-  })
 
   /** General ledger routes**/
   .state('generalLedger', {
@@ -177,6 +166,13 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     url : '/suppliers',
     controller: 'SupplierController as SupplierCtrl',
     templateUrl: '/partials/suppliers/suppliers.html'
+  })
+
+  /* purchase routes */
+  .state('purchasesCreate', {
+    url : '/purchases/create',
+    controller : 'PurchaseOrderController as PurchaseCtrl',
+    templateUrl : 'partials/purchases/create/create.html'
   })
 
   /* transaction type */
@@ -219,11 +215,17 @@ function localeConfig(tmhDynamicLocaleProvider) {
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
 
+  var loginStateRegexp = /#\/login$/;
+  var rootStateRegexp = /#\/$|\/$|#$/;
+
+
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
-    var isLoginState = next.indexOf('#/login') !== -1;
+
+    var isLoginState = loginStateRegexp.test(next);
+    var isRootState = rootStateRegexp.test(next);
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
@@ -237,7 +239,11 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // to the login page.
     } else if (!isLoggedIn && !isLoginState) {
       event.preventDefault();
-      Notify.warn('AUTH.UNAUTHENTICATED');
+
+      if (!isRootState) {
+        Notify.warn('AUTH.UNAUTHENTICATED');
+      }
+
       $state.go('login');
     }
 
@@ -325,18 +331,32 @@ function constantConfig() {
     dates : {
       minDOB : new Date('1900-01-01'),
     },
+    yearOptions : {
+      format : 'yyyy',
+      datepickerMode : 'year',
+      minMode : 'year'
+    },
+    dayOptions : {
+      format : 'dd/MM/yyyy',
+      datepickerMode : 'day',
+      minMode : 'day'
+    },    
     lengths : {
       maxTextLength : 1000,
       minDecimalValue: 0.0001
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG : '_error'
+      ROW_ERROR_FLAG : '_error',
+      FILTER_BAR_HEIGHT : { height : 'calc(100vh - 105px)' }
     },
     transactions : {
       ROW_EDIT_FLAG : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
+    },
+    barcodes : {
+      LENGTH : 10
     },
     transactionType : {
       GENERIC_INCOME     : 1,
@@ -356,6 +376,9 @@ function constantConfig() {
       AGED_DEBTOR : 'AGED_DEBTOR',
       CASHFLOW : 'CASHFLOW',
       INCOME_EXPENSE : 'INCOME_EXPENSE'
+    },
+    precision: {
+      MAX_DECIMAL_PRECISION : 4
     }
   };
 }
@@ -394,7 +417,7 @@ function animateConfig($animateProvider) {
 function compileConfig($compileProvider) {
 
   // switch this variable when going into production for an easy performance win.
-  var PRODUCTION = false;
+  var PRODUCTION = true;
 
   if (PRODUCTION) {
     $compileProvider.debugInfoEnabled(false);

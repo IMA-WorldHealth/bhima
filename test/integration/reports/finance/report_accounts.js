@@ -1,5 +1,4 @@
 /* global expect, chai, agent */
-/* jshint expr: true */
 'use strict';
 
 const helpers = require('../../helpers');

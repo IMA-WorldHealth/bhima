@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
@@ -16,7 +15,7 @@ describe('Patient Registration', function () {
 
   const mockPatient = {
     display_name : 'Mock Patient First',
-    dob : '01-01-1993',
+    dob : '01/01/1993',
     sex : 'M',
     project_id : 1,
     hospital_no : 120
@@ -24,7 +23,7 @@ describe('Patient Registration', function () {
 
   const uniqueHospitalNumber = 1020;
 
-  it('registers a valid patient', function (done) {
+  it('registers a valid patient', function () {
 
     // patient name
     FU.input('PatientRegCtrl.medical.display_name', mockPatient.display_name);
@@ -46,7 +45,6 @@ describe('Patient Registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
     FU.exists(by.id('receipt-confirm-created'), true);
-    done();
   });
 
   // This test group assumes the previous mock patient has been successfully registered
@@ -76,9 +74,9 @@ describe('Patient Registration', function () {
     });
 
     it('alerts for minimum and maximum dates', function () {
-      const testMaxYear = '01-01-9000';
-      const validYear = '01-01-2000';
-      const testMinYear = '01-01-1000';
+      const testMaxYear = '01/01/9000';
+      const validYear = '01/01/2000';
+      const testMinYear = '01/01/1000';
 
 
       FU.input('PatientRegCtrl.medical.dob', testMaxYear);

@@ -34,6 +34,7 @@
     "NOT_POSITIVE"   : "Contiens des valeurs non positives",
     "NUMBER"         : "Numéro de compte",
     "PROFIT_CENTER"  : "Centre des profits",
+    "RECORDING"      : "Enregistrement",
     "RECORD_SAME"    : "Aucun changement n'a été apporté au formulaire. Mettez à jour les informations du compte, puis appuyez sur Envoyer.",
     "ROOT_PARENT"    : "Ce compte est défini comme un enfant du compte root. Cela signifie qu'il sera au plus haut niveau dans la hiérarchie des comptes.",
     "SELECT_PARENT"  : "Choisir le compte parent..",
@@ -60,6 +61,13 @@
     "LOGIN"                      : "Se connecter",
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
+  },
+  "BARCODE" : {
+    "SCAN" : "Scanner le Code à Barres",
+    "AWAITING_INPUT" : "En Attente d'Entrée",
+    "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
+    "READ_SUCCESS" : "Facture Trouvée",
+    "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
   },
   "BALANCE" : {
     "ACCOUNT_CHOICE"  : "Choix des comptes",
@@ -98,8 +106,9 @@
       "TITLE" : "Facture(s) debiteur"
     },
     "PAYMENT"         : "Paiement",
-    "RECEIPT"         : {
-      "SUCCESS" : "Succes"
+    "RECEIPT": {
+      "TITLE"   : "Recu",
+      "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
@@ -107,14 +116,12 @@
       "TITLE"              : "Selection caisse"
     },
     "TITLE"           : "Caisse Auxilliaire",
+    "TOOLS"         : "Utils",
     "TRANSFER": {
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
-      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous."
-    },
-    "RECEIPT": {
-      "TITLE"   : "Recu",
-      "SUCCESS" : "Créé avec succès un paiement en espèces"
+      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
+      "SUCCESS" : "Transfer effectué vers le compte de transfer."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -128,13 +135,22 @@
         "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
+      "BARCODE" : {
+        "SCAN" : "Scanner le Code à Barres",
+        "AWAITING_INPUT" : "En Attente d'Entrée",
+        "AWAITING_HTTP" : "Code à barres lu! Recherche de factures ....",
+        "READ_SUCCESS" : "Facture Trouvée",
+        "READ_ERROR" : "Code à barres illisible! Entrez le code à barres manuellement."
+      },
+      "OPEN_BARCODE_MODAL" : "Numériser un autre code à barres lors d'un paiement réussi.",
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
       "SLIP"            : "Caisse en espèces",
       "TITLE"           : "Recu de caisse",
       "SELECTED"        : "Facture selectionnée"
-    }
+    },
+    "MOTIVE" : "Motif"
   },
   "CASHBOX": {
     "ACTIONS"         : "Actions",
@@ -164,9 +180,6 @@
     "UPDATE"         : "Mise à jour du groupe crediteur",
     "FAILURE_DELETE" : "Echec de suppression du groupe crediteur"
   },
-  "DB": {
-    "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
-  },
   "DEBTOR_GROUP": {
     "BACK"           : "Retour vers les groupes débiteurs",
     "CREATE"         : "Créer un Groupe débiteur",
@@ -175,7 +188,9 @@
     "DEBTOR"         : {
      "SUBSCRIBED"    : "Debiteurs souscris"
     },
+    "DELETE"         : "Supprimer un groupe débiteur",
     "EDIT"           : "Editer le groupe debiteur",
+    "FAILURE_DELETE" : "Echec de suppression du groupe débiteurs",
     "GROUPS"         : "Groupes Débiteurs",
     "HELP_TXT_1"     : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
     "HELP_TXT_2"     : "Editer le Groupe de debiteur Sélectionnée",
@@ -192,7 +207,7 @@
         "INFO"  : "Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
         "LABEL"   : "Ce groupe est qualifié pour les subventions",
         "UPDATE"  : "Mettre à jour les subventions",
-        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"        
+        "EMPTY"   : "Ce groupe de débiteurs n'est pas souscrit à des subventions"
       },
       "DISCOUNTS" : {
         "TITLE" : "Réductions",
@@ -211,6 +226,11 @@
     "SUBSCRIBED"     : "Débiteurs abonnés",
     "SUBSCRIPTIONS"  : "Abonnements",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
+  },
+  "DOWNLOADS" : {
+    "JSON" : "Télécharger en JSON",
+    "PDF" : "Télécharger en PDF",
+    "CSV" : "Télécharger en CSV"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Ajouter un dépôt",
@@ -246,11 +266,22 @@
     "BAD_DATE_INTERVAL" : "Mauvais interval de date",
     "BAD_REQUEST"       : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
-    "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
+    "NO_EXCHANGE_RATE" : "Aucun taux de change defini pour aujourd'hui!",
     "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",
     "NOT_FOUND"        : "Cet enregistrement n'a pas pu être trouvé",
     "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
-    "UNKNOWN"          : "Une erreur est survenue."
+    "UNKNOWN"          : "Une erreur est survenue.",
+    "OVERPAID_INVOICE" : "Vous avez payé trop aux factures.",
+    "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
+    "ER_DUP_ENTRY" : "Vous avez dupliqué une valeur dans un champ unique! Assurez-vous que les valeurs nécessaires sont uniques.",
+    "ER_BAD_FIELD_ERROR" : "Vous avez entré un champ qui ne peut pas être stocké dans la base de données.",
+    "ER_ROW_IS_REFERENCED" : "Vous ne pouvez pas supprimer cet enregistrement référencé par un autre enregistrement dans la base de données.",
+    "ER_ROW_IS_REFERENCED_2" :"Vous ne pouvez pas supprimer cet enregistrement référencé par un autre enregistrement dans la base de données.",
+    "ER_BAD_NULL_ERROR" : "Un champ a été laissé vide qui ne peut pas être vide.",
+    "ER_PARSE_ERROR" : "Votre demande n'a pas été comprise. Veuillez modifier votre demande et réessayer.",
+    "ER_EMPTY_QUERY" : "Votre demande semble vide. Êtes-vous sûr de remplir tout?",
+    "ER_NO_DEFAULT_FOR_FIELD" : "Vous n'avez pas inclus suffisamment d'informations dans votre soumission! Veuillez vérifier vos erreurs et réessayer.",
+    "ER_DATA_TOO_LONG" : "Une de vos valeurs de formulaire est trop longue! Veuillez le raccourcir et le renvoyer."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",
@@ -288,6 +319,7 @@
   },
   "FORM": {
     "BUTTONS": {
+      "ACTIONS"               : "Actions",
       "ADD"                   : "Ajouter",
       "BACK"                  : "Précédent",
       "CANCEL"                : "Annuler",
@@ -376,6 +408,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
+      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -440,11 +473,12 @@
       "BILLING_DATE"           : "Date Facturation",
       "BILLING_SERVICES"       : "Les services de facturation appliquée",
       "BY"                     : "Par",
+      "ON"                     : "Sur",
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCEL"                 : "Annuler",
       "CANCELED"               : "Annulée",
-      "CHARACTERISTICS"         : "Caractéristiques",
+      "CHARACTERISTICS"        : "Caractéristiques",
       "CASHBOX"                : "Caisse",
       "CASHIER"                : "Caissier",
       "CASH_ACCOUNT"           : "Compte caisse",
@@ -463,7 +497,9 @@
       "COUNTRY"                : "Pays",
       "CONSUMABLE"             : "Consommable",
       "CREATE"                 : "CRÉATION",
+      "CREATE_CREDIT_NOTE"     : "Emettre Note de Credit",
       "CREATED"                : "Crée",
+      "CREATED_BY"             : "Crée par",
       "CREDIT"                 : "Crédit",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
       "CREDITOR_SUBCRIBED"     : "Crediteur souscris",
@@ -482,8 +518,11 @@
       "DEFINE_UNTIL_DATE"      : "Définir une date limite",
       "DESCRIPTION"            : "Description",
       "DETAILS"                : "Details",
+      "DEFAULT_QUANTITY"       : "Quantité par Défaut",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
+      "DISABLED"               : "Désactivée",
+      "DIAGNOSIS"              : "Diagnostic",
       "DOB"                    : "Date de Naissance",
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
@@ -492,10 +531,11 @@
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
+      "ENABLED"                : "Activé",
       "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTER_BIRTH_YEAR"       : "Entrez seulement l'année de naissance",
-      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",      
+      "ENTER_BIRTH_DAY"        : "Entrez la date de naissance complète",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
       "ENTITY"                 : "Entité",
@@ -531,6 +571,8 @@
       "INVENTORY"              : "Inventaire",
       "INVENTORY_ITEM"         : "Item",
       "INVOICE"                : "Facture",
+      "INVOICES"               : "Factures",
+      "INVOICE_CURRENCY_SETTING" : "Configuration monnaie Facture",
       "INVOICES_DETAILS"       : "Details Factures",
       "INVOICE_PAYMENT"        : "Paiement facture",
       "IS_ASSET"               : "Actif ?",
@@ -571,8 +613,10 @@
       "ON_DELIVERY"            : "Lors de la delivarance",
       "ON_PURCHASE"            : "Lors de l'achat",
       "OTHER"                  : "Autres",
-      "OPTIONAL_INFO"          : "Informations optionnelles",
-      "ORIGIN_LOCATION"        : "Localisation d'origine",
+      "OPTIONAL_INFO"          : "Informations Optionnelles",
+      "ORIGIN_LOCATION"        : "Localisation d'Origine",
+      "ORIGIN_VILLAGE"         : "Village d'Origine",
+      "ORIGIN_SECTOR"          : "Secteur d'Origine",
       "OTHER"                  : "Autre",
       "PARENT_ACCOUNT"         : "Compte parent",
       "PASSIVE"                : "Passive",
@@ -607,6 +651,7 @@
       "QUANTITY"               : "Quantité",
       "RECIPIENT"              : "Facture de ",
       "REFERENCE"              : "Référence",
+      "REFERENCE_PATIENT"      : "Référence Patient",
       "REFERENCE_GROUP"        : "Groupe de référence",
       "RELIGION"               : "Religion",
       "RESULT"                 : "Resultats",
@@ -648,8 +693,10 @@
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
       "TO"                     : "à",
+      "TOOLS"                  : "Utils",
       "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
+      "TOTAL_BALANCE_REMAINING" : "Solde Total Restant",
       "TOTAL_BILLED"           : "Total Facture",
       "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_PAID"             : "Total paye",
@@ -659,10 +706,13 @@
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TRANSFER_TYPE"          : "Type de Transfert",
+      "TRANSACTION_TYPE"       : "Type de transaction",
+      "TRANSACTION_DATE"       : "Date de Transaction",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
       "UNDEFINED"              : "Non defini",
       "UNIT"                   : "Forme galenique",
+      "UNIT_PRICE"             : "Prix Unitaire",
       "UNIT_WEIGHT"            : "Poids",
       "UNIT_VOLUME"            : "Volume",
       "UNTIL_DATE"             : "jusqu'à la date",
@@ -671,7 +721,9 @@
       "UPDATE_GROUP_DEBTOR"    : "Mettre à jour le Groupe débiteur",
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
       "USE"                    : "Utilisation",
-      "USERNAME"               : "Nom Utilisateur",
+      "USERNAME"               : "Nom de l'utilisateur",
+      "USE_POS_RECEIPT"        : "Impression POS",
+      "USE_SIMPLIFIED_CARD"    : "Utiliser une identité de patient simple",
       "USER"                   : "Utilisateur",
       "VALUE"                  : "Valeur",
       "VILLAGE"                : "Village/Commune",
@@ -720,12 +772,13 @@
       "TYPE"         : "Entrer le type",
       "UNIT_WEIGHT"  : "Entrer le poids",
       "UNIT_VOLUME"  : "Entrer le volume",
-      "USERNAME"     : "Entrer le nom utilisateur",
+      "USERNAME"     : "Entrer le nom de l'utilisateur",
       "VILLAGE"      : "Entrer village/Commune",
       "FILTER_NAME"        : "Filtrer par Nom...",
       "FILTER_BY"          : "Filtrer par",
       "SEARCH_NAME"        : "Chercher Par Nom",
-      "SEARCH_PATIENT_ID"  : "Chercher ID Patient"
+      "SEARCH_PATIENT_ID"  : "Chercher ID Patient",
+      "QUANTITY"           : "Entrer le Quantité"
     },
     "SELECT": {
       "EMPTY"              : "Vide",
@@ -752,6 +805,7 @@
       "PRICE_LIST"         : "Sélectionner la liste de prix",
       "PROFIT_CENTER"      : "Sélectionner centre profit",
       "PROJECT"            : "Sélectionner projet",
+      "PATIENT_GROUP"      : "Sélectionner une groupe des patients",
       "PROVINCE"           : "Sélectionner une province",
       "REFERENCE"          : "Sélectionner la Référence",
       "REFERENCE_GROUP"    : "Sélectionner un groupe de référence",
@@ -810,6 +864,7 @@
   },
   "HOME": {
     "BHIMA"          : "Bhima",
+    "BHIMA_FINANCE"  : "BHIMA",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
     "EXCHANGE_SET"   : "Configuré le",
@@ -819,24 +874,27 @@
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
     "TODAY"          : "Date du jour",
-    "DEBTORS" : { 
+    "DEBTORS" : {
       "TITLE"    : "Debiteurs de l'entreprise",
       "BALANCED" : "Toutes les dettes sont reglées",
       "CACHED"   : "Données à jour"
     }
   },
   "INVENTORY" : {
-    "ADD_GROUP"     : "Ajouter Groupe d'inventaires",
-    "ADD_METADATA"  : "Ajouter inventaire",
-    "ADD_TYPE"      : "Ajouter Types d'inventaires",
-    "ADD_UNIT"      : "Ajouter Forme d'inventaires",
+    "ADD_GROUP"     : "Ajouter Groupe d'Inventaires",
+    "ADD_METADATA"  : "Ajouter Inventaire",
+    "ADD_TYPE"      : "Ajouter Types d'Inventaires",
+    "ADD_UNIT"      : "Ajouter Forme d'Inventaires",
     "CONFIGURATION" : "Configurations",
     "CONTAINS"      : "Contient",
+    "CREATE_ANOTHER" : "Ajouter une Autre Inventaires",
+    "DEFAULT_QUANTITY_DEFINITION" : "Ce champ suggérera le quantité par défaut dans le facture.",
     "EDIT_GROUP"    : "Modifier Groupe d'inventaires",
-    "EDIT_METADATA" : "Modifier inventaire",
+    "EDIT_METADATA" : "Modifier Inventaire",
     "EDIT_TYPE"     : "Modifier Types d'inventaires",
     "EDIT_UNIT"     : "Modifier Forme d'inventaires",
-    "ELEMENT"       : "Elt",
+    "ELEMENT"       : "Élément",
+    "PRICES"        : "Tarification",
     "LIST"          : "Liste des données d'inventaire",
     "LIST_METADATA" : "Inventaires",
     "LIST_GROUP"    : "Groupes d'inventaires",
@@ -845,7 +903,9 @@
   },
   "INVOICE_REGISTRY" : {
     "TITLE" : "Registre des Factures",
-    "RECEIPT_CURRENCY" : "Monnaie du reçu"
+    "RECEIPT_CURRENCY" : "Monnaie du reçu",
+    "EXCLUDE_REVERSE" : "Exclure toutes les factures inversees",
+    "INCLUDE_REVERSE" : "Inclure uniquement les factures inversees"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
@@ -859,7 +919,8 @@
     "MANAGE_SECTOR"         : "Gerer Les Secteurs",
     "MANAGE_VILLAGE"        : "Gerer Les Villages/Communes",
     "REGISTERED"            : "Localisations Enregistrées",
-    "TITLE"                 : "Gestion des localisations"
+    "TITLE"                 : "Gestion des localisations",
+    "REGISTER_AGAIN"        : "Enregisterer une autre Localisation"
   },
   "LOGIN": {
     "TITLE" : "Authentification"
@@ -916,6 +977,7 @@
     },
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
+    "LABEL_PAID"         : "Cette facture a été payé.",
     "PAGE_TITLE"         : "Facture des patients",
     "STAT_TOTAL_INVOICE" : "Total factures",
     "STAT_PAID"          : "Payés",
@@ -936,6 +998,17 @@
       "BY" : "par",
       "SUCCESS" : "Confirmation de la visite du patient avec succes"
     },
+    "VISITS" : {
+      "TITLE" : "Visites des patients",
+      "ADMIT" : "Admission à l'hôpital",
+      "ADMISSION_DIAGNOSIS" : "Diagnostic Admission",
+      "ADMISSION" : "Admission",
+      "DISCHARGE" : "Décharge",
+      "ORIGINAL" : "Ce patient n'a pas de visites enregistrées",
+      "RECENT" : "Dernières Visites",
+      "IN_PROGRESS" : "En cours",
+      "SEARCH_INFO" : "L'entrée recherche le diagnostic après avoir tapé 3 caractères."
+    },
     "FINANCIAL_ACTIVITY" : {
       "ACCOUNT"       : "Numéro de compte",
       "DEBTOR_GROUP"  : "Groupe débiteur",
@@ -953,14 +1026,17 @@
     "CARD"                : "Fiche du patient",
     "PAGE_TITLE"          : "Enregistrement des Patients",
     "PATIENT_DETAILS"     : "Détails Patient",
-    "SUCCESS" : "Patient enregistré avec succès"
+    "SUCCESS" : "Patient enregistré avec succès",
+    "IDENTITY" : "Identité du patient"
   },
   "PATIENT_REGISTRY" : {
     "CARD"                  : "Carte",
     "DAY"                   : "jour",
     "DAYS"                  : "jours",
+    "INVOICES"              : "Les factures",
     "MONTH"                 : "mois",
     "MONTHS"                : "mois",
+    "PAYMENTS"              : "Les paiements",
     "RECORD"                : "Enregistrement",
     "YEAR_OLD"              : "an",
     "YEARS_OLD"             : "ans",
@@ -1137,8 +1213,6 @@
   "REPORT" : {
     "ACCOUNT"       : "Rapport du Compte",
     "BALANCE"       : "Rapport de la Balance",
-    "DOWNLOAD"      : "Telecharger",
-    "DELETE"        : "Supprimer rapport",
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Moins de 30 jours",
@@ -1148,6 +1222,8 @@
     },
     "CASH_EXPENSE"     : "Depenses",
     "CASH_INCOME"      : "Recettes",
+    "CASHFLOW"         : "Cashflow",
+    "CASHFLOW_BY_SERVICE" : "Cashflow par Service",
     "CHART_OF_ACCOUNTS": "Plan Comptable",
     "CLOSING_BALANCE"  : "Balance à la cloture",
     "CONFIGURATION"    : "Configuration rapport",
@@ -1165,7 +1241,9 @@
     "REPORT_ACCOUNTS"  : "Rapport de comptes",
     "INCOME_REPORT"    : "Rapport des recettes",
     "EXPENSE_REPORT"   : "Rapport des dépenses",
-    "SINCE"            : "Depuis"
+    "SINCE"            : "Depuis",
+    "VIEW_RECEIPT"     : "Voir le document",
+    "VIEW_CREDIT_NOTE" : "Voir la note de credit"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
@@ -1207,7 +1285,9 @@
   "SETTINGS": {
     "TITLE" : "Paramètres",
     "BUG_LINK" : "Signaler un Problème",
-    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO" : "Si cette option est activé, l'impression sera fait avec l'imprimante thermique.",
+    "SIMPLIFIED_CARD_INFO" : "Les identifiants simples de patients ont une largeur de 75mm, la hauteur de 125mm est en orientation 'Paysage'. Les identités standard sont 'A6'."
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Ajout d'une subvention",
@@ -1262,8 +1342,10 @@
       "COST"               : "Cout",
       "COST_CENTER"        : "Centre de cout",
       "COUNTRY"            : "Pays",
+      "CREATED_BY"         : "Crée par",
       "CREDIT"             : "Credit",
       "CURRENCY"           : "Monnaie",
+      "CREATED_BY"         : "Cree par",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date d'enregistrement",
       "DATA_SOURCE"        : "Source de données",
@@ -1273,6 +1355,7 @@
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
+      "DOCUMENT_ID"        : "ID Document",
       "DOB"                : "Date de naissance",
       "EDIT"               : "Editer",
       "EMAIL"              : "Email",
@@ -1367,7 +1450,6 @@
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
       "TYPE"               : "Type",
-      "USER"               : "Utilisateur",
       "UNIT"               : "Unité",
       "UNIT_PRICE"         : "Prix unitaire",
       "UNPAID_INVOICE_1"   : "Cette facture n'a pas été compensée en ",
@@ -1375,6 +1457,26 @@
       "USER"               : "Utilisateur",
       "VALUE"              : "Valeur",
       "VILLAGE"            : "Village/Commune"
+    },
+    "AGGREGATES"         : {
+      "NUM_USERS"      : "Nombre des Utilisateurs",
+      "NUM_SERVICES"   : "Nombre des Services",
+      "NUM_PROJECTS"   : "Nombre des Projets",
+      "NUM_PAYMENTS"   : "Nombre des Paiements",
+      "NUM_INVOICES"   : "Nombre des Factures",
+      "NUM_CAUTIONS"   : "Nombre des Cautions",
+      "NUM_CASHBOXES"  : "Nombres des Caisses",
+      "NUM_CLIENTS"    : "Nombre des Clients Unique",
+      "NUM_MEN"        : "Nombre des Hommes",
+      "NUM_WOMEN"      : "Nombre des Femmes",
+      "NUM_PATIENTS"   : "Nombre des Patients",
+      "NUM_DISTINCT_RESIDENCES" : "Nombres des Residences Unique",
+      "NUM_DEBTOR_GROUPS"       : "Nombre des Groups de Debiteur",
+      "NUM_RECORDS"    : "Nombre des enregistrements",
+      "NUMBER_OF_DAYS" : "Nombre des Jours",
+      "RECORDS"        : "Données",
+      "TOTAL_COST"     : "Cout Totale",
+      "TOTAL_AMOUNT"   : "Mountant Totale"
     }
   },
   "TRANSACTION_TYPE" : {
@@ -1387,7 +1489,6 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
-    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Registre des paiements",
     "CASH_WINDOW"                : "Paiements",
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
@@ -1496,7 +1597,6 @@
       "RECEIPT" :  {
         "SUCCESS" : "Bon de paiement enregistré avec succès."
       },
-      
       "REPORT" : "Rapport des Quittances",
       "TITLE"  : "Quittance",
       "TOOLS"  : "Outils",
@@ -1516,9 +1616,16 @@
       "PURCHASES"          : "Achats",
       "SUPPORT_INCOME"     : "Paiement Prise en charge",
       "TITLE"              : "Bordereau de transfert",
-      "TRANSFER"           : "Transfert d'argent"
+      "TRANSFER"           : "Transfert d'argent",
+      "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Prise en Charge de Facture de Patient"
     },
     "REPORT" : "Rapport"
+  },
+  "TRANSACTIONS" :  {
+    "SINGLE_ACCOUNT_TRANSACTION" : "Cette transaction contient un seul compte.  Veuillez sélectionner plusieurs comptes pour compléter la transaction.",
+    "MISSING_TRANSACTION_TYPE" : "Les transactions impliquant des comptes de trésorerie (banques ou caisses) doivent avoir un type de transaction spécifié pour les différencier dans le rapport de trésorerie. Veuillez sélectionner un type de transaction.",
+    "IMBALANCED_TRANSACTION" : "Les débits et les crédits de cette transaction doivent être équilibrés. Veuillez corriger les déséquilibres avant de les soumettre.",
+    "SINGLE_ROW_TRANSACTION" : "Cette transaction ne comporte qu'une seule ligne, mais deux lignes sont nécessaires. Veuillez ajouter une ou plusieurs lignes."
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement des patients",
@@ -1527,5 +1634,4 @@
     "LOGINS" : "Connexion",
     "PURCHASES" : "Achats"
   }
-
 }

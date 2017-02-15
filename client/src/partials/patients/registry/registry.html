@@ -14,18 +14,34 @@
           <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <button
+          ng-click="PatientRegistryCtrl.openColumnConfiguration()"
+          data-method="config"
+          class="btn btn-default">
+          <i class="fa fa-cogs"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+        </button>
+      </div>
+
       <div class="toolbar-item">
         <bh-pdf-print
           pdf-url="reports/medical/patients"
           options="PatientRegistryCtrl.filters">
         </bh-pdf-print>
       </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="reports/medical/patients"
+          report-options="PatientRegistryCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+<div class="flex-util bh-filter-bar" ng-show="PatientRegistryCtrl.filtersFmt.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="PatientRegistryCtrl.filtersFmt"
@@ -48,7 +64,8 @@
     <div
       id="patient-registry"
       ui-grid="PatientRegistryCtrl.uiGridOptions"
-      style="height : calc(100vh - 102px)"
+      class="grid-full-height"
+      ng-style="PatientRegistryCtrl.filterBarHeight"
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns>
@@ -56,10 +73,8 @@
       <bh-grid-loading-indicator
         loading-state="PatientRegistryCtrl.loading"
         empty-state="PatientRegistryCtrl.uiGridOptions.data.length === 0"
-        error-state="PatientRegistryCtrl.hasError"
-        >
+        error-state="PatientRegistryCtrl.hasError">
       </bh-grid-loading-indicator>
-
     </div>
   </div>
 </div>

@@ -6,7 +6,6 @@
 DELIMITER $$
 
 CREATE PROCEDURE StageInvoice(
-  IN is_distributable TINYINT(1),
   IN date DATETIME,
   IN cost DECIMAL(19, 4) UNSIGNED,
   IN description TEXT,
@@ -24,11 +23,11 @@ BEGIN
   SELECT NULL FROM `stage_invoice` LIMIT 0;
 
   IF (`no_invoice_stage` = 1) THEN
-    CREATE temporary table stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
+    CREATE TEMPORARY TABLE stage_invoice
+    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
   ELSE
     INSERT INTO stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
+    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
   END IF;
 END $$
 
@@ -51,12 +50,12 @@ BEGIN
 
   IF (`no_invoice_item_stage` = 1) THEN
     -- tables does not exist - create and enter data
-    create temporary table stage_invoice_item
+    CREATE TEMPORARY TABLE stage_invoice_item
       (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   ELSE
     -- table exists - only enter data
-    insert into stage_invoice_item
-      (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+    INSERT INTO stage_invoice_item
+      (SELECT uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   END IF;
 END $$
 
@@ -68,8 +67,8 @@ CREATE PROCEDURE StageBillingService(
 BEGIN
   CALL VerifyBillingServiceStageTable();
 
-   insert into stage_billing_service
-  (select id, invoice_uuid);
+   INSERT INTO stage_billing_service
+  (SELECT id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -79,8 +78,8 @@ CREATE PROCEDURE StageSubsidy(
 BEGIN
   CALL VerifySubsidyStageTable();
 
-  insert into stage_subsidy
-  (select id, invoice_uuid);
+  INSERT INTO stage_subsidy
+  (SELECT id, invoice_uuid);
 END $$
 
 -- create a temporary staging table for the subsidies, this is done via a helper
@@ -88,12 +87,12 @@ END $$
 -- optional entity that may or may not have been called for staging)
 CREATE PROCEDURE VerifySubsidyStageTable()
 BEGIN
-  create table if not exists stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
 END $$
 
 CREATE PROCEDURE VerifyBillingServiceStageTable()
 BEGIN
-  create table if not exists stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
 END $$
 
 CREATE PROCEDURE WriteInvoice(
@@ -115,8 +114,8 @@ BEGIN
   CALL VerifyBillingServiceStageTable();
 
   -- invoice details
-  INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable)
-  SELECT * from stage_invoice where stage_invoice.uuid = uuid;
+  INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description)
+  SELECT * FROM stage_invoice WHERE stage_invoice.uuid = uuid;
 
   -- invoice item details
   INSERT INTO invoice_item (uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid)
@@ -148,7 +147,7 @@ BEGIN
   WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
+  SELECT items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
 END $$
 
 CREATE PROCEDURE PostInvoice(
@@ -183,16 +182,16 @@ BEGIN
   -- populate core set-up values
   CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
 
-  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced 
-  SELECT COUNT(invoice_item.uuid) 
+  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced
+  SELECT COUNT(invoice_item.uuid)
     INTO verify_invalid_accounts
   FROM invoice JOIN invoice_item JOIN inventory JOIN inventory_group
-  ON invoice.uuid = invoice_item.invoice_uuid 
-    AND invoice_item.inventory_uuid = inventory.uuid 
+  ON invoice.uuid = invoice_item.invoice_uuid
+    AND invoice_item.inventory_uuid = inventory.uuid
     AND inventory.group_uuid = inventory_group.uuid
   WHERE invoice.uuid = uuid
   AND inventory_group.sales_account IS NULL;
-  
+
   IF verify_invalid_accounts > 0 THEN
     SIGNAL InvalidSalesAccounts
     SET MESSAGE_TEXT = 'A NULL sales account has been found for an inventory item in this invoice.';
@@ -369,11 +368,11 @@ BEGIN
       INSERT INTO posting_journal
           (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
-          iaccountId, icost, 0, icost, 0, currencyId, ientityId, 'D', cid, iuserId, 1
+          iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 1
         );
 
       -- exit the loop
@@ -393,12 +392,12 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
-          currencyId, ientityId, 'D', cid, iuserId, 1
+          currencyId, ientityId, cid, iuserId, 1
         );
 
       END IF;
@@ -413,11 +412,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, origin_id
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
-      currencyId, ientityId, 'D', iuserId, 1
+      currencyId, ientityId, iuserId, 1
     );
   END IF;
 
@@ -472,10 +471,10 @@ CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
      "INSERT INTO general_ledger
      (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
       description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-       entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+       entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
          description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-          entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+          entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
      FROM posting_journal
      WHERE trans_id
      IN (", transactions, ")");
@@ -549,7 +548,7 @@ BEGIN
 
   DECLARE cashPaymentOriginId SMALLINT(5);
 
-  -- set origin to the CASH_PAYMENT transaction type 
+  -- set origin to the CASH_PAYMENT transaction type
   SET cashPaymentOriginId = 2;
 
   -- copy cash payment values into working variables
@@ -598,11 +597,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id
+      credit_equiv, currency_id, entity_uuid, user_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id
+      c.debtor_uuid, c.user_id
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -619,11 +618,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
+      c.debtor_uuid, c.user_id, ci.invoice_uuid
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -665,16 +664,16 @@ BEGIN
         the difference to the debtor and credit the difference as a gain to the gain_account
 
         - The debtor entity an invoice reference are not included on the gain
-          account transaction. In this case the debtor covered MORE than the 
-          invoiced amount and so referencing them on the enterprise gain will 
-          actually debit them the additional amount. 
+          account transaction. In this case the debtor covered MORE than the
+          invoiced amount and so referencing them on the enterprise gain will
+          actually debit them the additional amount.
       */
       IF (remainder > 0) THEN
-  
-        -- The debtor is not debited in this transaction. They have already 
-        -- balanced the invoice and their debt according to the invoice (the 
+
+        -- The debtor is not debited in this transaction. They have already
+        -- balanced the invoice and their debt according to the invoice (the
         -- exact amount). The additional payment can just be put in a gain account.
-        
+
         -- credit the rounding account
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
@@ -692,9 +691,9 @@ BEGIN
         A negative remainder means that the debtor underpaid slightly and we should credit
         the difference to the debtor and debit the difference as a loss to the loss_account
 
-        - The debtor and invoice are referenced on the loss account transaction 
-          make up for the amount that is loss. In this case the debtor has not 
-          actually paid enough money to cover the amount of the invoice. If this 
+        - The debtor and invoice are referenced on the loss account transaction
+          make up for the amount that is loss. In this case the debtor has not
+          actually paid enough money to cover the amount of the invoice. If this
           is not referenced his balance will not be zero.
       */
       ELSE
@@ -706,11 +705,11 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id,
-          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+          c.debtor_uuid, c.user_id, lastInvoiceUuid
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -785,6 +784,22 @@ BEGIN
   END IF;
 END $$
 
+-- This makes sure the temporary tables exist before using them
+CREATE PROCEDURE VerifyCashTemporaryTables()
+BEGIN
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+  );
+END $$
+
 -- This calculates the amount due on previous invoices based on what is being paid
 CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
@@ -812,17 +827,7 @@ BEGIN
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
-    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
-  );
+  CALL VerifyCashTemporaryTables();
 
   INSERT INTO stage_cash_records
     SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
@@ -1099,12 +1104,12 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    entity_type, reference_uuid, comment, origin_id, user_id)
+    reference_uuid, comment, origin_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
     vi.debit * current_exchange_rate, vi.credit * current_exchange_rate, v.currency_id,
-    vi.entity_uuid, NULL, vi.document_uuid, NULL, v.type_id, v.user_id
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
 
@@ -1126,10 +1131,10 @@ BEGIN
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[reversal]', description, '\n[original description]', zz.description), user_id, 10, uuid
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[REVERSAL]', description, ' -- ', zz.description), user_id, 10, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.project_id, gl.description FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz
       JOIN project ON zz.project_id = project.id
@@ -1142,12 +1147,35 @@ BEGIN
     FROM (
       SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 
   CALL PostVoucher(voucher_uuid);
+END $$
+
+
+-- this stored procedure merges two locations, deleting the first location_uuid after
+-- all locations have been migrated.
+CREATE PROCEDURE MergeLocations(
+  IN beforeUuid BINARY(16),
+  IN afterUuid BINARY(16)
+)
+BEGIN
+
+  -- Go through every location in the database, replacing the location uuid with the new location uuid
+  UPDATE patient SET origin_location_id = afterUuid WHERE origin_location_id = beforeUuid;
+  UPDATE patient SET current_location_id = afterUuid WHERE current_location_id = beforeUuid;
+
+  UPDATE debtor_group SET location_id = afterUuid WHERE location_id = beforeUuid;
+
+  UPDATE employee SET location_id = afterUuid WHERE location_id = beforeUuid;
+
+  UPDATE enterprise SET location_id = afterUuid WHERE location_id = beforeUuid;
+
+  -- delete the beforeUuid village and leave the afterUuid village.
+  DELETE FROM village WHERE village.uuid = beforeUuid;
 END $$
 
 DELIMITER ;

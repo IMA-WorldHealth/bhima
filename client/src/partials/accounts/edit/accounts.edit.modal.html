@@ -3,8 +3,8 @@
     <li ng-class="{
       'title' : AccountEditCtrl.isCreateState,
       'static' : !AccountEditCtrl.isCreateState}">
-      {{ "ACCOUNT.TITLE" | translate }}
-      <label class="label label-warning" ng-if="AccountEditCtrl.isCreateState">CREATE</label>
+      <span translate>ACCOUNT.TITLE</span>
+      <label class="label label-warning text-uppercase" ng-if="AccountEditCtrl.isCreateState" translate>FORM.LABELS.CREATE</label>
     </li>
 
     <li ng-if="!AccountEditCtrl.isCreateState" class="title">
@@ -13,39 +13,41 @@
   </ol>
 </div>
 
+<form name="AccountForm"  bh-submit="AccountEditCtrl.updateAccount(AccountForm)" novalidate bh-form-defaults>
+
 <div class="modal-body">
   <!-- Failure message -->
   <div class="alert alert-danger" ng-if="AccountEditCtrl.accountNotFound">
     <i class="fa fa-exclamation-circle"></i>
-    <b>{{AccountEditCtrl.accountFailed.status}}</b> {{AccountEditCtrl.accountNotFound.code | translate}}
+    <b>{{AccountEditCtrl.accountFailed.status}}</b> <span translate>{{AccountEditCtrl.accountNotFound.code}}</span>
   </div>
 
   <!-- Account form -->
-  <div ng-show="AccountEditCtrl.account || AccountEditCtrl.isCreateState" ng-form="AccountForm">
+  <div ng-show="AccountEditCtrl.account || AccountEditCtrl.isCreateState">
 
     <div ng-if="!AccountEditCtrl.isCreateState" class="form-group">
-      <label class="control-label">{{ "ACCOUNT.NUMBER" | translate }}</label>
+      <label class="control-label" translate>ACCOUNT.NUMBER</label>
       <p class="form-control-static" id="number-static">{{AccountEditCtrl.account.number}}</p>
     </div>
 
     <div ng-if="AccountEditCtrl.isCreateState" class="form-group"
          ng-class="{'has-error' : AccountForm.number.$invalid && AccountForm.$submitted}">
-      <label class="control-label">{{ "ACCOUNT.NUMBER" | translate }}</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number" bh-integer required>
+      <label class="control-label" translate>ACCOUNT.NUMBER</label>
+      <input class="form-control" ng-model="AccountEditCtrl.account.number" autocomplete="off" name="number" bh-integer required>
       <div class="help-block" ng-messages="AccountForm.number.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
     <div class="form-group"
          ng-class="{'has-error' : AccountForm.label.$invalid && AccountForm.$submitted}">
-      <label class="control-label">{{ "ACCOUNT.LABEL" | translate }}</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.label" name="label" required>
+      <label class="control-label" translate>ACCOUNT.LABEL</label>
+      <input class="form-control" autocomplete="off" ng-model="AccountEditCtrl.account.label" name="label" required>
       <div class="help-block" ng-messages="AccountForm.label.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
-    <!-- @TODO Re-disable account type edditing after accounts are stable -->
+    <!-- @TODO Re-disable account type editing after accounts are stable -->
     <!-- Account type read only -->
     <!-- <div ng-if="!AccountEditCtrl.isCreateState" class="form-group"> -->
       <!-- <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label> -->
@@ -53,21 +55,22 @@
     <!-- </div> -->
 
 
+    <!-- TODO(@jniles): can this just use ng-options? -->
     <div class="form-group"
          ng-class="{'has-error' : (AccountForm.type_id.$invalid && AccountForm.$submitted) || AccountEditCtrl.invalidTitleAccount}">
-      <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.ACCOUNT_TYPE</label>
       <select
         class="form-control"
         ng-model="AccountEditCtrl.account.type_id"
         ng-change="AccountEditCtrl.titleChangedValidation(AccountEditCtrl.account.type_id)"
         name="type_id"
         required>
-        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT_TYPE" | translate }}</option>
-        <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}">{{entry.translation_key | translate}}</option>
+        <option value="" disabled translate>FORM.SELECT.ACCOUNT_TYPE</option>
+        <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}" translate>{{entry.translation_key}}</option>
       </select>
 
       <div class="help-block" ng-if="AccountEditCtrl.invalidTitleAccount">
-        {{ "ACCOUNT.TYPE_CHANGE_BLOCKED" | translate }}
+        <span translate>ACCOUNT.TYPE_CHANGE_BLOCKED</span>
       </div>
       <div class="help-block" ng-messages="AccountForm.type_id.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -75,9 +78,9 @@
     </div>
     <div class="form-group"
          ng-class="{'has-error' : AccountForm.parent.$invalid && AccountForm.$submitted}">
-      <label class="control-label">{{ "FORM.LABELS.PARENT_ACCOUNT" | translate }}</label>
-      <a href ng-click="AccountEditCtrl.setRootAccount(AccountForm)"><i class="fa fa-level-up"></i> {{ "ACCOUNT.SET_ROOT" | translate }}</a>
-      <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.Constants.accounts.ROOT" class="text-info"><i class="fa fa-info-circle"></i> {{ "ACCOUNT.ROOT_PARENT" | translate }}</p>
+      <label class="control-label" translate>FORM.LABELS.PARENT_ACCOUNT</label>
+      <a href ng-click="AccountEditCtrl.setRootAccount(AccountForm)"><i class="fa fa-level-up"></i> <span translate>ACCOUNT.SET_ROOT</span></a>
+      <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.Constants.accounts.ROOT" class="text-info"><i class="fa fa-info-circle"></i> <span translate>ACCOUNT.ROOT_PARENT</span></p>
 
       <ui-select
         name="parent"
@@ -100,22 +103,39 @@
 <div class="modal-footer">
   <div>
     <!-- @todo business logic rules will have to be displayed along with these messages when implemented with features (Edit, Delete, Lock etc.) -->
-    <p ng-if="AccountForm.$submitted && AccountForm.$pristine && !AccountEditCtrl.isCreateState" class="text-warning"><i class="fa fa-warning"></i> {{ "ACCOUNTS.RECORD_SAME" | translate }}</p>
-    <p ng-if="AccountForm.$submitted && AccountForm.$invalid" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
-    <p ng-if="AccountEditCtrl.fetchError" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{AccountEditCtrl.fetchError.data.code | translate}}</p>
+    <p ng-if="AccountForm.$submitted && AccountForm.$pristine && !AccountEditCtrl.isCreateState" class="text-warning"><i class="fa fa-warning"></i> <span translate>ACCOUNTS.RECORD_SAME</span></p>
+    <p ng-if="AccountForm.$submitted && AccountForm.$invalid" class="text-danger"><i class="fa fa-exclamation-circle"></i> <span translate>FORM.ERRORS.RECORD_ERROR</span></p>
+    <p ng-if="AccountEditCtrl.fetchError" class="text-danger"><i class="fa fa-exclamation-circle"></i> <span translate>{{AccountEditCtrl.fetchError.data.code}}</span></p>
   </div>
+
   <div class="checkbox" style="display : inline-block" ng-if="AccountEditCtrl.isCreateState">
     <label>
-      <input type="checkbox" ng-model="AccountEditCtrl.batchCreate"> {{ "ACCOUNT.CREATE_ANOTHER" | translate }}
+      <input type="checkbox" ng-model="AccountEditCtrl.batchCreate"> <span translate>ACCOUNT.CREATE_ANOTHER</span>
     </label>
   </div>
-  <button class="btn btn-default btn-sm" data-method="cancel" ng-click="AccountEditCtrl.close()" data-action="close">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
-  <button ng-if="!AccountEditCtrl.isCreateState" id="delete_account" class="btn btn-danger btn-sm" data-method="delete" ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account)" data-action="close">
-    {{ "ACCOUNT.SUBMIT_DELETE" | translate }}
+
+  <button
+    type="button"
+    class="btn btn-default"
+    data-method="cancel"
+    ng-click="AccountEditCtrl.close()"
+    data-action="close">
+    <span translate>FORM.BUTTONS.CLOSE</span>
   </button>
 
-  <button ng-disabled="AccountEditCtrl.accountNotFound || AccountEditCtrl.error" data-method="submit" class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
-    <span ng-if="AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_CREATE" | translate }}</span>
-    <span ng-if="!AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_UPDATE" | translate }}</span>
+  <button
+    type="button"
+    ng-if="!AccountEditCtrl.isCreateState"
+    class="btn btn-danger btn-sm"
+    data-method="delete"
+    ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account)">
+    <span translate>ACCOUNT.SUBMIT_DELETE</span>
   </button>
+
+  <bh-loading-button loading-state="AccountForm.$loading" disabled="AccountEditCtrl.accountNotFound || AccountEditCtrl.error">
+    <span ng-if="AccountEditCtrl.isCreateState" translate>ACCOUNT.SUBMIT_CREATE</span>
+    <span ng-if="!AccountEditCtrl.isCreateState" translate>ACCOUNT.SUBMIT_UPDATE</span>
+  </bh-loading-button>
 </div>
+
+</form>

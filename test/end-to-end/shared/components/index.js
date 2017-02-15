@@ -18,5 +18,6 @@ module.exports = {
   dateEditor:      require('./bhDateEditor'),
   modalAction:     require('./bhModalAction'),
   notification:    require('./notify'),
-  dateInterval:    require('./bhDateInterval')
+  dateInterval:    require('./bhDateInterval'),
+  accountSelect : require('./bhAccountSelect')
 };

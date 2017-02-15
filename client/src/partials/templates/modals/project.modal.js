@@ -10,8 +10,9 @@ function ProjectModalController(Instance, Projects, Notify, Data) {
   var vm = this;
 
   vm.project = {};
-  vm.action  = Data.action; // action must be 'create' or 'update'
+  vm.action  = Data.action; // action must be 'create' or 'edit'
   vm.enterprise = Data.enterprise; // the project enterprise
+  vm.showLock = Data.action === 'edit' ? true : false;
 
   // expose to the view
   vm.submit = submit;
@@ -29,7 +30,7 @@ function ProjectModalController(Instance, Projects, Notify, Data) {
     }
 
     var promise;
-    var creation = (Data.action === 'create');
+    var creation = !vm.showLock; //if show lock is false, creation true
     var project = angular.copy(vm.project);
 
     // set enterprise

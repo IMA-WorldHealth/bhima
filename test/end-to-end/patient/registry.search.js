@@ -1,12 +1,13 @@
 /* global element, by, browser */
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
-const helpers = require('../shared/helpers');
 
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
-
 
 /*
  * Patient Search Tests
@@ -18,19 +19,18 @@ function PatientRegistrySearch() {
   const parameters = {
     name: 'Mock',
     name1: 'Patient',
-    dateRegistrationFrom: '2015-01-01',
-    dateRegistrationTo: '2015-04-01',
-    dateBirthFrom: '2016-05-01',
-    dateBirthTo: '2016-05-16',
-    dateBirthFrom2: '1960-06-30',
-    dateBirthTo2: '2016-05-16'
+    dateRegistrationFrom: '01/01/2015',
+    dateRegistrationTo: '01/04/2015',
+    dateBirthFrom: '01/05/2016',
+    dateBirthTo: '16/05/2016',
+    dateBirthFrom2: '30/01/1960',
+    dateBirthTo2: '16/05/2016'
   };
 
   const defaultVisibleRowNumber = 3;
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-
 
   function expectNumberOfGridRows(number) {
     expect(rows.count(),
@@ -54,7 +54,7 @@ function PatientRegistrySearch() {
   // demonstrates that filtering works
   it(`should find one patient with name "${parameters.name}"`, () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name);
+    FU.input('ModalCtrl.params.display_name', parameters.name);
     FU.modal.submit();
 
     expectNumberOfGridRows(1);
@@ -65,7 +65,7 @@ function PatientRegistrySearch() {
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name1);
+    FU.input('ModalCtrl.params.display_name', parameters.name1);
     element(by.id('male')).click();
     FU.modal.submit();
 
@@ -77,7 +77,7 @@ function PatientRegistrySearch() {
   // demonstrates that additive + time-delimited filtering works
   it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name1);
+    FU.input('ModalCtrl.params.display_name', parameters.name1);
     $('[data-date-registration]').$('[data-date-range="week"]').click();
     FU.modal.submit();
 
@@ -87,7 +87,7 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates that sex + time-delimited filtering works
-  it('should find one female patient registered in the last year.', function () {
+  it('should find no female patients registered in the last year.', function () {
     FU.buttons.search();
     $('[data-date-registration]').$('[data-date-range="year"]').click();
     element(by.id('female')).click();
@@ -156,7 +156,7 @@ function PatientRegistrySearch() {
     // Add all the filters (4 in total)
     $('[data-date-dob]').$('[data-date-range="year"]').click();
     element(by.id('male')).click();
-    FU.input('ModalCtrl.params.name', 'Some Non-Existant Patient');
+    FU.input('ModalCtrl.params.display_name', 'Some Non-Existant Patient');
 
     FU.modal.submit();
 
@@ -172,4 +172,3 @@ function PatientRegistrySearch() {
 }
 
 module.exports = PatientRegistrySearch;
-
