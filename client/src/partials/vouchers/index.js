@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService', 'GridFilteringService',
   'uiGridGroupingConstants', 'uiGridConstants', 'ModalService', 'DateService',
-  'bhConstants', 'ReceiptModal', 'GridSortingService'
+  'bhConstants', 'ReceiptModal', 'GridSortingService',
 ];
 
 /**
@@ -39,47 +39,66 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.gridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
-    enableFiltering : vm.filterEnabled,
-    rowTemplate: '/partials/templates/grid/voucher.row.html'
+    enableFiltering  : vm.filterEnabled,
+    rowTemplate      : '/partials/templates/grid/voucher.row.html'
   };
 
   // grid default options
-  vm.gridOptions.columnDefs = [
-    { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
-      treeAggregationType: uiGridGroupingConstants.aggregation.COUNT,
-      sortingAlgorithm : Sorting.algorithms.sortByReference,
-      treeAggregationLabel: '', footerCellClass : 'text-center',
-    },
-    { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
-      sort: { priority: 0, direction : 'asc' },
-      cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
-      treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-      customTreeAggregationFinalizerFn: typeAggregation,
-      treeAggregationLabel : '',
-      groupingShowAggregationMenu: false
-    },
-    { field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate',
-      cellFilter : 'date',
-      filter : { condition : filtering.byDate },
-      customTreeAggregationFinalizerFn: timeAggregation,
-      treeAggregationLabel : '', type : 'date',
-      groupingShowAggregationMenu: false
-    },
-    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate',
-      groupingShowAggregationMenu: false
-    },
-    { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-      treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-      treeAggregationLabel : '', footerCellClass : 'text-center',
-      type: 'number', groupingShowAggregationMenu: false
-    },
-    { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
-      groupingShowAggregationMenu: false
-    },
-    { field : 'action', displayName : '...', enableFiltering: false, enableColumnMenu: false,
-      enableSorting: false, cellTemplate: 'partials/vouchers/templates/action.cell.html'
-    }
-  ];
+  vm.gridOptions.columnDefs = [{
+    field                : 'reference',
+    displayName          : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter     : 'translate',
+    treeAggregationType  : uiGridGroupingConstants.aggregation.COUNT,
+    sortingAlgorithm     : Sorting.algorithms.sortByReference,
+    treeAggregationLabel : '',
+  }, {
+    field                            : 'type_id',
+    displayName                      : 'TABLE.COLUMNS.TYPE',
+    headerCellFilter                 : 'translate',
+    sort                             : { priority: 0, direction: 'asc' },
+    cellTemplate                     : 'partials/templates/grid/voucherType.tmpl.html',
+    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : typeAggregation,
+    treeAggregationLabel             : '',
+    groupingShowAggregationMenu      : false,
+  }, {
+    field                            : 'date',
+    displayName                      : 'TABLE.COLUMNS.DATE',
+    headerCellFilter                 : 'translate',
+    cellFilter                       : 'date',
+    filter                           : { condition: filtering.byDate },
+    customTreeAggregationFinalizerFn : timeAggregation,
+    treeAggregationLabel             : '',
+    type                             : 'date',
+    groupingShowAggregationMenu      : false,
+  }, {
+    field                       : 'description',
+    displayName                 : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter            : 'translate',
+    groupingShowAggregationMenu : false,
+  }, {
+    field                       : 'amount',
+    displayName                 : 'TABLE.COLUMNS.AMOUNT',
+    headerCellFilter            : 'translate',
+    treeAggregationType         : uiGridGroupingConstants.aggregation.SUM,
+    treeAggregationLabel        : '',
+    footerCellClass             : 'text-right',
+    type                        : 'number',
+    groupingShowAggregationMenu : false,
+    cellTemplate                : 'partials/vouchers/templates/amount.grid.tmpl.html',
+  }, {
+    field                       : 'display_name',
+    displayName                 : 'TABLE.COLUMNS.RESPONSIBLE',
+    headerCellFilter            : 'translate',
+    groupingShowAggregationMenu : false,
+  }, {
+    field            : 'action',
+    displayName      : '...',
+    enableFiltering  : false,
+    enableColumnMenu : false,
+    enableSorting    : false,
+    cellTemplate     : 'partials/vouchers/templates/action.cell.html',
+  }];
 
   // register API
   vm.gridOptions.onRegisterApi = onRegisterApi;
