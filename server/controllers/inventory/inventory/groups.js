@@ -81,7 +81,7 @@ function getGroupsMembers() {
   let sql = `
     SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account, ig.stock_account, COUNT(i.uuid) AS inventory_counted
     FROM inventory_group AS ig
-    JOIN inventory AS i ON i.group_uuid = ig.uuid
+    LEFT JOIN inventory AS i ON i.group_uuid = ig.uuid
     GROUP BY ig.uuid;
     `;
 
