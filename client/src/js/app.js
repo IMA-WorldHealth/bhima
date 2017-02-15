@@ -6,198 +6,197 @@ var bhima = angular.module('bhima', [
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
-  'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch'
+  'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
 ]);
 
 function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
-
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
 
   $stateProvider
   .state('index', {
-    abstract : true,
-    url : '/',
-    controller : 'HomeController as HomeCtrl',
-    templateUrl : 'partials/home/home.html'
+    abstract    : true,
+    url         : '/',
+    controller  : 'HomeController as HomeCtrl',
+    templateUrl : 'partials/home/home.html',
   })
   .state('index.details', {
-    url : '',
+    url   : '',
     views : {
       'debtors@index' : {
         templateUrl : 'partials/home/units/debtors.html',
-        controller : 'DashboardDebtorController as DebtorCtrl'
+        controller  : 'DashboardDebtorController as DebtorCtrl',
       },
       'invoices@index' : {
         templateUrl : 'partials/home/units/invoices.html',
-        controller : 'DashboardInvoiceController as InvoiceCtrl'
+        controller  : 'DashboardInvoiceController as InvoiceCtrl',
       },
       'patients@index' : {
         templateUrl : 'partials/home/units/patients.html',
-        controller : 'DashboardPatientController as PatientCtrl'
-      }
-    }
+        controller  : 'DashboardPatientController as PatientCtrl',
+      },
+    },
   })
   .state('exchange', {
-    abstract : true,
-    url : '/exchange',
-    templateUrl: 'partials/application/exchange.html'
+    abstract    : true,
+    url         : '/exchange',
+    templateUrl : 'partials/application/exchange.html',
   })
   .state('exchange.index', {
-    url : '',
+    url   : '',
     views : {
       'exchange@exchange' : {
         templateUrl : 'partials/enterprises/exchange/exchange.html',
-        controller : 'ExchangeController as ExchangeCtrl'
-      }
-    }
+        controller  : 'ExchangeController as ExchangeCtrl',
+      },
+    },
   })
   .state('login', {
-    url : '/login',
-    controller : 'LoginController as LoginCtrl',
-    templateUrl : 'partials/login/login.html'
+    url         : '/login',
+    controller  : 'LoginController as LoginCtrl',
+    templateUrl : 'partials/login/login.html',
   })
   .state('settings', {
-    url : '/settings?previous',
-    controller: 'settings as SettingsCtrl',
-    templateUrl: 'partials/settings/settings.html'
+    url         : '/settings?previous',
+    controller  : 'settings as SettingsCtrl',
+    templateUrl : 'partials/settings/settings.html',
   })
   .state('services', {
-    url : '/services',
-    controller : 'ServicesController as ServicesCtrl',
-    templateUrl : 'partials/services/services.html'
+    url         : '/services',
+    controller  : 'ServicesController as ServicesCtrl',
+    templateUrl : 'partials/services/services.html',
   })
 
   .state('invoiceRegistry', {
-    url  : '/invoices',
-    controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
-    templateUrl: '/partials/patient_invoice/registry/registry.html',
-    params : {
+    url         : '/invoices',
+    controller  : 'InvoiceRegistryController as InvoiceRegistryCtrl',
+    templateUrl : '/partials/patient_invoice/registry/registry.html',
+    params      : {
       filters : null,
-      display : null
-    }     
+      display : null,
+    },
   })
   .state('configBilan', {
-    url: '/section_bilan',
-    controller : 'sectionBilanController as sectionBilanCtrl',
-    templateUrl : 'partials/section_bilan/section_bilan.html'
+    url         : '/section_bilan',
+    controller  : 'sectionBilanController as sectionBilanCtrl',
+    templateUrl : 'partials/section_bilan/section_bilan.html',
   })
   .state('configResultat', {
-    url : '/section_resultat',
-    controller : 'sectionResultatController as sectionResultatCtrl',
-    templateUrl : 'partials/section_resultat/section_resultat.html'
+    url         : '/section_resultat',
+    controller  : 'sectionResultatController as sectionResultatCtrl',
+    templateUrl : 'partials/section_resultat/section_resultat.html',
   })
   .state('subsidies', {
-    url : '/subsidies',
-    controller : 'SubsidyController as SubsidyCtrl',
-    templateUrl : 'partials/subsidies/subsidies.html'
+    url         : '/subsidies',
+    controller  : 'SubsidyController as SubsidyCtrl',
+    templateUrl : 'partials/subsidies/subsidies.html',
   })
 
   /* admin : depot management */
   .state('depots', {
-    url : '/depots',
-    controller : 'DepotManagementController as DepotCtrl',
-    templateUrl : 'partials/depots/depots.html'
+    url         : '/depots',
+    controller  : 'DepotManagementController as DepotCtrl',
+    templateUrl : 'partials/depots/depots.html',
   })
 
   /* employees routes */
   .state('employees', {
-    url : '/employees',
-    controller : 'EmployeeController as EmployeeCtrl',
-    templateUrl : 'partials/employees/employees.html'
+    url         : '/employees',
+    controller  : 'EmployeeController as EmployeeCtrl',
+    templateUrl : 'partials/employees/employees.html',
   })
   /* location routes */
 
   .state('locations', {
-    url : '/locations',
-    controller : 'LocationController as LocationCtrl',
-    templateUrl: 'partials/locations/locations.html'
+    url         : '/locations',
+    controller  : 'LocationController as LocationCtrl',
+    templateUrl : 'partials/locations/locations.html',
   })
   .state('locationsVillage', {
-    url : '/locations/village',
-    controller : 'VillageController as VillageCtrl',
-    templateUrl: 'partials/locations/village/village.html'
+    url         : '/locations/village',
+    controller  : 'VillageController as VillageCtrl',
+    templateUrl : 'partials/locations/village/village.html',
   })
   .state('locationsSector', {
-    url : '/locations/sector',
-    controller : 'SectorController as SectorCtrl',
-    templateUrl: 'partials/locations/sector/sector.html'
+    url         : '/locations/sector',
+    controller  : 'SectorController as SectorCtrl',
+    templateUrl : 'partials/locations/sector/sector.html',
   })
   .state('locationsProvince', {
-    url : '/locations/province',
-    controller : 'ProvinceController as ProvinceCtrl',
-    templateUrl: 'partials/locations/province/province.html'
+    url         : '/locations/province',
+    controller  : 'ProvinceController as ProvinceCtrl',
+    templateUrl : 'partials/locations/province/province.html',
   })
   .state('locationsCountry', {
-    url : '/locations/country',
-    controller : 'CountryController as CountryCtrl',
-    templateUrl: 'partials/locations/country/country.html'
+    url         : '/locations/country',
+    controller  : 'CountryController as CountryCtrl',
+    templateUrl : 'partials/locations/country/country.html',
   })
 
   /** General ledger routes**/
   .state('generalLedger', {
-    url : '/general_ledger',
-    controller : 'GeneralLedgerController as GeneralLedgerCtrl',
-    templateUrl : 'partials/general_ledger/general_ledger.html'
+    url         : '/general_ledger',
+    controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger.html',
   })
 
   /* references routes */
 
   .state('references', {
-    url : '/references',
-    controller: 'ReferenceController as ReferenceCtrl',
-    templateUrl: 'partials/references/references.html'
+    url         : '/references',
+    controller  : 'ReferenceController as ReferenceCtrl',
+    templateUrl : 'partials/references/references.html',
   })
 
   .state('referenceGroups', {
-    url : '/references/groups',
-    controller: 'ReferenceGroupController as ReferenceGroupCtrl',
-    templateUrl: 'partials/references/groups/groups.html'
+    url         : '/references/groups',
+    controller  : 'ReferenceGroupController as ReferenceGroupCtrl',
+    templateUrl : 'partials/references/groups/groups.html',
   })
 
   .state('prices', {
-    url : '/prices',
-    controller: 'PriceListController as PriceListCtrl',
-    templateUrl: 'partials/price_list/pricelist.html'
+    url         : '/prices',
+    controller  : 'PriceListController as PriceListCtrl',
+    templateUrl : 'partials/price_list/pricelist.html',
   })
 
   /* creditor routes */
   .state('suppliers', {
-    url : '/suppliers',
-    controller: 'SupplierController as SupplierCtrl',
-    templateUrl: '/partials/suppliers/suppliers.html'
+    url         : '/suppliers',
+    controller  : 'SupplierController as SupplierCtrl',
+    templateUrl : '/partials/suppliers/suppliers.html',
   })
 
   /* purchase routes */
   .state('purchasesCreate', {
-    url : '/purchases/create',
-    controller : 'PurchaseOrderController as PurchaseCtrl',
-    templateUrl : 'partials/purchases/create/create.html'
+    url         : '/purchases/create',
+    controller  : 'PurchaseOrderController as PurchaseCtrl',
+    templateUrl : 'partials/purchases/create/create.html',
   })
 
   /* transaction type */
   .state('transactionType', {
-    url: '/admin/transaction_type',
-    controller: 'TransactionTypeController as TypeCtrl',
-    templateUrl: 'partials/admin/transaction_type/transaction_type.html'
+    url         : '/admin/transaction_type',
+    controller  : 'TransactionTypeController as TypeCtrl',
+    templateUrl : 'partials/admin/transaction_type/transaction_type.html',
   })
 
   .state('403', {
-    templateUrl : 'partials/errors/403.html'
+    templateUrl : 'partials/errors/403.html',
   })
 
   // this is a catch-all state.  It matches all URLs and preserves the URL in the top bar.
   .state('404', {
-    url: '{path:.*}',
-    templateUrl : 'partials/errors/404.html'
+    url         : '{path:.*}',
+    templateUrl : 'partials/errors/404.html',
   });
 }
 
 function translateConfig($translateProvider) {
-  //TODO Review i18n and determine if this it the right solution/grade_employers/
+  // TODO Review i18n and determine if this it the right solution/grade_employers/
   $translateProvider.useStaticFilesLoader({
-    prefix: '/i18n/',
-    suffix: '.json'
+    prefix : '/i18n/',
+    suffix : '.json',
   });
 
   $translateProvider.useSanitizeValueStrategy('escape');
@@ -319,44 +318,44 @@ function localStorageConfig($localStorageProvider) {
 function constantConfig() {
   return {
     accounts : {
-      ROOT : 0,
-      TITLE : 4
+      ROOT  : 0,
+      TITLE : 4,
     },
     purchase : {
-      GRID_HEIGHT: 200
+      GRID_HEIGHT : 200,
     },
-    settings: {
+    settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',
     },
     dates : {
       minDOB : new Date('1900-01-01'),
     },
     yearOptions : {
-      format : 'yyyy',
+      format         : 'yyyy',
       datepickerMode : 'year',
-      minMode : 'year'
+      minMode        : 'year',
     },
     dayOptions : {
-      format : 'dd/MM/yyyy',
+      format         : 'dd/MM/yyyy',
       datepickerMode : 'day',
-      minMode : 'day'
+      minMode        : 'day',
     },    
     lengths : {
-      maxTextLength : 1000,
-      minDecimalValue: 0.0001
+      maxTextLength   : 1000,
+      minDecimalValue : 0.0001,
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG : '_error',
-      FILTER_BAR_HEIGHT : { height : 'calc(100vh - 105px)' }
+      ROW_ERROR_FLAG     : '_error',
+      FILTER_BAR_HEIGHT  : { height: 'calc(100vh - 105px)' },
     },
     transactions : {
-      ROW_EDIT_FLAG : '_edit',
+      ROW_EDIT_FLAG      : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_INVALID_FLAG : '_invalid'
+      ROW_INVALID_FLAG   : '_invalid',
     },
     barcodes : {
-      LENGTH : 10
+      LENGTH : 10,
     },
     transactionType : {
       GENERIC_INCOME     : 1,
@@ -370,30 +369,30 @@ function constantConfig() {
       PURCHASES          : 9,
       CREDIT_NOTE        : 10,
       INCOME             : 'income',
-      EXPENSE            : 'expense'
+      EXPENSE            : 'expense',
     },
     flux : {
-      FROM_PURCHASE: 1,
-      FROM_OTHER_DEPOT: 2,
-      FROM_ADJUSTMENT: 3,
-      FROM_PATIENT: 4,
-      FROM_SERVICE: 5,
-      FROM_DONATION: 6,
-      FROM_LOSS: 7,
-      TO_OTHER_DEPOT: 8,
-      TO_PATIENT: 9,
-      TO_SERVICE: 10,
-      TO_LOSS: 11,
-      TO_ADJUSTMENT: 12
+      FROM_PURCHASE    : 1,
+      FROM_OTHER_DEPOT : 2,
+      FROM_ADJUSTMENT  : 3,
+      FROM_PATIENT     : 4,
+      FROM_SERVICE     : 5,
+      FROM_DONATION    : 6,
+      FROM_LOSS        : 7,
+      TO_OTHER_DEPOT   : 8,
+      TO_PATIENT       : 9,
+      TO_SERVICE       : 10,
+      TO_LOSS          : 11,
+      TO_ADJUSTMENT    : 12,
     },
     reports : {
-      AGED_DEBTOR : 'AGED_DEBTOR',
-      CASHFLOW : 'CASHFLOW',
-      INCOME_EXPENSE : 'INCOME_EXPENSE'
+      AGED_DEBTOR    : 'AGED_DEBTOR',
+      CASHFLOW       : 'CASHFLOW',
+      INCOME_EXPENSE : 'INCOME_EXPENSE',
     },
-    precision: {
-      MAX_DECIMAL_PRECISION : 4
-    }
+    precision : {
+      MAX_DECIMAL_PRECISION : 4,
+    },
   };
 }
 

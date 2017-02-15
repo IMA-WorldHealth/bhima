@@ -11,8 +11,7 @@
     </ol>
   </div>
 
-  <div class="modal-body">
-    <div style="height: 500px; overflow: auto;">
+  <div class="modal-body" style="max-height:500px; overflow-y: scroll;">
     <div
       class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
@@ -168,8 +167,6 @@
         <input class="form-control" type="number" step="1" name="purchase_interval" ng-model="$ctrl.item.purchase_interval">
         <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
       </div>
-    </div>
-
     </div>
     
   </div>

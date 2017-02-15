@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "BILLING_SERVICES.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>BILLING_SERVICES.TITLE</li>
     </ol>
 
     <div class="toolbar">
@@ -12,9 +12,8 @@
           class="btn btn-default"
           data-method="create"
           ui-sref="billingServices.create"
-          ui-sref-opts="{notify:false}"
-          >
-          <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.BTN.CREATE" | translate }}
+          ui-sref-opts="{notify:false}">
+          <span class="glyphicon glyphicon-plus"></span> <span translate>BILLING_SERVICES.BTN.CREATE</span>
         </a>
       </div>
     </div>
@@ -34,8 +33,7 @@
       <bh-grid-loading-indicator
         loading-state="BillingServicesCtrl.loading"
         empty-state="BillingServicesCtrl.options.data.length === 0"
-        error-state="BillingServicesCtrl.hasError"
-        >
+        error-state="BillingServicesCtrl.hasError">
       </bh-grid-loading-indicator>
 
     </div>
