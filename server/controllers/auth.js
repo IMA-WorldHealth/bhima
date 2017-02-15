@@ -18,8 +18,6 @@
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const Forbidden = require('../lib/errors/Forbidden');
-const NoProject = require('../lib/errors/NoProject');
-const NoPermission = require('../lib/errors/NoPermission');
 const InternalServerError = require('../lib/errors/InternalServerError');
 const Topic = require('../lib/topic');
 
@@ -91,11 +89,11 @@ function login(req, res, next) {
         if((loginPassWord === 0)){
           throw new Unauthorized('Bad username and password combination.');  
         } else {
-          throw new NoProject('No permissions for that project.');
+          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
         }        
       }
       else if((auth === 1) && (permission === 0)){
-        throw new NoPermission('No permissions in the database.');
+        throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
       }
 
       return loadSessionInformation(rows[0]);

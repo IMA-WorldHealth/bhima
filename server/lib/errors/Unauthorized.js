@@ -29,7 +29,9 @@ const util = require('util');
  *
  * @requires util
  */
-function Unauthorized(description) {
+
+function Unauthorized(description, key) {
+  'use strict';
 
   // make sure we have a working stack trace
   Error.captureStackTrace(this, this.constructor);
@@ -38,7 +40,7 @@ function Unauthorized(description) {
   this.status = 401;
 
   // bhima status code (for $translation)
-  this.code = 'ERRORS.UNAUTHORIZED';
+  this.code = key || 'ERRORS.UNAUTHORIZED';
 
   // default to an empty string if no description passed in
   this.description = description || '';
