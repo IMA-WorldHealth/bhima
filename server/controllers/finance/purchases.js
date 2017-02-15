@@ -1,4 +1,3 @@
-
 /**
  * @module controllers/finance/purchases
  *
@@ -6,23 +5,19 @@
  * This module provides an API interface for the Purchase API, responsible for
  * making purchase orders and quotes.
  *
- * @requires q
  * @requires node-uuid
  * @requires db
  * @requires NotFound
  * @requires BadRequest
- * @requires util
  */
 
-const q = require('q');
 const uuid = require('node-uuid');
 
 const db = require('../../lib/db');
-const util = require('../../lib/util');
-const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const identifiers = require('../../config/identifiers');
+const FilterParser = require('../../lib/filter');
 
 // create a new purchase order
 exports.create = create;
@@ -39,7 +34,7 @@ exports.update = update;
 // allows other controller to benefit from the lookup method
 exports.lookup = lookupPurchaseOrder;
 
-// search purchases 
+// search purchases
 exports.search = search;
 
 
@@ -59,11 +54,11 @@ function linkPurchaseItems(items, purchaseUuid) {
   // this columns array exists so that we are sure to order to columns in the
   // correct order
   const columns = [
-    'uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total', 'purchase_uuid'
+    'uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total', 'purchase_uuid',
   ];
 
   // loop through each item, making sure we have escapes and orderings correct
-  return items.map(item => {
+  return items.map((item) => {
 
     // make sure that each item has a uuid by generate
     item.uuid = db.bid(item.uuid || uuid.v4());
@@ -94,38 +89,34 @@ function lookupPurchaseOrder(uid) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
-      p.is_confirmed, p.is_received, p.is_cancelled  
+      p.is_confirmed, p.is_received, p.is_cancelled
     FROM purchase AS p
+    JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
-    JOIN user AS u ON u.id = p.user_id 
+    JOIN user AS u ON u.id = p.user_id
     WHERE p.uuid = ?;
   `;
 
-  return db.exec(sql, [db.bid(uid)])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a purchase with uuid ${uid}`);
-    }
+  return db.one(sql, [db.bid(uid), uid, 'Purchase Order'])
+    .then((row) => {
+      record = row;
 
-    // store the record for return
-    record = rows[0];
+      sql = `
+        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, i.text
+        FROM purchase_item AS pi
+        JOIN inventory AS i ON i.uuid = pi.inventory_uuid
+        WHERE pi.purchase_uuid = ?;
+      `;
 
-    sql = `
-      SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, i.text
-      FROM purchase_item AS pi
-      JOIN inventory AS i ON i.uuid = pi.inventory_uuid
-      WHERE pi.purchase_uuid = ?;
-    `;
+      return db.exec(sql, [db.bid(uid)]);
+    })
+    .then((rows) => {
 
-    return db.exec(sql, [db.bid(uid)]);
-  })
-  .then(function (rows) {
-
-    // bind the purchase items to the "items" property and return
-    record.items = rows;
-    return record;
-  });
+      // bind the purchase items to the "items" property and return
+      record.items = rows;
+      return record;
+    });
 }
 
 /**
@@ -180,9 +171,9 @@ function create(req, res, next) {
     .addQuery(sql, [data])
     .addQuery(itemSql, [items]);
 
-  transaction.execute()
+  return transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : puid });
+      res.status(201).json({ uuid: puid });
     })
     .catch(next)
     .done();
@@ -215,7 +206,7 @@ function list(req, res, next) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled  
+        p.is_confirmed, p.is_received, p.is_cancelled
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
@@ -224,7 +215,7 @@ function list(req, res, next) {
   }
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -241,7 +232,7 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupPurchaseOrder(req.params.uuid)
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -276,64 +267,46 @@ function update(req, res, next) {
  * @method search
  * @description search purchases by some filters given
  */
- function search(req, res, next) {
-
-   listPurchases(req.query)
-     .then(function (rows) {
-       res.status(200).json(rows);
-     })
-     .catch(next)
-     .done();
- }
+function search(req, res, next) {
+  find(req.query)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
 
 /**
- * @method listPurchases
- * @description get list of purchase orders 
+ * @method find
+ *
+ * @description
+ * This method will apply filters from the options object passed in to
+ * filter the purchase orders.
  */
-function listPurchases(params) {
+function find(options) {
+  const filters = new FilterParser(options, { tableAlias: 'p' });
 
   const sql = `
-    SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
+    SELECT BUID(p.uuid) AS uuid,
+        CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled  
+        p.is_confirmed, p.is_received, p.is_cancelled
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
-      JOIN user AS u ON u.id = p.user_id 
+      JOIN user AS u ON u.id = p.user_id
   `;
 
-  if (params) {
-    let reference = params.reference;
-    let userId = params.user_id;
-    let supplierUuid = params.supplier_uuid;
+  filters.dateFrom('dateFrom', 'date');
+  filters.dateTo('dateTo', 'date');
 
-    if (reference) {
-      delete params.reference;
-    }
+  const referenceStatement = `CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) = ?`;
+  filters.custom('reference', referenceStatement);
 
-    if (userId) {
-      params[`u.id`] = userId;
-      delete params.user_id;
-    }
+  filters.setOrder('ORDER BY p.date DESC');
 
-    if (supplierUuid) {
-      params[`s.uuid`] = supplierUuid;
-      delete params.supplier_uuid;
-    }
-
-    let qc =
-      params.dateFrom && params.dateTo ?
-      util.queryCondition(sql, params, null, 'DATE(p.date) BETWEEN DATE(?) AND DATE(?)') :
-      util.queryCondition(sql, params);
-
-    if (reference) {
-      qc.query += ' HAVING reference = ? ';
-      qc.conditions.push(reference);
-    }
-
-    return db.exec(qc.query, qc.conditions);
-  }
-
-  return db.exec(sql);
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
 }

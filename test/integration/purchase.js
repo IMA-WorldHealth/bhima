@@ -1,6 +1,7 @@
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
+const SearchTests = require('./purchase.search.js');
 
 /*
  * The /purchases API endpoint
@@ -11,28 +12,28 @@ describe('(/purchases) Purchases', () => {
 
   // purchase order we will add during this test suite
   const purchaseOrder = {
-    cost: 546.7520,
-    date: new Date('2016-02-19'),
-    currency_id: 1,
-    supplier_uuid: '3ac4e83c-65f2-45a1-8357-8b025003d793',
-    project_id: 1,
-    user_id: 2,
-    items: [{
-      inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-      quantity: 200,
-      unit_price: 0.0538,
-      total: 10.7520
+    cost          : 546.7520,
+    date          : new Date('2016-02-19'),
+    currency_id   : 1,
+    supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
+    project_id    : 1,
+    user_id       : 2,
+    items         : [{
+      inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      quantity       : 200,
+      unit_price     : 0.0538,
+      total          : 10.7520,
     }, {
-      inventory_uuid: 'c48a3c4b-c07d-4899-95af-411f7708e296',
-      quantity: 16000,
-      unit_price: 0.0335,
-      total: 536.0000
-    }]
+      inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
+      quantity       : 16000,
+      unit_price     : 0.0335,
+      total          : 536.0000,
+    }],
   };
 
   const responseKeys = [
-    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note', 
-    'is_confirmed', 'is_received', 'is_cancelled'
+    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note',
+    'is_confirmed', 'is_received', 'is_cancelled',
   ];
 
   it('POST /purchases should create a new purchase order', () => {
@@ -93,4 +94,7 @@ describe('(/purchases) Purchases', () => {
       .then(res => helpers.api.errored(res, 404))
       .catch(helpers.handler);
   });
+
+  describe('/purchases/search', SearchTests);
 });
+

@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$translate', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants', 'uiGridGroupingConstants',
   'ModalService', '$state', 'ReceiptModal', 'SessionService', 'LanguageService',
-  'SearchFilterFormatService'
+  'SearchFilterFormatService',
 ];
 
 /**
@@ -15,10 +15,9 @@ PurchaseListController.$inject = [
 function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConstants, uiGridGroupingConstants, Modal, $state, Receipts, Session, Languages, SearchFilterFormat) {
   var vm = this;
 
-  /** gobal variables */
+  /** global variables */
   vm.filters         = { lang: Languages.key };
   vm.formatedFilters = [];
-  vm.enterprise      = Session.enterprise;
   vm.filterEnabled   = false;
   vm.loading         = false;
   vm.gridApi         = {};
@@ -38,67 +37,63 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     }
   ];
 
-  var columnDefs  = [
-    { 
-        field : 'reference', 
-        displayName : 'FORM.LABELS.REFERENCE', 
-        headerCellFilter : 'translate', 
-        aggregationType: uiGridConstants.aggregationTypes.count,
-        aggregationHideLabel: true },
-
-    { 
-        field : 'date', 
-        displayName : 'FORM.LABELS.DATE', 
-        headerCellFilter : 'translate', 
+  var columnDefs  = [{
+    field : 'reference',
+    displayName : 'FORM.LABELS.REFERENCE',
+    headerCellFilter : 'translate',
+    aggregationType: uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel: true
+  }, {
+        field : 'date',
+        displayName : 'FORM.LABELS.DATE',
+        headerCellFilter : 'translate',
         cellFilter: 'date' },
 
-    { 
-        field : 'supplier', 
-        displayName : 'FORM.LABELS.SUPPLIER', 
-        headerCellFilter : 'translate' },
-
-    { 
-        field : 'note', 
-        displayName : 'FORM.LABELS.DESCRIPTION', 
-        headerCellFilter : 'translate' },
-
-    { 
-        cellTemplate: '/partials/purchases/templates/cellCost.tmpl.html',
-        field : 'cost', 
-        displayName : 'FORM.LABELS.COST', 
-        headerCellFilter : 'translate', 
-        footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
-        aggregationType : uiGridConstants.aggregationTypes.sum,
-        aggregationHideLabel: true },
-
-    { 
-        field : 'author', 
-        displayName : 'FORM.LABELS.AUTHOR', 
+    {
+        field : 'supplier',
+        displayName : 'FORM.LABELS.SUPPLIER',
         headerCellFilter : 'translate' },
 
     {
-        cellTemplate: '/partials/purchases/templates/cellStatus.tmpl.html', 
-        field : 'status', 
-        displayName : 'FORM.LABELS.STATUS', 
+        field : 'note',
+        displayName : 'FORM.LABELS.DESCRIPTION',
+        headerCellFilter : 'translate' },
+
+    {
+        cellTemplate: '/partials/purchases/templates/cellCost.tmpl.html',
+        field : 'cost',
+        displayName : 'FORM.LABELS.COST',
+        headerCellFilter : 'translate',
+        footerCellFilter : 'currency:' + Session.enterprise.currency_id,
+        aggregationType : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel: true
+    }, {
+        field : 'author',
+        displayName : 'FORM.LABELS.AUTHOR',
+        headerCellFilter : 'translate' },
+
+    {
+        cellTemplate: '/partials/purchases/templates/cellStatus.tmpl.html',
+        field : 'status',
+        displayName : 'FORM.LABELS.STATUS',
         headerCellFilter : 'translate',
         enableFiltering: false,
         enableSorting: false },
 
-    { 
-        field : 'uuid', 
+    {
+        field : 'uuid',
         cellTemplate : '/partials/purchases/templates/cellDocument.tmpl.html',
-        displayName : 'FORM.LABELS.DOCUMENT', 
+        displayName : 'FORM.LABELS.DOCUMENT',
         headerCellFilter : 'translate',
         enableFiltering: false,
         enableSorting: false },
-
     {
       field : 'action',
       displayName : '',
       cellTemplate: '/partials/purchases/templates/cellEdit.tmpl.html',
       enableFiltering: false,
-      enableSorting: false }
-  ];
+      enableSorting: false
+  }];
 
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -133,12 +128,12 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
       .catch(Notify.handleError);
   }
 
-  // get document 
+  // get document
   function getDocument(uuid) {
     Receipts.purchase(uuid);
   }
 
-  // edit status 
+  // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
     .then(load)
@@ -150,7 +145,7 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
   }
 
-  // clear all filters 
+  // clear all filters
   function clearFilters() {
     SearchFilterFormat.clearFilters(reload);
   }
@@ -171,7 +166,5 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
       .catch(Notify.handleError);
   }
 
-  /** initial setting start */
   load();
-
 }

@@ -273,7 +273,7 @@ function reference(req, res, next) {
       FROM cash JOIN project ON cash.project_id = project.id
     )c WHERE c.reference = ?;`;
 
-  db.one(sql, [ ref ])
+  db.one(sql, [ ref , 'cash'])
     .then(function (payment) {
       // references should be unique - return the first one
       res.status(200).json(payment);
