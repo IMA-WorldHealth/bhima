@@ -18,7 +18,7 @@ const q = require('q');
 const uuid = require('node-uuid');
 
 const db = require('../../lib/db');
-
+const util = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
