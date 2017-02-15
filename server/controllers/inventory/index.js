@@ -203,7 +203,7 @@ function updateInventoryGroups(req, res, next) {
  */
 function listInventoryGroups(req, res, next) {
 
-  groups.list()
+  groups.list(req.query.include_members)
   .then((rows) => {
     res.status(200).json(rows);
   })
