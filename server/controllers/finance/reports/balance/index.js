@@ -12,11 +12,9 @@
  */
 
 
-const _             = require('lodash');
-const moment        = require('moment');
-const db            = require('../../../../lib/db');
+const _ = require('lodash');
+const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const BadRequest    = require('../../../../lib/errors/BadRequest');
 
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
@@ -31,7 +29,7 @@ exports.document = document;
 function document(req, res, next) {
   const params = req.query;
 
-  let session = {};
+  const session = {};
   let report;
   let data;
 
@@ -61,9 +59,7 @@ function document(req, res, next) {
   params.enterpriseId = session.enterprise.id;
 
   balanceReporting(params)
-    .then(balances => {
-      return processAccounts(balances, accounts, totals);
-    })
+    .then(balances => processAccounts(balances, accounts, totals))
     .then(result => {
       data = { accounts: result.accounts, totals: result.totals, session };
       return report.render(data);
@@ -175,7 +171,7 @@ function getSold (item){
  * @param {object} params An object which contains dates range and the account class
  */
 function balanceReporting(params) {
-  let sql, hasClasse, dateRange, queryParameters, 
+  let sql, hasClasse, dateRange, queryParameters,
       query = params,
       data = {};
 
@@ -224,21 +220,21 @@ function balanceReporting(params) {
     return data;
   })
   .then(function (rows) {
-    // Manual mixing 
+    // Manual mixing
     const TITLE_ACCOUNT_TYPE = 4;
-    
-    // fill with zero if all accounts 
-    sql = 
-      `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit 
+
+    // fill with zero if all accounts
+    sql =
+      `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit
        FROM account a WHERE a.type_id <> ${TITLE_ACCOUNT_TYPE} AND a.locked = 0;`;
-    
+
     return query.accountOption === 'all' ? db.exec(sql) : false;
   })
   .then(function (rows) {
 
     if (!rows) { return data; }
-    
-    // Naive manipulation for filling with zero 
+
+    // Naive manipulation for filling with zero
     let accounts = rows;
     let touched  = data.beginning.map(item => {
       return item.id;
