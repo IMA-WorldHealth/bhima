@@ -3,14 +3,14 @@
   <div class="panel-heading" style="display: flex; justify-content: space-between;">
     <span>
       <i class="fa fa-object-group"></i>
-      <spam translate> INVENTORY.LIST_GROUP </spam> ({{ GroupsCtrl.groupList.length }})
+      <span translate> INVENTORY.LIST_GROUP </span> ({{ GroupsCtrl.groupList.length }})
     </span>
 
     <button
       ng-click="GroupsCtrl.addInventoryGroup()"
       class="pull-right btn btn-default btn-sm"
       type="button" data-create-group>
-      <i class="fa fa-plus"></i><spam translate> FORM.LABELS.ADD </spam>
+      <i class="fa fa-plus"></i><span translate> FORM.LABELS.ADD </span>
     </button>
   </div>
 
@@ -36,7 +36,7 @@
         <tr ng-repeat="group in GroupsCtrl.groupList | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
-          <td>{{ group.inventory_counted }} <small style="text-transform: lowercase" translate> INVENTORY.ELEMENT</small>(s)</td>
+          <td>{{ group.inventory_counted }} <small class="text-lowercase" translate> INVENTORY.ELEMENT</small>(s)</td>
           <td class="text-center">{{ group.saleAccountNumber }}</td>
           <td class="text-center">{{ group.stockAccountNumber }}</td>
           <td class="text-center">{{ group.cogsAccountNumber }}</td>
@@ -44,7 +44,7 @@
             <a href
               ng-click="GroupsCtrl.editInventoryGroup(group.uuid)"
               data-edit-group="{{ group.code }}">
-              <i class="fa fa-edit"></i><spam translate> FORM.LABELS.EDIT </spam>
+              <i class="fa fa-edit"></i><span translate> FORM.LABELS.EDIT </span>
             </a>
           </td>
         </tr>
