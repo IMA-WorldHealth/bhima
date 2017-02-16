@@ -65,7 +65,7 @@
           <td class="text-left"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
           {{#each periodStartArray as |period $index|}}
           <td class="text-right">
-            {{currency (look ../periodicOpenningBalance period)}}
+            {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}
           </td>
           {{/each}}
         </tr>
@@ -75,7 +75,7 @@
           <td class="text-left"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
           {{#each periodStartArray as |period $index|}}
           <td class="text-right">
-            {{currency (look ../periodicBalance period)}}
+            {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
           </td>
           {{/each}}
         </tr>
@@ -111,7 +111,7 @@
             <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #ccc;">
-              <strong>{{currency (look ../periodicOpenningBalance period)}}</strong>
+              <strong>{{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}</strong>
             </td>
             {{/each}}
           </tr>
@@ -131,7 +131,7 @@
             <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../periodStartArray as |period $index|}}
             <td class="text-right">
-              {{currency (look ../../incomes period label)}}
+              {{currency (look ../../incomes period label) ../../metadata.enterprise.currency_id}}
             </td>
             {{/each}}
           </tr>
@@ -142,7 +142,7 @@
             <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (look ../totalIncomes period)}}</b>
+              <b>{{currency (look ../totalIncomes period) ../metadata.enterprise.currency_id}}</b>
             </td>
             {{/each}}
           </tr>
@@ -167,7 +167,7 @@
             <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../periodStartArray as |period $index|}}
             <td class="text-right">
-              {{currency (look ../../expenses period label)}}
+              {{currency (look ../../expenses period label) ../../metadata.enterprise.currency_id}}
             </td>
             {{/each}}
           </tr>
@@ -178,7 +178,7 @@
             <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (look ../totalExpenses period)}}</b>
+              <b>{{currency (look ../totalExpenses period) ../metadata.enterprise.currency_id}}</b>
             </td>
             {{/each}}
           </tr>
@@ -193,7 +193,7 @@
             <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'REPORT.MONTHLY_BALANCE'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (substract (look ../totalIncomes period) (look ../totalExpenses period))}}</b>
+              <b>{{currency (substract (look ../totalIncomes period) (look ../totalExpenses period)) ../metadata.enterprise.currency_id}}</b>
             </td>
             {{/each}}
           </tr>
@@ -203,7 +203,7 @@
             <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #ccc;">
-              {{currency (look ../periodicBalance period)}}
+              {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
             </td>
             {{/each}}
           </tr>
