@@ -48,8 +48,7 @@
       <!-- user -->
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.USER</label>
-
-        <ui-select name="user" ng-model="$ctrl.bundle.user_id" theme="bootstrap">
+        <ui-select name="user" ng-model="$ctrl.bundle.user_id">
           <ui-select-match>
             <span>{{$select.selected.display_name}}</span>
           </ui-select-match>
@@ -61,32 +60,33 @@
 
       <!-- status -->
       <div class="form-group">
-          <fieldset>
-            <legend translate>FORM.LABELS.STATUS</legend>
-            <label>
-                <input type="checkbox" name="is_confirmed" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_confirmed">
-                <span translate>PURCHASES.STATUS.CONFIRMED</span>
-            </label><br>
+        <p class="control-label" style="margin-bottom:5px;">
+          <strong translate>FORM.LABELS.STATUS</strong>
+        </p>
 
-            <label>
-                <input type="checkbox" name="is_received" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_received">
-                <span translate>PURCHASES.STATUS.RECEIVED</span>
-            </label><br>
+        <label class="checkbox-inline">
+          <input type="checkbox" name="is_confirmed" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_confirmed">
+          <span translate>PURCHASES.STATUS.CONFIRMED</span>
+        </label>
 
-            <label>
-                <input type="checkbox" name="is_cancelled" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_cancelled">
-                <span translate>PURCHASES.STATUS.CANCELLED</span>
-            </label>
-          </fieldset>
+        <label class="checkbox-inline">
+          <input type="checkbox" name="is_received" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_received">
+          <span translate>PURCHASES.STATUS.RECEIVED</span>
+        </label>
+
+        <label class="checkbox-inline">
+          <input type="checkbox" name="is_cancelled" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_cancelled">
+          <span translate>PURCHASES.STATUS.CANCELLED</span>
+        </label>
       </div>
     </fieldset>
-
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
+
     <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
