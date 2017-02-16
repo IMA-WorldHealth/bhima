@@ -1,5 +1,8 @@
 {{> head title="CASH.TITLE" }}
-
+<head>
+  <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
 <div class="container" style="font-size: 0.9em;">
 
   <header>
@@ -26,6 +29,8 @@
           </span> <br>
           <strong>{{payment.reference}}</strong> <br>
           <small>{{date payment.date}}</small> <br>
+          <small>{{> barcode value=details.barcode}}</small> <br>
+          <br>
         </h3>
       </div>
     </div>
@@ -113,4 +118,5 @@
       <hr/>
     </div>
   </div>
+  <script>JsBarcode('.barcode').init();</script>
 </div>

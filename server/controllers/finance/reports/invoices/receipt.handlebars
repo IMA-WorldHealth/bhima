@@ -1,5 +1,8 @@
 {{> head title="TREE.PATIENT_INVOICE"}}
-
+<head>
+  <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
 <div class="container" style="font-size: 0.9em;">
 
   <header>
@@ -25,6 +28,8 @@
           <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
           <strong>{{reference}}</strong> <br>
           <small>{{date date}}</small> <br>
+          <small>{{> barcode value=barcode}}</small><br>
+          <br>
         </h3>
       </div>
     </div>
@@ -173,4 +178,5 @@
       <hr/>
     </div>
   </div>
+  <script>JsBarcode('.barcode').init();</script>  
 </div>

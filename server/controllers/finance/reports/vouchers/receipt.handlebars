@@ -1,5 +1,8 @@
 {{> head title="VOUCHERS.GLOBAL.TITLE"}}
-
+<head>
+ <meta charset="utf-8" />
+  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+</head>
 <div class="container" style="font-size: 0.9em;">
 
   <header>
@@ -20,9 +23,11 @@
         </h3>
         <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
         <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+        <div>{{> barcode value=details.barcode}}</div>        
       </div>
     </div>
   </header>
+  <br>
 
   <!-- client and user details  -->
   <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
@@ -72,4 +77,5 @@
   <h4>
     <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
   </h4>
+  <script>JsBarcode('.barcode').init();</script>
 </div>
