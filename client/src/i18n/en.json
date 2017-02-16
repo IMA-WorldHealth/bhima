@@ -410,7 +410,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",

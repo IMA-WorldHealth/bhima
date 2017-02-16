@@ -411,7 +411,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",

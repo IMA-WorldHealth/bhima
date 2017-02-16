@@ -3,11 +3,13 @@ angular.module('bhima.controllers')
 
 ModalCreditNoteController.$inject = [
   '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService', 'NotifyService',
-  '$translate'
+  '$translate', '$filter',
 ];
 
-function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $translate) {
+function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $translate, $filter) {
   var vm = this;
+
+  var $currency = $filter('currency');
 
   vm.creditNote = {};
   vm.submit = submit;
@@ -27,11 +29,19 @@ function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $
      // stop submission if the form is invalid
     if (form.$invalid) { return; }
 
-    var creditNoteMessage = $translate.instant('FORM.INFO.CREDIT_NOTE_INVOICE');
-    creditNoteMessage = creditNoteMessage.replace('%FAC%', vm.patientInvoice.reference);
-    vm.creditNote.description += ' -- '.concat(creditNoteMessage) ;
+    var note = angular.copy(vm.creditNote);
 
-    return Vouchers.reverse(vm.creditNote)
+    var creditNoteMessage = $translate.instant('FORM.INFO.CREDIT_NOTE_INVOICE', {
+      invoiceReference : vm.patientInvoice.reference,
+      invoiceAmount    : $currency(vm.patientInvoice.cost, data.invoice.currency_id),
+      description      : vm.creditNote.description,
+      debtorName       : data.invoice.patientName,
+      debtorIdentifier : data.invoice.patientReference,
+    });
+
+    note.description = creditNoteMessage;
+
+    return Vouchers.reverse(note)
       .then(function () {
         return Instance.close(true);
       });
