@@ -105,6 +105,11 @@
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Inclure uniquement les paiements inversees",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclure toutes les paiements inversees",
+      "REVERSED_RECORDS" : "Paiements Inversees"
+    },
     "PAYMENT"         : "Paiement",
     "RECEIPT": {
       "TITLE"   : "Recu",

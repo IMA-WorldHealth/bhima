@@ -76,6 +76,23 @@
         validation-trigger="CashVoucherForm.$submitted">
       </bh-currency-select>
 
+
+      <div class="radio">
+        <p class="control-label" style="margin-bottom:5px;">
+          <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
+        </p>
+        <label>
+          <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.bundle.reversed">
+          <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
+        </label>
+      </div>
+
+      <div class="radio">
+        <label>
+          <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.bundle.reversed">
+          <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
+        </label>
+      </div>
     </fieldset>
   </div>
 

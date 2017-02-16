@@ -105,6 +105,11 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
+      "REVERSED_RECORDS" : "Reversed Records"
+    },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH"       : "Missing Cash",
@@ -1599,8 +1604,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
-    },
-    "REPORT": "Report"
+    }
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
