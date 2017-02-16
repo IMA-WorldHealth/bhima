@@ -1199,10 +1199,10 @@
     "BALANCE"       : "Rapport de la Balance",
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
-      "THIRTY_DAYS" : "Moins de 30 jours",
-      "SIXTY_DAYS"  : "Moins de 60 jours",
-      "NINETY_DAYS" : "Moins de 90 jours",
-      "OVER_NINETY_DAYS" : "Audela de 90 jours"
+      "ZERO_TO_THIRTY_DAYS" : "Moins de 30 jours",
+      "THIRTY_TO_SIXTY_DAYS"  : "30 a 60 jours",
+      "SIXTY_TO_NINETY_DAYS" : "60 a 90 jours",
+      "OVER_NINETY_DAYS" : "Plus de 90 jours"
     },
     "CASH_EXPENSE"     : "Depenses",
     "CASH_INCOME"      : "Recettes",

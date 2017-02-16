@@ -1181,9 +1181,9 @@
     "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
-      "THIRTY_DAYS" : "Less Than 30 Days",
-      "SIXTY_DAYS" : "Less Than 60 Days",
-      "NINETY_DAYS" : "Less Than 90 Days",
+      "ZERO_TO_THIRTY_DAYS" : "Less Than 30 Days",
+      "THIRTY_TO_SIXTY_DAYS" : "30 to 60 Days",
+      "SIXTY_TO_NINETY_DAYS" : "60 to 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
     },
     "CASH_EXPENSE"     : "Expenses",
