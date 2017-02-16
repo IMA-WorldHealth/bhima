@@ -100,6 +100,9 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
 
     // clear the voucher
     vm.Voucher.clear();
+
+    // amount is held outside of the voucher
+    delete vm.amount;
   }
 
   RS.$on('voucher:configure', function (evt, data) {
@@ -119,6 +122,9 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     if (data.credit) {
       creditRow.configure(data.credit);
     }
+
+    // HACK to get this to work.  Why are vouchers so poorly designed?
+    creditRow.document_uuid = data.credit.reference.uuid;
 
     vm.Voucher.validate();
   });

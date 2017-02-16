@@ -124,13 +124,13 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
     data.type_id = bhConstants.transactionType.SUPPORT_INCOME;
 
     data.debit = {
-      debit : data.amount
+      debit : data.amount,
     };
 
     data.credit = {
       account_id : data.group.account_id,
-      reference : data.invoice.uuid,
-      entity : data.patient.debtor_uuid,
+      reference : data.invoice,
+      entity : { uuid : data.patient.debtor_uuid },
       credit: data.amount
     };
 

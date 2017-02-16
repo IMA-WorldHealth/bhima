@@ -3,14 +3,14 @@
   <div class="panel-heading" style="display: flex; justify-content: space-between;">
     <span>
       <i class="fa fa-object-group"></i>
-      {{ 'INVENTORY.LIST_GROUP' | translate }} ({{ GroupsCtrl.groupList.length }})
+      <span translate> INVENTORY.LIST_GROUP </span> ({{ GroupsCtrl.groupList.length }})
     </span>
 
     <button
       ng-click="GroupsCtrl.addInventoryGroup()"
       class="pull-right btn btn-default btn-sm"
       type="button" data-create-group>
-      <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
+      <i class="fa fa-plus"></i><span translate> FORM.LABELS.ADD </span>
     </button>
   </div>
 
@@ -18,17 +18,17 @@
     <table class="table table-condensed">
       <thead>
         <tr>
-          <th>{{ 'FORM.LABELS.CODE' | translate }}</th>
-          <th>{{ 'FORM.LABELS.NAME' | translate }}</th>
-          <th>{{ 'INVENTORY.CONTAINS' | translate }}</th>
-          <th class="text-center" colspan="3">{{ 'FORM.LABELS.ACCOUNT' | translate }}</th>
+          <th translate> FORM.LABELS.CODE </th>
+          <th translate> FORM.LABELS.NAME </th>
+          <th translate> INVENTORY.CONTAINS </th>
+          <th class="text-center" colspan="3" translate> FORM.LABELS.ACCOUNT </th>
           <th>&nbsp;</th>
         </tr>
         <tr>
           <th></th><th></th><th></th>
-          <th class="text-center"><small>{{ 'FORM.LABELS.SALE' | translate }}</small></th>
-          <th class="text-center"><small>{{ 'FORM.LABELS.STOCK' | translate }}</small></th>
-          <th class="text-center"><small>{{ 'FORM.LABELS.CHARGE' | translate }}</small></th>
+          <th class="text-center"><small translate> FORM.LABELS.SALE </small></th>
+          <th class="text-center"><small translate> FORM.LABELS.STOCK </small></th>
+          <th class="text-center"><small translate> FORM.LABELS.CHARGE </small></th>
         </tr>
       </thead>
 
@@ -36,7 +36,7 @@
         <tr ng-repeat="group in GroupsCtrl.groupList | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
-          <td>{{ group.inventory_counted }} <small>{{ 'INVENTORY.ELEMENT' | translate | lowercase }}(s)</small></td>
+          <td>{{ group.inventory_counted }} <small class="text-lowercase" translate> INVENTORY.ELEMENT</small>(s)</td>
           <td class="text-center">{{ group.saleAccountNumber }}</td>
           <td class="text-center">{{ group.stockAccountNumber }}</td>
           <td class="text-center">{{ group.cogsAccountNumber }}</td>
@@ -44,7 +44,7 @@
             <a href
               ng-click="GroupsCtrl.editInventoryGroup(group.uuid)"
               data-edit-group="{{ group.code }}">
-              <i class="fa fa-edit"></i> {{ 'FORM.LABELS.EDIT' | translate }}
+              <i class="fa fa-edit"></i><span translate> FORM.LABELS.EDIT </span>
             </a>
           </td>
         </tr>
