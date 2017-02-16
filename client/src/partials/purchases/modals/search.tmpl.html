@@ -1,0 +1,94 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="purchase-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>PURCHASES.ORDER</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <bh-date-interval
+      validation-trigger="!$ctrl.validDateRange"
+      on-change="$ctrl.validate()"
+      required="true"
+      date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
+    </bh-date-interval>
+
+
+    <fieldset>
+      <legend translate>FORM.LABELS.DETAILS</legend>
+
+      <!-- reference  -->
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+        <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
+      </div>
+
+      <!-- supplier -->
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.SUPPLIER</label>
+
+        <ui-select name="supplier" ng-model="$ctrl.bundle.supplier_uuid" theme="bootstrap">
+          <ui-select-match>
+            <span>{{$select.selected.display_name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="supplier as supplier in $ctrl.suppliers | filter:$select.search">
+            <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <!-- user -->
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.USER</label>
+
+        <ui-select name="user" ng-model="$ctrl.bundle.user_id" theme="bootstrap">
+          <ui-select-match>
+            <span>{{$select.selected.display_name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="user as user in $ctrl.users | filter:$select.search">
+            <span ng-bind-html="user.display_name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <!-- status -->
+      <div class="form-group">
+          <fieldset>
+            <legend translate>FORM.LABELS.STATUS</legend>
+            <label>
+                <input type="checkbox" name="is_confirmed" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_confirmed">
+                <span translate>PURCHASES.STATUS.CONFIRMED</span>
+            </label><br>
+
+            <label>
+                <input type="checkbox" name="is_received" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_received">
+                <span translate>PURCHASES.STATUS.RECEIVED</span>
+            </label><br>
+
+            <label>
+                <input type="checkbox" name="is_cancelled" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_cancelled">
+                <span translate>PURCHASES.STATUS.CANCELLED</span>
+            </label>
+          </fieldset>
+      </div>
+    </fieldset>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
