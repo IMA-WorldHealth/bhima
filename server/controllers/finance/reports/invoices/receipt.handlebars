@@ -98,7 +98,7 @@
               <td class="text-right">
                 ({{this.label}} {{this.billing_value}}%
                 {{translate 'FORM.LABELS.OF'}}
-                {{currency (sum gitems 'transaction_price' 'quantity') ../metadata.enterprise.currency_id}}) =
+                {{currency this.invoice_cost ../metadata.enterprise.currency_id}}) =
               </td>
               <td class="text-right">
                 +{{currency this.value ../metadata.enterprise.currency_id}}

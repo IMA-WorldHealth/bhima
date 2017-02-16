@@ -125,10 +125,12 @@ function lookupInvoice(invoiceUuid) {
     WHERE invoice_uuid = ?`;
 
   let invoiceBillingQuery =
-    `SELECT invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value
+    `SELECT invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value, SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
     FROM invoice_billing_service
     JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
-    WHERE invoice_billing_service.invoice_uuid = ?`;
+    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_billing_service.invoice_uuid
+    WHERE invoice_billing_service.invoice_uuid = ?
+    GROUP BY billing_service.id`;
 
   let invoiceSubsidyQuery = `
     SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
