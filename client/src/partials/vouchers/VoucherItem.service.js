@@ -1,20 +1,19 @@
 angular.module('bhima.services')
   .service('VoucherItemService', VoucherItemService);
 
-VoucherItemService.$inject = [ 'uuid', 'bhConstants', 'util' ];
+VoucherItemService.$inject = ['uuid', 'bhConstants', 'util'];
 
 /**
  * @class VoucherItemService
  *
  * @description
- * This class implements the defaults for a patient invoice item.  The class is
- * instantiated with every row of the Patient Invoice module's grid.  It
+ * This class implements the defaults for a voucher item.  The class is
+ * instantiated with every row of the Complex Voucher module's grid.  It
  * implements the following convenience methods:
  *  1. validate() - sets the `_valid` and `_invalid` flags on the row
- *  2. configure() - sets up the row's inventory item reference
+ *  2. configure() - sets up the row's item reference
  */
 function VoucherItemService(uuid, Constants, util) {
-
   // global variables
   var MIN_DECIMAL_VALUE = Constants.lengths.minDecimalValue;
   var MIN_PRECISION_VALUE = getDecimalPrecision(MIN_DECIMAL_VALUE);
@@ -100,7 +99,6 @@ function VoucherItemService(uuid, Constants, util) {
 
     // if invalid, set the error appropriately
     if (this._invalid) {
-
       if (!initialized) {
         this._error = 'FORM.ERRORS.NOT_INITIALIZED';
       } else if (!hasValidPrecision) {
@@ -127,7 +125,6 @@ function VoucherItemService(uuid, Constants, util) {
    * the ui-select.
    */
   VoucherItem.prototype.configure = function configure(item) {
-
     if (item.account_id) {
       this.account_id = item.account_id;
     }
@@ -146,8 +143,8 @@ function VoucherItemService(uuid, Constants, util) {
       this.entity = item.entity;
     }
 
-    if (angular.isDefined(item.reference)) {
-      this.reference = item.reference;
+    if (angular.isDefined(item.document)) {
+      this.document = item.document;
     }
   };
 

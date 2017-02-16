@@ -1566,6 +1566,9 @@
       "VALID_TOTALS"          : "Transactions are valid (balanced transaction)",
       "VOUCHER"               : "Voucher"
     },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
+    },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Cashflow Option",
       "CONVENTION_INVOICES" : "Convention - Invoices payment",

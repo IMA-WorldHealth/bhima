@@ -1589,6 +1589,9 @@
       "VALID_TOTALS"          : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"               : "Bordereau de Transfert"
     },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
+    },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Option pour cashflow",
       "CONVENTION_INVOICES" : "Convention - Paiement factures",

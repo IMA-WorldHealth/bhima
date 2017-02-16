@@ -30,7 +30,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
 
   // strips internal keys from object
   function stripInternalObjectKeys(object) {
-
     var o = {};
 
     angular.forEach(object, function (value, key) {
@@ -57,8 +56,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
         escapedItem.entity_uuid = escapedItem.entity.uuid;
       }
 
-      if (escapedItem.reference) {
-        escapedItem.document_uuid = escapedItem.reference.uuid;
+      if (escapedItem.document) {
+        escapedItem.document_uuid = escapedItem.document.uuid;
       }
 
       return escapedItem;

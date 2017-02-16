@@ -110,6 +110,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     // configure the basics of the transaction type.
     vm.Voucher.details.description = data.description;
     vm.Voucher.details.type_id = data.type_id;
+
     vm.amount = data.amount;
 
     var debitRow = vm.Voucher.store.data[0];
@@ -122,9 +123,6 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     if (data.credit) {
       creditRow.configure(data.credit);
     }
-
-    // HACK to get this to work.  Why are vouchers so poorly designed?
-    creditRow.document_uuid = data.credit.reference.uuid;
 
     vm.Voucher.validate();
   });
