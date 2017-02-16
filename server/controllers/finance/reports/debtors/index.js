@@ -77,10 +77,10 @@ function queryContext(queryParams) {
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(?, gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
@@ -93,10 +93,10 @@ function queryContext(queryParams) {
   // aggregates the data above as totals into columns of 30, 60, 90, and >90
   const aggregateSql = `
     SELECT
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(?, gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(?, gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
