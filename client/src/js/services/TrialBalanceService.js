@@ -135,13 +135,12 @@ function TrialBalanceService(util, $http, $translate) {
    *
    * This function is called only when every test are passed without a fatal error
    **/
-  function postToGeneralLedger (records) {
-
+  function postToGeneralLedger(records) {
     var transactions = getTransactionList(records);
     var url = baseUrl.concat('post_transactions/');
 
     /** posting a list of transactions to the server to be stored to the general ledger **/
-    return $http.post(url, {transactions : transactions});
+    return $http.post(url, { transactions : transactions });
   }
 
   /**
