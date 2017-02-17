@@ -10,7 +10,7 @@
 
 const chaiPromise = require('chai-as-promised');
 
-const PATH_REGEXP = /^#!|^#|^!/;
+const PATH_REGEXP = /^#!|^#|^!/g;
 
 // gets a random number within the range(0, n)
 exports.random = function random(n) {
@@ -33,7 +33,7 @@ exports.configure = function configure(chai) {
 exports.getCurrentPath = function getCurrentPath() {
   return browser.getCurrentUrl()
     .then((url) => {
-      var partial = url.split('#')[1];
+      var partial = url.split('#!')[1];
       partial.replace(PATH_REGEXP, '');
       return `#!${partial}`;
     });

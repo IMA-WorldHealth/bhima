@@ -7,6 +7,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
+  'ui.router.state.events',
 ]);
 
 function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
@@ -245,7 +246,8 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
   // trigger a $state.go() to the login state, it will not be stopped - the
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
-  $rootScope.$on('$stateChangeStart', (event, next) => {
+  // TODO - migrate this to $transitions.on()
+  $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
 
@@ -313,7 +315,7 @@ function constantConfig() {
       TITLE : 4,
     },
     purchase : {
-      GRID_HEIGHT : 200,
+      GRID_HEIGHT: 200,
     },
     settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',

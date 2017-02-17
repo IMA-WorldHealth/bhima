@@ -8,7 +8,6 @@ function ReceiptModalPage(){
 
     var closeButton = element(by.id('receipt_modal_close'));
 
-
     function close() {
         closeButton.click();
     }

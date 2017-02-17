@@ -1,18 +1,16 @@
 /* global element, by, browser */
 
 const chai = require('chai');
-
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const JournalCorePage = require('./journal.page.js');
 const JournalConfiguration = require('./journal.config.js');
 const TrialBalanceTest = require('./trial_balance/trialBalance.config.js');
 
-describe('Posting Journal Core', function () {
-  'use strict';
-
-  const path = '#/journal';
+describe('Posting Journal Core', () => {
+  const path = '#!/journal';
   const initialTransactionRows = 14;
   const journal = new JournalCorePage();
 
@@ -20,7 +18,7 @@ describe('Posting Journal Core', function () {
   // to the correct page.
   before(() => helpers.navigate(path));
 
-  it('loads initial transactions from the database', function () {
+  it('loads initial transactions from the database', () => {
     journal.expectRowCountAbove(initialTransactionRows);
   });
 

@@ -1,20 +1,20 @@
 /* global element, by, browser */
+
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Cashboxes', function () {
-
-  before(() => helpers.navigate('#/cashboxes'));
+describe('Cashboxes', () => {
+  before(() => helpers.navigate('#!/cashboxes'));
 
   const cashbox = {
-    label: 'Test Principal Cashbox',
-    type: 1,
-    project: 'Test Project A'
+    label   : 'Test Principal Cashbox',
+    type    : 1,
+    project : 'Test Project A',
   };
 
   // clicks the 'update' button on the cashbox at $index n in the table
@@ -24,8 +24,7 @@ describe('Cashboxes', function () {
       .click();
   }
 
-  it('creates a new cashbox', function () {
-
+  it('creates a new cashbox', () => {
     // switch to the create form
     FU.buttons.create();
 
@@ -40,8 +39,7 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('successfully edits a cashbox', function () {
-
+  it('successfully edits a cashbox', () => {
     // navigate to the update form for the second item
     update(1);
 
@@ -54,13 +52,12 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('allows the user to change currency accounts', function () {
-
+  it('allows the user to change currency accounts', () => {
     // navigate to the update form for the second item
     update(2);
 
     // get the "FC" (congolese francs) currency
-    var FC = element(by.css('[data-currency-id="1"]'));
+    const FC = element(by.css('[data-currency-id="1"]'));
     FC.click();
 
     // confirm that the modal appears
@@ -78,14 +75,13 @@ describe('Cashboxes', function () {
   });
 
   // forget to change the gain exchange account id
-  it('rejects a missing account on the currency modal', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('rejects a missing account on the currency modal', () => {
+    helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
     update(3);
 
     // get a locator for the currencies
-    var USD = element(by.css('[data-currency-id="2"]'));
+    const USD = element(by.css('[data-currency-id="2"]'));
     USD.click();
 
     // confirm that the modal appears
@@ -111,9 +107,8 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('allows you to delete a cashbox', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('allows you to delete a cashbox', () => {
+    helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
     update(0);
 
@@ -126,9 +121,8 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('performs form validation', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('performs form validation', () => {
+    helpers.navigate('#!/cashboxes');
     // switch to the create form
     FU.buttons.create();
 

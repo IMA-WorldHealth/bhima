@@ -9,7 +9,7 @@ helpers.configure(chai);
 describe.skip('Depots Management', function () {
 
   // navigate to the page
-  before(() => helpers.navigate('#/depots'));
+  before(() => helpers.navigate('#!/depots'));
 
   const depot = {
     text : 'E2E_new_depot',

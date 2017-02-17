@@ -10,7 +10,7 @@ const components = require('../shared/components');
 
 describe('Enterprises', function () {
 
-  const path = '#/enterprises';
+  const path = '#!/enterprises';
   const enterpriseId = 1;
 
   // enterprise
