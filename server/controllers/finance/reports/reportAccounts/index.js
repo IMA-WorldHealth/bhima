@@ -41,13 +41,8 @@ function document(req, res, next) {
   }
 
   return queryReportAccount(params.account_id, params.sourceId)
-    .then((accounts) => {
-      _.extend(bundle, { accounts, title });
-
-      return queryAggrega(params.account_id, params.sourceId);
-    })
-    .then((sum) => {
-      _.extend(bundle, { sum });
+    .then((result) => {
+      _.extend(bundle, { accounts: result.accounts, sum: result.sum, title });
 
       return report.render(bundle);
     })
@@ -56,30 +51,6 @@ function document(req, res, next) {
     })
     .catch(next)
     .done();
-}
-
-/**
- * @function queryAggrega
- * this function helps to calculate sums
- */
-function queryAggrega(accountId, source) {
-  const sourceId = parseInt(source, 10);
-
-  // get the table name
-  const tableName = sourceMap[sourceId];
-
-  const sql = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
-    FROM (
-      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
-        debit_equiv as debit, credit_equiv as credit
-      FROM ${tableName}
-      WHERE account_id = ?
-      GROUP BY trans_id 
-      ORDER BY trans_date ASC
-    ) AS t 
-    `;
-
-  return db.one(sql, [accountId, accountId]);
 }
 
 
@@ -101,7 +72,28 @@ function queryReportAccount(accountId, source) {
       GROUP BY trans_id 
       ORDER BY trans_date ASC`;
 
-  return db.exec(sql, [accountId, accountId]);
+  const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
+    FROM (
+      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+        debit_equiv as debit, credit_equiv as credit
+      FROM ${tableName}
+      WHERE account_id = ?
+      GROUP BY trans_id 
+      ORDER BY trans_date ASC
+    ) AS t 
+    `;
+
+  const bundle = {};
+
+  return db.exec(sql, [accountId, accountId])
+    .then((accounts) => {
+      _.extend(bundle, { accounts });
+      return db.one(sqlAggrega, [accountId, accountId]);
+    })
+    .then((sum) => {
+      _.extend(bundle, { sum });
+      return bundle;
+    });
 }
 
 exports.document = document;
