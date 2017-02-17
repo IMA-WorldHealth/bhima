@@ -1,9 +1,9 @@
 angular.module('bhima.components')
 .component('bhGridLoadingIndicator', {
-  bindings: {
-    loadingState: '<',
-    emptyState: '<',
-    errorState: '<'
+  bindings : {
+    loadingState : '<',
+    emptyState   : '<',
+    errorState   : '<',
   },
-  templateUrl  : 'partials/templates/bhGridLoadingIndicator.tmpl.html',
+  templateUrl : 'partials/templates/bhGridLoadingIndicator.tmpl.html',
 });

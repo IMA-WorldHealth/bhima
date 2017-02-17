@@ -175,7 +175,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
     var url = '/reports/finance/journal';
     var params = { renderer: 'pdf', lang: Languages.key, uuids: uuids };
-    Modal.openReports({ url: url, params: params });
+    Modal.openReports({ url: url, params: params })
+      .catch(angular.noop);
   };
 
   function errorHandler(error) {
@@ -216,7 +217,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         toggleLoadingIndicator();
 
         return load(options);
-      });
+      })
+      .catch(angular.noop);
   };
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.

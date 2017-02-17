@@ -205,9 +205,9 @@ function localeConfig(tmhDynamicLocaleProvider) {
 
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
-  var loginStateRegexp = /#\/login$/;
-  var rootStateRegexp = /#\/$|\/$|#$/;
 
+  var loginStateRegexp = /#!\/login$/;
+  var rootStateRegexp = /#!\/$|\/$|#!$/;
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
@@ -411,8 +411,8 @@ function compileConfig($compileProvider) {
     $compileProvider.debugInfoEnabled(false);
 
     // available in angular:1.6.x
-    // $compileProvider.commentDirectivesEnabled(false);
-    // $compileProvider.cssClassDirectivesEnabled(false);
+    $compileProvider.commentDirectivesEnabled(false);
+    $compileProvider.cssClassDirectivesEnabled(false);
   }
 }
 
@@ -421,6 +421,11 @@ function compileConfig($compileProvider) {
  */
 function uiSelectConfig(uiSelectConfig) {
   uiSelectConfig.theme = 'bootstrap';
+}
+
+// TODO - remove this
+function qConfig($qProvider) {
+  $qProvider.errorOnUnhandledRejections(false);
 }
 
 bhima.constant('bhConstants', constantConfig());
@@ -434,6 +439,7 @@ bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 bhima.config(['$compileProvider', compileConfig]);
+bhima.config(['$qProvider', qConfig]);
 
 // run the application
 bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);

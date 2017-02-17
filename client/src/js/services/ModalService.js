@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('ModalService', ModalService);
 
-ModalService.$inject = [ '$uibModal' ];
+ModalService.$inject = ['$uibModal'];
 
 /**
  * Modal Service
@@ -27,9 +27,9 @@ function ModalService(Modal) {
   var service = this;
 
   var modalParameters = {
-    size : 'md',
-    backdrop : 'static',
-    animation : false
+    size      : 'md',
+    backdrop  : 'static',
+    animation : false,
   };
 
   service.alert = alert;
@@ -68,10 +68,10 @@ function ModalService(Modal) {
   // search cash payment
   service.openSearchCashPayment = openSearchCashPayment;
 
-  // purchase order status 
+  // purchase order status
   service.openPurchaseOrderStatus = openPurchaseOrderStatus;
 
-  // search purchase order 
+  // search purchase order
   service.openSearchPurchaseOrder = openSearchPurchaseOrder;
 
   /**

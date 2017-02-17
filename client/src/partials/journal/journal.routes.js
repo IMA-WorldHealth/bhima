@@ -1,4 +1,3 @@
-
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
 

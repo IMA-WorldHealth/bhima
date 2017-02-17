@@ -1,14 +1,14 @@
 angular.module('bhima.components')
   .component('bhCurrencySelect', {
-    controller : bhCurrencySelect,
+    controller  : bhCurrencySelect,
     templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
-    bindings : {
-      currencyId: '=',
-      validationTrigger: '<',
-      disableIds: '<?',
-      onChange: '&?',
-      cashboxId: '<?'
-    }
+    bindings    : {
+      currencyId        : '=',
+      validationTrigger : '<',
+      disableIds        : '<?',
+      onChange          : '&?',
+      cashboxId         : '<?',
+    },
   });
 
 bhCurrencySelect.$inject = ['CurrencyService'];
@@ -65,17 +65,10 @@ function bhCurrencySelect(Currencies) {
   var $ctrl = this;
   var isArray = angular.isArray;
 
-  $ctrl.valid = true;
-
-  // default to noop() if an onChange() method was not passed in
-  $ctrl.onChange = $ctrl.onChange || angular.noop;
-
   $ctrl.$onInit = function onInit() {
-
     // load all the available currencies
     Currencies.read()
       .then(function (currencies) {
-
         // cache a label for faster view rendering
         currencies.forEach(function (currency) {
           currency.label = Currencies.format(currency.id);
@@ -83,6 +76,11 @@ function bhCurrencySelect(Currencies) {
 
         $ctrl.currencies = currencies;
       });
+
+    $ctrl.valid = true;
+
+    // default to noop() if an onChange() method was not passed in
+    $ctrl.onChange = $ctrl.onChange || angular.noop;
   };
 
   $ctrl.$onChanges = function onChanges(changes) {

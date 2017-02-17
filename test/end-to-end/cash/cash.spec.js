@@ -13,7 +13,7 @@ const FU = require('../shared/FormUtils');
 describe('Cash Payments', function () {
   'use strict';
 
-  const path = '#/cash';
+  const path = '#!/cash';
 
   const cashboxB = {
     id: 2,

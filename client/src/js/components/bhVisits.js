@@ -1,12 +1,11 @@
 angular.module('bhima.components')
-.component('bhVisits', {
-  bindings : {
-    patientUuid : '<'
-  },
-  templateUrl : 'partials/templates/bhVisits.tmpl.html',
-  controller : VisitsController,
-  controllerAs : '$ctrl'
-});
+  .component('bhVisits', {
+    bindings : {
+      patientUuid : '<',
+    },
+    templateUrl : 'partials/templates/bhVisits.tmpl.html',
+    controller  : VisitsController,
+  });
 
 VisitsController.$inject = ['PatientService', 'NotifyService', 'moment'];
 
@@ -17,17 +16,18 @@ function VisitsController(Patients, Notify, Moment) {
   // Currently not limited on client to give accurate representation of total
   // number of visits
   var DEFAULT_VISIT_LIMIT = 3;
-  vm.viewLimit = DEFAULT_VISIT_LIMIT;
 
-  vm.loaded = false;
-  vm.loading = true;
+  this.$onInit = function $onInit() {
+    vm.viewLimit = DEFAULT_VISIT_LIMIT;
+    vm.loaded = false;
+    vm.loading = true;
+    vm.visiting = false;
 
-  vm.visiting = false;
+    refreshVisitFeed();
+  };
 
   // expose methods to the view
   vm.admit = admit;
-
-  refreshVisitFeed();
 
   function refreshVisitFeed() {
     vm.loading = true;
@@ -52,7 +52,6 @@ function VisitsController(Patients, Notify, Moment) {
   function calculateDays(visit) {
     var startDate = new Moment(visit.start_date);
     var endDate = new Moment(visit.end_date);
-
     visit.totalDays = endDate.diff(startDate, 'days');
   }
 
