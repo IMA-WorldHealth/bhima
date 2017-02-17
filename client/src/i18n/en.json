@@ -449,6 +449,7 @@
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
       "ACCOUNT"                : "Account",
+      "ACCOUNT_EXTRACT"        : "Account Details",
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
@@ -1320,6 +1321,7 @@
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
+      "CREDITOR_SOLD"      : "Creditor Sold",
       "CREATED_BY"         : "Created by",
       "CURRENCY"           : "Currency",
       "DATA_SOURCE"        : "Data Source",
@@ -1328,6 +1330,7 @@
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debtor",
       "DEBTOR_GROUPS"      : "Debtor Groups",
+      "DEBTOR_SOLD"        : "Debtor Sold",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",

@@ -16,170 +16,170 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   $stateProvider
   .state('index', {
-    abstract : true,
-    url : '/',
-    controller : 'HomeController as HomeCtrl',
+    abstract    : true,
+    url         : '/',
+    controller  : 'HomeController as HomeCtrl',
     templateUrl : 'partials/home/home.html'
   })
   .state('index.details', {
-    url : '',
+    url   : '',
     views : {
       'debtors@index' : {
         templateUrl : 'partials/home/units/debtors.html',
-        controller : 'DashboardDebtorController as DebtorCtrl'
+        controller  : 'DashboardDebtorController as DebtorCtrl'
       },
       'invoices@index' : {
         templateUrl : 'partials/home/units/invoices.html',
-        controller : 'DashboardInvoiceController as InvoiceCtrl'
+        controller  : 'DashboardInvoiceController as InvoiceCtrl'
       },
       'patients@index' : {
         templateUrl : 'partials/home/units/patients.html',
-        controller : 'DashboardPatientController as PatientCtrl'
+        controller  : 'DashboardPatientController as PatientCtrl'
       }
     }
   })
   .state('exchange', {
-    abstract : true,
-    url : '/exchange',
-    templateUrl: 'partials/application/exchange.html'
+    abstract    : true,
+    url         : '/exchange',
+    templateUrl : 'partials/application/exchange.html'
   })
   .state('exchange.index', {
-    url : '',
+    url   : '',
     views : {
       'exchange@exchange' : {
         templateUrl : 'partials/enterprises/exchange/exchange.html',
-        controller : 'ExchangeController as ExchangeCtrl'
+        controller  : 'ExchangeController as ExchangeCtrl'
       }
     }
   })
   .state('login', {
-    url : '/login',
-    controller : 'LoginController as LoginCtrl',
+    url         : '/login',
+    controller  : 'LoginController as LoginCtrl',
     templateUrl : 'partials/login/login.html'
   })
   .state('settings', {
-    url : '/settings?previous',
-    controller: 'settings as SettingsCtrl',
-    templateUrl: 'partials/settings/settings.html'
+    url         : '/settings?previous',
+    controller  : 'settings as SettingsCtrl',
+    templateUrl : 'partials/settings/settings.html'
   })
   .state('services', {
-    url : '/services',
-    controller : 'ServicesController as ServicesCtrl',
+    url         : '/services',
+    controller  : 'ServicesController as ServicesCtrl',
     templateUrl : 'partials/services/services.html'
   })
 
   .state('invoiceRegistry', {
-    url  : '/invoices',
-    controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
-    templateUrl: '/partials/patient_invoice/registry/registry.html',
-    params : {
+    url         : '/invoices',
+    controller  : 'InvoiceRegistryController as InvoiceRegistryCtrl',
+    templateUrl : '/partials/patient_invoice/registry/registry.html',
+    params      : {
       filters : null,
       display : null
     }     
   })
   .state('configBilan', {
-    url: '/section_bilan',
-    controller : 'sectionBilanController as sectionBilanCtrl',
+    url         : '/section_bilan',
+    controller  : 'sectionBilanController as sectionBilanCtrl',
     templateUrl : 'partials/section_bilan/section_bilan.html'
   })
   .state('configResultat', {
-    url : '/section_resultat',
-    controller : 'sectionResultatController as sectionResultatCtrl',
+    url         : '/section_resultat',
+    controller  : 'sectionResultatController as sectionResultatCtrl',
     templateUrl : 'partials/section_resultat/section_resultat.html'
   })
   .state('subsidies', {
-    url : '/subsidies',
-    controller : 'SubsidyController as SubsidyCtrl',
+    url         : '/subsidies',
+    controller  : 'SubsidyController as SubsidyCtrl',
     templateUrl : 'partials/subsidies/subsidies.html'
   })
 
   /* admin : depot management */
   .state('depots', {
-    url : '/depots',
-    controller : 'DepotManagementController as DepotCtrl',
+    url         : '/depots',
+    controller  : 'DepotManagementController as DepotCtrl',
     templateUrl : 'partials/depots/depots.html'
   })
 
   /* employees routes */
   .state('employees', {
-    url : '/employees',
-    controller : 'EmployeeController as EmployeeCtrl',
+    url         : '/employees',
+    controller  : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employees/employees.html'
   })
   /* location routes */
 
   .state('locations', {
-    url : '/locations',
-    controller : 'LocationController as LocationCtrl',
-    templateUrl: 'partials/locations/locations.html'
+    url         : '/locations',
+    controller  : 'LocationController as LocationCtrl',
+    templateUrl : 'partials/locations/locations.html'
   })
   .state('locationsVillage', {
-    url : '/locations/village',
-    controller : 'VillageController as VillageCtrl',
-    templateUrl: 'partials/locations/village/village.html'
+    url         : '/locations/village',
+    controller  : 'VillageController as VillageCtrl',
+    templateUrl : 'partials/locations/village/village.html'
   })
   .state('locationsSector', {
-    url : '/locations/sector',
-    controller : 'SectorController as SectorCtrl',
-    templateUrl: 'partials/locations/sector/sector.html'
+    url         : '/locations/sector',
+    controller  : 'SectorController as SectorCtrl',
+    templateUrl : 'partials/locations/sector/sector.html'
   })
   .state('locationsProvince', {
-    url : '/locations/province',
-    controller : 'ProvinceController as ProvinceCtrl',
-    templateUrl: 'partials/locations/province/province.html'
+    url         : '/locations/province',
+    controller  : 'ProvinceController as ProvinceCtrl',
+    templateUrl : 'partials/locations/province/province.html'
   })
   .state('locationsCountry', {
-    url : '/locations/country',
-    controller : 'CountryController as CountryCtrl',
-    templateUrl: 'partials/locations/country/country.html'
+    url         : '/locations/country',
+    controller  : 'CountryController as CountryCtrl',
+    templateUrl : 'partials/locations/country/country.html'
   })
 
   /** General ledger routes**/
   .state('generalLedger', {
-    url : '/general_ledger',
-    controller : 'GeneralLedgerController as GeneralLedgerCtrl',
-    templateUrl : 'partials/general_ledger/general_ledger.html'
+    url         : '/general_ledger',
+    controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger_accounts.html',
   })
 
   /* references routes */
 
   .state('references', {
-    url : '/references',
-    controller: 'ReferenceController as ReferenceCtrl',
-    templateUrl: 'partials/references/references.html'
+    url         : '/references',
+    controller  : 'ReferenceController as ReferenceCtrl',
+    templateUrl : 'partials/references/references.html'
   })
 
   .state('referenceGroups', {
-    url : '/references/groups',
-    controller: 'ReferenceGroupController as ReferenceGroupCtrl',
-    templateUrl: 'partials/references/groups/groups.html'
+    url         : '/references/groups',
+    controller  : 'ReferenceGroupController as ReferenceGroupCtrl',
+    templateUrl : 'partials/references/groups/groups.html'
   })
 
   .state('prices', {
-    url : '/prices',
-    controller: 'PriceListController as PriceListCtrl',
-    templateUrl: 'partials/price_list/pricelist.html'
+    url         : '/prices',
+    controller  : 'PriceListController as PriceListCtrl',
+    templateUrl : 'partials/price_list/pricelist.html'
   })
 
   /* creditor routes */
   .state('suppliers', {
-    url : '/suppliers',
-    controller: 'SupplierController as SupplierCtrl',
-    templateUrl: '/partials/suppliers/suppliers.html'
+    url         : '/suppliers',
+    controller  : 'SupplierController as SupplierCtrl',
+    templateUrl : '/partials/suppliers/suppliers.html'
   })
 
   /* purchase routes */
   .state('purchasesCreate', {
-    url : '/purchases/create',
-    controller : 'PurchaseOrderController as PurchaseCtrl',
+    url         : '/purchases/create',
+    controller  : 'PurchaseOrderController as PurchaseCtrl',
     templateUrl : 'partials/purchases/create/create.html'
   })
 
   /* transaction type */
   .state('transactionType', {
-    url: '/admin/transaction_type',
-    controller: 'TransactionTypeController as TypeCtrl',
-    templateUrl: 'partials/admin/transaction_type/transaction_type.html'
+    url         : '/admin/transaction_type',
+    controller  : 'TransactionTypeController as TypeCtrl',
+    templateUrl : 'partials/admin/transaction_type/transaction_type.html'
   })
 
   .state('403', {
@@ -188,7 +188,7 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   // this is a catch-all state.  It matches all URLs and preserves the URL in the top bar.
   .state('404', {
-    url: '{path:.*}',
+    url         : '{path:.*}',
     templateUrl : 'partials/errors/404.html'
   });
 }
@@ -196,8 +196,8 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/
   $translateProvider.useStaticFilesLoader({
-    prefix: '/i18n/',
-    suffix: '.json'
+    prefix : '/i18n/',
+    suffix : '.json'
   });
 
   $translateProvider.useSanitizeValueStrategy('escape');
@@ -319,41 +319,41 @@ function localStorageConfig($localStorageProvider) {
 function constantConfig() {
   return {
     accounts : {
-      ROOT : 0,
+      ROOT  : 0,
       TITLE : 4
     },
     purchase : {
-      GRID_HEIGHT: 200
+      GRID_HEIGHT : 200
     },
-    settings: {
+    settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',
     },
     dates : {
       minDOB : new Date('1900-01-01'),
     },
     yearOptions : {
-      format : 'yyyy',
+      format         : 'yyyy',
       datepickerMode : 'year',
-      minMode : 'year'
+      minMode        : 'year'
     },
     dayOptions : {
-      format : 'dd/MM/yyyy',
+      format         : 'dd/MM/yyyy',
       datepickerMode : 'day',
-      minMode : 'day'
+      minMode        : 'day'
     },    
     lengths : {
-      maxTextLength : 1000,
-      minDecimalValue: 0.0001
+      maxTextLength   : 1000,
+      minDecimalValue : 0.0001
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG : '_error',
-      FILTER_BAR_HEIGHT : { height : 'calc(100vh - 105px)' }
+      ROW_ERROR_FLAG     : '_error',
+      FILTER_BAR_HEIGHT  : { height: 'calc(100vh - 105px)' }
     },
     transactions : {
-      ROW_EDIT_FLAG : '_edit',
+      ROW_EDIT_FLAG      : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_INVALID_FLAG : '_invalid'
+      ROW_INVALID_FLAG   : '_invalid'
     },
     barcodes : {
       LENGTH : 10
@@ -373,11 +373,11 @@ function constantConfig() {
       EXPENSE            : 'expense'
     },
     reports : {
-      AGED_DEBTOR : 'AGED_DEBTOR',
-      CASHFLOW : 'CASHFLOW',
+      AGED_DEBTOR    : 'AGED_DEBTOR',
+      CASHFLOW       : 'CASHFLOW',
       INCOME_EXPENSE : 'INCOME_EXPENSE'
     },
-    precision: {
+    precision : {
       MAX_DECIMAL_PRECISION : 4
     }
   };
