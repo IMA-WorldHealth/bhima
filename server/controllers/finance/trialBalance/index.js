@@ -1,4 +1,3 @@
-
 /**
  * The trial balance provides a description of what the general
  * ledger would look like after posting data from the
@@ -6,26 +5,23 @@
  * It also submit errors back to the client.
  */
 const q = require('q');
-const uuid = require('node-uuid');
 const _ = require('lodash');
 const db = require('../../../lib/db');
-const util = require('../../../lib/util');
-const NotFound   = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
 // creates an error report for a given code
 function createErrorReport(code, isFatal, rows) {
   return {
-    code : code,
-    fatal : isFatal,
-    transactions : rows.map((row) => row.trans_id),
-    affectedRows : _.sumBy(rows, 'count')
+    code,
+    fatal        : isFatal,
+    transactions : rows.map(row => row.trans_id),
+    affectedRows : _.sumBy(rows, 'count'),
   };
 }
 
 // make sure that a entity_uuid exists for each deb_cred_type
 function checkDescriptionExists(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.description FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) GROUP BY trans_id HAVING pj.description IS NULL;`;
 
@@ -41,7 +37,7 @@ function checkDescriptionExists(transactions) {
 
 // make sure that the record Id exist in each line of the transaction
 function checkRecordUuidExists(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.record_uuid, pj.trans_id FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) GROUP BY pj.trans_id HAVING pj.record_uuid IS NULL;`;
 
@@ -57,7 +53,7 @@ function checkRecordUuidExists(transactions) {
 
 // make sure dates are in their correct period
 function checkDateInPeriod(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.start_date, p.end_date
     FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
     WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND
@@ -76,7 +72,7 @@ function checkDateInPeriod(transactions) {
 
 // make sure fiscal years and periods exist for all transactions
 function checkPeriodAndFiscalYearExists(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL)
@@ -94,7 +90,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
 
 // make sure there are no missing accounts in the transactions
 function checkMissingAccounts(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj LEFT JOIN account ON
       pj.account_id = account.id
@@ -113,7 +109,7 @@ function checkMissingAccounts(transactions) {
 
 // Ensure no accounts are locked in the transactions
 function checkAccountsLocked(transactions) {
-  let sql =
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id
     FROM posting_journal AS pj LEFT JOIN account
       ON pj.account_id = account.id
@@ -132,7 +128,7 @@ function checkAccountsLocked(transactions) {
 
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
-  let sql = `
+  const sql = `
     SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
     FROM posting_journal AS pj
     WHERE pj.trans_id IN (?)
@@ -149,9 +145,9 @@ function checkTransactionsBalanced(transactions) {
     });
 }
 
-//Check if there is no transaction with one line to avoid single line with ero in debit and credit which is valuable
-function checkSingleLineTransaction (transactions){
-  let sql =
+// Check if there is no transaction with one line to avoid single line with ero in debit and credit which is valuable
+function checkSingleLineTransaction(transactions) {
+  const sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id FROM posting_journal AS pj
     WHERE pj.trans_id IN (?)
     GROUP BY trans_id HAVING count = 1;`;
@@ -167,10 +163,10 @@ function checkSingleLineTransaction (transactions){
 }
 
 exports.getDataPerAccount = function (req, res, next) {
-  let transactions = req.body.transactions;
+  const transactions = req.body.transactions;
 
   // @FIXME This could use a lot of comments
-  let requestString =
+  const requestString =
     `SELECT pt.debit_equiv, pt.credit_equiv,
       pt.account_id, pt.balance_before, account.number AS account_number,
       (pt.balance_before + (pt.debit_equiv - pt.credit_equiv)) as balance_final
@@ -222,7 +218,7 @@ exports.getDataPerAccount = function (req, res, next) {
  *   }]
  **/
 exports.checkTransactions = function (req, res, next) {
-  let transactions =  req.body.transactions;
+  const transactions =  req.body.transactions;
 
   if (!transactions) {
     return next(new BadRequest('The transaction list is null or undefined'));
@@ -235,10 +231,10 @@ exports.checkTransactions = function (req, res, next) {
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkRecordUuidExists(transactions), checkDescriptionExists(transactions)
+    checkRecordUuidExists(transactions), checkDescriptionExists(transactions),
   ])
-  .then(function (errorReports){
-    let errors = errorReports.filter(function (errorReport) {
+  .then(function (errorReports) {
+    const errors = errorReports.filter(function (errorReport) {
       return errorReport;
     });
     res.status(201).json(errors);
@@ -253,15 +249,15 @@ exports.checkTransactions = function (req, res, next) {
  * It posts data to the general ledger.
  **/
 exports.postToGeneralLedger = function (req, res, next) {
-  let transaction =  db.transaction();
-  let transactions = req.body.transactions;
+  const transaction = db.transaction();
+  const transactions = req.body.transactions;
 
   if (!transactions || !Array.isArray(transactions)) {
     return next(new BadRequest('The transaction list is null or undefined otherwise The query is bad formatted'));
   }
 
-  //Just a workaround because mysql does not have a type for array
-  let transactionString =
+  // Just a workaround because mysql does not have a type for array
+  const transactionString =
     transactions.map((trans_id) => `"${trans_id}"`).join(',');
 
   transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
