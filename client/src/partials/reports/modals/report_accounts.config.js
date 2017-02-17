@@ -55,7 +55,6 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
       sourceLabel     : vm.source.label,
       label           : vm.label,
       lang            : Languages.key,
-      dateInterval    : vm.dateInterval,
       dateTo          : vm.dateTo,
       dateFrom        : vm.dateFrom,
       reportType      : vm.type

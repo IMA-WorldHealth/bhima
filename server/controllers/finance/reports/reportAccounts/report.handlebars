@@ -4,7 +4,12 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.ACCOUNT"}}</strong></h3>
-  <h4 class="text-center"><strong>{{ title.accountNumber }} {{ title.accountLabel}}</strong></h4>
+  <h4 class="text-center"><strong>{{ title.accountNumber }} | {{ title.accountLabel}}</strong></h4>
+  {{#if title.dateFrom }}
+    <h3 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+      <small>{{date title.dateFrom }} - {{date title.dateTo }}</small>
+    </h3>
+  {{/if}}  
 
   <section>
     <table class="table table-condensed table-striped table-report table-bordered">
