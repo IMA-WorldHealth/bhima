@@ -22,7 +22,7 @@
         {{#each accounts}}
           <tr>
             <td>{{this.trans_id}}</td>
-            <td>{{date this.date}}</td>
+            <td>{{date this.trans_date}}</td>
             <td>{{this.description}}</td>
             <td>{{currency this.debit ../metadata.enterprise.currency_id}}</td>
             <td>{{currency this.credit ../metadata.enterprise.currency_id}}</td>
