@@ -1,32 +1,30 @@
 /* global element, by, browser */
 const chai = require('chai');
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-helpers.configure(chai);
-
 const components = require('../shared/components');
 
-describe('Suppliers', function () {
-  'use strict';
+const expect = chai.expect;
+helpers.configure(chai);
 
-  const path = '#/suppliers';
+
+describe('Suppliers', () => {
+  const path = '#!/suppliers';
   before(() => helpers.navigate(path));
 
   const supplier = {
     display_name : 'Alpha Lmtd',
-    address_1 : '45 Street Blvd',
-    address_2 : '30 june Blvd',
-    email : 'info@alpha.cd',
-    fax : '12-34-294-10',
-    note : 'Commentaire speciale',
-    phone : '025495950001'
+    address_1    : '45 Street Blvd',
+    address_2    : '30 june Blvd',
+    email        : 'info@alpha.cd',
+    fax          : '12-34-294-10',
+    note         : 'Commentaire speciale',
+    phone        : '025495950001',
   };
 
   const supplierRank = 1;
 
-  it('creates a new supplier', function () {
+  it('creates a new supplier', () => {
     FU.buttons.create();
 
     FU.input('SupplierCtrl.supplier.display_name', supplier.display_name);
@@ -48,8 +46,8 @@ describe('Suppliers', function () {
     components.notification.hasSuccess();
   });
 
-  it('edits an supplier', function () {
-    element(by.id('supplier-upd-' + supplierRank )).click();
+  it('edits an supplier', () => {
+    element(by.id(`supplier-upd-${supplierRank}`)).click();
 
     // modify the supplier display_name
     FU.input('SupplierCtrl.supplier.display_name', 'Updated');
@@ -62,7 +60,7 @@ describe('Suppliers', function () {
     components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
     FU.buttons.create();
 
     // verify form has not been submitted

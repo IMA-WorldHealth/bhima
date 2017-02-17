@@ -2,34 +2,31 @@
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-
 const notification = require('../shared/components/notify');
 
-describe('Locations (create modal)', function () {
-  'use strict';
-
-  before(() => helpers.navigate('#/patients/register'));
+describe('Locations (create modal)', () => {
+  before(() => helpers.navigate('#!/patients/register'));
 
   /** location to be created */
-  var newLocation = {
-    country:  'Test Country 2',
-    province: 'Test Province 2',
-    sector:   'Test Sector 2',
-    village:  'Test Village 2'
+  const newLocation = {
+    country  : 'Test Country 2',
+    province : 'Test Province 2',
+    sector   : 'Test Sector 2',
+    village  : 'Test Village 2',
   };
 
-  var selector = '[data-location-modal]';
-  var link = '#origin-location-id [data-location-modal-open]';
+  const selector = '[data-location-modal]';
+  const link = '#origin-location-id [data-location-modal-open]';
 
   // switch to a certain view on the modal
   function view(key) {
-    var root = element(by.css(selector));
+    const root = element(by.css(selector));
 
     // template in the target
-    var target = `[data-location-view-key=${key}]`;
+    const target = `[data-location-view-key=${key}]`;
 
     // grab the correct button and click it
-    var btn = root.element(by.css(target));
+    const btn = root.element(by.css(target));
     btn.click();
   }
 
@@ -40,12 +37,12 @@ describe('Locations (create modal)', function () {
 
   // submit the modal
   function submit() {
-    var root = element(by.css(selector));
-    var submit = root.element(by.css('[type=submit]'));
-    submit.click();
+    const root = element(by.css(selector));
+    const submitBtn = root.element(by.css('[type=submit]'));
+    submitBtn.click();
   }
 
-  it('registers a new country', function () {
+  it('registers a new country', () => {
     open();
 
     // switch to the country view
@@ -61,7 +58,7 @@ describe('Locations (create modal)', function () {
     FU.exists(by.css(selector), false);
   });
 
-  it('registers a new province', function () {
+  it('registers a new province', () => {
     open();
 
     FU.exists(by.css(selector), true);
@@ -80,7 +77,7 @@ describe('Locations (create modal)', function () {
     FU.exists(by.css(selector), false);
   });
 
-  it('register a new sector', function () {
+  it('register a new sector', () => {
     open();
 
     FU.exists(by.css(selector), true);
@@ -99,7 +96,7 @@ describe('Locations (create modal)', function () {
     FU.exists(by.css(selector), false);
   });
 
-  it('register a new village', function () {
+  it('register a new village', () => {
     open();
 
     FU.exists(by.css(selector), true);
@@ -119,6 +116,5 @@ describe('Locations (create modal)', function () {
 
     // it should close the modal
     FU.exists(by.css(selector), false);
-
   });
 });

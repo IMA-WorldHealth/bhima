@@ -1,22 +1,24 @@
 /* global element, by, browser */
+
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 describe('Patient Groups', function () {
-
   // navigate to the page before running test suite
-  before(() => helpers.navigate('#/patients/groups'));
+  before(() => helpers.navigate('#!/patients/groups'));
 
   // a new group to create
   const group = {
-    name: 'HIV Patients',
-    note: 'These are patients that suffer from HIV and ' +
-      'benefit from medical discounts.'
+    name : 'HIV Patients',
+    note : `
+      These are patients that suffer from HIV and
+      benefit from medical discounts.
+    `,
   };
 
   // the uuid to delete.
-  var deleteUuid = 'group-112a9fb5-847d-4c6a-9b20-710fa8b4da22';
+  const deleteUuid = 'group-112a9fb5-847d-4c6a-9b20-710fa8b4da22';
 
   it('creates a patient group', function () {
     FU.buttons.create();

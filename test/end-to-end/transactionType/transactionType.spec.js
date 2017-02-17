@@ -1,41 +1,37 @@
 /* global element, by, browser */
-'use strict';
 
-const uuid   = require('node-uuid');
-const chai   = require('chai');
-const expect = chai.expect;
-
+const chai = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const expect = chai.expect;
 helpers.configure(chai);
 
-describe('Transaction Types ::', () => {
-
+describe('Transaction Types', () => {
   // navigate to the page
-  before(() => helpers.navigate('#/admin/transaction_type'));
+  before(() => helpers.navigate('#!/admin/transaction_type'));
 
-  let newType = {
-    text: 'E2E Transaction Type',
-    description: 'Test transaction type',
-    type: 'income',
-    prefix: 'E2ETT'
+  const newType = {
+    text        : 'E2E Transaction Type',
+    description : 'Test transaction type',
+    type        : 'income',
+    prefix      : 'E2ETT',
   };
 
-  let updateType = {
-    text: 'E2E Transaction Type updated',
-    description: 'Test transaction type updated',
-    type: 'expense',
-    prefix: 'E2ETT_UPDATED'
+  const updateType = {
+    text        : 'E2E Transaction Type updated',
+    description : 'Test transaction type updated',
+    type        : 'expense',
+    prefix      : 'E2ETT_UPDATED',
   };
 
-  let otherType = {
-    text: 'E2E Other Transaction Type',
-    description: 'Test Other transaction type',
-    type: 'other',
-    prefix: 'E2EOTT',
-    other: 'OTHER_TYPE'
+  const otherType = {
+    text        : 'E2E Other Transaction Type',
+    description : 'Test Other transaction type',
+    type        : 'other',
+    prefix      : 'E2EOTT',
+    other       : 'OTHER_TYPE',
   };
 
   it('Successfully creates a transaction type', () => {
@@ -50,7 +46,7 @@ describe('Transaction Types ::', () => {
   });
 
   it('Successfully updates an existing transaction type', () => {
-    element(by.css('[data-edit-type="' + newType.text + '"]')).click();
+    element(by.css(`[data-edit-type="${newType.text}"]`)).click();
     FU.input('$ctrl.transactionType.text', updateType.text);
     FU.input('$ctrl.transactionType.description', updateType.description);
     FU.input('$ctrl.transactionType.prefix', updateType.prefix);
@@ -112,5 +108,4 @@ describe('Transaction Types ::', () => {
 
     components.notification.hasDanger();
   });
-
 });

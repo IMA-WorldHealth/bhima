@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('FiscalController', FiscalController);
 
 FiscalController.$inject = [
-  '$state', 'FiscalService', 'ModalService', 'NotifyService', '$window'
+  '$state', 'FiscalService', 'ModalService', 'NotifyService', '$window',
 ];
 
-function FiscalController($state, fiscalService, ModalService, Notify, $window) {
+function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   var vm = this;
   var today = new Date();
 
@@ -27,21 +27,20 @@ function FiscalController($state, fiscalService, ModalService, Notify, $window) 
 
   // refresh Fiscal Year
   function refreshFiscalYear() {
-    return fiscalService.read(null,{ detailed : 1 })
-    .then(function (fiscalYears) {
-
-      vm.fiscalYears = fiscalYears;
-    });
+    return Fiscal.read(null,{ detailed: 1 })
+      .then(function (fiscalYears) {
+        vm.fiscalYears = fiscalYears;
+      });
   }
 
   // Get the fiscal Year By Date
-  fiscalService.fiscalYearDate({date : today})
-  .then(function (current) {
-    vm.current = current;
-    vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
-    vm.previousFiscalYearId = vm.current[0].previous_fiscal_year_id;
-  })
-  .catch(Notify.handleError);
+  Fiscal.fiscalYearDate({ date: today })
+    .then(function (current) {
+      vm.current = current;
+      vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
+      vm.previousFiscalYearId = vm.current[0].previous_fiscal_year_id;
+    })
+    .catch(Notify.handleError);
 
   // switch to delete warning mode
   function del(fiscal) {
@@ -50,14 +49,14 @@ function FiscalController($state, fiscalService, ModalService, Notify, $window) 
        // if the user clicked cancel, reset the view and return
       if (!bool) { return; }
 
-      fiscalService.delete(fiscal.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        return refreshFiscalYear();
-      })
-      .catch(function (error) {
-        Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
-      });
+      Fiscal.delete(fiscal.id)
+        .then(function () {
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+          return refreshFiscalYear();
+        })
+        .catch(function (error) {
+          Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
+        });
     });
   }
 
@@ -93,11 +92,11 @@ function FiscalController($state, fiscalService, ModalService, Notify, $window) 
       vm.nbMonthDesc = 'down';
     }
 
-    fiscalService.read(null, option)
-    .then(function (fiscalYears) {
-      vm.fiscalYears = fiscalYears;
-    })
-    .catch(Notify.handleError);
+    Fiscal.read(null, option)
+      .then(function (fiscalYears) {
+        vm.fiscalYears = fiscalYears;
+      })
+      .catch(Notify.handleError);
   }
 
   refreshFiscalYear();

@@ -4,54 +4,52 @@
  * @todo - this page is complex enough to merit a PriceList page object.
  */
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Price Lists', function () {
-
-  const path = '#/prices';
+describe('Price Lists', () => {
+  const path = '#!/prices';
   before(() => helpers.navigate(path));
 
   const priceList2 = {
-    label : 'Price list with two items'
+    label : 'Price list with two items',
   };
 
   const item1 = {
     label : 'Item 1',
-    value : 15
+    value : 15,
   };
 
   const item2 = {
     label : 'Item 2',
-    value : 30
+    value : 30,
   };
 
   const item3 = {
     label : 'Item 3',
-    value : 45
+    value : 45,
   };
 
   const item4 = {
     label : 'Item 4',
-    value : 60
+    value : 60,
   };
 
   const item5 = {
     label : 'Item 5',
-    value : 75
+    value : 75,
   };
 
   const priceListID1 = 1;
-  const priceListID2 = 2;
 
-  it('prices should create a price list without price list items', function () {
+  it('prices should create a price list without price list items', () => {
     const list = {
-      label: 'Price list without Items',
-      description: 'Description of price list without an item.'
+      label       : 'Price list without Items',
+      description : 'Description of price list without an item.',
     };
 
     FU.buttons.create();
@@ -64,8 +62,8 @@ describe('Price Lists', function () {
     components.notification.hasSuccess();
   });
 
-  it('add price_list_items to a price list', function () {
-    element(by.id('price_list_' + priceListID1 )).click();
+  it('add price_list_items to a price list', () => {
+    element(by.id(`price_list_${priceListID1}`)).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item1.label);
@@ -86,7 +84,7 @@ describe('Price Lists', function () {
     components.notification.hasSuccess();
   });
 
-  it('prices should create a price list with two items', function () {
+  it('prices should create a price list with two items', () => {
     FU.buttons.create();
 
     FU.input('PriceListCtrl.priceList.label', priceList2.label);
@@ -110,8 +108,8 @@ describe('Price Lists', function () {
     components.notification.hasSuccess();
   });
 
-  it('edits a price list ', function () {
-    element(by.id('price_list_' + priceListID1 )).click();
+  it('edits a price list ', () => {
+    element(by.id(`price_list_${priceListID1}`)).click();
 
     FU.input('PriceListCtrl.priceList.label', 'Updated List');
     FU.input('PriceListCtrl.priceList.description', 'Added description of a price list.');
@@ -133,8 +131,8 @@ describe('Price Lists', function () {
     components.notification.hasSuccess();
   });
 
-  it('deletes a price list', function () {
-    element(by.id('price_delete_' + priceListID1 )).click();
+  it('deletes a price list', () => {
+    element(by.id(`price_delete_${priceListID1}`)).click();
 
     // accept the alert
     components.modalAction.confirm();
@@ -142,7 +140,7 @@ describe('Price Lists', function () {
     components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
     FU.buttons.create();
 
     element(by.id('submit-priceList')).click();

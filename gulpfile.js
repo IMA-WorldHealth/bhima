@@ -60,6 +60,10 @@ const paths = {
 
       // Angular UI
       'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
+
+      // @TODO - rm this
+      'client/vendor/angular-ui-router/release/stateEvents.min.js',
+
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
