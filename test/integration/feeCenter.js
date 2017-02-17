@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *  - invalid POSTs
  *  - 404s on PUTs
  */
-describe('(/fee_centers) The fee center API', function () {
+describe.only('(/fee_centers) The fee center API', function () {
 
   const newFeeCenter = {
     project_id : 1,
