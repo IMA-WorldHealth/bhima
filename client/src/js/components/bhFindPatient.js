@@ -47,41 +47,42 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   /* @const the enter key keycode */
   var ENTER_KEY = 13;
 
-  /* supported searches: by name or by id */
-  vm.options = {
-    findById : {
-      label : 'FORM.LABELS.PATIENT_ID',
-      placeholder : 'FORM.PLACEHOLDERS.SEARCH_PATIENT_ID'
-    },
-    findByName : {
-      label : 'FORM.LABELS.PATIENT_NAME',
-      placeholder : 'FORM.PLACEHOLDERS.SEARCH_NAME'
-    }
-  };
-
   vm.$onInit = function onInit() {
     vm.suppressReset = vm.suppressReset || false;
+
+    /* supported searches: by name or by id */
+    vm.options = {
+      findById : {
+        label       : 'FORM.LABELS.PATIENT_ID',
+        placeholder : 'FORM.PLACEHOLDERS.SEARCH_PATIENT_ID',
+      },
+      findByName : {
+        label       : 'FORM.LABELS.PATIENT_NAME',
+        placeholder : 'FORM.PLACEHOLDERS.SEARCH_NAME',
+      },
+    };
+
+    vm.showSearchView = true;
+    vm.loadStatus = null;
+
 
     // fetch the initial setting for the component from appcache
     loadDefaultOption(cache.optionKey);
 
     // call the onRegisterApi() callback with the
     vm.onRegisterApi({
-      api : { reset : vm.reset, searchByUuid : searchByUuid }
+      api : { reset: vm.reset, searchByUuid: searchByUuid },
     });
   };
 
-  vm.showSearchView = true;
-  vm.loadStatus     = null;
-
   /* Expose functions and variables to the template view */
-  vm.searchByReference  = searchByReference;
-  vm.searchByName       = searchByName;
-  vm.selectPatient      = selectPatient;
-  vm.submit             = submit;
-  vm.findBy             = findBy;
-  vm.reset              = reset;
-  vm.onKeyPress         = onKeyPress;
+  vm.searchByReference = searchByReference;
+  vm.searchByName = searchByName;
+  vm.selectPatient = selectPatient;
+  vm.submit = submit;
+  vm.findBy = findBy;
+  vm.reset = reset;
+  vm.onKeyPress = onKeyPress;
 
   /**
    * @method searchByUuid
@@ -112,11 +113,13 @@ function FindPatientComponent(Patients, AppCache, Notify) {
    * who is identified by a hospital reference. (e.g. HBB123)
    */
   function searchByReference(reference) {
+    var options;
+
     vm.loadStatus = 'loading';
 
-    var options = {
+    options = {
       reference : reference,
-      limit : 1
+      limit     : 1,
     };
 
     // query the patient's search endpoint for the
@@ -139,12 +142,13 @@ function FindPatientComponent(Patients, AppCache, Notify) {
    * @return {Array} An array of patients
    */
   function searchByName(text) {
+    var options;
     vm.loadStatus = 'loading';
 
     // format query string parameters
-    var options = {
+    options = {
       display_name : text.toLowerCase(),
-      limit : LIMIT
+      limit        : LIMIT,
     };
 
     return Patients.search(options)

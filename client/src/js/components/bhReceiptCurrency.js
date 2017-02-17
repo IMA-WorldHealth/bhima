@@ -1,29 +1,31 @@
-angular.module('bhima.components').component('bhReceiptCurrency', {
-  templateUrl : 'partials/templates/bhReceiptCurrency.tmpl.html',
-  controller : ReceiptCurrencyController,
-  bindings : {
-    onUpdate : '&'
-  }
-});
+angular.module('bhima.components')
+  .component('bhReceiptCurrency', {
+    templateUrl : 'partials/templates/bhReceiptCurrency.tmpl.html',
+    controller  : ReceiptCurrencyController,
+    bindings    : {
+      onUpdate : '&',
+    },
+  });
 
 ReceiptCurrencyController.$inject = ['CurrencyService', 'SessionService', 'AppCache', 'Store'];
 
 /**
  * Receipt Currency Component
- *
  */
 function ReceiptCurrencyController(Currencies, Session, AppCache, Store) {
   var ctrl = this;
   var cache = new AppCache('ReceiptCurrencyComponent');
 
-  Currencies.read()
-    .then(function (currencies) {
-      ctrl.currencies = new Store();
-      ctrl.currencies.setData(currencies);
-      loadDefaultCurrency();
-    });
+  this.$onInit = function $onInit() {
+    Currencies.read()
+      .then(function (currencies) {
+        ctrl.currencies = new Store();
+        ctrl.currencies.setData(currencies);
+        loadDefaultCurrency();
+      });
+  };
 
-  ctrl.update = function (currency) {
+  ctrl.update = function update(currency) {
     // update view with currency object (id and symbol)
     ctrl.selectedCurrency = currency;
 
@@ -31,7 +33,7 @@ function ReceiptCurrencyController(Currencies, Session, AppCache, Store) {
     cache.selectedCurrencyId = currency.id;
 
     // update bindings
-    ctrl.onUpdate({ currencyId : currency.id });
+    ctrl.onUpdate({ currencyId: currency.id });
   };
 
   function loadDefaultCurrency() {

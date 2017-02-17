@@ -18,6 +18,8 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   var $ctrl = this;
   var openedCache = AppCache('navigation.opened');
 
+  var $$listeners = [];
+
   /*
    * Object used to index unit ids and paths, this allows for very efficient
    * lookups during runtime and means that the units only have to be recursively
@@ -154,11 +156,18 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    * changed within BHIMA - tracking this allows the tree to update without the
    * page being refreshed
    */
-  $rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation);
-  $rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange);
+  $$listeners.push($rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation));
+  $$listeners.push($rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange));
 
   // if the session is reloaded, download the new tree units
-  $rootScope.$on('session:reload', loadTreeUnits);
+  $$listeners.push($rootScope.$on('session:reload', loadTreeUnits));
+
+  // unregister listeners on destroy
+  this.$onDestroy = function $onDestroy() {
+    $$listeners.forEach(function (unregister) {
+      unregister();
+    });
+  };
 
   loadTreeUnits();
 }
