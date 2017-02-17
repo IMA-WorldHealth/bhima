@@ -25,43 +25,85 @@ var NotFound = require('../../lib/errors/NotFound');
 function list (req, res, next) {
   'use strict';
 
+  let is_detailed = Boolean(Number(req.query.detailed));
+
+  let detailed = is_detailed ? 'fc.note, fc.is_principal' : '';
+
   var sql =
-    'SELECT fc.id, fc.label, fc.is_cost FROM fee_center AS fc ';
-  var filter = '', ordering = 'ORDER BY fc.label;';
+    `SELECT fc.id, fc.label, fc.is_cost ${detailed} FROM fee_center AS fc JOIN project as po on fc.project_id = p.id`;
+  // var filter = '', ordering = 'ORDER BY fc.label;';
+  // var promise, params = [];
 
-  if (req.query.detailed === '1') {
-    sql =
-      `SELECT fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
-      FROM fee_center AS fc JOIN project AS p ON fc.project_id = p.id `;
-  }
+  // if (req.query.detailed === '1') {
+  //   sql =
+  //     `SELECT fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
+  //     FROM fee_center AS fc JOIN project AS p ON fc.project_id = p.id `;
+  // }
 
 
-  if(req.query.available === '1') {
-    filter += ' fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) ';
-  }
+  let filters = new FilterParser(req.query, { tableAlias : 'fc' });
 
-  if(req.query.is_cost){
-    if(filter !== ''){
-      filter += ' AND ';
+  filters.equals('is_principal');
+  filters.equals('is_cost');
+
+
+  if (req.query.available) {
+    if (Boolean(Number(req.query.available))) {
+      // if the available flag is true - register a filter for services that have already been assigned
+      let assignedToServiceQuery = 'fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) AND ?';
+      filters.custom('available', assignedToServiceQuery);
+    } else {
+      // if the available flag is false, remove this flag so it is not processed by FilterParser
+      delete req.query.available;
     }
-    filter += `fc.is_cost = ${req.query.is_cost} `;
   }
 
-  if(req.query.is_principal){
-    if(filter !== ''){
-      filter += ' AND ';
-    }
-    filter += `fc.is_principal = ${req.query.is_cost} `;
-  }
+  filters.setOrder('ORDER BY fc.label');
 
-  sql = filter === '' ? sql + ordering : sql + 'WHERE ' + filter + ordering;
+  // if(req.query.available === '1') {
+  //   filter += ' fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) ';
+  // }
 
-  db.exec(sql)
+  //
+  // if(req.query.is_cost){
+  //   if(filter !== ''){
+  //     filter += ' AND ';
+  //   }
+  //   filter += `fc.is_cost = ? `;
+  //   params.push(req.query.is_cost);
+  // }
+  //
+  // if(req.query.is_principal){
+  //   if(filter !== ''){
+  //     filter += ' AND ';
+  //   }
+  //   filter += `fc.is_principal = ? `;
+  //   params.push(req.query.is_principal);
+  // }
+  let query = filters.applyQuery(sql);
+  let params = filters.parameters();
+  db.exec(query, params)
+
   .then(function (rows) {
     res.status(200).json(rows);
   })
   .catch(next)
   .done();
+
+  // sql = filter === '' ? sql + ordering : sql + 'WHERE ' + filter + ordering;
+
+  // if(params.length > 0){
+  //   promise = db.exec(sql, params);
+  // }else{
+  //   promise = db.exec(sql);
+  // }
+
+  // promise
+  // .then(function (rows) {
+  //   res.status(200).json(rows);
+  // })
+  // .catch(next)
+  // .done();
 }
 
 /**
@@ -111,11 +153,14 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-  lookupFeeCenter(feeCenterId)
-    .then(function () {
-      return db.exec(updateFeeCenterQuery, [queryData, feeCenterId]);
-    })
-    .then(function () {
+
+   db.exec(updateFeeCenterQuery, [queryData, feeCenterId])
+    .then(function (res) {
+
+      if(res.affectedRows === 0){
+        throw new NotFound(`Could not update a fee center with id ${feeCenterId}`);
+      }
+
       return lookupFeeCenter(feeCenterId);
     })
     .then(function (feeCenter) {
