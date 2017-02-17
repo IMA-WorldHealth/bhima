@@ -61,10 +61,10 @@ function document(req, res, next) {
  * This feature select all transactions for a specific account
 */
 function queryReportAccount(accountId, source) {
-  source = parseInt(source);
+  const sourceId = parseInt(source, 10);
   let sql;
 
-  if (source === 1) {
+  if (sourceId === 1) {
     sql = `
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
       general_ledger.trans_date, general_ledger.debit_equiv as debit, general_ledger.credit_equiv as credit
@@ -73,7 +73,7 @@ function queryReportAccount(accountId, source) {
       GROUP BY general_ledger.trans_id
       ORDER BY general_ledger.trans_date ASC;
     `;
-  } else if (source === 2) {
+  } else if (sourceId === 2) {
     sql = `
       SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
       posting_journal.trans_date, posting_journal.debit_equiv as debit, posting_journal.credit_equiv as credit
@@ -82,7 +82,7 @@ function queryReportAccount(accountId, source) {
       GROUP BY posting_journal.trans_id
       ORDER BY posting_journal.trans_date ASC;
     `;
-  } else if (source === 3) {
+  } else if (sourceId === 3) {
     sql = `
       SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, 
         transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit
