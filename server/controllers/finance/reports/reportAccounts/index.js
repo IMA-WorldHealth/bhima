@@ -1,8 +1,14 @@
-
+const _ = require('lodash');
+const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const db            = require('../../../../lib/db');
-const TEMPLATE      = './server/controllers/finance/reports/reportAccounts/report.handlebars';
-const BadRequest    = require('../../../../lib/errors/BadRequest');
+
+const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
+const BadRequest = require('../../../../lib/errors/BadRequest');
+
+/**
+ * global constants
+ */
+const sourceMap = { 1: 'general_ledger', 2: 'posting_journal', 3: 'combined_ledger' };
 
 /**
  * @method document
@@ -12,8 +18,16 @@ const BadRequest    = require('../../../../lib/errors/BadRequest');
  */
 function document(req, res, next) {
   let report;
+  const bundle = {};
 
-  let params = req.query;
+  const params = req.query;
+
+  const title = {
+    accountNumber : params.account_number,
+    accountLabel  : params.account_label,
+    source        : params.sourceLabel,
+  };
+
   params.user = req.session.user;
 
   if (!params.account_id) {
@@ -22,35 +36,17 @@ function document(req, res, next) {
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
-  } catch(e) {
+  } catch (e) {
     return next(e);
   }
 
   return queryReportAccount(params.account_id, params.sourceId)
-    .then(accounts => {
+    .then((result) => {
+      _.extend(bundle, { accounts: result.accounts, sum: result.sum, title });
 
-      let sum = {
-        credit : 0,
-        debit : 0,
-        balance: 0
-      };
-
-      let title = {
-        accountNumber : params.account_number,
-        accountLabel : params.account_label,
-        source       : params.sourceLabel
-      };
-
-      accounts.forEach(function (account) {
-        sum.debit += account.debit;
-        sum.credit += account.credit;
-        sum.balance = sum.debit - sum.credit;
-      });
-
-      return report.render({ accounts, title, sum });
-
+      return report.render(bundle);
     })
-    .then(result => {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)
@@ -63,47 +59,41 @@ function document(req, res, next) {
  * This feature select all transactions for a specific account
 */
 function queryReportAccount(accountId, source) {
-  source = parseInt(source);
-  let sql;
+  const sourceId = parseInt(source, 10);
 
-  if (source === 1) {
-    sql = `
-      SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-      general_ledger.trans_date, general_ledger.debit_equiv as debit, general_ledger.credit_equiv as credit
-      FROM general_ledger
-      WHERE general_ledger.account_id = ?
-      GROUP BY general_ledger.trans_id
-      ORDER BY general_ledger.trans_date ASC;
-    `;
-  } else if (source === 2) {
-    sql = `
-      SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-      posting_journal.trans_date, posting_journal.debit_equiv as debit, posting_journal.credit_equiv as credit
-      FROM posting_journal
-      WHERE posting_journal.account_id = ?
-      GROUP BY posting_journal.trans_id
-      ORDER BY posting_journal.trans_date ASC;
-    `;
-  } else if (source === 3) {
-    sql = `
-      SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit
-      FROM(
-        SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv
-        FROM posting_journal
-        WHERE posting_journal.account_id = ?
-        UNION
-        SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv
-        FROM general_ledger
-        WHERE general_ledger.account_id = ?
-      ) as transaction
-      GROUP BY transaction.trans_id
-      ORDER BY transaction.trans_date ASC;
-    `;
-  }
+  // get the table name
+  const tableName = sourceMap[sourceId];
 
-  return db.exec(sql, [accountId, accountId]);
+  const sql = `
+      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+        debit_equiv as debit, credit_equiv as credit
+      FROM ${tableName}
+      WHERE account_id = ?
+      GROUP BY trans_id 
+      ORDER BY trans_date ASC`;
+
+  const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
+    FROM (
+      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+        debit_equiv as debit, credit_equiv as credit
+      FROM ${tableName}
+      WHERE account_id = ?
+      GROUP BY trans_id 
+      ORDER BY trans_date ASC
+    ) AS t 
+    `;
+
+  const bundle = {};
+
+  return db.exec(sql, [accountId, accountId])
+    .then((accounts) => {
+      _.extend(bundle, { accounts });
+      return db.one(sqlAggrega, [accountId, accountId]);
+    })
+    .then((sum) => {
+      _.extend(bundle, { sum });
+      return bundle;
+    });
 }
 
 exports.document = document;
