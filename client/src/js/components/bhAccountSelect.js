@@ -85,10 +85,10 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
         $ctrl.accounts = Accounts.order(elements);
 
         // writes the accounts into localstorage
-        cacheAccounts($ctrl.accounts);
+        //cacheAccounts($ctrl.accounts);
 
         // set the timeout for removing cached accounts
-        $timeout(removeCachedAccounts, CACHE_TIMEOUT);
+        //$timeout(removeCachedAccounts, CACHE_TIMEOUT);
       });
   }
 
