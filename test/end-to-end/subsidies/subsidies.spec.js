@@ -25,7 +25,7 @@ describe('Subsidies', () => {
     FU.buttons.create();
     FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
     FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-    FU.uiSelect('SubsidyCtrl.subsidy.account_id', 'Test Debtor Accounts2');
+    components.accountSelect.set('Test Debtor Accounts2');
     FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server
@@ -58,7 +58,6 @@ describe('Subsidies', () => {
     // the following fields should be required
     FU.validation.error('SubsidyCtrl.subsidy.label');
     FU.validation.error('SubsidyCtrl.subsidy.value');
-    FU.validation.error('SubsidyCtrl.subsidy.account_id');
     // the following fields are not required
     FU.validation.ok('SubsidyCtrl.subsidy.description');
   });

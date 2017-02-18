@@ -1,12 +1,12 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('SubsidyController', SubsidyController);
+  .controller('SubsidyController', SubsidyController);
 
 SubsidyController.$inject = [
-  'SubsidyService', 'AccountService', '$translate', 'ModalService', 'util', 'NotifyService'
+  'SubsidyService', 'ModalService', 'util', 'NotifyService',
 ];
 
-function SubsidyController(Subsidy , Accounts, $translate, ModalService, util, Notify) {
+function SubsidyController(Subsidy, ModalService, util, Notify) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -15,24 +15,21 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService, util, N
   vm.create = create;
   vm.submit = submit;
   vm.update = update;
-  vm.del    = del;
+  vm.del = del;
   vm.cancel = cancel;
+  vm.onAccountSelect = onAccountSelect;
 
   vm.length250 = 200;
   vm.maxLength = util.maxTextLength;
 
   // fired on startup
   function startup() {
-
-    // load accounts and properly formats their labels
-    Accounts.read(null, { detailed : 1 })
-      .then(function (accounts) {
-        vm.accounts = accounts;
-      })
-      .catch(Notify.handleError);
-
     // load Subsidies
     refreshSubsidies();
+  }
+
+  function onAccountSelect(account) {
+    vm.subsidy.account_id = account.id;
   }
 
   function cancel() {
@@ -50,7 +47,6 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService, util, N
     vm.view = 'update';
     vm.subsidy = data;
   }
-
 
   // refresh the displayed Subsidies
   function refreshSubsidies() {
