@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('ReceiptModal', ReceiptModal);
+  .service('ReceiptModal', ReceiptModal);
 
 ReceiptModal.$inject = ['$uibModal', 'ReceiptService'];
 
@@ -195,7 +195,7 @@ function ReceiptModal(Modal, Receipts) {
   }
 
   /**
-   * Invokes an invoice's credit note 
+   * Invokes an invoice's credit note
    *
    * @param {String} uuid             Target invoice UUID
    * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation

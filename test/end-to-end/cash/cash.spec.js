@@ -247,13 +247,19 @@ function CashTransfer() {
     $('[data-action="transfer"]').click();
 
     // choose CDF as transfer currency
-    components.currencySelect.set(1, 'transfer-currency-select');
+    components.currencySelect.set(2, 'transfer-currency-select');
 
     //set a value in the currency component by model to avoid conflict
     components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
 
     // submit the modal button
     FU.modal.submit();
+
+    // expect the receipt modal to appear
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // dismiss the modal
+    $('[data-action="close"]').click();
 
     // make sure we have a success notification shown
     components.notification.hasSuccess();

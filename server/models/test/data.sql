@@ -204,10 +204,10 @@ INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (3,'Test Aux Cashbox B',1,1);
 
 INSERT INTO `cash_box_account_currency` VALUES
-  (1,1,1,3626,3626),
-  (2,2,1,3627,3627),
-  (3,1,2,3627,3627),
-  (4,2,2,3627,3627);
+  (1,1,1,3626,3627),
+  (2,2,1,3627,3626),
+  (3,1,2,3626,3627),
+  (4,2,2,3626,3627);
 
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
