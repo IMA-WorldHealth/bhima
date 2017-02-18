@@ -21,7 +21,7 @@ describe('Enterprises', function () {
     po_box : 'POBOX USA 1',
     phone : '01500',
     gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Expense Accounts'
+    loss_account_id : 'Test Loss Account'
   };
 
   // default enterprise
@@ -32,7 +32,7 @@ describe('Enterprises', function () {
     po_box : 'POBOX USA 1',
     phone : '243 81 504 0540',
     gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Expense Accounts'
+    loss_account_id : 'Test Loss Account'
   };
 
   // project
@@ -61,8 +61,8 @@ describe('Enterprises', function () {
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
-    FU.uiSelect('EnterpriseCtrl.enterprise.gain_account_id', enterprise.gain_account_id);
-    FU.uiSelect('EnterpriseCtrl.enterprise.loss_account_id', enterprise.loss_account_id);
+    components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
+    components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
 
     FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
     FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
@@ -105,8 +105,8 @@ describe('Enterprises', function () {
      FU.input('EnterpriseCtrl.enterprise.name', default_enterprise.name);
      FU.input('EnterpriseCtrl.enterprise.abbr', default_enterprise.abbr);
 
-     FU.uiSelect('EnterpriseCtrl.enterprise.gain_account_id', default_enterprise.gain_account_id);
-     FU.uiSelect('EnterpriseCtrl.enterprise.loss_account_id', default_enterprise.loss_account_id);
+     components.accountSelect.set(default_enterprise.gain_account_id, 'gain-account-id');
+     components.accountSelect.set(default_enterprise.loss_account_id, 'loss-account-id');
 
      FU.input('EnterpriseCtrl.enterprise.po_box', default_enterprise.po_box);
      FU.input('EnterpriseCtrl.enterprise.email', default_enterprise.email);
