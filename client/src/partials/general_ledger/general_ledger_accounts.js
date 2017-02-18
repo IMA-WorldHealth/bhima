@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('GeneralLedgerAccountsController', GeneralLedgerAccountsController);
 
 GeneralLedgerAccountsController.$inject = [
-  'GeneralLedgerService', 'SessionService', 'NotifyService', 'uiGridConstants',
+  'GeneralLedgerService', 'SessionService', 'NotifyService', 
+  'uiGridConstants', 'ReceiptModal',
 ];
 
 /**
@@ -11,7 +12,7 @@ GeneralLedgerAccountsController.$inject = [
  * @description
  * This controller is responsible for displaying accounts and their solds
  */
-function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridConstants) {
+function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridConstants, Receipts) {
   var vm = this;
 
   vm.enterprise = Session.enterprise;
@@ -66,6 +67,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
 
   vm.gridApi = {};
   vm.loading = true;
+  vm.slip = slip;
   vm.toggleFilter = toggleFilter;
 
   vm.gridOptions = {
@@ -95,12 +97,17 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  function loadData(data) {
+    vm.gridOptions.data = data;
+  }
+
+  function slip(id) {
+    Receipts.accountSlip(id);
+  }
+
   GeneralLedger.accounts.read()
     .then(loadData)
     .catch(handleError)
     .finally(toggleLoadingIndicator);
 
-  function loadData(data) {
-    vm.gridOptions.data = data;
-  }
 }

@@ -44,6 +44,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.transaction = transaction;
   service.payroll = payroll;
   service.creditNote = creditNote;
+  service.accountSlip = accountSlip;
 
   service.setPosReceipt = setPosReceipt;
   service.setSimplified = setSimplified;
@@ -124,6 +125,12 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   // print a credit note for an invoice 
   function creditNote(uuid, options) {
     var route = '/reports/finance/invoices/'.concat(uuid, '/creditNote');
+    return fetch(route, options);
+  }
+
+  // print a document for an account slip 
+  function accountSlip(id, options) {
+    var route = '/reports/finance/general_ledger/'.concat(id);
     return fetch(route, options);
   }
 

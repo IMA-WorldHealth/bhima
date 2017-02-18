@@ -850,7 +850,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "General Ledger"
+    "TITLE" : "General Ledger",
+    "ACCOUNT_SLIP" : "Account Slip",
+    "SOLD" : "Sold"
   },
   "HOME": {
     "BHIMA"          : "Bhima",
@@ -1511,6 +1513,7 @@
     "PATIENT_REGISTRATIONS"      : "Patient Registrations",
     "PATIENT_REGISTRY"           : "Patients Registry",
     "PHARMACY"                   : "Pharmacy Management",
+    "POSTED_JOURNAL"             : "Posted Journal",
     "POSTING_JOURNAL"            : "Posting Journal",
     "PRICE_LIST"                 : "Price List",
     "PROJECT"                    : "Projects",

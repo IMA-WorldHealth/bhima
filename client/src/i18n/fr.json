@@ -852,7 +852,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "Grand Livre"
+    "TITLE" : "Grand Livre",
+    "ACCOUNT_SLIP" : "Extrait de compte",
+    "SOLD" : "Solde"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement de patients",
@@ -1531,7 +1533,7 @@
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
     "PATIENT_REGISTRY"           : "Registre des patients",
     "PAYROLL"                    : "Payroll",
-    "PHARMACY"                   : "Pharmacie",
+    "POSTED_JOURNAL"             : "Journal Posté",
     "POSTING_JOURNAL"            : "Journal de Saisie",
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",

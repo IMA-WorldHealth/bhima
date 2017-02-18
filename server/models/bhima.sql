@@ -52,7 +52,8 @@ INSERT INTO unit VALUES
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
   (153, 'Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
-  (154, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors');
+  (154, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors'),
+  (155, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES

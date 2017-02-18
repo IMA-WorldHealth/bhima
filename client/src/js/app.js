@@ -134,11 +134,18 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : 'partials/locations/country/country.html'
   })
 
-  /** General ledger routes**/
+  /** General ledger routes **/
   .state('generalLedger', {
     url         : '/general_ledger',
     controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
     templateUrl : 'partials/general_ledger/general_ledger_accounts.html',
+  })
+
+  /** Posted Journal **/
+  .state('postedJournal', {
+    url         : '/journal/posted',
+    controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger.html',
   })
 
   /* references routes */

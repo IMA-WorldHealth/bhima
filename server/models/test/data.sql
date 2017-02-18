@@ -178,7 +178,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 
 -- Report Customer Debts
-(151,1);
+(151,1),
+
+-- Posted Journal
+(155,1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

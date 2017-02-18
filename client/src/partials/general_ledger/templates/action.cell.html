@@ -1,5 +1,4 @@
 <div class="text-center" class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body>
-
   <a href uib-dropdown-toggle>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
@@ -8,10 +7,9 @@
   <ul class="dropdown-menu-right" uib-dropdown-menu>
     <li>
       <a href
-          data-method="edit"
-          data-edit-metadata="{{ row.entity.code }}"
-          ng-hide="row.groupHeader" ui-sref="inventory.update({uuid : row.entity.uuid })">
-          <i class="fa fa-file-text"></i> <span translate>FORM.LABELS.ACCOUNT_EXTRACT</span>
+        data-method="receipt"
+        ng-click="grid.appScope.slip(row.entity.id)">
+        <i class="fa fa-file-text"></i> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
       </a>
     </li>
   </ul>
