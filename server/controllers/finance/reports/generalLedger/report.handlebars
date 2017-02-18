@@ -28,8 +28,8 @@
             <tr>
               <td>{{number}}</td>
               <td>{{label}}</td>
-              <td class="text-right">{{currency debtor_sold ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency creditor_sold ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency debtor_balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency creditor_balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=4}}

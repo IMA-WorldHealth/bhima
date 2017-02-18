@@ -72,16 +72,13 @@ function listAccounts(req, res, next) {
 function getlistAccounts() {
   const sql =
     `SELECT aggregator.id, aggregator.number, aggregator.label,
-      IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_sold,
-      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_sold
+      IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
+      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance
     FROM (
       SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance, 
         a.id, a.number, a.label 
       FROM general_ledger AS gl 
         JOIN account a ON a.id = gl.account_id
-        JOIN project pro ON pro.id = gl.project_id
-        JOIN period per ON per.id = gl.period_id
-        JOIN user u ON u.id = gl.user_id 
       GROUP BY a.id 
       ORDER BY a.number
     ) AS aggregator;`;
