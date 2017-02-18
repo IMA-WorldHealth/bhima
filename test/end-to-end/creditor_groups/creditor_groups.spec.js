@@ -32,7 +32,7 @@ describe('Creditor Groups Management', () => {
     FU.buttons.create();
 
     FU.input('CreditorGroupCtrl.bundle.name', group.name);
-    FU.uiSelect('CreditorGroupCtrl.bundle.account_id', group.account);
+    components.accountSelect.set(group.account);
 
     FU.buttons.submit();
     components.notification.hasSuccess();
