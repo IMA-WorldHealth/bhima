@@ -64,8 +64,8 @@ describe('Cashboxes', () => {
     FU.exists(by.css('[uib-modal-window]'), true);
     FU.exists(by.name('CashboxModalForm'), true);
 
-    FU.uiSelect('CashboxModalCtrl.data.account_id', 'Test Gain Account');
-    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Loss Account');
+    components.accountSelect.set('Test Gain Account', 'account-id');
+    components.accountSelect.set('Test Loss Account', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -87,7 +87,7 @@ describe('Cashboxes', () => {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    FU.uiSelect('CashboxModalCtrl.data.account_id', 'First Test Item Account');
+    components.accountSelect.set('First Test Item Account', 'account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -95,11 +95,7 @@ describe('Cashboxes', () => {
     // confirm that the modal did not disappear
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    // these inputs should not have error states
-    FU.validation.ok('CashboxModalCtrl.data.account_id');
-    FU.validation.error('CashboxModalCtrl.data.transfer_account_id');
-
-    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Debtor Group Account');
+    components.accountSelect.set('Test Debtor Group Account', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
