@@ -1,73 +1,55 @@
 <form name="CashboxModalForm" bh-submit="CashboxModalCtrl.submit(CashboxModalForm)" bh-form-defaults novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "CASHBOX.TITLE" | translate }}</li>
-      <li class="title">{{ "CASHBOX.CONFIG_ACCOUNTS" | translate }} <small>{{ CashboxModalCtrl.cashbox.text }}</small></li>
+      <li class="static" translate>CASHBOX.TITLE</li>
+      <li class="title">
+        <span translate>CASHBOX.CONFIG_ACCOUNTS</span> <small>{{ CashboxModalCtrl.cashbox.text }}</small>
+      </li>
     </ol>
   </div>
 
   <div class="modal-body">
+
     <p class="text-danger text-justify" ng-if="CashboxModalCtrl.error">
-      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "FORM.ERRORS.CONNECTION" | translate }}
+      <i class="glyphicon glyphicon-exclamation-sign"></i> <span translate>FORM.ERRORS.CONNECTION</span>
     </p>
 
     <div class="form-group">
-      <label>{{ "FORM.LABELS.CURRENCY" | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.CURRENCY</label>
       <p class="form-control-static">
         {{ CashboxModalCtrl.currency.name }} ({{ CashboxModalCtrl.currency.symbol}})
       </p>
     </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.account_id.$invalid }">
-      <label class="control-label">{{ "FORM.LABELS.CASH_ACCOUNT" | translate }}</label>
-      <ui-select
-        name="account_id"
-        ng-model="CashboxModalCtrl.data.account_id"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
-          repeat="account.id as account in CashboxModalCtrl.accounts | filter: { 'hrlabel' : $select.search }">
-          <span ng-bind-html="account.number | highlight:$select.search"></span>
-          <small ng-bind-html="account.label | highlight:$select.search"></small>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+    <bh-account-select
+      id="account-id"
+      account-id="CashboxModalCtrl.data.account_id"
+      label="FORM.LABELS.CASH_ACCOUNT"
+      name="account_id"
+      on-select-callback="CashboxModalCtrl.onSelectCashAccount(account)">
+    </bh-account-select>
 
-    <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.transfer_account_id.$invalid }">
-      <label class="control-label">{{ "FORM.LABELS.TRANSFER_ACCOUNT" | translate }}</label>
-      <ui-select
-        name="transfer_account_id"
-        ng-model="CashboxModalCtrl.data.transfer_account_id"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
-          repeat="account.id as account in CashboxModalCtrl.accounts | filter: { 'hrlabel' : $select.search }">
-          <span ng-bind-html="account.number | highlight:$select.search"></span>
-          <small ng-bind-html="account.label | highlight:$select.search"></small>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+    <bh-account-select
+      id="transfer-account-id"
+      account-id="CashboxModalCtrl.data.transfer_account_id"
+      label="FORM.LABELS.TRANSFER_ACCOUNT"
+      name="transfer_account_id"
+      on-select-callback="CashboxModalCtrl.onSelectTransferAccount(account)">
+    </bh-account-select>
   </div>
 
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="CashboxModalCtrl.dismiss()" data-method="cancel">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
+
     <bh-loading-button loading-state="CashboxModalForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
 
     <span data-role="feedback">
       <span ng-if="CashboxModalForm.$submitted && CashboxModalForm.$invalid" class="text-danger">
-        <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERROR" | translate }}
+        <i class="glyphicon glyphicon-remove-sign"></i> <span translate>FORM.ERRORS.HAS_ERROR</span>
       </span>
     </span>
   </div>

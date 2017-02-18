@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('CashboxCurrencyModalController', CashboxCurrencyModalController);
 
 CashboxCurrencyModalController.$inject = [
-  '$uibModalInstance', 'AccountService', 'CashboxService',
-  'currency', 'cashbox', 'data', 'bhConstants', 'NotifyService'
+  '$uibModalInstance', 'AccountService', 'CashboxService', 'currency', 'cashbox', 'data', 'NotifyService',
 ];
 
 /**
@@ -13,15 +12,13 @@ CashboxCurrencyModalController.$inject = [
  * cashboxes.  Each cashbox must have a currencied account defined for each currency
  * supported by the application.
  */
-function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, bhConstants, Notify) {
+function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, Notify) {
   var vm = this;
 
   // if a currency matches, we are updating.  Otherwise, we are creating.
   var currencyIds = cashbox.currencies.map(function (row) {
     return row.currency_id;
   });
-
-  vm.bhConstants = bhConstants;
 
   // determine whether we will send a POST or a PUT request to the server
   var method = (currencyIds.indexOf(currency.id) > -1) ?
@@ -33,25 +30,24 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
   vm.cashbox = cashbox;
   vm.data = data;
   vm.data.currency_id = currency.id;
+  vm.onSelectCashAccount = onSelectCashAccount;
+  vm.onSelectTransferAccount = onSelectTransferAccount;
 
   // bind methods to the view-model
   vm.dismiss = ModalInstance.dismiss;
   vm.submit = submit;
 
-  /* ------------------------------------------------------------------------ */
-
-  // startup script for the controller
-  function startup() {
-
-    // load accounts and properly order them
-    Accounts.read(null, { detailed : 1 })
-      .then(function (accounts) {
-        vm.accounts = Accounts.order(accounts);
-      })
-      .catch(Notify.handleError);
+  // callback for currency account
+  function onSelectCashAccount(account) {
+    vm.data.account_id = account.id;
   }
 
-  // return data to the
+  // callback for transfer account
+  function onSelectTransferAccount(account) {
+    vm.data.transfer_account_id = account.id;
+  }
+
+  // submit to the server
   function submit(form) {
 
     // if the form has errors, exit immediately
@@ -66,11 +62,8 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
       Boxes.currencies.update(vm.cashbox.id, vm.data);
 
     // upon successful completion, close the modal or error out
-  return promise
-    .then(function () { ModalInstance.close(); })
-    .catch(Notify.handleError);
+    return promise
+      .then(function () { ModalInstance.close(); })
+      .catch(Notify.handleError);
   }
-
-  // startup the controller
-  startup();
 }
