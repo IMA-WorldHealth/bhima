@@ -552,6 +552,7 @@ exports.configure = function configure(app) {
   // purchase
   app.post('/purchases', purchases.create);
   app.get('/purchases', purchases.list);
+  app.get('/purchases/search', purchases.search);
   app.get('/purchases/:uuid', purchases.detail);
   app.put('/purchases/:uuid', purchases.update);
 

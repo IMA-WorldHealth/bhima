@@ -1,8 +1,8 @@
 
-const q       = require('q');
-const mysql   = require('mysql');
+const q = require('q');
+const mysql = require('mysql');
 const winston = require('winston');
-const uuid    = require('node-uuid');
+const uuid = require('node-uuid');
 const Transaction = require('./transaction');
 
 const BadRequest = require('../errors/BadRequest');
@@ -29,10 +29,10 @@ class DatabaseConnector {
   constructor() {
     const url = process.env.DB_URL;
     const params = {
-      host:     process.env.DB_HOST,
-      user:     process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME
+      host     : process.env.DB_HOST,
+      user     : process.env.DB_USER,
+      password : process.env.DB_PASS,
+      database : process.env.DB_NAME,
     };
 
     // favors a connection URL over the pre-defined parameters
@@ -71,7 +71,6 @@ class DatabaseConnector {
   // executes an SQL statement as a
   exec(sql, params) {
     const deferred = q.defer();
-
     this.pool.getConnection((error, connection) => {
       if (error) { return deferred.reject(error); }
 
@@ -110,10 +109,8 @@ class DatabaseConnector {
    * @returns {Promise} the result of the database query
    */
   one(sql, params, id, entity) {
-
     return this.exec(sql, params)
-      .then(rows => {
-
+      .then((rows) => {
         if (rows.length < 1) {
           throw new NotFound(
             `Expected ${entity || 'record'} to contain a single record with id ${id}, but none were found!`
