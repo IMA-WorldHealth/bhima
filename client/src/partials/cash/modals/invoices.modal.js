@@ -3,17 +3,17 @@ angular.module('bhima.controllers')
 
 CashInvoiceModalController.$inject = [
   'DebtorService', 'SessionService', '$timeout', 'NotifyService', '$state',
-  '$rootScope'
+  '$rootScope', '$uibModalInstance',
 ];
 
 /**
  * @module cash/modals/CashInvoiceModalController
  *
  * @description
- * This controller is responsible for retrieving a list of debtor invoices
- * from the server, and allowing selection of any number of invoices.
+ * This controller is responsible for retrieving a list of debtor invoices from the server,
+ * and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, $rootScope) {
+function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, $rootScope, Instance) {
   var vm = this;
 
   var debtorId = $state.params.debtor_uuid;
@@ -26,21 +26,21 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, 
 
   // bind methods
   vm.submit = submit;
-  vm.cancel = dismiss;
+  vm.cancel = Instance.dismiss;
 
   vm.gridOptions = {
-    appScopeProvider : vm,
-    multiSelect: true,
-    fastWatch: true,
-    flatEntityAccess: true,
-    onRegisterApi : onRegisterApi,
-    enableColumnMenus: false,
-    columnDefs : [
-      { name : 'reference' },
-      { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
-      { name : 'date', cellFilter: 'date' }
+    appScopeProvider  : vm,
+    multiSelect       : true,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    onRegisterApi     : onRegisterApi,
+    enableColumnMenus : false,
+    columnDefs        : [
+      { name: 'reference' },
+      { name: 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
+      { name: 'date', cellFilter: 'date' },
     ],
-    minRowsToShow : 10
+    minRowsToShow : 10,
   };
 
   function selectionChangeCallback() {
@@ -107,21 +107,18 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, 
 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
+    var invoices;
 
     // we start in a neutral state
     vm.loading = false;
     vm.hasError = false;
 
     // retrieve the outstanding patient invoices from the ui grid
-    var invoices = vm.getSelectedRows();
+    invoices = vm.getSelectedRows();
 
-    $rootScope.$broadcast('cash:configure', { invoices : invoices });
+    $rootScope.$broadcast('cash:configure', { invoices: invoices });
 
-    $state.go('^.window', $state.params);
-  }
-
-  function dismiss() {
-    $state.go('^.window', $state.params);
+    return Instance.close();
   }
 
   // start up the module
