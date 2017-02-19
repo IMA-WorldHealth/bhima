@@ -1,5 +1,4 @@
 /* global element, by, browser */
-'use strict';
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -8,7 +7,6 @@ const components = require('../shared/components');
 const PurchasesRegistryPage = require('./purchases.registry.page');
 
 function PurchasesRegistryTests() {
-
   // navigate to the page
   before(() => helpers.navigate('#/purchases/list'));
 
@@ -17,7 +15,6 @@ function PurchasesRegistryTests() {
   const page = new PurchasesRegistryPage();
 
   it('find purchases by date interval', () => {
-
     /** Get all purchases of the year 2016 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/12/2016');
@@ -47,10 +44,9 @@ function PurchasesRegistryTests() {
   });
 
   it('find purchase by reference', () => {
-
     /** Existing reference */
     FU.buttons.search();
-    FU.input('$ctrl.bundle.reference', 'TPA1');
+    FU.input('$ctrl.bundle.reference', 'PO.TPA.1');
     FU.modal.submit();
     GU.expectRowCount('PurchaseListGrid', 1);
 
@@ -65,7 +61,6 @@ function PurchasesRegistryTests() {
   });
 
   it('find purchase by supplier', () => {
-
     /** Get all purchase of test Supplier */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.supplier_uuid', 'Test Supplier');
@@ -78,7 +73,6 @@ function PurchasesRegistryTests() {
 
 
   it('find purchase by user', () => {
-
     /** Get all purchase of Regular User */
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.user_id', 'Regular User');
@@ -96,7 +90,6 @@ function PurchasesRegistryTests() {
   });
 
   it('find confirmed purchases', () => {
-
     /** Get all confirmed purchases */
     FU.buttons.search();
     element(by.model('$ctrl.bundle.is_confirmed')).click();
@@ -108,7 +101,6 @@ function PurchasesRegistryTests() {
   });
 
   it('set status to confirmed', () => {
-
     /** Set to confirmed for first */
     page.editStatus(0);
 
@@ -117,7 +109,6 @@ function PurchasesRegistryTests() {
   });
 
   it('find confirmed purchases order after update status', () => {
-
     /** Get all confirmed purchases */
     FU.buttons.search();
     element(by.model('$ctrl.bundle.is_confirmed')).click();
@@ -127,7 +118,6 @@ function PurchasesRegistryTests() {
     // clear filters
     FU.buttons.clear();
   });
-
 }
 
 describe('Purchase Order Registry', PurchasesRegistryTests);
