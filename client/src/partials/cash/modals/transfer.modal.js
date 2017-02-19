@@ -2,20 +2,22 @@ angular.module('bhima.controllers')
   .controller('CashTransferModalController', CashTransferModalController);
 
 CashTransferModalController.$inject = [
-  'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService',
-  'CashService', '$state', 'NotifyService', 'SessionService'
+  'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService', 'SessionService',
+  'CashService', '$state', 'NotifyService', 'ReceiptModal', 'bhConstants', 'VoucherForm'
 ];
 
 /**
- * @module cash/modals/CashTransferModalController
+ * @module CashTransferModalController
  *
  * @description
- * This controller is responsible transferring money between auxiliary cash and a transfer account
-*/
-
-function CashTransferModalController(Currencies, Vouchers, Cashboxes, Accounts, Cash, $state, Notify, Session) {
+ * This controller is responsible transferring money between a cashbox and a transfer account.
+ */
+function CashTransferModalController(Currencies, Vouchers, Cashboxes, Accounts, Session, Cash, $state, Notify, Receipts, bhConstants, VoucherForm) {
   var vm = this;
-  var id = $state.params.id;
+
+  vm.voucher = new VoucherForm('CashTransferForm');
+
+  var TRANSFER_TYPE_ID = bhConstants.transactionType.TRANSFER;
 
   vm.loadAccountDetails = loadAccountDetails;
   vm.submit = submit;
@@ -24,69 +26,103 @@ function CashTransferModalController(Currencies, Vouchers, Cashboxes, Accounts, 
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var cashAccountCurrency;
+    var record = prepareVoucherRecord();
 
-    // TODO - clean this code up.
-    vm.cashbox.currencies.forEach(function (row) {
-      if (row.currency_id === vm.record.currency_id) {
-        cashAccountCurrency = row;
-      }
-    });
-
-    var record = Cash.getTransferRecord(cashAccountCurrency, vm.record.amount, vm.record.currency_id);
+    // validate
+    var validation = vm.voucher.validate();
+    if (!validation) { return; }
 
     return Vouchers.create(record)
       .then(function (response) {
         Notify.success('CASH.TRANSFER.SUCCESS');
-        return $state.go('^.window', { id : id });
+        return Receipts.voucher(response.uuid, true);
+      })
+      .then(function () {
+        return $state.go('^.window', { id : $state.params.id });
       })
       .catch(Notify.handleError);
+  }
+
+  function prepareVoucherRecord() {
+
+    // extract the voucher from the VoucherForm
+    var record = vm.voucher.details;
+    record.items = vm.voucher.store.data;
+
+    // configure the debits/credits appropriately
+
+    var debit = record.items[0];
+    debit.configure({ debit : vm.amount, account_id : vm.transferAccount.id });
+
+    var credit = record.items[1];
+    credit.configure({ credit : vm.amount, account_id : vm.cashAccount.id });
+
+    // format voucher description as needed
+    vm.voucher.description('CASH.TRANSFER.DESCRIPTION', {
+      amount : vm.amount,
+      fromLabel : vm.cashAccount.label,
+      toLabel : vm.transferAccount.label,
+      userName : Session.user.display_name
+    });
+
+    return record;
+  }
+
+  // this object retains a mapping of the currency ids to their respective accounts.
+  var cashCurrencyMap = {};
+
+  // this function maps the accounts to their respective currencies.
+  // { currency_id :  { currency_id, account_id, transfer_account_id } }
+  function mapCurrenciesToAccounts(currencies) {
+    return currencies.reduce(function (map, currency) {
+      map[currency.currency_id] = currency;
+      return map;
+    }, {});
   }
 
   // fired on state startup
   function startup() {
 
-    // the blank transfer record
-    vm.record = {
-      currency_id : Session.enterprise.currency_id
-    };
+    // set the transaction type id
+    vm.voucher.details.type_id = TRANSFER_TYPE_ID;
 
     // load needed modules
     Currencies.read()
       .then(function (currencies) {
         vm.currencies = currencies;
-        return Cashboxes.read(id);
+        return Cashboxes.read($state.params.id);
       })
       .then(function (cashbox) {
         vm.cashbox = cashbox;
         vm.disabledCurrencyIds = Cash.calculateDisabledIds(cashbox, vm.currencies);
 
-        // load the accounts up
-        loadAccountDetails();
+        // load the accounts up for the voucher currency
+        loadAccountDetails(vm.voucher.details.currency_id);
       })
       .catch(Notify.handleError);
   }
 
-  function loadAccountDetails() {
-    var transferAccountId;
-    var cashAccountId;
+  function loadAccountDetails(selectedCurrencyId) {
 
-    vm.cashbox.currencies.forEach(function (row) {
-      if (row.currency_id === vm.record.currency_id) {
-        transferAccountId = row.transfer_account_id;
-        cashAccountId = row.account_id;
-      }
-    });
+    // create the cashCurrencyMap
+    cashCurrencyMap = mapCurrenciesToAccounts(vm.cashbox.currencies);
 
-    Accounts.read(transferAccountId)
+    // pull the accounts from the cashCurrencyMap
+    var accounts = cashCurrencyMap[selectedCurrencyId];
+
+    // look up the transfer account
+    Accounts.read(accounts.transfer_account_id)
       .then(function (account) {
-        vm.cashAccount = account;
+        account.hrlabel = Accounts.label(account);
+        vm.transferAccount = account;
       })
       .catch(Notify.handleError);
 
-    Accounts.read(cashAccountId)
+    // look up the cash account
+    Accounts.read(accounts.account_id)
       .then(function (account) {
-        vm.transferAccount = account;
+        account.hrlabel = Accounts.label(account);
+        vm.cashAccount = account;
       })
       .catch(Notify.handleError);
   }

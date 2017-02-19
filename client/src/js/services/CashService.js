@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$http', 'util'
+  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
 ];
 
 /**
@@ -12,18 +12,16 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
+function CashService(Modal, Api, Exchange, Session, moment) {
   var service     = new Api('/cash/');
   var urlCheckin  = '/cash/checkin/';
 
   // templates for descriptions
-  var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :name';
   var PAYMENT_DESCRIPTION = 'Cash Payment / :date / :name \n ';
   var CAUTION_DESCRIPTION = 'Caution Payment / :date / :name';
 
   // custom methods
   service.create = create;
-  service.getTransferRecord = getTransferRecord;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatCashDescription = formatCashDescription;
   service.formatFilterParameters = formatFilterParameters;
@@ -97,32 +95,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   }
 
   /**
-   * This method is responsible to create a voucher object and it back
-   */
-  function getTransferRecord(cashAccountCurrency, amount, currencyId) {
-    var voucher = {
-      project_id: Session.project.id,
-      currency_id: currencyId,
-      amount: amount,
-      description: generateTransferDescription(),
-      user_id: Session.user.id,
-
-      // two lines (debit and credit) to be recorded in the database
-      items: [{
-        account_id : cashAccountCurrency.account_id,
-        debit : 0,
-        credit : amount,
-      }, {
-        account_id : cashAccountCurrency.transfer_account_id,
-        debit : amount,
-        credit : 0,
-      }]
-    };
-
-    return voucher;
-  }
-
-  /**
    * @method calculateDisabledIds
    *
    * @description
@@ -150,17 +122,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   }
 
   /**
-   * This method is responsible to generate a description for the transfer operation.
-   * @private
-   */
-  function generateTransferDescription() {
-    return TRANSFER_DESCRIPTION
-      .replace(':date', moment().format('YYYY-MM-DD'))
-      .replace(':user', Session.user.display_name);
-  }
-
-
-  /**
    * @method formatFilterParameters
    * @description format filters parameters
    */
@@ -173,7 +134,8 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
       { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
-      { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' }
+      { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' },
+      { field: 'reversed', displayName: 'CASH.REGISTRY.REVERSED_RECORDS' },
     ];
 
     // returns columns from filters
@@ -211,10 +173,10 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
    *   your code here
    *  });
    */
-  function checkCashPayment (invoiceUuid){
+  function checkCashPayment(invoiceUuid) {
     var url = urlCheckin + invoiceUuid;
-    return $http.get(url)
-      .then(util.unwrapHttpResponse);
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
   }
 
   return service;

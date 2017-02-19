@@ -1,15 +1,15 @@
 angular.module('bhima.controllers')
-    .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
+  .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance', 'CurrencyService'
+  'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance',
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, Currencies) {
+function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance) {
   var vm = this;
 
   // global variables
@@ -51,7 +51,7 @@ function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, Cu
   function formatFilterParameters() {
     var out = {};
     for (var i in vm.bundle) {
-      if (vm.bundle[i]) {
+      if (angular.isDefined(vm.bundle[i])) {
         out[i] = vm.bundle[i];
       }
     }

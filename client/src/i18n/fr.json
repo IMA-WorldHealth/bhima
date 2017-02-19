@@ -105,6 +105,11 @@
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Inclure uniquement les paiements inversees",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclure toutes les paiements inversees",
+      "REVERSED_RECORDS" : "Paiements Inversees"
+    },
     "PAYMENT"         : "Paiement",
     "RECEIPT": {
       "TITLE"   : "Recu",
@@ -121,7 +126,8 @@
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
       "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
-      "SUCCESS" : "Transfer effectué vers le compte de transfer."
+      "SUCCESS" : "Transfer effectué vers le compte de transfer.",
+      "DESCRIPTION" : "Transfer de {{ amount }} viens de {{ fromLabel }} à {{ toLabel }} par {{ userName }}."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -269,7 +275,9 @@
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini pour aujourd'hui!",
     "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",
     "NOT_FOUND"        : "Cet enregistrement n'a pas pu être trouvé",
-    "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
+    "NO_PERMISSIONS"   : "La connexion a réussi, mais vous n'avez aucune autorisation. Veuillez contacter un administrateur système.",
+    "NO_PROJECT"       : "Aucune autorisation pour ce projet, Veuillez contacter un administrateur système",
+    "UNAUTHORIZED"     : "Vous avez soumis un mauvais nom ou mot de passe.  Entrez un nom ou un mot de passe valid pour continuer.",
     "UNKNOWN"          : "Une erreur est survenue.",
     "OVERPAID_INVOICE" : "Vous avez payé trop aux factures.",
     "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
@@ -408,7 +416,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -618,6 +626,7 @@
       "ORIGIN_VILLAGE"         : "Village d'Origine",
       "ORIGIN_SECTOR"          : "Secteur d'Origine",
       "OTHER"                  : "Autre",
+      "ORDER"                  : "Ordre",
       "PARENT_ACCOUNT"         : "Compte parent",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Mot de passe",
@@ -698,8 +707,8 @@
       "TOTAL"                  : "Total",
       "TOTAL_BALANCE_REMAINING" : "Solde Total Restant",
       "TOTAL_BILLED"           : "Total Facture",
-      "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_PAID"             : "Total paye",
+      "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_SELECTED_INVOICES": "Total des factures selectionnées",
       "TO_ACCOUNT"             : "Au Compte",
       "TO_LOCK"                : "Bloquer",
@@ -1215,10 +1224,14 @@
     "BALANCE"       : "Rapport de la Balance",
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
-      "THIRTY_DAYS" : "Moins de 30 jours",
-      "SIXTY_DAYS"  : "Moins de 60 jours",
-      "NINETY_DAYS" : "Moins de 90 jours",
-      "OVER_NINETY_DAYS" : "Audela de 90 jours"
+      "ZERO_TO_THIRTY_DAYS" : "Moins de 30 jours",
+      "THIRTY_TO_SIXTY_DAYS"  : "30 a 60 jours",
+      "SIXTY_TO_NINETY_DAYS" : "60 a 90 jours",
+      "OVER_NINETY_DAYS" : "Plus de 90 jours"
+    },
+    "OPEN_DEBTORS" : {
+      "TITLE" : "Debiteurs Avec Dettes",
+      "TREE" : "Debiteurs Avec Dettes"
     },
     "CASH_EXPENSE"     : "Depenses",
     "CASH_INCOME"      : "Recettes",
@@ -1319,6 +1332,14 @@
     "VERSION": "Version",
     "EVENTS" : "Evement système"
   },
+  "ORDER" : {
+    "PAYMENT_DATE_ASC" : "+ Date de Paiement",
+    "PAYMENT_DATE_DESC" : "- Date de Paiement",
+    "INVOICE_DATE_ASC" : "+ Date de Facturation",
+    "INVOICE_DATE_DESC" : "- Date de Facturation",
+    "DEBT_ASC" : "+ Dettes",
+    "DEBT_DESC" : "- Dettes"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -1383,7 +1404,9 @@
       "LAST_BILL"          : "Dernière Facture",
       "LAST_NAME"          : "Nom",
       "LAST_TRANSACTION"   : "Derniers Transactions",
-      "LAST_VISIT"         : "Derniere visite",
+      "LAST_VISIT"         : "Derniere Visite",
+      "LAST_INVOICE"       : "Derniere Facture",
+      "LAST_PAYMENT"       : "Derniere Paiement",
       "LISTS"              : "Liste des prix enregistrés",
       "LOADING"            : "Récupération des données à partir du serveur.",
       "LOCKED"             : "Bloquée",
@@ -1446,6 +1469,7 @@
       "TITLE"              : "Titre",
       "TOTAL"              : "Total",
       "TOTAL_COST"         : "Total",
+      "TOTAL_DEBT"         : "Total des Dettes",
       "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
@@ -1588,6 +1612,9 @@
       "TITLE"                 : "Ajout des transactions",
       "VALID_TOTALS"          : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"               : "Bordereau de Transfert"
+    },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
     },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Option pour cashflow",

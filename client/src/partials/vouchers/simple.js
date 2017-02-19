@@ -110,6 +110,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     // configure the basics of the transaction type.
     vm.Voucher.details.description = data.description;
     vm.Voucher.details.type_id = data.type_id;
+
     vm.amount = data.amount;
 
     var debitRow = vm.Voucher.store.data[0];

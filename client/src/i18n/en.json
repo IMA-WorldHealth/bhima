@@ -105,6 +105,11 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
+      "REVERSED_RECORDS" : "Reversed Records"
+    },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH"       : "Missing Cash",
@@ -120,7 +125,8 @@
       "TITLE" : "New Cash Transfer",
       "ACTION" : "You are transferring funds out of the cashbox.",
       "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below.",
-      "SUCCESS" : "Successfully transferred money out of the cash window."
+      "SUCCESS" : "Successfully transferred money out of the cash window.",
+      "DESCRIPTION" : "Cash transfer of {{ amount }} from {{ fromLabel }} to {{ toLabel }} by {{ userName }}."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -267,7 +273,9 @@
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
     "NOT_ALLOWED"      : "You are not allowed to perform this action",
     "NOT_FOUND"        : "This record could not be found",
-    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
+    "NO_PERMISSIONS"   : "The login succeeded, but you have no permissions. Please see a system administrator.",
+    "NO_PROJECT"       : "No permissions for that project,  Please see a system administrator",
+    "UNAUTHORIZED"     : "You have submitted a bad username or password combination.  Please login in with valid credentials to continue.",
     "UNKNOWN"          : "An error occurred.",
     "OVERPAID_INVOICE" : "You have overpaid the invoices.",
     "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
@@ -407,7 +415,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -616,6 +624,7 @@
       "ON_DELIVERY"            : "On Delivery",
       "ON_PURCHASE"            : "On Purchase",
       "OTHER"                  : "Other",
+      "ORDER"                  : "Order",
       "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
@@ -1197,10 +1206,14 @@
     "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
-      "THIRTY_DAYS" : "Less Than 30 Days",
-      "SIXTY_DAYS" : "Less Than 60 Days",
-      "NINETY_DAYS" : "Less Than 90 Days",
+      "ZERO_TO_THIRTY_DAYS" : "Less Than 30 Days",
+      "THIRTY_TO_SIXTY_DAYS" : "30 to 60 Days",
+      "SIXTY_TO_NINETY_DAYS" : "60 to 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
+    },
+    "OPEN_DEBTORS" : {
+      "TITLE" : "Debtors with Unpaid Debts",
+      "TREE" : "Open Debtors"
     },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
@@ -1299,6 +1312,14 @@
     "VERSION": "Version",
     "EVENTS" : "System Events"
   },
+  "ORDER" : {
+    "PAYMENT_DATE_ASC" : "+ Payment Date",
+    "PAYMENT_DATE_DESC" : "- Payment Date",
+    "INVOICE_DATE_ASC" : "+ Invoice Date",
+    "INVOICE_DATE_DESC" : "- Invoice Date",
+    "DEBT_ASC" : "+ Debts",
+    "DEBT_DESC" : "- Debts"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -1363,6 +1384,8 @@
       "LAST_NAME"          : "Last Name",
       "LAST_TRANSACTION"   : "Last Transactions",
       "LAST_VISIT"         : "Last Visit",
+      "LAST_INVOICE"       : "Last Invoice",
+      "LAST_PAYMENT"       : "Last Payment",
       "LISTS"              : "Registered price list",
       "LOADING"            : "Fetching data from the server.",
       "LOCKED"             : "Locked",
@@ -1424,6 +1447,7 @@
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
       "TOTAL_COST"         : "Total Cost",
+      "TOTAL_DEBT"         : "Total Debt",
       "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "Transaction ID",
       "TRANSACTION_PRICE"  : "Transaction Price",
@@ -1568,6 +1592,9 @@
       "VALID_TOTALS"          : "Transactions are valid (balanced transaction)",
       "VOUCHER"               : "Voucher"
     },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
+    },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Cashflow Option",
       "CONVENTION_INVOICES" : "Convention - Invoices payment",
@@ -1597,8 +1624,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
-    },
-    "REPORT": "Report"
+    }
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
