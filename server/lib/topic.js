@@ -12,57 +12,60 @@
  * @todo refine the ideas of channels, events, and entities to something that
  * can be easily localized and used.
  *
- * @requires db
+ * @requires lodash
  * @requires ioredis
  * @requires winston
+ * @requires db
  */
 
-const db = require('./db');
+const _ = require('lodash');
 const Redis = require('ioredis');
 const winston = require('winston');
+const db = require('./db');
+
+const hasEventsEnabled = (process.env.ENABLE_EVENTS === 'true');
 
 // event constants
 const events = {
-  CREATE: 'create',
-  UPDATE: 'update',
-  DELETE: 'delete',
-  REPORT: 'report',
-  LOGIN: 'login',
+  CREATE : 'create',
+  UPDATE : 'update',
+  DELETE : 'delete',
+  REPORT : 'report',
+  LOGIN  : 'login',
   RELOAD : 'reload',
-  LOGOUT: 'logout',
-  SEARCH: 'search'
+  LOGOUT : 'logout',
+  SEARCH : 'search',
 };
 
 // event entities
 const entities = {
-  PATIENT: 'patient',
-  INVOICE: 'invoice',
-  PAYMENT: 'payment',
-  VOUCHER: 'voucher',
-  PATIENT_GROUP: 'patient group',
-  DEBTOR_GROUP: 'debtor_group',
-  EMPLOYEE: 'employee',
-  USER: 'user',
-  SERVICE: 'service',
-  SUPPLIER: 'supplier',
-  PERMISSION: 'permission',
-  LOCATION: 'location',
-  CASHBOX: 'cashbox'
+  PATIENT       : 'patient',
+  INVOICE       : 'invoice',
+  PAYMENT       : 'payment',
+  VOUCHER       : 'voucher',
+  PATIENT_GROUP : 'patient group',
+  DEBTOR_GROUP  : 'debtor_group',
+  EMPLOYEE      : 'employee',
+  USER          : 'user',
+  SERVICE       : 'service',
+  SUPPLIER      : 'supplier',
+  PERMISSION    : 'permission',
+  LOCATION      : 'location',
+  CASHBOX       : 'cashbox',
 };
 
 // event channels
 const channels = {
-  ALL: 'all',
-  APP: 'app',
-  MEDICAL: 'medical',
-  FINANCE: 'finance',
-  INVENTORY: 'inventory',
-  ADMIN: 'administration'
+  ALL       : 'all',
+  APP       : 'app',
+  MEDICAL   : 'medical',
+  FINANCE   : 'finance',
+  INVENTORY : 'inventory',
+  ADMIN     : 'administration',
 };
 
 // writes events into the event database table
 function databaseLogger(data) {
-
   if (!data.entity) {
     throw new Error(
       `[topic] The event ${data.event} expected an entity, but got ${data.entity} instead.`
@@ -70,13 +73,19 @@ function databaseLogger(data) {
   }
 
   const record = {
-    timestamp: new Date(data.timestamp),
-    user_id: data.user_id,
-    channel: data.channel,
-    entity : data.entity.toUpperCase(),
-    type: data.event,
-    data: JSON.stringify(data)
+    timestamp : new Date(data.timestamp),
+    user_id   : data.user_id,
+    channel   : data.channel,
+    entity    : data.entity,
+    type      : data.event,
+    data      : JSON.stringify(data),
   };
+
+  // this is cheeky substitution, but works.  Eventually we can standardize this using lodash
+  // template strings
+  winston.verbose(
+    `[${record.channel}] ${data.user || record.user_id} ${record.type}ed a ${record.entity}.`
+ );
 
   /*
    * @todo - in a week of operation on a small scale ~600 events were
@@ -155,6 +164,12 @@ class Topic {
    * the database for future
    */
   constructor() {
+    this.disabled = !hasEventsEnabled;
+
+    // perform no configuration if events are disabled
+    if (this.disabled) {
+      return;
+    }
 
     // create a redis client for pub/sub messaging
     this.publisher = new Redis();
@@ -175,10 +190,10 @@ class Topic {
    * @param {Object} data  data to send to all subscribers
    */
   publish(channel, data) {
+    if (this.disabled) { return; }
 
-    data.timestamp = Date.now();
-    data.channel = channel;
-
+    const timestamp = Date.now();
+    _.extend(data, { timestamp, channel });
     const serial = serialize(data);
 
     // skip if broadcasting on the ALL channel (we do this by default anyway)
@@ -203,14 +218,15 @@ class Topic {
    *   are emitted
    */
   subscribe(channel, callback) {
+    if (this.disabled) { return; }
+
     this.subscriber.subscribe(channel, (err, count) => {
       winston.info(`Subscription count on channel [${channel}] is now [${count}].`);
     });
 
     // open a subscription to the channel
-    let subscription = (channel, data) => callback(deserialize(data));
+    const subscription = (chnl, data) => callback(deserialize(data));
     this.subscriber.on('message', subscription);
-    return subscription;
   }
 
   /**
@@ -222,6 +238,7 @@ class Topic {
    * @param {String} channel - the channel to unsubscribe from.
    */
   unsubscribe(channel, subscription) {
+    if (this.disabled) { return; }
     this.subscriber.unsubscribe(channel);
     this.subscriber.removeListener('message', subscription);
   }

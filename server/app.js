@@ -39,18 +39,17 @@ const app = express();
  * defaults to 'production'
  */
 function configureEnvironmentVariables() {
-
   // if the process NODE_ENV is not set, default to production.
   process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
   // normalize the environmental variable name
-  let env = process.env.NODE_ENV.toLowerCase();
+  const env = process.env.NODE_ENV.toLowerCase();
 
   // decode the file path for the environmental variables.
-  let dotfile = `server/.env.${env}`.trim();
+  const dotfile = `server/.env.${env}`.trim();
 
   // load the environmental variables into process using the dotenv module
-  console.log(`[app] Loading configuration from ${dotfile}.`);
+  winston.info(`[app] Loading configuration from ${dotfile}.`);
   require('dotenv').config({ path : dotfile });
 }
 
@@ -67,22 +66,21 @@ function configureEnvironmentVariables() {
  *
  */
 function configureLogger() {
-
   // set logging levels to that found in the configuration file (default: warn)
-  winston.level = process.env.LOG_LEVEL || 'warn';
+  winston.level = (process.env.LOG_LEVEL || 'warn');
 
   const logFile = process.env.LOG_FILE;
 
   // allow logging to a file if needed
   if (logFile) {
-    winston.add(winston.transports.File, { filename : logFile });
+    winston.add(winston.transports.File, { filename: logFile });
   }
 
   // be sure to log unhandled exceptions
   winston.handleExceptions(new winston.transports.Console({
-    humanReadableUnhandledException: true,
-    colorize: true,
-    prettyPrint: true
+    humanReadableUnhandledException : true,
+    colorize                        : true,
+    prettyPrint                     : true,
   }));
 }
 
@@ -93,7 +91,6 @@ function configureLogger() {
  * Set up the HTTP server to listen on the correct
  */
 function configureServer() {
-
   // destruct the environmental variables
   const port = process.env.PORT;
   const mode = process.env.NODE_ENV;
@@ -103,7 +100,6 @@ function configureServer() {
     .listen(process.env.PORT, () => {
       winston.info(`Server started in mode ${mode} on port ${port}.`);
     });
-
 }
 
 // run configuration tools
