@@ -461,8 +461,7 @@ ol.headercrumb {
   font-weight : bold;
 }
 
-.headercrumb > .static,
-.headercrumb > .static > a {
+.headercrumb > .static {
   text-decoration: none;
   color: #828080;
 }
