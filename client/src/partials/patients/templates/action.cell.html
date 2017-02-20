@@ -5,6 +5,7 @@
   </a>
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a data-method="record" ui-sref="patientRecord.details({patientID : row.entity.uuid})" href>
         <span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span>
@@ -17,7 +18,7 @@
     </li>
     <li>
       <a data-method="card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
-        <span class="fa fa-user"></span> <span translate>PATIENT_REGISTRY.CARD</span>
+        <span class="fa fa-id-card-o"></span> <span translate>PATIENT_REGISTRY.CARD</span>
       </a>
     </li>
     <li class="divider"></li>
