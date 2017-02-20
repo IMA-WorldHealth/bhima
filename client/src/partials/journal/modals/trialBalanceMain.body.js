@@ -20,49 +20,61 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate'},
     { field : 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', visible : false},
     { field : 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', visible : false},
-    { field : 'balance_before',
-      displayName : 'TABLE.COLUMNS.BEFORE',
+    { field            : 'balance_before',
+      displayName      : 'TABLE.COLUMNS.BEFORE',
       headerCellFilter : 'translate',
-      cellFilter : 'currency:' + Session.enterprise.currency_id,
-      visible : true
-    },
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/debit_equiv.cell.html' },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/credit_equiv.cell.html'},
-    { field : 'balance_final',
-      displayName : 'TABLE.COLUMNS.AFTER',
+      cellClass        : 'text-right',
+      cellFilter       : 'currency:' + Session.enterprise.currency_id,
+      visible          : true,
+    }, {
+      field            : 'debit_equiv',
+      displayName      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter : 'translate',
-      cellFilter : 'currency:' + Session.enterprise.currency_id,
-      visible : true
-    },
-    { field : 'actions',
-      displayName : '',
-      headerCellFilter: 'translate',
-      visible: true,
-      enableCellEdit: false,
-      cellTemplate: '/partials/journal/templates/details-link.cell.html',
-      allowCellFocus: false
-    }
-  ];
+      cellClass        : 'text-right',
+      cellFilter       : 'currency:' + Session.enterprise.currency_id,
+    }, {
+      field            : 'credit_equiv',
+      displayName      : 'TABLE.COLUMNS.CREDIT',
+      headerCellFilter : 'translate',
+      cellFilter       : 'currency:' + Session.enterprise.currency_id,
+      cellClass        : 'text-right',
+    }, {
+      field            : 'balance_final',
+      displayName      : 'TABLE.COLUMNS.AFTER',
+      headerCellFilter : 'translate',
+      cellClass        : 'text-right',
+      cellFilter       : 'currency:' + Session.enterprise.currency_id,
+      visible          : true,
+    }, {
+      field            : 'actions',
+      displayName      : '',
+      headerCellFilter : 'translate',
+      visible          : true,
+      cellTemplate     : '/partials/journal/templates/details-link.cell.html',
+    }];
 
-  var errorList = null, records = $state.params.records;
+  var errorList = null;
+  var records = $state.params.records;
 
   vm.enterprise = Session.enterprise;
   vm.dataByTrans = records;
   vm.hasError = false;
 
   vm.viewDetail = {
-    'trans' : transactionView,
-    'account' : accountView,
-    key : 'FORM.BUTTONS.GROUP_BY_TRANSACTION',
-    selected : 'account'
+    trans    : transactionView,
+    account  : accountView,
+    key      : 'FORM.BUTTONS.GROUP_BY_TRANSACTION',
+    selected : 'account',
   };
 
   vm.gridOptions = {
     enableColumnMenus          : false,
     treeRowHeaderAlwaysVisible : false,
+    flatEntityAccess           : true,
+    fastWatch                  : true,
     appScopeProvider           : vm,
     columnDefs                 : columns,
-    onRegisterApi              : function(gridApi) { vm.gridApi = gridApi;}
+    onRegisterApi              : function (gridApi) { vm.gridApi = gridApi; },
   };
 
   vm.grouping = new Grouping(vm.gridOptions, false);
@@ -91,7 +103,6 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * This view is one of the two mains views because from this view you can post to the general ledger
    **/
   function transactionView() {
-
     vm.columns.setVisibleColumns({
       balance_before : false,
       balance_final : false,
@@ -120,7 +131,6 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * This view is one of the two mains views because from this view you can post to the general ledger
    **/
   function accountView() {
-
     vm.columns.setVisibleColumns({
       balance_before : true,
       balance_final : true,
