@@ -212,7 +212,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
-  $rootScope.$on('$locationChangeStart', (event, next) => {
+  $rootScope.$on('$locationChangeStart', function (event, next)  {
     var isLoggedIn = !!SessionService.user;
 
     var isLoginState = loginStateRegexp.test(next);
@@ -280,7 +280,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     if (!paths || isPublicPath) { return; }
 
     // check if the user is authorized to access this route.
-    var authorized = paths.some((data) => {
+    var authorized = paths.some(function (data) {
       return path.indexOf(data.path) === 0 && data.authorized;
     });
 
