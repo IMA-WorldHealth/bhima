@@ -27,12 +27,22 @@
       </div>
 
       <div class="toolbar-item">
+        <button
+          ng-click="InventoryCtrl.research()"
+          data-method="research"
+          class="btn btn-default">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
         <bh-pdf-print
           pdf-url="/reports/inventory/items"
           disable-cache="true">
         </bh-pdf-print>
       </div>
     </div>
+
   </div>
 </div>
 

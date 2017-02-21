@@ -22,6 +22,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   var cache = new AppCache('Inventory');
 
   vm.toggleFilter = toggleFilter;
+  vm.research = research;
 
   // grid default options
   var columnDefs  = [{
@@ -78,6 +79,23 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.filterEnabled = cache.filterEnabled = !vm.filterEnabled;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
+  // research and filter data in Inventory List
+  function research() {
+    Inventory.openSearchModal()
+      .then(function (parameters) {
+
+        Inventory.search(parameters)
+          .then(function (rows) {
+            vm.gridOptions.data = rows;
+          })
+          .catch(handleError)
+          .finally(function () {
+            toggleLoadingIndicator();
+          });      
+
+      });
   }
 
   /* startup */
