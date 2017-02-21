@@ -42,13 +42,13 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // grid default options
   vm.gridOptions = {
-    appScopeProvider : vm,
-    showColumnFooter : true,
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
     enableColumnMenus : false,
-    flatEntityAccess : true,
-    fastWatch : true,
-    enableFiltering : vm.filterEnabled,
-    rowTemplate : '/partials/cash/payments/templates/grid.canceled.tmpl.html'
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    enableFiltering   : vm.filterEnabled,
+    rowTemplate       : '/partials/cash/payments/templates/grid.canceled.tmpl.html',
   };
 
   vm.gridOptions.columnDefs = [{
