@@ -1,30 +1,17 @@
-<div class="row" style="margin-bottom: 5px;">
+<div class="row" style="margin: 5px;" ng-if="TrialBalanceMainBodyCtrl.showErrorButton">
   <div class="col-xs-4">
     <button
       type="button"
-      ng-show="TrialBalanceMainBodyCtrl.showErrorButton"
       class="btn"
-      ng-class="
-        { 'btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
-          'btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
-          'btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess}"
+      ng-class="{
+        'btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
+        'btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
+        'btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess
+      }"
       ng-click="TrialBalanceMainBodyCtrl.viewErrorList()"
       data-method="show-error">
       <i class="fa fa-bars"></i>
       <span translate>FORM.BUTTONS.VIEW_ERRORS</span>
-    </button>
-  </div>
-
-  <div class="col-xs-offset-5 col-xs-3 text-right">
-    <button
-      ng-if="!TrialBalanceMainBodyCtrl.loading"
-      id="switchViewID"
-      type="button"
-      class="btn btn-default"
-      ng-click="TrialBalanceMainBodyCtrl.switchView()"
-      data-method="switch">
-      <i class="fa fa-retweet"></i>
-      <span translate>{{TrialBalanceMainBodyCtrl.viewDetail.key }}</span>
     </button>
   </div>
 </div>

@@ -178,7 +178,8 @@ exports.getDataPerAccount = function (req, res, next) {
   //   3) To add clarity, a wrapper SELECT is used to show the balance_before, movements, and then
   //     balance_final as the sum of all of the above.  It also brings in the account_number
   const sql = `
-    SELECT account_id, account.number AS account_number, balance_before, debit_equiv, credit_equiv,
+    SELECT account_id, account.number AS number, account.label AS label,
+      balance_before, debit_equiv, credit_equiv,
       balance_before + debit_equiv - credit_equiv AS balance_final
     FROM (
       SELECT posting_journal.account_id, totals.balance_before, SUM(debit_equiv) AS debit_equiv,

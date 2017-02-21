@@ -1,12 +1,21 @@
 <button
+  id="cancelID"
+  type="button"
+  class="btn btn-default"
+  ng-click="TrialBalanceFooterDetailCtrl.cancel()">
+  <span translate>FORM.BUTTONS.CANCEL</span>
+</button>
+
+<button
   ng-if="TrialBalanceFooterDetailCtrl.stateParams.feedBack"
   id="detailID"
   type="button"
   data-method="reset"
+  class="btn btn-default"
   ng-class="{
-  'btn btn-danger' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasError,
-  'btn btn-warning': TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasWarning,
-  'btn btn-primary' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasSuccess}"
+  'btn-danger' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasError,
+  'btn-warning': TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasWarning,
+  'btn-primary' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasSuccess}"
   ng-click="TrialBalanceFooterDetailCtrl.reset()">
-  {{ "FORM.BUTTONS.RETURN" | translate }}
+  <span translate>FORM.BUTTONS.RETURN</span>
 </button>
