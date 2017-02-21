@@ -84,6 +84,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   }
 
   function runResearch(params){ 
+
     vm.filtersFmt = Inventory.formatFilterParameters(params);
     Inventory.search(params)
       .then(function (rows) {
@@ -104,6 +105,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
+    $state.params.filters = null;
     delete vm.filters[key];
     runResearch(vm.filters);
   }
@@ -111,6 +113,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   // clears the filters 
   function clearFilters() {
     startup();
+    $state.params.filters = null;
     vm.filtersFmt = {};
   }
 
@@ -118,11 +121,19 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   function startup() {
     vm.filters = {};
 
-    Inventory.read()
-      .then(function (inventory) {
-        vm.gridOptions.data = inventory;
-      })
-      .catch(Notify.handleError);
+    // if filters are directly passed in 
+    if ($state.params.filters) {
+      runResearch($state.params.filters);
+
+    } else {
+      Inventory.read()
+        .then(function (inventory) {
+          vm.gridOptions.data = inventory;
+        })
+        .catch(Notify.handleError);      
+    }
+
+
 
     // load the cached filter state
     vm.filterEnabled = cache.filterEnabled || false;
