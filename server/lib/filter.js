@@ -140,7 +140,7 @@ class FilterParser {
         preparedStatement = `voucher.type_id = ?`;
       } else {
         // exclude all record that meet the reversed criteria
-        preparedStatement = `voucher.type_id IS NULL OR voucher.type_id <> ?`;
+        preparedStatement = `(voucher.type_id IS NULL OR voucher.type_id <> ?)`;
       }
 
       // using the reversal voucher id as the parameter is a hack, this will be
