@@ -150,6 +150,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         if (originalRecord) {
           // only remove rows that haven't been added in this session
           this._entity.removedRows.push(row);
+
+          this._entity.data.remove(row.uuid);
+          // removeFromNonIndexedArray(this._entity.rows, 'uuid', row.uuid, 'entity');
+
+          console.log('rmmmmmmmmmmmmmmmmmmm');
+          console.log(this._entity);
           console.log('removeRowIfExists', row);
         } else {
           // directly delete from rows that have been added
@@ -158,6 +164,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         this.removeRowIfExists(row);
       }
     }.bind(this));
+
+    this.digestAggregates();
   }
 
   Transactions.prototype.addRow = function addRow() {
@@ -189,6 +197,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     setPropertyOnTransaction.call(this, transactionRow.uuid, ROW_EDIT_FLAG, true);
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     console.log(uiGridConstants.dataChange);
+
+    this.digestAggregates();
   }
 
   // tied to afterCellEdit event
@@ -212,6 +222,9 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     // console.log('Updated', colDef.name, 'from', oldValue, 'to', newValue);
     console.log('_changes', this._changes);
     console.log('_entity', this._entity);
+
+    console.log('calling digest');
+    this.digestAggregates();
   }
 
   /**
@@ -450,29 +463,29 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         this._entity = {
           uuid : uuid,
           data : transactionData,
-          rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
+          // rows : this.getTransactionRows(uuid, RETURN_DATA_ENTITY),
           aggregates : {},
           newRows : new Store({ identifier : 'uuid' }),
           removedRows : []
         };
 
         console.log('ROWS FOR EDIT');
-        console.log(this._entity.rows);
+        console.log(rows);
 
         // shared data needed for all rows
-        this._entity.trans_id = this._entity.rows[0].entity.trans_id;
-        this._entity.transaction = this._entity.rows[0].entity.transaction;
-        this._entity.date = this._entity.rows[0].entity.trans_date;
-        this._entity.record_uuid = this._entity.rows[0].entity.record_uuid;
-        this._entity.period_id = this._entity.rows[0].entity.period_id;
-        this._entity.project_id = this._entity.rows[0].entity.project_id;
-        this._entity.fiscal_year_id = this._entity.rows[0].entity.fiscal_year_id;
-        this._entity.currency_id = this._entity.rows[0].entity.currency_id;
-        this._entity.user_id = this._entity.rows[0].entity.user_id;
-        this._entity.project_name = this._entity.rows[0].entity.project_name;
+        this._entity.trans_id = rows[0].trans_id;
+        this._entity.transaction = rows[0].transaction;
+        this._entity.date = rows[0].trans_date;
+        this._entity.record_uuid = rows[0].record_uuid;
+        this._entity.period_id = rows[0].period_id;
+        this._entity.project_id = rows[0].project_id;
+        this._entity.fiscal_year_id = rows[0].fiscal_year_id;
+        this._entity.currency_id = rows[0].currency_id;
+        this._entity.user_id = rows[0].user_id;
+        this._entity.project_name = rows[0].project_name;
 
-        this._entity.hrRecord = this._entity.rows[0].entity.hrRecord;
-        this._entity.currencyName = this._entity.rows[0].entity.currencyName;
+        this._entity.hrRecord = rows[0].hrRecord;
+        this._entity.currencyName = rows[0].currencyName;
 
         this.applyEdits();
         this.digestAggregates();
@@ -491,14 +504,20 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   };
 
   Transactions.prototype.digestAggregates = function digestAggregates () {
-    this._entity.aggregates.totalRows = this._entity.rows.length;
-    this._entity.aggregates.credit = this._entity.rows.reduce(function (a, b) {
-      return a + b.entity.credit;
-    }, 0);
-    this._entity.aggregates.debit = this._entity.rows.reduce(function (a, b) {
-      return a + b.entity.debit;
-    }, 0);
+    this._entity.aggregates.totalRows =
+      this._entity.data.data.length +
+      this._entity.newRows.data.length;
+      // this._entity.removedRows.length;
 
+    this._entity.aggregates.credit =
+      this._entity.data.data.reduce(function (a, b) { return a + Number(b.credit_equiv); }, 0) +
+      this._entity.newRows.data.reduce(function (a, b) { return a + Number(b.credit_equiv) || 0; }, 0);
+
+    this._entity.aggregates.debit =
+      this._entity.data.data.reduce(function (a, b) { return a + Number(b.debit_equiv); }, 0) +
+      this._entity.newRows.data.reduce(function (a, b) { return a + Number(b.debit_equiv) || 0; }, 0);
+
+    console.log('DIGEST', this._entity);
   };
 
 
@@ -550,25 +569,55 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   Transactions.prototype.removeRowIfExists = function removeRowIfExists(row) {
     var uuid = row.uuid;
 
-    var dataIndex;
-    var index = this.gridApi.grid.options.data.some(function (journalRow, index) {
-      // console.log('comparing', journalRow.uuid, uuid);
-      if (journalRow.uuid === uuid) {
+    var removed = removeFromNonIndexedArray(this.gridApi.grid.options.data, 'uuid', uuid);
+    if (removed) {
+      createTransactionIndexMap.bind(this)();
+    }
 
-        console.log('FOUND ROW TO REMOVE', row);
+    // var dataIndex;
+    // var index = this.gridApi.grid.options.data.some(function (journalRow, index) {
+      // console.log('comparing', journalRow.uuid, uuid);
+      // if (journalRow.uuid === uuid) {
+
+        // console.log('FOUND ROW TO REMOVE', row);
+        // dataIndex = index;
+        // return true;
+      // }
+      // return false;
+    // });
+
+    // if (angular.isDefined(dataIndex)) {
+
+      // console.log('attempting to remove data item');
+      // this.gridApi.grid.options.data.splice(dataIndex, 1);
+      // createTransactionIndexMap.bind(this)();
+    // }
+  };
+
+  function removeFromNonIndexedArray(array, id, value, objectAlias) {
+    var dataIndex;
+    var removed;
+    var index = array.some(function (item, index) {
+      var entity = objectAlias ? item[objectAlias] : item;
+
+      // console.log('comparing', journalRow.uuid, uuid);
+      if (entity[id] === value) {
+
+        console.log('FOUND ROW TO REMOVE', item);
         dataIndex = index;
         return true;
       }
       return false;
     });
 
-    if (angular.isDefined(dataIndex)) {
+    removed = angular.isDefined(dataIndex);
 
-      console.log('attempting to remove data item');
-      this.gridApi.grid.options.data.splice(dataIndex, 1);
-      createTransactionIndexMap.bind(this)();
+    if (removed) {
+      array.splice(dataIndex, 1);
     }
-  };
+
+    return removed;
+  }
 
 
 
