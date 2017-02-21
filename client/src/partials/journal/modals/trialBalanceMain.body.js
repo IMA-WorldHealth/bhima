@@ -2,8 +2,9 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceMainBodyController', TrialBalanceMainBodyController);
 
 TrialBalanceMainBodyController.$inject = [
-  'SessionService', 'TrialBalanceService', 'GridGroupingService', 'GridColumnService',
-  'NotifyService', '$state', 'uiGridConstants', 'uiGridGroupingConstants', '$filter',
+  'SessionService', 'TrialBalanceService', 'NotifyService',
+  '$state', 'uiGridConstants', 'uiGridGroupingConstants', '$filter',
+  'AccountService',
 ];
 
 /**
@@ -13,13 +14,19 @@ TrialBalanceMainBodyController.$inject = [
  * This controller provides a tool to view the main state of trial balance
  * The main state let you post transaction into the general ledger
  */
-function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns, Notify, $state, uiGridConstants, uiGridGroupingConstants, $filter) {
+function TrialBalanceMainBodyController(Session, TrialBalance, Notify, $state, uiGridConstants, uiGridGroupingConstants, $filter, Accounts) {
   var vm = this;
   var currencyId = Session.enterprise.currecny_id;
   var $currency = $filter('currency');
 
   var errorList = null;
   var records = $state.params.records;
+
+  var gridApi;
+
+  // expose to the view
+  vm.viewErrorList = viewErrorList;
+  vm.viewDetailByAccount = viewDetailByAccount;
 
   function render(aggregation) {
     aggregation.rendered = $currency(aggregation.value, currencyId);
@@ -31,8 +38,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
     headerCellFilter : 'translate',
     visible          : false,
   }, {
-    field            : 'account_number',
-    type             : 'number',
+    field            : 'account',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     headerCellFilter : 'translate',
   }, {
@@ -46,21 +52,18 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
     headerCellFilter : 'translate',
     visible          : false,
   }, {
-    field                            : 'balance_before',
-    type                             : 'number',
-    displayName                      : 'TABLE.COLUMNS.BEFORE',
-    headerCellFilter                 : 'translate',
-    cellClass                        : 'text-right',
-    footerCellClass                  : 'text-right',
-    cellFilter                       : 'currency:' + currencyId,
-    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-    customTreeAggregationFinalizerFn : render,
+    field            : 'balance_before',
+    type             : 'number',
+    displayName      : 'TABLE.COLUMNS.BEFORE',
+    headerCellFilter : 'translate',
+    cellClass        : 'text-right',
+    cellFilter       : 'currency:' + currencyId,
   }, {
     field                            : 'debit_equiv',
     type                             : 'number',
     displayName                      : 'TABLE.COLUMNS.DEBIT',
     headerCellFilter                 : 'translate',
-    footerCellClass                  : 'text-right',
+    footerCellClass                  : 'text-right text-danger',
     cellClass                        : 'text-right',
     cellFilter                       : 'currency:' + currencyId,
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
@@ -70,21 +73,18 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
     type                             : 'number',
     displayName                      : 'TABLE.COLUMNS.CREDIT',
     headerCellFilter                 : 'translate',
-    footerCellClass                  : 'text-right',
+    footerCellClass                  : 'text-right text-danger',
     cellFilter                       : 'currency:' + currencyId,
     cellClass                        : 'text-right',
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : render,
   }, {
-    field                            : 'balance_final',
-    type                             : 'number',
-    displayName                      : 'TABLE.COLUMNS.AFTER',
-    headerCellFilter                 : 'translate',
-    footerCellClass                  : 'text-right',
-    cellClass                        : 'text-right',
-    cellFilter                       : 'currency:' + currencyId,
-    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-    customTreeAggregationFinalizerFn : render,
+    field            : 'balance_final',
+    type             : 'number',
+    displayName      : 'TABLE.COLUMNS.AFTER',
+    headerCellFilter : 'translate',
+    cellClass        : 'text-right',
+    cellFilter       : 'currency:' + currencyId,
   }, {
     field            : 'actions',
     displayName      : '',
@@ -96,27 +96,16 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
   vm.dataByTrans = records;
   vm.hasError = false;
 
-  vm.viewDetail = {
-    trans    : transactionView,
-    account  : accountView,
-    key      : 'FORM.BUTTONS.GROUP_BY_TRANSACTION',
-    selected : 'account',
-  };
-
   vm.gridOptions = {
-    showColumnFooter           : true,
     enableColumnMenus          : false,
+    showColumnFooter           : true,  // default to true so that grid knows how to draw
     treeRowHeaderAlwaysVisible : false,
     flatEntityAccess           : true,
     fastWatch                  : true,
     appScopeProvider           : vm,
     columnDefs                 : columns,
-    onRegisterApi              : function (gridApi) { vm.gridApi = gridApi; },
+    onRegisterApi              : function (api) { gridApi = api; },
   };
-
-  vm.grouping = new Grouping(vm.gridOptions, false);
-  vm.columns = new Columns(vm.gridOptions);
-  vm.loading = true;
 
   /**
    * @function : fetchDataByAccount
@@ -127,42 +116,15 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
   function fetchDataByAccount() {
     return TrialBalance.getDataByAccount(vm.dataByTrans)
       .then(function (data) {
+
+        data.forEach(function (row) {
+          row.account = Accounts.label(row);
+        });
+
         vm.gridOptions.data = data;
-        vm.viewDetail.key = 'FORM.BUTTONS.GROUP_BY_TRANSACTION';
-        vm.viewDetail.selected = 'account';
-        vm.grouping.removeGrouping();
-        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+        gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })
       .catch(errorHandler);
-  }
-
-  /**
-   * @function : transactionView
-   * @description :
-   * This function is responsible of felling the grid data and grouping them by transaction
-   *
-   * - It begins by configuring column visibility
-   * - Fill the data
-   * - Grouping the data by transaction
-   *
-   * This view is one of the two mains views because from this view you can post to the general ledger
-   **/
-  function transactionView() {
-    vm.columns.setVisibleColumns({
-      balance_before : false,
-      balance_final  : false,
-      actions        : false,
-      debit_equiv    : true,
-      credit_equiv   : true,
-      trans_id       : true,
-      account_number : true,
-    });
-
-    vm.gridOptions.data = vm.dataByTrans;
-    vm.viewDetail.key = 'FORM.BUTTONS.GROUP_BY_ACCOUNT';
-    vm.viewDetail.selected = 'trans';
-    vm.grouping.changeGrouping('trans_id');
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   function toggleLoadingIndicator() {
@@ -220,7 +182,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
   function viewDetailByAccount(accountId) {
     var lines = TrialBalance.getRelatedTransaction(accountId, vm.dataByTrans);
     // FIX ME : what is the good way of keeping records? using appcache?
-    $state.go('trialBalanceDetail', {lines : lines, feedBack : vm.feedBack, records: records, errors : errorList }, {reload : false});
+    $state.go('trialBalanceDetail', { lines: lines, feedBack: vm.feedBack, records: records, errors: errorList }, { reload: false });
   }
 
   /**
@@ -246,17 +208,6 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
 
 
   /**
-   * @function switchView
-   * @description
-   * This method can change the way data are filled in the grid, from
-   * transaction grouping to account grouping vice versa
-   */
-  function switchView() {
-    var newView = TrialBalance.switchView(vm.viewDetail.selected);
-    vm.viewDetail[newView]();
-  }
-
-  /**
    *  @function errorHandler
    * @description
    * This method handle correctly error by notifying the user through
@@ -273,19 +224,29 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
     TrialBalance.checkTransactions(vm.dataByTrans)
       .then(function (error) {
         var cssClass = null;
+
         errorList = error.data;
+
         vm.feedBack = TrialBalance.getFeedBack(errorList); // getting a feedback object to customize the grid
         vm.isInvalid = vm.feedBack.hasError || vm.feedBack.hasWarning;
+
         cssClass = TrialBalance.getCSSClass(vm.feedBack);
 
         $state.current.data.checkingData = { errors: errorList, feedBack: vm.feedBack, cssClass: cssClass };
         $state.current.data.checked = true;
 
+        // @todo - this should probably be done with the grid's header row template.
         columns.forEach(function (col) {
           col.headerCellClass = cssClass;
         });
 
-        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+        // only show the footer if the amounts are invalid
+        if (!vm.isInvalid) {
+          vm.gridOptions.showColumnFooter = false;
+        }
+
+        // make sure the column footer is processed + column css classes
+        gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })
       .catch(errorHandler)
       .finally(function () {
@@ -297,8 +258,4 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Grouping, Columns
   }
 
   startup();
-
-  vm.switchView = switchView;
-  vm.viewErrorList = viewErrorList;
-  vm.viewDetailByAccount = viewDetailByAccount;
 }
