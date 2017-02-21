@@ -117,7 +117,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       filter : { condition : filtering.byDate },
       editableCellTemplate: 'partials/journal/templates/date.edit.html',
       enableCellEdit: true,
-      footerCellTemplate:'<i></i>'
+      footerCellTemplate:'<i></i>',
     },
     { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
