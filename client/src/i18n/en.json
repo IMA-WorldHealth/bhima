@@ -993,6 +993,7 @@
     "UPDATE_PICTURE"     : "Update Patient Photo",
     "UPLOAD_PICTURE"     : "Upload Patient Photo",
     "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator.",
+    "DOB_NOT_SPECIFIED"  : "Only a year of birth was specified during patient registration. This is an approximate date.",
     "CHECK_IN" : {
       "TITLE" : "Check In",
       "SUBMIT" : "Check Patient In",
@@ -1168,7 +1169,7 @@
     "RECEIPT" : {
       "TITLE" : "Purchase Order Receipt",
       "SUCCESS" : "Purchase Order created."
-    }, 
+    },
     "STATUS" : {
       "CONFIRMED"                 : "Confirmed",
       "CONFIRMED_DESC"            : "The purchase order has been confirmed by the supplier that it can be delivered",

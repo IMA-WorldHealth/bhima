@@ -57,6 +57,13 @@
                   <dt>{{ "TABLE.COLUMNS.AGE" | translate }}</dt>
                   <dd id="age">{{::PatientRecordCtrl.patient.age}}</dd>
 
+                  <dt translate>TABLE.COLUMNS.DOB</dt>
+                  <dd id="dob">{{::PatientRecordCtrl.patient.dobFormatted}}</dd>
+                  <p ng-if="PatientRecordCtrl.patient.dob_unknown_date" class="text-info">
+                    <i class="fa fa-info-circle"></i>
+                    <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
+                  </p>
+
                   <dt>{{ "TABLE.COLUMNS.GENDER" | translate }}</dt>
                   <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
                 </dl>

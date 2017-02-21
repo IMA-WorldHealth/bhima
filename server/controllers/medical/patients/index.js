@@ -231,7 +231,7 @@ function lookupPatient(patientUuid) {
 
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
-      p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
+      p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
