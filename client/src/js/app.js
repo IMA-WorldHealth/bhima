@@ -175,13 +175,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : '/partials/suppliers/suppliers.html',
   })
 
-  /* purchase routes */
-  .state('purchasesCreate', {
-    url         : '/purchases/create',
-    controller  : 'PurchaseOrderController as PurchaseCtrl',
-    templateUrl : 'partials/purchases/create/create.html',
-  })
-
   /* transaction type */
   .state('transactionType', {
     url         : '/admin/transaction_type',
