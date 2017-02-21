@@ -11,6 +11,11 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 const sourceMap = { 1: 'general_ledger', 2: 'posting_journal', 3: 'combined_ledger' };
 
 /**
+ * Expose to controllers
+ */
+exports.getAccountTransactions = getAccountTransactions;
+
+/**
  * @method document
  *
  * @description
@@ -40,9 +45,9 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return queryReportAccount(params.account_id, params.sourceId)
+  return getAccountTransactions(params.account_id, params.sourceId)
     .then((result) => {
-      _.extend(bundle, { accounts: result.accounts, sum: result.sum, title });
+      _.extend(bundle, { transactions: result.transactions, sum: result.sum, title });
 
       return report.render(bundle);
     })
@@ -55,10 +60,10 @@ function document(req, res, next) {
 
 
 /**
- * @function queryReportAccount
+ * @function getAccountTransactions
  * This feature select all transactions for a specific account
 */
-function queryReportAccount(accountId, source) {
+function getAccountTransactions(accountId, source) {
   const sourceId = parseInt(source, 10);
 
   // get the table name
@@ -66,7 +71,7 @@ function queryReportAccount(accountId, source) {
 
   const sql = `
       SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
-        debit_equiv as debit, credit_equiv as credit
+        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
       FROM ${tableName}
       WHERE account_id = ?
       GROUP BY trans_id 
@@ -75,7 +80,7 @@ function queryReportAccount(accountId, source) {
   const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
     FROM (
       SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
-        debit_equiv as debit, credit_equiv as credit
+        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
       FROM ${tableName}
       WHERE account_id = ?
       GROUP BY trans_id 
@@ -85,10 +90,10 @@ function queryReportAccount(accountId, source) {
 
   const bundle = {};
 
-  return db.exec(sql, [accountId, accountId])
-    .then((accounts) => {
-      _.extend(bundle, { accounts });
-      return db.one(sqlAggrega, [accountId, accountId]);
+  return db.exec(sql, [accountId])
+    .then((transactions) => {
+      _.extend(bundle, { transactions });
+      return db.one(sqlAggrega, [accountId]);
     })
     .then((sum) => {
       _.extend(bundle, { sum });

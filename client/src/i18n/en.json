@@ -455,6 +455,7 @@
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
       "ACCOUNT"                : "Account",
+      "ACCOUNT_EXTRACT"        : "Account Details",
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
@@ -860,7 +861,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "General Ledger"
+    "TITLE" : "General Ledger",
+    "ACCOUNT_SLIP" : "Account Slip",
+    "SOLD" : "Sold"
   },
   "HOME": {
     "BHIMA"          : "Bhima",
@@ -1344,6 +1347,7 @@
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
+      "CREDITOR_SOLD"      : "Creditor Sold",
       "CREATED_BY"         : "Created by",
       "CURRENCY"           : "Currency",
       "DATA_SOURCE"        : "Data Source",
@@ -1352,6 +1356,7 @@
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debtor",
       "DEBTOR_GROUPS"      : "Debtor Groups",
+      "DEBTOR_SOLD"        : "Debtor Sold",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
@@ -1532,6 +1537,7 @@
     "PATIENT_REGISTRATIONS"      : "Patient Registrations",
     "PATIENT_REGISTRY"           : "Patients Registry",
     "PHARMACY"                   : "Pharmacy Management",
+    "POSTED_JOURNAL"             : "Posted Journal",
     "POSTING_JOURNAL"            : "Posting Journal",
     "PRICE_LIST"                 : "Price List",
     "PROJECT"                    : "Projects",
@@ -1624,7 +1630,8 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
-    }
+    },
+    "REPORT" : "Rapport"
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",

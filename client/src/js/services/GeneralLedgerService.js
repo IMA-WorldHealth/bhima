@@ -10,5 +10,8 @@ GeneralLedgerService.$inject = ['PrototypeApiService'];
  */
 function GeneralLedgerService(Api) {
   var service = new Api('/general_ledger/');
+
+  service.accounts = new Api('/general_ledger/accounts');
+
   return service;
 }

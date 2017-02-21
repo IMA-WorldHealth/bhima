@@ -456,6 +456,7 @@
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
       "ACCOUNT"                : "Compte",
+      "ACCOUNT_EXTRACT"        : "Extrait de compte",
       "ACCOUNT_NUMBER"         : "Numéro de Compte",
       "ACCOUNT_TITLE"          : "Libelle de Compte",
       "ACCOUNT_TYPE"           : "Type de Compte",
@@ -862,7 +863,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "Grand Livre"
+    "TITLE" : "Grand Livre",
+    "ACCOUNT_SLIP" : "Extrait de compte",
+    "SOLD" : "Solde"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement de patients",
@@ -1365,14 +1368,15 @@
       "COUNTRY"            : "Pays",
       "CREATED_BY"         : "Crée par",
       "CREDIT"             : "Credit",
+      "CREDITOR_SOLD"      : "Solde Crediteur",
       "CURRENCY"           : "Monnaie",
-      "CREATED_BY"         : "Cree par",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date d'enregistrement",
       "DATA_SOURCE"        : "Source de données",
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debiteur",
       "DEBTOR_GROUPS"      : "Groupes Débiteurs",
+      "DEBTOR_SOLD"        : "Solde Débiteur",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
@@ -1553,6 +1557,7 @@
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
     "PATIENT_REGISTRY"           : "Registre des patients",
     "PAYROLL"                    : "Payroll",
+    "POSTED_JOURNAL"             : "Journal Posté",
     "POSTING_JOURNAL"            : "Journal de Saisie",
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",

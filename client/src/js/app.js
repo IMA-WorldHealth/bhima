@@ -134,9 +134,16 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : 'partials/locations/country/country.html',
   })
 
-  /** General ledger routes**/
+  /** General ledger routes **/
   .state('generalLedger', {
     url         : '/general_ledger',
+    controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger_accounts.html',
+  })
+
+  /** Posted Journal **/
+  .state('postedJournal', {
+    url         : '/journal/posted',
     controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
     templateUrl : 'partials/general_ledger/general_ledger.html',
   })
@@ -315,7 +322,8 @@ function constantConfig() {
       TITLE : 4,
     },
     purchase : {
-      GRID_HEIGHT: 200,
+      GRID_HEIGHT : 200,
+      TITLE : 4,
     },
     settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',
@@ -332,7 +340,7 @@ function constantConfig() {
       format         : 'dd/MM/yyyy',
       datepickerMode : 'day',
       minMode        : 'day',
-    },
+    },    
     lengths : {
       maxTextLength   : 1000,
       minDecimalValue : 0.0001,

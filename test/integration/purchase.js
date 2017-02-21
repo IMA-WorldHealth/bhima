@@ -39,12 +39,12 @@ describe('(/purchases) Purchases', () => {
   it('POST /purchases should create a new purchase order', () => {
     return agent.post('/purchases')
       .send(purchaseOrder)
-      .then(res => {
+      .then((res) => {
         helpers.api.created(res);
         purchaseOrder.uuid = res.body.uuid;
         return agent.get(`/purchases/${purchaseOrder.uuid}`);
       })
-      .then(res => {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.cost).to.equal(purchaseOrder.cost);
@@ -61,7 +61,7 @@ describe('(/purchases) Purchases', () => {
 
   it('GET /purchases/:uuid should return a single JSON purchase order', () => {
     return agent.get(`/purchases/${purchaseOrder.uuid}`)
-      .then(res => {
+      .then((res) => {
         var purchase = res.body;
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -72,8 +72,8 @@ describe('(/purchases) Purchases', () => {
 
   it('GET /purchases?detailed=1 returns a complete list of purchase', () => {
     return agent.get('/purchases')
-      .query({ detailed : 1 })
-      .then(res => {
+      .query({ detailed: 1 })
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body[0]).to.contain.all.keys(responseKeys);
@@ -90,7 +90,7 @@ describe('(/purchases) Purchases', () => {
 
   it('PUT /purchases/:uuid unable to update an unknown purchase order', () => {
     return agent.put('/purchases/invalid')
-      .send({ note : 'This was canceled a week ago' })
+      .send({ note: 'This was canceled a week ago' })
       .then(res => helpers.api.errored(res, 404))
       .catch(helpers.handler);
   });
