@@ -342,7 +342,7 @@ function ModalService(Modal) {
     }
 
     /** searchCashPayment */
-    function openSearchCashPayment(request) {
+    function openSearchCashPayment(filters) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/cash/payments/templates/search.modal.html',
         controller   : 'SearchCashPaymentModalController',
@@ -351,7 +351,7 @@ function ModalService(Modal) {
         backdrop     : 'static',
         animation    : false,
         resolve : {
-          data :  function dataProvider() { return request; }
+          filters :  function filtersProvider() { return filters; }
         }
       });
 
