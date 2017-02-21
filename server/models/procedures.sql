@@ -1131,7 +1131,7 @@ BEGIN
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[REVERSAL]', description, ' -- ', zz.description), user_id, 10, uuid
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(REVERSAL)', description), user_id, 10, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL

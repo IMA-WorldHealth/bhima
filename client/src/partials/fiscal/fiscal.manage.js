@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('FiscalManagementController', FiscalManagementController);
 
 FiscalManagementController.$inject = [
-  '$state', 'FiscalService', 'NotifyService', 'ModalService', 'util', 'moment'
+  '$state', 'FiscalService', 'NotifyService', 'ModalService', 'util', 'moment',
 ];
 
 /**
@@ -35,7 +35,6 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
    * @description init data for the module
    */
   function init() {
-
     if (id && vm.isUpdateState) {
       // concerned fiscal year
       Fiscal.read(id)
@@ -58,7 +57,6 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
           .concat(moment(fy.end_date).format('DD MMM YYYY').toString(), ')');
         return fy;
       });
-
     })
     .catch(Notify.handleError);
   }
@@ -68,16 +66,13 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
    * @description launch the modal for closing a fiscal year
    */
   function closingFiscalYear() {
-
     if (!vm.isUpdateState) { return; }
 
     Modal.openClosingFiscalYear(vm.fiscal)
-    .then(function (res) {
-      if (!res) { return; }
-
-      $state.go('fiscal.list', null, { reload: true });
-    });
-
+      .then(function (res) {
+        if (!res) { return; }
+        $state.go('fiscal.list', null, { reload: true });
+      });
   }
 
   /**
@@ -100,7 +95,7 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
 
     // ensure all Angular form validation checks have passed
     if (form.$invalid) {
-       Notify.danger('FORM.ERRORS.RECORD_ERROR');
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
@@ -109,16 +104,16 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
 
     var promise = isUpdate ? Fiscal.update(id, vm.fiscal) : Fiscal.create(vm.fiscal);
 
-    return promise.then(function () {
+    return promise
+      .then(function () {
         Notify.success(isUpdate ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS');
 
         // navigate back to list view
-        $state.go('fiscal.list', null, {reload : true});
+        $state.go('fiscal.list', null, { reload: true });
       })
       .catch(Notify.handleError);
   }
 
   // excecute
   init();
-
 }

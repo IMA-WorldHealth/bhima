@@ -9,7 +9,7 @@ helpers.configure(chai);
 describe('Villages Management', function () {
   'use strict';
 
-  const path = '#/locations/village';
+  const path = '#!/locations/village';
   before(() => helpers.navigate(path));
 
   const village = {

@@ -1,9 +1,11 @@
 /* global browser, element, by */
 const chai = require('chai');
+
 const expect = chai.expect;
 
 // import testing utilities
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const components = require('../shared/components');
@@ -11,18 +13,16 @@ const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
 describe('Cash Payments', function () {
-  'use strict';
-
-  const path = '#/cash';
+  const path = '/cash';
 
   const cashboxB = {
-    id: 2,
-    text : 'Test Aux Cashbox A'
+    id   : 2,
+    text : 'Test Aux Cashbox A',
   };
 
   const cashboxC = {
-    id: 3,
-    text : 'Test Aux Cashbox B'
+    id   : 3,
+    text : 'Test Aux Cashbox B',
   };
 
   // this is a shortcut function for clicking an action in the cash page
@@ -40,7 +40,7 @@ describe('Cash Payments', function () {
     it('navigating to /cash/:unknown should send a notification error ', function () {
 
       // navigate to an invalid cashbox
-      helpers.navigate(path.concat('/unknown'));
+      helpers.navigate(`${path}/unknown`);
 
       // expect the 'cashbox selection' modal to appear
       FU.exists(by.css('[data-cashbox-modal]'), true);
@@ -56,14 +56,14 @@ describe('Cash Payments', function () {
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
 
       // our target is cashbox B
-      var target = path.concat('/' + cashboxB.id);
+      var target = `#!${path}/${cashboxB.id}`;
 
       // implicitly choose cashbox B by navigating to it directly
       browser.get(target);
 
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
-      browser.get(path);
+      browser.get(`#!${path}`);
 
       // the cashbox selection modal should not appear
       FU.exists(by.css('[data-cashbox-modal]'), false);
@@ -73,9 +73,8 @@ describe('Cash Payments', function () {
     });
 
     it('should allow a user to select and deselect a cashbox', function () {
-
       // the auxiliary cashbox is the target
-      var targetAuxiliary1 = path.concat('/' + cashboxC.id);
+      const targetAuxiliary1 = `#!${path}/${cashboxC.id}`;
 
       helpers.navigate(targetAuxiliary1);
 
@@ -83,13 +82,13 @@ describe('Cash Payments', function () {
       expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
 
       // the auxiliary cashbox is the target
-      var targetAuxiliary2 = path.concat('/' + cashboxB.id);
+      const targetAuxiliary2 = `#!${path}/${cashboxB.id}`;
 
       // use the button to navigate back to the cashbox select module
       selectDropdownAction('change-cashbox');
 
       // select the auxiliary cashbox B displayed
-      element(by.id('cashbox-' + cashboxB.id)).click();
+      element(by.id(`cashbox-${cashboxB.id}`)).click();
 
       // click on the ok button of the modal box
       element(by.css('[data-cashbox-modal-submit]')).click();
@@ -109,16 +108,16 @@ describe('Cash Payments', function () {
     // failures
 
     // This caution payment should succeed
-    var mockCautionPayment = {
-      patientName: 'Test 2',
-      amount : 150
+    const mockCautionPayment = {
+      patientName : 'Test 2',
+      amount      : 150
     };
 
     // This payment against patient invoices should succeed
-    var mockInvoicesPayment = {
-      patientId: 'PA.TPA.2',
-      date : new Date('2016-03-01'),
-      amount : 5.12
+    const mockInvoicesPayment = {
+      patientId : 'PA.TPA.2',
+      date      : new Date('2016-03-01'),
+      amount    : 5.12,
     };
 
     it('should make a caution payment', function () {
@@ -129,7 +128,7 @@ describe('Cash Payments', function () {
       // we will leave the date input as default
 
       // select the proper is caution type
-      var cautionOption = element(by.css('[data-caution-option="1"]'));
+      const cautionOption = element(by.css('[data-caution-option="1"]'));
       cautionOption.click();
 
       // select the FC currency from the currency select

@@ -1,21 +1,20 @@
 angular.module('bhima.components')
 .component('bhDateEditor', {
-	templateUrl : '/partials/templates/bhDateEditor.tmpl.html',
-	controller : dateEditorController,
-	bindings : {
-		dateValue : '=',  // two-way binding
-		minDate : '<',    // one-way binding
-		maxDate : '<',    // one-way binding
-		validationTrigger : '<', // one-way binding
-    disabled : '<',   // one-way binding
-		dateFormat : '@', // bind text
-    label : '@'       // bind text
-	}
+  templateUrl : '/partials/templates/bhDateEditor.tmpl.html',
+  controller  : dateEditorController,
+  bindings    : {
+    dateValue         : '=',  // two-way binding
+    minDate           : '<',    // one-way binding
+    maxDate           : '<',    // one-way binding
+    validationTrigger : '<', // one-way binding
+    disabled          : '<',   // one-way binding
+    dateFormat        : '@', // bind text
+    label             : '@',       // bind text
+  },
 });
 
-dateEditorController.$inject = [
-  'bhConstants'
-];
+dateEditorController.$inject = ['bhConstants'];
+
 /**
  * bhDateEditor Component
  *
@@ -30,28 +29,29 @@ dateEditorController.$inject = [
  *  min-date="Ctrl.min"
  *  max-date="Ctrl.max"
  *  validation-trigger="Form.$submitted"
- *  disabled="Ctrl.isDisabled"
- * >
+ *  disabled="Ctrl.isDisabled">
  * </bh-date-editor>
  *
  * @module components/bhDateEditor
  */
 function dateEditorController(bhConstants) {
-	var ctrl = this;
+  var ctrl = this;
 
-	ctrl.dateFormat = bhConstants.dayOptions.format;
-	
-	ctrl.editMode = false;
-	ctrl.toggleEditMode = toggleEditMode;
+  this.$onInit = function $onInit() {
+    ctrl.dateFormat = bhConstants.dayOptions.format;
 
-  // options to be passed to datepicker-option
-  ctrl.options = {
-    minDate : ctrl.minDate,
-    maxDate : ctrl.maxDate
+    ctrl.editMode = false;
+    ctrl.toggleEditMode = toggleEditMode;
+
+    // options to be passed to datepicker-option
+    ctrl.options = {
+      minDate : ctrl.minDate,
+      maxDate : ctrl.maxDate,
+    };
   };
 
   // opens/closes the date dropdown
-	function toggleEditMode() {
-		ctrl.editMode = !ctrl.editMode;
-	}
+  function toggleEditMode() {
+    ctrl.editMode = !ctrl.editMode;
+  }
 }

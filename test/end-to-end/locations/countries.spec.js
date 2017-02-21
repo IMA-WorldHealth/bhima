@@ -1,21 +1,21 @@
 /* global element, by, browser */
 
 const chai = require('chai');
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+
+const expect = chai.expect;
+
 helpers.configure(chai);
 
 describe('Countries Management', function () {
-  'use strict';
 
-  const path = '#/locations/country';
+  const path = '#!/locations/country';
 
   // navigate to the page before the test suite
   before(() => helpers.navigate(path));
 
-  const country = { name : 'New Country' };
+  const country = { name: 'New Country' };
 
   it('creates a new country', function () {
     FU.buttons.create();

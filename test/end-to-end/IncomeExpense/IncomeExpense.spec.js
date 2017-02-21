@@ -11,7 +11,7 @@ helpers.configure(chai);
 describe.skip('Income Expense report generator', () => {
   'use strict';
 
-  before(() => helpers.navigate('#/finance/reports/incomeExpense'));
+  before(() => helpers.navigate('#!/finance/reports/incomeExpense'));
 
   it('GET /finance/incomeExpense return incomeExpense report at the client', () => {
 

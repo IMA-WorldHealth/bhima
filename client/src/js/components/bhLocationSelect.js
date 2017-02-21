@@ -5,16 +5,16 @@ angular.module('bhima.components')
  */
 .component('bhLocationSelect', {
   templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
-  controller : LocationSelectController,
-  bindings: {
-    locationUuid:      '=', // two-way binding
-    disable:           '<', // one-way binding
-    validationTrigger: '<', // one-way binding
-    name:              '@'
-  }
+  controller  : LocationSelectController,
+  bindings    : {
+    locationUuid      : '=', // two-way binding
+    disable           : '<', // one-way binding
+    validationTrigger : '<', // one-way binding
+    name              : '@',
+  },
 });
 
-LocationSelectController.$inject =  [ 'LocationService', '$rootScope', '$scope', '$timeout' ];
+LocationSelectController.$inject =  ['LocationService', '$rootScope', '$scope', '$timeout'];
 
 /**
  * Location Select Controller
@@ -54,9 +54,60 @@ LocationSelectController.$inject =  [ 'LocationService', '$rootScope', '$scope',
  */
 function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
   var vm = this;
+  var listener;
 
-  /** loading indicator */
-  vm.loading = false;
+  this.$onInit = function $onInit() {
+    vm.loading = false;
+
+    // set default component name if none has been set
+    vm.name = vm.name || 'LocationComponentForm';
+
+    // wrap the alias call in a $timeout to ensure that the component link/ compile process has run
+    $timeout(aliasComponentForm);
+
+    /** disabled bindings for individual <select>s */
+    vm.disabled = {
+      village  : true,
+      sector   : true,
+      province : true,
+    };
+
+    /**
+     * Hook up a listener to the locationUuid to reload it if it is changed
+     * externally.
+     *
+     * Note - this will also fire when updated internally, however loadLocation()
+     * should detect it and prevent unnecessary HTTP requests.
+     *
+     * In general, $scope.$watch is more inefficient than exposing an API to the
+     * parent controller.  However, this component favors minimal controller code
+     * over application efficiency.  This could be optimized as the application
+     * evolves.
+     *
+     * @TODO - this should be replaced with this.$onChanges();
+     */
+    $scope.$watch('$ctrl.locationUuid', loadLocation);
+
+    /**
+     * <select> component messages to be translated
+     */
+    vm.messages = {
+      country  : Locations.messages.country,
+      province : Locations.messages.province,
+      sector   : Locations.messages.sector,
+      village  : Locations.messages.village,
+    };
+
+    // @TODO Temporary locations update fix - this should expose an API to be updated or
+    // should use bhConstants
+    listener = $rootScope.$on('LOCATIONS_UPDATED', refreshData);
+  };
+
+  // destroy the listener when the scope is destroyed
+  this.$onDestroy = function $onDestroy() {
+    listener();
+  };
+
 
   /** methods */
   vm.loadVillages = loadVillages;
@@ -64,12 +115,6 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
   vm.loadProvinces = loadProvinces;
   vm.updateLocationUuid = updateLocationUuid;
   vm.modal = openAddLocationModal;
-
-  // set default component name if none has been set
-  vm.name = vm.name || 'LocationComponentForm';
-
-  // wrap the alias call in a $timeout to ensure that the component link/ compile process has run
-  $timeout(aliasComponentForm);
 
   /**
    * This function assigns a reference to the components form onto the $scope
@@ -92,24 +137,6 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
   function aliasComponentForm() {
     $scope.LocationForm = $scope[vm.name];
   }
-
-  /** disabled bindings for individual <select>s */
-  vm.disabled = {
-    village:  true,
-    sector:   true,
-    province: true
-  };
-
-  /**
-   * <select> component messages to be translated
-   */
-  vm.messages = {
-    country:  Locations.messages.country,
-    province: Locations.messages.province,
-    sector:   Locations.messages.sector,
-    village:  Locations.messages.village,
-  };
-
   function loadCountries() {
     return Locations.countries()
     .then(function (countries) {
@@ -143,7 +170,7 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
       // show the appropriate message to the user
       vm.messages.province = (provinces.length > 0) ?
         Locations.messages.province :
-        Locations.messages.empty ;
+        Locations.messages.empty;
 
       // clear the dependent <select> elements
       vm.sectors = [];
@@ -153,7 +180,6 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
 
   /** load the sectors, based on the province selected */
   function loadSectors() {
-
     // don't send an HTTP request if there is no province
     if (!vm.province || !vm.province.uuid) { return; }
 
@@ -198,7 +224,6 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
 
   /** updates the exposed location uuid for the client to use */
   function updateLocationUuid() {
-
     if (vm.village) {
 
       // this exposes the true value of the component to the top level form validation
@@ -235,22 +260,22 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
 
       // bind initial data to each <select> elementin the view
       vm.village = {
-        uuid : initial.villageUuid,
+        uuid    : initial.villageUuid,
         village : initial.village,
       };
 
       vm.sector = {
-        uuid : initial.sectorUuid,
+        uuid   : initial.sectorUuid,
         sector : initial.sector,
       };
 
       vm.province = {
-        uuid : initial.provinceUuid,
+        uuid     : initial.provinceUuid,
         province : initial.province,
       };
 
       vm.country = {
-        uuid : initial.countryUuid,
+        uuid    : initial.countryUuid,
         country : initial.country,
       };
 
@@ -263,27 +288,8 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
     });
   }
 
-
   // load the countries once, at startup
   loadCountries();
-
-  /**
-   * Hook up a listener to the locationUuid to reload it if it is changed
-   * externally.
-   *
-   * Note - this will also fire when updated internally, however loadLocation()
-   * should detect it and prevent unnecessary HTTP requests.
-   *
-   * In general, $scope.$watch is more inefficient than exposing an API to the
-   * parent controller.  However, this component favors minimal controller code
-   * over application efficiency.  This could be optimized as the application
-   * evolves.
-   */
-  $scope.$watch('$ctrl.locationUuid', loadLocation);
-
-  // @TODO Temporary locations update fix - this should expose an API to be updated or
-  // should use bhConstants
-  $rootScope.$on('LOCATIONS_UPDATED', refreshData);
 
   function refreshData() {
     var cacheSector = angular.copy(vm.sector);

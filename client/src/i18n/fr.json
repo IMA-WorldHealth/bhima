@@ -105,6 +105,11 @@
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Inclure uniquement les paiements inversees",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclure toutes les paiements inversees",
+      "REVERSED_RECORDS" : "Paiements Inversees"
+    },
     "PAYMENT"         : "Paiement",
     "RECEIPT": {
       "TITLE"   : "Recu",
@@ -411,7 +416,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -495,6 +500,7 @@
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
       "CONTACT_ADMIN"          : "Veuillez contacter l'administrateur",
+      "COST"                   : "Cout",
       "COST_CENTER"            : "Centre de cout",
       "CONVENTION"             : "Convention",
       "COUNTRY"                : "Pays",
@@ -530,6 +536,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Editer",
+      "EDIT_STATUS"            : "Modifier Etat",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
@@ -571,6 +578,7 @@
       "INCLUDE_ZEROES"         : "Include lines with zero values",
       "INTL"                   : "Internationale",
       "INVENTORY"              : "Inventaire",
+      "INVENTORY_ITEM"         : "Item",
       "INVOICE"                : "Facture",
       "INVOICES"               : "Factures",
       "INVOICE_CURRENCY_SETTING" : "Configuration monnaie Facture",
@@ -650,6 +658,7 @@
       "PROFIT_CENTER"          : "Centre de profit",
       "PROJECT"                : "Projet",
       "PROVINCE"               : "Province",
+      "QUANTITY"               : "Quantité",
       "RECIPIENT"              : "Facture de ",
       "REFERENCE"              : "Référence",
       "REFERENCE_PATIENT"      : "Référence Patient",
@@ -677,7 +686,7 @@
       "SIZE_PB"                : "Po",
       "SOLD"                   : "Solde",
       "SPOUSE"                 : "Nom de l'époux(se)",
-      "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
+      "SPOUSE_EMPLOYER"        : "Employeur (époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
       "START"                  : "Début",
       "STATUS"                 : "Etat",
@@ -717,6 +726,7 @@
       "UNIT_WEIGHT"            : "Poids",
       "UNIT_VOLUME"            : "Volume",
       "UNTIL_DATE"             : "jusqu'à la date",
+      "UNIT_PRICE"             : "Prix unitaire",
       "UPDATE"                 : "MISE À JOUR",
       "UPDATE_GROUP_DEBTOR"    : "Mettre à jour le Groupe débiteur",
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
@@ -1168,15 +1178,28 @@
     "TITLE"         : "GESTION DES PROVINCES"
   },
   "PURCHASES" : {
-    "PAGE_TITLE" : "Achats",
+    "ORDER"          : "Ordre d'achat",
+    "PAGE_TITLE"     : "Achats",
     "PAYMENT_METHOD" : "Mode de paiement",
     "PAYMENT_METHOD_EXPLANATION" : "Ce champ fournit les conditions de paiement de l'ordre d'achat convenu. Un achat peut être payée à l'avant, à la livraison, ou dans une autre combinaison de paiements.",
     "ERRORS" : {
       "INVALID_ITEMS" : "Certains des postes de commande ont des erreurs. S'il vous plaît corriger ces erreurs et soumettre à nouveau l'ordre d'achat."
     },
     "RECEIPT" : {
-      "TITLE" : "Bon de commande de réception",
+      "TITLE" : "Bon de commande",
       "SUCCESS" : "Bon de commande créé."
+    },
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmé",
+      "CONFIRMED_DESC"            : "La commande a été confirmée par le fournisseur qu'elle pourra être livrée",
+      "WAITING_CONFIRMATION"      : "En Attente de confirmation",
+      "WAITING_CONFIRMATION_DESC" : "Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande",
+      "RECEIVED"                  : "Reçu en Stock",
+      "RECEIVED_DESC"             : "La commande a été reçu et se trouve dans le stock",
+      "NOT_RECEIVED"              : "Non Reçu",
+      "NOT_RECEIVED_DESC"         : "La commande n'a pas encore été reçu",
+      "CANCELLED"                 : "Annulé",
+      "CANCELLED_DESC"            : "La commande a été annulée suite à une raison quelconque"
     }
   },
   "REFERENCE": {
@@ -1539,7 +1562,9 @@
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",
     "PURCHASING"                 : "Achat",
-    "PURCHASE_ORDER"             : "Order d'Achats",
+    "PURCHASE_ORDER"             : "Ordre d'Achats",
+    "PURCHASE"                   : "Commande",
+    "PURCHASE_REGISTRY"          : "Registre des commandes",
     "REPORTS"                    : "Rapports",
     "REPORT_ACCOUNTS"            : "Rapport de comptes",
     "REFERENCE"                  : "Référence",
@@ -1553,7 +1578,6 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
-    "SUBSIDY"                    : "Subvention",
     "TRANSACTION_TYPE"           : "Types de Transaction",
     "SUBSIDY"                    : "Gestion des subventions",
     "USERS"                      : "Utilisateurs",
@@ -1593,6 +1617,9 @@
       "TITLE"                 : "Ajout des transactions",
       "VALID_TOTALS"          : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"               : "Bordereau de Transfert"
+    },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
     },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Option pour cashflow",

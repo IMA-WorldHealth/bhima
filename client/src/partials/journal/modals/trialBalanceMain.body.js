@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 TrialBalanceMainBodyController.$inject = [
   'SessionService', 'TrialBalanceService', 'GridGroupingService', 'GridColumnService',
-  'NotifyService', '$state', '$timeout', 'uiGridConstants'
+  'NotifyService', '$state', '$timeout', 'uiGridConstants',
 ];
 
 /**
@@ -58,11 +58,11 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
   };
 
   vm.gridOptions = {
-    enableColumnMenus: false,
-    treeRowHeaderAlwaysVisible: false,
-    appScopeProvider: vm,
-    columnDefs : columns,
-    onRegisterApi: function(gridApi){ vm.gridApi = gridApi;}
+    enableColumnMenus          : false,
+    treeRowHeaderAlwaysVisible : false,
+    appScopeProvider           : vm,
+    columnDefs                 : columns,
+    onRegisterApi              : function(gridApi) { vm.gridApi = gridApi;}
   };
 
   vm.grouping = new Grouping(vm.gridOptions, false);
@@ -75,7 +75,7 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * This function fetch data by account from the server
    * through the trial balance service module
    **/
-  function fetchDataByAccount(){
+  function fetchDataByAccount() {
     return trialBalanceService.getDataByAccount(vm.dataByTrans);
   }
 
@@ -184,19 +184,20 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
    * The target view is not the main view, because you can not post to the general ledger from this view,
    * you have to reset the view to the main view first, this view is just giving complementary information to the user.
    **/
-  function viewErrorList () {
+  function viewErrorList() {
     var lines = trialBalanceService.parseErrorRecord(errorList);
-    //FIX ME : what is the good way of keeping records? using appcache?
-    $state.go('trialBalanceErrors', {lines : lines, feedBack : vm.feedBack, records : records}, {reload : false});
+    // FIX ME : what is the good way of keeping records? using appcache?
+    $state.go('trialBalanceErrors', { lines: lines, feedBack: vm.feedBack, records: records }, { reload: false });
   }
 
 
   /**
-   *  @function switchView
+   * @function switchView
    * @description
-   * This method can change the way data are filled in the grid, from transaction grouping to account grouping vice versa
-   **/
-  function switchView (){
+   * This method can change the way data are filled in the grid, from
+   * transaction grouping to account grouping vice versa
+   */
+  function switchView() {
     var newView = trialBalanceService.switchView(vm.viewDetail.selected);
     vm.viewDetail[newView]();
   }
@@ -219,12 +220,14 @@ function TrialBalanceMainBodyController(Session, trialBalanceService, Grouping, 
       vm.feedBack = trialBalanceService.getFeedBack(errorList); //getting a feedback object to customize the grid
       vm.isInvalid = vm.feedBack.hasError || vm.feedBack.hasWarning;
       cssClass = trialBalanceService.getCSSClass(vm.feedBack);
+
       $state.current.data.checkingData = {errors : errorList, feedBack : vm.feedBack, cssClass : cssClass};
       $state.current.data.checked = true;
 
       columns.forEach(function (col) {
         col.headerCellClass = cssClass;
       });
+
       vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     })
     .catch(errorHandler)

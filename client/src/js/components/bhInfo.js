@@ -9,7 +9,7 @@ angular.module('bhima.components')
       '  popover-trigger="\'mouseenter\'"> ' +
       '</span> ',
     bindings : {
-      template: '@',
-      direction: '@'
-    }
+      template  : '@',
+      direction : '@',
+    },
   });

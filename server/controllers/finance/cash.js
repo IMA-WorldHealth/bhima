@@ -160,9 +160,9 @@ function listPayment(options) {
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
       d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
-      v.type_id, p.display_name AS patientName
+      voucher.type_id, p.display_name AS patientName
     FROM cash
-      LEFT JOIN voucher v ON v.reference_uuid = cash.uuid
+      LEFT JOIN voucher ON voucher.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN patient p on p.debtor_uuid = d.uuid
@@ -175,6 +175,9 @@ function listPayment(options) {
 
   let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
+
+  // filter reversed cash records
+  filters.reversed('reversed');
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
@@ -273,7 +276,7 @@ function reference(req, res, next) {
       FROM cash JOIN project ON cash.project_id = project.id
     )c WHERE c.reference = ?;`;
 
-  db.one(sql, [ ref ])
+  db.one(sql, [ ref ], ref, 'cash')
     .then(function (payment) {
       // references should be unique - return the first one
       res.status(200).json(payment);

@@ -1,20 +1,20 @@
 /* global element, by, browser */
+
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Cashboxes', function () {
-
-  before(() => helpers.navigate('#/cashboxes'));
+describe('Cashboxes', () => {
+  before(() => helpers.navigate('#!/cashboxes'));
 
   const cashbox = {
-    label: 'Test Principal Cashbox',
-    type: 1,
-    project: 'Test Project A'
+    label   : 'Test Principal Cashbox',
+    type    : 1,
+    project : 'Test Project A',
   };
 
   // clicks the 'update' button on the cashbox at $index n in the table
@@ -24,8 +24,7 @@ describe('Cashboxes', function () {
       .click();
   }
 
-  it('creates a new cashbox', function () {
-
+  it('creates a new cashbox', () => {
     // switch to the create form
     FU.buttons.create();
 
@@ -40,8 +39,7 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('successfully edits a cashbox', function () {
-
+  it('successfully edits a cashbox', () => {
     // navigate to the update form for the second item
     update(1);
 
@@ -54,21 +52,20 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('allows the user to change currency accounts', function () {
-
+  it('allows the user to change currency accounts', () => {
     // navigate to the update form for the second item
     update(2);
 
     // get the "FC" (congolese francs) currency
-    var FC = element(by.css('[data-currency-id="1"]'));
+    const FC = element(by.css('[data-currency-id="1"]'));
     FC.click();
 
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
     FU.exists(by.name('CashboxModalForm'), true);
 
-    FU.uiSelect('CashboxModalCtrl.data.account_id', 'Test Gain Account');
-    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Loss Account');
+    components.accountSelect.set('Test Gain Account', 'account-id');
+    components.accountSelect.set('Test Loss Account', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -78,20 +75,19 @@ describe('Cashboxes', function () {
   });
 
   // forget to change the gain exchange account id
-  it('rejects a missing account on the currency modal', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('rejects a missing account on the currency modal', () => {
+    helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
     update(3);
 
     // get a locator for the currencies
-    var USD = element(by.css('[data-currency-id="2"]'));
+    const USD = element(by.css('[data-currency-id="2"]'));
     USD.click();
 
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    FU.uiSelect('CashboxModalCtrl.data.account_id', 'First Test Item Account');
+    components.accountSelect.set('First Test Item Account', 'account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -99,11 +95,7 @@ describe('Cashboxes', function () {
     // confirm that the modal did not disappear
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    // these inputs should not have error states
-    FU.validation.ok('CashboxModalCtrl.data.account_id');
-    FU.validation.error('CashboxModalCtrl.data.transfer_account_id');
-
-    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Debtor Group Account');
+    components.accountSelect.set('Test Debtor Group Account', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -111,9 +103,8 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('allows you to delete a cashbox', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('allows you to delete a cashbox', () => {
+    helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
     update(0);
 
@@ -126,9 +117,8 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
   });
 
-  it('performs form validation', function () {
-
-    helpers.navigate('#/cashboxes');
+  it('performs form validation', () => {
+    helpers.navigate('#!/cashboxes');
     // switch to the create form
     FU.buttons.create();
 

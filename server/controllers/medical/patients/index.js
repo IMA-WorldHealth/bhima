@@ -141,10 +141,10 @@ function create(req, res, next) {
 
       // publish a CREATE event on the medical channel
       topic.publish(topic.channels.MEDICAL, {
-        event: topic.events.CREATE,
-        entity: topic.entities.PATIENT,
-        user_id: req.session.user.id,
-        uuid: uuid.unparse(medical.uuid)
+        event   : topic.events.CREATE,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+        uuid    : uuid.unparse(medical.uuid),
       });
     })
     .catch(next)

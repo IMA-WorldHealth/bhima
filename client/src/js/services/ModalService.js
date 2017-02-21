@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('ModalService', ModalService);
 
-ModalService.$inject = [ '$uibModal' ];
+ModalService.$inject = ['$uibModal'];
 
 /**
  * Modal Service
@@ -27,9 +27,9 @@ function ModalService(Modal) {
   var service = this;
 
   var modalParameters = {
-    size : 'md',
-    backdrop : 'static',
-    animation : false
+    size      : 'md',
+    backdrop  : 'static',
+    animation : false,
   };
 
   service.alert = alert;
@@ -67,6 +67,12 @@ function ModalService(Modal) {
 
   // search cash payment
   service.openSearchCashPayment = openSearchCashPayment;
+
+  // purchase order status
+  service.openPurchaseOrderStatus = openPurchaseOrderStatus;
+
+  // search purchase order
+  service.openSearchPurchaseOrder = openSearchPurchaseOrder;
 
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
@@ -340,6 +346,42 @@ function ModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/cash/payments/templates/search.modal.html',
         controller   : 'SearchCashPaymentModalController',
+        controllerAs : '$ctrl',
+        size         : 'md',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** purchase order status */
+    function openPurchaseOrderStatus(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/purchases/modals/status.tmpl.html',
+        controller   : 'PurchaseOrderStatusModalController',
+        controllerAs : '$ctrl',
+        size         : 'md',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** search purchase order */
+    function openSearchPurchaseOrder(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/purchases/modals/search.tmpl.html',
+        controller   : 'SearchPurchaseOrderModalController',
         controllerAs : '$ctrl',
         size         : 'md',
         backdrop     : 'static',

@@ -1,9 +1,8 @@
 angular.module('bhima.controllers')
-.controller('CreditorGroupController', CreditorGroupController);
+  .controller('CreditorGroupController', CreditorGroupController);
 
 CreditorGroupController.$inject = [
-  '$state', 'CreditorGroupService', 'AccountService',
-  'NotifyService', 'ModalService'
+  '$state', 'CreditorGroupService', 'NotifyService', 'ModalService',
 ];
 
 /**
@@ -12,7 +11,7 @@ CreditorGroupController.$inject = [
  *
  * @module admin/creditor_groups
  */
-function CreditorGroupController($state, CreditorGroup, Accounts, Notify, Modal) {
+function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   var vm = this;
 
   var uuid = $state.params.uuid;
@@ -27,6 +26,7 @@ function CreditorGroupController($state, CreditorGroup, Accounts, Notify, Modal)
   // expose to public
   vm.submit = submit;
   vm.deleteGroup = deleteGroup;
+  vm.onSelectAccount = onSelectAccount;
 
   // load the list state
   loadListState();
@@ -34,18 +34,14 @@ function CreditorGroupController($state, CreditorGroup, Accounts, Notify, Modal)
   // load the detail of the creditor group
   loadDetails();
 
+  function onSelectAccount(account) {
+    vm.bundle.account_id = account.id;
+  }
 
   // load creditor groups
   CreditorGroup.read(null, { detailed : 1 })
   .then(function (list) {
     vm.creditorGroupList = list;
-  })
-  .catch(Notify.handleError);
-
-  // load accounts
-  Accounts.read(null, { detailed: 1 })
-  .then(function (list) {
-    vm.accounts = list;
   })
   .catch(Notify.handleError);
 
@@ -67,10 +63,10 @@ function CreditorGroupController($state, CreditorGroup, Accounts, Notify, Modal)
     if (!vm.isUpdateState) { return; }
 
     CreditorGroup.read($state.params.uuid)
-    .then(function (detail) {
-      vm.bundle = detail;
-    })
-    .catch(Notify.handleError);
+      .then(function (detail) {
+        vm.bundle = detail;
+      })
+      .catch(Notify.handleError);
   }
 
   /**

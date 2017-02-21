@@ -1,14 +1,14 @@
 angular.module('bhima.components')
 .component('bhFiltersApplied', {
   templateUrl : 'partials/templates/bhFiltersApplied.tmpl.html',
-  controller : bhFiltersAppliedController,
-  bindings: {
-    filters: '<',
-    onRemoveFilter: '&'  // fires to remove the filter
-  }
+  controller  : bhFiltersAppliedController,
+  bindings    : {
+    filters        : '<',
+    onRemoveFilter : '&',  // fires to remove the filter
+  },
 });
 
-bhFiltersAppliedController.$inject = [ '$filter' ];
+bhFiltersAppliedController.$inject = ['$filter'];
 
 /**
  * @class bhFiltersApplied
@@ -44,9 +44,11 @@ function bhFiltersAppliedController($filter) {
 
   // formats the $viewValue according to any filters passed in
   $ctrl.$onChanges = function onChanges(changes) {
+    var filters;
+
     if (!changes.filters) { return; }
 
-    var filters = changes.filters.currentValue;
+    filters = changes.filters.currentValue;
 
     filters.forEach(function (filter) {
       if (filter.ngFilter) {

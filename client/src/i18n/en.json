@@ -105,6 +105,11 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
+      "REVERSED_RECORDS" : "Reversed Records"
+    },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH"       : "Missing Cash",
@@ -410,7 +415,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -494,6 +499,7 @@
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
       "CONTACT_ADMIN"          : "Please contact the administrator",
+      "COST"                   : "Cost",
       "COST_CENTER"            : "Cost Center",
       "CONSUMABLE"             : "Consumable",
       "CONVENTION"             : "Convention",
@@ -529,6 +535,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Edit",
+      "EDIT_STATUS"            : "Edit Status",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
@@ -569,6 +576,7 @@
       "INCOME_EXPENSE"         : "Income and Expense",
       "INTL"                   : "International",
       "INVENTORY"              : "Inventory",
+      "INVENTORY_ITEM"         : "Item",
       "INVOICE"                : "Invoice",
       "INVOICES"               : "Invoices",
       "INVOICE_CURRENCY_SETTING" : "Invoice Currency Setting",
@@ -636,6 +644,7 @@
       "POST_OFFICE_BOX"        : "Post Office Box",
       "POSTING_JOURNAL"        : "Posting Journal",
       "PO_BOX"                 : "PO Box",
+      "QUANTITY"               : "Quantity",
       "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Previous Date",
       "PREVIOUS_FISCAL_YEAR"   : "Previous Fiscal Year",
@@ -710,6 +719,7 @@
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UNDEFINED"              : "Undefined",
+      "UNIT_PRICE"             : "Unit Price",
       "UNTIL_DATE"             : "Until the date",
       "UPDATE"                 : "UPDATE",
       "UPDATE_GROUP_DEBTOR"    : "Update Debtor Group",
@@ -1148,6 +1158,7 @@
     "TITLE"         : "Province Manager"
   },
   "PURCHASES" : {
+    "ORDER" : "Purchase order",
     "PAGE_TITLE" : "Purchases",
     "PAYMENT_METHOD" : "Payment Method",
     "PAYMENT_METHOD_EXPLANATION" : "This field provides the agreed the payment conditions of the purchase order.  A purchase can either be paid up front, at delivery, or in some other combination of payments.",
@@ -1157,6 +1168,18 @@
     "RECEIPT" : {
       "TITLE" : "Purchase Order Receipt",
       "SUCCESS" : "Purchase Order created."
+    }, 
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmed",
+      "CONFIRMED_DESC"            : "The purchase order has been confirmed by the supplier that it can be delivered",
+      "WAITING_CONFIRMATION"      : "Waiting confirmation",
+      "WAITING_CONFIRMATION_DESC" : "The supplier doesn't confirm that the purchase order can be delivered",
+      "RECEIVED"                  : "Received in Stock",
+      "RECEIVED_DESC"             : "The purchase order has been completed and products are in the stock",
+      "NOT_RECEIVED"              : "Not Received",
+      "NOT_RECEIVED_DESC"         : "The purchase order products are not yet in the stock",
+      "CANCELLED"                 : "Cancelled",
+      "CANCELLED_DESC"            : "The purchase order has been cancelled"
     }
   },
   "REFERENCE": {
@@ -1519,6 +1542,8 @@
     "PRICE_LIST"                 : "Price List",
     "PROJECT"                    : "Projects",
     "PURCHASE_ORDER"             : "Purchase Order",
+    "PURCHASE"                   : "Purchase",
+    "PURCHASE_REGISTRY"          : "Purchase Registry",
     "PURCHASING"                 : "Purchasing",
     "REFERENCE"                  : "Reference",
     "REFERENCE_GROUP"            : "Reference Group",
@@ -1573,6 +1598,9 @@
       "VALID_TOTALS"          : "Transactions are valid (balanced transaction)",
       "VOUCHER"               : "Voucher"
     },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
+    },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Cashflow Option",
       "CONVENTION_INVOICES" : "Convention - Invoices payment",
@@ -1602,8 +1630,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
-    },
-    "REPORT": "Report"
+    }
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",

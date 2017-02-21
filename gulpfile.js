@@ -56,30 +56,34 @@ const paths = {
       'client/vendor/angular-messages/angular-messages.min.js',
 
       // Angular Sanitize
-      'client/vendor/angular-sanitize/angular-sanitize.js',
+      'client/vendor/angular-sanitize/angular-sanitize.min.js',
 
       // Angular UI
       'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
-      'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+
+      // @TODO - rm this
+      'client/vendor/angular-ui-router/release/stateEvents.min.js',
+
+      'client/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
       // Angular Touch
       'client/vendor/angular-touch/angular-touch.min.js',
 
       // Angular UI Select
-      'client/vendor/angular-ui-select/dist/select.js',
+      'client/vendor/angular-ui-select/dist/select.min.js',
 
       // ChartJS
       'client/vendor/chart.js/dist/Chart.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
 
       // Angular Growl
-      'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.js',
-      'client/vendor/angular-animate/angular-animate.js',
+      'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.min.js',
+      'client/vendor/angular-animate/angular-animate.min.js',
 
       // MomentJS
       'client/vendor/moment/moment.js',
-      'client/vendor/angular-moment/angular-moment.js',
+      'client/vendor/angular-moment/angular-moment.min.js',
       'client/vendor/moment/locale/fr.js',
 
       // Angular Translate
@@ -94,7 +98,7 @@ const paths = {
       'client/vendor/ng-file-upload/ng-file-upload.min.js',
 
       // ngStorage
-      'client/vendor/ngstorage/ngStorage.min.js'
+      'client/vendor/ngstorage/ngStorage.min.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures

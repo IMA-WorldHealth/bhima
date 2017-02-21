@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 VoucherScanBarcodeController.$inject = [
   '$state', 'NotifyService', 'BarcodeService', 'PatientService', 'DebtorGroupService',
-  'bhConstants', '$uibModalInstance', '$timeout', 'PatientInvoiceService', '$rootScope'
+  'bhConstants', '$uibModalInstance', '$timeout', 'PatientInvoiceService', '$rootScope',
+  '$translate',
 ];
 
 /**
@@ -15,7 +16,7 @@ VoucherScanBarcodeController.$inject = [
  *
  * @todo - refactor this whole thing into a component.
 */
-function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices, RS) {
+function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices, RS, $translate) {
   var vm = this;
   var id = $state.params.id;
 
@@ -115,24 +116,27 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
   // this function formats the data as needed.
   function barcodeDataFinalizerFn(data) {
 
-    data.description =
-      'Prise en charge de ' + data.patient.display_name +
-      ' (' + data.patient.reference + ') ' +
-      'pour facture ' + data.invoice.reference + '.';
+    data.description = $translate.instant('VOUCHERS.TYPES.SUPPORT_PAYMENT_DESCRIPTION', {
+      patientName : data.patient.display_name,
+      patientReference : data.patient.reference,
+      invoiceReference : data.invoice.reference
+    });
+
+    data.debit = {
+      debit : data.invoice.cost,
+    };
 
     // PRISE_EN_CHARGE
     data.type_id = bhConstants.transactionType.SUPPORT_INCOME;
 
-    data.debit = {
-      debit : data.amount,
-    };
-
     data.credit = {
       account_id : data.group.account_id,
-      reference : data.invoice,
+      document : data.invoice,
       entity : { uuid : data.patient.debtor_uuid },
-      credit: data.amount
+      credit : data.invoice.cost,
     };
+
+    data.amount = data.invoice.cost;
 
     return data;
   }

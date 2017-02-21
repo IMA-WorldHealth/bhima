@@ -1,9 +1,9 @@
 /* global element, by, browser */
 const chai = require('chai');
-const expect = chai.expect;
-
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
+const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const PurchaseOrderPage = require('./purchases.page.js');
@@ -12,16 +12,14 @@ const components = require('../shared/components');
 /*
  * Simple Tests for Purchase Orders
  */
-describe('Purchase Orders', function () {
-  'use strict';
-
-  const path = '#/purchases/create';
+describe('Purchase Orders', () => {
+  const path = '#!/purchases/create';
 
   // navigate to the patient invoice page
   beforeEach(() => helpers.navigate(path));
 
   it('supports single item purchase orders', () => {
-    let page = new PurchaseOrderPage();
+    const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
     FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
@@ -44,8 +42,8 @@ describe('Purchase Orders', function () {
     page.reset();
   });
 
-  it('supports multi-item purchase orders', function () {
-    let page = new PurchaseOrderPage();
+  it('supports multi-item purchase orders', () => {
+    const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
     FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
@@ -90,8 +88,8 @@ describe('Purchase Orders', function () {
     page.reset();
   });
 
-  it('blocks submission if no supplier is available', function () {
-    let page = new PurchaseOrderPage();
+  it('blocks submission if no supplier is available', () => {
+    const page = new PurchaseOrderPage();
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
 
     // make sure the "add rows" button is still disabled
@@ -101,8 +99,8 @@ describe('Purchase Orders', function () {
     expect(page.btns.submit.isEnabled()).to.eventually.equal(false);
   });
 
-  it('blocks submission for an invalid grid', function () {
-    let page = new PurchaseOrderPage();
+  it('blocks submission for an invalid grid', () => {
+    const page = new PurchaseOrderPage();
     page.btns.clear.click();
 
     // prepare the page with default supplier, description, etc

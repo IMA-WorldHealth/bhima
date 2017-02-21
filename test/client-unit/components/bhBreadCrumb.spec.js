@@ -2,7 +2,7 @@
  * Created by Dedrick Kitamuka on 23/06/2016.
  */
 /* global inject, expect, chai */
-describe('component : bhBreadCrumb', function () {
+describe.skip('component : bhBreadCrumb', function () {
   //two different spy for clarity
   var buttonSpy = chai.spy();
   var dropDownSpy = chai.spy();

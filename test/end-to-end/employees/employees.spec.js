@@ -1,35 +1,34 @@
 /* global element, by, browser */
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe.skip('Employees', function () {
-  'use strict';
-
-  const path = '#/employees';
+describe.skip('Employees', () => {
+  const path = '#!/employees';
   before(() => helpers.navigate(path));
 
   const employee = {
-    code : 'HBB80',
-    display_name : 'Sherlock Holmes Doyle',
-    sexe : 'M',
-    dob : new Date('1960-06-30'),
+    code          : 'HBB80',
+    display_name  : 'Sherlock Holmes Doyle',
+    sexe          : 'M',
+    dob           : new Date('1960-06-30'),
     date_embauche : new Date('1997-05-17'),
-    nb_spouse : 1,
-    nb_enfant : 2,
-    bank : 'BIAC',
-    bank_account : '00-99-88-77',
-    email : 'me@info.com',
-    adresse : '221B Baker Street'
+    nb_spouse     : 1,
+    nb_enfant     : 2,
+    bank          : 'BIAC',
+    bank_account  : '00-99-88-77',
+    email         : 'me@info.com',
+    adresse       : '221B Baker Street',
   };
 
   const employeeId = helpers.random(2);
 
-  it('creates a new employee', function () {
+  it('creates a new employee', () => {
     FU.buttons.create();
 
     FU.input('EmployeeCtrl.employee.display_name', employee.display_name);
@@ -66,8 +65,8 @@ describe.skip('Employees', function () {
     components.notification.hasSuccess();
   });
 
-  it('edits an employee', function () {
-    element(by.id('employee-upd-' + employeeId )).click();
+  it('edits an employee', () => {
+    element(by.id(`employee-upd-${employeeId}`)).click();
 
     // modify the employee display_name
     FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
@@ -80,8 +79,8 @@ describe.skip('Employees', function () {
     components.notification.hasSuccess();
   });
 
-  it('unlocks an employee', function () {
-    element(by.id('employee-upd-' + employeeId )).click();
+  it('unlocks an employee', () => {
+    element(by.id(`employee-upd-${employeeId}`)).click();
     element(by.id('bhima-employee-locked')).click();
     element(by.id('change_employee')).click();
 
@@ -89,7 +88,7 @@ describe.skip('Employees', function () {
     components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
     FU.buttons.create();
 
     // verify form has not been submitted
