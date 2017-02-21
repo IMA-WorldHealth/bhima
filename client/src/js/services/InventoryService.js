@@ -53,7 +53,7 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
 
       if (angular.isDefined(value)) {
         column.value = value;
-
+        
         return true;
       } else {
         return false;
