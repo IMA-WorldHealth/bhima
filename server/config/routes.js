@@ -14,78 +14,77 @@
  */
 
 const winston = require('winston');
-const upload  = require('../lib/uploader');
+const upload = require('../lib/uploader');
 
 // unclassified routes
-const auth                 = require('../controllers/auth');
-const tree                 = require('../controllers/tree');
-const units                = require('../controllers/units');
-const system               = require('../controllers/system');
-const report               = require('../controllers/report');
+const auth = require('../controllers/auth');
+const tree = require('../controllers/tree');
+const units = require('../controllers/units');
+const system = require('../controllers/system');
+const report = require('../controllers/report');
 
 // admin routes
-const users        = require('../controllers/admin/users');
-const projects     = require('../controllers/admin/projects');
-const enterprises  = require('../controllers/admin/enterprises');
-const employees    = require('../controllers/admin/employees');
-const services     = require('../controllers/admin/services');
-const suppliers    = require('../controllers/admin/suppliers');
-const functions    = require('../controllers/admin/functions');
-const grades       = require('../controllers/admin/grades');
-const languages    = require('../controllers/admin/languages');
-const locations    = require('../controllers/admin/locations');
-const groups       = require('../controllers/groups');
+const users = require('../controllers/admin/users');
+const projects = require('../controllers/admin/projects');
+const enterprises = require('../controllers/admin/enterprises');
+const employees = require('../controllers/admin/employees');
+const services = require('../controllers/admin/services');
+const suppliers = require('../controllers/admin/suppliers');
+const functions = require('../controllers/admin/functions');
+const grades = require('../controllers/admin/grades');
+const languages = require('../controllers/admin/languages');
+const locations = require('../controllers/admin/locations');
+const groups = require('../controllers/groups');
 
 // medical routes
-const patients       = require('../controllers/medical/patients');
-const patientGroups  = require('../controllers/medical/patientGroups');
-const snis           = require('../controllers/medical/snis');
+const patients = require('../controllers/medical/patients');
+const patientGroups = require('../controllers/medical/patientGroups');
+const snis = require('../controllers/medical/snis');
 const medicalReports = require('../controllers/medical/reports');
-const diagnoses      = require('../controllers/medical/diagnoses');
+const diagnoses = require('../controllers/medical/diagnoses');
 
 // stock and inventory routes
-const inventory            = require('../controllers/inventory');
-const depots               = require('../controllers/inventory/depots');
-const inventoryReports     = require('../controllers/inventory/reports');
+const inventory = require('../controllers/inventory');
+const depots = require('../controllers/inventory/depots');
+const inventoryReports = require('../controllers/inventory/reports');
 
 // finance routes
-const trialBalance     = require('../controllers/finance/trialBalance');
-const ledger           = require('../controllers/finance/ledger');
-const fiscal           = require('../controllers/finance/fiscal');
-const gl               = require('../controllers/finance/ledgers/general');
-const purchases        = require('../controllers/finance/purchases');
-const taxPayment       = require('../controllers/finance/taxPayment');
-const debtors          = require('../controllers/finance/debtors');
-const cashboxes        = require('../controllers/finance/cashboxes');
-const exchange         = require('../controllers/finance/exchange');
-const cash             = require('../controllers/finance/cash');
-const priceList        = require('../controllers/finance/priceList');
-const billingServices  = require('../controllers/finance/billingServices');
-const accounts         = require('../controllers/finance/accounts');
-const costCenter       = require('../controllers/finance/costCenter');
-const profitCenter     = require('../controllers/finance/profitCenter');
-const reference        = require('../controllers/finance/reference');
-const subsidies        = require('../controllers/finance/subsidies');
-const patientInvoice   = require('../controllers/finance/patientInvoice');
-const financeReports   = require('../controllers/finance/reports');
-const discounts        = require('../controllers/finance/discounts');
-const payroll          = require('../controllers/finance/payroll');
-const debtorGroups     = require('../controllers/finance/debtors/groups');
-const currencies       = require('../controllers/finance/currencies');
-const vouchers         = require('../controllers/finance/vouchers');
-const creditorGroups   = require('../controllers/finance/creditorGroups');
-const referenceGroup   = require('../controllers/finance/referenceGroup');
+const trialBalance = require('../controllers/finance/trialBalance');
+const ledger = require('../controllers/finance/ledger');
+const fiscal = require('../controllers/finance/fiscal');
+const gl = require('../controllers/finance/ledgers/general');
+const purchases = require('../controllers/finance/purchases');
+const taxPayment = require('../controllers/finance/taxPayment');
+const debtors = require('../controllers/finance/debtors');
+const cashboxes = require('../controllers/finance/cashboxes');
+const exchange = require('../controllers/finance/exchange');
+const cash = require('../controllers/finance/cash');
+const priceList = require('../controllers/finance/priceList');
+const billingServices = require('../controllers/finance/billingServices');
+const accounts = require('../controllers/finance/accounts');
+const costCenter = require('../controllers/finance/costCenter');
+const profitCenter = require('../controllers/finance/profitCenter');
+const reference = require('../controllers/finance/reference');
+const subsidies = require('../controllers/finance/subsidies');
+const patientInvoice = require('../controllers/finance/patientInvoice');
+const financeReports = require('../controllers/finance/reports');
+const discounts = require('../controllers/finance/discounts');
+const payroll = require('../controllers/finance/payroll');
+const debtorGroups = require('../controllers/finance/debtors/groups');
+const currencies = require('../controllers/finance/currencies');
+const vouchers = require('../controllers/finance/vouchers');
+const creditorGroups = require('../controllers/finance/creditorGroups');
+const referenceGroup = require('../controllers/finance/referenceGroup');
 const sectionResultats = require('../controllers/finance/sectionResultat');
-const sectionBilans    = require('../controllers/finance/sectionBilan');
-const creditors        = require('../controllers/finance/creditors.js');
-const journal          = require('../controllers/finance/journal');
-const transactionType  = require('../controllers/admin/transactionType');
-const generalLedger    = require('../controllers/finance/generalLedger');
-const cashflow         = require('../controllers/finance/reports/cashflow');
+const sectionBilans = require('../controllers/finance/sectionBilan');
+const creditors = require('../controllers/finance/creditors.js');
+const journal = require('../controllers/finance/journal');
+const transactionType = require('../controllers/admin/transactionType');
+const generalLedger = require('../controllers/finance/generalLedger');
 const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
-const stats            = require('../controllers/dashboard/stats');
+const stats = require('../controllers/dashboard/stats');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -216,8 +215,9 @@ exports.configure = function configure(app) {
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
+  app.get('/general_ledger/accounts', generalLedger.listAccounts);
 
-  //API for trial balance
+  // API for trial balance
   app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
   app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
@@ -386,6 +386,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.report);
+  app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
+  app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
 
   app.get('/reports/keys/:key', report.keys);
 

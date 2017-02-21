@@ -31,7 +31,7 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   function submit() {
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
-        $state.go('generalLedger');
+        $state.go('postedJournal');
       })
       .catch(Notify.handleError);
   }

@@ -15,13 +15,17 @@ const db = require('../../../lib/db');
 
 // expose to the api
 exports.list = list;
+exports.listAccounts = listAccounts;
+
+// expose to server controllers
+exports.getlistAccounts = getlistAccounts;
 
 /**
  * GET /general_ledger
  * Getting data from the general ledger
  */
 function list(req, res, next) {
-  let sql = `
+  const sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
       gl.trans_id, gl.trans_date, BUID(gl.record_uuid) AS record_uuid,
       gl.description, gl.account_id, gl.debit, gl.credit,
@@ -42,8 +46,43 @@ function list(req, res, next) {
     `;
 
   db.exec(sql)
-    .then(function (rows) {
-        res.status(200).json(rows);
+    .then((rows) => {
+      res.status(200).json(rows);
     })
     .catch(next);
 }
+
+/**
+ * GET /general_ledger/accounts
+ * list accounts and their solds
+ */
+function listAccounts(req, res, next) {
+  getlistAccounts()
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * @function getlistAccounts
+ * get list of accounts
+ */
+function getlistAccounts() {
+  const sql =
+    `SELECT aggregator.id, aggregator.number, aggregator.label,
+      IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
+      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance
+    FROM (
+      SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance, 
+        a.id, a.number, a.label 
+      FROM general_ledger AS gl 
+        JOIN account a ON a.id = gl.account_id
+      GROUP BY a.id 
+      ORDER BY a.number
+    ) AS aggregator;`;
+
+  return db.exec(sql);
+}
+

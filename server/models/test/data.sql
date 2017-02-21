@@ -180,7 +180,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Report Customer Debts
 (151,1),
 
--- purchase order folder 
+-- Posted Journal
+(158,1),
+
+-- Purchase order folder 
 (154, 1), (155, 1), (156, 1);
 
 -- Fiscal Year 2015
