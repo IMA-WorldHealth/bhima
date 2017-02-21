@@ -181,7 +181,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (151,1),
 
 -- Posted Journal
-(157,1),
+(158,1),
 
 -- Purchase order folder 
 (154, 1), (155, 1), (156, 1);
