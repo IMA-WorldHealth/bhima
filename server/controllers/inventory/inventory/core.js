@@ -177,8 +177,6 @@ function getItemsMetadataSearch(params){
   filters.setOrder('ORDER BY inventory.code ASC');  
   let query = filters.applyQuery(sql);
   let parameters = filters.parameters();
-
-  console.log(query);
   
   return db.exec(query, parameters);
 

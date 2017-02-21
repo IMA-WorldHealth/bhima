@@ -18,11 +18,13 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
+  vm.clearFilters = clearFilters;
 
   var cache = new AppCache('Inventory');
 
   vm.toggleFilter = toggleFilter;
   vm.research = research;
+  vm.onRemoveFilter = onRemoveFilter;
 
   // grid default options
   var columnDefs  = [{
@@ -81,25 +83,41 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  function runResearch(params){ 
+    vm.filtersFmt = Inventory.formatFilterParameters(params);
+    Inventory.search(params)
+      .then(function (rows) {
+        vm.gridOptions.data = rows;
+      })
+      .catch(Notify.handleError);     
+  }
+
   // research and filter data in Inventory List
   function research() {
     Inventory.openSearchModal()
       .then(function (parameters) {
-
-        Inventory.search(parameters)
-          .then(function (rows) {
-            vm.gridOptions.data = rows;
-          })
-          .catch(handleError)
-          .finally(function () {
-            toggleLoadingIndicator();
-          });      
+        vm.filters = parameters;
+        runResearch(parameters);
 
       });
   }
 
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+    delete vm.filters[key];
+    runResearch(vm.filters);
+  }
+
+  // clears the filters 
+  function clearFilters() {
+    startup();
+    vm.filtersFmt = {};
+  }
+
   /* startup */
   function startup() {
+    vm.filters = {};
+
     Inventory.read()
       .then(function (inventory) {
         vm.gridOptions.data = inventory;

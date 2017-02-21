@@ -46,6 +46,25 @@
   </div>
 </div>
 
+<div class="flex-util bh-filter-bar" ng-if="InventoryCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="InventoryCtrl.filtersFmt"
+    on-remove-filter="InventoryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="InventoryCtrl.clearFilters()"
+    ng-show="InventoryCtrl.filtersFmt.length > 0"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+  </a>
+</div>
+
+
 <!-- grid content  -->
 <div class="flex-content">
   <div class="container-fluid">

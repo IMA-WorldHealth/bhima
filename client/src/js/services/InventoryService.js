@@ -13,6 +13,7 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
   service.Units = Units;
   service.Types = Types;
   service.openSearchModal = openSearchModal; 
+  service.formatFilterParameters = formatFilterParameters;  
 
   /**
    * @method openSearchModal
@@ -34,6 +35,32 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
       }
     }).result;
   }
+
+  /**
+   * This function prepares the headers inventory properties which were filtered,
+   * Special treatment occurs when processing data related to the date
+   * @todo - this might be better in it's own service
+   */
+  function formatFilterParameters(params) {
+    var columns = [
+      { field: 'group_uuid', displayName: 'FORM.LABELS.GROUP' },
+      { field: 'text', displayName: 'FORM.LABELS.LABEL' }
+    ];
+    // returns columns from filters
+    return columns.filter(function (column) {
+      var LIMIT_UUID_LENGTH = 6;
+      var value = params[column.field];
+
+      if (angular.isDefined(value)) {
+        column.value = value;
+
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
 
   return service;
 }
