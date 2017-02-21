@@ -8,6 +8,7 @@
 
 const uuid = require('node-uuid');
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 // this should be a const in future ES versions
 var errors = {
@@ -42,6 +43,7 @@ exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
 exports.createItemsMetadata = createItemsMetadata;
 exports.updateItemsMetadata = updateItemsMetadata;
+exports.getItemsMetadataSearch = getItemsMetadataSearch;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
@@ -151,6 +153,35 @@ function getItemsMetadataById(uuid) {
     WHERE i.uuid = ?;`;
 
   return db.one(sql, [db.bid(uuid), uuid, 'inventory']);
+}
+
+
+function getItemsMetadataSearch(params){
+  if(params.group_uuid){
+    db.bid(params.group_uuid);  
+  }
+  
+  let filters = new FilterParser(params, { tableAlias : 'inventory' });
+
+  var sql =
+    `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
+      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id, inventory.unit_weight,
+      inventory.unit_volume, ig.sales_account, inventory.default_quantity
+    FROM inventory JOIN inventory_type AS it
+      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
+      inventory.unit_id = iu.id`;
+
+  filters.fullText('text', 'text', 'inventory');
+  filters.setOrder('ORDER BY inventory.code ASC');  
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+
+  console.log(query);
+  
+  return db.exec(query, parameters);
+
 }
 
 /**
