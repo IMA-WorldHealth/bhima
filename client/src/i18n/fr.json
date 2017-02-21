@@ -1032,7 +1032,8 @@
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
-    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
+    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme",
+    "DOB_NOT_SPECIFIED"  : "Seulement une année de naissance a été spécifiée lors de l'enregistrement du patient. C'est une date approximative."
   },
   "PATIENT_REG": {
     "CARD"                : "Fiche du patient",
