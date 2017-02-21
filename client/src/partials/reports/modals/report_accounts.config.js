@@ -42,6 +42,11 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
 
     var url = 'reports/finance/account';
 
+    if(!vm.dateInterval){
+      vm.dateTo = null;
+      vm.dateFrom = null; 
+    }
+
     var options = {
       account_id      : vm.account.id,
       account_label   : vm.account.label,
@@ -50,6 +55,9 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
       sourceLabel     : vm.source.label,
       label           : vm.label,
       lang            : Languages.key,
+      dateInterval    : vm.dateInterval,
+      dateTo          : vm.dateTo,
+      dateFrom        : vm.dateFrom,
       reportType      : vm.type
     };
 

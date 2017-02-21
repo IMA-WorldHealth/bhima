@@ -4,28 +4,29 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.ACCOUNT"}}</strong></h3>
-  <h4 class="text-center"><strong>{{ title.accountNumber }}</strong></h4>
-  <h4 class="text-center text-uppercase"><strong>{{ title.accountLabel}}</strong></h4>
+  <h4 class="text-center"><strong>{{ title.accountNumber }} {{ title.accountLabel}}</strong></h4>
 
   <section>
     <table class="table table-condensed table-striped table-report table-bordered">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;">
-          <th style="width: 15%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
-          <th style="width: 15%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
+		      <th style="width: 10%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
           <th style="width: 40%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
-          <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
-          <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 12%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 12%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 16%;">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
         </tr>
       </thead>
       <tbody>
         {{#each transactions}}
           <tr>
-            <td>{{this.trans_id}}</td>
             <td>{{date this.trans_date}}</td>
+            <td>{{this.trans_id}}</td>
             <td>{{this.description}}</td>
-            <td>{{currency this.debit ../metadata.enterprise.currency_id}}</td>
-            <td>{{currency this.credit ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency this.debit ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency this.credit ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency this.cumulBalance ../metadata.enterprise.currency_id}}</td>
           </tr>
         {{else}}
           {{> emptyTable columns=5}}
@@ -34,8 +35,9 @@
       <tfoot>
         <tr style="background-color: #ddd;">
           <td colspan="3"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
-          <td><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
-          <td><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.balance metadata.enterprise.currency_id}}</strong></td>
         </tr>
       </tfoot>
     </table>

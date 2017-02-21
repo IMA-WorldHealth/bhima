@@ -17,6 +17,22 @@
       </div>
     </div>
 
+    <!-- Inclure Date interval  -->
+    <div class="checkbox">
+      <label class="control-label">
+        <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
+        <strong>{{ "FORM.LABELS.INCLUDE_DATE_INTERVAL" | translate }}</strong>
+      </label>
+    </div>
+    
+    <!-- Date interval  -->
+    <div ng-if="ReportConfigCtrl.dateInterval === 1">    
+      <bh-date-interval
+        date-from="ReportConfigCtrl.dateFrom"
+        date-to="ReportConfigCtrl.dateTo">
+      </bh-date-interval>
+    </div>
+
     <!-- account selection  -->
     <div class="form-group"
       ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.account.$invalid }">

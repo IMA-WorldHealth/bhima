@@ -11,11 +11,6 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 const sourceMap = { 1: 'general_ledger', 2: 'posting_journal', 3: 'combined_ledger' };
 
 /**
- * Expose to controllers
- */
-exports.getAccountTransactions = getAccountTransactions;
-
-/**
  * @method document
  *
  * @description
@@ -26,12 +21,17 @@ function document(req, res, next) {
   const bundle = {};
 
   const params = req.query;
+  const filter = {};
 
   const title = {
     accountNumber : params.account_number,
     accountLabel  : params.account_label,
     source        : params.sourceLabel,
+    dateFrom      : params.dateFrom,
+    dateTo        : params.dateTo
   };
+
+  let cumulBalance = 0;
 
   params.user = req.session.user;
 
@@ -45,9 +45,16 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return getAccountTransactions(params.account_id, params.sourceId)
+  return queryReportAccount(params.account_id, params.sourceId, params.dateFrom, params.dateTo)
     .then((result) => {
-      _.extend(bundle, { transactions: result.transactions, sum: result.sum, title });
+
+      result.accounts.forEach(function (account) {
+        cumulBalance += account.debit - account.credit;
+        account.cumulBalance = cumulBalance;
+      });
+
+
+      _.extend(bundle, { accounts: result.accounts, sum: result.sum, title });
 
       return report.render(bundle);
     })
@@ -60,45 +67,81 @@ function document(req, res, next) {
 
 
 /**
- * @function getAccountTransactions
+ * @function queryReportAccount
  * This feature select all transactions for a specific account
 */
-function getAccountTransactions(accountId, source) {
+function queryReportAccount(accountId, source, dateFrom, dateTo) {
   const sourceId = parseInt(source, 10);
 
   // get the table name
   const tableName = sourceMap[sourceId];
 
-  const sql = `
-      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
-        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
-      FROM ${tableName}
-      WHERE account_id = ?
-      GROUP BY trans_id 
-      ORDER BY trans_date ASC`;
+  if(dateFrom && dateTo){    
+    const sql = `
+        SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+          debit_equiv as debit, credit_equiv as credit
+        FROM ${tableName}
+        WHERE account_id = ? AND trans_date >= DATE(?) AND trans_date <= DATE(?) 
+        GROUP BY trans_id 
+        ORDER BY trans_date ASC`;
 
-  const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
-    FROM (
-      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
-        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
-      FROM ${tableName}
-      WHERE account_id = ?
-      GROUP BY trans_id 
-      ORDER BY trans_date ASC
-    ) AS t 
-    `;
+    const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
+      FROM (
+        SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+          debit_equiv as debit, credit_equiv as credit
+        FROM ${tableName}
+        WHERE account_id = ? AND trans_date >= DATE(?) AND trans_date <= DATE(?)
+        GROUP BY trans_id 
+        ORDER BY trans_date ASC
+      ) AS t 
+      `;
 
-  const bundle = {};
+    const bundle = {};
 
-  return db.exec(sql, [accountId])
-    .then((transactions) => {
-      _.extend(bundle, { transactions });
-      return db.one(sqlAggrega, [accountId]);
-    })
-    .then((sum) => {
-      _.extend(bundle, { sum });
-      return bundle;
-    });
+    return db.exec(sql, [accountId, dateFrom, dateTo])
+      .then((accounts) => {
+        _.extend(bundle, { accounts });
+        return db.one(sqlAggrega, [accountId, dateFrom, dateTo]);
+      })
+      .then((sum) => {
+        _.extend(bundle, { sum });
+        return bundle;
+      });
+
+  } else {
+    const sql = `
+        SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+          debit_equiv as debit, credit_equiv as credit
+        FROM ${tableName}
+        WHERE account_id = ?
+        GROUP BY trans_id 
+        ORDER BY trans_date ASC`;
+
+    const sqlAggrega = ` SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance 
+      FROM (
+        SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date, 
+          debit_equiv as debit, credit_equiv as credit
+        FROM ${tableName}
+        WHERE account_id = ?
+        GROUP BY trans_id 
+        ORDER BY trans_date ASC
+      ) AS t 
+      `;
+
+    const bundle = {};
+
+    return db.exec(sql, [accountId])
+      .then((accounts) => {
+        _.extend(bundle, { accounts });
+        return db.one(sqlAggrega, [accountId]);
+      })
+      .then((sum) => {
+        _.extend(bundle, { sum });
+        return bundle;
+      });
+
+  }
+
 }
 
 exports.document = document;
