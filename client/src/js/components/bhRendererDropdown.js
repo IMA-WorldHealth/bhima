@@ -30,7 +30,8 @@ function bhRendererController(AppCache, $httpParamSerializer) {
 
   $ctrl.select = function select(option) {
     $ctrl.selection = option;
-    cache.selection = option;
+    cache.selection = $ctrl.selection;
+    combineAndSerializeParameters();
   };
 
   // watch for changes on the component's border and behave appropriately

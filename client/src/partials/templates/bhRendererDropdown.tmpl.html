@@ -1,5 +1,5 @@
 <div class="btn-group" uib-dropdown>
-  <a class="btn btn-default" ng-href="{{::$ctrl.reportUrl}}?{{$ctrl.params}}" download>
+  <a class="btn btn-default" ng-href="{{$ctrl.reportUrl}}?{{$ctrl.params}}" download>
     <span ng-show="$ctrl.loading">
       <i class="fa fa-circle-notch-o"></i> <span translate>FORM.INFO.LOAING</span>
     </span>
@@ -12,7 +12,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-    <li ng-repeat="option in ::$ctrl.options">
+    <li ng-repeat="option in $ctrl.options">
       <a href ng-click="$ctrl.select(option)">
         <i class="fa fa-{{::option.icon}}"></i>
         <span translate>{{ ::option.key }}</span>
