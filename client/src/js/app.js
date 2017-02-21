@@ -326,10 +326,10 @@ function constantConfig() {
   return {
     accounts : {
       ROOT  : 0,
-      TITLE : 4
+      TITLE : 4,
     },
     purchase : {
-      GRID_HEIGHT : 200
+      GRID_HEIGHT : 200,
       TITLE : 4,
     },
     settings : {
