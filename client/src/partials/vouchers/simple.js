@@ -66,7 +66,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     var creditRow = vm.Voucher.store.data[1];
 
     // configure as needed
-    debitRow.configure({ debit : vm.amount});
+    debitRow.configure({ debit : vm.amount });
     creditRow.configure({ credit : vm.amount });
 
     var valid = vm.Voucher.validate();
