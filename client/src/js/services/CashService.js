@@ -136,6 +136,7 @@ function CashService(Modal, Api, Exchange, Session, moment) {
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
       { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' },
       { field: 'reversed', displayName: 'CASH.REGISTRY.REVERSED_RECORDS' },
+      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'}
     ];
 
     // returns columns from filters

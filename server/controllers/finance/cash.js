@@ -176,6 +176,9 @@ function listPayment(options) {
   let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
+  let patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
+  filters.custom('patientReference', patientReferenceStatement);
+
   // filter reversed cash records
   filters.reversed('reversed');
 
