@@ -245,6 +245,11 @@ describe('(/inventory) The Inventory HTTP API', () => {
     consumable : 0
   };
 
+  let metadataSearch = {
+    text : 'Firs'
+  };
+
+
   it('POST /inventory/metadata create a new inventory metadata', () => {
     return agent.post('/inventory/metadata')
       .send(metadata)
@@ -268,6 +273,18 @@ describe('(/inventory) The Inventory HTTP API', () => {
         expect(res.body.default_quantity).to.be.equal(metadataUpdate.default_quantity);
         expect(res.body.group_uuid).to.be.equal(metadataUpdate.group_uuid);
         expect(res.body.consumable).to.be.equal(metadataUpdate.consumable);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata/search Returns the list of filtered inventories', () => {
+    return agent.get('/inventory/metadata/search')
+      .query(metadataSearch)
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        inventoryList = res.body;
+        expect(res.body.length).to.be.equal(1);
       })
       .catch(helpers.handler);
   });
