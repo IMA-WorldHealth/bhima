@@ -289,10 +289,17 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.saveTransaction = saveTransaction;
   function saveTransaction() {
     vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
-    transactions.save();
+    transactions.save()
+      .then(function (results) {
+        Notify.success('JOURNAL.SAVE_TRANSACTION_SUCCESS');
+        // ensure that all of the data now respects the current filter
+        load(vm.filters);
+      })
+      .catch(Notify.handleError);
   }
 
   function cancelEdit() {
+    // @TODO this should return a promise in a uniform standard with `saveTransaction`
     transactions.cancel();
 
     // ensure data that has been changed is up to date from the server

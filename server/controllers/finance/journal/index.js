@@ -385,7 +385,6 @@ function editTransaction(req, res, next) {
 
   transformColumns(rowsAdded, true)
     .then((result) => {
-      console.log('got transformed columns', result);
       result.forEach((row) => {
         db.convert(row, ['uuid', 'record_uuid']);
         // row = transformColumns(row);
@@ -414,6 +413,7 @@ function editTransaction(req, res, next) {
 
 // converts all valid posting journal editable columns into data representations
 // returns valid errors for incorrect data
+// @TODO Many requests are made vs. getting one look up table and using that - this can be greatly optimised
 function transformColumns(rows, newRecord) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
@@ -443,10 +443,7 @@ function transformColumns(rows, newRecord) {
         if (!result.length) {
           throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
         }
-        console.log('assignment got results', result);
-        console.log('assignment running pre assignment');
         row.account_id = result[0].id;
-        console.log('assignment running', row);
         return result;
       });
       delete row.account_number;
@@ -496,6 +493,11 @@ function transformColumns(rows, newRecord) {
       row.credit = row.credit_equiv;
     }
 
+    // ensure date strings are processed correctly
+    // @TODO standardise formatting vs. lookup behaviour
+    if (row.trans_date) {
+      row.trans_date = new Date(row.trans_date);
+    }
   });
 
   promises = databaseRequests.map((request, index) => {
@@ -506,9 +508,7 @@ function transformColumns(rows, newRecord) {
   });
 
   return q.all(promises)
-    .then(function (results) {
-
-      // throw new BadRequest('THIS FAILED MAN', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
+    .then((results) => {
       return rows;
     });
 }
