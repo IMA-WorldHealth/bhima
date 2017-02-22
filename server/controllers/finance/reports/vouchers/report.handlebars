@@ -25,18 +25,18 @@
             <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
             <th>{{translate 'FORM.LABELS.DATE'}}</th>
             <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-            <th class="text-right">{{translate 'FORM.LABELS.AMOUNT'}}</th>
-            <th>{{translate 'FORM.LABELS.BY'}}</th>
+            <th>{{translate 'FORM.LABELS.AMOUNT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CREATED_BY'}}</th>
           </tr>
         </thead>
         <tbody>
-          {{#each rows}}
+          {{#each rows as |voucher|}}
             <tr>
-              <td>{{reference}}</td>
-              <td>{{date date}}</td>
-              <td>{{description}}</td>
-              <td class="text-right">{{currency amount this.currency_id}}</td>
-              <td>{{this.display_name}}</td>
+              <td>{{voucher.reference}}</td>
+              <td>{{date voucher.date}}</td>
+              <td>{{voucher.description}}</td>
+              <td class="text-right">{{currency voucher.amount voucher.currency_id}}</td>
+              <td>{{voucher.display_name}}</td>
             </tr>
           {{/each}}
         </tbody>
