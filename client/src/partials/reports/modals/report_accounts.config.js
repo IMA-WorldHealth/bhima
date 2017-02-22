@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('report_accountsController', ReportAccountsConfigController);
 
 ReportAccountsConfigController.$inject = [
-  '$state', '$uibModalInstance', 'AccountService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants'
+  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants'
 ];
 
 /**
@@ -12,7 +12,7 @@ ReportAccountsConfigController.$inject = [
  * This controller is responsible for the configuration of the ReportAccounts report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify, Languages, SavedReports, reportDetails, bhConstants) {
+function ReportAccountsConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails, bhConstants) {
   var vm = this;
   var report = reportDetails;
 
@@ -21,6 +21,7 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
   vm.bhConstants = bhConstants;
+  vm.onAccountSelect = onAccountSelect;
 
   // default value for General Ledger
   vm.source = 1;
@@ -31,11 +32,11 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
     {id: 3, label : 'FORM.LABELS.ALL'}
   ];
 
-  Accounts.read()
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    })
-    .catch(Notify.handleError);
+  function onAccountSelect(account) {
+    vm.accountId = account.id;
+    vm.accountLabel = account.label;
+    vm.accountNumber = account.number;
+  }
 
   function generate(form) {
     if (form.$invalid) { return; }
@@ -48,9 +49,9 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
     }
 
     var options = {
-      account_id      : vm.account.id,
-      account_label   : vm.account.label,
-      account_number  : vm.account.number,
+      account_id      : vm.accountId,
+      account_label   : vm.accountLabel,
+      account_number  : vm.accountNumber,
       sourceId        : vm.source.id,
       sourceLabel     : vm.source.label,
       label           : vm.label,
