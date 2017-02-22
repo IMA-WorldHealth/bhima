@@ -23,7 +23,7 @@ describe('Report Accounts generator', () => {
     FU.buttons.create();
 
     FU.input('ReportConfigCtrl.label', 'Report of Account 41003');
-    FU.uiSelect('ReportConfigCtrl.account', '41003');
+	components.accountSelect.set('41003');
     FU.select('ReportConfigCtrl.source',  'Tous');
 
     // focus on the button zone
