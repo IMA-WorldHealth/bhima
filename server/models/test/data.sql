@@ -187,7 +187,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (154, 1), (155, 1), (156, 1),
 
 -- Stock 
-(160, 1), (161, 1), (162, 1), (163, 1);
+(160, 1), (161, 1), (162, 1), (163, 1), (164, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

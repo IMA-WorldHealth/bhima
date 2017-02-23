@@ -1841,6 +1841,7 @@ CREATE TABLE `stock_movement` (
   `depot_uuid`      BINARY(16) NOT NULL,
   `lot_uuid`        BINARY(16) NOT NULL,
   `entity_uuid`     BINARY(16) NULL,
+  `description`     TEXT NULL,
   `flux_id`         INT(11) NOT NULL,
   `date`            DATE NOT NULL,
   `quantity`        int(11) NOT NULL DEFAULT 0,

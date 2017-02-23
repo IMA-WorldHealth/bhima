@@ -3,28 +3,28 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchInventoriesModalController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 
-  'SearchFilterFormatService', 'FluxService', '$translate'
+  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance',
+  'SearchFilterFormatService',
 ];
 
-function SearchInventoriesModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat, Flux, $translate) {
+function SearchInventoriesModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat) {
   var vm = this;
 
   // global methods
   vm.cancel = Instance.close;
   vm.submit = submit;
 
-  // load depots 
+  // load depots
   Depots.read()
   .then(function (depots) {
-      vm.depots = depots;
+    vm.depots = depots;
   })
   .catch(Notify.handleError);
 
-  // load inventories 
+  // load inventories
   Inventory.read()
   .then(function (inventories) {
-      vm.inventories = inventories;
+    vm.inventories = inventories;
   })
   .catch(Notify.handleError);
 
