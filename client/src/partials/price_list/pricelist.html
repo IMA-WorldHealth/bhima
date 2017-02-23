@@ -2,24 +2,25 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "PRICE_LIST.TITLE" | translate }}</li>
+      <li class="active">{{ "PRICE_LIST.TITLE" | translate }}</li>
     </ol>
+
+   <div class="toolbar">
+     <div class="toolbar-item">
+      <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
+        <span class="fa fa-plus"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }}
+      </button>
+     </div>
+   </div>
   </div>
 </div>
-
-<div class="flex-util">
-  <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
-    <span class="fa fa-plus"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }}
-  </button>
-</div>
-
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
 
-      <div class="col-xs-6">
-        <div class="panel panel-default" style="overflow: auto; max-height: 80vh;">
+      <div class="col-md-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
             {{ "TABLE.COLUMNS.LISTS" | translate }}
           </div>
@@ -45,10 +46,11 @@
               </tr>
             </tbody>
           </table>
+
         </div>
       </div>
 
-      <div class="col-xs-6" ng-switch="PriceListCtrl.view">
+      <div class="col-md-6" ng-switch="PriceListCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ "PRICE_LIST.TITLE" | translate }}</h4>
@@ -60,7 +62,7 @@
           </div>
         </div>
 
-        <div class="panel panel-primary" ng-switch-when="create">
+        <div class="panel panel-primary" ng-switch-when="create" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">{{ "PRICE_LIST.ADD_PRICE_LIST" | translate }}</div>
           <div class="panel-body">
             <form name="CreateForm" bh-submit="PriceListCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
@@ -122,7 +124,8 @@
           </div>
         </div>
 
-        <div class="panel panel-primary" ng-switch-when="update">
+
+        <div class="panel panel-primary" ng-switch-when="update" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
           <div class="panel-body">
             <form name="UpdateForm" bh-submit="PriceListCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
@@ -182,6 +185,7 @@
             </form>
           </div>
         </div>
+
       </div>
     </div>
   </div>
