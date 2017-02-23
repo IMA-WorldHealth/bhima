@@ -52,6 +52,11 @@ INSERT INTO unit VALUES
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
   (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
   (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
+  (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
+  (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
+  (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
+  (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors'),
+  (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted'),
   (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/partials/stock', '/stock'),
   (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/partials/stock/lots', '/stock/lots'),
   (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/partials/stock/movements', '/stock/movements'),
@@ -72,7 +77,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (4, 'balance', 'REPORT.BALANCE'),
   (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS'),
-  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE');
+  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
+  (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

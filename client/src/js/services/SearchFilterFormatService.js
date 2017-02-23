@@ -100,7 +100,6 @@ function SearchFilterFormatService() {
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
       { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
-      
       { field: 'depot_uuid', displayName: 'STOCK.DEPOT' },
       { field: 'inventory_uuid', displayName: 'STOCK.INVENTORY' },
       { field: 'label', displayName: 'FORM.LABELS.LABEL' },
@@ -108,11 +107,9 @@ function SearchFilterFormatService() {
       { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter:'date' },
       { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter:'date' },
       { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter:'date' },
-
       { field: 'flux_id', displayName: 'STOCK.FLUX' },
       { field: 'is_exit', displayName: 'STOCK.OUTPUT' },
-
-      { field: 'status', displayName: 'STOCK.STATUS.LABEL' }
+      { field: 'status', displayName: 'STOCK.STATUS.LABEL' },
     ];
 
     // returns columns from filters

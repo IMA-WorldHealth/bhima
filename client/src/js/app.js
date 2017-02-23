@@ -7,6 +7,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
+  'ui.router.state.events',
 ]);
 
 function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
@@ -133,9 +134,16 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : 'partials/locations/country/country.html',
   })
 
-  /** General ledger routes**/
+  /** General ledger routes **/
   .state('generalLedger', {
     url         : '/general_ledger',
+    controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger_accounts.html',
+  })
+
+  /** Posted Journal **/
+  .state('postedJournal', {
+    url         : '/journal/posted',
     controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
     templateUrl : 'partials/general_ledger/general_ledger.html',
   })
@@ -165,13 +173,6 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     url         : '/suppliers',
     controller  : 'SupplierController as SupplierCtrl',
     templateUrl : '/partials/suppliers/suppliers.html',
-  })
-
-  /* purchase routes */
-  .state('purchasesCreate', {
-    url         : '/purchases/create',
-    controller  : 'PurchaseOrderController as PurchaseCtrl',
-    templateUrl : 'partials/purchases/create/create.html',
   })
 
   /* transaction type */
@@ -205,7 +206,6 @@ function translateConfig($translateProvider) {
 }
 
 function localeConfig(tmhDynamicLocaleProvider) {
-
   // TODO Hardcoded default translation/ localisation
   tmhDynamicLocaleProvider.localeLocationPattern('/i18n/locale/angular-locale_{{locale}}.js');
   tmhDynamicLocaleProvider.defaultLocale('fr-be');
@@ -214,13 +214,12 @@ function localeConfig(tmhDynamicLocaleProvider) {
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
 
-  var loginStateRegexp = /#\/login$/;
-  var rootStateRegexp = /#\/$|\/$|#$/;
-
+  var loginStateRegexp = /#!\/login$/;
+  var rootStateRegexp = /#!\/$|\/$|#!$/;
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
-  $rootScope.$on('$locationChangeStart', function (event, next) {
+  $rootScope.$on('$locationChangeStart', function (event, next)  {
     var isLoggedIn = !!SessionService.user;
 
     var isLoginState = loginStateRegexp.test(next);
@@ -254,6 +253,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
   // trigger a $state.go() to the login state, it will not be stopped - the
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
+  // TODO - migrate this to $transitions.on()
   $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
@@ -323,6 +323,7 @@ function constantConfig() {
     },
     purchase : {
       GRID_HEIGHT : 200,
+      TITLE : 4,
     },
     settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',
@@ -404,7 +405,6 @@ function constantConfig() {
  *                                  'interceptors' that are chained on any HTTP request
  */
 function httpConfig($httpProvider) {
-
   // register an auth injector, which logs $http errors to the console, even if
   // caught by a .catch() statement.
   // TODO - in production, we shouldn't log as many errors
@@ -428,7 +428,6 @@ function animateConfig($animateProvider) {
  * Configure the $compiler with performance enhancing variables
  */
 function compileConfig($compileProvider) {
-
   // switch this variable when going into production for an easy performance win.
   var PRODUCTION = true;
 
@@ -436,8 +435,8 @@ function compileConfig($compileProvider) {
     $compileProvider.debugInfoEnabled(false);
 
     // available in angular:1.6.x
-    //$compileProvider.commentDirectivesEnabled(false);
-    //$compileProvider.cssClassDirectivesEnabled(false);
+    $compileProvider.commentDirectivesEnabled(false);
+    $compileProvider.cssClassDirectivesEnabled(false);
   }
 }
 
@@ -446,6 +445,11 @@ function compileConfig($compileProvider) {
  */
 function uiSelectConfig(uiSelectConfig) {
   uiSelectConfig.theme = 'bootstrap';
+}
+
+// TODO - remove this
+function qConfig($qProvider) {
+  $qProvider.errorOnUnhandledRejections(false);
 }
 
 bhima.constant('bhConstants', constantConfig());
@@ -459,6 +463,7 @@ bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 bhima.config(['$compileProvider', compileConfig]);
+bhima.config(['$qProvider', qConfig]);
 
 // run the application
 bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);

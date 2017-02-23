@@ -74,10 +74,10 @@
         </a>
 
         <!-- opening balance  -->
-        <a class="btn btn-default" data-action="opening-balance" ui-sref="fiscal.openingBalance" href>
+        <button type="button" class="btn btn-default" data-action="opening-balance" ui-sref="fiscal.openingBalance({ id: FiscalManageCtrl.fiscal.id })">
           <i class="fa fa-balance-scale"></i>
           {{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}
-        </a>
+        </button>
       </p>
     </div>
   </div>

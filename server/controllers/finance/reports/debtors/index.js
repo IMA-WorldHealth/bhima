@@ -44,9 +44,7 @@ function agedDebtorReport(req, res, next) {
 
   // fire the SQL for the report
   queryContext(qs)
-    .then(function (data) {
-      return report.render(data);
-    })
+    .then(data => report.render(data))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
@@ -57,7 +55,7 @@ function agedDebtorReport(req, res, next) {
 /**
  * @method queryContext
  *
- * @param {Object} params Paramters passed in to customise the report - these
+ * @param {Object} params Parameters passed in to customise the report - these
  *                        are usually passed in through the query string
  * @description
  * The HTTP interface which actually creates the report.
@@ -116,3 +114,4 @@ function queryContext(queryParams) {
 
 exports.context = queryContext;
 exports.aged = agedDebtorReport;
+exports.open = require('./openDebtors').report;

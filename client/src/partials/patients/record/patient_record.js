@@ -53,6 +53,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       /** @todo move to service or mysql query */
       vm.patient.name = vm.patient.display_name;
       vm.patient.age = moment().diff(vm.patient.dob, 'years');
+      vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
     })
     .catch(function (error) {
       vm.loading = false;

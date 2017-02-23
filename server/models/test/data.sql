@@ -180,6 +180,12 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Report Customer Debts
 (151,1),
 
+-- Posted Journal
+(158,1),
+
+-- Purchase order folder 
+(154, 1), (155, 1), (156, 1),
+
 -- Stock 
 (160, 1), (161, 1), (162, 1), (163, 1);
 
@@ -204,10 +210,10 @@ INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (3,'Test Aux Cashbox B',1,1);
 
 INSERT INTO `cash_box_account_currency` VALUES
-  (1,1,1,3626,3626),
-  (2,2,1,3627,3627),
-  (3,1,2,3627,3627),
-  (4,2,2,3627,3627);
+  (1,1,1,3626,3627),
+  (2,2,1,3627,3626),
+  (3,1,2,3626,3627),
+  (4,2,2,3626,3627);
 
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
@@ -387,7 +393,7 @@ UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c299557
 
 SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
 INSERT INTO `purchase` VALUES
-  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL);
+  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL, 0, 0, 0);
 
 INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),

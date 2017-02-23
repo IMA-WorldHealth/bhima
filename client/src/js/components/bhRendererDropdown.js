@@ -1,29 +1,24 @@
 angular.module('bhima.components')
   .component('bhRendererDropdown', {
     bindings : {
-      reportUrl : '@',
-      reportOptions : '<'
+      reportUrl     : '@',
+      reportOptions : '<',
     },
     templateUrl : 'partials/templates/bhRendererDropdown.tmpl.html',
-    controller : bhRendererController
+    controller  : bhRendererController,
   });
 
-bhRendererController.$inject = [ 'appcache', '$httpParamSerializer' ];
+bhRendererController.$inject = ['appcache', '$httpParamSerializer'];
 
 function bhRendererController(AppCache, $httpParamSerializer) {
   var $ctrl = this;
 
   var cache = new AppCache('bhRendererComponent');
 
-  // delay between GET request completion and loading indication, this is used
-  // to compensate for the delay in browsers opening the print dialog
-  // @todo - make this work!
-  var loadingIndicatorDelay = 1000;
-
-  $ctrl.$onInit = function () {
+  $ctrl.$onInit = function $onInit() {
     $ctrl.options = [
-      { icon : 'file-excel-o', key : 'DOWNLOADS.CSV', parameters : { renderer: 'csv'}, type : 'application/csv' },
-      { icon : 'file-pdf-o', key : 'DOWNLOADS.PDF', parameters : { renderer: 'pdf'}, type : 'application/pdf' }
+      { icon: 'file-excel-o', key: 'DOWNLOADS.CSV', parameters: { renderer: 'csv' }, type: 'application/csv' },
+      { icon: 'file-pdf-o', key: 'DOWNLOADS.PDF', parameters: { renderer: 'pdf' }, type: 'application/pdf' },
     ];
 
     $ctrl.selection = cache.selection || $ctrl.options[0];
@@ -33,12 +28,14 @@ function bhRendererController(AppCache, $httpParamSerializer) {
     combineAndSerializeParameters();
   };
 
-  $ctrl.select = function (option) {
-    $ctrl.selection = cache.selection = option;
+  $ctrl.select = function select(option) {
+    $ctrl.selection = option;
+    cache.selection = $ctrl.selection;
+    combineAndSerializeParameters();
   };
 
   // watch for changes on the component's border and behave appropriately
-  $ctrl.$onChanges = function (changes) {
+  $ctrl.$onChanges = function $onChanges(changes) {
     var hasParameterChanges = (changes && changes.reportOptions);
 
     // if there are changes to the report options, serialize them
@@ -55,7 +52,7 @@ function bhRendererController(AppCache, $httpParamSerializer) {
    * a url to be passed to ngHref.
    */
   function combineAndSerializeParameters() {
-    var rendererParams = $ctrl.selection && $ctrl.selection.parameters || {};
+    var rendererParams = ($ctrl.selection && $ctrl.selection.parameters) || {};
     var reportParams = $ctrl.reportOptions || {};
 
     // combine the parameters into one
@@ -63,16 +60,5 @@ function bhRendererController(AppCache, $httpParamSerializer) {
 
     // serialize the parameters with the $http parameter serializer
     $ctrl.params = $httpParamSerializer(combined);
-  }
-
-  /**
-   * @method toggleLoading
-   *
-   * @description
-   * This method is responsible for updating the loading state for the controllers
-   * HTTP requests.
-   */
-  function toggleLoading() {
-    $ctrl.$loading = !$ctrl.$loading;
   }
 }

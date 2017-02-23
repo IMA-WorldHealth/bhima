@@ -1,8 +1,9 @@
 /* global element, by, browser */
-const chai = require('chai');
-const expect = chai.expect;
 
+const chai = require('chai');
 const helpers = require('../../shared/helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 const FU = require('../../shared/FormUtils');
@@ -17,16 +18,16 @@ const components = require('../../shared/components');
  *   - Test for price list
  *   - Test for discount
  */
-describe('Patient Invoice', function () {
+describe('Patient Invoice', () => {
   'use strict';
 
-  const path = '#/invoices/patient';
+  const path = '#!/invoices/patient';
 
   // navigate to the patient invoice page
   before(() => helpers.navigate(path));
 
-  it('invoices a patient for a single item', function () {
-    var page = new PatientInvoicePage();
+  it('invoices a patient for a single item', () => {
+    const page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
     page.prepare();
@@ -44,8 +45,8 @@ describe('Patient Invoice', function () {
     page.reset();
   });
 
-  it('invoices a patient for multiple items', function () {
-    var page = new PatientInvoicePage();
+  it('invoices a patient for multiple items', () => {
+    const page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
     page.prepare();
@@ -85,8 +86,8 @@ describe('Patient Invoice', function () {
     page.reset();
   });
 
-  it('blocks submission if no patient is available', function () {
-    var page = new PatientInvoicePage();
+  it('blocks submission if no patient is available', () => {
+    const page = new PatientInvoicePage();
 
     // this patient doesn't exist
     page.patient('TPA1.1');
@@ -98,8 +99,8 @@ describe('Patient Invoice', function () {
     expect(page.btns.submit.isEnabled()).to.eventually.equal(false);
   });
 
-  it('blocks submission for an invalid grid', function () {
-    var page = new PatientInvoicePage();
+  it('blocks submission for an invalid grid', () => {
+    const page = new PatientInvoicePage();
     page.btns.clear.click();
 
     // set up a valid invoice
@@ -114,8 +115,8 @@ describe('Patient Invoice', function () {
     components.notification.hasDanger();
   });
 
-  it('saves and loads cached items correctly', function () {
-    var page = new PatientInvoicePage();
+  it('saves and loads cached items correctly', () => {
+    const page = new PatientInvoicePage();
     page.btns.clear.click();
 
     page.prepare();
@@ -162,5 +163,5 @@ describe('Patient Invoice', function () {
     FU.modal.close();
   });
 
-  //it('can calculate totals correctly');
+  // it('can calculate totals correctly');
 });

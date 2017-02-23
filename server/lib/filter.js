@@ -1,6 +1,4 @@
-
 const _ = require('lodash');
-const db = require('./db');
 
 const RESERVED_KEYWORDS = ['limit', 'detailed'];
 const DEFAULT_LIMIT_KEY = 'limit';
@@ -124,7 +122,7 @@ class FilterParser {
    * @method reversed
    *
    * @description
-   * 'reversed criteria' currently stands as joining with the voucer table on reference_uuid
+   * 'reversed criteria' currently stands as joining with the voucher table on reference_uuid
    * if a voucher exists for this record it will contain a `type_id`
    *
    * @TODO this is the first example of a 'toggle' filter, this should be more carefully
@@ -142,7 +140,7 @@ class FilterParser {
         preparedStatement = `voucher.type_id = ?`;
       } else {
         // exclude all record that meet the reversed criteria
-        preparedStatement = `voucher.type_id IS NULL OR voucher.type_id <> ?`;
+        preparedStatement = `(voucher.type_id IS NULL OR voucher.type_id <> ?)`;
       }
 
       // using the reversal voucher id as the parameter is a hack, this will be
@@ -242,6 +240,7 @@ class FilterParser {
     if (limit) {
       limitString = `LIMIT ${limit} `;
     }
+
     return limitString;
   }
 }

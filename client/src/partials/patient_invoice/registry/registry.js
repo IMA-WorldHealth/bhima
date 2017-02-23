@@ -90,17 +90,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    parameters = $state.params.filters ? $state.params.filters : parameters;
-
-    if($state.params.display){ 
-      var display = $state.params.display;
-      vm.filtersFmt = Invoices.formatFilterParameters(display);
-      // show filter bar as needed
-      vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
-
-    }
-
-
     // if we have search parameters, use search.  Otherwise, just read all
     // invoices.
     var request = angular.isDefined(parameters) ?
@@ -162,10 +151,14 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    // @TODO standardise loading/ caching/ assigning filters with a client service
+    // if filters are directly passed in through params, override cached filters
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
     vm.filters = cache.filters;
-
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
-
     load(vm.filters);
 
     // show filter bar as needed
@@ -178,7 +171,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       .then(function (success) {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load();
+          return load(vm.filters);
         }
       })
       .catch(Notify.handleError);

@@ -1,7 +1,7 @@
-<div class="ui-grid-cell-contents" title="TOOLTIP" ng-if="!row.groupHeader">
-  {{row.entity.credit_equiv}}
+<div class="ui-grid-cell-contents text-right" title="TOOLTIP" ng-if="!row.groupHeader">
+  {{row.entity.credit_equiv | number:2}}
 </div>
 
-<div class="ui-grid-cell-contents" title="TOOLTIP" ng-if="row.groupHeader">
+<div class="ui-grid-cell-contents text-right" title="TOOLTIP" ng-if="row.groupHeader">
   {{ COL_FIELD CUSTOM_FILTERS }}
 </div>

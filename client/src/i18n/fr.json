@@ -105,6 +105,11 @@
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Inclure uniquement les paiements inversees",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclure toutes les paiements inversees",
+      "REVERSED_RECORDS" : "Paiements Inversees"
+    },
     "PAYMENT"         : "Paiement",
     "RECEIPT": {
       "TITLE"   : "Recu",
@@ -121,7 +126,8 @@
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
       "TITLE" : "Transfert",
       "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
-      "SUCCESS" : "Transfer effectué vers le compte de transfer."
+      "SUCCESS" : "Transfer effectué vers le compte de transfer.",
+      "DESCRIPTION" : "Transfer de {{ amount }} viens de {{ fromLabel }} à {{ toLabel }} par {{ userName }}."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -373,7 +379,7 @@
       "UPDATE"                : "Mettre à jour",
       "VALIDATE"              : "Valider",
       "VIEW_ERRORS"           : "Voir Erreurs",
-      "VIEW_DETAILS"          : "Voir les Détails"
+      "VIEW_DETAILS"          : "Détails"
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Confirmez vous cette action ?",
@@ -410,7 +416,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Cette note de credit concerne la facture %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -450,6 +456,7 @@
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
       "ACCOUNT"                : "Compte",
+      "ACCOUNT_EXTRACT"        : "Extrait de compte",
       "ACCOUNT_NUMBER"         : "Numéro de Compte",
       "ACCOUNT_TITLE"          : "Libelle de Compte",
       "ACCOUNT_TYPE"           : "Type de Compte",
@@ -494,6 +501,7 @@
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
       "CONTACT_ADMIN"          : "Veuillez contacter l'administrateur",
+      "COST"                   : "Cout",
       "COST_CENTER"            : "Centre de cout",
       "CONVENTION"             : "Convention",
       "COUNTRY"                : "Pays",
@@ -530,6 +538,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Editer",
+      "EDIT_STATUS"            : "Modifier Etat",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Nom de l'employé",
       "EMPLOYER"               : "Employeur",
@@ -568,9 +577,11 @@
       "ID"                     : "ID",
       "INCOME"                 : "Recettes",
       "INCOME_EXPENSE"         : "Recettes et dépenses",
+      "INCLUDE_DATE_INTERVAL"  : "Inclure l'intervalle de dates",
       "INCLUDE_ZEROES"         : "Include lines with zero values",
       "INTL"                   : "Internationale",
       "INVENTORY"              : "Inventaire",
+      "INVENTORY_ITEM"         : "Item",
       "INVOICE"                : "Facture",
       "INVOICES"               : "Factures",
       "INVOICE_CURRENCY_SETTING" : "Configuration monnaie Facture",
@@ -619,6 +630,7 @@
       "ORIGIN_VILLAGE"         : "Village d'Origine",
       "ORIGIN_SECTOR"          : "Secteur d'Origine",
       "OTHER"                  : "Autre",
+      "ORDER"                  : "Ordre",
       "PARENT_ACCOUNT"         : "Compte parent",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Mot de passe",
@@ -650,6 +662,7 @@
       "PROJECT"                : "Projet",
       "PROVINCE"               : "Province",
       "PURCHASE_INTERVAL"      : "Intervalle de commande",
+      "QUANTITY"               : "Quantité",
       "RECIPIENT"              : "Facture de ",
       "REFERENCE"              : "Référence",
       "REFERENCE_PATIENT"      : "Référence Patient",
@@ -677,7 +690,7 @@
       "SIZE_PB"                : "Po",
       "SOLD"                   : "Solde",
       "SPOUSE"                 : "Nom de l'époux(se)",
-      "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
+      "SPOUSE_EMPLOYER"        : "Employeur (époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
       "START"                  : "Début",
       "STATUS"                 : "Etat",
@@ -699,8 +712,8 @@
       "TOTAL"                  : "Total",
       "TOTAL_BALANCE_REMAINING" : "Solde Total Restant",
       "TOTAL_BILLED"           : "Total Facture",
-      "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_PAID"             : "Total paye",
+      "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_SELECTED_INVOICES": "Total des factures selectionnées",
       "TO_ACCOUNT"             : "Au Compte",
       "TO_LOCK"                : "Bloquer",
@@ -717,6 +730,7 @@
       "UNIT_WEIGHT"            : "Poids",
       "UNIT_VOLUME"            : "Volume",
       "UNTIL_DATE"             : "jusqu'à la date",
+      "UNIT_PRICE"             : "Prix unitaire",
       "UPDATE"                 : "MISE À JOUR",
       "UPDATE_GROUP_DEBTOR"    : "Mettre à jour le Groupe débiteur",
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
@@ -853,7 +867,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "Grand Livre"
+    "TITLE" : "Grand Livre",
+    "ACCOUNT_SLIP" : "Extrait de compte",
+    "SOLD" : "Solde"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement de patients",
@@ -1020,7 +1036,8 @@
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
-    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
+    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme",
+    "DOB_NOT_SPECIFIED"  : "Seulement une année de naissance a été spécifiée lors de l'enregistrement du patient. C'est une date approximative."
   },
   "PATIENT_REG": {
     "CARD"                : "Fiche du patient",
@@ -1166,15 +1183,28 @@
     "TITLE"         : "GESTION DES PROVINCES"
   },
   "PURCHASES" : {
-    "PAGE_TITLE" : "Achats",
+    "ORDER"          : "Ordre d'achat",
+    "PAGE_TITLE"     : "Achats",
     "PAYMENT_METHOD" : "Mode de paiement",
     "PAYMENT_METHOD_EXPLANATION" : "Ce champ fournit les conditions de paiement de l'ordre d'achat convenu. Un achat peut être payée à l'avant, à la livraison, ou dans une autre combinaison de paiements.",
     "ERRORS" : {
       "INVALID_ITEMS" : "Certains des postes de commande ont des erreurs. S'il vous plaît corriger ces erreurs et soumettre à nouveau l'ordre d'achat."
     },
     "RECEIPT" : {
-      "TITLE" : "Bon de commande de réception",
+      "TITLE" : "Bon de commande",
       "SUCCESS" : "Bon de commande créé."
+    },
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmé",
+      "CONFIRMED_DESC"            : "La commande a été confirmée par le fournisseur qu'elle pourra être livrée",
+      "WAITING_CONFIRMATION"      : "En Attente de confirmation",
+      "WAITING_CONFIRMATION_DESC" : "Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande",
+      "RECEIVED"                  : "Reçu en Stock",
+      "RECEIVED_DESC"             : "La commande a été reçu et se trouve dans le stock",
+      "NOT_RECEIVED"              : "Non Reçu",
+      "NOT_RECEIVED_DESC"         : "La commande n'a pas encore été reçu",
+      "CANCELLED"                 : "Annulé",
+      "CANCELLED_DESC"            : "La commande a été annulée suite à une raison quelconque"
     }
   },
   "REFERENCE": {
@@ -1207,6 +1237,10 @@
       "SIXTY_TO_NINETY_DAYS" : "60 a 90 jours",
       "OVER_NINETY_DAYS" : "Plus de 90 jours"
     },
+    "OPEN_DEBTORS" : {
+      "TITLE" : "Debiteurs Avec Dettes",
+      "TREE" : "Debiteurs Avec Dettes"
+    },
     "CASH_EXPENSE"     : "Depenses",
     "CASH_INCOME"      : "Recettes",
     "CASHFLOW"         : "Cashflow",
@@ -1224,7 +1258,7 @@
     "PERIOD_STOP"      : "Fin",
     "PRODUCED_BY"      : "Produit par",
     "PRODUCED_DATE"    : "Date de generation",
-    "PRODUCED_ON"      : "Produit sur",
+    "PRODUCED_ON"      : "Produit le",
     "REPORT_ACCOUNTS"  : "Rapport de comptes",
     "INCOME_REPORT"    : "Rapport des recettes",
     "EXPENSE_REPORT"   : "Rapport des dépenses",
@@ -1362,6 +1396,14 @@
     "VERSION": "Version",
     "EVENTS" : "Evement système"
   },
+  "ORDER" : {
+    "PAYMENT_DATE_ASC" : "+ Date de Paiement",
+    "PAYMENT_DATE_DESC" : "- Date de Paiement",
+    "INVOICE_DATE_ASC" : "+ Date de Facturation",
+    "INVOICE_DATE_DESC" : "- Date de Facturation",
+    "DEBT_ASC" : "+ Dettes",
+    "DEBT_DESC" : "- Dettes"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -1369,6 +1411,7 @@
       "ACTION"             : "Action",
       "AFTER"              : "Apres",
       "AGE"                : "Age",
+      "BALANCE"            : "Balance",
       "AMOUNT"             : "Montant",
       "ASSET"              : "Actif",
       "BALANCE_SECTION"    : "Section du Bilan",
@@ -1387,14 +1430,15 @@
       "COUNTRY"            : "Pays",
       "CREATED_BY"         : "Crée par",
       "CREDIT"             : "Credit",
+      "CREDITOR_SOLD"      : "Solde Crediteur",
       "CURRENCY"           : "Monnaie",
-      "CREATED_BY"         : "Cree par",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date d'enregistrement",
       "DATA_SOURCE"        : "Source de données",
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debiteur",
       "DEBTOR_GROUPS"      : "Groupes Débiteurs",
+      "DEBTOR_SOLD"        : "Solde Débiteur",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
@@ -1426,7 +1470,9 @@
       "LAST_BILL"          : "Dernière Facture",
       "LAST_NAME"          : "Nom",
       "LAST_TRANSACTION"   : "Derniers Transactions",
-      "LAST_VISIT"         : "Derniere visite",
+      "LAST_VISIT"         : "Derniere Visite",
+      "LAST_INVOICE"       : "Derniere Facture",
+      "LAST_PAYMENT"       : "Derniere Paiement",
       "LISTS"              : "Liste des prix enregistrés",
       "LOADING"            : "Récupération des données à partir du serveur.",
       "LOCKED"             : "Bloquée",
@@ -1489,6 +1535,7 @@
       "TITLE"              : "Titre",
       "TOTAL"              : "Total",
       "TOTAL_COST"         : "Total",
+      "TOTAL_DEBT"         : "Total des Dettes",
       "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
@@ -1572,11 +1619,14 @@
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
     "PATIENT_REGISTRY"           : "Registre des patients",
     "PAYROLL"                    : "Payroll",
+    "POSTED_JOURNAL"             : "Journal Posté",
     "POSTING_JOURNAL"            : "Journal de Saisie",
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",
     "PURCHASING"                 : "Achat",
-    "PURCHASE_ORDER"             : "Order d'Achats",
+    "PURCHASE_ORDER"             : "Ordre d'Achats",
+    "PURCHASE"                   : "Commande",
+    "PURCHASE_REGISTRY"          : "Registre des commandes",
     "REPORTS"                    : "Rapports",
     "REPORT_ACCOUNTS"            : "Rapport de comptes",
     "REFERENCE"                  : "Référence",
@@ -1632,6 +1682,9 @@
       "TITLE"                 : "Ajout des transactions",
       "VALID_TOTALS"          : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"               : "Bordereau de Transfert"
+    },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
     },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Option pour cashflow",
