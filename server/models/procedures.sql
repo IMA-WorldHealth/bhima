@@ -583,7 +583,7 @@ BEGIN
     credit_equiv, currency_id, user_id, origin_id
   ) SELECT
     HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-    cb.account_id, c.amount, 0, (c.amount / currentExchangeRate), 0, c.currency_id, c.user_id, cashPaymentOriginId
+    cb.account_id, c.amount, 0, (c.amount * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
   FROM cash AS c
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
   WHERE c.uuid = cashUuid;
@@ -600,7 +600,7 @@ BEGIN
       credit_equiv, currency_id, entity_uuid, user_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
-      c.description, dg.account_id, 0, c.amount, 0, (c.amount / currentExchangeRate), c.currency_id,
+      c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -621,7 +621,7 @@ BEGIN
       credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
-      c.description, dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
+      c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id, ci.invoice_uuid
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
@@ -681,7 +681,7 @@ BEGIN
           credit_equiv, currency_id, user_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          gain_account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id, c.user_id
+          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -708,7 +708,7 @@ BEGIN
           credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id,
+          dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
           c.debtor_uuid, c.user_id, lastInvoiceUuid
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -722,7 +722,7 @@ BEGIN
           credit_equiv, currency_id, user_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          loss_account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
+          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -1108,7 +1108,7 @@ BEGIN
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
-    vi.debit * current_exchange_rate, vi.credit * current_exchange_rate, v.currency_id,
+    vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
     vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
