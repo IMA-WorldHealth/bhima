@@ -93,6 +93,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * @constructor
    */
   function Transactions(gridOptions) {
+    // why is this number magic?
+    var MAGIC_NUMBER = 410;
+
+    // Silly columns that can be navigated to.
+    var GRID_PLUGIN_COLUMNS = ['treeBaseRowHeaderCol', 'selectionRowHeaderCol'];
+
     this.gridOptions = gridOptions;
 
     // a mapping of record_uuid -> array indices in the rendered row set
@@ -115,12 +121,25 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         if (this._entity) {
           setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, true);
         }
+
         return rows;
-      }.bind(this), 410);
+      }.bind(this), MAGIC_NUMBER);
 
       api.grid.registerDataChangeCallback(function (rows) {
         createTransactionIndexMap.bind(scope)();
       }, [uiGridConstants.dataChange.ROW]);
+
+      // FIXME(@jniles)?
+      // This $timeout hack is necessary to remove the cellNav
+      $timeout(function () {
+
+        GRID_PLUGIN_COLUMNS.forEach(function (name) {
+          var column = api.grid.getColumn(name);
+          column.colDef.allowCellFocus = false;
+        });
+
+        this.disableCellNavigation();
+      }.bind(this), MAGIC_NUMBER);
     }.bind(this));
   }
 
