@@ -6,7 +6,7 @@ JournalController.$inject = [
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', 'Store', 'uiGridGroupingConstants'
+  'AppCache', 'Store', 'uiGridGroupingConstants',
 ];
 
 /**
@@ -39,6 +39,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
+  // @todo - this doesn't work with the ui-grid-datepicker-edit library yet.
+  vm.DATEPICKER_OPTIONS = { format: bhConstants.dates.format };
+
   // Journal utilities
   var sorting;
   var grouping;
@@ -63,6 +66,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     enableColumnMenus : false,
     showColumnFooter  : true,
     appScopeProvider  : vm,
+    flatEntityAccess  : true,
     rowTemplate       : '/partials/templates/grid/transaction.row.html',
   };
 
@@ -91,10 +95,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   vm.cancelEdit = cancelEdit;
 
-	// @todo move to cell template file
-  var hideGroupsLabelCell = '<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div>';
-
-
   /**
    * @function toggleLoadingIndicator
    *
@@ -120,19 +120,28 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
    *      cause unexpected behaviour (splitting up of groups) when sorting
    *      other columns. This can be avoided by setting default sort and group.
    */
- var columns = [
-    { field : 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
-    { field : 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
-    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible : false, enableCellEdit : false},
+  var columns = [
+    { field: 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
+    { field: 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
+    { field: 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible : false, enableCellEdit : false},
+    { field: 'trans_id',
+      displayName : 'TABLE.COLUMNS.TRANSACTION',
+      headerCellFilter: 'translate',
+      sortingAlgorithm : sorting.transactionIds,
+      // sort : { priority : 0, direction : 'asc' },
+      enableCellEdit: false,
+      width : 110,
+      cellTemplate : 'partials/journal/templates/hide-groups-label.cell.html',
+    },
     {
       field : 'trans_date',
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter: 'translate',
-      cellFilter : 'date:"mediumDate"',
+      cellFilter : 'date:"' + bhConstants.dates.format + '"',
       filter : { condition : filtering.byDate },
       editableCellTemplate: 'partials/journal/templates/date.edit.html',
       enableCellEdit: true,
-      footerCellTemplate:'<i></i>'
+      footerCellTemplate:'<i></i>',
     },
     { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true, enableCellEdit : false },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
@@ -155,15 +164,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       },
       enableFiltering: false
     },
-    { field : 'trans_id',
-      displayName : 'TABLE.COLUMNS.TRANSACTION',
-      headerCellFilter: 'translate',
-      sortingAlgorithm : sorting.transactionIds,
-      // sort : { priority : 0, direction : 'asc' },
-      enableCellEdit: false,
-      width : 110,
-      cellTemplate : hideGroupsLabelCell
-    },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
     { field : 'hrEntity', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: true},
     { field : 'hrReference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: true },
@@ -172,7 +172,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       visible: true, enableCellEdit: false,
       cellTemplate: '/partials/journal/templates/actions.cell.html',
       allowCellFocus: false,
-      enableFiltering: false
+      enableFiltering: false,
     }
   ];
 
@@ -184,13 +184,14 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   };
 
   //This function opens a modal, to let the user posting transaction to the general ledger
-  vm.openTrialBalanceModal = function openTrialBalanceModal () {
+  vm.openTrialBalanceModal = function openTrialBalanceModal() {
     // make sure a row is selected before running the trial balance
     if (grouping.selectedRowCount < 1) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
       return;
     }
-    $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
+
+    $state.go('trialBalanceMain', { records: vm.grouping.getSelectedGroups() });
   };
 
   // display the journal printable report of selected transactions
@@ -200,6 +201,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
       return;
     }
+
     var uuids = vm.grouping.getSelectedGroups().map(function (trans) {
       return trans.uuid;
     });
@@ -226,7 +228,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
-				transactions.applyEdits();
+
+        transactions.applyEdits();
 
         // try to unfold groups
         // try { grouping.unfoldAllGroups(); } catch (e) {}
@@ -239,7 +242,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // cells in UI grid. This should drastically improve performance
   // @todo move this method into a service
   function preprocessJournalData(data) {
-    var aggregateStore = new Store({ identifier : 'record_uuid' });
+    var aggregateStore = new Store({ identifier: 'record_uuid' });
     aggregateStore.setData(data.aggregate);
 
     data.journal.forEach(function (row) {
@@ -256,7 +259,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     var parameters = angular.copy(vm.filters);
     Config.openSearchModal(parameters)
       .then(function (options) {
-
         // if the options are not returned or have not changed, do not refresh
         // the data source
         if (angular.equals(options, vm.filters)) { return; }
@@ -297,6 +299,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   function editTransaction(row) {
     vm.filterBarHeight = bhConstants.utilBar.expandedHeightStyle;
     transactions.edit(row);
+
+    // disable inline filtering when editing
+    filtering.disableInlineFiltering();
   }
 
   vm.saveTransaction = saveTransaction;
@@ -312,16 +317,15 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   }
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
-
     if (vm.grouping.getCurrentGroupingColumn()) {
-      // alias for template speed/ convencience
+      // alias for template speed/ convenience
       vm.grouping.removeGrouping('trans_id');
       vm.grouped = cache.grouped = false;
     } else {
       vm.grouping.changeGrouping('trans_id');
       vm.grouped = cache.grouped = true;
     }
-  }
+  };
 
   function cancelEdit() {
     // @TODO this should return a promise in a uniform standard with `saveTransaction`

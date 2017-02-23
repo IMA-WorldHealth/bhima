@@ -1,7 +1,9 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store'];
+TransactionService.$inject = [
+  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store',
+];
 
 /**
  * Transactions Service
@@ -20,7 +22,6 @@ TransactionService.$inject = ['$timeout', 'util', 'uiGridConstants', 'bhConstant
  * @requires uiGridConstants
  */
 function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store) {
-
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
@@ -30,15 +31,10 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
 
   // @const
   var TRANSACTION_SHARED_ATTRIBUTES = [
-      'transaction', 'trans_id', 'trans_date', 'record_uuid', 'project_id',
-      'period_id', 'fiscal_year_id', 'currency_id', 'user_id', 'project_name',
-      'hrRecord', 'currencyName'
+    'transaction', 'trans_id', 'trans_date', 'record_uuid', 'project_id',
+    'period_id', 'fiscal_year_id', 'currency_id', 'user_id', 'project_name',
+    'hrRecord', 'currencyName', 'description',
   ];
-
-  // convert arguments to an array
-  function toArray(args) {
-    return Array.prototype.slice.call(args);
-  }
 
   /**
    * @function indexBy
@@ -55,7 +51,6 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * @private
    */
   function indexBy(array, property) {
-
     // console.log('calculating indexes');
     return array.reduce(function (aggregate, row, index) {
       var key = row.entity[property];
@@ -116,7 +111,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
 
       this.gridApi.edit.on.afterCellEdit(null, editCell.bind(this));
 
-			api.grid.registerRowsProcessor(function (rows) {
+      api.grid.registerRowsProcessor(function (rows) {
         if (this._entity) {
           setPropertyOnTransaction.call(this, this._entity.uuid, ROW_EDIT_FLAG, true);
         }
@@ -150,7 +145,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     }.bind(this));
 
     this.digestAggregates();
-  }
+  };
 
   Transactions.prototype.addRow = function addRow() {
     var transactionRow = cloneAttributes(this._entity, TRANSACTION_SHARED_ATTRIBUTES);
@@ -163,7 +158,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     this.gridApi.grid.options.data.push(transactionRow);
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     this.digestAggregates();
-  }
+  };
 
   // returns a new object picking only the attributes passed
   // @TODO perf
@@ -214,15 +209,13 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * with complex grids.
    *
    * @public
-   *
    */
   Transactions.prototype.disableCellNavigation = function disableCellNavigation() {
-
     // clear the focused element for a better UX
     this.gridApi.grid.cellNav.clearFocus();
 
     this._cellNavEnabled = false;
-    registerCellNavChange.call(this)
+    registerCellNavChange.call(this);
   };
 
   /**
@@ -252,7 +245,6 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * @return {Array} rows - the rows in the grid used to render that transaction.
    */
   Transactions.prototype.getTransactionRows = function getTransactionRows(uuid) {
-
     var array = this.gridApi.grid.rows;
     var indices = this.transactionIndices[uuid] || [];
 
@@ -405,18 +397,18 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         var transactionData = new Store({identifier : 'uuid'});
         transactionData.setData(rows);
 
-        var newRows = new Store({identifier : 'uuid'});
+        var newRows = new Store({identifier: 'uuid'});
 
         // use the first row in the transaction as a template for all new rows
         var transactionTemplate = cloneAttributes(rows[0], TRANSACTION_SHARED_ATTRIBUTES);
 
         // entity object will be used to track everything in the current edit session
         this._entity = {
-          uuid : uuid,
-          data : transactionData,
-          newRows : newRows,
+          uuid        : uuid,
+          data        : transactionData,
+          newRows     : newRows,
           removedRows : [],
-          aggregates : {}
+          aggregates  : {},
         };
 
         // assign shared values to entity session
@@ -434,7 +426,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       .catch(Notify.handleError);
   };
 
-  Transactions.prototype.digestAggregates = function digestAggregates () {
+  Transactions.prototype.digestAggregates = function digestAggregates() {
     this._entity.aggregates.totalRows =
       this._entity.data.data.length +
       this._entity.newRows.data.length;
@@ -459,11 +451,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   // search based on this new information. This should also provide a more
   // uniform user experience.
   // - local filters will still be applied to new and updated rows.
-  Transactions.prototype.applyEdits = function applyEdits () {
+  Transactions.prototype.applyEdits = function applyEdits() {
     var gridData = this.gridApi.grid.options.data;
     this.transactionIndices = {};
 
-    console.log('applyEdits');
+    // console.log('applyEdits');
+
     if (this._entity) {
       // apply edits - ensure current rows are shown
 
@@ -553,7 +546,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   };
 
   Transactions.prototype.preprocessJournalData = function preprocessJournalData(data) {
-    var aggregateStore = new Store({ identifier : 'record_uuid' });
+    var aggregateStore = new Store({ identifier: 'record_uuid' });
     aggregateStore.setData(data.aggregate);
 
     data.journal.forEach(function (row) {

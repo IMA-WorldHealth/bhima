@@ -888,3 +888,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
   display : inline-block;
   margin-right : 10px;
 }
+
+a[disabled] {
+  pointer-events: none;
+  cursor: default;
+}

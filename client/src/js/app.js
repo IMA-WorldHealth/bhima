@@ -332,6 +332,7 @@ function constantConfig() {
     },
     dates : {
       minDOB : new Date('1900-01-01'),
+      format         : 'dd/MM/yyyy',
     },
     yearOptions : {
       format         : 'yyyy',
