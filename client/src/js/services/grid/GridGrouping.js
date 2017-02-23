@@ -36,7 +36,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
   function configureDefaultAggregators(columns) {
     columns.forEach(function (column) {
       var aggregator = DEFAULT_AGGREGATORS[column.field];
-
+      
       if (aggregator) {
         GridAggregators.extendColumnWithAggregator(column, aggregator);
       }

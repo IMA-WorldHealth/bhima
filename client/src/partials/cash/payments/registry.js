@@ -26,7 +26,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // global variables
   vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
+  vm.filtersFmt = [];
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
@@ -42,13 +42,13 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // grid default options
   vm.gridOptions = {
-    appScopeProvider : vm,
-    showColumnFooter : true,
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
     enableColumnMenus : false,
-    flatEntityAccess : true,
-    fastWatch : true,
-    enableFiltering : vm.filterEnabled,
-    rowTemplate : '/partials/cash/payments/templates/grid.canceled.tmpl.html'
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    enableFiltering   : vm.filterEnabled,
+    rowTemplate       : '/partials/cash/payments/templates/grid.canceled.tmpl.html',
   };
 
   vm.gridOptions.columnDefs = [{
@@ -84,10 +84,12 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
 
   // search
   function search() {
-    Modal.openSearchCashPayment()
+    Modal.openSearchCashPayment(vm.filters.identifiers)
       .then(function (filters) {
         if (!filters) { return; }
-        reload(filters);
+
+        cacheFilters(filters);
+        load(vm.filters.identifiers);
       });
   }
 
@@ -95,44 +97,27 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   function onRemoveFilter(key) {
     delete vm.filters.identifiers[key];
     delete vm.filters.display[key];
-    reload(vm.filters);
+    cacheFilters(vm.filters);
+    load(vm.filters.identifiers);
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
-    $state.params.filters = null;
-    $state.params.display = null;
-    reload({ display : [], identifiers : {} });
-  }
-
-  // reload with filter
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = Cash.formatFilterParameters(filters.display);
-
-    // show filter bar as needed
-    vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
-
-    load(filters.identifiers);
+    // @TODO standardise all client side filters
+    cacheFilters({ display : {} });
+    load(vm.filters.identifiers);
   }
 
   // load cash
   function load(filters) {
-
     vm.hasError = false;
-    filters = $state.params.filters ? $state.params.filters : filters;
-
-    if($state.params.display){ 
-      var display = $state.params.display;
-      vm.formatedFilters = Cash.formatFilterParameters(display);
-      // show filter bar as needed
-      vm.filterBarHeight = (vm.formatedFilters.length > 0) ?  FILTER_BAR_HEIGHT : {};
-    }
-
     toggleLoadingIndicator();
 
-    Cash.search(filters)
-      .then(function (rows) {
+    var request = angular.isDefined(filters) ?
+      Cash.search(filters) :
+      Cash.read();
+
+    request.then(function (rows) {
 
         rows.forEach(function (row) {
           var hasCreditNote = (row.type_id === bhConstants.transactionType.CREDIT_NOTE);
@@ -154,7 +139,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
       .then(function (success) {
         if (!success) { return; }
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-        load();
+        load(vm.filters.identifiers);
       });
   }
 
@@ -162,6 +147,29 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     vm.loading = !vm.loading;
   }
 
-  // startup
-  load();
+  function cacheFilters(filters) {
+    vm.filters = cache.filters = filters;
+    vm.filtersFmt = Cash.formatFilterParameters(filters.display);
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
+  }
+
+  function startup() {
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
+    vm.filters = cache.filters;
+
+    // ensure that filters exists, filter object is assumed by a number of methods
+    if (!vm.filters) {
+      cacheFilters({ display : {} });
+    }
+
+    vm.filtersFmt = Cash.formatFilterParameters(vm.filters.display);
+    load(vm.filters.identifiers);
+
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
+  }
+
+  startup();
 }

@@ -58,7 +58,7 @@ function GridAggregatorService(uiGridGroupingConstants, $filter, Session) {
     },
 
     date : {
-      treeAggregationType: uiGridGroupingConstants.aggregation.AVG,
+      treeAggregationType: uiGridGroupingConstants.aggregation.MAX,
       customTreeAggregationFinalizerFn: function (aggregation) {
         aggregation.rendered = $date(aggregation.value);
       },

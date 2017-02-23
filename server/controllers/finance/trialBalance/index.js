@@ -165,29 +165,41 @@ function checkSingleLineTransaction(transactions) {
 exports.getDataPerAccount = function (req, res, next) {
   const transactions = req.body.transactions;
 
-  // @FIXME This could use a lot of comments
-  const requestString =
-    `SELECT pt.debit_equiv, pt.credit_equiv,
-      pt.account_id, pt.balance_before, account.number AS account_number,
-      (pt.balance_before + (pt.debit_equiv - pt.credit_equiv)) as balance_final
-      FROM  account JOIN (
-        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
-        posting_journal.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) AS balance_before
-        FROM posting_journal LEFT JOIN period_total
-        ON posting_journal.account_id = period_total.account_id
-        WHERE posting_journal.trans_id IN (?)
-        GROUP BY posting_journal.account_id
-        ) AS pt
-      ON account.id = pt.account_id;`;
-
   if (!transactions) {
     return next(new BadRequest('The transaction list is null or undefined'));
   }
 
-  db.exec(requestString, [transactions])
-    .then(function (data) {
-      res.status(200).json(data);
-    })
+  // This is a complicated query, but it performs correctly.
+  //   1) The beginning balances are gathered for the accounts hit in the posting_journal
+  //     by querying the period_totals table.  If they have never been used, defaults 0.  This
+  //     is stored in the variable balance_before.
+  //   2) The debits and credits of the posting journal are summed for the transactions hit.
+  //     These are grouped by account and joined with the balance_before totals.
+  //   3) To add clarity, a wrapper SELECT is used to show the balance_before, movements, and then
+  //     balance_final as the sum of all of the above.  It also brings in the account_number
+  const sql = `
+    SELECT account_id, account.number AS number, account.label AS label,
+      balance_before, debit_equiv, credit_equiv,
+      balance_before + debit_equiv - credit_equiv AS balance_final
+    FROM (
+      SELECT posting_journal.account_id, totals.balance_before, SUM(debit_equiv) AS debit_equiv,
+        SUM(credit_equiv) AS credit_equiv
+      FROM posting_journal JOIN (
+        SELECT u.account_id, IFNULL(SUM(debit - credit), 0) AS balance_before
+        FROM (
+          SELECT DISTINCT account_id FROM posting_journal WHERE posting_journal.trans_id IN (?)
+        ) AS u LEFT JOIN period_total ON u.account_id = period_total.account_id
+        GROUP BY u.account_id
+      ) totals ON posting_journal.account_id = totals.account_id
+      WHERE posting_journal.trans_id IN (?)
+      GROUP BY posting_journal.account_id
+    ) AS combined
+      JOIN account ON account.id = combined.account_id;
+  `;
+
+  // execute the query
+  db.exec(sql, [transactions, transactions])
+    .then(data => res.status(200).json(data))
     .catch(next);
 };
 

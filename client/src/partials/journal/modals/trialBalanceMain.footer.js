@@ -29,11 +29,15 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
    * @description for submitting a dialog content
    */
   function submit() {
+    vm.loading = true;
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
         $state.go('postedJournal');
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   vm.cancel = cancel;

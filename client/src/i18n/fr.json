@@ -380,7 +380,7 @@
       "UPDATE"                : "Mettre à jour",
       "VALIDATE"              : "Valider",
       "VIEW_ERRORS"           : "Voir Erreurs",
-      "VIEW_DETAILS"          : "Voir les Détails"
+      "VIEW_DETAILS"          : "Détails"
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Confirmez vous cette action ?",
@@ -576,6 +576,7 @@
       "ID"                     : "ID",
       "INCOME"                 : "Recettes",
       "INCOME_EXPENSE"         : "Recettes et dépenses",
+      "INCLUDE_DATE_INTERVAL"  : "Inclure l'intervalle de dates",
       "INCLUDE_ZEROES"         : "Include lines with zero values",
       "INTL"                   : "Internationale",
       "INVENTORY"              : "Inventaire",
@@ -1033,7 +1034,8 @@
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
-    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
+    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme",
+    "DOB_NOT_SPECIFIED"  : "Seulement une année de naissance a été spécifiée lors de l'enregistrement du patient. C'est une date approximative."
   },
   "PATIENT_REG": {
     "CARD"                : "Fiche du patient",
@@ -1265,7 +1267,7 @@
     "PERIOD_STOP"      : "Fin",
     "PRODUCED_BY"      : "Produit par",
     "PRODUCED_DATE"    : "Date de generation",
-    "PRODUCED_ON"      : "Produit sur",
+    "PRODUCED_ON"      : "Produit le",
     "REPORT_ACCOUNTS"  : "Rapport de comptes",
     "INCOME_REPORT"    : "Rapport des recettes",
     "EXPENSE_REPORT"   : "Rapport des dépenses",
@@ -1362,6 +1364,7 @@
       "ACTION"             : "Action",
       "AFTER"              : "Apres",
       "AGE"                : "Age",
+      "BALANCE"            : "Balance",
       "AMOUNT"             : "Montant",
       "ASSET"              : "Actif",
       "BALANCE_SECTION"    : "Section du Bilan",

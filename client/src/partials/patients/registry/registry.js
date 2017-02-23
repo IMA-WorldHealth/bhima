@@ -33,10 +33,11 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
       displayName : 'TABLE.COLUMNS.REFERENCE',
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true, headerCellFilter: 'translate',
+      cellTemplate : '/partials/templates/grid/patient.card.cell.html',
       footerCellClass : 'text-center',
       sortingAlgorithm : Sorting.algorithms.sortByReference
     },
-    { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate' },
+    { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/patient.cell.html' },
     { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate', type: 'number' },
     { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter: 'translate' },
     { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate' },
@@ -57,9 +58,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch: true,
-    columnDefs : columnDefs,
-    rowTemplate: '/partials/templates/grid/patient.row.html'
-
+    columnDefs : columnDefs
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);

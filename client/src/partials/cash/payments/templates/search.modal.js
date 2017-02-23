@@ -4,12 +4,13 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
   'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance',
+  'filters'
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance) {
+function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, filters) {
   var vm = this;
 
   // global variables
@@ -17,7 +18,7 @@ function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance) {
   var isObject = angular.isObject;
 
   // expose to the view
-  vm.bundle = {};
+  vm.bundle = angular.copy(filters || {});
   vm.validate = validate;
   vm.submit = submit;
   vm.cancel = Instance.close;
@@ -77,6 +78,7 @@ function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance) {
         formattedFilters[key].uuid || formattedFilters[key].id || formattedFilters[key] : formattedFilters[key];
 
       // get value to display
+      // @FIXME custom very specific logic has to change - this is not maintainable
       out.display[key] = isObject(formattedFilters[key]) ?
         formattedFilters[key].text || formattedFilters[key].label || formattedFilters[key].display_name || formattedFilters[key] : formattedFilters[key];
     }

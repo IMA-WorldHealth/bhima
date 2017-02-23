@@ -19,12 +19,11 @@ angular.module('bhima.routes')
         parent  : 'journal',
         onEnter : ['$state', '$uibModal', function ($state, Modal) {
           Modal.open({
-            size : 'lg',
-            templateUrl : 'partials/journal/modals/trialBalanceStructure.html'
-          }).result
-            .then(function () {
-              $state.go('journal', null, { reload: true });
-            });
+            size        : 'lg',
+            templateUrl : 'partials/journal/modals/trialBalanceStructure.html',
+            keyboard    : false,
+            backdrop    : 'static',
+          });
         }],
         onExit : ['$uibModalStack', function (ModalStack) {
           ModalStack.dismissAll();

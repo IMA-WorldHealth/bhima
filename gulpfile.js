@@ -4,28 +4,38 @@
  * Should we make these requires dependent on what path is being taken, so that
  * not all are required to build bhima?  In this format, there is no difference
  * between the install requirements of a developer and a production environment.
+ *
+ * @TODO
+ * Make sure all CSS from vendors are gathered and compiled into a vendor minified
+ * CSS file.
  */
-const gulp    = require('gulp');
-const gulpif  = require('gulp-if');
-const concat  = require('gulp-concat');
-const uglify  = require('gulp-uglify');
+const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const concat = require('gulp-concat'); const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
-const iife    = require('gulp-iife');
-const pump    = require('pump');
-const rimraf  = require('rimraf');
-const less    = require('gulp-less');
+const template = require('gulp-template');
+const rev = require('gulp-rev');
+const revReplace = require('gulp-rev-replace');
+const iife = require('gulp-iife');
+const pump = require('pump');
+const rimraf = require('rimraf');
+const less = require('gulp-less');
 
 // child process for custom scripts
 const exec = require('child_process').exec;
 
 // toggle client javascript minification
-const UGLIFY = (process.env.NODE_ENV === 'production');
+const isProduction = (process.env.NODE_ENV === 'production');
 
 // the output folder for built server files
 const SERVER_FOLDER = './bin/server/';
 
 // the output folder for built client files
 const CLIENT_FOLDER = './bin/client/';
+
+// globals
+const MANIFEST_PATH = 'rev-manifest.json';
+const BHIMA_LESS = 'client/src/less/bhima-bootstrap.less';
 
 // resource paths
 const paths = {
@@ -34,9 +44,9 @@ const paths = {
       'client/src/js/define.js',
       'client/src/js/app.js',
       'client/src/**/*.js',
-      '!client/src/i18n/**/*.js'
+      '!client/src/i18n/**/*.js',
     ],
-    css : [ 'client/src/css/*.css' ],
+    css         : ['client/src/css/*.css'],
     vendorStyle : [
       'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
 
@@ -45,9 +55,9 @@ const paths = {
       'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
 
       '!client/vendor/**/src{,/**}',
-      '!client/vendor/**/js{,/**}'
+      '!client/vendor/**/js{,/**}',
     ],
-    vendorJs   : [
+    vendorJs : [
       // jquery
       'client/vendor/jquery/dist/jquery.min.js',
 
@@ -103,18 +113,19 @@ const paths = {
 
     // these must be globs ("**" syntax) to retain their folder structures
     static : [
-      'client/src/index.html',
       'client/src/js/app.js',
       'client/src/**/*',
+      '!client/src/index.html',
       '!client/src/js/**/*.js',
       '!client/src/partials/**/*.js',
-      '!client/src/**/*.css'
-    ]
+      '!client/src/**/*.css',
+    ],
+    index : 'client/src/index.html',
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
     files      : ['server/*', 'server/**/*', '.env.*'],
-  }
+  },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -127,7 +138,6 @@ const paths = {
  * the following:
  *   - [client-minify-css]  minify (via css nano) the css
  *   - [client-compile-js]  minify (via uglify) the client-side js code
- *   - [client-lint-i18n]   compares translation files for missing values
  *   - [client-mv-static]   moves the static files (html, img) to the client
  *                          folder
  * To run all of the above, run the gulp task `gulp build-client`.
@@ -138,43 +148,42 @@ const paths = {
 
 
 // minify the client javascript code via uglify writes output to bhima.min.js
-gulp.task('client-compile-js', function (cb) {
+gulp.task('client-compile-js', (cb) => {
   pump([
     gulp.src(paths.client.javascript),
-    gulpif(UGLIFY, uglify({ mangle: true })),
+    gulpif(isProduction, uglify({ mangle: true })),
     concat('js/bhima.min.js'),
     iife(),
-    gulp.dest(CLIENT_FOLDER)
+    gulp.dest(CLIENT_FOLDER),
   ], cb);
-
 });
 
 // minify the vendor JS code and compact into a vendor.min.js file.
-gulp.task('client-compile-vendor', function () {
-  return gulp.src(paths.client.vendorJs)
-    .pipe(gulpif(UGLIFY, uglify({ mangle: true })))
+gulp.task('client-compile-vendor', () =>
+  gulp.src(paths.client.vendorJs)
+    .pipe(gulpif(isProduction, uglify({ mangle: true })))
     .pipe(concat('js/vendor.min.js'))
-    .pipe(gulp.dest(CLIENT_FOLDER));
-});
+    .pipe(gulp.dest(CLIENT_FOLDER))
+);
 
 
 // minify the client css styles via cssnano
 // writes output to style.min.css
-gulp.task('client-minify-css', function () {
-  return gulp.src(paths.client.css)
+gulp.task('client-compile-css', () =>
+  gulp.src(paths.client.css)
     .pipe(cssnano())
-    .pipe(concat('style.min.css'))
-    .pipe(gulp.dest(CLIENT_FOLDER + 'css/'));
-});
+    .pipe(concat('css/style.min.css'))
+    .pipe(gulp.dest(CLIENT_FOLDER))
+);
 
 // move vendor files over to the /vendor directory
-gulp.task('client-mv-vendor-style', function () {
-  return gulp.src(paths.client.vendorStyle)
-    .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/'));
-});
+// TODO - separate movement of fonts from the movement of styles
+gulp.task('client-mv-vendor-style', () =>
+  gulp.src(paths.client.vendorStyle)
+    .pipe(gulp.dest(`${CLIENT_FOLDER}vendor/`))
+);
 
-gulp.task('client-vendor-build-bootstrap', function () {
-
+gulp.task('client-vendor-build-bootstrap', () =>
   /**
    * For now this just moves the latest version of bootstrap into the repository
    * This build process should compile the latest bhima less definition with the
@@ -183,29 +192,27 @@ gulp.task('client-vendor-build-bootstrap', function () {
    * - compile with less
    * - copy CSS into static file folder
    */
-  const bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
-
-  return gulp.src(bhimaDefinition)
+  gulp.src(BHIMA_LESS)
     .pipe(gulp.dest('client/vendor/bootstrap/less/'))
     .pipe(less({
-      paths : ['./client/vendor/bootstrap/less/']
+      paths : ['./client/vendor/bootstrap/less/'],
     }))
-    .pipe(gulp.dest(CLIENT_FOLDER + 'css'));
-});
+    .pipe(gulp.dest(`${CLIENT_FOLDER}css`))
+);
 
 // move static files to the public directory
-gulp.task('client-mv-static', ['client-lint-i18n'], function () {
-  return gulp.src(paths.client.static)
-    .pipe(gulp.dest(CLIENT_FOLDER));
-});
+gulp.task('client-mv-static', ['lint-i18n'], () =>
+  gulp.src(paths.client.static)
+    .pipe(gulp.dest(CLIENT_FOLDER))
+);
 
 // custom task: compare the English and French for missing tokens
-gulp.task('client-lint-i18n', function (cb) {
-  var progPath = './utilities/translation/tfcomp.js',
-      enPath = 'client/src/i18n/en.json',
-      frPath = 'client/src/i18n/fr.json';
+gulp.task('lint-i18n', (cb) => {
+  const progPath = './utilities/translation/tfcomp.js';
+  const enPath = 'client/src/i18n/en.json';
+  const frPath = 'client/src/i18n/fr.json';
 
-  exec('node ' + [progPath, enPath, frPath].join(' '), function(err, _, warning) {
+  exec(`node ${progPath} ${enPath} ${frPath}`, (err, _, warning) => {
     if (err) { throw err; }
     if (warning) { console.error(warning); }
     cb();
@@ -213,22 +220,37 @@ gulp.task('client-lint-i18n', function (cb) {
 });
 
 // watches for any change and builds the appropriate route
-gulp.task('watch-client', function () {
-  gulp.watch(paths.client.css, ['client-minify-css']);
+gulp.task('watch-client', () => {
+  gulp.watch(paths.client.css, ['client-compile-css']);
   gulp.watch(paths.client.javascript, ['client-compile-js']);
   gulp.watch(paths.client.static, ['client-mv-static']);
   gulp.watch(paths.client.vendor, ['client-mv-vendor-style', 'client-compile-vendor']);
 });
 
-// builds the client with all the options available
-gulp.task('build-client', function () {
-  gulp.start('client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static');
-});
+// gather a list of files to rewrite revisions for
+const toHash = ['**/*.min.js', '**/*.css'].map(file => `${CLIENT_FOLDER}${file}`);
 
-// Lint client code separately from build process
-// TODO Processes for linting server code - requires uncategorised commit update
-gulp.task('lint', function () {
-  gulp.start('client-lint-js', 'client-lint-i18n');
+gulp.task('client-compute-hashes', ['client-compile-js', 'client-compile-vendor', 'client-compile-css'], () =>
+  gulp.src(toHash)
+    .pipe(rev())
+    .pipe(gulp.dest(CLIENT_FOLDER))
+    .pipe(rev.manifest(MANIFEST_PATH))
+    .pipe(gulp.dest(CLIENT_FOLDER))
+);
+
+gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () =>
+  gulp.src(paths.client.index)
+    .pipe(template({ isProduction: true }))
+    .pipe(revReplace({ manifest: gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
+    .pipe(gulp.dest(CLIENT_FOLDER))
+);
+
+// TODO - streamline piping so that all the assets - CSS, javascript
+// are built with rev() and then written with rev.manifest({ merge : true });
+// Then the last thing will be to rewrite index.html, replacing the values
+// with gulp-replace and then replacing the manifest itself.
+gulp.task('build-client', () => {
+  gulp.start('client-compile-assets', 'client-vendor-build-bootstrap', 'client-mv-vendor-style');
 });
 
 /* -------------------------------------------------------------------------- */
@@ -247,29 +269,30 @@ gulp.task('lint', function () {
 */
 
 // move the server files into /bin/server
-gulp.task('server-mv-files', function () {
-  return gulp.src(paths.server.files)
-    .pipe(gulp.dest(SERVER_FOLDER));
-});
+gulp.task('server-mv-files', () =>
+  gulp.src(paths.server.files)
+    .pipe(gulp.dest(SERVER_FOLDER))
+);
 
 // build the server
-gulp.task('build-server', function () {
-  gulp.start('server-mv-files');
-});
+gulp.task('build-server', () =>
+  gulp.start('server-mv-files')
+);
 
 /* -------------------------------------------------------------------------- */
 
 /** shared utilities */
 
-gulp.task('clean', function (cb) {
-  rimraf('./bin/', cb);
+gulp.task('clean', (cb) => {
+  if (isProduction) { return cb(); }
+  return rimraf('./bin/', cb);
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', ['clean'], () => {
   gulp.start('build-client', 'build-server');
 });
 
 // run the build-client and build-server tasks when no arguments
-gulp.task('default', ['clean'], function () {
+gulp.task('default', ['clean'], () => {
   gulp.start('build-client', 'build-server');
 });

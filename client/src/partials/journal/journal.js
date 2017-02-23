@@ -6,7 +6,7 @@ JournalController.$inject = [
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', '$timeout', 'Store', 'uiGridGroupingConstants'
+  'AppCache', 'Store', 'uiGridGroupingConstants'
 ];
 
 /**
@@ -31,7 +31,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, $timeout, Store, uiGridGroupingConstants) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants) {
   var vm = this;
 
   /** @constants */
@@ -40,7 +40,12 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // Journal utilities
-  var sorting, grouping, filtering, columnConfig, transactions, editors;
+  var sorting;
+  var grouping;
+  var filtering;
+  var columnConfig;
+  var transactions;
+  var editors; // editors is affected but not used
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -48,22 +53,24 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // filter cache
   var cache = AppCache(cacheKey + '-filters');
 
+  var vm = this;
+
   vm.enterprise = Session.enterprise;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
     enableColumnMenus : false,
-    showColumnFooter : true,
-    appScopeProvider : vm,
-    rowTemplate: '/partials/templates/grid/transaction.row.html',
+    showColumnFooter  : true,
+    appScopeProvider  : vm,
+    rowTemplate       : '/partials/templates/grid/transaction.row.html',
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
 
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
-  sorting   = new Sorting(vm.gridOptions);
+  sorting = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping  = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
@@ -113,10 +120,10 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
    *      cause unexpected behaviour (splitting up of groups) when sorting
    *      other columns. This can be avoided by setting default sort and group.
    */
-  var columns = [
+ var columns = [
     { field : 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
     { field : 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
-    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible: false, enableCellEdit: false},
+    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible : false, enableCellEdit : false},
     {
       field : 'trans_date',
       displayName : 'TABLE.COLUMNS.DATE',
@@ -155,7 +162,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       // sort : { priority : 0, direction : 'asc' },
       enableCellEdit: false,
       width : 110,
-			cellTemplate : hideGroupsLabelCell
+      cellTemplate : hideGroupsLabelCell
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
     { field : 'hrEntity', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: true},
