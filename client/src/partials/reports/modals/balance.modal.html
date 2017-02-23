@@ -1,7 +1,7 @@
 <form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" bh-form-defaults novalidate autocomplete="off">
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>ReportConfigCtrl.report.title_key</li>
+      <li class="static" translate>{{ReportConfigCtrl.report.title_key}}</li>
       <li class="title" translate>FORM.LABELS.CREATE</li>
     </ol>
   </div>
@@ -28,7 +28,7 @@
         theme="bootstrap"
         required>
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-          <span>{{$select.selected.number}}</span> - <span translate>$select.selected.name</span>
+          <span>{{$select.selected.number}}</span> - <span translate>{{ $select.selected.name }}</span>
         </ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="c in ReportConfigCtrl.classes | filter:$select.search">
           <span ng-bind-html="c.number | highlight:$select.search"></span> -
@@ -72,7 +72,7 @@
         <input type="radio" ng-model="ReportConfigCtrl.dateOption" ng-value="'date-until'">
         <span translate>BALANCE.DATE_UNTIL</span>
       </label>
-    </fieldset>
+    </div>
 
     <!-- choose date interval  -->
     <div ng-if="ReportConfigCtrl.dateOption === 'date-range'">
