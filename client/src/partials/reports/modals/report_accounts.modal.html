@@ -19,14 +19,14 @@
 
     <!-- Inclure Date interval  -->
     <div class="checkbox">
-      <label class="control-label">
+      <label>
         <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
         <strong translate> FORM.LABELS.INCLUDE_DATE_INTERVAL </strong>
       </label>
     </div>
-    
+
     <!-- Date interval  -->
-    <div ng-if="ReportConfigCtrl.dateInterval === 1">    
+    <div ng-if="ReportConfigCtrl.dateInterval === 1">
       <bh-date-interval
         date-from="ReportConfigCtrl.dateFrom"
         date-to="ReportConfigCtrl.dateTo">
