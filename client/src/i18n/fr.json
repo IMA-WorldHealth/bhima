@@ -331,6 +331,7 @@
       "ADD"                   : "Ajouter",
       "BACK"                  : "Précédent",
       "CANCEL"                : "Annuler",
+      "CANCEL_EDIT"           : "Annuler Modifier",
       "CLEAR"                 : "Effacer",
       "CLOSE"                 : "Fermer",
       "CONFIGURE"             : "Configurer",
@@ -1078,6 +1079,13 @@
    "CREDIT"                : "Crédit",
    "DEBIT"                 : "Débit",
    "DEB_CRED"              : "Débiteur / Créditeur",
+   "ROW"                   : "Ligne",
+   "ROWS"                  : "Ligne(s)",
+   "TOOLS"                 : "Utils",
+   "DEBIT_LETTER"          : "D",
+   "CREDIT_LETTER"         : "C",
+   "TOTAL_ROWS"            : "Lignes",
+   "SAVE_TRANSACTION_SUCCESS" : "Enregistrement de transaction enregistré avec succés",
    "DELETE_TRANSACTION"    : "Supprimer une transaction",
    "EDIT": {
       "ATTEMPTS_REMAINING" : "essais restants.",
@@ -1126,10 +1134,14 @@
     "MISSING_ENTITY"           : "Ligne(s) sans ID entite",
     "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
     "MULTIPLE_CANCELLING"      : "Annulation multiple. Cette transaction a deja été annulée",
-    "SINGLE_LINE_TRANSACTION"  : "Transaction(s) avec une ligne"
+    "SINGLE_LINE_TRANSACTION"  : "Transaction(s) avec une ligne",
+    "EDIT_INVALID_ACCOUNT"     : "Transaction avec des comptes non valides",
+    "EDIT_INVALID_ENTITY"      : "Transaction avec une entité non valide",
+    "EDIT_INVALID_REFERENCE"   : "Transaction avec référence non valide"
   },
   "WARNINGS" : {
-    "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
+    "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite",
+    "NO_TRANSACTIONS_SELECTED" : "Aucune transaction sélectionnée. Vous devez étre en mode Transaction pour utiliser cet outil."
   },
   "ERROR_REPORT" : {
     "TITLE" : "Rapports D'erreurs"

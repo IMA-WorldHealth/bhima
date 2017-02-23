@@ -59,11 +59,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     rowTemplate: '/partials/templates/grid/transaction.row.html',
   };
 
+  vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
+
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
   sorting   = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
-  grouping  = new Grouping(vm.gridOptions, true);
+  grouping  = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
@@ -131,9 +133,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'debit_equiv',
       displayName : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter: 'translate',
-      // cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
-      // aggregationType : uiGridConstants.aggregationTypes.sum,
-      // footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
@@ -143,9 +142,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'credit_equiv',
       displayName : 'TABLE.COLUMNS.CREDIT',
       headerCellFilter: 'translate',
-      // cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
-      // aggregationType : uiGridConstants.aggregationTypes.sum,
-      // footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
@@ -156,9 +152,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter: 'translate',
       sortingAlgorithm : sorting.transactionIds,
-      sort : { priority : 0, direction : 'asc' },
+      // sort : { priority : 0, direction : 'asc' },
       enableCellEdit: false,
-      width : 180,
+      width : 110,
 			cellTemplate : hideGroupsLabelCell
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
@@ -182,11 +178,21 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   //This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal () {
+    // make sure a row is selected before running the trial balance
+    if (grouping.selectedRowCount < 1) {
+      Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
+      return;
+    }
     $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
   };
 
   // display the journal printable report of selected transactions
   vm.openJournalReport = function openJournalReport() {
+    // make sure a row is selected before running the trial balance
+    if (grouping.selectedRowCount < 1) {
+      Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
+      return;
+    }
     var uuids = vm.grouping.getSelectedGroups().map(function (trans) {
       return trans.uuid;
     });
@@ -216,7 +222,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 				transactions.applyEdits();
 
         // try to unfold groups
-        try { grouping.unfoldAllGroups(); } catch (e) {}
+        // try { grouping.unfoldAllGroups(); } catch (e) {}
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -291,11 +297,23 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
     transactions.save()
       .then(function (results) {
-        Notify.success('JOURNAL.SAVE_TRANSACTION_SUCCESS');
+        Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
         // ensure that all of the data now respects the current filter
         load(vm.filters);
       })
       .catch(Notify.handleError);
+  }
+
+  vm.toggleTransactionGroup = function toggleTransactionGroup() {
+
+    if (vm.grouping.getCurrentGroupingColumn()) {
+      // alias for template speed/ convencience
+      vm.grouping.removeGrouping('trans_id');
+      vm.grouped = cache.grouped = false;
+    } else {
+      vm.grouping.changeGrouping('trans_id');
+      vm.grouped = cache.grouped = true;
+    }
   }
 
   function cancelEdit() {
@@ -313,8 +331,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
     load(vm.filters);
   }
-
-
 
   startup();
 }

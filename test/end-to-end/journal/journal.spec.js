@@ -9,7 +9,7 @@ const JournalCorePage = require('./journal.page.js');
 const JournalConfiguration = require('./journal.config.js');
 const TrialBalanceTest = require('./trial_balance/trialBalance.config.js');
 
-describe('Posting Journal Core', () => {
+describe.skip('Posting Journal Core', () => {
   const path = '#!/journal';
   const initialTransactionRows = 14;
   const journal = new JournalCorePage();

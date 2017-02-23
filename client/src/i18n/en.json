@@ -329,6 +329,7 @@
       "ADD"                   : "Add",
       "BACK"                  : "Back",
       "CANCEL"                : "Cancel",
+      "CANCEL_EDIT"           : "Cancel Edit",
       "CLEAR"                 : "Clear",
       "CLOSE"                 : "Close",
       "CONFIGURE"             : "Configure",
@@ -1065,6 +1066,9 @@
     "ADD_TRANSACTION" : "Add Transaction",
     "CONFIGURE" : "Configure",
     "CREDIT" : "Credit",
+    "ROW" : "Row",
+    "ROWS" : "Row(s)",
+    "TOOLS" : "Tools",
     "CREDIT_LETTER" : "C",
     "DEBIT_LETTER" : "D",
     "DEBIT"  : "Debit",
@@ -1089,6 +1093,7 @@
     "SPLIT_TRANSACTION" : "Split transaction",
     "TRANSACTION" : "Transaction",
     "TRANSACTION_DATE" : "Transaction Date",
+    "SAVE_TRANSACTION_SUCCESS" : "Transaction record was updated successfully.",
     "TRANSACTION_NUMBER" : "Transaction Number",
     "TRANSACTION_SUCCESS" : "Transaction success",
     "UNKNOWN_ACCOUNT" : "Unknown Account",
@@ -1108,11 +1113,13 @@
       "MISSING_FISCAL_OR_PERIOD" : "Fiscal year or period omitted",
       "MULTIPLE_CANCELLING"      : "Multiple Cancelling. This transaction has been already cancelled",
       "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line",
-
-      "EDIT_INVALID_ACCOUNT"     : "Transaction contains invalid account(s)"
+      "EDIT_INVALID_ACCOUNT"     : "Transaction contains invalid account(s)",
+      "EDIT_INVALID_ENTITY"      : "Transaction contains an invalid entity",
+      "EDIT_INVALID_REFERENCE"   : "Transaction contains an invlid reference"
     },
     "WARNINGS" : {
-      "MISSING_ENTITY" : "Record without entity type and entity ID"
+      "MISSING_ENTITY" : "Record without entity type and entity ID",
+      "NO_TRANSACTIONS_SELECTED" : "No transactions selected. You must be in Transaction view to use this tool."
     },
     "ERROR_REPORT" : {
       "TITLE" : "Error Report"
@@ -1173,7 +1180,7 @@
     "RECEIPT" : {
       "TITLE" : "Purchase Order Receipt",
       "SUCCESS" : "Purchase Order created."
-    }, 
+    },
     "STATUS" : {
       "CONFIRMED"                 : "Confirmed",
       "CONFIRMED_DESC"            : "The purchase order has been confirmed by the supplier that it can be delivered",

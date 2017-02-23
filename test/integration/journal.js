@@ -37,10 +37,12 @@ describe('(/journal) API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /journal/:record_uuid : it returns a transaction which is an array of record', function () {
+  it('GET /journal/:record_uuid : it returns an object with the transaction and aggregate information', function () {
     return agent.get(`/journal/${RECORD_UUID}`)
       .then(function (res) {
-        helpers.api.listed(res, NUM_ROWS_FETCHING_TRANSACTION);
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.journal).to.have.length(NUM_ROWS_FETCHING_TRANSACTION);
       })
       .catch(helpers.handler);
   });

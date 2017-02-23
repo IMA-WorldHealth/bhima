@@ -17,19 +17,8 @@ GridGroupingService.$inject = [
  * set up.
  */
 function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, $timeout, util) {
-
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
-  // var DEFAULT_AGGREGATORS = {
-  //   // 'debit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
-  //   // 'credit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
-  //   'cost' : copy(DEFAULT_COST_AGGREGATOR),
-  //   'quantity' : copy(DEFAULT_QUANTITY_AGGREGATOR),
-  //   'amount' : copy(DEFAULT_QUANTITY_AGGREGATOR),
-  //   'description' : copy(DEFAULT_SINGLE_AGGREGATOR),
-  //   'date' : copy(DEFAULT_SINGLE_AGGREGATOR),
-  //   'trans_date' : copy(DEFAULT_SINGLE_AGGREGATOR), // TODO - eliminate this in favor of "date"
-  // };
 
   /**
    * @method configureDefaultAggregators
@@ -52,6 +41,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
         GridAggregators.extendColumnWithAggregator(column, aggregator);
       }
 
+      // show debit or credit total for transaction on transaction header
 			if (column.grouping && column.grouping.groupPriority > -1) {
 
         column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
@@ -133,71 +123,50 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
       // bind the group selection method
       gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
-
       gridApi.selection.on.rowSelectionChangedBatch(null, handleBatchSelection.bind(this));
     }
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
     gridApi.core.on.rowsRendered(null, util.once(function () {
-      gridApi.grouping.groupColumn(this.column);
-      // configureDefaultAggregators(gridApi.grid.columns);
-      groupByTransactionView(gridApi);
+      if (this.groupByDefault) {
+        gridApi.grouping.groupColumn(this.column);
+      }
 
-      // for the expandAllRows() to be fired last
-      unfoldAllGroups(gridApi);
+      if (this.expandByDefault) {
+        unfoldAllGroups(gridApi);
+      }
     }.bind(this)));
   }
 
-	function groupByTransactionView(gridApi) {
-    var fieldKey = 'trans_id';
-    gridApi.grouping.groupColumn(fieldKey);
-
-    // set the header row text for grouped element
-    gridApi.grid.columns.some(function (column) {
-      // if (column.grouping && column.grouping.groupPriority > -1) {
-
-      //   console.log('grouping rule applies');
-      //   column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
-      //     // @todo this will be called for every row in a group but only needs to be called once
-      //     aggregation.value = row.entity.transaction.debit_equiv;
-      //   };
-
-      //   column.customTreeAggregationFinalizerFn = function (aggregation) {
-      //     if (typeof(aggregation.groupVal) !== 'undefined') {
-      //       aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
-      //     } else {
-      //       aggregation.rendered = null;
-      //     }
-      //   };
-
-      //   return true;
-      // }
-      // return false;
-    });
-	}
+	// function groupByTransactionView(gridApi) {
+    // var fieldKey = 'trans_id';
+    // gridApi.grouping.groupColumn(fieldKey);
+	// }
 
   function unfoldAllGroups(api) {
     $timeout(api.treeBase.expandAllRows, 0, false);
   }
 
   function changeGrouping (column) {
-    this.gridApi.grouping.clearGrouping();
     this.gridApi.grouping.groupColumn(column);
-    // this.gridApi.grouping.aggregateColumn('debit_equiv', uiGridGroupingConstants.aggregation.SUM);
-    // this.gridApi.grouping.aggregateColumn('credit_equiv', uiGridGroupingConstants.aggregation.SUM);
 
-    unfoldAllGroups(this.gridApi);
+    if (this.expandByDefault) {
+      unfoldAllGroups(this.gridApi);
+    }
   }
 
-  function removeGrouping () {
-    try {
-      this.gridApi.grouping.clearGrouping();
-    } catch (e) { }
+  function removeGrouping(column) {
+    this.gridApi.grouping.ungroupColumn(column);
   }
 
   // return the current grouping
   function  getCurrentGroupingColumn () {
     var groupingDetail = this.gridApi.grouping.getGrouping();
+
+    if (!groupingDetail.grouping.length) {
+      // return early - there is no name to choose
+      return;
+    }
     return groupingDetail.grouping[0].colName;
   }
 
@@ -229,8 +198,10 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
   /**
    * @constructor
+   *
+   * @TODO accept `options` configuration instead of many parameters
    */
-  function GridGrouping(gridOptions, isGroupHeaderSelectable, column) {
+  function GridGrouping(gridOptions, isGroupHeaderSelectable, column, groupByDefault, expandByDefault) {
 
     /**
      * contains the number of selected rows
@@ -242,9 +213,12 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     this.removeGrouping = removeGrouping.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
+    this.expandByDefault = angular.isDefined(expandByDefault) ? expandByDefault : true;
+    this.groupByDefault = angular.isDefined(groupByDefault) ? groupByDefault : true;
     this.gridOptions = gridOptions;
 
     // global grouping configuration
+
     gridOptions.enableGroupHeaderSelection = isGroupHeaderSelectable || true;
     gridOptions.treeRowHeaderAlwaysVisible = false;
     gridOptions.showTreeExpandNoChildren = false;
@@ -252,12 +226,9 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
 
-      // attach custom renderers
-			// @TODO - this used to just be called once, as a processor it is called frequently; investigate need
-			var AGGREGATE_PRIORITY = 410;
-			api.grid.registerColumnsProcessor(configureDefaultAggregators, AGGREGATE_PRIORITY);
-
-      // configureDefaultAggregators(gridOptions.columnDefs);
+      // @TODO default aggregators work for now - there is no need to view the total debits and credits by the transaction
+      // var AGGREGATE_PRIORITY = 410;
+			// api.grid.registerColumnsProcessor(configureDefaultAggregators, AGGREGATE_PRIORITY);
 
       // configure default grouping
       configureDefaultGroupingOptions.call(this, api);
