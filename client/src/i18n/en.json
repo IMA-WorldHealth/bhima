@@ -572,6 +572,7 @@
       "HOSPITAL_FILE_NR"       : "Hospital File Number",
       "HOSPITAL_NO"            : "Hospital No.",
       "ID"                     : "ID",
+      "INCLUDE_DATE_INTERVAL"  : "Include date interval",
       "INCOME"                 : "Income",
       "INCOME_EXPENSE"         : "Income and Expense",
       "INTL"                   : "International",
@@ -592,7 +593,7 @@
       "IS_REPORT"              : "Is report ?",
       "IS_TITLE"               : "Is title ?",
       "IS_WAREHOUSE"           : "Is warehouse ?",
-      "INCLUDE_ZEROES"         : "Include lines with zero values",
+      "INCLUDE_ZEROES"         : "Inclure des lignes avec des valeurs zéro",
       "LABEL"                  : "Label",
       "LANGUAGE"               : "Language",
       "LAST_NAME"              : "Last name",
@@ -1333,6 +1334,7 @@
       "AGE"                : "Age",
       "AMOUNT"             : "Amount",
       "ASSET"              : "Asset",
+      "BALANCE"            : "Balance",
       "BALANCE_SECTION"    : "Balance Sheet Section",
       "BEFORE"             : "Before",
       "BILL"               : "Bill",
@@ -1632,7 +1634,7 @@
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
     },
-    "REPORT" : "Rapport"
+    "REPORT" : "Report"
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
