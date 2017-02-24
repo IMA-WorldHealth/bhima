@@ -882,3 +882,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
   padding-top : 7px;
   max-height: initial;
 }
+
+.text-menu-item {
+  display : inline-block;
+  margin-right : 10px;
+}

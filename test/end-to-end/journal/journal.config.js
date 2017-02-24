@@ -17,6 +17,9 @@ function JournalConfigurationModal() {
   const page = new JournalCorePage();
 
   it(`displays ${defaultVisibleColumnCount} visible columns by default`, () => {
+    // tests expect page to be in transaction mode
+    $('[data-method="grouping"]').click();
+
     page.expectColumnCount(defaultVisibleColumnCount);
   });
 

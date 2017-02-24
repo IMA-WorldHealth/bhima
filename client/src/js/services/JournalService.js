@@ -9,9 +9,47 @@ JournalService.$inject = ['PrototypeApiService'];
  * This service is responsible of all process with the posting journal
  */
 function JournalService(Api) {
-  var service = new Api('/journal/');
+  var URL = '/journal/';
+  var service = new Api(URL);
 
   service.formatFilterParameters = formatFilterParameters;
+  service.grid = grid;
+  service.saveChanges = saveChanges;
+
+  /**
+   * Standard API read method, as this will be used to drive the journal grids
+   * this method wil always request aggregate information
+   */
+  function grid(id, parameters) {
+    var gridOptions = angular.extend({aggregates : 1}, parameters);
+    return this.read(id, gridOptions);
+  }
+
+  function saveChanges(entity, changes) {
+    var added = angular.copy(entity.newRows);
+
+    // format request for server
+    var saveRequest = {
+      changed : changes,
+      added : sanitiseNewRows(added),
+      removed : entity.removedRows
+    };
+
+    return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
+      .then(service.util.unwrapHttpRequest);
+  }
+
+  function sanitiseNewRows(rows) {
+    rows.data.forEach(function (row) {
+      // delete view data required by journal grid
+      delete row.transaction;
+      delete row.hrRecord;
+      delete row.currencyName;
+      delete row.project_name;
+    });
+
+    return rows.data;
+  }
 
   /**
    * This function prepares the filters for the journal for display to the

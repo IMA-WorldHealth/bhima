@@ -13,10 +13,13 @@ FOR EACH ROW BEGIN
   INSERT INTO entity_map
     SELECT new.uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
 
+  -- debtor entity reference removed to allow for reverse lookups - if debot 
+  -- entity is refined this can point directly to the debtor
+  
   -- this writes a debtor entity into the entity_map table
-  -- NOTE: the debtor actually points to the patient entity for convenience
-  INSERT INTO entity_map
-    SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
+  -- NOTE: the debtor actually points to the patient entity for convienence
+  /* INSERT INTO entity_map */
+    /* SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id; */
 END$$
 
 -- Purchase Triggers
