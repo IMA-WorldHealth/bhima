@@ -81,16 +81,19 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   const csum = 'SET @csum := 0;';
 
   const sql = `
-    SELECT a.trans_id, a.debit, a.credit, a.balance, a.trans_date, (@csum := @csum + a.balance) AS cumulBalance,
-      a.description
+    SELECT a.trans_id, a.debit, a.credit, a.balance, a.trans_date, a.document_reference,
+      (@csum := IFNULL(@csum, 0) + a.balance) AS cumulBalance, a.description
     FROM (
       SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date,
+        document_map.text AS document_reference,
         SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
       FROM ${tableName}
+      LEFT JOIN document_map ON record_uuid = document_map.uuid
       WHERE account_id = ? ${dateCondition}
-      GROUP BY trans_id
+      GROUP BY record_uuid
       ORDER BY trans_date ASC
-    ) AS a`;
+    ) AS a
+  `;
 
 
   const sqlAggrega = `
@@ -100,10 +103,10 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
         SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
       FROM ${tableName}
       WHERE account_id = ? ${dateCondition}
-      GROUP BY trans_id
+      GROUP BY record_uuid
       ORDER BY trans_date ASC
     ) AS t
-    `;
+  `;
 
   const bundle = {};
   return db.exec(csum)
