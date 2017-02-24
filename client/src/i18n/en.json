@@ -396,6 +396,7 @@
       "CONFIRM_MODAL"          : "Confirmation Needed"
     },
     "ERRORS": {
+      "AT_LEAST_1_COL"      : "At least one column must be selected",
       "CONNECTION"          : "Connection error",
       "GENERIC"             : "The form contains errors.",
       "HAS_ERROR"           : "Contains an error",
