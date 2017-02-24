@@ -15,12 +15,13 @@
     <table class="table table-condensed table-striped table-report table-bordered">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;">
-          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
-		      <th style="width: 10%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
-          <th style="width: 40%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
-          <th style="width: 12%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
-          <th style="width: 12%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
-          <th style="width: 16%;">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th>{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DOCUMENT" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width:12%">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width:12%">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width:12%">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
         </tr>
       </thead>
       <tbody>
@@ -28,18 +29,19 @@
           <tr>
             <td>{{date this.trans_date}}</td>
             <td>{{this.trans_id}}</td>
+            <td>{{this.document_reference}}</td>
             <td>{{this.description}}</td>
             <td class="text-right">{{currency this.debit ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{currency this.credit ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{currency this.cumulBalance ../metadata.enterprise.currency_id}}</td>
           </tr>
         {{else}}
-          {{> emptyTable columns=5}}
+          {{> emptyTable columns=7}}
         {{/each}}
       </tbody>
       <tfoot>
         <tr style="background-color: #ddd;">
-          <td colspan="3"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
+          <td colspan="4"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
           <td class="text-right"><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
           <td class="text-right"><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
           <td class="text-right"><strong>{{currency sum.balance metadata.enterprise.currency_id}}</strong></td>
@@ -54,7 +56,7 @@
       </tr>
       <tr>
         <th colspan="5" class="text-right">
-          <i>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate title.source }}</i> 
+          <i>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate title.source }}</i>
         </th>
       </tr>
     </table>
