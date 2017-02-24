@@ -26,6 +26,7 @@ const exec = require('child_process').exec;
 
 // toggle client javascript minification
 const isProduction = (process.env.NODE_ENV === 'production');
+const isDevelopment = (process.env.NODE_ENV !== 'production');
 
 // the output folder for built server files
 const SERVER_FOLDER = './bin/server/';
@@ -240,7 +241,7 @@ gulp.task('client-compute-hashes', ['client-compile-js', 'client-compile-vendor'
 
 gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () =>
   gulp.src(paths.client.index)
-    .pipe(template({ isProduction: true }))
+    .pipe(template({ isProduction, isDevelopment }))
     .pipe(revReplace({ manifest: gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
     .pipe(gulp.dest(CLIENT_FOLDER))
 );
