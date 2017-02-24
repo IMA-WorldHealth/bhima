@@ -1,5 +1,6 @@
 <div>
   <form name="DateForm">
-    <div ui-grid-edit-datepicker ng-class="'colt' + col.uid"></div>
+    <!-- @todo - fork this library to allow specifying the datepicker popup format -->
+    <div ui-grid-edit-datepicker datepicker-options="grid.appScope.DATEPICKER_OPTIONS" ng-class="'colt' + col.uid"></div>
   </form>
 </div>
