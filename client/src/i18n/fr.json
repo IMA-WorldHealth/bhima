@@ -398,6 +398,7 @@
       "CONFIRM_MODAL"          : "La confirmation est nécessaire"
     },
     "ERRORS": {
+      "AT_LEAST_1_COL"     : "Au moins une colonne doit être sélectionnée",
       "CONNECTION"         : "Erreur de connexion",
       "GENERIC"            : "Le formulaire contient des erreurs",
       "HAS_ERROR"          : "Contiens une erreur",
