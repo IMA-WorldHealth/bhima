@@ -110,9 +110,9 @@
 <!-- this is templated in with variables from gulp-template -->
 <script>
   angular.module('bhima')
-  .config(['$compileProvider', function ($compileProvider) {
-    $compileProvider.debugInfoEnabled(<%= isProduction %>);
-  }])
+    .config(['$compileProvider', function ($compileProvider) {
+      $compileProvider.debugInfoEnabled(<%= isDevelopment %>);
+    }])
 </script>
 
 </body>
