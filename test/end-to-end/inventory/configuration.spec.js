@@ -65,6 +65,12 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
+    it('successfully deletes an existing inventory group', () => {
+      element(by.css('[data-delete-group="' + group.code +'"]')).click();
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
   });
 
   // test inventory type
@@ -86,6 +92,12 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
+    it('Successfully deletes an existing inventory type', () => {
+      element(by.css('[data-delete-type="' + type.text +'"]')).click();
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
   });
 
   // test inventory unit
@@ -103,6 +115,12 @@ describe('Inventory Configuration', () => {
     it('Successfully updates an existing inventory unit', () => {
       element(by.css('[data-edit-unit="' + unit.text +'"]')).click();
       FU.input('$ctrl.session.text', updateUnit.text);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
+    it('Successfully deletes an existing inventory unit', () => {
+      element(by.css('[data-delete-unit="' + unit.text +'"]')).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });

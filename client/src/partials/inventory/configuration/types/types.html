@@ -31,7 +31,14 @@
             <a style="cursor:pointer; text-decoration:none;"
               ng-click="TypesCtrl.editInventoryType(type.id)"
               data-edit-type="{{ type.text }}">
-              <i class="fa fa-edit"></i>
+              <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+            </a>
+          </td>
+          <td>
+            <a style="cursor:pointer; text-decoration:none;"
+              ng-click="TypesCtrl.deleteInventoryType(type.id)"
+              data-delte-type="{{ type.text }}">
+              <i class="fa fa-remove"></i> {{ "FORM.BUTTONS.DELETE" | translate }}
             </a>
           </td>
         </tr>
