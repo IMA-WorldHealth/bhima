@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('income_expenseController', IncomeExpenseConfigController);
 
 IncomeExpenseConfigController.$inject = [
-  '$state', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails'
+  '$state', '$uibModalInstance', 'CashboxService', 'NotifyService',
+  'LanguageService', 'BaseReportService', 'reportDetails',
 ];
 
 /**
@@ -22,12 +23,12 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
   vm.report = report;
 
   vm.reportType = [
-    {id: 1, label : 'FORM.LABELS.INCOME_EXPENSE'},
-    {id: 2, label : 'FORM.LABELS.INCOME'},
-    {id: 3, label : 'FORM.LABELS.EXPENSE'}
+    { id: 1, label: 'FORM.LABELS.INCOME_EXPENSE' },
+    { id: 2, label: 'FORM.LABELS.INCOME' },
+    { id: 3, label: 'FORM.LABELS.EXPENSE' },
   ];
 
-  Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
+  Cashbox.read(null, { detailed: 1 })
     .then(function (cashboxes) {
       cashboxes.forEach(function (cashbox) {
         cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
@@ -39,23 +40,21 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
 
   function generate(form) {
     var url = 'reports/finance/income_expense';
+    var options;
 
     if (form.$invalid) { return; }
 
-    vm.$loading = true;
-
-    var options = {
-      account_id: vm.cashbox.account_id,
-      dateFrom: vm.dateFrom,
-      label : vm.label,
-      dateTo: vm.dateTo,
-      lang: Languages.key,
-      reportType: vm.type
+    options = {
+      account_id : vm.cashbox.account_id,
+      dateFrom   : vm.dateFrom,
+      label      : vm.label,
+      dateTo     : vm.dateTo,
+      lang       : Languages.key,
+      reportType : vm.type,
     };
 
     return SavedReports.requestPDF(url, report, options)
-      .then(function (result) {
-        vm.$loading = false;
+      .then(function () {
         ModalInstance.dismiss();
         $state.reload();
       });
