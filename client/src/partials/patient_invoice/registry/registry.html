@@ -1,8 +1,8 @@
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "INVOICE_REGISTRY.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>INVOICE_REGISTRY.TITLE</li>
     </ol>
 
     <div class="toolbar">
@@ -11,7 +11,7 @@
           ng-click="InvoiceRegistryCtrl.search()"
           data-method="search"
           class="btn btn-default">
-          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+          <span class="fa fa-search"></span> <span translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
       <div class="toolbar-item">
@@ -42,7 +42,7 @@
     ng-click="InvoiceRegistryCtrl.clearFilters()"
     class="text-danger"
     data-method="clear">
-    <i class="fa fa-ban text-danger"></i>
+    <i class="fa fa-close text-danger"></i>
     <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
 </div>

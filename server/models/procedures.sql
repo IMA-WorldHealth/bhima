@@ -368,11 +368,11 @@ BEGIN
       INSERT INTO posting_journal
           (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
-          iaccountId, icost, 0, icost, 0, currencyId, ientityId, 'D', cid, iuserId, 1
+          iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 1
         );
 
       -- exit the loop
@@ -392,12 +392,12 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, reference_uuid,
+          credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, origin_id
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
-          currencyId, ientityId, 'D', cid, iuserId, 1
+          currencyId, ientityId, cid, iuserId, 1
         );
 
       END IF;
@@ -412,11 +412,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, origin_id
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
-      currencyId, ientityId, 'D', iuserId, 1
+      currencyId, ientityId, iuserId, 1
     );
   END IF;
 
@@ -471,10 +471,10 @@ CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
      "INSERT INTO general_ledger
      (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
       description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-       entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+       entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
          description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-          entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+          entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
      FROM posting_journal
      WHERE trans_id
      IN (", transactions, ")");
@@ -546,6 +546,11 @@ BEGIN
   DECLARE remainder DECIMAL(19,4);
   DECLARE lastInvoiceUuid BINARY(16);
 
+  DECLARE cashPaymentOriginId SMALLINT(5);
+
+  -- set origin to the CASH_PAYMENT transaction type
+  SET cashPaymentOriginId = 2;
+
   -- copy cash payment values into working variables
   SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id, cash.is_caution
     INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId, isCaution
@@ -575,10 +580,10 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, user_id
+    credit_equiv, currency_id, user_id, origin_id
   ) SELECT
     HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-    cb.account_id, c.amount, 0, (c.amount / currentExchangeRate), 0, c.currency_id, c.user_id
+    cb.account_id, c.amount, 0, (c.amount * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
   FROM cash AS c
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
   WHERE c.uuid = cashUuid;
@@ -592,11 +597,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id
+      credit_equiv, currency_id, entity_uuid, user_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
-      c.description, dg.account_id, 0, c.amount, 0, (c.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id
+      c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
+      c.debtor_uuid, c.user_id
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -613,11 +618,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
-      c.description, dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
-      c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
+      c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
+      c.debtor_uuid, c.user_id, ci.invoice_uuid
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -676,7 +681,7 @@ BEGIN
           credit_equiv, currency_id, user_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          gain_account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id, c.user_id
+          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -700,11 +705,11 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id,
-          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+          dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
+          c.debtor_uuid, c.user_id, lastInvoiceUuid
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -717,7 +722,7 @@ BEGIN
           credit_equiv, currency_id, user_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          loss_account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
+          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -779,6 +784,22 @@ BEGIN
   END IF;
 END $$
 
+-- This makes sure the temporary tables exist before using them
+CREATE PROCEDURE VerifyCashTemporaryTables()
+BEGIN
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+  );
+END $$
+
 -- This calculates the amount due on previous invoices based on what is being paid
 CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
@@ -806,17 +827,7 @@ BEGIN
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
-  );
-
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
-    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
-  );
+  CALL VerifyCashTemporaryTables();
 
   INSERT INTO stage_cash_records
     SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
@@ -1093,12 +1104,12 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    entity_type, reference_uuid, comment, origin_id, user_id)
+    reference_uuid, comment, origin_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
-    vi.debit * current_exchange_rate, vi.credit * current_exchange_rate, v.currency_id,
-    vi.entity_uuid, NULL, vi.document_uuid, NULL, v.type_id, v.user_id
+    vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
 
@@ -1120,10 +1131,10 @@ BEGIN
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[REVERSAL]', description, ' -- ', zz.description), user_id, 10, uuid
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(REVERSAL)', description), user_id, 10, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.project_id, gl.description FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz
       JOIN project ON zz.project_id = project.id
@@ -1136,7 +1147,7 @@ BEGIN
     FROM (
       SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
-      UNION
+      UNION ALL
       SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;

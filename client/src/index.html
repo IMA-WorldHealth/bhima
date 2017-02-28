@@ -107,5 +107,13 @@
 <script src="js/vendor.min.js"></script>
 <script src="js/bhima.min.js"></script>
 
+<!-- this is templated in with variables from gulp-template -->
+<script>
+  angular.module('bhima')
+    .config(['$compileProvider', function ($compileProvider) {
+      $compileProvider.debugInfoEnabled(<%= isDevelopment %>);
+    }])
+</script>
+
 </body>
 </html>

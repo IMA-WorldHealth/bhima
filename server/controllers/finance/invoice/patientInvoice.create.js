@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Patient Invoice - Create State

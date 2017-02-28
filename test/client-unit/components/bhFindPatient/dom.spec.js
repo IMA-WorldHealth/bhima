@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global inject, expect, chai */
 
 describe.skip('bhFindPatient DOM bindings', DomTests);

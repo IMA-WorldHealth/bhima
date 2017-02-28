@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @module medical/patient
@@ -40,6 +39,7 @@ const barcode = require('../../../lib/barcode');
 const util   = require('../../../lib/util');
 const db     = require('../../../lib/db');
 const topic  = require('../../../lib/topic');
+const FilterParser = require('../../../lib/filter');
 
 const BadRequest  = require('../../../lib/errors/BadRequest');
 const NotFound    = require('../../../lib/errors/NotFound');
@@ -141,10 +141,10 @@ function create(req, res, next) {
 
       // publish a CREATE event on the medical channel
       topic.publish(topic.channels.MEDICAL, {
-        event: topic.events.CREATE,
-        entity: topic.entities.PATIENT,
-        user_id: req.session.user.id,
-        uuid: uuid.unparse(medical.uuid)
+        event   : topic.events.CREATE,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+        uuid    : uuid.unparse(medical.uuid),
       });
     })
     .catch(next)
@@ -231,7 +231,7 @@ function lookupPatient(patientUuid) {
 
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
-      p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
+      p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
@@ -342,22 +342,35 @@ function hospitalNumberExists(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['patient_group_uuid']);
 
-  // remove the limit first thing, if it exists
-  let limit = Number(options.limit);
-  delete options.limit;
+  let filters = new FilterParser(options, { tableAlias : 'q' });
+  let sql = patientEntityQuery(options.detailed);
 
-  // support flexible queries by keeping a growing list of conditions and
-  // statements
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
+  filters.fullText('display_name');
+  filters.dateFrom('dateRegistrationFrom', 'registration_date');
+  filters.dateTo('dateRegistrationTo', 'registration_date');
+  filters.dateFrom('dateBirthFrom', 'dob');
+  filters.dateTo('dateBirthTo', 'dob');
 
+  let patientGroupStatement = '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
+  filters.custom('patient_group_uuid', patientGroupStatement);
+
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY q.registration_date DESC');
+
+  // applies filters and limits to defined sql, get parameters in correct order
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+  return db.exec(query, parameters);
+}
+
+function patientEntityQuery(detailed) {
   let detailedColumns = '';
 
   // if the find should included detailed results
-  if (options.detailed) {
+  if (detailed) {
       detailedColumns = `
         , q.abbr, q.father_name, q.mother_name, q.profession, q.employer, q.hospital_no,
         q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
@@ -365,11 +378,10 @@ function find(options) {
         BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.text,
         q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked
       `;
-
-    // remove options.detailed so that it cannot be used again
-    delete options.detailed;
   }
 
+  // @TODO Investigate if this origin alias table as 'q' does JOINs on every single patient row
+  //       _before_selecting.
   // build the main part of the SQL query
   let sql = `
     SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
@@ -393,89 +405,9 @@ function find(options) {
         JOIN user AS u ON p.user_id = u.id
         LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
         GROUP BY p.uuid
-      ) AS q WHERE
+      ) AS q
   `;
-
-  // this is every permutation of the first, last, and middle name combinations you can imagine.
-  if (options.name) {
-    let keyValue = '%' + options.name + '%';
-
-    conditions.statements.push('LOWER(q.display_name) LIKE ? ');
-    conditions.parameters.push(keyValue);
-
-    // remove options.name so that it cannot be used again
-    delete options.name;
-  }
-
-  // impose lower limit on registration dates
-  if (options.dateRegistrationFrom) {
-    conditions.statements.push('DATE(q.registration_date) >= DATE(?)');
-    conditions.parameters.push(new Date(options.dateRegistrationFrom));
-    delete options.dateRegistrationFrom;
-  }
-
-  // impose upper limit on registration dates
-  if (options.dateRegistrationTo) {
-    conditions.statements.push('DATE(q.registration_date) <= DATE(?)');
-    conditions.parameters.push(new Date(options.dateRegistrationTo));
-    delete options.dateRegistrationTo;
-  }
-
-  // impose lower limit on birth dates
-  if (options.dateBirthFrom) {
-    conditions.statements.push('DATE(q.dob) >= DATE(?)');
-    conditions.parameters.push(new Date(options.dateBirthFrom));
-    delete options.dateBirthFrom;
-  }
-
-  // impose upper limit on birth dates
-  if (options.dateBirthTo) {
-    conditions.statements.push('DATE(q.dob) <= DATE(?)');
-    conditions.parameters.push(new Date(options.dateBirthTo));
-    delete options.dateBirthTo;
-  }
-
-  // allow searching by a debtor_uuid
-  if (options.debtor_uuid) {
-    conditions.statements.push('q.debtor_uuid = ?');
-    conditions.parameters.push(db.bid(options.debtor_uuid));
-    delete options.debtor_uuid;
-  }
-
-  if (options.patient_group_uuid) {
-    conditions.statements.push('(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1');
-    conditions.parameters.push(db.bid(options.patient_group_uuid));
-    delete options.patient_group_uuid;
-  }
-
-  // use util.queryCondition to fill out the rest of the query
-  sql += conditions.statements.join(' AND ');
-
-  // @fixme HACK to add final AND
-  if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
-  let query = util.queryCondition(sql, options, true);
-
-  // destructure the query object from util.queryCondition
-  sql = query.query;
-  let parameters = conditions.parameters.concat(query.conditions);
-
-  // if nothing was submitted to the search, get all records
-  if (!parameters.length) {
-
-    // this writes in WHERE 1; to the SQL query
-    sql += ' 1 ';
-  }
-
-  // add the ordering query
-  sql += ' ORDER BY q.registration_date DESC ';
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += 'LIMIT ?;';
-    parameters.push(limit);
-  }
-
-  return db.exec(sql, parameters);
+  return sql;
 }
 
 /**

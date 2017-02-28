@@ -5,7 +5,7 @@
   {{> header }}
 
   <h3 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
-  <h4 class="text-center">{{ debtor.display_name }}</h4>
+  <h4 class="text-center"><strong>{{ debtor.reference }}</strong> | {{ debtor.display_name }} </h4>
   <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}} : {{ debtor.debtor_group_name }} </h4>
   <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} : {{ debtor.number }} </h4>
 
@@ -14,7 +14,7 @@
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ccc;" >
           <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th style="width: 5%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
+          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DOCUMENT_ID" }}</th>
           <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
           <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
           <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.AMOUNT" }}</th>
@@ -24,7 +24,7 @@
         {{#each patients}}
           <tr>
             <td>{{date this.trans_date}}</td>
-            <td class="text-right">{{this.reference}}</td>
+            <td class="text-right">{{this.document}}</td>
             <td class="text-right">{{this.trans_id}}</td>
             <td>{{this.description}}</td>
             <td class="text-right {{#if this.credit}}text-danger{{/if}}">

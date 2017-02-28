@@ -1,0 +1,41 @@
+{{> head title="TREE.GENERAL_LEDGER"}}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'TREE.GENERAL_LEDGER'}}
+      </h2>
+
+      <!-- invoices listed  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.LABEL'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DEBTOR_SOLD'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CREDITOR_SOLD'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{number}}</td>
+              <td>{{label}}</td>
+              <td class="text-right">{{currency debtor_balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency creditor_balance ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=4}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

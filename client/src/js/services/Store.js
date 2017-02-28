@@ -1,4 +1,3 @@
-/* jshint forin:false */
 angular.module('bhima.services')
   .service('Store', StoreService);
 

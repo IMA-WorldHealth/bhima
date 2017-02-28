@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
-  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout'
+  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout', '$translate'
 ];
 
 /**
@@ -16,7 +16,7 @@ VoucherFormService.$inject = [
  *
  * @todo - finish the caching implementation
  */
-function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout) {
+function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout, $translate) {
 
   var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
 
@@ -195,8 +195,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    */
   VoucherForm.prototype.setup = function setup() {
     this.details = {};
+
     this.details.date = new Date();
+    this.details.project_id = Session.project.id;
     this.details.currency_id = Session.enterprise.currency_id;
+    this.details.user_id = Session.user.id;
 
     this.addItems(2);
   };
@@ -209,6 +212,10 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   VoucherForm.prototype.configureRow = function configureRow(row) {
     row.configure(row);
     this.validate();
+  };
+
+  VoucherForm.prototype.description = function description(key, options) {
+    this.details.description = $translate.instant(key, options);
   };
 
   /**

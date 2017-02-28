@@ -1,50 +1,64 @@
 angular.module('bhima.components')
   .component('bhRendererDropdown', {
     bindings : {
-      reportUrl : '@',
-      reportOptions : '<'
+      reportUrl     : '@',
+      reportOptions : '<',
     },
     templateUrl : 'partials/templates/bhRendererDropdown.tmpl.html',
-    controller : bhRendererController
+    controller  : bhRendererController,
   });
 
-bhRendererController.$inject = [ 'appcache' ];
+bhRendererController.$inject = ['appcache', '$httpParamSerializer'];
 
-function bhRendererController(AppCache) {
+function bhRendererController(AppCache, $httpParamSerializer) {
   var $ctrl = this;
 
   var cache = new AppCache('bhRendererComponent');
 
-  // delay between GET request completion and loading indication, this is used
-  // to compensate for the delay in browsers opening the print dialog
-  var loadingIndicatorDelay = 1000;
-
-  $ctrl.$onInit = function () {
+  $ctrl.$onInit = function $onInit() {
     $ctrl.options = [
-      { icon : 'file-code-o', key : 'DOWNLOADS.JSON', parameters : { renderer: 'json'}, type : 'application/json' },
-      { icon : 'file-excel-o', key : 'DOWNLOADS.CSV', parameters : { renderer: 'csv'}, type : 'application/csv' },
-      { icon : 'file-pdf-o', key : 'DOWNLOADS.PDF', parameters : { renderer: 'pdf'}, type : 'application/pdf' }
+      { icon: 'file-excel-o', key: 'DOWNLOADS.CSV', parameters: { renderer: 'csv' }, type: 'application/csv' },
+      { icon: 'file-pdf-o', key: 'DOWNLOADS.PDF', parameters: { renderer: 'pdf' }, type: 'application/pdf' },
     ];
 
     $ctrl.selection = cache.selection || $ctrl.options[0];
 
-    $ctrl.reportOptions = $ctrl.reportOptions || {};
-
     $ctrl.$loading = false;
+
+    combineAndSerializeParameters();
   };
 
-  $ctrl.select = function (option) {
-    $ctrl.selection = cache.selection = option;
+  $ctrl.select = function select(option) {
+    $ctrl.selection = option;
+    cache.selection = $ctrl.selection;
+    combineAndSerializeParameters();
+  };
+
+  // watch for changes on the component's border and behave appropriately
+  $ctrl.$onChanges = function $onChanges(changes) {
+    var hasParameterChanges = (changes && changes.reportOptions);
+
+    // if there are changes to the report options, serialize them
+    if (hasParameterChanges) {
+      combineAndSerializeParameters();
+    }
   };
 
   /**
-   * @method toggleLoading
+   * @method combineAndSerializeParameters
    *
    * @description
-   * This method is responsible for updating the loading state for the controllers
-   * HTTP requests.
+   * This method combines the renderers parameter and the reportOptions into
+   * a url to be passed to ngHref.
    */
-  function toggleLoading() {
-    $ctrl.$loading = !$ctrl.$loading;
+  function combineAndSerializeParameters() {
+    var rendererParams = ($ctrl.selection && $ctrl.selection.parameters) || {};
+    var reportParams = $ctrl.reportOptions || {};
+
+    // combine the parameters into one
+    var combined = angular.merge(rendererParams, reportParams);
+
+    // serialize the parameters with the $http parameter serializer
+    $ctrl.params = $httpParamSerializer(combined);
   }
 }

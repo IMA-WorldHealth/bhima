@@ -20,7 +20,6 @@
  * @requires accounts/types
  */
 
-'use strict';
 
 const lodash = require('lodash');
 const db = require('../../../lib/db');

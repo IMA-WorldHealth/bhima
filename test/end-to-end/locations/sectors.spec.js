@@ -7,9 +7,8 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Sectors Management', function () {
-  'use strict';
 
-  before(() => helpers.navigate('#/locations/sector'));
+  before(() => helpers.navigate('#!/locations/sector'));
 
   const sector = {
     country :'Test Hook Country',
@@ -52,7 +51,7 @@ describe('Sectors Management', function () {
     FU.buttons.create();
 
     // Verify form has not been successfully submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal('#/locations/sector');
+    expect(helpers.getCurrentPath()).to.eventually.equal('#!/locations/sector');
 
     // submit the page to the server
     FU.buttons.submit();

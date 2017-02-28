@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService'
+  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService', '$state'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting, $state) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -151,15 +151,18 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    // @TODO standardise loading/ caching/ assigning filters with a client service
+    // if filters are directly passed in through params, override cached filters
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
     vm.filters = cache.filters;
-
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
-
     load(vm.filters);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
  //Call the opening of Modal
@@ -168,7 +171,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       .then(function (success) {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load();
+          return load(vm.filters);
         }
       })
       .catch(Notify.handleError);

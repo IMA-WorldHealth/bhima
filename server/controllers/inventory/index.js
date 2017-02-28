@@ -27,7 +27,6 @@
 * TODO: We should migrate the inventory to using the regular bhima 2.x guidelines.
 */
 
-'use strict';
 
 const q  = require('q');
 const ReportManager = require('../../lib/ReportManager');
@@ -204,7 +203,7 @@ function updateInventoryGroups(req, res, next) {
  */
 function listInventoryGroups(req, res, next) {
 
-  groups.list()
+  groups.list(req.query.include_members)
   .then((rows) => {
     res.status(200).json(rows);
   })

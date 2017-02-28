@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Inventory Groups Controller
@@ -18,8 +17,12 @@ exports.remove  = remove;
 exports.countInventory = countInventory;
 
 /** list inventory group */
-function list () {
-  return getGroups();
+function list (include_members) {
+  if(include_members){
+    return getGroupsMembers();    
+  } else {
+    return getGroups();
+  }  
 }
 
 /** details of inventory group */
@@ -68,6 +71,21 @@ function getGroups(uid) {
   uid = (uid) ? db.bid(uid) : undefined;
   sql += (uid) ? ' WHERE uuid = ?;' : ';';
   return db.exec(sql, [uid]);
+}
+
+
+/**
+ * Get the inventory groups and the number of inventors that make up this group
+ */
+function getGroupsMembers() {
+  let sql = `
+    SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account, ig.stock_account, COUNT(i.uuid) AS inventory_counted
+    FROM inventory_group AS ig
+    LEFT JOIN inventory AS i ON i.group_uuid = ig.uuid
+    GROUP BY ig.uuid;
+    `;
+
+  return db.exec(sql);
 }
 
 /**

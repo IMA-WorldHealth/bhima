@@ -9,7 +9,7 @@
           </a>
 
           <div class="pull-right">
-            <span class="label label-primary" translate> {{GroupCtrl.sort.key }} </span>
+            <span class="label label-primary" ng-if="GroupCtrl.sort"><span translate>{{GroupCtrl.sort.key }}</span></span>
             <span uib-dropdown>
               <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
               <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
@@ -17,7 +17,7 @@
                   <a href ng-click="GroupCtrl.setOrder(option)"><span translate>{{ option.key }}</span></a>
                 </li>
                 <li role="seperator" class="divider"></li>
-                <li><a ng-click="GroupCtrl.setOrder()"><span class="fa fa-times" aria-hidden="true"></span><span translate> FORM.BUTTONS.CLEAR </span></a></li>
+                <li><a href ng-click="GroupCtrl.setOrder()"><span class="fa fa-times" aria-hidden="true"></span><span translate> FORM.BUTTONS.CLEAR </span></a></li>
               </ul>
             </span>
           </div>
@@ -25,12 +25,14 @@
 
         <input ng-model="GroupCtrl.filter" ng-show="GroupCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
       </div>
+
+      <!-- Pagination rule -->
+      <!-- | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize -->
       <div
         ng-repeat=
         "debtorGroup in GroupCtrl.debtorGroups
           | filter    : {name : GroupCtrl.filter}
           | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
-          | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize
           track by debtorGroup.uuid ">
 
         <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry="{{ debtorGroup.uuid }}">
@@ -65,17 +67,19 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <uib-pagination
-          total-items="GroupCtrl.debtorGroups.length"
-          max-size="GroupCtrl.pageSize"
-          ng-model="GroupCtrl.currentPage"
-          previous-text="&lsaquo;"
-          next-text="&rsaquo;"
-          boundary-link-numbers="true">
-        </uib-pagination>
-      </div>
-    </div>
+    <!-- Pagination component -->
+    <!-- @TODO resolve user experience with paginating and filtering (reducing total number of items) -->
+    <!-- <div class="row"> -->
+    <!--   <div class="col-md-8 col-md-offset-2"> -->
+    <!--     <ul uib-pagination -->
+    <!--       total-items="GroupCtrl.debtorGroups.length" -->
+    <!--       items-per-page="GroupCtrl.pageSize" -->
+    <!--       ng-model="GroupCtrl.currentPage" -->
+    <!--       previous-text="&lsaquo;" -->
+    <!--       next-text="&rsaquo;" -->
+    <!--       boundary-link-numbers="true"> -->
+    <!--     </ul> -->
+    <!--   </div> -->
+    <!-- </div> -->
   </div>
 </div>

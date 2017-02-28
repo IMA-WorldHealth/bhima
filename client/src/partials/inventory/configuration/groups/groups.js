@@ -85,9 +85,8 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     // initializes inventory group list with associate accounts
     Account.read()
     .then(handleAccountList)
-    .then(InventoryGroup.read)
+    .then(readInventoryGroup)
     .then(handleGroupList)
-    .then(countInventory)
     .catch(Notify.handleError);
 
     // handle the list of accounts
@@ -111,19 +110,14 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
         group.cogsAccountNumber  = AccountStore.get(group.cogs_account) ?
           AccountStore.get(group.cogs_account).number : '';
       });
+
+      vm.groupList = list;
+
       return list;
     }
 
-    // handle number of inventory in group
-    function countInventory(list) {
-      vm.groupList = list;
-      vm.groupList.forEach(function (item) {
-        InventoryGroup.count(item.uuid)
-        .then(function (number) {
-          item.inventory_counted = number;
-        })
-        .catch(Notify.handleError);
-      });
+    function readInventoryGroup(){
+      return InventoryGroup.read(null, { include_members : 1 });
     }
 
   }

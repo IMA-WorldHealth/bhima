@@ -1,40 +1,57 @@
-{{> head title="PATIENT_REG.PATIENT_REGISTRATIONS"}}
+{{> head title="PURCHASES.RECEIPT.TITLE"}}
 
-<body>
-  <h4 class="text-center">{{translate "PURCHASES.RECEIPT.TITLE" }}</h4>
+<body  class="container" style="font-size: 0.9em;">
 
-  <section>
-    <dl>
-      <dt>{{translate "FORM.LABELS.SUPPLIER"}}</dt><dd>{{purchase.supplier}}</dd>
-      <dt>{{translate "FORM.LABELS.DATE"}}</dt><dd>{{date purchase.date}}</dd>
-      <dt>{{translate "FORM.LABELS.REFERENCE"}}</dt><dd>{{purchase.reference}}</dd>
-      <dt>{{translate "FORM.LABELS.NOTES"}}</dt><dd>{{purchase.note}}</dd>
-    </dl>
-  </section>
+  {{> header}}
 
-  <section>
-    <table class="table table-bordered table-condensed table-mini">
-      <thead>
-        <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
-        <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
-        <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
-        <th>{{translate "FORM.LABELS.TOTAL" }}</th>
-      </thead>
-      <tbody>
-        {{#each purchase.items}}
-          <tr>
-            <td>{{this.text}}</td>
-            <td class="text-right">{{currency this.quantity}}</td>
-            <td class="text-right">{{currency this.unit_price}}</td>
-            <td class="text-right">{{currency this.total}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-      <tfoot>
-        <tr class="text-right">
-          <td colspan="4">{{translate "FORM.LABELS.COST"}} {{currency purchase.cost}}</td>
+  <header>
+    <!-- page title  -->
+    <div class="row">
+      <div class="col-xs-12">
+        <h2 class="text-center">
+          <span class="text-uppercase">
+            {{translate "PURCHASES.RECEIPT.TITLE" }} N&deg; 
+            {{purchase.reference}}
+          </span>
+        </h2>
+      </div>
+    </div>
+
+    <!-- order details -->
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate "FORM.LABELS.SUPPLIER"}}</span>: <strong>{{purchase.supplier}}</strong> <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.DATE"}}</span>: {{date purchase.date}} <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.REFERENCE"}}</span>: {{purchase.reference}} <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.NOTES"}}</span>: <strong>{{purchase.note}}</strong> <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.AUTHOR"}}</span>: <strong>{{purchase.author}}</strong>
+      </div>
+    </div>
+  </header>
+
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
+      <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
+      <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
+      <th>{{translate "FORM.LABELS.TOTAL" }}</th>
+    </thead>
+    <tbody>
+      {{#each purchase.items}}
+        <tr>
+          <td>{{this.text}}</td>
+          <td class="text-right">{{this.quantity}}</td>
+          <td class="text-right">{{currency this.unit_price}}</td>
+          <td class="text-right">{{currency this.total}}</td>
         </tr>
-      </tfoot>
-    </table>
-  </section>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="text-left" colspan="3">{{translate "FORM.LABELS.TOTAL"}}</td>
+        <td class="text-right" >{{currency purchase.cost}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
 </body>

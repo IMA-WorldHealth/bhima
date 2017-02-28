@@ -22,23 +22,23 @@ function CashPaymentsRegistryTests() {
     // TODO - why does this need to be tomorrow?
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    let tomorrowFmt = moment(tomorrow).format('DD-MM-YYYY');
+    let tomorrowFmt = moment(tomorrow).format('DD/MM/YYYY');
 
     /** Get all payment of the year 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2016', tomorrowFmt);
+    components.dateInterval.range('01/01/2016', tomorrowFmt);
     FU.modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     /** Get all payment of january 2016 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2016', '31-01-2016');
+    components.dateInterval.range('01/01/2016', '31/01/2016');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 1);
 
     /** Get all payment of the year 2015 */
     FU.buttons.search();
-    components.dateInterval.range('01-01-2015', '31-12-2015');
+    components.dateInterval.range('01/01/2015', '31/12/2015');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
 
@@ -59,18 +59,6 @@ function CashPaymentsRegistryTests() {
     FU.input('$ctrl.bundle.reference', 'NOT_A_REFERENCE');
     FU.modal.submit();
     GU.expectRowCount('payment-registry', 0);
-
-    // clear filters
-    FU.buttons.clear();
-  });
-
-  it('find payment by client', () => {
-
-    /** Get all payment of Patient/2/Patient */
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.debtor_uuid', 'Patient/2/Patient');
-    FU.modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
 
     // clear filters
     FU.buttons.clear();

@@ -28,7 +28,6 @@ exports.createDistributions = createDistributions;
 * Create a distribution
 */
 function createDistributions(depotId, body, session) {
-  'use strict';
 
   var sql, fmap, queries,
 
@@ -101,14 +100,12 @@ function writeToJournal(type, docId, session) {
 
 // create a patient distribution
 function createPatientDistribution(depotId, item) {
-  'use strict';
 
   // TODO
 }
 
 // create a service distribution
 function createServiceDistribution(depotId, item) {
-  'use strict';
 
   var sql =
     'INSERT INTO consumption_service VALUES (?, ?, ?);';
@@ -124,7 +121,6 @@ function createServiceDistribution(depotId, item) {
 * TODO - discuss this design
 */
 function createLossDistribution(depotId, item) {
-  'use strict';
 
   var sql =
     'INSERT INTO consumption_loss VALUES (?, ?);';
@@ -134,7 +130,6 @@ function createLossDistribution(depotId, item) {
 
 
 function createRummageDistribution(depotId, item) {
-  'use strict';
 
   // TODO
 }

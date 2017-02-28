@@ -132,8 +132,8 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
   /** Reference modal */
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
-      .then(function (reference) {
-        row.reference = reference;
+      .then(function (document) {
+        row.configure({ document : document });
       });
   }
 
@@ -169,13 +169,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
     aggregationType: uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
     footerCellClass : 'text-center',
-    width: 40
+    width: 40,
   }, {
     field : 'account',
     displayName : 'FORM.LABELS.ACCOUNT',
     headerCellFilter: 'translate',
     cellTemplate: 'partials/vouchers/templates/account.grid.tmpl.html',
-    width: '35%'
+    width: '35%',
   }, {
     field : 'debit',
     displayName : 'FORM.LABELS.DEBIT',
@@ -214,7 +214,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   /** submit data */
   function submit(form) {
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');

@@ -11,19 +11,16 @@ const GU = require('../shared/GridUtils');
 helpers.configure(chai);
 
 describe('Aged Debtors Report', () => {
-  'use strict';
-
   function getInvoiceNumber(gridId) {
     return GU.getRows(gridId).count();
   }
   const numReports = 1;
 
-  before(() => helpers.navigate('#/reports/agedDebtors'));
+  before(() => helpers.navigate('#!/reports/agedDebtors'));
 
   // TODO client side report removed, required update for server PDF success
   it('GET /reports/agedDebtors Create a new Report of Aged Debtors', () => {
-
-    let date = new Date('12-31-2016');
+    const date = new Date('12-31-2016');
     element(by.id('create-report')).click();
 
     FU.input('ReportConfigCtrl.label', 'Report Debts of December 31, 2016');

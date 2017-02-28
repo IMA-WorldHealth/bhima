@@ -1,4 +1,3 @@
-'use strict';
 
 /*
 * Inventory Core Functions
@@ -164,7 +163,6 @@ function getItemsMetadataById(uuid) {
 * @return {Boolean} Returns true if m and n are both truthy or both falsey
 */
 function hasBoth(m, n) {
-  /* jshint -W018 */
   return !m === !n;
 }
 

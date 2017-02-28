@@ -2,7 +2,6 @@ var db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 function detail(req, res, next) {
-  'use strict';
 
   lookupReference (req.params.id)
     .then(function (row) {
@@ -13,7 +12,6 @@ function detail(req, res, next) {
 }
 
 function list(req, res, next) {
-  'use strict';
 
   var sql =
     'SELECT r.id, r.text, r.ref FROM reference AS r';
@@ -39,7 +37,6 @@ function list(req, res, next) {
 }
 
 function create (req, res, next) {
-  'use strict';
 
   var record = req.body;
 
@@ -56,7 +53,6 @@ function create (req, res, next) {
 }
 
 function update (req, res, next) {
-  'use strict';
 
   var queryData = req.body;
   var referenceId = req.params.id;

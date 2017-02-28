@@ -10,7 +10,6 @@
  * @requires lib/topic
  */
 
-'use strict';
 
 const os = require('os');
 const db = require('../lib/db');

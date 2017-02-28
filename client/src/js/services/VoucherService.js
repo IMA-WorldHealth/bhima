@@ -30,7 +30,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
 
   // strips internal keys from object
   function stripInternalObjectKeys(object) {
-
     var o = {};
 
     angular.forEach(object, function (value, key) {
@@ -57,8 +56,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
         escapedItem.entity_uuid = escapedItem.entity.uuid;
       }
 
-      if (escapedItem.reference) {
-        escapedItem.reference_uuid = escapedItem.reference.uuid;
+      if (escapedItem.document) {
+        escapedItem.document_uuid = escapedItem.document.uuid;
       }
 
       return escapedItem;
@@ -77,7 +76,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore) {
    * This method facilitate annulling a transaction,
    * bhima should automatically be able to reverse
    * any transaction in the posting_journal by creating a
-   * new transaction that is an exact duplicate of the original transaction with sign minous.
+   * new transaction that is an exact duplicate of the original transaction with the
+   * debits and credits switched.
    */
   function reverse(creditNote) {
     return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)

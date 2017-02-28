@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('ReceiptModal', ReceiptModal);
+  .service('ReceiptModal', ReceiptModal);
 
 ReceiptModal.$inject = ['$uibModal', 'ReceiptService'];
 
@@ -32,6 +32,7 @@ function ReceiptModal(Modal, Receipts) {
   service.payroll = payroll;
   service.voucher = voucher;
   service.creditNote = creditNote;
+  service.accountSlip = accountSlip;
 
   /**
    * Invokes a patient invoice receipt
@@ -51,15 +52,15 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var receiptOptions = {
-      renderer      : Receipts.renderers.PDF,
+      renderer : Receipts.renderers.PDF,
       currency : Receipts.receiptCurrency
     };
 
     var invoiceRequest = Receipts.invoice(uuid, receiptOptions);
     var invoiceProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : invoiceRequest }; },
-        options       : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: invoiceRequest }; },
+        options : function optionsProvider() { return options; },
       }
     };
 
@@ -85,7 +86,7 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var receiptOptions = {
-      renderer      : Receipts.renderers.PDF
+      renderer : Receipts.renderers.PDF
     };
 
     angular.extend(receiptOptions, userOptions);
@@ -93,8 +94,8 @@ function ReceiptModal(Modal, Receipts) {
     var patientRequest = Receipts.patient(uuid, receiptOptions);
     var patientProvider = {
       resolve : {
-        receipt  : function receiptProvider() { return { promise : patientRequest }; },
-        options  : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: patientRequest }; },
+        options : function optionsProvider() { return options; },
       }
     };
 
@@ -122,8 +123,8 @@ function ReceiptModal(Modal, Receipts) {
     var purchaseRequest = Receipts.purchase(uuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : purchaseRequest}; },
-        options       : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: purchaseRequest}; },
+        options : function optionsProvider() { return options; },
       }
     };
 
@@ -150,10 +151,10 @@ function ReceiptModal(Modal, Receipts) {
     var cashRequest = Receipts.cash(uuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : cashRequest }; },
-        options       : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: cashRequest }; },
+        options : function optionsProvider() { return options; },
       },
-      keyboard      : false
+      keyboard : false
     };
 
     var configuration = angular.extend(modalConfiguration, reportProvider);
@@ -183,8 +184,8 @@ function ReceiptModal(Modal, Receipts) {
     var voucherRequest = Receipts.voucher(uuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : voucherRequest }; },
-        options       : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: voucherRequest }; },
+        options : function optionsProvider() { return options; },
       }
     };
 
@@ -194,7 +195,7 @@ function ReceiptModal(Modal, Receipts) {
   }
 
   /**
-   * Invokes an invoice's credit note 
+   * Invokes an invoice's credit note
    *
    * @param {String} uuid             Target invoice UUID
    * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
@@ -211,7 +212,7 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var receiptOptions = {
-      renderer      : Receipts.renderers.PDF
+      renderer : Receipts.renderers.PDF
     };
 
     angular.extend(receiptOptions, userOptions);
@@ -219,12 +220,43 @@ function ReceiptModal(Modal, Receipts) {
     var creditNoteRequest = Receipts.creditNote(uuid, receiptOptions);
     var creditNoteProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : creditNoteRequest }; },
-        options       : function optionsProvider() { return options; },
+        receipt : function receiptProvider() { return { promise: creditNoteRequest }; },
+        options : function optionsProvider() { return options; },
       }
     };
 
     var configuration = angular.extend(modalConfiguration, creditNoteProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method accountSlip
+   *
+   * @description
+   * Invokes a general ledger account slip
+   *
+   * @param {number} id - Target account ii
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
+  function accountSlip(id, notifyCreated) {
+    var options = {
+      title         : 'GENERAL_LEDGER.ACCOUNT_SLIP',
+      // createdKey    : 'VOUCHERS.GLOBAL.RECEIPT.SUCCESS',
+      // identifier    : 'reference', // @todo - what does this do?
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var accountSlipRequest = Receipts.accountSlip(id, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: accountSlipRequest }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
     var instance = Modal.open(configuration);
     return instance.result;
   }

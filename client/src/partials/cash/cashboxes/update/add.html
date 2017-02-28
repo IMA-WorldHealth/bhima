@@ -5,7 +5,7 @@
       <p>
         <a ui-sref="cashboxes.list">
           <span class="fa fa-arrow-circle-left"></span>
-          {{ "CASHBOX.BACK" | translate }}
+          <span translate>CASHBOX.BACK</span>
         </a>
       </p>
     </div>
@@ -22,8 +22,8 @@
        <div>
          <div>
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
-              <label class="control-label">
-                {{ "FORM.LABELS.NAME" | translate }}
+              <label class="control-label" translate>
+                FORM.LABELS.NAME
               </label>
               <input class="form-control" name="label" ng-model="UpdateCtrl.box.label" ng-maxlength="CashCtrl.maxLength" required autocomplete="off">
               <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
@@ -31,22 +31,21 @@
               </div>
             </div>
 
-            <label class="control-label">
-              {{ "FORM.LABELS.TYPE" | translate }}
-            </label>
-
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
+              <label class="control-label" translate>
+                FORM.LABELS.TYPE
+              </label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="0" required>
-                  {{ "FORM.LABELS.PRINCIPAL" | translate }}
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" ng-value="0" required>
+                  <span translate>FORM.LABELS.PRINCIPAL</span>
                 </label>
               </div>
 
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="1" required>
-                  {{ "FORM.LABELS.AUXILIARY" | translate }}
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" ng-value="1" required>
+                  <span translate>FORM.LABELS.AUXILIARY</span>
                 </label>
               </div>
               <div class="help-block" ng-messages="CreateForm.type.$error" ng-show="CreateForm.$submitted">
@@ -55,8 +54,8 @@
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
-              <label class="control-label">
-                {{ "FORM.LABELS.PROJECT" | translate }}
+              <label class="control-label" translate>
+                FORM.LABELS.PROJECT
               </label>
               <select
                 class="form-control"
@@ -64,7 +63,7 @@
                 ng-model="UpdateCtrl.box.project_id"
                 ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
                 required>
-                <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                <option value="" disabled translate>FORM.SELECT.PROJECT</option>
               </select>
               <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
                 <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -76,7 +75,7 @@
         <div class="clearfix" style="margin-bottom : 5px">
           <div class="pull-right" style="text-align : right">
             <bh-loading-button loading-state="CreateForm.$loading">
-              {{ "FORM.BUTTONS.SUBMIT" | translate }}
+              <span translate>FORM.BUTTONS.SUBMIT</span>
             </bh-loading-button>
           </div>
         </div>

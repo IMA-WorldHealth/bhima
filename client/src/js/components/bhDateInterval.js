@@ -26,26 +26,27 @@ angular.module('bhima.components')
   });
 
 // dependencies injection
-bhDateInterval.$inject = ['DateService', 'moment'];
+bhDateInterval.$inject = ['DateService', 'moment', 'bhConstants'];
 
 // controller definition
-function bhDateInterval(Dates, moment) {
+function bhDateInterval(Dates, moment, bhConstants) {
   var vm = this;
 
   // expose to the viewe
   vm.search = search;
-  vm.clear  = clear;
+  vm.clear = clear;
 
-  vm.$onInit = function () {
-
+  vm.$onInit = function $onInit() {
     vm.options = [
-      { translateKey : 'FORM.LABELS.TODAY', fn : day, range: 'day' },
-      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week, range: 'week' },
-      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month, range: 'month' },
-      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year, range: 'year' }
+      { translateKey: 'FORM.LABELS.TODAY', fn: day, range: 'day' },
+      { translateKey: 'FORM.LABELS.THIS_WEEK', fn: week, range: 'week' },
+      { translateKey: 'FORM.LABELS.THIS_MONTH', fn: month, range: 'month' },
+      { translateKey: 'FORM.LABELS.THIS_YEAR', fn: year, range: 'year' },
     ];
 
-    vm.pickerOptions = { showWeeks : false };
+    vm.dateFormat = bhConstants.dayOptions.format;
+
+    vm.pickerOptions = { showWeeks: false };
 
     // start up the modal
     startup();
@@ -82,13 +83,14 @@ function bhDateInterval(Dates, moment) {
   }
 
   function startup() {
+    var option;
 
     // set today as default date plage value
     if (!vm.dateFrom && !vm.dateTo) {
       search(vm.options[0]);
     }
 
-    var option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
+    option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
     // set the default option according the mode
     if (option > -1) {

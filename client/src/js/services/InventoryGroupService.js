@@ -24,8 +24,9 @@ function InventoryGroupService($http, util) {
   }
 
   /** get inventory groups */
-  function read(uuid) {
-    return $http.get(baseUrl.concat(uuid || ''))
+  function read(uuid, options) {
+    var url = baseUrl.concat(uuid || '');
+    return $http.get(url, { params : options })
     .then(util.unwrapHttpResponse);
   }
 

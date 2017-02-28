@@ -17,7 +17,6 @@ exports.getInventoryLeadTimesById = getInventoryLeadTimesById;
 * @returns {Promise} Returns a database query
 */
 function getInventoryLeadTimes(options) {
-  'use strict';
 
   var sql;
 
@@ -41,7 +40,6 @@ function getInventoryLeadTimes(options) {
 * @returns {Promise} Returns a database query
 */
 function getInventoryLeadTimesById(uuid, options) {
-  'use strict';
   // TODO
   var sql;
 

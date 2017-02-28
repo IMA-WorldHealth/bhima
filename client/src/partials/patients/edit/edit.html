@@ -3,7 +3,7 @@
 
     <ol class="headercrumb">
       <li class="static"><span translate>TREE.HOSPITAL</span></li>
-      <li class="static"><span translate>PATIENT_RECORDS.TITLE</span></li>
+      <li class="static"><span><a ui-sref="patientRegistry" translate>PATIENT_RECORDS.TITLE</a></span></li>
       <li class="title">{{ PatientEditCtrl.medical.name }}</li>
     </ol>
 
@@ -12,7 +12,7 @@
         ng-show="PatientEditCtrl.medical.name"
         style="margin-left : 5px"
         class="label label-warning">
-      <span style="text-transform : uppercase">{{ "FORM.LABELS.EDIT" | translate }}</span>
+      <span style="text-transform : uppercase" translate>FORM.LABELS.EDIT</span>
     </span>
 
   </div>
@@ -24,7 +24,7 @@
     <div class="row" ng-if="PatientEditCtrl.unknownId">
       <div class="col-md-12">
         <div class="alert alert-danger">
-          <i class="fa fa-search"></i> {{ "PATIENT_EDIT.PAGE_FAIL" | translate }}
+          <i class="fa fa-search"></i> <span translate>PATIENT_EDIT.PAGE_FAIL</span>
         </div>
       </div>
     </div>
@@ -34,15 +34,15 @@
       <div class="col-md-5 col-md-push-7">
 
         <div class="panel panel-default">
-          <div class="panel-heading">
-            {{ "PATIENT_EDIT.FINANCIAL_INFO" | translate }}
+          <div class="panel-heading" translate>
+            PATIENT_EDIT.FINANCIAL_INFO
           </div>
           <div class="panel-body">
             <form name="finance" bh-form-defaults novalidate>
 
               <!-- Patient Group -->
               <div class="form-group">
-                <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.GROUPS_PATIENT_TITLE</label>
 
                 <!-- Iterate through patient groups -->
                  <ul>
@@ -54,7 +54,7 @@
                  </ul>
 
                  <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">
-                 <span class="fa fa-info-circle"></span> {{ "FORM.LABELS.GROUPS_PATIENT_EMPTY" | translate }}
+                  <span class="fa fa-info-circle"></span> <span translate>FORM.LABELS.GROUPS_PATIENT_EMPTY</span>
                  </p>
 
               </div>
@@ -163,7 +163,7 @@
                       name="dob"
                       type="text"
                       class="form-control"
-                      uib-datepicker-popup="dd-MM-yyyy"
+                      uib-datepicker-popup="{{PatientEditCtrl.datePickerOptions.popup}}"
                       datepicker-options="PatientEditCtrl.datePickerOptions"
                       is-open="PatientEditCtrl.datePickerIsOpen"
                       show-button-bar="false"

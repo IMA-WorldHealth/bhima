@@ -1,10 +1,10 @@
-'use strict';
 
 const uuid = require('node-uuid');
 const _ = require('lodash');
-const db   = require('../../lib/db');
+const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const util = require('../../lib/util');
+const Topic = require('../../lib/topic');
 
 module.exports = create;
 
@@ -26,7 +26,6 @@ function processCashItems(cashUuid, items) {
   items.forEach(item => {
     item.cash_uuid = cashUuid;
     item.uuid = item.uuid || uuid.v4();
-
     item = db.convert(item, ['uuid', 'invoice_uuid']);
   });
 
@@ -76,10 +75,9 @@ function processCash(cashUuid, payment) {
  * POST /cash
  */
 function create(req, res, next) {
-
   // alias insertion data
   let data = req.body.payment;
-  const isInvoicePayment = !Boolean(data.is_caution);
+  const isInvoicePayment = !data.is_caution;
   const hasItems = (data.items && data.items.length > 0);
 
   // disallow invoice payments with empty items by returning a 400 to the client
@@ -144,7 +142,15 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(cashUuid) });
+      res.status(201).json({ uuid: uuid.unparse(cashUuid) });
+
+      Topic.publish(Topic.channels.FINANCE, {
+        event   : Topic.events.CREATE,
+        entity  : Topic.entities.PAYMENT,
+        user_id : req.session.user.id,
+        user    : req.session.user.display_name,
+        uuid    : uuid.unparse(cashUuid),
+      });
     })
     .catch(next)
     .done();

@@ -11,7 +11,6 @@ exports.getInventoryLotsById = getInventoryLotsById;
 * @returns {Promise} The database query
 */
 function getInventoryLotsById(uuid) {
-  'use strict';
 
   var sql;
 

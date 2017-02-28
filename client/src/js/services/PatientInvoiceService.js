@@ -120,6 +120,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
       { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
+      { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
       { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
       { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },

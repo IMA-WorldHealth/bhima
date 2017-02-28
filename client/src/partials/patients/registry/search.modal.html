@@ -40,7 +40,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateRegistrationFrom"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateRegistrationFromIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
@@ -63,7 +63,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateRegistrationTo"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateRegistrationToIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
@@ -89,12 +89,12 @@
           {{ 'FORM.LABELS.NAME' | translate }}
         </label>
         <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('name')" tabindex="-1">
+          <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
             <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
           </a>
         </span>
-        <input type="text" class="form-control" name="name" ng-model="ModalCtrl.params.name">
-        <div class="help-block" ng-messages="ModalForm.name.$error" ng-show="ModalForm.$submitted">
+        <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
+        <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
         </div>
       </div>
@@ -249,7 +249,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateBirthFrom"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateBirthFromIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">
@@ -273,7 +273,7 @@
               type="text"
               class="form-control"
               ng-model="ModalCtrl.params.dateBirthTo"
-              uib-datepicker-popup="yyyy-MM-dd"
+              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
               is-open="ModalCtrl.dateBirthToIsOpen"
               datepicker-options="ModalCtrl.dateOptions"
               show-button-bar="false">

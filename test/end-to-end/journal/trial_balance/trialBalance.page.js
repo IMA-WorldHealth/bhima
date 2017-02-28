@@ -1,11 +1,12 @@
-/* jshint expr:true */
 /* global element, by, browser */
 
 function TrialBalancePage() {
-  var page = this;
-  
+  const page = this;
+
   const grid = element(by.id('main-grid'));
-  const gridRows = grid.element(by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+  const gridRows = grid
+    .element(by.css('.ui-grid-render-container-body'))
+    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
   const viewErrorButton = $('[data-method="show-error"]');
   const switchViewButton = element(by.id('switchViewID'));
   const cancelButton = element(by.id('cancelID'));
@@ -16,7 +17,7 @@ function TrialBalancePage() {
     return submitButton.click();
   }
 
-  function closeTrialBalance (){
+  function closeTrialBalance() {
     return cancelButton.click();
   }
 
@@ -32,7 +33,7 @@ function TrialBalancePage() {
     return viewErrorButton.click();
   }
 
-  function resetView(){
+  function resetView() {
     return resetButton.click();
   }
 

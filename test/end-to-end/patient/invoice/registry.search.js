@@ -1,6 +1,5 @@
 'use strict';
 
-/* jshint expr:true */
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
@@ -57,7 +56,7 @@ function InvoiceRegistrySearch() {
 
     // set the date inputs manually
     FU.buttons.search();
-    components.dateInterval.dateTo('30-01-2015');
+    components.dateInterval.dateTo('30/01/2015');
     FU.modal.submit();
 
     expectNumberOfGridRows(0);

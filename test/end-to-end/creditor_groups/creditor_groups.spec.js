@@ -1,28 +1,27 @@
 /* global browser, element, by */
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
+const expect = chai.expect;
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 
 describe('Creditor Groups Management', () => {
-  'use strict';
-
-  const path = '#/admin/creditor_groups';
+  const path = '#!/admin/creditor_groups';
   before(() => helpers.navigate(path));
 
   const INITIAL_GROUP = 2;
   const USED_CREDITOR_GROUP = 'Personnel [Creditor Group Test]';
 
-  let currentDate = new Date();
-  let uniqueIdentifier = currentDate.getTime().toString();
+  const currentDate = new Date();
+  const uniqueIdentifier = currentDate.getTime().toString();
 
   const group = {
-    name : 'E2E Creditor Group ' + uniqueIdentifier,
-    updated_name : 'E2E Creditor Group Updated ' + uniqueIdentifier,
-    account : '41001'
+    name         : `E2E Creditor Group ${uniqueIdentifier}`,
+    updated_name : `E2E Creditor Group Updated ${uniqueIdentifier}`,
+    account      : '41001',
   };
 
   it('Get initial list of creditor groups', () => {
@@ -33,7 +32,7 @@ describe('Creditor Groups Management', () => {
     FU.buttons.create();
 
     FU.input('CreditorGroupCtrl.bundle.name', group.name);
-    FU.uiSelect('CreditorGroupCtrl.bundle.account_id', group.account);
+    components.accountSelect.set(group.account);
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -63,5 +62,4 @@ describe('Creditor Groups Management', () => {
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
-
 });

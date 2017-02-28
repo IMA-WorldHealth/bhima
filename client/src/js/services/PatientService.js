@@ -222,7 +222,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    */
   function formatFilterParameters(params) {
     var columns = [
-      { field: 'name', displayName: 'FORM.LABELS.NAME' },
+      { field: 'display_name', displayName: 'FORM.LABELS.NAME' },
       { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
       { field: 'hospital_no', displayName: 'FORM.LABELS.HOSPITAL_NO' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },

@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
-      <li class="static">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.HOSPITAL</li>
+      <li class="static"><a ui-sref="patientRegistry" translate>PATIENT_RECORDS.TITLE</a></li>
       <li class="title">{{ PatientRecordCtrl.patient.name }}</li>
     </ol>
   </div>
@@ -13,7 +13,7 @@
   <!-- Unknown patient state -->
   <div class="container-fluid" ng-if="!PatientRecordCtrl.patient && PatientRecordCtrl.loading===false">
     <div class="alert alert-danger" id="nopatient">
-      <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.NOT_FOUND" | translate }}
+      <span class="fa fa-search"></span> <span translate>PATIENT_RECORDS.NOT_FOUND</span>
     </div>
   </div>
 
@@ -26,8 +26,8 @@
 
           <div class="panel panel-primary">
             <div class="panel-heading clearfix">
-              <span class="glyphicon glyphicon-list-alt"></span>
-              {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+              <span class="fa fa-list-alt"></span>
+              <span translate>FORM.LABELS.PATIENT_DETAILS</span>
             </div>
 
             <div class="panel-body">
@@ -35,16 +35,16 @@
                 <div>
 
                   <dl>
-                    <dt>{{"FORM.LABELS.NAME" | translate}}</dt>
+                    <dt translate>FORM.LABELS.NAME</dt>
                     <dd id="name">{{::PatientRecordCtrl.patient.name}}</dd>
 
-                    <dt>{{"FORM.LABELS.PATIENT_ID" | translate}}</dt>
+                    <dt translate>FORM.LABELS.PATIENT_ID</dt>
                     <dd id="patientID">{{::PatientRecordCtrl.patient.reference}}</dd>
 
-                    <dt>{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</dt>
+                    <dt translate>FORM.LABELS.HOSPITAL_FILE_NR</dt>
                     <dd id="hospitalNo">{{::PatientRecordCtrl.patient.hospital_no}}</dd>
 
-                    <dt>{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</dt>
+                    <dt translate>TABLE.COLUMNS.DATE_REGISTERED</dt>
                     <dd><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></dd>
                   </dl>
 
@@ -54,10 +54,17 @@
               <div class="col-sm-4">
 
                 <dl>
-                  <dt>{{ "TABLE.COLUMNS.AGE" | translate }}</dt>
+                  <dt translate>TABLE.COLUMNS.AGE</dt>
                   <dd id="age">{{::PatientRecordCtrl.patient.age}}</dd>
 
-                  <dt>{{ "TABLE.COLUMNS.GENDER" | translate }}</dt>
+                  <dt translate>TABLE.COLUMNS.DOB</dt>
+                  <dd id="dob">{{::PatientRecordCtrl.patient.dobFormatted}}</dd>
+                  <p ng-if="PatientRecordCtrl.patient.dob_unknown_date" class="text-info">
+                    <i class="fa fa-info-circle"></i>
+                    <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
+                  </p>
+
+                  <dt translate>TABLE.COLUMNS.GENDER</dt>
                   <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
                 </dl>
               </div>
@@ -79,10 +86,10 @@
 
                 <a
                   data-method="edit"
-                  ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
+                  ui-sref="patientEdit({ uuid : PatientRecordCtrl.patient.uuid })"
                   class="btn btn-default btn-block">
                   <span class="glyphicon glyphicon-edit"></span>
-                  {{ "PATIENT_EDIT.EDIT_DETAILS" | translate }}
+                  <span translate>PATIENT_EDIT.EDIT_DETAILS</span>
                 </a>
               </div>
             </div>

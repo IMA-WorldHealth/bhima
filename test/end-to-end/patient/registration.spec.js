@@ -1,25 +1,23 @@
-/* jshint expr: true */
 /* global element, by, browser */
 const chai = require('chai');
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 describe('Patient Registration', function () {
-  'use strict';
 
-  const path = '#/patients/register';
+  const path = '#!/patients/register';
   beforeEach(() => helpers.navigate(path));
 
   const mockPatient = {
     display_name : 'Mock Patient First',
-    dob : '01-01-1993',
-    sex : 'M',
-    project_id : 1,
-    hospital_no : 120
+    dob          : '01/01/1993',
+    sex          : 'M',
+    project_id   : 1,
+    hospital_no  : 120,
   };
 
   const uniqueHospitalNumber = 1020;
@@ -75,9 +73,9 @@ describe('Patient Registration', function () {
     });
 
     it('alerts for minimum and maximum dates', function () {
-      const testMaxYear = '01-01-9000';
-      const validYear = '01-01-2000';
-      const testMinYear = '01-01-1000';
+      const testMaxYear = '01/01/9000';
+      const validYear = '01/01/2000';
+      const testMinYear = '01/01/1000';
 
 
       FU.input('PatientRegCtrl.medical.dob', testMaxYear);

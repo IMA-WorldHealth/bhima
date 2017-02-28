@@ -1,9 +1,8 @@
-
 angular.module('bhima.controllers')
   .controller('TrialBalanceMainFooterController', TrialBalanceMainFooterController);
 
 TrialBalanceMainFooterController.$inject = [
-  '$state', 'TrialBalanceService', 'NotifyService'
+  '$state', 'TrialBalanceService', 'NotifyService',
 ];
 
 /**
@@ -14,7 +13,6 @@ TrialBalanceMainFooterController.$inject = [
  */
 function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   var vm = this;
-
   vm.state = $state;
 
   /**
@@ -23,7 +21,7 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
    * closes the modal and stop the posting process
    **/
   function cancel() {
-    $state.transitionTo('journal');
+    $state.go('journal');
   }
 
   /**
@@ -31,11 +29,15 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
    * @description for submitting a dialog content
    */
   function submit() {
+    vm.loading = true;
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
-        $state.go('generalLedger', null, {reload : true});
+        $state.go('postedJournal');
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   vm.cancel = cancel;

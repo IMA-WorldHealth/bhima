@@ -111,26 +111,11 @@
                 </div>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
-                <label class="col-md-3 control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
-                <ui-select
-                  name="account_id"
-                  ng-model="SubsidyCtrl.subsidy.account_id"
-                  theme="bootstrap"
-                  required>
-                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-                  </ui-select-match>
-                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
-                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                    <span ng-bind-html="account.label | highlight:$select.search"></span>
-                  </ui-select-choices>
-                </ui-select>
-
-                <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
+              <bh-account-select
+                account-id="SubsidyCtrl.subsidy.account_id"
+                name="account_id"
+                on-select-callback="SubsidyCtrl.onAccountSelect(account)">
+              </bh-account-select>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
@@ -173,26 +158,11 @@
                 </div>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
-                <ui-select
-                  name="account_id"
-                  ng-model="SubsidyCtrl.subsidy.account_id"
-                  theme="bootstrap"
-                  required>
-                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-                  </ui-select-match>
-                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
-                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                    <span ng-bind-html="account.label | highlight:$select.search"></span>
-                  </ui-select-choices>
-                </ui-select>
-
-                <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
+              <bh-account-select
+                account-id="SubsidyCtrl.subsidy.account_id"
+                name="account_id"
+                on-select-callback="SubsidyCtrl.onAccountSelect(account)">
+              </bh-account-select>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>

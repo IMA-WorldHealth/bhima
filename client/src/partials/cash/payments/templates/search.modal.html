@@ -34,20 +34,6 @@
         <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
       </div>
 
-      <!-- client -->
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.CLIENT</label>
-
-        <ui-select name="debtor" ng-model="$ctrl.bundle.debtor_uuid">
-          <ui-select-match>
-            <span>{{$select.selected.text}}</span>
-          </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="debtor in $ctrl.debtors | filter:{ text : $select.search } track by debtor.uuid">
-            <span ng-bind-html="debtor.text | highlight:$select.search"></span>
-          </ui-select-choices>
-        </ui-select>
-      </div>
-
       <div class="checkbox">
         <label>
           <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
@@ -85,11 +71,33 @@
         </ui-select>
       </div>
 
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+        <input type="text" class="form-control" ng-model="$ctrl.bundle.patientReference"/>
+      </div>
+
       <bh-currency-select
         currency-id="$ctrl.bundle.currency_id"
         validation-trigger="CashVoucherForm.$submitted">
       </bh-currency-select>
 
+
+      <div class="radio">
+        <p class="control-label" style="margin-bottom:5px;">
+          <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
+        </p>
+        <label>
+          <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.bundle.reversed">
+          <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
+        </label>
+      </div>
+
+      <div class="radio">
+        <label>
+          <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.bundle.reversed">
+          <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
+        </label>
+      </div>
     </fieldset>
   </div>
 

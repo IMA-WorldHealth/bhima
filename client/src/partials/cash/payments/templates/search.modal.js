@@ -1,15 +1,16 @@
 angular.module('bhima.controllers')
-    .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
+  .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'DebtorService', 'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance', 'CurrencyService'
+  'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance',
+  'filters'
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Instance, Currencies) {
+function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, filters) {
   var vm = this;
 
   // global variables
@@ -17,17 +18,10 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
   var isObject = angular.isObject;
 
   // expose to the view
-  vm.bundle = {};
+  vm.bundle = angular.copy(filters || {});
   vm.validate = validate;
   vm.submit = submit;
   vm.cancel = Instance.close;
-
-  // client
-  Debtors.read()
-    .then(function (list) {
-      vm.debtors = list;
-    })
-    .catch(Notify.handleError);
 
   // cashboxes
   Cashboxes.read()
@@ -58,7 +52,7 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
   function formatFilterParameters() {
     var out = {};
     for (var i in vm.bundle) {
-      if (vm.bundle[i]) {
+      if (angular.isDefined(vm.bundle[i])) {
         out[i] = vm.bundle[i];
       }
     }
@@ -84,6 +78,7 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
         formattedFilters[key].uuid || formattedFilters[key].id || formattedFilters[key] : formattedFilters[key];
 
       // get value to display
+      // @FIXME custom very specific logic has to change - this is not maintainable
       out.display[key] = isObject(formattedFilters[key]) ?
         formattedFilters[key].text || formattedFilters[key].label || formattedFilters[key].display_name || formattedFilters[key] : formattedFilters[key];
     }

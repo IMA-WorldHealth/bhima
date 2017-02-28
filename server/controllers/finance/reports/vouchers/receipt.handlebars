@@ -6,43 +6,37 @@
     <!-- headings  -->
     <div class="row">
       <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
+        <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
+        <address style="margin-bottom: 0px;">
+          {{metadata.enterprise.location}}
+        </address>
+        <div>{{metadata.enterprise.email}}</div>
+        <div>{{metadata.enterprise.phone}}</div>
       </div>
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'FORM.LABELS.VOUCHER'}}</span> <br>
-          <strong>{{details.reference}}</strong> <br>
-          <small>{{date details.date}}</small> <br>
+          <div class="text-uppercase">{{translate details.text}}</div>
+          <div><strong>{{details.reference}}</strong></div>
         </h3>
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
-      <div class="col-xs-6">
-        <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{details.reference}}</strong> <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency details.amount details.currency_id}}</strong> <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
-        <span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{details.display_name}}
+        <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
+        <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+        <div>{{> barcode value=details.barcode}}</div>        
       </div>
     </div>
   </header>
+  <br>
 
-  <!-- description  -->
-  <h4>
-    <u>{{translate 'FORM.LABELS.DESCRIPTION'}}</u>
-  </h4>
-  <p>{{details.description}}</p>
+  <!-- client and user details  -->
+  <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="col-xs-6">
+      <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{details.reference}}</strong> <br>
+      <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency details.amount details.currency_id}}</strong> <br>
+      <span class="text-capitalize">{{translate 'FORM.LABELS.TRANSACTION_DATE'}}</span>: {{date details.date}} <br>
+      <span class="text-capitalize">{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</span>: {{details.display_name}}
+    </div>
+  </div>
 
-  <!-- voucher containt details  -->
-  <h4>
-    <u>{{translate 'FORM.LABELS.DETAILS'}}</u>
-  </h4>
+  <h5>{{details.description}}</h5>
 
   <table class="table table-condensed">
     <thead>
@@ -51,27 +45,34 @@
         <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
         <th class="text-right">{{translate 'FORM.LABELS.DEBIT'}}</th>
         <th class="text-right">{{translate 'FORM.LABELS.CREDIT'}}</th>
+        <th>{{translate 'FORM.LABELS.ENTITY'}}</th>
+        <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
       </tr>
     </thead>
     <tbody>
       {{#each rows}}
-      <tr>
-        <td>{{number}}</td>
-        <td>{{label}}</td>
-        <td class="text-right">{{currency debit currency_id}}</td>
-        <td class="text-right">{{currency credit currency_id}}</td>
-      </tr>
+        <tr>
+          <td>{{number}}</td>
+          <td>{{label}}</td>
+          <td class="text-right">{{currency debit currency_id}}</td>
+          <td class="text-right">{{currency credit currency_id}}</td>
+          <td>{{ entity_reference }}</td>
+          <td>{{ document_reference }}</td>
+        </tr>
       {{/each}}
-      <tr>
-        <td colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</td>
-        <td class="text-right">{{currency (sum rows 'debit') details.currency_id}}</td>
-        <td class="text-right">{{currency (sum rows 'credit') details.currency_id}}</td>
-      </tr>
     </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="2" class="text-right">{{translate 'FORM.LABELS.TOTAL'}}</th>
+        <th class="text-right">{{currency (sum rows 'debit') details.currency_id}}</th>
+        <th class="text-right">{{currency (sum rows 'credit') details.currency_id}}</th>
+        <th colspan="2"></th>
+      </tr>
+    </tfoot>
   </table>
 
   <h4>
     <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
   </h4>
-  <hr />
+  <script>JsBarcode('.barcode').init();</script>
 </div>

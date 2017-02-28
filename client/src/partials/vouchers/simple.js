@@ -66,7 +66,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     var creditRow = vm.Voucher.store.data[1];
 
     // configure as needed
-    debitRow.configure({ debit : vm.amount});
+    debitRow.configure({ debit : vm.amount });
     creditRow.configure({ credit : vm.amount });
 
     var valid = vm.Voucher.validate();
@@ -100,6 +100,9 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
 
     // clear the voucher
     vm.Voucher.clear();
+
+    // amount is held outside of the voucher
+    delete vm.amount;
   }
 
   RS.$on('voucher:configure', function (evt, data) {
@@ -107,6 +110,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     // configure the basics of the transaction type.
     vm.Voucher.details.description = data.description;
     vm.Voucher.details.type_id = data.type_id;
+
     vm.amount = data.amount;
 
     var debitRow = vm.Voucher.store.data[0];

@@ -1,5 +1,6 @@
 /* global element, by, browser */
 const chai = require('chai');
+
 const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
@@ -8,21 +9,19 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Fiscal Year', function () {
-  'use strict';
-
-  const path = '#/fiscal';
-  var pathNew = '#/fiscal/create';
+describe('Fiscal Year', () => {
+  const path = '#!/fiscal';
+  const pathNew = '#!/fiscal/create';
 
   before(() => helpers.navigate(path));
 
   const fiscalYear = {
-    label : 'A Special Fiscal Year',
-    note : 'Note for the new fiscal Year',
-    previous : 'Test Fiscal Year 2016'
+    label    : 'A Special Fiscal Year',
+    note     : 'Note for the new fiscal Year',
+    previous : 'Test Fiscal Year 2016',
   };
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
     // switch to the create form
     FU.buttons.create();
 
@@ -30,7 +29,7 @@ describe('Fiscal Year', function () {
     expect(helpers.getCurrentPath()).to.eventually.equal(pathNew);
 
     // set invalid date range to test `number_of_months`
-    components.dateInterval.range('01-02-2016', '01-01-2016');
+    components.dateInterval.range('01/02/2016', '01/01/2016');
 
     FU.buttons.submit();
 
@@ -41,11 +40,11 @@ describe('Fiscal Year', function () {
     components.notification.hasDanger();
   });
 
-  it('creates a new fiscalYear', function () {
+  it('creates a new fiscalYear', () => {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateInterval.range('01-01-2018', '31-12-2018');
+    components.dateInterval.range('01/01/2018', '31/12/2018');
     FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
@@ -53,9 +52,8 @@ describe('Fiscal Year', function () {
     components.notification.hasSuccess();
   });
 
-
-  it('edits a fiscal Year', function () {
-    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+  it('edits a fiscal Year', () => {
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).first().click();
 
     // modify the fiscal year label and note
@@ -66,8 +64,8 @@ describe('Fiscal Year', function () {
     components.notification.hasSuccess();
   });
 
-  it('delete a fiscal Year', function () {
-    var deleteButton = element.all(by.css('[data-fiscal-entry]'));
+  it('delete a fiscal Year', () => {
+    const deleteButton = element.all(by.css('[data-fiscal-entry]'));
     deleteButton.all(by.css('[data-method="delete"]')).first().click();
 
     // click the alert asking for permission
@@ -79,7 +77,7 @@ describe('Fiscal Year', function () {
     helpers.navigate(path);
 
     // the last in the list is the oldest
-    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // click on the opening balance button
@@ -89,9 +87,9 @@ describe('Fiscal Year', function () {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    let account1 = 3627;
-    let account2 = 3628;
-    let account3 = 3630;
+    const account1 = 3627;
+    const account2 = 3628;
+    const account3 = 3630;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -99,14 +97,13 @@ describe('Fiscal Year', function () {
 
     FU.buttons.submit();
     components.notification.hasSuccess();
-
   });
 
   it('forbid not balanced submission', () => {
     helpers.navigate(path);
 
     // the last in the list is the oldest
-    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // click on the opening balance button
@@ -116,9 +113,9 @@ describe('Fiscal Year', function () {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    let account1 = 3627;
-    let account2 = 3628;
-    let account3 = 3630;
+    const account1 = 3627;
+    const account2 = 3628;
+    const account3 = 3630;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -127,14 +124,13 @@ describe('Fiscal Year', function () {
     FU.buttons.submit();
     components.notification.hasDanger();
     expect(element(by.css('[data-status="not-balanced"]')).isPresent()).to.eventually.equal(true);
-
   });
 
   it('forbid negative value for total debit or total credit', () => {
     helpers.navigate(path);
 
     // the last in the list is the oldest
-    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // click on the opening balance button
@@ -144,9 +140,9 @@ describe('Fiscal Year', function () {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    let account1 = 3627;
-    let account2 = 3628;
-    let account3 = 3630;
+    const account1 = 3627;
+    const account2 = 3628;
+    const account3 = 3630;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -155,25 +151,24 @@ describe('Fiscal Year', function () {
     FU.buttons.submit();
     components.notification.hasDanger();
     expect(element(by.css('[data-status="not-positive"]')).isPresent()).to.eventually.equal(true);
-
   });
 
   it('closing a fiscal year in normal way', () => {
     helpers.navigate(path);
 
     // the last in the list is the oldest
-    let updateButton = element.all(by.css('[data-fiscal-entry]'));
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // this fix multiple element found take first
-    let submitButton = element.all(by.css('[data-method="submit"]')).first();
+    const submitButton = element.all(by.css('[data-method="submit"]')).first();
 
     // click on the opening balance button
     element(by.css('[data-action="closing-fiscal-year"]')).click();
 
-    // inner variables
-    let resultAccount = 'Test Capital One';
-    let fiscalYearPattern = 'Test Fiscal Year 2015';
+    // inner constiables
+    const resultAccount = 'Test Capital One';
+    const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account
     FU.uiSelect('$ctrl.resultAccount', resultAccount);
@@ -192,7 +187,5 @@ describe('Fiscal Year', function () {
 
     // check notification
     components.notification.hasSuccess();
-
   });
-
 });

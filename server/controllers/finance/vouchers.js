@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-'use strict';
 
 const _    = require('lodash');
 const uuid = require('node-uuid');
@@ -252,18 +251,21 @@ function getSql(detailed) {
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
   `;
 
-  let detailedSql =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+  let detailedSql = `
+    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, BUID(vi.document_uuid) as document_uuid,
       BUID(vi.uuid) AS voucher_item_uuid, vi.account_id, vi.debit, transaction_type.text,
       vi.credit, a.number, a.label, u.display_name,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
+      entity_map.text AS entity_reference, document_map.text AS document_reference
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
-    JOIN account a ON a.id = vi.account_id `;
+    JOIN account a ON a.id = vi.account_id
+    LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
+    LEFT JOIN document_map ON document_map.uuid = vi.document_uuid `;
 
   return !util.isFalsy(detailed) ? detailedSql : sql;
 }

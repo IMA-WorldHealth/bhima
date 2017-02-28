@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('UsersController', UsersController);
+  .controller('UsersController', UsersController);
 
 UsersController.$inject = ['$state', 'UserService', 'NotifyService'];
 

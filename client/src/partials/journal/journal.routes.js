@@ -1,38 +1,33 @@
-
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
 
     $stateProvider
       .state('journal', {
-        url : '/journal',
-        controller : 'JournalController as JournalCtrl',
+        url         : '/journal',
+        controller  : 'JournalController as JournalCtrl',
         templateUrl : 'partials/journal/journal.html'
       })
       .state('journalPrint', {
-        controller : 'journal.print',
+        controller  : 'journal.print',
         templateUrl : 'partials/journal/print.html'
       })
       .state('journalVoucher', {
-        controller: 'JournalVoucherController as JournalVoucherCtrl',
-        templateUrl: 'partials/journal/voucher/voucher.html'
+        controller  : 'JournalVoucherController as JournalVoucherCtrl',
+        templateUrl : 'partials/journal/voucher/voucher.html'
       })
       .state('journalModal', {
-        parent : 'journal',
+        parent  : 'journal',
         onEnter : ['$state', '$uibModal', function ($state, Modal) {
           Modal.open({
-            size : 'lg',
-            templateUrl : 'partials/journal/modals/trialBalanceStructure.html'
-          }).result.then(function () {
-              // go to the parent state (with refresh)
-              $state.go('journal', null, { reload : true });
-            })
-            .catch(function () {
-              $state.go('journal', null, { notify: false });
-            });
+            size        : 'lg',
+            templateUrl : 'partials/journal/modals/trialBalanceStructure.html',
+            keyboard    : false,
+            backdrop    : 'static',
+          });
         }],
         onExit : ['$uibModalStack', function (ModalStack) {
           ModalStack.dismissAll();
-        }]
+        }],
       })
       .state('trialBalanceMain',{
         parent : 'journalModal',

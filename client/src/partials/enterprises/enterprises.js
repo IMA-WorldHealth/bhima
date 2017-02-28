@@ -2,17 +2,14 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService',
-  'ProjectService', 'ModalService', 'AccountService', 'bhConstants'
+  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal, Accounts, bhConstants) {
+function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal) {
   var vm = this;
-
-  vm.bhConstants = bhConstants;
 
   vm.enterprises = [];
   vm.enterprise = {};
@@ -25,12 +22,14 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
   // bind methods
   vm.submit = submit;
+  vm.onSelectGainAccount = onSelectGainAccount;
+  vm.onSelectLossAccount = onSelectLossAccount;
 
   // fired on startup
   function startup() {
 
     // load enterprises
-    Enterprises.read(null, { detailed : 1 })
+    Enterprises.read(null, { detailed: 1 })
       .then(function (enterprises) {
         vm.hasEnterprise = (enterprises.length > 0);
         vm.enterprises = vm.hasEnterprise ? enterprises : [];
@@ -40,11 +39,6 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
-
-        return Accounts.read();
-      })
-      .then(function (accounts) {
-        vm.accounts = Accounts.order(accounts);
         return refreshProjects();
       })
       .catch(Notify.handleError);
@@ -55,7 +49,14 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
         vm.currencies = currencies;
       })
       .catch(Notify.handleError);
+  }
 
+  function onSelectGainAccount(account) {
+    vm.enterprise.gain_account_id = account.id;
+  }
+
+  function onSelectLossAccount(account) {
+    vm.enterprise.loss_account_id = account.id;
   }
 
   // form submission
@@ -120,6 +121,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
       identifier : id,
       enterprise : vm.enterprise
     };
+
     Modal.openProjectActions(params)
     .then(function (value) {
       if (!value) { return; }

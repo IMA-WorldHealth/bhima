@@ -1,35 +1,35 @@
 angular.module('bhima.components')
 .component('bhPdfPrint', {
   bindings : {
-    pdfUrl : '@',
-    disableCache: '@',
-    options : '<',
-    disabled : '<'
+    pdfUrl       : '@',
+    disableCache : '@',
+    options      : '<',
+    disabled     : '<',
   },
   template :
     '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">' +
       '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
     '</bh-loading-button>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
-  controller : bhPDFPrintController
+  controller : bhPDFPrintController,
 });
 
 angular.module('bhima.components')
 .component('bhPdfLink', {
   bindings : {
-    pdfUrl : '@',
-    buttonText : '@',
-    disableCache: '@',
-    options : '<'
+    pdfUrl       : '@',
+    buttonText   : '@',
+    disableCache : '@',
+    options      : '<',
   },
   transclude : true,
-  template :
+  template   :
     '<a href ng-click="$ctrl.print()">' +
       '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
       '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
     '</a>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
-  controller : bhPDFPrintController
+  controller : bhPDFPrintController,
 });
 
 
@@ -65,8 +65,15 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages)
   var cachedRequest;
   var component = this;
 
-  // Default value for buttonText
-  component.buttonText = component.buttonText || 'FORM.BUTTONS.PRINT';
+  this.$onInit = function $onInit() {
+    component.buttonText = component.buttonText || 'FORM.BUTTONS.PRINT';
+
+    component.$loading = false;
+    component.embeddedContentId = 'pdfdirect-' + Date.now();
+  };
+
+  // expose the print method to the view
+  component.print = print;
 
   // turn off caching via disable-cache="true".  Caching is enabled by default.
   var enableCache = (component.disableCache !== 'true');
@@ -83,12 +90,6 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages)
   // delay between GET request completion and loading indication, this is used
   // to compensate for the delay in browsers opening the print dialog
   var loadingIndicatorDelay = 1000;
-
-  component.$loading = false;
-  component.embeddedContentId = 'pdfdirect-' + Date.now();
-
-  // expose the print method to the view
-  component.print = print;
 
   function print() {
     var url = component.pdfUrl;

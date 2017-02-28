@@ -13,7 +13,6 @@
  * @requires lib/errors/NotFound
  * @requires Topic
  */
-'use strict';
 
 const _ = require('lodash');
 const db = require('../../../lib/db');

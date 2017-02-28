@@ -10,6 +10,7 @@ Before you begin the installation process, please make sure you have all the bhi
  1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or greater)
  2. [Redis](redis.io)
  3. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm)).
+ 4. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html)
 
 
 ###### Getting the source
@@ -33,15 +34,14 @@ npm install --no-progress --loglevel http
 ./node_modules/.bin/bower install -f
 
 # build the application
-./node_modules/.bin/gulp build
+npm run build
 ```
 
 ###### Creating a database
 The database structure is contained in the following files:
- 1. `server/models/schema.sql`
- 2. `server/models/procedures.sql`
+ 1. `server/models/*.sql`
 
-For an initial setup, bhima also includes a file `server/models/test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.
+For an initial setup, bhima also includes a file `server/models/test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.  Note that the database must be running SQL strict mode for all the logic to behave correctly.
 
 Alternative, you might use the `install.sh` script, customized with your environmental variables as shown below:
 
@@ -53,10 +53,17 @@ Alternative, you might use the `install.sh` script, customized with your environ
 ###### Configuring the Application
 Copy the `.env.sample` environmental variable file into `.env.production` and set your preferred environmental variables where required.  Make sure this file is in the root directory.
 
-###### Running the application
-Running the application is super easy!  Just type `npm run app` in the application root directory.
+###### Running the Application
+Running the application is super easy!  Just type `npm run app` in the application root directory.  Alternatively, you can run the development version using `npm run dev`.
 
-###### Verify the install
+###### Verify the Install
 Navigate to [https://localhost:8080](https://localhost:8080) in the browser to verify the installation.  You should be greeted with a login page.
+
+###### Testing the Application
+Our tests are broken into unit tests, end to end tests, and integration tests.  There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
+ 1. **Integration Tests** - These test the server + database integration and generally our APIs.  All reachable API endpoints should generally have an integration test associated with them.  To run them, type `npm run test:integration`.
+ 2. **Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies.  Karma launches a chrome browser to execute the tests.  To run them, type `npm run karma`.
+ 3. **End to End Tests** - The entire stack is tested with (often flaky) end to end tests using [protractor](protractortest.org).  Protractor depends on `webdriver-manager` which must be installed separately.  See their documentation for more information.  The end to end tests can be run with `npm run test:ends`.
+
 
 Enjoy using bhima!

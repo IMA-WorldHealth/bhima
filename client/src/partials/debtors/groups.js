@@ -67,15 +67,19 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
    */
   function deleteGroup(groupUuid) {
     Modal.confirm()
-      .then(function (ans) {
-        if (!ans) { return false; }
-        return DebtorGroups.remove(groupUuid);
+      .then(function (confirmResponse) {
+        if (!confirmResponse) {
+          return false;
+        }
+
+        // user has confirmed removal of debtor group
+        return DebtorGroups.remove(groupUuid)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            $state.go('debtorGroups.list', null, {reload : true});
+          })
+          .catch(Notify.handleError);
       })
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        $state.go('debtorGroups.list', null, {reload : true});
-      })
-      .catch(Notify.handleError);
   }
 
   function setOrder(attribute) {

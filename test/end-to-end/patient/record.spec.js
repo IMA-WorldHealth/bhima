@@ -1,4 +1,3 @@
-/* jshint expr: true */
 /* global element, by, browser */
 'use strict';
 
@@ -15,7 +14,7 @@ helpers.configure(chai);
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 describe('Patient Record', function () {
-  const root = '#/patients/';
+  const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   const patient = {

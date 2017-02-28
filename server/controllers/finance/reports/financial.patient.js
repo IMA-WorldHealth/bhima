@@ -9,7 +9,6 @@
  * @requires ReportManager
  * @requires Debtors
  */
-'use strict';
 
 const _ = require('lodash');
 
@@ -77,7 +76,7 @@ function financialActivities(patientUuid) {
         sum.debit += patient.debit;
         sum.credit += patient.credit;
         sum.balance = sum.debit - sum.credit;
-        sum.hasDebitBalance = sum.balance > 0;
+        sum.hasDebitBalance = sum.balance > 0;      
       });
 
       const debtor = glb.debtor;

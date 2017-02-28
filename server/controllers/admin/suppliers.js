@@ -6,7 +6,6 @@
  * This controller exposes an API to the client for reading and writing supplier
  */
 
-'use strict';
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');

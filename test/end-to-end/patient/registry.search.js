@@ -19,12 +19,12 @@ function PatientRegistrySearch() {
   const parameters = {
     name: 'Mock',
     name1: 'Patient',
-    dateRegistrationFrom: '2015-01-01',
-    dateRegistrationTo: '2015-04-01',
-    dateBirthFrom: '2016-05-01',
-    dateBirthTo: '2016-05-16',
-    dateBirthFrom2: '1960-06-30',
-    dateBirthTo2: '2016-05-16'
+    dateRegistrationFrom: '01/01/2015',
+    dateRegistrationTo: '01/04/2015',
+    dateBirthFrom: '01/05/2016',
+    dateBirthTo: '16/05/2016',
+    dateBirthFrom2: '30/01/1960',
+    dateBirthTo2: '16/05/2016'
   };
 
   const defaultVisibleRowNumber = 3;
@@ -54,7 +54,7 @@ function PatientRegistrySearch() {
   // demonstrates that filtering works
   it(`should find one patient with name "${parameters.name}"`, () => {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name);
+    FU.input('ModalCtrl.params.display_name', parameters.name);
     FU.modal.submit();
 
     expectNumberOfGridRows(1);
@@ -65,7 +65,7 @@ function PatientRegistrySearch() {
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name1);
+    FU.input('ModalCtrl.params.display_name', parameters.name1);
     element(by.id('male')).click();
     FU.modal.submit();
 
@@ -77,7 +77,7 @@ function PatientRegistrySearch() {
   // demonstrates that additive + time-delimited filtering works
   it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
     FU.buttons.search();
-    FU.input('ModalCtrl.params.name', parameters.name1);
+    FU.input('ModalCtrl.params.display_name', parameters.name1);
     $('[data-date-registration]').$('[data-date-range="week"]').click();
     FU.modal.submit();
 
@@ -156,7 +156,7 @@ function PatientRegistrySearch() {
     // Add all the filters (4 in total)
     $('[data-date-dob]').$('[data-date-range="year"]').click();
     element(by.id('male')).click();
-    FU.input('ModalCtrl.params.name', 'Some Non-Existant Patient');
+    FU.input('ModalCtrl.params.display_name', 'Some Non-Existant Patient');
 
     FU.modal.submit();
 

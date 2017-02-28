@@ -6,7 +6,6 @@
  * @requires server/lib/template
  */
 
-'use strict';
 
 const exhbs = require('express-handlebars');
 const util = require('../util');

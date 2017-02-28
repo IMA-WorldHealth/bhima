@@ -55,67 +55,29 @@
               </div>
 
               <!-- gain account  -->
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.gain_account.$invalid }">
-                <label class="control-label">
-                  {{ "FORM.LABELS.GAIN_ACCOUNT" | translate }}
-                </label>
+              <bh-account-select
+                id="gain-account-id"
+                account-id="EnterpriseCtrl.enterprise.gain_account_id"
+                label="FORM.LABELS.GAIN_ACCOUNT"
+                name="gain_account_id"
+                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)">
+              </bh-account-select>
 
-                <ui-select
-                  name="gain_account"
-                  ng-model="EnterpriseCtrl.enterprise.gain_account_id"
-                  required>
-                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-                  </ui-select-match>
-                  <ui-select-choices
-                    ui-select-focus-patch
-                    ui-disable-choice="account.type_id === EnterpriseCtrl.bhConstants.accounts.TITLE"
-                    repeat="account.id as account in  EnterpriseCtrl.accounts | filter: { 'hrlabel': $select.search }">
-                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                    <span ng-bind-html="account.label | highlight:$select.search"></span>
-                  </ui-select-choices>
-                </ui-select>
-
-                <div class="help-block" ng-messages="EnterpriseForm.gain_account.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <!-- loss account  -->
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.loss_account.$invalid }">
-                <label class="control-label">
-                  {{ "FORM.LABELS.LOSS_ACCOUNT" | translate }}
-                </label>
-
-                <ui-select
-                  name="loss_account"
-                  ng-model="EnterpriseCtrl.enterprise.loss_account_id"
-                  required>
-                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-                  </ui-select-match>
-                  <ui-select-choices
-                    ui-select-focus-patch
-                    ui-disable-choice="account.type_id === EnterpriseCtrl.bhConstants.accounts.TITLE"
-                    repeat="account.id as account in  EnterpriseCtrl.accounts | filter:{'hrlabel' : $select.search}">
-                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                    <span ng-bind-html="account.label | highlight:$select.search"></span>
-                  </ui-select-choices>
-                </ui-select>
-
-                <div class="help-block" ng-messages="EnterpriseForm.loss_account.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
+              <bh-account-select
+                id="loss-account-id"
+                account-id="EnterpriseCtrl.enterprise.loss_account_id"
+                label="FORM.LABELS.LOSS_ACCOUNT"
+                name="loss_account_id"
+                on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
+              </bh-account-select>
 
             </div>
 
             <div class="panel-footer text-right">
               <bh-loading-button loading-state="EnterpriseForm.$loading">
-                {{ "FORM.BUTTONS.UPDATE" | translate }}
+                <span translate>FORM.BUTTONS.UPDATE</span>
               </bh-loading-button>
             </div>
-
           </div>
 
           <!-- enterprise optional info  -->
@@ -200,7 +162,6 @@
 
         <!-- embedded exchange rate -->
         <div ui-view="exchange"></div>
-
       </div>
     </div>
   </div>

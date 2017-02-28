@@ -25,6 +25,8 @@
           <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
           <strong>{{reference}}</strong> <br>
           <small>{{date date}}</small> <br>
+          <small>{{> barcode value=barcode}}</small><br>
+          <br>
         </h3>
       </div>
     </div>
@@ -98,7 +100,7 @@
               <td class="text-right">
                 ({{this.label}} {{this.billing_value}}%
                 {{translate 'FORM.LABELS.OF'}}
-                {{currency (sum gitems 'transaction_price' 'quantity') ../metadata.enterprise.currency_id}}) =
+                {{currency this.invoice_cost ../metadata.enterprise.currency_id}}) =
               </td>
               <td class="text-right">
                 +{{currency this.value ../metadata.enterprise.currency_id}}
@@ -173,4 +175,5 @@
       <hr/>
     </div>
   </div>
+  <script>JsBarcode('.barcode').init();</script>  
 </div>

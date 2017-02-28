@@ -4,12 +4,12 @@ const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 describe('Provinces Management', function () {
-  'use strict';
 
-  const path = '#/locations/province';
+  const path = '#!/locations/province';
 
   before(() => helpers.navigate(path));
 

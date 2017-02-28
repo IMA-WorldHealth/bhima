@@ -45,7 +45,6 @@ const util = require('util');
  * @constructor
  */
 function Forbidden(description) {
-  'use strict';
 
   // make sure we have a working stack trace
   Error.captureStackTrace(this, this.constructor);

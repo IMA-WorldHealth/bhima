@@ -11,7 +11,6 @@
  * @requires Patients
  * @requires Locations
  */
-'use strict';
 
 const _ = require('lodash');
 

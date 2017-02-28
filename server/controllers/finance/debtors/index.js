@@ -15,7 +15,6 @@
 * @requires lib/errors/BadRequest
 */
 
-'use strict';
 
 const q = require('q');
 const uuid = require('node-uuid');
@@ -139,7 +138,7 @@ function invoices(req, res, next) {
   const options = req.query;
 
   getDebtorInvoices(req.params.uuid)
-    .then(function (uuids){      
+    .then(function (uuids){
       return invoiceBalances(req.params.uuid, uuids, options);
     })
     .then(function (invoices) {
@@ -150,14 +149,14 @@ function invoices(req, res, next) {
 }
 
 /**
- * This function sends back a list of invoices uuids 
+ * This function sends back a list of invoices uuids
  * which belong to a particular debtor
  **/
 
 function getDebtorInvoices (debtorUid){
   debtorUid = db.bid(debtorUid);
   const reversalVoucherType = 10;
-  
+
   // get the debtor invoice uuids from the invoice table
   let sql =`
     SELECT BUID(invoice.uuid) as uuid
@@ -165,8 +164,9 @@ function getDebtorInvoices (debtorUid){
     WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
     ORDER BY invoice.date ASC, invoice.reference;
   `;
+
   return db.exec(sql, [debtorUid, reversalVoucherType])
-    .then(function (uuids) {
+    .then(uuids => {
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
       uuids = uuids.map(item => item.uuid);
@@ -277,27 +277,13 @@ function financialPatient(debtorUuid) {
 
   // build the main part of the SQL query
   let sql = `
-    SELECT transaction.trans_id, BUID(transaction.entity_uuid) as entity_uuid, transaction.description,
-      BUID(transaction.record_uuid) AS record_uuid, transaction.trans_date,
-      SUM(transaction.credit_equiv) AS credit, SUM(transaction.debit_equiv) AS debit,
-      IF(ISNULL(transaction.reference), '', CONCAT_WS('.', '${identifiers.INVOICE.key}', transaction.abbr, transaction.reference)) AS reference
-    FROM (
-        SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.description, posting_journal.record_uuid,
-          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, invoice.reference, project.abbr
-        FROM posting_journal
-          LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
-          LEFT JOIN project ON invoice.project_id = project.id
-        WHERE posting_journal.entity_uuid = ?
-      UNION
-        SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.description, general_ledger.record_uuid,
-          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
-        FROM general_ledger
-          LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
-          LEFT JOIN project ON invoice.project_id = project.id
-        WHERE general_ledger.entity_uuid = ?
-    ) AS transaction
-    GROUP BY transaction.record_uuid
-    ORDER BY transaction.trans_date ASC, transaction.trans_id;`;
+    SELECT combined_ledger.trans_id, combined_ledger.entity_uuid, combined_ledger.description, combined_ledger.record_uuid,
+      combined_ledger.trans_date, SUM(combined_ledger.debit_equiv) AS debit, SUM(combined_ledger.credit_equiv) AS credit, document_map.text AS document
+    FROM combined_ledger
+      LEFT JOIN document_map ON document_map.uuid = combined_ledger.record_uuid
+    WHERE combined_ledger.entity_uuid = ?
+    GROUP BY combined_ledger.record_uuid
+    ORDER BY combined_ledger.trans_date ASC, combined_ledger.trans_id`;
 
-  return db.exec(sql, [buid, buid]);
+  return db.exec(sql, [buid]);
 }

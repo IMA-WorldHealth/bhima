@@ -10,12 +10,13 @@
  * @requires NotFound
  * @requires Topic
  * @requires Cashboxes/Currencies
+ * @requires FilterParser
  */
 
-'use strict';
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
 const Topic = require('../../../lib/topic');
 const currencies = require('./currencies');
 
@@ -33,22 +34,16 @@ exports.currencies = currencies;
  * GET /cashboxes
  * Lists available cashboxes, defaulting to all in the database.  Pass in the
  * optional parameters:
- *  1) ?project_id={id}
- *  2) ?is_auxiliary={1|0}
- *  3) ?detailed={1|0}
- * to filter results appropriately.
  */
 function list(req, res, next) {
-  const possibleConditions = ['project_id', 'is_auxiliary'];
-  const providedConditions = Object.keys(req.query);
-  const conditions = [];
+  const filters = new FilterParser(req.query);
 
   let sql =
-    'SELECT id, label FROM cash_box ';
+    'SELECT id, label, is_auxiliary FROM cash_box ';
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT cash_box.id, label, account_id, transfer_account_id, symbol,
+      SELECT cash_box.id, label, account_id, is_auxiliary, transfer_account_id, symbol,
       cash_box_account_currency.currency_id
       FROM cash_box JOIN cash_box_account_currency ON
       cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON
@@ -56,33 +51,16 @@ function list(req, res, next) {
     `;
   }
 
-  delete req.query.detailed;
+  filters.equals('project_id');
+  filters.equals('is_auxiliary');
 
-  // loop through conditions if they exist, escaping them and adding them
-  // to the query string.
-  /** @todo -- use the queryConditions() function already written */
-  if (providedConditions.length > 0) {
-    possibleConditions.forEach(function (k) {
-      let key = req.query[k];
+  filters.setOrder('ORDER BY label');
 
-      // if the key exists, add it to a list of growing conditions
-      if (key) {
-        conditions.push(k + ' = ' + db.escape(key));
-      }
-    });
-  }
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
 
-  // if we have actual matches, concatenate them into a WHERE condition
-  if (conditions.length > 0) {
-    sql += 'WHERE ' + conditions.join(' AND ');
-  }
-
-  sql += ';';
-
-  db.exec(sql)
-    .then(function (rows) {
-      res.status(200).json(rows);
-    })
+  db.exec(query, parameters)
+    .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
 }
@@ -104,14 +82,10 @@ function helperGetCashbox(id) {
     WHERE id = ?;
   `;
 
-  return db.exec(sql, [id])
-    .then(function (rows) {
+  return db.one(sql, [id], id, 'Cashbox')
+    .then(box => {
 
-      if (!rows.length) {
-        throw new NotFound(`Could not find a cashbox with id ${id}.`);
-      }
-
-      cashbox = rows[0];
+      cashbox = box;
 
       // query the currencies supported by this cashbox
       sql = `
@@ -122,8 +96,7 @@ function helperGetCashbox(id) {
 
       return db.exec(sql, [cashbox.id]);
     })
-    .then(function (rows) {
-
+    .then(rows => {
       // assign the currencies to the cashbox
       cashbox.currencies = rows;
       return cashbox;
@@ -141,11 +114,9 @@ function helperGetCashbox(id) {
  */
 function detail(req, res, next) {
   helperGetCashbox(req.params.id)
-  .then(function (cashbox) {
-    res.status(200).json(cashbox);
-  })
-  .catch(next)
-  .done();
+    .then(cashbox => res.status(200).json(cashbox))
+    .catch(next)
+    .done();
 }
 
 
@@ -163,19 +134,19 @@ function create(req, res, next) {
     'INSERT INTO cash_box SET ?;';
 
   db.exec(sql, [ box ])
-  .then(function (row) {
+    .then(function (row) {
 
-    Topic.publish(Topic.channels.FINANCE, {
-      event: Topic.events.CREATE,
-      entity: Topic.entities.CASHBOX,
-      user_id: req.session.user.id,
-      id: row.insertId
-    });
+      Topic.publish(Topic.channels.FINANCE, {
+        event: Topic.events.CREATE,
+        entity: Topic.entities.CASHBOX,
+        user_id: req.session.user.id,
+        id: row.insertId
+      });
 
-    res.status(201).json({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -191,22 +162,20 @@ function update(req, res, next) {
   let sql = 'UPDATE cash_box SET ? WHERE id = ?;';
 
   db.exec(sql, [req.body, req.params.id])
-  .then(function (rows) {
-    return helperGetCashbox(req.params.id);
-  })
-  .then(function (cashbox) {
+    .then(() => helperGetCashbox(req.params.id))
+    .then(cashbox => {
 
-    Topic.publish(Topic.channels.FINANCE, {
-      event: Topic.events.UPDATE,
-      entity: Topic.entities.CASHBOX,
-      user_id: req.session.user.id,
-      id: req.params.id
-    });
+      Topic.publish(Topic.channels.FINANCE, {
+        event: Topic.events.UPDATE,
+        entity: Topic.entities.CASHBOX,
+        user_id: req.session.user.id,
+        id: req.params.id
+      });
 
-    res.status(200).json(cashbox);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(cashbox);
+    })
+    .catch(next)
+    .done();
 }
 
 

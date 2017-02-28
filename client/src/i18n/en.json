@@ -105,6 +105,11 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "REGISTRY" : {
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
+      "REVERSED_RECORDS" : "Reversed Records"
+    },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH"       : "Missing Cash",
@@ -120,7 +125,8 @@
       "TITLE" : "New Cash Transfer",
       "ACTION" : "You are transferring funds out of the cashbox.",
       "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below.",
-      "SUCCESS" : "Successfully transferred money out of the cash window."
+      "SUCCESS" : "Successfully transferred money out of the cash window.",
+      "DESCRIPTION" : "Cash transfer of {{ amount }} from {{ fromLabel }} to {{ toLabel }} by {{ userName }}."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -267,7 +273,9 @@
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
     "NOT_ALLOWED"      : "You are not allowed to perform this action",
     "NOT_FOUND"        : "This record could not be found",
-    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
+    "NO_PERMISSIONS"   : "The login succeeded, but you have no permissions. Please see a system administrator.",
+    "NO_PROJECT"       : "No permissions for that project,  Please see a system administrator",
+    "UNAUTHORIZED"     : "You have submitted a bad username or password combination.  Please login in with valid credentials to continue.",
     "UNKNOWN"          : "An error occurred.",
     "OVERPAID_INVOICE" : "You have overpaid the invoices.",
     "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
@@ -321,6 +329,7 @@
       "ADD"                   : "Add",
       "BACK"                  : "Back",
       "CANCEL"                : "Cancel",
+      "CANCEL_EDIT"           : "Cancel Edit",
       "CLEAR"                 : "Clear",
       "CLOSE"                 : "Close",
       "CONFIGURE"             : "Configure",
@@ -407,7 +416,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "This Credit Note is about the invoice %FAC%", 
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -447,6 +456,7 @@
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
       "ACCOUNT"                : "Account",
+      "ACCOUNT_EXTRACT"        : "Account Details",
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
@@ -490,6 +500,7 @@
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
       "CONTACT_ADMIN"          : "Please contact the administrator",
+      "COST"                   : "Cost",
       "COST_CENTER"            : "Cost Center",
       "CONSUMABLE"             : "Consumable",
       "CONVENTION"             : "Convention",
@@ -525,6 +536,7 @@
       "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Edit",
+      "EDIT_STATUS"            : "Edit Status",
       "EMAIL"                  : "Email",
       "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
@@ -561,10 +573,12 @@
       "HOSPITAL_FILE_NR"       : "Hospital File Number",
       "HOSPITAL_NO"            : "Hospital No.",
       "ID"                     : "ID",
+      "INCLUDE_DATE_INTERVAL"  : "Include date interval",
       "INCOME"                 : "Income",
       "INCOME_EXPENSE"         : "Income and Expense",
       "INTL"                   : "International",
       "INVENTORY"              : "Inventory",
+      "INVENTORY_ITEM"         : "Item",
       "INVOICE"                : "Invoice",
       "INVOICES"               : "Invoices",
       "INVOICE_CURRENCY_SETTING" : "Invoice Currency Setting",
@@ -580,7 +594,7 @@
       "IS_REPORT"              : "Is report ?",
       "IS_TITLE"               : "Is title ?",
       "IS_WAREHOUSE"           : "Is warehouse ?",
-      "INCLUDE_ZEROES"         : "Include lines with zero values",
+      "INCLUDE_ZEROES"         : "Inclure des lignes avec des valeurs zéro",
       "LABEL"                  : "Label",
       "LANGUAGE"               : "Language",
       "LAST_NAME"              : "Last name",
@@ -613,6 +627,7 @@
       "ON_DELIVERY"            : "On Delivery",
       "ON_PURCHASE"            : "On Purchase",
       "OTHER"                  : "Other",
+      "ORDER"                  : "Order",
       "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
@@ -631,6 +646,7 @@
       "POST_OFFICE_BOX"        : "Post Office Box",
       "POSTING_JOURNAL"        : "Posting Journal",
       "PO_BOX"                 : "PO Box",
+      "QUANTITY"               : "Quantity",
       "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Previous Date",
       "PREVIOUS_FISCAL_YEAR"   : "Previous Fiscal Year",
@@ -698,12 +714,14 @@
       "TO"                     : "To",
       "TO_LOCK"                : "To lock",
       "TRANSACTION"            : "Transaction",
+      "TRANSACTION_DATE"       : "Transaction Date",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
       "TRANSACTION_TYPE"       : "Transaction Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UNDEFINED"              : "Undefined",
+      "UNIT_PRICE"             : "Unit Price",
       "UNTIL_DATE"             : "Until the date",
       "UPDATE"                 : "UPDATE",
       "UPDATE_GROUP_DEBTOR"    : "Update Debtor Group",
@@ -845,7 +863,9 @@
     }
   },
   "GENERAL_LEDGER" : {
-    "TITLE" : "General Ledger"
+    "TITLE" : "General Ledger",
+    "ACCOUNT_SLIP" : "Account Slip",
+    "SOLD" : "Sold"
   },
   "HOME": {
     "BHIMA"          : "Bhima",
@@ -975,6 +995,7 @@
     "UPDATE_PICTURE"     : "Update Patient Photo",
     "UPLOAD_PICTURE"     : "Upload Patient Photo",
     "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator.",
+    "DOB_NOT_SPECIFIED"  : "Only a year of birth was specified during patient registration. This is an approximate date.",
     "CHECK_IN" : {
       "TITLE" : "Check In",
       "SUBMIT" : "Check Patient In",
@@ -1017,8 +1038,10 @@
     "CARD"                  : "Card",
     "DAY"                   : "day",
     "DAYS"                  : "days",
+    "INVOICES"              : "View Invoices",
     "MONTH"                 : "month",
     "MONTHS"                : "months",
+    "PAYMENTS"              : "View Cash Payments",
     "YEAR_OLD"              : "year old",
     "YEARS_OLD"             : "years old",
     "TITLE"                 : "Patients",
@@ -1045,7 +1068,13 @@
     "ADD_TRANSACTION" : "Add Transaction",
     "CONFIGURE" : "Configure",
     "CREDIT" : "Credit",
+    "ROW" : "Row",
+    "ROWS" : "Row(s)",
+    "TOOLS" : "Tools",
+    "CREDIT_LETTER" : "C",
+    "DEBIT_LETTER" : "D",
     "DEBIT"  : "Debit",
+    "TOTAL_ROWS" : "Rows",
     "DEB_CRED" : "Deb Cred",
     "DELETE_TRANSACTION" : "Delete Transaction",
     "EDIT" : "Edit",
@@ -1066,6 +1095,7 @@
     "SPLIT_TRANSACTION" : "Split transaction",
     "TRANSACTION" : "Transaction",
     "TRANSACTION_DATE" : "Transaction Date",
+    "SAVE_TRANSACTION_SUCCESS" : "Transaction record was updated successfully.",
     "TRANSACTION_NUMBER" : "Transaction Number",
     "TRANSACTION_SUCCESS" : "Transaction success",
     "UNKNOWN_ACCOUNT" : "Unknown Account",
@@ -1084,10 +1114,14 @@
       "MISSING_ENTITY"           : "Record without entity ID",
       "MISSING_FISCAL_OR_PERIOD" : "Fiscal year or period omitted",
       "MULTIPLE_CANCELLING"      : "Multiple Cancelling. This transaction has been already cancelled",
-      "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line"
+      "SINGLE_LINE_TRANSACTION"  : "Transaction with a single line",
+      "EDIT_INVALID_ACCOUNT"     : "Transaction contains invalid account(s)",
+      "EDIT_INVALID_ENTITY"      : "Transaction contains an invalid entity",
+      "EDIT_INVALID_REFERENCE"   : "Transaction contains an invlid reference"
     },
     "WARNINGS" : {
-      "MISSING_ENTITY" : "Record without entity type and entity ID"
+      "MISSING_ENTITY" : "Record without entity type and entity ID",
+      "NO_TRANSACTIONS_SELECTED" : "No transactions selected. You must be in Transaction view to use this tool."
     },
     "ERROR_REPORT" : {
       "TITLE" : "Error Report"
@@ -1138,6 +1172,7 @@
     "TITLE"         : "Province Manager"
   },
   "PURCHASES" : {
+    "ORDER" : "Purchase order",
     "PAGE_TITLE" : "Purchases",
     "PAYMENT_METHOD" : "Payment Method",
     "PAYMENT_METHOD_EXPLANATION" : "This field provides the agreed the payment conditions of the purchase order.  A purchase can either be paid up front, at delivery, or in some other combination of payments.",
@@ -1147,6 +1182,18 @@
     "RECEIPT" : {
       "TITLE" : "Purchase Order Receipt",
       "SUCCESS" : "Purchase Order created."
+    },
+    "STATUS" : {
+      "CONFIRMED"                 : "Confirmed",
+      "CONFIRMED_DESC"            : "The purchase order has been confirmed by the supplier that it can be delivered",
+      "WAITING_CONFIRMATION"      : "Waiting confirmation",
+      "WAITING_CONFIRMATION_DESC" : "The supplier doesn't confirm that the purchase order can be delivered",
+      "RECEIVED"                  : "Received in Stock",
+      "RECEIVED_DESC"             : "The purchase order has been completed and products are in the stock",
+      "NOT_RECEIVED"              : "Not Received",
+      "NOT_RECEIVED_DESC"         : "The purchase order products are not yet in the stock",
+      "CANCELLED"                 : "Cancelled",
+      "CANCELLED_DESC"            : "The purchase order has been cancelled"
     }
   },
   "REFERENCE": {
@@ -1176,10 +1223,14 @@
     "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
-      "THIRTY_DAYS" : "Less Than 30 Days",
-      "SIXTY_DAYS" : "Less Than 60 Days",
-      "NINETY_DAYS" : "Less Than 90 Days",
+      "ZERO_TO_THIRTY_DAYS" : "Less Than 30 Days",
+      "THIRTY_TO_SIXTY_DAYS" : "30 to 60 Days",
+      "SIXTY_TO_NINETY_DAYS" : "60 to 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
+    },
+    "OPEN_DEBTORS" : {
+      "TITLE" : "Debtors with Unpaid Debts",
+      "TREE" : "Open Debtors"
     },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
@@ -1278,6 +1329,14 @@
     "VERSION": "Version",
     "EVENTS" : "System Events"
   },
+  "ORDER" : {
+    "PAYMENT_DATE_ASC" : "+ Payment Date",
+    "PAYMENT_DATE_DESC" : "- Payment Date",
+    "INVOICE_DATE_ASC" : "+ Invoice Date",
+    "INVOICE_DATE_DESC" : "- Invoice Date",
+    "DEBT_ASC" : "+ Debts",
+    "DEBT_DESC" : "- Debts"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -1287,6 +1346,7 @@
       "AGE"                : "Age",
       "AMOUNT"             : "Amount",
       "ASSET"              : "Asset",
+      "BALANCE"            : "Balance",
       "BALANCE_SECTION"    : "Balance Sheet Section",
       "BEFORE"             : "Before",
       "BILL"               : "Bill",
@@ -1302,6 +1362,7 @@
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
+      "CREDITOR_SOLD"      : "Creditor Sold",
       "CREATED_BY"         : "Created by",
       "CURRENCY"           : "Currency",
       "DATA_SOURCE"        : "Data Source",
@@ -1310,9 +1371,11 @@
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debtor",
       "DEBTOR_GROUPS"      : "Debtor Groups",
+      "DEBTOR_SOLD"        : "Debtor Sold",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
+      "DOCUMENT_ID"        : "Document ID",
       "DOB"                : "Date of birth",
       "EDIT"               : "Edit",
       "EMAIL"              : "Email",
@@ -1341,6 +1404,8 @@
       "LAST_NAME"          : "Last Name",
       "LAST_TRANSACTION"   : "Last Transactions",
       "LAST_VISIT"         : "Last Visit",
+      "LAST_INVOICE"       : "Last Invoice",
+      "LAST_PAYMENT"       : "Last Payment",
       "LISTS"              : "Registered price list",
       "LOADING"            : "Fetching data from the server.",
       "LOCKED"             : "Locked",
@@ -1402,6 +1467,7 @@
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
       "TOTAL_COST"         : "Total Cost",
+      "TOTAL_DEBT"         : "Total Debt",
       "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "Transaction ID",
       "TRANSACTION_PRICE"  : "Transaction Price",
@@ -1486,10 +1552,13 @@
     "PATIENT_REGISTRATIONS"      : "Patient Registrations",
     "PATIENT_REGISTRY"           : "Patients Registry",
     "PHARMACY"                   : "Pharmacy Management",
+    "POSTED_JOURNAL"             : "Posted Journal",
     "POSTING_JOURNAL"            : "Posting Journal",
     "PRICE_LIST"                 : "Price List",
     "PROJECT"                    : "Projects",
     "PURCHASE_ORDER"             : "Purchase Order",
+    "PURCHASE"                   : "Purchase",
+    "PURCHASE_REGISTRY"          : "Purchase Registry",
     "PURCHASING"                 : "Purchasing",
     "REFERENCE"                  : "Reference",
     "REFERENCE_GROUP"            : "Reference Group",
@@ -1544,6 +1613,9 @@
       "VALID_TOTALS"          : "Transactions are valid (balanced transaction)",
       "VOUCHER"               : "Voucher"
     },
+    "TYPES" : {
+      "SUPPORT_PAYMENT_DESCRIPTION" : "Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
+    },
     "GLOBAL" : {
       "CASHFLOW_OPTION" : "Cashflow Option",
       "CONVENTION_INVOICES" : "Convention - Invoices payment",
@@ -1574,7 +1646,7 @@
       "TRANSFER"           : "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT" : "Patient Invoice Debt Transfer"
     },
-    "REPORT": "Report"
+    "REPORT" : "Report"
   },
   "TRANSACTIONS" :  {
     "SINGLE_ACCOUNT_TRANSACTION" : "This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",

@@ -1,17 +1,16 @@
 <div class="ui-grid-cell-contents"
-  ng-class="{'bg-info': row.entity.reference.uuid}">
-  <a
-    class="text-action"
+  ng-class="{'bg-info': row.entity.document.uuid}">
+  <a class="text-action"
     ng-click="grid.appScope.openReferenceModal(row.entity)"
     data-reference-button>
 
     <span
-      ng-show="row.entity.reference.uuid" class="text-primary">
-      <i class="fa fa-file-o"></i> {{ row.entity.reference.document_type | translate }}: {{ row.entity.reference.reference }}
+      ng-show="row.entity.document.uuid" class="text-primary">
+      <i class="fa fa-file-o"></i> {{ row.entity.document.reference }} - <span translate>{{ row.entity.document.document_type }}</span>
     </span>
 
-    <span ng-hide="row.entity.reference.uuid">
-      <i class="fa fa-plus"></i> {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
+    <span ng-hide="row.entity.document.uuid">
+      <i class="fa fa-plus"></i> <span translate>VOUCHERS.COMPLEX.REFERENCE</span>
     </span>
   </a>
 </div>
