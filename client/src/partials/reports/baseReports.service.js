@@ -41,19 +41,20 @@ function BaseReportService($http, Modal, util) {
     // controller and template are linked by convention
     // template : /partials/reports/modals/:report_key:.modal.html
     // controller : :report_key:Controller
-    var templateString = '/partials/reports/modals/'.concat(report.report_key, '.modal.html');
-    var controllerString = report.report_key.concat('Controller as ReportConfigCtrl');
 
-    return Modal.open({
-      templateUrl : templateString,
-      controller : controllerString,
-      size : 'md',
-      resolve : {
-        reportDetails : function () {
-          return report;
-        }
-      }
-    });
+    // var templateString = '/partials/reports/modals/'.concat(report.report_key, '.modal.html');
+    // var controllerString = report.report_key.concat('Controller as ReportConfigCtrl');
+
+    // return Modal.open({
+    //   templateUrl : templateString,
+    //   controller : controllerString,
+    //   size : 'md',
+    //   resolve : {
+    //     reportDetails : function () {
+    //       return report;
+    //     }
+    //   }
+    // });
   }
 
   /**

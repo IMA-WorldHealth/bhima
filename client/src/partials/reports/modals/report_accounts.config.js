@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('report_accountsController', ReportAccountsConfigController);
 
 ReportAccountsConfigController.$inject = [
-  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants'
+  '$state', 'NotifyService', 'LanguageService', 'BaseReportService', 'bhConstants'
 ];
 
 /**
@@ -12,16 +12,18 @@ ReportAccountsConfigController.$inject = [
  * This controller is responsible for the configuration of the ReportAccounts report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function ReportAccountsConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails, bhConstants) {
+function ReportAccountsConfigController($state, Notify, Languages, SavedReports, bhConstants) {
   var vm = this;
-  var report = reportDetails;
+  // var report = reportDetails;
 
   // expose to the view
   vm.generate = generate;
-  vm.cancel = ModalInstance.dismiss;
-  vm.report = report;
+  // vm.cancel = ModalInstance.dismiss;
+  // vm.report = report;
   vm.bhConstants = bhConstants;
   vm.onAccountSelect = onAccountSelect;
+
+  console.log('firing account report controller');
 
   // default value for General Ledger
   vm.source = 1;
@@ -45,7 +47,7 @@ function ReportAccountsConfigController($state, ModalInstance, Notify, Languages
 
     if(!vm.dateInterval){
       vm.dateTo = null;
-      vm.dateFrom = null; 
+      vm.dateFrom = null;
     }
 
     var options = {
@@ -63,7 +65,7 @@ function ReportAccountsConfigController($state, ModalInstance, Notify, Languages
 
     return SavedReports.requestPDF(url, report, options)
       .then(function (result) {
-        ModalInstance.dismiss();
+        // ModalInstance.dismiss();
         $state.reload();
       });
   }
