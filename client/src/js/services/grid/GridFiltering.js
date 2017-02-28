@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('GridFilteringService', GridFilteringService);
 
-GridFilteringService.$inject = ['appcache', 'uiGridConstants', 'util'];
+GridFilteringService.$inject = ['appcache', 'uiGridConstants', 'util', 'moment', 'bhConstants'];
 
 /**
  * Grid Filter Service
@@ -9,9 +9,7 @@ GridFilteringService.$inject = ['appcache', 'uiGridConstants', 'util'];
  * This service is responsible for defining the global configuration for
  * filtering for ui-grids.
  */
-function GridFilteringService(AppCache, uiGridConstants, util) {
-
-  /** @const service key */
+function GridFilteringService(AppCache, uiGridConstants, util, moment, bhConstants) {
   var serviceKey = '-Filtering';
 
   function GridFiltering(gridOptions, cacheKey) {
@@ -21,7 +19,7 @@ function GridFilteringService(AppCache, uiGridConstants, util) {
 
     // global filtering configuration
     // @FIXME(jniles): turned inline filtering off for the moment
-    cache.enableFiltering =  false;
+    cache.enableFiltering = false;
     gridOptions.enableFiltering = cache.enableFiltering;
 
     // bind the grid API to the service
@@ -34,22 +32,12 @@ function GridFilteringService(AppCache, uiGridConstants, util) {
    * @method filterByDate
    *
    * @description
-   * Matches the date string provided in the string.
+   * Matches the date string provided in the string using the date format
+   * configured for the application.
    */
   GridFiltering.prototype.filterByDate = function filterByDate(searchValue, cellValue) {
-    var cellDate = new Date(cellValue);
-
-    var month = cellDate.getMonth();
-    var date = cellDate.getDate();
-    var year = cellDate.getFullYear();
-
-    var cellMonth = (month < 9) ? '0' + (month + 1) : (month + 1);
-    var cellDateLong = (date < 10) ? '0' + date : date;
-    var cellDateString = year + '-' + cellMonth + '-' + cellDateLong;
-
-    searchValue = searchValue.replace(/\\/g, '');
-
-    return cellDateString.indexOf(searchValue) !== -1;
+    var cellDateString = moment(cellValue).format(bhConstants.dates.format);
+    return cellDateString.indexOf(searchValue.replace(/\\/g, '')) !== -1;
   };
 
   /**
@@ -59,10 +47,45 @@ function GridFilteringService(AppCache, uiGridConstants, util) {
    * This method toggles the inline grid filters on the column headers of a grid.
    */
   GridFiltering.prototype.toggleInlineFiltering = function toggleInlineFiltering() {
+    if (this.gridOptions.enableFiltering) {
+      this.disableInlineFiltering();
+    } else {
+      this.enableInlineFiltering();
+    }
+  };
+
+  /**
+   * @method disableInlineFiltering
+   *
+   * @description
+   * This method toggles off the inline grid filters on the column headers of a grid.
+   */
+  GridFiltering.prototype.disableInlineFiltering = function disableInlineFiltering() {
     if (!this.gridOptions) { return; }
 
-    this.gridOptions.enableFiltering = !this.gridOptions.enableFiltering;
-    this.cache.enableFiltering = this.gridOptions.enableFiltering;
+    // skip if inline editing is currently off
+    if (!this.gridOptions.enableFiltering) { return; }
+
+    this.gridOptions.enableFiltering = false;
+    this.cache.enableFiltering = false;
+
+    this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
+
+  /**
+   * @method enableInlineFiltering
+   *
+   * @description
+   * This method toggles on the inline grid filters on the column headers of a grid.
+   */
+  GridFiltering.prototype.enableInlineFiltering = function enableInlineFiltering() {
+    if (!this.gridOptions) { return; }
+
+    // skip if inline editing is currently on
+    if (this.gridOptions.enableFiltering) { return; }
+
+    this.gridOptions.enableFiltering = true;
+    this.cache.enableFiltering = true;
 
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };

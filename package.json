@@ -4,8 +4,8 @@
   "description": "A rural hospital information management system.",
   "main": "sh/deploy.sh",
   "scripts": {
-    "app": "gulp build && cd bin && NODE_ENV=production node server/app.js",
-    "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
+    "app": "NODE_ENV=production gulp build && cd bin && NODE_ENV=production node server/app.js",
+    "dev": "NODE_ENV=development gulp build && cd bin && NODE_ENV=development node server/app.js",
     "start": "sh/deploy.sh",
     "karma": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
     "lint": "./sh/lint.sh",

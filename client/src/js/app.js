@@ -316,6 +316,8 @@ function localStorageConfig($localStorageProvider) {
  * populated according to the enterprise configuration
  */
 function constantConfig() {
+  var UTIL_BAR_HEIGHT = '106px';
+
   return {
     accounts : {
       ROOT  : 0,
@@ -330,6 +332,7 @@ function constantConfig() {
     },
     dates : {
       minDOB : new Date('1900-01-01'),
+      format         : 'dd/MM/yyyy',
     },
     yearOptions : {
       format         : 'yyyy',
@@ -340,7 +343,7 @@ function constantConfig() {
       format         : 'dd/MM/yyyy',
       datepickerMode : 'day',
       minMode        : 'day',
-    },    
+    },
     lengths : {
       maxTextLength   : 1000,
       minDecimalValue : 0.0001,
@@ -394,6 +397,11 @@ function constantConfig() {
     precision : {
       MAX_DECIMAL_PRECISION : 4,
     },
+    utilBar : {
+      height : UTIL_BAR_HEIGHT,
+      expandedHeightStyle : { 'height' : 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
+      collapsedHeightStyle : {}
+    }
   };
 }
 

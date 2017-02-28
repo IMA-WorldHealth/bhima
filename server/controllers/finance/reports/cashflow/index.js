@@ -612,8 +612,6 @@ function reportByService(req, res, next) {
       JOIN service ON invoice.service_id = service.id
     WHERE cash.is_caution = 0
       AND cash.date >= DATE(?) AND cash.date <= DATE(?)
-      AND cash.uuid NOT IN
-        (SELECT DISTINCT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CASH_RETURN_ID})
     ORDER BY cash.date;
   `;
 

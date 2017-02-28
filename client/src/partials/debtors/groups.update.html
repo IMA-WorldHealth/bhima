@@ -1,16 +1,16 @@
 <div class="container-fluid" ng-form="debtorGroup" bh-form-defaults novalidate>
   <div class="row" ng-if="GroupUpdateCtrl.$loading">
     <div class="col-xs-12">
-      <i class="fa fa-circle-o-notch fa-spin"></i> {{ "DEBTOR_GROUP.LOADING" | translate }}
+      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
     </div>
   </div>
   <div ng-if="GroupUpdateCtrl.$loaded">
     <div class="row">
       <div class="col-xs-12">
         <p>
-          <a ng-href="#/debtors/groups">
+          <a ui-sref="debtorGroups.list">
             <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
-            {{ "DEBTOR_GROUP.BACK" | translate }}
+            <span translate>DEBTOR_GROUP.BACK</translate>
           </a>
         </p>
       </div>
@@ -23,7 +23,7 @@
           <div
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
-            <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+            <label class="control-label" translate>FORM.LABELS.NAME</label>
             <input name="name" ng-model="GroupUpdateCtrl.group.name" autocomplete="off" class="form-control" required>
 
             <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
@@ -42,13 +42,13 @@
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.price_list.$invalid && debtorGroup.$submitted}">
 
-            <label class="control-label">{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</label>
+            <label class="control-label" translate>TABLE.COLUMNS.PRICE_LIST</label>
             <select
               name="price_list_uuid"
               ng-model="GroupUpdateCtrl.group.price_list_uuid"
               ng-options="priceList.uuid as priceList.label for priceList in GroupUpdateCtrl.priceLists"
               class="form-control">
-              <option value="">{{ "PRICE_LIST.NONE" | translate }}</option>
+              <option value="" translate>PRICE_LIST.NONE</option>
             </select>
 
             <div class="help-block" ng-messages="debtorGroup.price_list.$error" ng-show="debtorGroup.$submitted">
@@ -60,8 +60,8 @@
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.max_credit.$invalid && debtorGroup.$submitted}">
 
-            <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
-            <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ "FORM.LABELS.MAX_CREDIT_INFO" | translate }}</p>
+            <label class="control-label" translate>FORM.LABELS.MAX_CREDIT</label>
+            <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> <span translate>FORM.LABELS.MAX_CREDIT_INFO</span></p>
             <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" autocomplete="off" name="max_credit" class="form-control" bh-integer required>
 
             <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">

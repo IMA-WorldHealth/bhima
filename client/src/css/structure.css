@@ -461,8 +461,7 @@ ol.headercrumb {
   font-weight : bold;
 }
 
-.headercrumb > .static,
-.headercrumb > .static > a {
+.headercrumb > .static {
   text-decoration: none;
   color: #828080;
 }
@@ -882,4 +881,14 @@ growl-notification.fading.ng-leave.ng-leave-active {
   min-height : 35px;
   padding-top : 7px;
   max-height: initial;
+}
+
+.text-menu-item {
+  display : inline-block;
+  margin-right : 10px;
+}
+
+a[disabled] {
+  pointer-events: none;
+  cursor: default;
 }

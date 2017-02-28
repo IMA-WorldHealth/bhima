@@ -26,6 +26,7 @@ const exec = require('child_process').exec;
 
 // toggle client javascript minification
 const isProduction = (process.env.NODE_ENV === 'production');
+const isDevelopment = (process.env.NODE_ENV !== 'production');
 
 // the output folder for built server files
 const SERVER_FOLDER = './bin/server/';
@@ -222,7 +223,9 @@ gulp.task('lint-i18n', (cb) => {
 // watches for any change and builds the appropriate route
 gulp.task('watch-client', () => {
   gulp.watch(paths.client.css, ['client-compile-css']);
-  gulp.watch(paths.client.javascript, ['client-compile-js']);
+
+  // client-compile-assets calls client-compute-hashes which in turn runs client-compile-js
+  gulp.watch(paths.client.javascript, ['client-compile-assets']);
   gulp.watch(paths.client.static, ['client-mv-static']);
   gulp.watch(paths.client.vendor, ['client-mv-vendor-style', 'client-compile-vendor']);
 });
@@ -240,7 +243,7 @@ gulp.task('client-compute-hashes', ['client-compile-js', 'client-compile-vendor'
 
 gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () =>
   gulp.src(paths.client.index)
-    .pipe(template({ isProduction: true }))
+    .pipe(template({ isProduction, isDevelopment }))
     .pipe(revReplace({ manifest: gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
     .pipe(gulp.dest(CLIENT_FOLDER))
 );
