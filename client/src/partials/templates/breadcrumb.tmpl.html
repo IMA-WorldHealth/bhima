@@ -5,7 +5,7 @@
       <li ng-repeat="p in vm.bcPaths" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
         <span ng-hide="p.link">{{ p.label | translate }}</span>
         <span ng-show="p.link">
-          <a ng-href="{{ p.link }}" id="{{ vm.prefix + p.id }}" href>{{ p.label | translate }}</a>
+          <a ng-href="{{ p.link }}" id="{{ vm.prefix + p.id }}" href translate>{{ p.label }}</a>
         </span>
       </li>
     </ol>
@@ -19,8 +19,8 @@
           </a>
           <ul class="pull-right" uib-dropdown-menu>
             <li ng-repeat="opt in d.option">
-              <a href ng-click="vm.helperDropdown(opt, d)" id="{{ vm.prefix + opt.id }}" data-method="{{ opt.dataMethod }}">
-                {{ opt.label | translate }}
+              <a href ng-click="vm.helperDropdown(opt, d)" id="{{ vm.prefix + opt.id }}" data-method="{{ opt.dataMethod }}" translate>
+                {{ opt.label }}
               </a>
             </li>
           </ul>
@@ -57,7 +57,7 @@
       <!-- labels -->
       <div class="toolbar-item" ng-if="vm.bcLabels.length">
         <label ng-repeat="l in vm.bcLabels" id="{{ vm.prefix + l.id }}" data-method="{{ l.dataMethod }}">
-          <strong><span class="{{ l.icon }}"></span> {{ l.label | translate }}</strong>
+          <strong><span class="{{ l.icon }}"></span> <span translate>{{ l.label }}</span></strong>
         </label>
       </div>
     </div>

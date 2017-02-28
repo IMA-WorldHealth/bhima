@@ -167,7 +167,7 @@
     "CONFIG_ACCOUNTS" : "Configuration comptes",
     "DANGER_ZONE"     : "Zone reservee",
     "DESCRIPTION"     : "Ce module est responsable de la gestion de caisse",
-    "NO_SUPPORTED_CURRENCIES" : "Aucune monnaie n'est configuré pour cette Cette.",
+    "NO_SUPPORTED_CURRENCIES" : "Aucune monnaie n'est configuré pour cette caisse.",
     "SET_CURRENCY_ACCOUNTS" : "Définir la configuration des comptes des monnaie pour cette caisse.",
     "TITLE"           : "Gestion caisse"
   },

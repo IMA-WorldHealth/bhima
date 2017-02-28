@@ -129,7 +129,7 @@
                   <div ng-repeat="currency in CashCtrl.currencies | orderBy:currency.name track by currency.id">
                     <p ng-class="{ 'text-danger' : !currency.configured }">
                       <i class="glyphicon glyphicon-alert" ng-if="!currency.configured"></i> {{ currency.name }} ({{ currency.symbol}})
-                      <a class="btn btn-xs btn-default" href="" ng-click="CashCtrl.configureCurrency(currency)" data-currency-id="{{ currency.id }}">
+                      <a class="btn btn-xs btn-default" href ng-click="CashCtrl.configureCurrency(currency)" data-currency-id="{{ currency.id }}">
                         <i class="fa fa-pencil-square-o"></i> {{ "FORM.BUTTONS.CONFIGURE" | translate }}
                       </a>
                     </p>
@@ -158,10 +158,10 @@
 
                 <div class="form-group">
                   <bh-loading-button loading-state="UpdateForm.$loading">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                    <span translate>FORM.BUTTONS.SUBMIT</span>
                   </bh-loading-button>
-                  <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.BUTTONS.CANCEL" | translate }}
+                  <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()" data-method="cancel" translate>
+                    FORM.BUTTONS.CANCEL
                   </button>
                 </div>
               </form>

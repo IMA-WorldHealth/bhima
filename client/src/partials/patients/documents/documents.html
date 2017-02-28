@@ -2,25 +2,24 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="static" translate>TREE.HOSPITAL</li>
       <li class="static">
-        <a ng-href="#/patients">
-          {{ "PATIENT_RECORDS.TITLE" | translate }}
+        <a ui-sref="patientRegistry" href translate>
+          PATIENT_RECORDS.TITLE
         </a>
       </li>
       <li class="title">
-        <a ng-href="#/patients/{{ PatientDocCtrl.patientUuid }}">
+        <a ui-sref="patientRecord({ patientID : PatientDocCtrl.patientUuid })" href>
           {{ PatientDocCtrl.formatedPatientName }}
         </a>
       </li>
     </ol>
 
-    <!-- ng-show to stop flickering on load -->
     <span
         ng-show="PatientDocCtrl.formatedPatientName"
         style="margin-left : 5px"
         class="label label-warning">
-      <span style="text-transform : uppercase">{{ "FORM.LABELS.DOCUMENT" | translate }}</span>
+      <span class="text-uppercase" translate>FORM.LABELS.DOCUMENT</span>
     </span>
 
   </div>
@@ -29,7 +28,6 @@
 <div class="flex-content">
   <div class="container">
 
-    <!-- find document  -->
     <bh-find-document
       patient-uuid="PatientDocCtrl.patientUuid"
       enable-patient-details="false"
@@ -37,7 +35,6 @@
       enable-option-bar="true"
       display="thumbnail">
     </bh-find-document>
-    <!-- end find document  -->
 
   </div>
 </div>

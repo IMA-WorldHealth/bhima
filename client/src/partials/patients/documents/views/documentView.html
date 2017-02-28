@@ -2,16 +2,15 @@
   <div class="col-xs-12">
 
     <div class="panel panel-default">
-      <!-- heading  -->
       <div class="panel-heading clearfix">
         <div class="btn pull-left">
           <span class="glyphicon glyphicon-file"></span>
-          {{ 'PATIENT_DOCUMENT.DOCUMENT_LIST' | translate }}
+          <span translate>PATIENT_DOCUMENT.DOCUMENT_LIST</span>
         </div>
 
         <button ng-click="DocViewCtrl.addDocument()" class="pull-right btn btn-default" type="button">
           <span class="glyphicon glyphicon-paperclip"></span>
-          {{ 'PATIENT_DOCUMENT.ADD' | translate }}
+          <span translate>PATIENT_DOCUMENT.ADD</span>
         </button>
       </div>
 
@@ -32,46 +31,31 @@
 
         <!-- documents template -->
         <div class="row">
-          <!-- document informations  -->
-          <div class="col-xs-12 col-md-6 col-lg-4"
-            ng-repeat="document in DocViewCtrl.patientDocuments | filter: DocViewCtrl.searchDocument">
+          <div class="col-xs-12 col-md-6 col-lg-4" ng-repeat="document in DocViewCtrl.patientDocuments | filter: DocViewCtrl.searchDocument">
             <div class="document">
               <div class="crop">
                 <img class="document-thumbnail" ng-src="{{ document.link }}" />
               </div>
-              <h4>{{ document.label}}</h4>
-              <!-- <h5>
-                <span class="glyphicon glyphicon-file"></span>
-                File name <small> ~ (11kb)</small>
-              </h5> -->
-              <!-- <div>
-                <span class="glyphicon glyphicon-user"></span>
-                {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
-                <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div> -->
+              <h4>{{ document.label }}</h4>
               <div class="document-actions">
                 <button type="button" class="btn btn-default btn-sm" name="button">
                   <span class="glyphicon glyphicon-zoom-in"></span>
-                  {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
+                  <span translate>PATIENT_DOCUMENT.OVERVIEW</span>
                 </button>
                 <a ng-href="/{{ document.link }}" download="{{ document.label }}" type="button" class="btn btn-default btn-sm" name="button">
                   <span class="glyphicon glyphicon-download"></span>
-                  {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
+                  <span translate>PATIENT_DOCUMENT.DOWNLOAD</span>
                 </a>
                 <button type="button" class="btn btn-danger btn-sm" name="button"
                   ng-click="DocViewCtrl.deleteDocument(document.uuid)">
                   <span class="glyphicon glyphicon-trash"></span>
-                  {{ 'FORM.BUTTONS.DELETE' | translate }}
+                  <span translate>FORM.BUTTONS.DELETE</span>
                 </button>
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </div>
