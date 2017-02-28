@@ -55,6 +55,29 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
     vm.service= data;
     vm.view = 'update';
   }
+  // switch to view more information about
+  // data is an object that contains all the information of a service
+  function more(data) {
+    setState('default');
+    vm.service= data;
+    vm.choosen.service = data.name;
+    var ccId = data.cc_id;
+    var pcId = data.pc_id;
+
+    // load Cost Center value for a specific service
+    FinancialService.getFeeValue(ccId).
+    then(function (data) {
+      vm.choosen.charge = data.value;
+    }).catch(handler);
+
+    // load Profit Center value for a specific service
+    FinancialService.getFeeValue(pcId).
+    then(function (data) {
+      vm.choosen.profit = data.value;
+    }).catch(handler);
+
+    vm.view = 'more';
+  }
 
   // switch to delete warning mode
   function del(service) {
@@ -83,7 +106,7 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
 
   // refresh the displayed Services
   function refreshServices() {
-    return Services.read(null, { full : 1 })
+    return Services.read(null, { detailed : 1 })
     .then(function (data) {
       vm.services = data;
     });

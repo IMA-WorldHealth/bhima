@@ -130,14 +130,12 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
+      SELECT a.id, a.enterprise_id, a.locked, a.fc_id, a.created,
         a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
         a.number, a.label, a.parent, a.type_id, a.is_title, at.type,
-        at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
-      FROM account AS a JOIN account_type AS at ON a.type_id = at.id
-      LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
-      LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
-    `;
+        at.translation_key, fc.label AS fee_center_text 
+        FROM account AS a JOIN account_type AS at ON a.type_id = at.id
+      LEFT JOIN fee_center AS fc ON a.fc_id = fc.id`;
   }
 
   // convert locked to a number if it exists
@@ -244,14 +242,12 @@ function getBalance(req, res, next) {
  */
 function lookupAccount(id) {
   let sql = `
-    SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
+    SELECT a.id, a.enterprise_id, a.locked, a.fc_id, a.created,
       a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
       a.number, a.label, a.parent, a.type_id, a.is_title, at.type,
-      at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
-    FROM account AS a JOIN account_type AS at ON a.type_id = at.id
-    LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
-    LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
-    `;
+      at.translation_key, fc.label AS fee_center_text 
+      FROM account AS a JOIN account_type AS at ON a.type_id = at.id
+    LEFT JOIN fee_center AS fc ON a.fc_id = fc.id`;
 
   sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' : ' ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
