@@ -53,7 +53,7 @@
     </div>
 
     <div>
-      <i class="glyphicon glyphicon-paperclip"></i> {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
+      <i class="glyphicon glyphicon-paperclip"></i> <span translate>PATIENT_DOCUMENT.DOCUMENTS</span>
       ({{ $ctrl.session.patientDocuments.length }})
     </div>
   </div>
@@ -63,7 +63,7 @@
 
     <!-- list of documents  -->
     <ng-switch on="$ctrl.session.display">
-      <!-- list dispaly mode  -->
+      <!-- list display mode  -->
       <div data-view="list" ng-switch-default>
         <div class="document media col-xs-12"
           ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
@@ -100,7 +100,7 @@
 
             <!-- date and author  -->
             <i class="fa fa-calendar-o"></i>
-            {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
+            {{ doc.timestamp | date }}, <span translate>FORM.LABELS.BY</span>
             {{ doc.display_name }}
           </div>
         </div>
@@ -149,7 +149,7 @@
 
             <!-- author  -->
             <i class="fa fa-calendar-o"></i>
-            {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
+            {{ doc.timestamp | date }}, <span translate>FORM.LABELS.BY</span>
             {{ doc.display_name }}
 
           </div>
@@ -161,12 +161,9 @@
     <!-- no result  -->
     <div ng-if="!$ctrl.session.patientDocuments.length">
       <p class="text-center text-info">
-        <i class="fa fa-info-circle"></i> {{ 'PATIENT_DOCUMENT.NO_DOCUMENT' | translate }}
+        <i class="fa fa-info-circle"></i> <span translate>PATIENT_DOCUMENT.NO_DOCUMENT</span>
       </p>
     </div>
 
   </div>
-  <!-- end of content  -->
-
 </div>
-<!-- end of document  -->

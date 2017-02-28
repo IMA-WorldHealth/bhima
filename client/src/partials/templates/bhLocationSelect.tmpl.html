@@ -20,7 +20,7 @@
   <div class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.country.$invalid }">
 
-    <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+    <label class="control-label" translate>FORM.LABELS.COUNTRY</label>
     <select
       class="form-control"
       ng-model="$ctrl.country"
@@ -29,7 +29,7 @@
       ng-change="$ctrl.loadProvinces()"
       data-country-select
       required>
-      <option value="" disabled>{{ $ctrl.messages.country | translate }}</option>
+      <option value="" disabled translate>{{ $ctrl.messages.country }}</option>
     </select>
   </div>
 
@@ -37,7 +37,7 @@
   <div class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.province.$invalid }"
     >
-    <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+    <label class="control-label" translate>FORM.LABELS.PROVINCE</label>
     <select
       class="form-control"
       ng-model="$ctrl.province"
@@ -47,7 +47,7 @@
       ng-disabled="$ctrl.disabled.province"
       data-province-select
       required>
-      <option ng-if="$ctrl.country" value="" disabled>{{ $ctrl.messages.province | translate }}</option>
+      <option ng-if="$ctrl.country" value="" disabled translate>{{ $ctrl.messages.province }}</option>
     </select>
   </div>
 
@@ -55,7 +55,7 @@
   <div class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.sector.$invalid }"
     >
-    <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+    <label class="control-label" translate>FORM.LABELS.SECTOR</label>
     <select
       class="form-control"
       ng-model="$ctrl.sector"
@@ -65,7 +65,7 @@
       ng-disabled="$ctrl.disabled.sector"
       data-sector-select
       required>
-      <option ng-if="$ctrl.province" value="" disabled>{{ $ctrl.messages.sector | translate }}</option>
+      <option ng-if="$ctrl.province" value="" disabled translate>{{ $ctrl.messages.sector }}</option>
     </select>
   </div>
 
@@ -73,7 +73,7 @@
   <div class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.village.$invalid }"
     >
-    <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
+    <label class="control-label" translate>FORM.LABELS.VILLAGE</label>
     <select
       class="form-control"
       ng-model="$ctrl.village"
@@ -83,7 +83,7 @@
       ng-disabled="$ctrl.disabled.village"
       data-village-select
       required>
-      <option ng-if="$ctrl.sector" value="" disabled>{{ $ctrl.messages.village | translate }}</option>
+      <option ng-if="$ctrl.sector" value="" disabled translate>{{ $ctrl.messages.village }}</option>
     </select>
 
     <!-- validation messages shown on form errors-->
@@ -94,9 +94,9 @@
 
   <!-- link to location create modal -->
   <p class="text-right">
-    <a href="" ng-click="$ctrl.modal()" data-location-modal-open>
+    <a href ng-click="$ctrl.modal()" data-location-modal-open>
       <span class="glyphicon glyphicon-modal-window"></span>
-      {{ "FORM.LABELS.LOCATION_REGISTER" | translate }}
+      <span translate>FORM.LABELS.LOCATION_REGISTER</span>
     </a>
   </p>
 </fieldset>

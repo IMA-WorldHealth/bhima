@@ -19,6 +19,9 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   var FILTER_BAR_HEIGHT;
   var cache = new AppCache('VoucherRegistry');
 
+  var INCOME = bhConstants.transactionType.INCOME;
+  var EXPENSE = bhConstants.transactionType.EXPENSE;
+
   /* global variables */
   vm.filterEnabled = false;
   vm.transactionTypes = {};
@@ -39,6 +42,8 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   vm.gridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
+    flatEntityAccess : true,
+    fastWatch        : true,
     enableFiltering  : vm.filterEnabled,
     fastWatch        : true,
     flatEntityAccess : true,
@@ -152,6 +157,19 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     Vouchers.read(null, parameters)
       .then(function (vouchers) {
         vm.gridOptions.data = vouchers;
+
+        // loop through the vouchers and precompute the voucher type tags
+        vouchers.forEach(function (voucher) {
+          voucher._isIncome = (voucher.type_id === INCOME);
+          voucher._isExpense = (voucher.type_id === EXPENSE);
+          voucher._type = get(voucher.type_id).text;
+        });
+
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      })
+      .catch(function (err) {
+        if (err && !err.code) { return; }
+        Notify.handleError(err);
       })
       .catch(errorHandler)
       .finally(function () {

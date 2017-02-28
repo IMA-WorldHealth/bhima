@@ -3,56 +3,55 @@ angular.module('bhima.routes')
 
     $stateProvider
       .state('patientsRegister', {
-        url : '/patients/register',
-        controller: 'PatientRegistrationController as PatientRegCtrl',
-        templateUrl: 'partials/patients/registration/registration.html'
+        url         : '/patients/register',
+        controller  : 'PatientRegistrationController as PatientRegCtrl',
+        templateUrl : 'partials/patients/registration/registration.html',
       })
 
       .state('patientEdit', {
-        url : '/patients/:uuid/edit',
-        controller: 'PatientEdit as PatientEditCtrl',
-        templateUrl: 'partials/patients/edit/edit.html'
+        url         : '/patients/:uuid/edit',
+        controller  : 'PatientEdit as PatientEditCtrl',
+        templateUrl : 'partials/patients/edit/edit.html',
       })
 
       .state('patientDocuments', {
-        url    : '/patients/:patient_uuid/documents',
+        url         : '/patients/:patient_uuid/documents',
         controller  : 'PatientDocumentsController as PatientDocCtrl',
-        templateUrl : 'partials/patients/documents/documents.html'
+        templateUrl : 'partials/patients/documents/documents.html',
       })
 
       .state('patientInvoice', {
-        url : '/invoices/patient',
-        controller : 'PatientInvoiceController as PatientInvoiceCtrl',
-        templateUrl : 'partials/patient_invoice/patientInvoice.html'
+        url         : '/invoices/patient',
+        controller  : 'PatientInvoiceController as PatientInvoiceCtrl',
+        templateUrl : 'partials/patient_invoice/patientInvoice.html',
       })
 
       .state('patientRegistry', {
-        url  : '/patients',
-        controller: 'PatientRegistryController as PatientRegistryCtrl',
-        templateUrl: '/partials/patients/registry/registry.html',
-        params : {
-          filters : null
-        }
+        url         : '/patients',
+        controller  : 'PatientRegistryController as PatientRegistryCtrl',
+        templateUrl : '/partials/patients/registry/registry.html',
+        params      : { filters: null },
       })
       .state('patientGroups', {
-        url : '/patients/groups',
-        controller: 'PatientGroupController as PatientGroupCtrl',
-        templateUrl: 'partials/patients/groups/groups.html'
+        url         : '/patients/groups',
+        controller  : 'PatientGroupController as PatientGroupCtrl',
+        templateUrl : 'partials/patients/groups/groups.html',
       })
 
       .state('patientRecord', {
-        abstract : true,
-        url : '/patients/:patientID',
-        templateUrl: 'partials/patients/record/patient_record.html',
-        controller: 'PatientRecordController as PatientRecordCtrl'
+        abstract    : true,
+        url         : '/patients/:patientID',
+        params      : { patientID: null },
+        templateUrl : 'partials/patients/record/patient_record.html',
+        controller  : 'PatientRecordController as PatientRecordCtrl',
       })
       .state('patientRecord.details', {
-        url : '',
+        url   : '',
         views : {
           'checkin@patientRecord' : {
             templateUrl : 'partials/patients/record/units/checkin.html',
-            controller : 'CheckInController as CheckInCtrl'
-          }
-        }
+            controller  : 'CheckInController as CheckInCtrl',
+          },
+        },
       });
   }]);
