@@ -15,6 +15,8 @@ function ReportsController($state, SavedReports, Modal, Notify) {
   vm.createReport = createReport;
   vm.deleteReport = deleteReport;
 
+  console.log('Report Controller fired');
+
   vm.gridOptions = {
     fastWatch : true,
     flatEntityAccess : true,

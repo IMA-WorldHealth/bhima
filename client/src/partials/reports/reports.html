@@ -23,18 +23,24 @@
 </div>
 
 <div class="flex-content">
+
   <div class="container-fluid">
-
-    <div
-      id="report-grid"
-      class="grid-full-height"
-      ui-grid="ReportCtrl.gridOptions">
-
-      <bh-grid-loading-indicator
-        loading-state="ReportCtrl.loading"
-        empty-state="ReportCtrl.gridOptions.data.length === 0"
-        error-state="ReportCtrl.hasError">
-      </bh-grid-loading-indicator>
-    </div>
+    Content
   </div>
+
+  <div ui-view></div>
+  <!-- <div class="container-fluid"> -->
+
+  <!--   <div -->
+  <!--     id="report-grid" -->
+  <!--     class="grid-full-height" -->
+  <!--     ui-grid="ReportCtrl.gridOptions"> -->
+
+  <!--     <bh-grid-loading-indicator -->
+  <!--       loading-state="ReportCtrl.loading" -->
+  <!--       empty-state="ReportCtrl.gridOptions.data.length === 0" -->
+  <!--       error-state="ReportCtrl.hasError"> -->
+  <!--     </bh-grid-loading-indicator> -->
+  <!--   </div> -->
+  <!-- </div> -->
 </div>
