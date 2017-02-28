@@ -1,7 +1,8 @@
 angular.module('bhima.components')
   .component('bhDepotDropdown', {
     bindings : {
-      model : '=',
+      model    : '=',
+      onSelect : '<',
     },
     templateUrl  : 'partials/templates/bhDepotDropdown.tmpl.html',
     controller   : bhDepotController,

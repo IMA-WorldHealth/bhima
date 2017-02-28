@@ -61,7 +61,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
   vm.gridOptions = {
     appScopeProvider  : vm,
     fastWatch         : true,
-    flatEntityAccess : true,
+    flatEntityAccess  : true,
     enableSorting     : false,
     enableColumnMenus : false,
     showColumnFooter  : true,

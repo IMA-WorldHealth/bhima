@@ -1,0 +1,14 @@
+<div ng-if="row.entity._initialised">
+  <ui-select append-to-body="true"
+    name="lot"
+    ng-model="row.entity.lot"
+    required>
+    <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.LOT' | translate }}">
+      <span>{{$select.selected.label}}</span>
+    </ui-select-match>
+    <ui-select-choices
+      repeat="lot as lot in row.entity.lots | filter: $select.search">
+      <span>{{ lot.label }} </span>
+    </ui-select-choices>
+  </ui-select>
+</div>
