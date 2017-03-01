@@ -19,6 +19,8 @@ const ReportManager = require('../../../../lib/ReportManager');
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
 
+const TITLE_ACCOUNT_TYPE = 4;
+
 // expose to the API
 exports.document = document;
 
@@ -28,10 +30,8 @@ exports.document = document;
  */
 function document(req, res, next) {
   const params = req.query;
-
   const session = {};
   let report;
-  let data;
 
   // date option
   if (params.dateFrom && params.dateTo) {
@@ -45,7 +45,7 @@ function document(req, res, next) {
   session.classe_name = params.classe_name;
   session.enterprise = req.session.enterprise;
 
-  _.defaults(params, { orientation : 'landscape' ,user : req.session.user });
+  _.defaults(params, { orientation: 'landscape', user: req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -60,11 +60,10 @@ function document(req, res, next) {
 
   balanceReporting(params)
     .then(balances => processAccounts(balances, accounts, totals))
-    .then(result => {
-      data = { accounts: result.accounts, totals: result.totals, session };
-      return report.render(data);
+    .then((result) => {
+      return report.render({ accounts: result.accounts, totals: result.totals, session });
     })
-    .then(result => {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)
@@ -80,22 +79,24 @@ function processAccounts(balances, accounts, totals) {
 
   // format and process opening balance for accounts
   accounts = balances.beginning.reduce(function (init, row) {
-    var account = init, id = row.number;
-    var obj = account[id] = {}, sold = getSold(row);
+    let account = init;
+    let id = row.number;
+    let obj = account[id] = {};
+    let sold = getSold(row);
     obj.label = row.label;
+    obj.number = row.number;
     obj.beginDebit = sold.debit;
     obj.beginCredit = sold.credit;
     obj.middleDebit = 0;
     obj.middleCredit = 0;
     obj.is_charge = row.is_charge;
     obj.is_asset = row.is_asset;
-    account[id] = obj;
     return account;
   }, {});
 
   // format and process the monthly balance for accounts
-  balances.middle.forEach(function (row){
-    var account = accounts[row.number] || {};
+  balances.middle.forEach(function (row) {
+    let account = accounts[row.number] || {};
     account.middleDebit = row.debit;
     account.middleCredit = row.credit;
     account.label = row.label;
@@ -104,20 +105,20 @@ function processAccounts(balances, accounts, totals) {
     accounts[row.number] = account;
   });
 
-  Object.keys(accounts).forEach(function (item){
+  Object.keys(accounts).forEach(function (item) {
     accounts[item].endDebit = 0;
     accounts[item].endCredit = 0;
-    var sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit - accounts[item].middleCredit);
-    if(sold < 0){
+    let sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit - accounts[item].middleCredit);
+    if (sold < 0) {
       accounts[item].endCredit = sold * -1;
-    }else{
+    } else {
      accounts[item].endDebit = sold;
     }
   });
 
   // process for getting totals
   totals = Object.keys(accounts).reduce(function (totals, key) {
-    var account = accounts[key];
+    let account = accounts[key];
     totals.beginDebit += (account.beginDebit || 0);
     totals.beginCredit += (account.beginCredit || 0);
     totals.middleDebit += (account.middleDebit || 0);
@@ -126,12 +127,12 @@ function processAccounts(balances, accounts, totals) {
     totals.endCredit += (account.endCredit || 0);
     return totals;
   }, {
-    beginDebit : 0,
-    beginCredit : 0,
-    middleDebit: 0,
+    beginDebit   : 0,
+    beginCredit  : 0,
+    middleDebit  : 0,
     middleCredit : 0,
-    endDebit : 0,
-    endCredit : 0
+    endDebit     : 0,
+    endCredit    : 0,
   });
 
   return { accounts, totals };
@@ -142,23 +143,23 @@ function processAccounts(balances, accounts, totals) {
  * @description return the balance of an account
  * @param {object} object An object from the array returned by balanceReporting function
  */
-function getSold (item){
-  let debit  = 0;
+function getSold(item) {
+  let debit = 0;
   let credit = 0;
-  let sold   = 0;
+  let sold  = 0;
 
-  if(item.is_asset === 1 || item.is_charge === 1){
+  if (item.is_asset === 1 || item.is_charge === 1) {
     sold = item.debit - item.credit;
-    if(sold < 0){
-      credit = sold * -1 ;
-    }else{
+    if (sold < 0) {
+      credit = sold * -1;
+    } else {
       debit = sold;
     }
-  }else{
+  } else {
     sold = item.credit - item.debit;
-    if(sold < 0){
+    if (sold < 0) {
       debit = sold * -1;
-    } else{
+    } else {
       credit = sold;
     }
   }
@@ -200,7 +201,7 @@ function balanceReporting(params) {
   queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
 
   return db.exec(sql, queryParameters)
-  .then(function (rows) {
+  .then((rows) => {
     data.beginning = rows;
 
     sql =
@@ -215,13 +216,12 @@ function balanceReporting(params) {
 
     return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
   })
-  .then(function (rows) {
+  .then((rows) => {
     data.middle = rows;
     return data;
   })
-  .then(function (rows) {
+  .then((rows) => {
     // Manual mixing
-    const TITLE_ACCOUNT_TYPE = 4;
 
     // fill with zero if all accounts
     sql =
@@ -230,8 +230,7 @@ function balanceReporting(params) {
 
     return query.accountOption === 'all' ? db.exec(sql) : false;
   })
-  .then(function (rows) {
-
+  .then((rows) => {
     if (!rows) { return data; }
 
     // Naive manipulation for filling with zero
@@ -239,11 +238,13 @@ function balanceReporting(params) {
     let touched  = data.beginning.map(item => {
       return item.id;
     });
+
     accounts.forEach(item => {
       if (touched.indexOf(item.id) === -1) {
         data.beginning.push(item);
       }
     });
+
     return data;
   });
 }
