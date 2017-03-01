@@ -33,12 +33,8 @@
       <legend translate> FORM.LABELS.INVOICES_DETAILS </legend>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
-        <label class="control-label">{{ 'FORM.LABELS.REFERENCE' | translate }}</label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('reference')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+        <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
         <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -47,12 +43,7 @@
 
       <div class="form-group">
         <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('reversed')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
-
+        <bh-clear on-clear="ModalCtrl.clear('reversed')"></bh-clear>
         <div class="radio">
           <label>
             <input type="radio" name="optionsReversal" value="0" ng-model="ModalCtrl.params.reversed">
@@ -69,28 +60,20 @@
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
-        <label class="control-label">{{ 'FORM.LABELS.SERVICE' | translate }}</label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('service_id')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <label class="control-label" translate>FORM.LABELS.SERVICE</label>
+        <bh-clear on-clear="ModalCtrl.clear('service_id')"></bh-clear>
         <select
           class="form-control"
           name="service"
           ng-model="ModalCtrl.params.service_id"
           ng-options="s.id as s.name for s in ModalCtrl.services | orderBy:'name'">
-          <option value="" disabled>{{ 'FORM.SELECT.SERVICE' | translate }}</option>
+          <option value="" disabled translate>FORM.SELECT.SERVICE</option>
         </select>
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.user.$invalid }">
-        <label class="control-label">{{ 'FORM.LABELS.USER' | translate }}</label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <label class="control-label" translate>FORM.LABELS.USER</label>
+        <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
         <select
           class="form-control"
           name="user"
@@ -102,6 +85,7 @@
 
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+        <bh-clear on-clear="ModalCtrl.clear('patientReference')"></bh-clear>
         <input type="text" class="form-control" ng-model="ModalCtrl.params.patientReference"/>
       </div>
     </fieldset>
