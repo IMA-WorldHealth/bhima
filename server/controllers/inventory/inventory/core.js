@@ -11,7 +11,7 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
 // this should be a const in future ES versions
-var errors = {
+const errors = {
   MISSING_PARAMETERS : {
     httpStatus : 400,
     code   : 'ERR_MISSING_PARAMETERS',
@@ -102,7 +102,7 @@ function updateItemsMetadata(record, identifier) {
 function getIds() {
 
   // TODO - should we be filtering on enterprise id in these queries?
-  var sql =
+  let sql =
     'SELECT i.uuid FROM inventory AS i;';
 
   return db.exec(sql);
@@ -117,7 +117,7 @@ function getIds() {
 */
 function getItemsMetadata() {
 
-  var sql =
+  let sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
@@ -157,13 +157,9 @@ function getItemsMetadataById(uuid) {
 
 
 function getItemsMetadataSearch(params){
-  if(params.group_uuid){
-    db.bid(params.group_uuid);  
-  }
-  
   let filters = new FilterParser(params, { tableAlias : 'inventory' });
 
-  var sql =
+  let sql =
     `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id, inventory.unit_weight,
