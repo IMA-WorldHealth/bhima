@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('CashboxService', CashboxService);
+  .service('CashboxService', CashboxService);
 
 CashboxService.$inject = [ '$http', 'util' ];
 
