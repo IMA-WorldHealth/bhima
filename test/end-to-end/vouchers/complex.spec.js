@@ -1,4 +1,5 @@
 /* global browser, element, by */
+
 'use strict';
 
 const helpers = require('../shared/helpers');
