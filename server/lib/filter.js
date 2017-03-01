@@ -9,17 +9,17 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
  * @description
  * This library provides a uniform interface for processing filter `options`
  * sent from the client to server controllers.
- * It providers helper methods for commonly request filters like date restrictions
+ * It provides helper methods for commonly request filters like date restrictions
  * and standardises the conversion to valid SQL.
  *
- * It implements a number of built in 'Filter Types' that allow column qurries
+ * It implements a number of built in 'Filter Types' that allow column queries
  * to be formatted for tasks that are frequently required.
  *
  * Supported Filter Types:
  * * equals - a direct comparison
  * * text - search for text contained within a text field
- * * dateFrom - limit the querry to records from a date
- * * dateTo - limit the querry to records up until a date
+ * * dateFrom - limit the query to records from a date
+ * * dateTo - limit the query to records up until a date
  *
  * @requires lodash
  * @requires db
@@ -43,7 +43,7 @@ class FilterParser {
   }
 
   /**
-   * @method text
+   * @method fullText
    *
    * @description
    * filter by text value, searches for value anywhere in the database attribute
