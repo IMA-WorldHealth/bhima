@@ -21,7 +21,8 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
 
   // grid columns 
   var columns = [
-      
+      { field : 'depot_text', displayName : 'STOCK.DEPOT', headerCellFilter: 'translate' },
+
       { field : 'code', displayName : 'STOCK.CODE', headerCellFilter: 'translate' },
 
       { field : 'text', displayName : 'STOCK.INVENTORY', headerCellFilter: 'translate',

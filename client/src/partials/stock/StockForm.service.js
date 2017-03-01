@@ -35,13 +35,8 @@ function StockFormService(Store, AppCache, Session, $timeout) {
    * This function initializes the journal voucher form with data.  By default,
    * two lines are always present in the form.
    */
-  StockForm.prototype.setup = function setup(depotUuid) {
+  StockForm.prototype.setup = function setup() {
     var self = this;
-    if (!depotUuid) {
-      throw new Error('Depot expected, but it was not provided.');
-    }
-
-    self.clear();
     self.details = {};
     self.details.date = new Date();
     self.details.user_id = Session.user.id;
@@ -106,17 +101,6 @@ function StockFormService(Store, AppCache, Session, $timeout) {
   StockForm.prototype.writeCache = function writeCache() {
     this.cache.details = this.details;
     this.cache.items = angular.copy(this.store.data);
-  };
-
-  /**
-   * @method readCache
-   *
-   * @description
-   * This method read values from the application cache into the stock movement
-   */
-  StockForm.prototype.readCache = function readCache() {
-    this.details = this.cache.details;
-    this.store.data = angular.copy(this.cache.items);
   };
 
   /**

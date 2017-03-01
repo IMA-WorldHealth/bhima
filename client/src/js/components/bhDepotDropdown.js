@@ -1,7 +1,6 @@
 angular.module('bhima.components')
   .component('bhDepotDropdown', {
     bindings : {
-      model    : '=',
       onSelect : '<',
     },
     templateUrl  : 'partials/templates/bhDepotDropdown.tmpl.html',
@@ -22,8 +21,8 @@ function bhDepotController(Depot, AppCache, Notify) {
       if (!rows.length) { return; }
       $ctrl.depots = rows;
       $ctrl.selection = cache.selection || $ctrl.depots[0];
-      $ctrl.model = $ctrl.selection;
       $ctrl.$loading = false;
+      $ctrl.onSelect($ctrl.selection);
     })
     .catch(Notify.handleError);
   };
@@ -31,6 +30,6 @@ function bhDepotController(Depot, AppCache, Notify) {
   $ctrl.select = function select(option) {
     $ctrl.selection = option;
     cache.selection = $ctrl.selection;
-    $ctrl.model = $ctrl.selection;
+    $ctrl.onSelect($ctrl.selection);
   };
 }

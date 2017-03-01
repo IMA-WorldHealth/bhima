@@ -4,33 +4,36 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
-  'PurchaseOrderService', 'PurchaseOrderForm', 'SupplierService',
-  'SessionService', 'util', 'ReceiptModal', 'bhConstants',
-  'StockFormService', 'StockService', 'Store',
+  'SessionService', 'util', 'bhConstants',
+  'StockFormService', 'StockService', 'uiGridGroupingConstants',
 ];
 
+/**
+ * StockExitController
+ * @description This controller is responsible to handle stock exit module
+ * @todo Implement caching data feature
+ */
 function StockExitController(Depots, Inventory, Notify,
-  Purchases, PurchaseOrder, Suppliers,
-  Session, util, Receipts, bhConstants, StockForm, Stock, Store) {
+  Session, util, bhConstants, StockForm, Stock, uiGridGroupingConstants) {
   var vm = this;
 
   vm.Stock = new StockForm('StockExit');
 
+  vm.depot = {};
   vm.movement = {
-    details : {},
-    hasCacheAvailable : false,
+    date : new Date(),
   };
 
-  vm.depot = {};
-
+  // bind methods
   vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.maxDate = new Date();
-  vm.selectExitType = selectExitType;
   vm.configureItem = configureItem;
+  vm.selectExitType = selectExitType;
+  vm.setupDepot = setupDepot;
 
   // grid options
   var gridOptions = {
@@ -66,11 +69,12 @@ function StockExitController(Depots, Inventory, Notify,
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/exit/templates/price.tmpl.html' },
 
-      { field            : 'quantity',
-        width            : 150,
-        displayName      : 'TABLE.COLUMNS.QUANTITY',
-        headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/exit/templates/quantity.tmpl.html' },
+      { field               : 'quantity',
+        width               : 150,
+        displayName         : 'TABLE.COLUMNS.QUANTITY',
+        headerCellFilter    : 'translate',
+        cellTemplate        : 'partials/stock/exit/templates/quantity.tmpl.html',
+        treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
 
       { field            : 'available_lot',
         width            : 150,
@@ -96,10 +100,7 @@ function StockExitController(Depots, Inventory, Notify,
     data          : vm.Stock.store.data,
   };
 
-  // bind methods
   vm.gridOptions = gridOptions;
-  vm.configureItem = configureItem;
-  vm.setupDepot = setupDepot;
 
   // expose the API so that scrolling methods can be used
   function onRegisterApi(api) {
@@ -108,14 +109,16 @@ function StockExitController(Depots, Inventory, Notify,
 
   // exit type
   function selectExitType(exitType) {
-    vm.movement.details.exit_type = exitType;
+    vm.movement.exit_type = exitType;
   }
 
   // configure depot
   function setupDepot(depot) {
     if (!depot || !depot.uuid) { return; }
     vm.depot = depot;
-    vm.Stock.setup(vm.depot.uuid);
+    loadInventories(vm.depot);
+    vm.Stock.setup();
+    vm.Stock.store.clear();
   }
 
   // add items
@@ -124,38 +127,52 @@ function StockExitController(Depots, Inventory, Notify,
   }
 
   // remove item
-  function removeItem(index) {
-    vm.Stock.removeItem(index);
+  function removeItem(item) {
+    vm.Stock.removeItem(item.index);
+    pushInventory(item.inventory);
   }
 
   // configure item
   function configureItem(item) {
     item._initialised = true;
-    item.inventory_uuid = item.inventory.inventory_uuid;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory_uuid })
+    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
       .then(function (lots) {
         item.lots = lots;
+        popInventory(item);
       })
       .catch(Notify.errorHandler);
   }
 
+  // init actions
   function moduleInit() {
+    loadInventories(vm.depot);
     setupDepot(vm.depot);
   }
 
-  // read cache data
-  function readCache() {
-    if (!vm.Stock.hasCacheAvailable()) { return; }
-    vm.Stock.readCache();
+  // ============================ Inventories ==========================
+  function loadInventories(depot) {
+    var givenDepot = depot || vm.depot;
+    Stock.inventories.read(null, { depot_uuid: givenDepot.uuid })
+      .then(function (inventories) {
+        vm.selectableInventories = angular.copy(inventories);
+      })
+      .catch(Notify.errorHandler);
   }
 
-  // ============================ Inventories ==========================
-  Stock.inventories.read(null, { depot_uuid: vm.depot.uuid })
-  .then(function (inventories) {
-    vm.inventories = inventories;
-  })
-  .catch(Notify.errorHandler);
+  // remove item from selectable inventories
+  function popInventory(item) {
+    var idx;
+    if (!item) { return; }
+    vm.selectableInventories.indexOf(item.inventory);
+    vm.selectableInventories.splice(idx, 1);
+  }
+
+  // insert item into selectable inventories
+  function pushInventory(inventory) {
+    if (!inventory) { return; }
+    vm.selectableInventories.push(inventory);
+  }
 
   moduleInit();
 }
