@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  bh-submit="$ctrl.submit(ModalForm)"
+  ng-submit="$ctrl.submit(ModalForm)"
   data-modal="cash-payment-search"
   bh-form-defaults
   novalidate>
@@ -106,8 +106,8 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
+    <button class="btn btn-primary" type="submit" data-method="submit" translate ng-disabled="!$ctrl.validDateRange">
+      FORM.BUTTONS.SUBMIT
+    </button>
   </div>
 </form>
