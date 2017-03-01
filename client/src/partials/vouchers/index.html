@@ -45,12 +45,21 @@
   </div>
 </div>
 
-<div class="flex-util" ng-if="VoucherCtrl.dateInterval">
-  <label class="label label-primary">
-    <i class="fa fa-filter"></i>
-    {{ VoucherCtrl.dateInterval.dateFrom | date }} -
-    {{ VoucherCtrl.dateInterval.dateTo | date }}
-  </label>
+<div class="flex-util bh-filter-bar" ng-show="VoucherCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="VoucherCtrl.filtersFmt"
+    on-remove-filter="VoucherCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="VoucherCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-close text-danger"></i>
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
+  </a>
 </div>
 
 <div class="flex-content">

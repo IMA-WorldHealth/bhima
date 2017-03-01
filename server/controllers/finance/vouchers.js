@@ -129,6 +129,8 @@ function find(options) {
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
+  filters.fullText('description');
+
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
