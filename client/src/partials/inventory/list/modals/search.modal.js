@@ -9,11 +9,11 @@ InventoryServiceModalController.$inject = [
  * @class InventoryServiceModalController
  *
  * @description
- * This controller is responsible for setting up the filters for the patient
- * search functionality on the patient registry page.  Filters that are already
+ * This controller is responsible for setting up the filters for the Inventory
+ * search functionality on the Inventory list.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function InventoryServiceModalController(ModalInstance, params, InventoryGroups) {
+function InventoryServiceModalController(ModalInstance, params, Inventory) {
   var vm = this;
 
   // bind filters if they have already been applied.  Otherwise, default to an
@@ -25,7 +25,7 @@ function InventoryServiceModalController(ModalInstance, params, InventoryGroups)
   vm.cancel = cancel;
   vm.clear = clear;
 
-  InventoryGroups.Groups.read()
+  Inventory.Groups.read()
     .then(function (result) {
       vm.inventoryGroups = result;
     });
