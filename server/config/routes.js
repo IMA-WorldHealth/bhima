@@ -63,7 +63,6 @@ const priceList = require('../controllers/finance/priceList');
 const billingServices = require('../controllers/finance/billingServices');
 const accounts = require('../controllers/finance/accounts');
 const feeCenter = require('../controllers/finance/feeCenter');
-const costCenter = require('../controllers/finance/costCenter');
 const reference = require('../controllers/finance/reference');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
