@@ -12,6 +12,7 @@
 
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
+const FilterParser = require('../../lib/filter');
 
 /**
 * Returns an array of fee centers
@@ -25,93 +26,36 @@ var NotFound = require('../../lib/errors/NotFound');
 function list (req, res, next) {
   'use strict';
 
+  let ordering = 'ORDER BY fc.label';
+
   let is_detailed = Boolean(Number(req.query.detailed));
+  let detailed = is_detailed ? ', fc.note, fc.is_principal, fc.project_id, fc.is_cost, p.name, p.abbr, p.enterprise_id, p.zs_id ' : '';
 
-  let detailed = is_detailed ? 'fc.note, fc.is_principal' : '';
+  let sql =
+    `SELECT fc.id, fc.label, fc.is_cost ${detailed} FROM fee_center AS fc JOIN project as p on fc.project_id = p.id`;
 
-  var sql =
-    `SELECT fc.id, fc.label, fc.is_cost ${detailed} FROM fee_center AS fc JOIN project as po on fc.project_id = p.id`;
-  // var filter = '', ordering = 'ORDER BY fc.label;';
-  // var promise, params = [];
+  let notInStatement = `(fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id) UNION SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) AND ?)`;
 
-  // if (req.query.detailed === '1') {
-  //   sql =
-  //     `SELECT fc.id, fc.label, fc.project_id, fc.is_cost, fc.note, fc.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
-  //     FROM fee_center AS fc JOIN project AS p ON fc.project_id = p.id `;
-  // }
+  let filterParser = new FilterParser(req.query, { tableAlias : 'fc' });
 
+  filterParser.equals('is_principal');
+  filterParser.equals('is_cost');
+  filterParser.custom('available', notInStatement, req.query.available);
+  filterParser.setOrder(ordering);
 
-  let filters = new FilterParser(req.query, { tableAlias : 'fc' });
+  let query = filterParser.applyQuery(sql);
+  let params = filterParser.parameters();
 
-  filters.equals('is_principal');
-  filters.equals('is_cost');
-
-
-  if (req.query.available) {
-    if (Boolean(Number(req.query.available))) {
-      // if the available flag is true - register a filter for services that have already been assigned
-      let assignedToServiceQuery = 'fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) AND ?';
-      filters.custom('available', assignedToServiceQuery);
-    } else {
-      // if the available flag is false, remove this flag so it is not processed by FilterParser
-      delete req.query.available;
-    }
-  }
-
-  filters.setOrder('ORDER BY fc.label');
-
-  // if(req.query.available === '1') {
-  //   filter += ' fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id)) AND fc.id NOT IN (SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) ';
-  // }
-
-  //
-  // if(req.query.is_cost){
-  //   if(filter !== ''){
-  //     filter += ' AND ';
-  //   }
-  //   filter += `fc.is_cost = ? `;
-  //   params.push(req.query.is_cost);
-  // }
-  //
-  // if(req.query.is_principal){
-  //   if(filter !== ''){
-  //     filter += ' AND ';
-  //   }
-  //   filter += `fc.is_principal = ? `;
-  //   params.push(req.query.is_principal);
-  // }
-  let query = filters.applyQuery(sql);
-  let params = filters.parameters();
   db.exec(query, params)
-
   .then(function (rows) {
     res.status(200).json(rows);
   })
   .catch(next)
   .done();
-
-  // sql = filter === '' ? sql + ordering : sql + 'WHERE ' + filter + ordering;
-
-  // if(params.length > 0){
-  //   promise = db.exec(sql, params);
-  // }else{
-  //   promise = db.exec(sql);
-  // }
-
-  // promise
-  // .then(function (rows) {
-  //   res.status(200).json(rows);
-  // })
-  // .catch(next)
-  // .done();
 }
 
 /**
 * Create a fee center in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
 *
 * @example
 * // POST /fee_centers : Insert a fee center
@@ -174,10 +118,6 @@ function update (req, res, next) {
 /**
 * Remove a fee center in the database
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
-*
 * @example
 * // DELETE /fee_centers : delete a fee center
 * var feeCenters = require('finance/fee_centers');
@@ -188,11 +128,11 @@ function remove (req, res, next) {
   var feeCenterId = req.params.id;
   var removeFeeCenterQuery = 'DELETE FROM fee_center WHERE id = ?';
 
-  lookupFeeCenter(feeCenterId)
-    .then(function () {
-      return db.exec(removeFeeCenterQuery, [feeCenterId]);
-    })
-    .then(function () {
+  return db.exec(removeFeeCenterQuery, [feeCenterId])
+    .then(function (res) {
+      if(res.affectedRows === 0){
+        throw new NotFound(`Could not remove a fee center with id ${feeCenterId}`);
+      }
       res.sendStatus(204);
     })
     .catch(next)
@@ -201,11 +141,6 @@ function remove (req, res, next) {
 
 /**
 * Return a fee center details from the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the control to the next middleware
-*
 * @example
 * // GET /fee_centers : returns a fee center detail
 * var feeCenters = require('finance/fee_centers');
