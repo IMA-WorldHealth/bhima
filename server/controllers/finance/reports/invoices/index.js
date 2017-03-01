@@ -138,8 +138,8 @@ function receipt(req, res, next) {
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
 
-      if (invoiceResponse.creditNote) { 
-        invoiceResponse.isCreditNoted = true; 
+      if (invoiceResponse.creditNote) {
+        invoiceResponse.isCreditNoted = true;
         invoiceResponse.creditNoteReference = invoiceResponse.creditNote.reference;
       }
 
@@ -212,7 +212,7 @@ function creditNote(req, res, next) {
       if (invoiceResponse.exchange) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
-      
+
       // return Invoices.lookupInvoiceCreditNote(invoiceUuid);
     })
     .then(creditNoteResult => {
