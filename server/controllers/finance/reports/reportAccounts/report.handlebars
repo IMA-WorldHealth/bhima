@@ -35,7 +35,7 @@
             <td>{{this.description}}</td>
             <td class="text-right">{{currency this.debit ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{currency this.credit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency this.cumulBalance ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency this.cumsum ../metadata.enterprise.currency_id}}</td>
           </tr>
         {{else}}
           {{> emptyTable columns=7}}
