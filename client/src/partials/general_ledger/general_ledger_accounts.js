@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('GeneralLedgerAccountsController', GeneralLedgerAccountsController);
 
 GeneralLedgerAccountsController.$inject = [
-  'GeneralLedgerService', 'SessionService', 'NotifyService', 
+  'GeneralLedgerService', 'SessionService', 'NotifyService',
   'uiGridConstants', 'ReceiptModal',
 ];
 
@@ -10,37 +10,35 @@ GeneralLedgerAccountsController.$inject = [
  * @module GeneralLedgerAccountsController
  *
  * @description
- * This controller is responsible for displaying accounts and their solds
+ * This controller is responsible for displaying accounts and their balances
  */
 function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridConstants, Receipts) {
   var vm = this;
+  var columns;
 
   vm.enterprise = Session.enterprise;
   vm.filterEnabled = false;
 
-  var columns = [
+  columns = [
     { field            : 'number',
       displayName      : 'TABLE.COLUMNS.ACCOUNT',
       enableFiltering  : true,
+      cellTemplate     : '/partials/general_ledger/templates/account_number.cell.html',
       headerCellFilter : 'translate',
-      enableCellEdit   : false,
       width            : '10%' },
 
     { field            : 'label',
       displayName      : 'TABLE.COLUMNS.LABEL',
+      cellTemplate     : '/partials/general_ledger/templates/account_label.cell.html',
       enableFiltering  : true,
-      headerCellFilter : 'translate',
-      enableCellEdit   : false },
+      headerCellFilter : 'translate' },
 
     { field            : 'debtor_sold',
       displayName      : 'TABLE.COLUMNS.DEBTOR_SOLD',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellClass        : 'text-right',
-      cellFilter       : 'currency: grid.appScope.enterprise.currency_id',
       cellTemplate     : '/partials/general_ledger/templates/debtor.cell.html',
-      enableCellEdit   : false,
       width            : '15%' },
 
     { field            : 'creditor_sold',
@@ -48,10 +46,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellClass        : 'text-right',
-      cellFilter       : 'currency: grid.appScope.enterprise.currency_id',
       cellTemplate     : '/partials/general_ledger/templates/creditor.cell.html',
-      enableCellEdit   : false,
       width            : '15%' },
 
     {
@@ -73,6 +68,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
   vm.gridOptions = {
     columnDefs        : columns,
     fastWatch         : true,
+    flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
     onRegisterApi     : onRegisterApiFn,
@@ -109,5 +105,4 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
     .then(loadData)
     .catch(handleError)
     .finally(toggleLoadingIndicator);
-
 }
