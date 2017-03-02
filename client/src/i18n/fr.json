@@ -1383,6 +1383,7 @@
       "SECURITY"      : "Stock de Securité Atteint",
       "SOLD_OUT"      : "Rupture de stock"
     },
+    "SUCCESS"         : "Mouvement realisé avec success",
     "UNIT_COST"       : "Cout unitaire"
   },
   "STOCK_FLUX" : {

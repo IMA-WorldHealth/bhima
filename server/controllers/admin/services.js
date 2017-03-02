@@ -30,11 +30,11 @@ const Topic = require('../../lib/topic');
  */
 function list(req, res, next) {
   let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id FROM service AS s';
+    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id,
+      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid, 
         s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
         cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
       FROM service AS s

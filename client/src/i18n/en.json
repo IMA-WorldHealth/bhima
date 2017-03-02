@@ -1354,6 +1354,7 @@
       "SECURITY"      : "Security Stock Reached",
       "SOLD_OUT"      : "Sold Out"
     },
+    "SUCCESS"         : "Successfully created a movement",
     "UNIT_COST"       : "Unit cost"
   },
   "STOCK_FLUX" : {

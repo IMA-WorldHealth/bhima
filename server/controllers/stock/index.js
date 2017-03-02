@@ -113,6 +113,7 @@ function createStock(req, res, next) {
  */
 function createMovement(req, res, next) {
     let params = req.body;
+    console.log('<<<<<<<<<<', params);
 
     const document = {
         uuid: uuid.v4(),

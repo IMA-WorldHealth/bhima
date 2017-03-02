@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
   'SessionService', 'util', 'bhConstants',
-  'StockFormService', 'StockService', 'uiGridGroupingConstants',
+  'StockFormService', 'StockService', 'StockModalService', 'uiGridGroupingConstants',
 ];
 
 /**
@@ -14,15 +14,18 @@ StockExitController.$inject = [
  * @todo Implement caching data feature
  */
 function StockExitController(Depots, Inventory, Notify,
-  Session, util, bhConstants, StockForm, Stock, uiGridGroupingConstants) {
+  Session, util, bhConstants, StockForm, Stock, StockModal, uiGridGroupingConstants) {
   var vm = this;
+  var mapExit = {
+    patient : { find: findPatient, submit: submitPatient },
+    service : { find: findService },
+    depot   : { find: findDepot },
+    loss    : { find: configureLoss },
+  };
 
   vm.Stock = new StockForm('StockExit');
-
   vm.depot = {};
-  vm.movement = {
-    date : new Date(),
-  };
+  vm.movement = {};
 
   // bind methods
   vm.itemIncrement = 1;
@@ -34,6 +37,7 @@ function StockExitController(Depots, Inventory, Notify,
   vm.configureItem = configureItem;
   vm.selectExitType = selectExitType;
   vm.setupDepot = setupDepot;
+  vm.submit = submit;
 
   // grid options
   var gridOptions = {
@@ -96,8 +100,8 @@ function StockExitController(Depots, Inventory, Notify,
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/exit/templates/actions.tmpl.html' },
     ],
-    onRegisterApi : onRegisterApi,
-    data          : vm.Stock.store.data,
+    onRegisterApi,
+    data : vm.Stock.store.data,
   };
 
   vm.gridOptions = gridOptions;
@@ -110,6 +114,7 @@ function StockExitController(Depots, Inventory, Notify,
   // exit type
   function selectExitType(exitType) {
     vm.movement.exit_type = exitType;
+    mapExit[exitType].find();
   }
 
   // configure depot
@@ -137,7 +142,7 @@ function StockExitController(Depots, Inventory, Notify,
     item._initialised = true;
     // get lots
     Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
-      .then(function (lots) {
+      .then((lots) => {
         item.lots = lots;
         popInventory(item);
       })
@@ -146,6 +151,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // init actions
   function moduleInit() {
+    vm.movement = { date: new Date(), entity: {} };
     loadInventories(vm.depot);
     setupDepot(vm.depot);
   }
@@ -154,7 +160,7 @@ function StockExitController(Depots, Inventory, Notify,
   function loadInventories(depot) {
     var givenDepot = depot || vm.depot;
     Stock.inventories.read(null, { depot_uuid: givenDepot.uuid })
-      .then(function (inventories) {
+      .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
       })
       .catch(Notify.errorHandler);
@@ -172,6 +178,91 @@ function StockExitController(Depots, Inventory, Notify,
   function pushInventory(inventory) {
     if (!inventory) { return; }
     vm.selectableInventories.push(inventory);
+  }
+
+  // ============================ Modals ================================
+  // find patient
+  function findPatient() {
+    StockModal.openFindPatient()
+    .then((patient) => {
+      if (!patient) { return; }
+      vm.movement.entity = {
+        uuid     : patient.uuid,
+        type     : 'patient',
+        instance : patient,
+      };
+    })
+    .catch(Notify.errorHandler);
+  }
+
+  // find service
+  function findService() {
+    StockModal.openFindService()
+    .then((service) => {
+      if (!service) { return; }
+      vm.movement.entity = {
+        uuid     : service.uuid,
+        type     : 'service',
+        instance : service,
+      };
+    })
+    .catch(Notify.errorHandler);
+  }
+
+  // find depot
+  function findDepot() {
+    StockModal.openFindDepot()
+    .then((depot) => {
+      if (!depot) { return; }
+      vm.movement.entity = {
+        uuid     : depot.uuid,
+        type     : 'depot',
+        instance : depot,
+      };
+    })
+    .catch(Notify.errorHandler);
+  }
+
+  // configure loss
+  function configureLoss() {
+    vm.movement.entity = {
+      uuid     : null,
+      type     : 'loss',
+      instance : {},
+    };
+  }
+
+  // ================================ submit ================================
+  function submit(form) {
+    mapExit[vm.movement.exit_type].submit();
+  }
+
+  // submit patient
+  function submitPatient() {
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date        : vm.movement.date,
+      is_exit     : 1,
+      flux_id     : bhConstants.flux.TO_PATIENT,
+      user_id     : Session.user.id,
+    };
+
+    var lots = vm.Stock.store.data.map(function (row) {
+      return {
+        uuid      : row.lot.uuid,
+        quantity  : row.quantity,
+        unit_cost : row.lot.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    Stock.movements.create(movement)
+    .then(function () {
+      Notify.success('STOCK.SUCCESS');
+    })
+    .catch(Notify.errorHandler);
   }
 
   moduleInit();
