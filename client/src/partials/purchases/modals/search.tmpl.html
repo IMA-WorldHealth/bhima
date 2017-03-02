@@ -35,7 +35,7 @@
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.SUPPLIER</label>
 
-        <ui-select name="supplier" ng-model="$ctrl.bundle.supplier_uuid" theme="bootstrap">
+        <ui-select name="supplier" ng-model="$ctrl.bundle.supplier_uuid">
           <ui-select-match>
             <span>{{$select.selected.display_name}}</span>
           </ui-select-match>
@@ -87,8 +87,8 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.validDateRange">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
+    <button class="btn btn-primary" type="submit" data-method="submit" translate ng-disabled="!$ctrl.validDateRange">
+      FORM.BUTTONS.SUBMIT
+    </button>
   </div>
 </form>

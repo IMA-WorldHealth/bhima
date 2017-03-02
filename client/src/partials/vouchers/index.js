@@ -3,9 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 VoucherController.$inject = [
-  'VoucherService', '$translate', 'NotifyService', 'GridFilteringService',
-  'uiGridGroupingConstants', 'uiGridConstants', 'ModalService', 'DateService',
-  'bhConstants', 'ReceiptModal', 'GridSortingService',
+  'VoucherService', 'NotifyService', 'GridFilteringService', 'uiGridGroupingConstants', 'uiGridConstants',
+  'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache'
 ];
 
 /**
@@ -14,8 +13,14 @@ VoucherController.$inject = [
  * @description
  * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, bhConstants, Receipts, Sorting) {
+function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, bhConstants, Receipts, Sorting, $state, AppCache) {
   var vm = this;
+  var filtering;
+  var FILTER_BAR_HEIGHT;
+  var cache = new AppCache('VoucherRegistry');
+
+  var INCOME = bhConstants.transactionType.INCOME;
+  var EXPENSE = bhConstants.transactionType.EXPENSE;
 
   /* global variables */
   vm.filterEnabled = false;
@@ -24,23 +29,25 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.gridOptions = {};
   vm.search = search;
   vm.toggleFilter = toggleFilter;
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.clearFilters = clearFilters;
 
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  vm.loading = false;
 
-  /** search filters */
-  vm.searchFilter = [
-    { displayName: 'FORM.LABELS.DATE_FROM', values: vm.dateInterval ? vm.dateInterval.dateFrom : null, filter: 'moment' },
-    { displayName: 'FORM.LABELS.DATE_TO', values: vm.dateInterval ? vm.dateInterval.dateTo : null, filter: 'moment'},
-  ];
+  FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   // init the filter service
-  var filtering  = new Filtering(vm.gridOptions);
+  filtering = new Filtering(vm.gridOptions);
 
   vm.gridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
+    flatEntityAccess : true,
+    fastWatch        : true,
     enableFiltering  : vm.filterEnabled,
-    rowTemplate      : '/partials/templates/grid/voucher.row.html'
+    fastWatch        : true,
+    flatEntityAccess : true,
+    rowTemplate      : '/partials/templates/grid/voucher.row.html',
   };
 
   // grid default options
@@ -52,25 +59,21 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     sortingAlgorithm     : Sorting.algorithms.sortByReference,
     treeAggregationLabel : '',
   }, {
-    field                            : 'type_id',
-    displayName                      : 'TABLE.COLUMNS.TYPE',
-    headerCellFilter                 : 'translate',
-    sort                             : { priority: 0, direction: 'asc' },
-    cellTemplate                     : 'partials/templates/grid/voucherType.tmpl.html',
-    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-    customTreeAggregationFinalizerFn : typeAggregation,
-    treeAggregationLabel             : '',
-    groupingShowAggregationMenu      : false,
+    field                       : 'type_id',
+    displayName                 : 'TABLE.COLUMNS.TYPE',
+    headerCellFilter            : 'translate',
+    cellTemplate                : 'partials/templates/grid/voucherType.tmpl.html',
+    treeAggregationType         : uiGridGroupingConstants.aggregation.SUM,
+    treeAggregationLabel        : '',
+    groupingShowAggregationMenu : false,
   }, {
-    field                            : 'date',
-    displayName                      : 'TABLE.COLUMNS.DATE',
-    headerCellFilter                 : 'translate',
-    cellFilter                       : 'date',
-    filter                           : { condition: filtering.byDate },
-    customTreeAggregationFinalizerFn : timeAggregation,
-    treeAggregationLabel             : '',
-    type                             : 'date',
-    groupingShowAggregationMenu      : false,
+    field                       : 'date',
+    displayName                 : 'TABLE.COLUMNS.DATE',
+    headerCellFilter            : 'translate',
+    cellFilter                  : 'date',
+    filter                      : { condition: filtering.byDate },
+    type                        : 'date',
+    groupingShowAggregationMenu : false,
   }, {
     field                       : 'description',
     displayName                 : 'TABLE.COLUMNS.DESCRIPTION',
@@ -109,25 +112,9 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.showReceipt = showReceipt;
   vm.bhConstants = bhConstants;
 
-  // startup
-  startup();
-
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-  }
-
-  // Grid Aggregation
-  function typeAggregation(aggregation) {
-    var type = get(aggregation.groupVal);
-    aggregation.rendered = $translate.instant(type ? type.text : 'FORM.LABELS.UNDEFINED');
-  }
-
-  // Time Aggregation
-  function timeAggregation(aggregation) {
-    var date = new Date(aggregation.groupVal);
-    var time = date.getHours() + ':' + date.getMinutes();
-    aggregation.rendered = aggregation.groupVal ? date.toDateString().concat('  (', time, ')') : null;
   }
 
   // isDefined Type
@@ -149,32 +136,68 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // search voucher
   function search() {
-    vm.hasError = false;
-
-    Modal.openDateInterval()
-      .then(function (dateInterval) {
-        vm.dateInterval = dateInterval;
-
-        toggleLoadingIndicator();
-        return Vouchers.read(null, vm.dateInterval);
-      })
-      .then(function (vouchers) {
-        vm.gridOptions.data = vouchers;
-        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-      })
-      .catch(function (err) {
-        if (err && !err.code) { return; }
-        Notify.handleError(err);
-      })
-      .finally(function () {
-        toggleLoadingIndicator();
-        vm.filterBarHeight = (vm.dateInterval) ? FILTER_BAR_HEIGHT : {};
+    Vouchers.openSearchModal(vm.filters)
+      .then(function (parameters) {
+        if (!parameters) { return; }
+        cacheFilters(parameters);
+        return load(vm.filters);
       });
   }
 
   // showReceipt
   function showReceipt(uuid) {
     Receipts.voucher(uuid);
+  }
+
+  function load(parameters) {
+    // flush error and loading states
+    vm.hasError = false;
+    toggleLoadingIndicator();
+
+    Vouchers.read(null, parameters)
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
+
+        // loop through the vouchers and precompute the voucher type tags
+        vouchers.forEach(function (voucher) {
+          voucher._isIncome = (voucher.type_id === INCOME);
+          voucher._isExpense = (voucher.type_id === EXPENSE);
+          voucher._type = get(voucher.type_id).text;
+        });
+
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      })
+      .catch(function (err) {
+        if (err && !err.code) { return; }
+        Notify.handleError(err);
+      })
+      .catch(errorHandler)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
+  }
+
+
+  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
+  function cacheFilters(filters) {
+    vm.filters = cache.filters = filters;
+    vm.filtersFmt = Vouchers.formatFilterParameters(filters);
+
+    // show filter bar as needed
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
+  }
+
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+    delete vm.filters[key];
+    cacheFilters(vm.filters);
+    load(vm.filters);
+  }
+
+  // clears the filters by forcing a cache of an empty array
+  function clearFilters() {
+    cacheFilters({});
+    load();
   }
 
   /**
@@ -202,20 +225,20 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // initialize module
   function startup() {
-    vm.hasError = false;
-    toggleLoadingIndicator();
-
     Vouchers.transactionType()
       .then(function (store) {
         vm.transactionTypes = store;
       })
       .catch(Notify.handleError);
 
-    Vouchers.read()
-      .then(function (vouchers) {
-        vm.gridOptions.data = vouchers;
-      })
-      .catch(errorHandler)
-      .finally(toggleLoadingIndicator);
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
+    vm.filters = cache.filters;
+    vm.filtersFmt = Vouchers.formatFilterParameters(vm.filters || {});
+    load(vm.filters);
   }
+
+  startup();
 }

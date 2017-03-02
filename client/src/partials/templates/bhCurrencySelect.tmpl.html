@@ -30,7 +30,8 @@
     <!-- show danger message if all currencies are disabled -->
     <p class="help-block" ng-hide="$ctrl.valid">
       <i class="fa fa-exclamation-circle"></i> <span translate>CASHBOX.NO_SUPPORTED_CURRENCIES</span>
-      <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}/edit" class="text-danger">
+      <br />
+      <a ng-show="$ctrl.cashboxId" ui-sref="cashboxes.edit({ uuid: $ctrl.cashboxId })" class="text-danger" href>
         <strong><i class="fa fa-link"></i> <span translate>CASHBOX.SET_CURRENCY_ACCOUNTS</span></strong>
       </a>
     </p>
