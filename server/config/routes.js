@@ -614,5 +614,8 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
 
+  // stock receipts API
+  app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
+
   app.get('/diagnoses', diagnoses.list);
 };

@@ -145,6 +145,19 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     /* noop */
   }
 
+  // ========================== stock ==============================
+
+  // bind methods
+  service.stockExitPatientReceipt = stockExitPatientReceipt;
+
+  // stock exit patient receipt
+  function stockExitPatientReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_patient/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // ========================== end stock ==========================
+
   function setPosReceipt(posReceiptEnabled) {
     service.posReceipt = cache.posReceipt = posReceiptEnabled;
   }

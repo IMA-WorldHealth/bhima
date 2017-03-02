@@ -269,5 +269,37 @@ function ReceiptModal(Modal, Receipts) {
     /* noop */
   }
 
+  // ================================ stock =====================================
+  // bind methods
+  service.stockExitPatientReceipt = stockExitPatientReceipt;
+
+  /**
+   * @method stockExitPatientReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitPatientReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.EXIT_PATIENT',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockExitPatientReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+
+  // ================================ end stock =================================
+
   return service;
 }

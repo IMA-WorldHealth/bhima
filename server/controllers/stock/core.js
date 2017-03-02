@@ -2,7 +2,7 @@
  * @module stock/core
  *
  * @description
- * This module is responsible for handling all function utility for stock 
+ * This module is responsible for handling all function utility for stock
  *
  * @requires lodash
  * @requires util
@@ -18,21 +18,21 @@ const util   = require('../../lib/util');
 const db     = require('../../lib/db');
 
 const flux = {
-  'FROM_PURCHASE'    : 1,
-  'FROM_OTHER_DEPOT' : 2,
-  'FROM_ADJUSTMENT'  : 3,
-  'FROM_PATIENT'     : 4,
-  'FROM_SERVICE'     : 5,
-  'FROM_DONATION'    : 6,
-  'FROM_LOSS'        : 7,
-  'TO_OTHER_DEPOT'   : 8,
-  'TO_PATIENT'       : 9,
-  'TO_SERVICE'       : 10,
-  'TO_LOSS'          : 11,
-  'TO_ADJUSTMENT'    : 12
+  FROM_PURCHASE    : 1,
+  FROM_OTHER_DEPOT : 2,
+  FROM_ADJUSTMENT  : 3,
+  FROM_PATIENT     : 4,
+  FROM_SERVICE     : 5,
+  FROM_DONATION    : 6,
+  FROM_LOSS        : 7,
+  TO_OTHER_DEPOT   : 8,
+  TO_PATIENT       : 9,
+  TO_SERVICE       : 10,
+  TO_LOSS          : 11,
+  TO_ADJUSTMENT    : 12,
 };
 
-// exports 
+// exports
 exports.flux = flux;
 exports.getLots = getLots;
 exports.getLotsDepot = getLotsDepot;
@@ -40,11 +40,11 @@ exports.getLotsMovements = getLotsMovements;
 
 /**
  * @function getLots
- * 
- * @description returns a list of lots 
- * 
+ *
+ * @description returns a list of lots
+ *
  * @param {string} sql - An optional sql script of selecting in lot
- * @param {object} params - A request query object 
+ * @param {object} params - A request query object
  * @param {string} final_clause - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
 function getLots(sql, params, final_clause) {
@@ -58,7 +58,7 @@ function getLots(sql, params, final_clause) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  let queryExpiration, paramExpiration, queryEntry, paramEntry, 
+  let queryExpiration, paramExpiration, queryEntry, paramEntry,
     queryArray = [], paramArray = [];
 
   if (params.uuid) {
@@ -84,7 +84,7 @@ function getLots(sql, params, final_clause) {
   if (params.expiration_date_from && params.expiration_date_to) {
     queryExpiration = ` DATE(l.expiration_date) BETWEEN DATE(?) AND DATE(?) `;
     paramExpiration = [
-        util.dateString(params.expiration_date_from), 
+        util.dateString(params.expiration_date_from),
         util.dateString(params.expiration_date_to),
       ];
 
@@ -97,7 +97,7 @@ function getLots(sql, params, final_clause) {
   } else if (params.expiration_date_from && !params.expiration_date_to) {
       queryExpiration = ` DATE(l.expiration_date) >= DATE(?) `;
       paramExpiration = [
-        util.dateString(params.expiration_date_from)
+        util.dateString(params.expiration_date_from),
       ];
 
       queryArray.push(queryExpiration);
@@ -108,7 +108,7 @@ function getLots(sql, params, final_clause) {
     } else if (!params.expiration_date_from && params.expiration_date_to) {
       queryExpiration = ` DATE(l.expiration_date) <= DATE(?) `;
       paramExpiration = [
-        util.dateString(params.expiration_date_to)
+        util.dateString(params.expiration_date_to),
       ];
 
       queryArray.push(queryExpiration);
@@ -121,7 +121,7 @@ function getLots(sql, params, final_clause) {
   if (params.entry_date_from && params.entry_date_to) {
     queryEntry = ` DATE(l.entry_date) BETWEEN DATE(?) AND DATE(?) `;
     paramEntry = [
-        util.dateString(params.entry_date_from), 
+        util.dateString(params.entry_date_from),
         util.dateString(params.entry_date_to),
       ];
 
@@ -134,18 +134,18 @@ function getLots(sql, params, final_clause) {
   } else if (params.entry_date_from && !params.entry_date_to) {
       queryEntry = ` DATE(l.entry_date) >= DATE(?) `;
       paramEntry = [
-        util.dateString(params.entry_date_from)
+        util.dateString(params.entry_date_from),
       ];
 
       queryArray.push(queryEntry);
       paramArray.push(paramEntry);
 
       delete params.entry_date_from;
-        
+
     } else if (!params.entry_date_from && params.entry_date_to) {
       queryEntry = ` DATE(l.entry_date) <= DATE(?) `;
       paramEntry = [
-        util.dateString(params.entry_date_to)
+        util.dateString(params.entry_date_to),
       ];
 
       queryArray.push(queryEntry);
@@ -157,7 +157,7 @@ function getLots(sql, params, final_clause) {
   if (params.dateFrom && params.dateTo) {
     queryExpiration = ` DATE(m.date) BETWEEN DATE(?) AND DATE(?) `;
     paramExpiration = [
-        util.dateString(params.dateFrom), 
+        util.dateString(params.dateFrom),
         util.dateString(params.dateTo),
       ];
 
@@ -170,7 +170,7 @@ function getLots(sql, params, final_clause) {
   } else if (params.dateFrom && !params.dateTo) {
       queryExpiration = ` DATE(m.date) >= DATE(?) `;
       paramExpiration = [
-        util.dateString(params.dateFrom)
+        util.dateString(params.dateFrom),
       ];
 
       queryArray.push(queryExpiration);
@@ -181,7 +181,7 @@ function getLots(sql, params, final_clause) {
     } else if (!params.dateFrom && params.dateTo) {
       queryExpiration = ` DATE(m.date) <= DATE(?) `;
       paramExpiration = [
-        util.dateString(params.dateTo)
+        util.dateString(params.dateTo),
       ];
 
       queryArray.push(queryExpiration);
@@ -194,9 +194,9 @@ function getLots(sql, params, final_clause) {
     // build query and parameters correctly
   let builder = util.queryCondition(sql, params);
 
-    // dates queries and parameters  
+    // dates queries and parameters
   let hasOtherParams = (Object.keys(params).length > 0);
-    
+
   if (paramArray.length) {
 
     builder.query += hasOtherParams ? ' AND ' + queryArray.join(' AND ') : ' WHERE ' + queryArray.join(' AND ');
@@ -204,7 +204,7 @@ function getLots(sql, params, final_clause) {
     builder.conditions = _.flattenDeep(builder.conditions);
   }
 
-    // finalize the query 
+    // finalize the query
   builder.query += final_clause || '';
 
   return db.exec(builder.query, builder.conditions);
@@ -212,13 +212,13 @@ function getLots(sql, params, final_clause) {
 
 /**
  * @function getLotsDepot
- * 
- * @description returns lots with their real quantity in each depots 
- * 
- * @param {number} depot_uuid - optional depot uuid for retrieving on depot 
- * 
- * @param {object} params - A request query object 
- * 
+ *
+ * @description returns lots with their real quantity in each depots
+ *
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot
+ *
+ * @param {object} params - A request query object
+ *
  * @param {string} final_clause - An optional final clause (GROUP BY, ...) to add to query built
  */
 function getLotsDepot(depot_uuid, params, final_clause) {
@@ -262,12 +262,12 @@ function getLotsDepot(depot_uuid, params, final_clause) {
 
 /**
  * @function getLotsMovements
- * 
- * @description returns lots movements for each depots 
- * 
- * @param {number} depot_uuid - optional depot uuid for retrieving on depot 
- * 
- * @param {object} params - A request query object 
+ *
+ * @description returns lots movements for each depots
+ *
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot
+ *
+ * @param {object} params - A request query object
  */
 function getLotsMovements(depot_uuid, params) {
 
@@ -292,7 +292,7 @@ function getLotsMovements(depot_uuid, params) {
 }
 
 /**
- * Stock Management Processing 
+ * Stock Management Processing
  */
 function stockManagementProcess(inventories) {
   const current = moment();
@@ -300,13 +300,13 @@ function stockManagementProcess(inventories) {
   let delay;
 
   return inventories.map(inventory => {
-    Q = inventory.quantity; // the quantity 
+    Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-    inventory.S_MAX = CM * inventory.purchase_interval + inventory.S_MIN; // stock maximum 
-    inventory.S_MONTH = inventory.quantity / CM; // mois de stock 
-    inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement  
+    inventory.S_MAX = CM * inventory.purchase_interval + inventory.S_MIN; // stock maximum
+    inventory.S_MONTH = inventory.quantity / CM; // mois de stock
+    inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
         // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
 
     if (Q <= 0) {

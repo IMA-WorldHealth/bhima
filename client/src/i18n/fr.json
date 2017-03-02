@@ -1372,6 +1372,10 @@
     "OUTPUT"          : "Sortie",
     "ORDERS"          : "Commandes",
     "QUANTITY"        : "Quantité",
+    "RECEIPT"         : {
+      "EXIT_PATIENT"  : "Sortie de Stock - Distribution au Patient"
+    },
+    "RESPONSIBLE"     : "Responsable",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
     "STATUS"          : {

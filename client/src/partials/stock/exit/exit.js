@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
-  'SessionService', 'util', 'bhConstants',
+  'SessionService', 'util', 'bhConstants', 'ReceiptModal',
   'StockFormService', 'StockService', 'StockModalService', 'uiGridGroupingConstants',
 ];
 
@@ -14,7 +14,7 @@ StockExitController.$inject = [
  * @todo Implement caching data feature
  */
 function StockExitController(Depots, Inventory, Notify,
-  Session, util, bhConstants, StockForm, Stock, StockModal, uiGridGroupingConstants) {
+  Session, util, bhConstants, ReceiptModal, StockForm, Stock, StockModal, uiGridGroupingConstants) {
   var vm = this;
   var mapExit = {
     patient : { find: findPatient, submit: submitPatient },
@@ -154,6 +154,7 @@ function StockExitController(Depots, Inventory, Notify,
     vm.movement = { date: new Date(), entity: {} };
     loadInventories(vm.depot);
     setupDepot(vm.depot);
+    checkValidity();
   }
 
   // ============================ Inventories ==========================
@@ -178,6 +179,14 @@ function StockExitController(Depots, Inventory, Notify,
   function pushInventory(inventory) {
     if (!inventory) { return; }
     vm.selectableInventories.push(inventory);
+  }
+
+  // check validity
+  function checkValidity() {
+    vm.validForSubmit = vm.Stock.store.data.every(function (item) {
+      return item.quantity > 0 && item.lot.uuid;
+    });
+    return vm.validForSubmit;
   }
 
   // ============================ Modals ================================
@@ -243,6 +252,7 @@ function StockExitController(Depots, Inventory, Notify,
       depot_uuid  : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date        : vm.movement.date,
+      description : vm.movement.description,
       is_exit     : 1,
       flux_id     : bhConstants.flux.TO_PATIENT,
       user_id     : Session.user.id,
@@ -259,8 +269,9 @@ function StockExitController(Depots, Inventory, Notify,
     movement.lots = lots;
 
     Stock.movements.create(movement)
-    .then(function () {
-      Notify.success('STOCK.SUCCESS');
+    .then(function (document) {
+      vm.Stock.store.clear();
+      ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
     })
     .catch(Notify.errorHandler);
   }

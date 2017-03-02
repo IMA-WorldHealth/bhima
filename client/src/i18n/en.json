@@ -1343,6 +1343,10 @@
     "OUTPUT"          : "Output",
     "ORDERS"          : "Orders",
     "QUANTITY"        : "Quantity",
+    "RECEIPT"         : {
+      "EXIT_PATIENT"  : "Stock Exit - Patient Distribution"
+    },
+    "RESPONSIBLE"     : "Responsable",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
     "STATUS"          : {
