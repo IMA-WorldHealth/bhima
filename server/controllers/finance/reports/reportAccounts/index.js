@@ -79,28 +79,28 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
     params.push(new Date(dateFrom), new Date(dateTo));
   }
 
-  const csum = 'SET @csum := 0;';
-
   const sql = `
-    SELECT a.trans_id, a.debit, a.credit, a.balance, a.trans_date, a.document_reference,
-      (@csum := IFNULL(@csum, 0) + a.balance) AS cumulBalance, a.description
+    SELECT groups.trans_id, groups.debit, groups.credit, groups.trans_date,
+      groups.document_reference, groups.cumsum, groups.description
     FROM (
-      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date,
-        document_map.text AS document_reference,
-        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
-      FROM ${tableName}
-      LEFT JOIN document_map ON record_uuid = document_map.uuid
-      WHERE account_id = ? ${dateCondition}
-      GROUP BY record_uuid
-      ORDER BY trans_date ASC
-    ) AS a
+      SELECT trans_id, description, trans_date, document_reference, debit, credit,
+        @cumsum := balance + @cumsum AS cumsum
+      FROM (
+        SELECT trans_id, description, trans_date, document_map.text AS document_reference,
+          SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
+        FROM ${tableName}
+        LEFT JOIN document_map ON record_uuid = document_map.uuid
+        WHERE account_id = ? ${dateCondition}
+        GROUP BY record_uuid
+        ORDER BY trans_date ASC
+      )c, (SELECT @cumsum := 0)z
+    ) AS groups
   `;
 
   const sqlAggrega = `
     SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
     FROM (
-      SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description, trans_date,
-        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit
+      SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
       FROM ${tableName}
       WHERE account_id = ? ${dateCondition}
       GROUP BY record_uuid
@@ -109,8 +109,8 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   `;
 
   const bundle = {};
-  return db.exec(csum)
-    .then(() => db.exec(sql, params))
+
+  return db.exec(sql, params)
     .then((transactions) => {
       _.extend(bundle, { transactions });
       return db.one(sqlAggrega, params);
