@@ -765,6 +765,7 @@
       "CREDITOR"     : "Enter creditor",
       "DEBTOR"       : "Enter debtor",
       "DEBTOR_GROUP" : "Enter debtor group",
+      "PATIENT_GROUP": "Enter patient group",
       "DESCRIPTION"  : "Enter description",
       "DOCUMENT_NAME": "Enter document name",
       "EMAIL"        : "Enter email",
