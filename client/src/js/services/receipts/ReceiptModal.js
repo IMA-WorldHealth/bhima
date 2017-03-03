@@ -274,6 +274,8 @@ function ReceiptModal(Modal, Receipts) {
   service.stockExitPatientReceipt = stockExitPatientReceipt;
   service.stockExitDepotReceipt = stockExitDepotReceipt;
   service.stockEntryDepotReceipt = stockEntryDepotReceipt;
+  service.stockExitServiceReceipt = stockExitServiceReceipt;
+  service.stockExitLossReceipt = stockExitLossReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -288,6 +290,56 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var request = Receipts.stockExitPatientReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockExitLossReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitLossReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.EXIT_LOSS',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockExitLossReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockExitServiceReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitServiceReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.EXIT_PATIENT',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockExitServiceReceipt(documentUuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
         receipt : function receiptProvider() { return { promise: request }; },

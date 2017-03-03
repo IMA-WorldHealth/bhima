@@ -2,11 +2,12 @@ angular.module('bhima.controllers')
   .controller('StockFindDepotModalController', StockFindDepotModalController);
 
 StockFindDepotModalController.$inject = [
-  '$uibModalInstance', 'DepotService', 'NotifyService',
+  '$uibModalInstance', 'DepotService', 'NotifyService', 'data',
 ];
 
-function StockFindDepotModalController(Instance, Depot, Notify) {
+function StockFindDepotModalController(Instance, Depot, Notify, Data) {
   var vm = this;
+  var bundle = {};
 
   // global
   vm.selected = {};
@@ -17,7 +18,14 @@ function StockFindDepotModalController(Instance, Depot, Notify) {
 
   Depot.read()
   .then(function (depots) {
-    vm.depots = depots;
+    bundle.depots = depots;
+    return depots.findIndex(function (item) {
+      return item.uuid === Data.depot.uuid;
+    });
+  })
+  .then(function (idx) {
+    bundle.depots.splice(idx, 1);
+    vm.depots = bundle.depots;
   })
   .catch(Notify.errorHandler);
 

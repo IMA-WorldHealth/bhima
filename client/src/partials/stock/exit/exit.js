@@ -220,7 +220,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // find depot
   function findDepot() {
-    StockModal.openFindDepot()
+    StockModal.openFindDepot({ depot: vm.depot })
     .then((depot) => {
       if (!depot) { return; }
       vm.movement.entity = {
@@ -243,6 +243,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // ================================ submit ================================
   function submit(form) {
+    if (form.$invalid) { return; }
     mapExit[vm.movement.exit_type].submit();
   }
 
@@ -278,7 +279,32 @@ function StockExitController(Depots, Inventory, Notify,
 
   // submit service
   function submitService() {
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      is_exit     : 1,
+      flux_id     : bhConstants.flux.TO_SERVICE,
+      user_id     : Session.user.id,
+    };
 
+    var lots = vm.Stock.store.data.map(function (row) {
+      return {
+        uuid      : row.lot.uuid,
+        quantity  : row.quantity,
+        unit_cost : row.lot.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    Stock.movements.create(movement)
+    .then(function (document) {
+      vm.Stock.store.clear();
+      ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
+    })
+    .catch(Notify.errorHandler);
   }
 
   // submit depot
@@ -311,7 +337,32 @@ function StockExitController(Depots, Inventory, Notify,
 
   // submit loss
   function submitLoss() {
-    
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      is_exit     : 1,
+      flux_id     : bhConstants.flux.TO_LOSS,
+      user_id     : Session.user.id,
+    };
+
+    var lots = vm.Stock.store.data.map(function (row) {
+      return {
+        uuid      : row.lot.uuid,
+        quantity  : row.quantity,
+        unit_cost : row.lot.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    Stock.movements.create(movement)
+    .then(function (document) {
+      vm.Stock.store.clear();
+      ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
+    })
+    .catch(Notify.errorHandler);
   }
 
   moduleInit();

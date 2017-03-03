@@ -151,6 +151,8 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockExitPatientReceipt = stockExitPatientReceipt;
   service.stockExitDepotReceipt = stockExitDepotReceipt;
   service.stockEntryDepotReceipt = stockEntryDepotReceipt;
+  service.stockExitServiceReceipt = stockExitServiceReceipt;
+  service.stockExitLossReceipt = stockExitLossReceipt;
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
@@ -158,9 +160,21 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     return fetch(route, options);
   }
 
+  // stock exit service receipt
+  function stockExitServiceReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_service/'.concat(uuid);
+    return fetch(route, options);
+  }
+
   // stock exit depot receipt
   function stockExitDepotReceipt(uuid, options) {
     var route = '/receipts/stock/exit_depot/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock exit loss receipt
+  function stockExitLossReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_loss/'.concat(uuid);
     return fetch(route, options);
   }
 
