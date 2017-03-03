@@ -8,8 +8,6 @@
  * @requires Patient
  */
 
-const _ = require('lodash');
-
 const Patient = require('./reports/financial.patient');
 
 /**
@@ -17,10 +15,9 @@ const Patient = require('./reports/financial.patient');
  * Return the patient balance status
  */
 function patientBalance(req, res, next) {
-
   Patient.financialActivities(req.params.uuid)
-    .then(result => {
-      let balance = result.sum && result.sum.balance ? result.sum.balance : null;
+    .then((result) => {
+      const balance = result.aggregates && result.aggregates.balance ? result.aggregates.balance : null;
       res.status(200).json(balance);
     })
     .catch(next)
