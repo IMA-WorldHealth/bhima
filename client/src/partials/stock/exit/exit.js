@@ -18,9 +18,9 @@ function StockExitController(Depots, Inventory, Notify,
   var vm = this;
   var mapExit = {
     patient : { find: findPatient, submit: submitPatient },
-    service : { find: findService },
-    depot   : { find: findDepot },
-    loss    : { find: configureLoss },
+    service : { find: findService, submit: submitService },
+    depot   : { find: findDepot, submit: submitDepot },
+    loss    : { find: configureLoss, submit: submitLoss },
   };
 
   vm.Stock = new StockForm('StockExit');
@@ -274,6 +274,44 @@ function StockExitController(Depots, Inventory, Notify,
       ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
     })
     .catch(Notify.errorHandler);
+  }
+
+  // submit service
+  function submitService() {
+
+  }
+
+  // submit depot
+  function submitDepot() {
+    var movement = {
+      from_depot  : vm.depot.uuid,
+      to_depot    : vm.movement.entity.uuid,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      user_id     : Session.user.id,
+    };
+
+    var lots = vm.Stock.store.data.map(function (row) {
+      return {
+        uuid      : row.lot.uuid,
+        quantity  : row.quantity,
+        unit_cost : row.lot.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    Stock.movements.create(movement)
+    .then(function (document) {
+      vm.Stock.store.clear();
+      ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+    })
+    .catch(Notify.errorHandler);
+  }
+
+  // submit loss
+  function submitLoss() {
+    
   }
 
   moduleInit();

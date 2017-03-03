@@ -19,6 +19,8 @@ function StockMovementsController($state, Stock, Notify,
 
   // bind flux id with receipt
   var mapFlux = {
+    2 : { receipt: ReceiptModal.stockEntryDepotReceipt },
+    8 : { receipt: ReceiptModal.stockExitDepotReceipt },
     9 : { receipt: ReceiptModal.stockExitPatientReceipt },
   };
 

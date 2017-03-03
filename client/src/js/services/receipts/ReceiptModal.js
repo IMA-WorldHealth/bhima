@@ -272,6 +272,8 @@ function ReceiptModal(Modal, Receipts) {
   // ================================ stock =====================================
   // bind methods
   service.stockExitPatientReceipt = stockExitPatientReceipt;
+  service.stockExitDepotReceipt = stockExitDepotReceipt;
+  service.stockEntryDepotReceipt = stockEntryDepotReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -286,6 +288,56 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var request = Receipts.stockExitPatientReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockExitDepotReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitDepotReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.EXIT_DEPOT',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockExitDepotReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockEntryDepotReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryDepotReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.ENTRY_DEPOT',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
         receipt : function receiptProvider() { return { promise: request }; },

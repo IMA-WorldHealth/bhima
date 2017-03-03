@@ -1309,6 +1309,7 @@
   "STOCK" : {
     "ALERT"           : "Alert",
     "ADJUSTEMENT"     : "Adjustment",
+    "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantity to order",
     "CACHED_DATA"     : "Data saved",
     "CODE"            : "Code",
@@ -1328,6 +1329,7 @@
     "EXIT_LOSS"       : "Loss",
     "FILE"            : "Stock File",
     "FLUX"            : "Reason",
+    "FROM"            : "From",
     "INVENTORY"       : "Inventory",
     "INPUT"           : "Input",
     "IO"              : "In/Out",
@@ -1344,9 +1346,14 @@
     "ORDERS"          : "Orders",
     "QUANTITY"        : "Quantity",
     "RECEIPT"         : {
-      "EXIT_PATIENT"  : "Stock Exit - Patient Distribution"
+      "ENTRY_DEPOT"   : "Stock Entry",
+      "EXIT_PATIENT"  : "Stock Exit - Patient Distribution",
+      "EXIT_DEPOT"    : "Stock Exit",
+      "EXIT_SERVICE"  : "Stock Exit - Service Distribution",
+      "EXIT_LOSS"     : "Stock Exit - Loss"
     },
-    "RESPONSIBLE"     : "Responsable",
+    "RECEIVER"        : "Recepteur",
+    "RESPONSIBLE"     : "Depot Manager",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
     "STATUS"          : {
@@ -1359,6 +1366,7 @@
       "SOLD_OUT"      : "Sold Out"
     },
     "SUCCESS"         : "Successfully created a movement",
+    "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost"
   },
   "STOCK_FLUX" : {
