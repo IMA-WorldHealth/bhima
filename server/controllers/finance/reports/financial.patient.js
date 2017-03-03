@@ -2,21 +2,17 @@
  * @overview server/controllers/finance/reports/financial.patient.js
  *
  * @description
- * This file contains code to create a PDF report for financial activites of a patient
+ * This file contains code to create a PDF report for financial activities of a patient
  *
- * @requires lodash
  * @requires Patients
  * @requires ReportManager
- * @requires Debtors
  */
 
-const _ = require('lodash');
-
+const q = require('q');
+const db = require('../../../lib/db');
 const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../../medical/patients');
-
-const Debtors = require('../debtors');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
 
@@ -30,7 +26,6 @@ const TEMPLATE = './server/controllers/finance/reports/financial.patient.handleb
  */
 function build(req, res, next) {
   const options = req.query;
-  let debtorData = {};
   let report;
 
   // set up the report with report manager
@@ -40,12 +35,9 @@ function build(req, res, next) {
     return next(e);
   }
 
-  // enforce detailed columns
-  options.detailed = 1;
-
-  financialActivities(req.params.uuid)
+  return financialActivities(req.params.uuid)
     .then(result => report.render(result))
-    .then(result => {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)
@@ -54,33 +46,47 @@ function build(req, res, next) {
 
 /**
  * @method financialActivities
- * Return details of financial activites of a given patient
+ * Return details of financial activities of a given patient
  */
-function financialActivities(patientUuid) {
-  let glb = {};
+function financialActivities(debtorUuid) {
+  const data = {};
 
-  return Patients.lookupByDebtorUuid(patientUuid)
-    .then(debtor => {
-      glb.debtor = debtor;
-      return Debtors.financialPatient(patientUuid);
+  const sql = `
+
+    SELECT trans_id, entity_uuid, description, record_uuid, trans_date, debit, credit, document,
+      (@cumsum := balance + @cumsum) AS cumsum
+    FROM (
+      SELECT combined_ledger.trans_id, combined_ledger.entity_uuid, combined_ledger.description,
+        combined_ledger.record_uuid, combined_ledger.trans_date, SUM(combined_ledger.debit_equiv) AS debit,
+        SUM(combined_ledger.credit_equiv) AS credit, document_map.text AS document,
+        (SUM(combined_ledger.debit_equiv) - SUM(combined_ledger.credit_equiv)) AS balance
+      FROM combined_ledger
+        LEFT JOIN document_map ON document_map.uuid = combined_ledger.record_uuid
+      WHERE combined_ledger.entity_uuid = ?
+      GROUP BY combined_ledger.record_uuid
+      ORDER BY combined_ledger.trans_date ASC, combined_ledger.trans_id
+    )c, (SELECT @cumsum := 0)z
+    ORDER BY trans_date ASC, trans_id;
+  `;
+
+  const aggregateQuery = `
+    SELECT SUM(combined_ledger.debit_equiv) AS debit, SUM(combined_ledger.credit_equiv) AS credit,
+      SUM(combined_ledger.debit_equiv - combined_ledger.credit_equiv) AS balance
+    FROM combined_ledger
+    WHERE combined_ledger.entity_uuid = ?
+    GROUP BY entity_uuid;
+  `;
+
+  return Patients.lookupByDebtorUuid(debtorUuid)
+    .then((patient) => {
+      data.patient = patient;
+      const buid = db.bid(debtorUuid);
+      return q.all([db.exec(sql, buid), db.one(aggregateQuery, buid)]);
     })
-    .then(patients => {
-      let sum = {
-        credit : 0,
-        debit : 0,
-        balance: 0
-      };
-
-      // why does this loop through patients?
-      patients.forEach(function (patient) {
-        sum.debit += patient.debit;
-        sum.credit += patient.credit;
-        sum.balance = sum.debit - sum.credit;
-        sum.hasDebitBalance = sum.balance > 0;      
-      });
-
-      const debtor = glb.debtor;
-      return { patients, debtor, sum };
+    .spread((transactions, aggregates) => {
+      const patient = data.patient;
+      aggregates.hasDebitBalance = aggregates.balance > 0;
+      return { transactions, patient, aggregates };
     });
 }
 

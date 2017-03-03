@@ -4,10 +4,10 @@
 
   {{> header }}
 
-  <h3 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
-  <h4 class="text-center"><strong>{{ debtor.reference }}</strong> | {{ debtor.display_name }} </h4>
-  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}} : {{ debtor.debtor_group_name }} </h4>
-  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} : {{ debtor.number }} </h4>
+  <h3 class="text-center text-capitalize">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
+  <h4 class="text-center"><strong>{{ patient.reference }}</strong> | {{ patient.display_name }} </h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}}: {{ patient.debtor_group_name }} </h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}}: {{ patient.number }} </h4>
 
   <section>
     <table class="table table-condensed table-bordered table-report">
@@ -18,10 +18,11 @@
           <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
           <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
           <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.AMOUNT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
         </tr>
       </thead>
       <tbody>
-        {{#each patients}}
+        {{#each transactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
             <td class="text-right">{{this.document}}</td>
@@ -34,6 +35,7 @@
                 {{currency this.debit ../metadata.enterprise.currency_id}}
               {{/if}}
             </td>
+            <td class="text-right">{{currency this.cumsum ../metadata.enterprise.currency_id}} </td>
           </tr>
         {{else}}
           {{>emptyTable columns=5}}
@@ -41,28 +43,28 @@
       </tbody>
       <tfoot style="background-color: #ededed;">
         <tr>
-          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL_BILLED" }}</th>
+          <th colspan="5" class="text-right">{{translate "FORM.LABELS.TOTAL_BILLED" }}</th>
           <th class="text-right">
-            <span>{{currency sum.debit metadata.enterprise.currency_id}}</span>
+            <span>{{currency aggregates.debit metadata.enterprise.currency_id}}</span>
           </th>
         </tr>
         <tr>
-          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL_PAID" }}</th>
+          <th colspan="5" class="text-right">{{translate "FORM.LABELS.TOTAL_PAID" }}</th>
           <th class="text-right">
-            <span class="text-danger">({{currency sum.credit metadata.enterprise.currency_id}})</span>
+            <span class="text-danger">({{currency aggregates.credit metadata.enterprise.currency_id}})</span>
           </th>
         </tr>
         <tr>
-          <th colspan="4" class="text-right">
+          <th colspan="5" class="text-right">
             {{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING" }}
           </th>
           <th class="text-right">
-            {{#unless sum.hasDebitBalance }}
+            {{#unless aggregates.hasDebitBalance }}
               <span class="text-danger">
-                ({{currency sum.balance metadata.enterprise.currency_id}})
+                ({{currency aggregates.balance metadata.enterprise.currency_id}})
               </span>
             {{else}}
-              {{currency sum.balance metadata.enterprise.currency_id}}
+              {{currency aggregates.balance metadata.enterprise.currency_id}}
             {{/unless}}
           </th>
         </tr>
