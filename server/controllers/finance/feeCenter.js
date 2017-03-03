@@ -27,7 +27,6 @@ function list (req, res, next) {
   'use strict';
 
   let ordering = 'ORDER BY fc.label';
-
   let is_detailed = Boolean(Number(req.query.detailed));
   let detailed = is_detailed ? ', fc.note, fc.is_principal, fc.project_id, fc.is_cost, p.name, p.abbr, p.enterprise_id, p.zs_id ' : '';
 
