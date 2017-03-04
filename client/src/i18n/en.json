@@ -975,6 +975,7 @@
     "COMBINED_SUBSIDIES" : "Combined Subsidies",
     "DISTRIBUTION_TYPE"  : "Distribution Type",
     "DISTRIBUTION_TYPE_EXPLANATION" : "This option determines whether the invoice items can be distributed at the pharmacy or if they have already been consumed.",
+    "INVOICED_FOR"       : "Invoiced for",
     "ERRORS"             : {
       "INVALID_NUMBERS" : "The record contains negative, zero, or invalid numbers",
       "MISSING_SALES_ACCOUNT" : "The record contains an inventory item missing a sales account.  You cannot make an invoice without a sales account.",

@@ -71,11 +71,12 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   // get the table name
   const tableName = sourceMap[sourceId];
   const params = [accountId];
+
   let dateCondition = '';
 
   if (dateFrom && dateTo) {
     dateCondition = 'AND DATE(trans_date) BETWEEN DATE(?) AND DATE(?)';
-    params.push(dateFrom, dateTo);
+    params.push(new Date(dateFrom), new Date(dateTo));
   }
 
   const csum = 'SET @csum := 0;';
@@ -94,7 +95,6 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
       ORDER BY trans_date ASC
     ) AS a
   `;
-
 
   const sqlAggrega = `
     SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
