@@ -66,7 +66,7 @@ describe('Inventory Configuration', () => {
     });
 
     it('successfully deletes an existing inventory group', () => {
-      element(by.css('[data-delete-group="' + group.code +'"]')).click();
+      element(by.css('[data-delete-group="' + updateGroup.code +'"]')).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
@@ -93,7 +93,7 @@ describe('Inventory Configuration', () => {
     });
 
     it('Successfully deletes an existing inventory type', () => {
-      element(by.css('[data-delete-type="' + type.text +'"]')).click();
+      element(by.css('[data-delete-type="' + updateType.text +'"]')).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
@@ -120,7 +120,7 @@ describe('Inventory Configuration', () => {
     });
 
     it('Successfully deletes an existing inventory unit', () => {
-      element(by.css('[data-delete-unit="' + unit.text +'"]')).click();
+      element(by.css('[data-delete-unit="' + updateUnit.text +'"]')).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });

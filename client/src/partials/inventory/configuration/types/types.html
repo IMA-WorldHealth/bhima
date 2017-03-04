@@ -37,7 +37,8 @@
           <td>
             <a style="cursor:pointer; text-decoration:none;"
               ng-click="TypesCtrl.deleteInventoryType(type.id)"
-              data-delte-type="{{ type.text }}">
+              class="text-danger"
+              data-delete-type="{{ type.text }}">
               <i class="fa fa-remove"></i> {{ "FORM.BUTTONS.DELETE" | translate }}
             </a>
           </td>
