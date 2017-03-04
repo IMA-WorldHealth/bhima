@@ -1,11 +1,8 @@
 /* global element, by, browser */
-
-'use strict';
-
 const chai = require('chai');
-const expect = chai.expect;
-
 const helpers = require('./helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 function getGrid(gridId) {
@@ -15,7 +12,7 @@ function getGrid(gridId) {
 function getColumns(gridId) {
   return getGrid(gridId)
     .element(by.css('.ui-grid-render-container-body'))
-    .element( by.css('.ui-grid-header'))
+    .element(by.css('.ui-grid-header'))
     .all(by.repeater('col in colContainer.renderedColumns track by col.uid'));
 }
 
@@ -30,12 +27,11 @@ function getCell(gridId, row, col) {
     .element(by.css('.ui-grid-render-container-body'))
     .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(row))
     .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(col));
-
 }
 
-function expectRowCount(gridId, number) {
+function expectRowCount(gridId, number, message) {
   const rows = getRows(gridId);
-  expect(rows.count()).to.eventually.equal(number);
+  expect(rows.count(), message).to.eventually.equal(number);
 }
 
 function expectRowCountAbove(gridId, number) {
@@ -63,9 +59,9 @@ function expectColumnCount(gridId, number) {
  *   const row = this.getRow( gridId, rowNum );
  * </pre>
  */
-function getRow( gridId, rowNum ) {
-  return getGrid( gridId )
-    .element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( rowNum )  );
+function getRow(gridId, rowNum) {
+  return getGrid(gridId)
+    .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(rowNum));
 }
 
 // takes in an array of column texts and asserts they are the column headers
@@ -80,7 +76,7 @@ function expectHeaderColumns(gridId, expectedColumns) {
   ).to.eventually.equal(expectedColumns.length);
 
   headerColumns.getText().then(columnTexts => {
-    columnTexts = columnTexts.map(function trimText (text) {
+    columnTexts = columnTexts.map(function trimText(text) {
       return text.replace(/^\s+/, '').replace(/\s+$/, '');
     });
 
@@ -100,16 +96,17 @@ function expectHeaderColumns(gridId, expectedColumns) {
  *   const row = gridUtils.selectRow( 'myGrid', 0 );
  * </pre>
  */
-function selectRow( gridId, rowNum ) {
+function selectRow(gridId, rowNum) {
   // NOTE: Can't do .click() as it doesn't work when webdriving Firefox
-  const row = getRow( gridId, rowNum );
-  const btn = row.element( by.css('.ui-grid-selection-row-header-buttons') );
-  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp().perform();
+  const row = getRow(gridId, rowNum);
+  const btn = row.element(by.css('.ui-grid-selection-row-header-buttons'));
+  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp()
+    .perform();
 }
 
 exports.getGrid = getGrid;
 exports.getRows = getRows;
-exports.getRow  = getRow;
+exports.getRow = getRow;
 exports.getColumns = getColumns;
 exports.getCell = getCell;
 exports.expectRowCount = expectRowCount;

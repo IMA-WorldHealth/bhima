@@ -16,16 +16,16 @@
  */
 
 
-const _    = require('lodash');
+const _ = require('lodash');
 const uuid = require('node-uuid');
 
 const util = require('../../lib/util');
-const db   = require('../../lib/db');
+const db = require('../../lib/db');
 
-const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
-
 const identifiers = require('../../config/identifiers');
+const FilterParser = require('../../lib/filter');
+
 const entityIdentifier = identifiers.VOUCHER.key;
 
 /** Get list of vouchers */
@@ -37,61 +37,112 @@ exports.detail = detail;
 /** Create a new voucher record */
 exports.create = create;
 
-exports.getVouchers = getVouchers;
+exports.find = find;
+exports.lookupVoucher = lookupVoucher;
 
 /**
  * GET /vouchers
  *
  * @method list
+ *
+ * @description
+ * Lists all the vouchers in the database.  Uses the FilterParser to ensure
+ * that searching is supported.
  */
 function list(req, res, next) {
-  let dateConditon = null;
-  let detailed = !util.isFalsy(req.query.detailed) ? 1 : 0;
-  let query = getSql(detailed);
-
-  // convert binary params if they exist
-  if (req.query.document_uuid) {
-    req.query.document_uuid = db.bid(req.query.document_uuid);
-  }
-
-  // the date conditions string
-  if (req.query.dateFrom && req.query.dateTo) {
-    dateConditon = 'DATE(v.date) BETWEEN DATE(?) AND DATE(?)';
-  }
-
-  // remove detailed for queryCondition
-  delete req.query.detailed;
-
-  // build query and parameters correctly
-  let builder = util.queryCondition(query, req.query, null, dateConditon);
-
-  // grouping for avoid doublons of detailed request
-  builder.query += !detailed ? ' GROUP BY v.uuid ' : '';
-
-  db.exec(builder.query, builder.conditions)
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+  find(req.query)
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 /**
  * GET /vouchers/:uuid
  *
  * @method detail
+ *
+ * @description
+ * This HTTP interface returns a single voucher in detail
  */
 function detail(req, res, next) {
-  getVouchers(req.params.uuid)
-    .then(function (rows) {
-      if (!rows.length) {
-        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
-      }
-
-      let record = rows[0];
-
-      res.status(200).json(record);
-    })
+  lookupVoucher(req.params.uuid)
+    .then(voucher => res.status(200).json(voucher))
     .catch(next)
     .done();
+}
+
+function lookupVoucher(vUuid) {
+  let voucher;
+
+  const sql = `
+    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference
+    FROM voucher v
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
+    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
+    WHERE v.uuid = ?;
+  `;
+
+  const itemSql = `
+    SELECT BUID(vi.uuid) AS uuid, vi.debit, vi.credit, vi.account_id, a.number, a.label,
+      BUID(vi.document_uuid) as document_uuid, document_map.text AS document_reference,
+      BUID(entity_uuid) AS entity_uuid, entity_map.text AS entity_reference
+    FROM voucher_item vi
+    JOIN account a ON a.id = vi.account_id
+    LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
+    LEFT JOIN document_map ON document_map.uuid = vi.document_uuid
+    WHERE vi.voucher_uuid = ?;
+  `;
+
+  return db.one(sql, [db.bid(vUuid)])
+    .then((record) => {
+      voucher = record;
+      return db.exec(itemSql, [db.bid(vUuid)]);
+    })
+    .then((items) => {
+      voucher.items = items;
+      return voucher;
+    });
+}
+
+function find(options) {
+  const filters = new FilterParser(options, { tableAlias: 'v' });
+
+  const sql = `
+    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
+      BUID(v.reference_uuid) AS reference_uuid
+    FROM voucher v
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
+    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
+  `;
+
+  delete options.detailed;
+
+  filters.dateFrom('dateFrom', 'date');
+  filters.dateTo('dateTo', 'date');
+
+  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
+  filters.custom('reference', referenceStatement);
+
+  filters.fullText('description');
+
+  // @todo - could this be improved
+  filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
+
+  // filter reversed cash records
+  filters.reversed('reversed');
+
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY v.date DESC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
 
 
@@ -101,7 +152,6 @@ function detail(req, res, next) {
  * @method create
  */
 function create(req, res, next) {
-
   // alias both the voucher and the voucher items
   const voucher = req.body.voucher;
   let items = req.body.voucher.items || [];
@@ -148,14 +198,16 @@ function create(req, res, next) {
   });
 
   // map items into an array of arrays
-  items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid'));
+  items = _.map(items,
+    util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid')
+  );
 
   // initialise the transaction handler
   const transaction = db.transaction();
 
   // build the SQL query
   transaction
-    .addQuery('INSERT INTO voucher SET ?', [ voucher ])
+    .addQuery('INSERT INTO voucher SET ?', [voucher])
     .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?', [ items ])
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
@@ -163,109 +215,4 @@ function create(req, res, next) {
     .then(() => res.status(201).json({ uuid: vuid }))
     .catch(next)
     .done();
-}
-
-/**
- * @function getVouchers
- * @param {null|string} uuid The voucher uuid, returns list of voucher according the uuid
- * @param {null|object} query The req.query object, retunrs list of voucher according the query,
- * @return promise
- */
-function getVouchers(uuid, request) {
-  let detailed = request && !util.isFalsy(request.detailed) ? 1: 0;
-
-  // sql detailed or not for voucher
-  let sql = getSql(detailed);
-
-  // binary uuid
-  let bid = uuid ? db.bid(uuid) : null;
-
-  // sql params
-  let sqlParams = [];
-
-  // query condition variables
-  let hasRequest = !!request;
-  let hasDates =  !!request && !util.isFalsy(request.dateFrom) && !util.isFalsy(request.dateTo);
-  let hasUuid = !!uuid;
-
-  if (hasRequest && hasDates && hasUuid) {
-
-    /**
-     * request is given but with dates, and uuid is also given :
-     * (hasRequest && hasDates && hasUuid)
-     */
-    sql += 'WHERE v.uuid = ? AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
-    sqlParams = [];
-    sqlParams.push(bid);
-    sqlParams.push(request.dateFrom);
-    sqlParams.push(request.dateTo);
-
-  } else if ((hasRequest && !hasDates && hasUuid) || (!hasRequest && hasUuid)) {
-
-    /**
-     * request is given but without dates, and uuid is also given :
-     * (hasRequest && !hasDates && hasUuid)
-     *
-     * request is not given, and uuid is given :
-     * (!hasRequest && hasUuid)
-     */
-    sql += 'WHERE v.uuid = ?';
-    sqlParams = [];
-    sqlParams.push(bid);
-
-  } else if (hasRequest && hasDates && !hasUuid) {
-
-    /**
-     * request is given with dates, and uuid is not given :
-     * (hasRequest && hasDates && !hasUuid)
-     */
-    sql += 'WHERE DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
-    sqlParams = [];
-    sqlParams.push(request.dateFrom);
-    sqlParams.push(request.dateTo);
-
-  } else {
-
-    sql += '';
-    sqlParams = [];
-
-  }
-
-  sql += !detailed ? ' GROUP BY v.uuid ' : '';
-
-  sql += ' ORDER BY v.date ';
-
-  return db.exec(sql, sqlParams);
-}
-
-function getSql(detailed) {
-  let sql = `
-    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      BUID(vi.document_uuid) AS document_uuid
-    FROM voucher v
-    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
-    JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id
-    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
-  `;
-
-  let detailedSql = `
-    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, v.user_id, v.type_id, BUID(vi.document_uuid) as document_uuid,
-      BUID(vi.uuid) AS voucher_item_uuid, vi.account_id, vi.debit, transaction_type.text,
-      vi.credit, a.number, a.label, u.display_name,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      entity_map.text AS entity_reference, document_map.text AS document_reference
-    FROM voucher v
-    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
-    JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id
-    LEFT JOIN transaction_type ON v.type_id = transaction_type.id
-    JOIN account a ON a.id = vi.account_id
-    LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
-    LEFT JOIN document_map ON document_map.uuid = vi.document_uuid `;
-
-  return !util.isFalsy(detailed) ? detailedSql : sql;
 }

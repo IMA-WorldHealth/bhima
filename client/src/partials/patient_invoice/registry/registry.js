@@ -165,7 +165,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
- //Call the opening of Modal
+ // Call the opening of Modal
   function openModal(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (success) {

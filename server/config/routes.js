@@ -244,7 +244,7 @@ exports.configure = function configure(app) {
   app.get('/tree', tree.generate);
 
   // snis controller
-  app.get('/snis/healthZones',snis.healthZones);
+  app.get('/snis/healthZones', snis.healthZones);
 
   // Employee management
   app.get('/employee_list/', employees.list);

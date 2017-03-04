@@ -20,7 +20,7 @@
         </h3>
         <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
         <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
-        <div>{{> barcode value=details.barcode}}</div>        
+        <div>{{> barcode value=details.barcode}}</div>
       </div>
     </div>
   </header>
@@ -50,7 +50,7 @@
       </tr>
     </thead>
     <tbody>
-      {{#each rows}}
+      {{#each items}}
         <tr>
           <td>{{number}}</td>
           <td>{{label}}</td>
@@ -64,8 +64,8 @@
     <tfoot>
       <tr>
         <th colspan="2" class="text-right">{{translate 'FORM.LABELS.TOTAL'}}</th>
-        <th class="text-right">{{currency (sum rows 'debit') details.currency_id}}</th>
-        <th class="text-right">{{currency (sum rows 'credit') details.currency_id}}</th>
+        <th class="text-right">{{currency (sum items 'debit') details.currency_id}}</th>
+        <th class="text-right">{{currency (sum items 'credit') details.currency_id}}</th>
         <th colspan="2"></th>
       </tr>
     </tfoot>

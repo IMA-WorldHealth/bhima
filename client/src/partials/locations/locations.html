@@ -9,32 +9,30 @@
 
 <!-- Menu to manage the various locations -->
 <div class="flex-util">
-  <a href="#/locations/village/" id="village" class="btn btn-default btn-sm" style="margin: 0 2px;">
-    <span class="glyphicon glyphicon-home"></span> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}
-  </a>
+  <button ui-sref="locationsVillage" id="village" class="btn btn-default btn-sm" style="margin: 0 2px;" href>
+    <span class="glyphicon glyphicon-home"></span> <span translate>LOCATION.MANAGE_VILLAGE</span>
+  </button>
 
-  <a href="#/locations/sector/" id="sector" class="btn btn-default btn-sm" style="margin: 0 2px;">
-    <span class="glyphicon glyphicon-th"></span> {{ 'LOCATION.MANAGE_SECTOR' | translate }}
-  </a>
+  <button ui-sref="locationsSector" id="sector" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-th"></span> <span translate>LOCATION.MANAGE_SECTOR</span>
+  </button>
 
-  <a href="#/locations/province/" id="province"  class="btn btn-default btn-sm" style="margin: 0 2px;">
-    <span class="glyphicon glyphicon-map-marker"></span> {{ 'LOCATION.MANAGE_PROVINCE' | translate }}
-  </a>
+  <button ui-sref="locationsProvince" id="province"  class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-map-marker"></span> <span translate>LOCATION.MANAGE_PROVINCE</span>
+  </button>
 
-  <a href="#/locations/country/" id="country" class="btn btn-default btn-sm" style="margin: 0 2px;">
-    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_COUNTRY' | translate }}
-  </a>
-
+  <button ui-sref="locationsCountry" id="country" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-globe"></span> <span translate>LOCATION.MANAGE_COUNTRY</span>
+  </button>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-    <!-- Complete list of existing locations -->
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading">
-            {{ "LOCATION.REGISTERED" | translate }}
+          <div class="panel-heading" translate>
+            LOCATION.REGISTERED
           </div>
           <table class="table table-condensed">
             <thead>
@@ -50,7 +48,7 @@
                 <td colspan="4"><loading-indicator></loading-indicator></td>
               </tr>
 
-              <tr ng-repeat="location in LocationCtrl.locations | orderBy:'village' | orderBy:'sector' | orderBy:'province' | orderBy:'country'">
+              <tr ng-repeat="location in LocationCtrl.locations | orderBy:'village' | orderBy:'sector' | orderBy:'province'">
                 <td>{{ location.village }}</td>
                 <td>{{ location.sector }}</td>
                 <td>{{ location.province }}</td>

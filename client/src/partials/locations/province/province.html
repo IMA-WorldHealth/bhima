@@ -17,9 +17,9 @@
 
 <!-- Links to the main menu of management maps as well as the button for adding provinces -->
 <div class="flex-util">
-  <a href="#/locations" class="btn btn-default btn-sm">
+  <button ui-sref="locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
-  </a>
+  </button>
 </div>
 
 
@@ -95,7 +95,7 @@
                   ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
                   ng-change="ProvinceCtrl.loadProvinces()"
                   required>
-                  <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
+                  <option value="" disabled>{{ ProvinceCtrl.messages.country | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
