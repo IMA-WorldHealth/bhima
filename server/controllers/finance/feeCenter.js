@@ -10,8 +10,8 @@
 **/
 
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
 /**
@@ -19,21 +19,19 @@ const FilterParser = require('../../lib/filter');
 *
 * @example
 * // GET /fee_centers : Get list of fee_centers
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/feeCenter');
 * feeCenters.list(req, res, next);
 */
-
 function list (req, res, next) {
-  'use strict';
 
-  let ordering = 'ORDER BY fc.label';
-  let is_detailed = Boolean(Number(req.query.detailed));
-  let detailed = is_detailed ? ', fc.note, fc.is_principal, fc.project_id, fc.is_cost, p.name, p.abbr, p.enterprise_id, p.zs_id ' : '';
+  const ordering = 'ORDER BY fc.label';
+  const is_detailed = Boolean(Number(req.query.detailed));
+  const detailed = is_detailed ? ', fc.note, fc.is_principal, fc.project_id, fc.is_cost, p.name, p.abbr, p.enterprise_id, p.zs_id ' : '';
 
-  let sql =
+  const sql =
     `SELECT fc.id, fc.label, fc.is_cost ${detailed} FROM fee_center AS fc JOIN project as p on fc.project_id = p.id`;
 
-  let notInStatement = `(fc.id NOT IN (SELECT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id) UNION SELECT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) AND ?)`;
+  const notInStatement = `(fc.id NOT IN (SELECT DISTINCT s.cc_id FROM service AS s WHERE NOT ISNULL(s.cc_id) UNION SELECT DISTINCT s.pc_id FROM service AS s WHERE NOT ISNULL(s.pc_id)) AND ?)`;
 
   let filterParser = new FilterParser(req.query, { tableAlias : 'fc' });
 
@@ -42,8 +40,8 @@ function list (req, res, next) {
   filterParser.custom('available', notInStatement, req.query.available);
   filterParser.setOrder(ordering);
 
-  let query = filterParser.applyQuery(sql);
-  let params = filterParser.parameters();
+  const query = filterParser.applyQuery(sql);
+  const params = filterParser.parameters();
 
   db.exec(query, params)
   .then(function (rows) {
@@ -58,15 +56,13 @@ function list (req, res, next) {
 *
 * @example
 * // POST /fee_centers : Insert a fee center
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/feeCenter');
 * feeCenters.create(req, res, next);
 */
-
 function create (req, res, next) {
-  'use strict';
 
-  var record = req.body;
-  var createFeeCenterQuery = 'INSERT INTO fee_center SET ?';
+  let record = req.body;
+  const createFeeCenterQuery = 'INSERT INTO fee_center SET ?';
 
   delete record.id;
 
@@ -83,16 +79,14 @@ function create (req, res, next) {
 *
 * @example
 * // PUT /fee_centers : update a fee center
-* var feeCenters = require('finance/fee_center');
+* var feeCenters = require('finance/feeCenter');
 * feeCenters.update(req, res, next);
 */
-
 function update (req, res, next) {
-  'use strict';
 
-  var queryData = req.body;
-  var feeCenterId = req.params.id;
-  var updateFeeCenterQuery = 'UPDATE fee_center SET ? WHERE id = ?';
+  let queryData = req.body;
+  const feeCenterId = req.params.id;
+  const updateFeeCenterQuery = 'UPDATE fee_center SET ? WHERE id = ?';
 
   delete queryData.id;
 
@@ -119,13 +113,13 @@ function update (req, res, next) {
 *
 * @example
 * // DELETE /fee_centers : delete a fee center
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/feeCenter');
 * feeCenters.remove(req, res, next);
 */
-
 function remove (req, res, next) {
-  var feeCenterId = req.params.id;
-  var removeFeeCenterQuery = 'DELETE FROM fee_center WHERE id = ?';
+
+  const feeCenterId = req.params.id;
+  const removeFeeCenterQuery = 'DELETE FROM fee_center WHERE id = ?';
 
   return db.exec(removeFeeCenterQuery, [feeCenterId])
     .then(function (res) {
@@ -142,12 +136,10 @@ function remove (req, res, next) {
 * Return a fee center details from the database
 * @example
 * // GET /fee_centers : returns a fee center detail
-* var feeCenters = require('finance/fee_centers');
+* var feeCenters = require('finance/feeCenters');
 * feeCenters.detail(req, res, next);
 */
-
 function detail(req, res, next) {
-  'use strict';
 
   lookupFeeCenter(req.params.id)
     .then(function (row) {
@@ -163,11 +155,9 @@ function detail(req, res, next) {
 * @param {integer} id of a fee center
 *
 */
-
 function lookupFeeCenter(id) {
-  'use strict';
 
-  var sql =
+  const sql =
     'SELECT fc.id, fc.label, fc.is_cost, fc.note, fc.is_principal, fc.project_id FROM fee_center AS fc WHERE fc.id = ?';
 
   return db.one(sql, id)
@@ -185,30 +175,29 @@ function lookupFeeCenter(id) {
 *
 * @example
 * // GET /fee_centers/:id/value : returns a value of the fee center
-* var feeCenters = require('finance/fee_center');
+* var feeCenters = require('finance/feeCenter');
 * feeCenters.getFeeValue(req, res, next);
 */
-
 function getFeeValue (req, res, next){
-  var sql = null;
-
 
   lookupFeeCenter(req.params.id)
     .then(function (){
 
-      sql =
+      //The value will be multiplied by -1 if the fee center has not is_cost property checked
+      const sql =
         `
         SELECT
-          IFNULL(IF(t.is_cost = 1, SUM(t.debit_equiv - t.credit_equiv), SUM(t.credit_equiv - t.debit_equiv)), 0) AS value, t.id
+          IFNULL(IF(t.is_cost = 1, value, value * -1), 0) AS value, t.id
         FROM
           (
             SELECT
-              gl.debit_equiv, gl.credit_equiv, f.is_cost, f.id
+              SUM(gl.debit_equiv - gl.credit_equiv) AS value, f.is_cost, f.id
             FROM
               general_ledger AS gl
             JOIN
               fee_center AS f ON gl.fc_id = f.id
             WHERE gl.fc_id = ?
+            GROUP BY gl.fc_id
           ) AS t;
          `;
 
