@@ -9,60 +9,66 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h3 class="text-center text-uppercase">{{translate 'GENERAL_LEDGER.ACCOUNT_SLIP'}}</h3>
-      <h4 class="text-center"><strong>{{ account.number }}</strong></h4>
-      <h4 class="text-center text-uppercase"><strong>{{ account.label }}</strong></h4>
+      <h3 class="text-center text-uppercase">
+        {{translate 'GENERAL_LEDGER.ACCOUNT_SLIP'}}
+      </h3>
+
+      <h4 class="text-center text-capitalize">
+        <strong>{{ account.number }} | {{ account.label }}</strong>
+      </h4>
 
       <section>
-      <table class="table table-condensed table-striped table-report table-bordered">
-        <thead>
-          <tr class="text-capitalize text-center" style="background-color: #ddd;">
-            <th style="width: 15%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
-            <th style="width: 15%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
-            <th style="width: 40%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
-            <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
-            <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each transactions}}
-            <tr>
-              <td>{{trans_id}}</td>
-              <td>{{date trans_date}}</td>
-              <td>{{description}}</td>
-              <td>{{currency debit ../metadata.enterprise.currency_id}}</td>
-              <td>{{currency credit ../metadata.enterprise.currency_id}}</td>
+        <table class="table table-condensed table-striped table-report table-bordered">
+          <thead>
+            <tr class="text-capitalize text-center" style="background-color: #ddd;">
+              <th>{{translate "TABLE.COLUMNS.TRANSACTION"}}</th>
+              <th>{{translate "TABLE.COLUMNS.REFERENCE"}}</th>
+              <th>{{translate "TABLE.COLUMNS.DATE"}}</th>
+              <th>{{translate "TABLE.COLUMNS.DESCRIPTION"}}</th>
+              <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT"}}</th>
+              <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT"}}</th>
+              <th style="width: 15%;">{{translate "TABLE.COLUMNS.BALANCE"}}</th>
             </tr>
-          {{else}}
-            {{> emptyTable columns=5}}
-          {{/each}}
-        </tbody>
-        <tfoot>
-          <tr style="background-color: #ddd;">
-            <td colspan="3"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
-            <td><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
-            <td><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
-          </tr>
-        </tfoot>
-      </table>
-      <table class="table table-condensed">
-        <tr>
-          <th colspan="5" class="text-right text-uppercase">
-            <strong>
-              {{#if hasDebtorSold}}
-                {{translate "TABLE.COLUMNS.DEBTOR_SOLD" }} 
-                {{currency sum.balance metadata.enterprise.currency_id}}
-              {{else}}
-                {{translate "TABLE.COLUMNS.CREDITOR_SOLD" }} 
-                {{currency (multiply sum.balance -1) metadata.enterprise.currency_id}}
-              {{/if}}
-            </strong>
-          </th>
-        </tr>
-      </table>
-    </section>
+          </thead>
+          <tbody>
+            {{#each transactions}}
+              <tr>
+                <td>{{date trans_date}}</td>
+                <td>{{trans_id}}</td>
+                <td>{{document_reference}}</td>
+                <td>{{description}}</td>
+                <td class="text-right">{{currency debit ../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{currency credit ../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{currency cumsum ../metadata.enterprise.currency_id}}</td>
+              </tr>
+            {{else}}
+              {{> emptyTable columns=7}}
+            {{/each}}
+          </tbody>
+          <tfoot>
+            <tr style="background-color: #ddd;">
+              <th colspan="4">{{translate "FORM.LABELS.TOTAL"}}</th>
+              <th>{{currency sum.debit metadata.enterprise.currency_id}}</th>
+              <th>{{currency sum.credit metadata.enterprise.currency_id}}</th>
+              <th>{{currency sum.balance metadata.enterprise.currency_id}}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+    </div>
+  </div>
 
-
+  <div class="row">
+    <div class="col-xs-12 text-right text-uppercase">
+      <strong>
+        {{#if hasDebtorSold}}
+          {{translate "TABLE.COLUMNS.DEBTOR_SOLD"}}
+          {{currency sum.balance metadata.enterprise.currency_id}}
+        {{else}}
+          {{translate "TABLE.COLUMNS.CREDITOR_SOLD"}}
+          {{currency (multiply sum.balance -1) metadata.enterprise.currency_id}}
+        {{/if}}
+      </strong>
     </div>
   </div>
 </body>
