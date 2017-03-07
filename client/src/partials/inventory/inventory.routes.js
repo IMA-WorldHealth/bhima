@@ -44,6 +44,7 @@ angular.module('bhima.routes')
           uuid : { squash : true, value : null },
           created : false,  // default for transitioning from child states
           updated : false,  // default for transitioning from child states
+          filters : null
         }
       });
       // @TODO IMPLEMENT THEM

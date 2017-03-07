@@ -8,9 +8,10 @@
 
 const uuid = require('node-uuid');
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 // this should be a const in future ES versions
-var errors = {
+const errors = {
   MISSING_PARAMETERS : {
     httpStatus : 400,
     code   : 'ERR_MISSING_PARAMETERS',
@@ -42,6 +43,7 @@ exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
 exports.createItemsMetadata = createItemsMetadata;
 exports.updateItemsMetadata = updateItemsMetadata;
+exports.getItemsMetadataSearch = getItemsMetadataSearch;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
@@ -100,7 +102,7 @@ function updateItemsMetadata(record, identifier) {
 function getIds() {
 
   // TODO - should we be filtering on enterprise id in these queries?
-  var sql =
+  let sql =
     'SELECT i.uuid FROM inventory AS i;';
 
   return db.exec(sql);
@@ -115,7 +117,7 @@ function getIds() {
 */
 function getItemsMetadata() {
 
-  var sql =
+  let sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
@@ -151,6 +153,29 @@ function getItemsMetadataById(uuid) {
     WHERE i.uuid = ?;`;
 
   return db.one(sql, [db.bid(uuid), uuid, 'inventory']);
+}
+
+
+function getItemsMetadataSearch(params){
+  let filters = new FilterParser(params, { tableAlias : 'inventory' });
+
+  let sql =
+    `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
+      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id, inventory.unit_weight,
+      inventory.unit_volume, ig.sales_account, inventory.default_quantity
+    FROM inventory JOIN inventory_type AS it
+      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
+      inventory.unit_id = iu.id`;
+
+  filters.fullText('text', 'text', 'inventory');
+  filters.setOrder('ORDER BY inventory.code ASC');  
+  let query = filters.applyQuery(sql);
+  let parameters = filters.parameters();
+  
+  return db.exec(query, parameters);
+
 }
 
 /**

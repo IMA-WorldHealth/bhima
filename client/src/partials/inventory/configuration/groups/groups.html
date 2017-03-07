@@ -36,7 +36,11 @@
         <tr ng-repeat="group in GroupsCtrl.groupList | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
-          <td>{{ group.inventory_counted }} <small class="text-lowercase" translate> INVENTORY.ELEMENT</small>(s)</td>
+          <td>
+            <a ui-sref="inventory.list({ filters : { group_uuid : group.uuid }})" href>
+              {{ group.inventory_counted }} <small class="text-lowercase" translate> INVENTORY.ELEMENT</small>(s)<span class="fa fa-link"></span>
+            </a>
+          </td>
           <td class="text-center">{{ group.saleAccountNumber }}</td>
           <td class="text-center">{{ group.stockAccountNumber }}</td>
           <td class="text-center">{{ group.cogsAccountNumber }}</td>

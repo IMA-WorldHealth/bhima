@@ -50,6 +50,7 @@ exports.createInventoryItems    = createInventoryItems;
 exports.updateInventoryItems    = updateInventoryItems;
 exports.getInventoryItems       = getInventoryItems;
 exports.getInventoryItemsById   = getInventoryItemsById;
+exports.searchInventoryItems    = searchInventoryItems;
 
 // expose inventory group methods
 exports.createInventoryGroups  = createInventoryGroups;
@@ -143,6 +144,28 @@ function getInventoryItems(req, res, next) {
   })
   .done();
 }
+
+
+/**
+* GET /inventory/metadata/search
+* Returns a description the inventory items filter by params.
+*
+* @function searchInventoryItems
+*/
+function searchInventoryItems(req, res, next) {
+  var params = req.query;
+  
+  core.getItemsMetadataSearch(params)
+  .then(function (row) {
+    res.status(200).json(row);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+
+}
+
 
 /**
 * GET /inventory/metadata/:uuid
