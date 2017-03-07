@@ -306,12 +306,8 @@
   },
   "FEE_CENTER" : {
     "ADDING_FEE_CENTER" : "Adding Fee Center",
-    "COST_CENTER" : "Cost center",
-    "CREATE"        : "Create",
     "PRINCIPAL"     : "Main",
-    "PROFIT_CENTER" : "Profit center",
     "RECORD_SAME"   : "No edited data",
-    "UPDATE"        : "Update",
     "UPDATING_FEE_CENTER" : "Updating"
   },
   "FISCAL": {
@@ -1397,6 +1393,7 @@
       "ERROR_TYPE"         : "Error Type",
       "ENTERPRISE_ID"      : "ID Enterprise",
       "EXCHANGE_RATE"      : "Exchange Rate",
+      "FEE_CENTER"         : "Fee Center",
       "FILTERING": {
         "LABEL"   : "Filter"
       },

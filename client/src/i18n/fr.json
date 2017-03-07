@@ -308,12 +308,8 @@
   },
   "FEE_CENTER" : {
     "ADDING_FEE_CENTER" : "Ajout Centre Frais",
-    "COST_CENTER" : "Centre de cout",
-    "CREATE"        : "Creer",
     "PRINCIPAL"     : "Principal",
-    "PROFIT_CENTER" : "Centre de profit",
     "RECORD_SAME"   : "Aucune donnee n'a ete modifiee",
-    "UPDATE"        : "Modifier",
     "UPDATING_FEE_CENTER" : "Modification"
   },
   "FISCAL": {
@@ -1417,6 +1413,7 @@
       "ENTERPRISE_ID"      : "ID enterprise",
       "ERROR_TYPE"         : "Type d'erreur",
       "EXCHANGE_RATE"      : "Taux de change",
+      "FEE_CENTER"         : "Centre de frai",
       "FILTERING": {
         "LABEL"   : "Filtre"
       },

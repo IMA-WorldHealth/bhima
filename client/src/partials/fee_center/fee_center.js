@@ -1,58 +1,34 @@
-'use strict';
-
-// controller definition
 angular.module('bhima.controllers')
 .controller('FeeCenterController', FeeCenterController);
 
-// dependencies injection
-FeeCenterController.$inject = ['FeeCenterService', 'NotifyService','$state', 'SessionService'];
+FeeCenterController.$inject = ['FeeCenterService', 'NotifyService', '$state', 'SessionService'];
 
-/** Transaction Type Controller  */
 function FeeCenterController(FeeCenterService, Notify, $state, Session) {
-  var vm = this;
+  window.state = $state;
+  let vm = this;
 
   vm.enterprise = Session.enterprise;
 
-  // edit button template
-  var actionTemplate = '<div class="ui-grid-cell-contents">' +
-    '<a href="" id="edit-link" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ng-click="grid.appScope.edit(row.entity)"> ' +
-    '<i class="fa fa-edit"></i>{{ "FORM.LABELS.EDIT" | translate }}</a>|' +
-    '<a ng-if="row.entity.is_principal !==1" href="" title="{{ \'FORM.LABELS.ASSIGN\' | translate }}" ng-click="grid.appScope.editFeeCenter(row.entity)"> ' +
-    '<i class="fa fa-share-alt"></i>{{ "FORM.LABELS.ASSIGN" | translate }}</a>' +
-    '</div>';
 
-  var infoTemplate = '<div class="ui-grid-cell-contents">' +
-    '<a href="" uib-popover="{{grid.appScope.showNote(row.entity.note)}}" ' +
-    'popover-placement="left"' +
-    'popover-trigger="\'mouseenter\'"' +
-    'popover-append-to-body="true"' +
-    'data-edit-type="{{ row.entity.label }}">' +
-    '<i class="fa fa-info-circle" aria-hidden="true"></i>' +
-    '</a></div>';
-
-  var columns = [
+  let columns = [
       { field : 'label', displayName : 'FORM.LABELS.TEXT',
         headerCellFilter: 'translate', cellFilter: 'translate'},
 
-      { field : 'is_cost', displayName : 'FORM.LABELS.TYPE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'partials/templates/grid/feeCenterType.tmpl.html'},
-
-      { field : 'value', displayName : 'FORM.LABELS.VALUE',
-        headerCellFilter: 'translate', 
-        cellTemplate : '/partials/templates/grid/fee_center_value.cell.html'},
-
       { field : 'principalState', displayName : 'FORM.LABELS.PRINCIPAL',
         headerCellFilter: 'translate'},
+
+      { field : 'value', displayName : 'FORM.LABELS.VALUE',
+        headerCellFilter: 'translate',
+        cellFilter: 'currency:' + vm.enterprise.currency_id},
 
       { field : 'name', displayName : 'FORM.LABELS.PROJECT',
         headerCellFilter: 'translate'},
 
       { field : 'info', displayName : 'TABLE.COLUMNS.NOTE', headerCellFilter: 'translate',
-        cellTemplate : infoTemplate},
+        cellTemplate : '/partials/templates/grid/fee_center_info.cell.html'},
 
       { field : 'action', displayName : '...',
-        cellTemplate: actionTemplate,
+        cellTemplate : '/partials/templates/grid/fee_center_action.cell.html',
         enableFiltering: false,
         enableColumnMenu: false
       }
@@ -70,12 +46,8 @@ function FeeCenterController(FeeCenterService, Notify, $state, Session) {
     $state.go('feeCenter.edit', {id : feeCenter.id, creating : false}, {reload : false});
   }
 
-  function showNote(note) {
-    return note;
-  }
-
   function startup() {
-    FeeCenterService.fullRead()
+    FeeCenterService.read(null, { detailed : 1})
     .then(function (list) {
       vm.gridOptions.data = FeeCenterService.formatRecord(list);
     })
@@ -88,6 +60,5 @@ function FeeCenterController(FeeCenterService, Notify, $state, Session) {
   // startup the module
   startup();
 
-  vm.showNote = showNote;
   vm.edit = edit;
 }

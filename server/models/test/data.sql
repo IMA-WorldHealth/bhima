@@ -61,7 +61,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (6,1),
 
 -- Fee center
-
 (7, 1),
 
 -- Posting Journal Management
@@ -279,20 +278,20 @@ INSERT INTO `reference` VALUES
   (4,0,'XX','Deletable reference 1',1,NULL,NULL);
 
 INSERT INTO `fee_center` VALUES
-  (1,1,'fee center 1', 1, 1, 'fee center a principal cost center'),
-  (2,1,'fee center 2', 1, 0, 'fee center a auxiliary cost center'),
-  (3,1,'fee center 3', 1, 1, 'fee center a principal cost center'),
-  (4,1,'fee center 4', 1, 1, 'fee center a principal cost center'),
-  (5,1,'fee center 5', 0, 1, 'fee center a profit center always principal'),
-  (6,1,'fee center 6', 0, 1, 'fee center a profit center always principal'),
-  (7,1,'fee center 7', 0, 1, 'fee center a profit center always principal');
+  (1,1,'fee center 1', 1, 'fee center a principal cost center'),
+  (2,1,'fee center 2', 0, 'fee center a auxiliary cost center'),
+  (3,1,'fee center 3', 1, 'fee center a principal cost center'),
+  (4,1,'fee center 4', 1, 'fee center a principal cost center'),
+  (5,1,'fee center 5', 1, 'fee center a profit center always principal'),
+  (6,1,'fee center 6', 1, 'fee center a profit center always principal'),
+  (7,1,'fee center 7', 1, 'fee center a profit center always principal');
 
 
 -- Services
 INSERT INTO `service` VALUES
-  (1, 1, 'Test Service', 1, 5),
-  (2, 1, 'Administration', 3, 6),
-  (3, 1, 'Medecine Interne', 4, 7);
+  (1, 1, 'Test Service', 1),
+  (2, 1, 'Administration', 3),
+  (3, 1, 'Medecine Interne', 4);
 
 -- billing service configuration
 
@@ -357,7 +356,7 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
 
 INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1),
+  (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,NULL),
   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,1,2,1),
   (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1),
   (HUID(UUID()),1,1,16,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,1,2,1),

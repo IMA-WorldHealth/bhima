@@ -2,17 +2,15 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.ADMIN</li>
-      <li class="title" translate>SERVICE.TITLE</li>
+      <li class="active" translate>SERVICE.TITLE</li>
     </ol>
-
-    <div class="toolbar">
-      <div class="toolbar-item">
-        <button class="btn btn-default" id="create" ng-click="ServicesCtrl.create()" data-method="create" translate>
-          <span class="glyphicon glyphicon-plus-sign"></span> SERVICE.ADD_SERVICE
-        </button>
-      </div>
-    </div>
   </div>
+</div>
+
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" id="create" ng-click="ServicesCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'SERVICE.ADD_SERVICE' | translate }}
+  </button>
 </div>
 
 <div class="flex-content">
@@ -26,26 +24,30 @@
           </div>
           <table class="table table-condensed table-hover">
             <thead>
-              <tr>
-                <th translate>TABLE.COLUMNS.SERVICE</th>
-                <th colspan="3" translate>TABLE.COLUMNS.ACTION</th>
-              </tr>
+            <tr>
+              <th translate>TABLE.COLUMNS.ID</th>
+              <th translate>TABLE.COLUMNS.SERVICE</th>
+              <th translate>TABLE.COLUMNS.FEE_CENTER</th>
+              <th colspan="3" translate>TABLE.COLUMNS.ACTION</th>
+            </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
-                <td>{{ service.name }}</td>
-                <td>
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index+1 }}">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </a>
-                  <!-- <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index+1 }}"> -->
-                  <!--   <span class="glyphicon glyphicon-eye-open"></span> -->
-                  <!-- </a> -->
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index+1 }}">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </a>
-                </td>
-              </tr>
+            <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
+              <td>{{ service.id }}</td>
+              <td>{{ service.name }}</td>
+              <td>{{ service.fee_center_name }}</td>
+              <td>
+                <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index+1 }}">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+                <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index+1 }}">
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
+                <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index+1 }}">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </a>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -68,7 +70,7 @@
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4 translate>FORM.INFO.UPDATE_SUCCESS</h4>
+            <h4 translate>FORM.INFO.UPDATE_SUCCESS </h4>
             </p>
           </div>
         </div>
@@ -94,14 +96,14 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name" translate>FORM.LABELS.NAME</label>
-                <input type="text" class="form-control" name="name" autocomplete="off" ng-maxlength="ServicesCtrl.maxLength" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                <input type="text" class="form-control" name="name" ng-maxlength="ServicesCtrl.maxLength" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.ENTERPRISE</label>
                 <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
                   <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
                 </select>
@@ -110,20 +112,11 @@
                 </div>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cost_center_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fee_center_id.$invalid }">
+                <label class="control-label" translate>FORM.LABELS.FEE_CENTER</label>
                 <div>
-                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'" >
-                    <option value="" disabled> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.profit_center_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
-                <div>
-                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'" >
-                    <option value="" disabled> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  <select class="form-control" name="fee_center_id" ng-model="ServicesCtrl.service.fc_id" id="bhima-service-fee_center_id" ng-options="fc.id as fc.label for fc in ServicesCtrl.feeCenters | orderBy:'label'" >
+                    <option value="" disabled> -- {{ 'FORM.SELECT.FEE_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -147,14 +140,14 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name" translate>FORM.LABELS.NAME</label>
-                <input type="text" class="form-control" name="name" autocomplete="off" id="bhima-service-name" ng-maxlength="ServicesCtrl.maxLength" ng-model="ServicesCtrl.service.name" required>
+                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-maxlength="ServicesCtrl.maxLength" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.ENTERPRISE</label>
                 <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
                   <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
                 </select>
@@ -163,33 +156,49 @@
                 </div>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cost_center_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fee_center_id.$invalid }">
+                <label class="control-label" translate>FORM.LABELS.FEE_CENTER</label>
                 <div>
-                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cc_id" id="bhima-service-cost_center_id" ng-options="c.id as c.label for c in ServicesCtrl.costCenters | orderBy:'label'">
-                    <option value=""> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.profit_center_id.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
-                <div>
-                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.pc_id" id="bhima-service-profit_center_id" ng-options="p.id as p.label for p in ServicesCtrl.profitCenters | orderBy:'label'">
-                    <option value=""> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  <select class="form-control" name="fee_center_id" ng-model="ServicesCtrl.service.fc_id" id="bhima-service-fee_center_id" ng-options="fc.id as fc.label for c in ServicesCtrl.feeCenters | orderBy:'label'">
+                    <option value=""> -- {{ 'FORM.SELECT.FEE_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit" translate>
-                    FORM.BUTTONS.SUBMIT
-                  </button>
-                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
-                    FORM.BUTTONS.CANCEL
-                  </button>
+                <button class="btn btn-default" id="change_service" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SUBMIT
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.CANCEL
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="more">
+          <div class="panel-heading" translate>SERVICE.OVERVIEWING_SERVICE</div>
+          <div class="panel-body">
+            <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
+              <table class="table table-condensed">
+                <thead>
+                <tr>
+                  <th>{{ "TABLE.COLUMNS.SERVICE" | translate }}</th>
+                  <th>{{ "TABLE.COLUMNS.RESULT" | translate}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  ng-if="true">
+                  <td>{{ServicesCtrl.choosen.service}}</td>
+                  <td>{{(ServicesCtrl.choosen.value) | currency}}</td>
+                </tr>
+                <tr ng-if="false">
+                  <td colspan="2"><div class="alert alert-warning square" translate>TABLE.INFOS.NOT_AVAILABLE</div></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

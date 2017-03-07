@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents">
+  <a href="" id="edit-link" title="{{ 'FORM.LABELS.EDIT' | translate }}" ng-click="grid.appScope.edit(row.entity)">
+    <i class="fa fa-edit"></i>{{ "FORM.LABELS.EDIT" | translate }}
+  </a>|
+  <a ng-if="row.entity.is_principal !==1" href="" title="{{ 'FORM.LABELS.ASSIGN' | translate }}" ng-click="">
+    <i class="fa fa-share-alt"></i>{{ "FORM.LABELS.ASSIGN" | translate }}
+  </a>
+</div>

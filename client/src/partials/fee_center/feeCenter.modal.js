@@ -23,7 +23,7 @@ function FeeCenterModalController($state, Projects, FeeCenter, Notify) {
 
   if (!vm.isCreating) {
 
-    FeeCenter.fullRead($state.params.id)
+    FeeCenter.read($state.params.id, { detailed : 1})
       .then(function (fc) {
         vm.feeCenter = fc;
       })
@@ -33,8 +33,7 @@ function FeeCenterModalController($state, Projects, FeeCenter, Notify) {
   function submit(feeCenterForm) {
     var promise;
 
-    if (feeCenterForm.$invalid) { return; }
-    if (!feeCenterForm.$dirty) { return; }
+    if (feeCenterForm.$pristine) { return; }
 
     promise = (vm.isCreating) ? FeeCenter.create(vm.feeCenter) : FeeCenter.update(vm.feeCenter.id, vm.feeCenter);
 

@@ -28,18 +28,15 @@ const Topic = require('../../lib/topic');
  */
 function list(req, res, next) {
   let sql =
-    'SELECT s.id, s.name, s.cc_id, s.pc_id FROM service AS s';
+    'SELECT s.id, s.name, s.fc_id FROM service AS s';
 
   if (req.query.detailed === '1') {
     sql = `
       SELECT 
-s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id, e.name AS enterprise_name, 
-e.abbr, cc.id AS cc_id, cc.cost_center_name, pc.id AS pc_id, pc.profit_center_name 
-
-FROM service AS s
-JOIN enterprise AS e ON s.enterprise_id = e.id
-LEFT JOIN (SELECT fee_center.label AS cost_center_name, id FROM fee_center WHERE fee_center.is_cost = 1) AS cc ON s.cc_id = cc.id 
-LEFT JOIN (SELECT fee_center.label AS profit_center_name, id FROM fee_center WHERE fee_center.is_cost = 0) AS pc ON s.pc_id = pc.id`;
+        s.id, s.name, s.enterprise_id, s.fc_id, e.name AS enterprise_name, fc.label AS fee_center_name 
+      FROM service AS s
+      JOIN enterprise AS e ON s.enterprise_id = e.id
+      LEFT JOIN fee_center AS fc ON fc.id = s.id`;
  }
 
   sql += ' ORDER BY s.name;';

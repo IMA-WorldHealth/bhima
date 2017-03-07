@@ -1,13 +1,14 @@
 angular.module('bhima.controllers')
-.controller('ServicesController', ServicesController);
+  .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', '$translate', 'SessionService', 'ModalService', 'util', 'NotifyService'
+  'ServiceService', 'EnterpriseService', 'FinancialService', 'SessionService', 'ModalService', 'util'
 ];
 
-function ServicesController(Services, $translate, SessionService, ModalService, util, Notify) {
+function ServicesController(Services, Enterprises, FinancialService, SessionService, ModalService, util) {
   var vm = this;
 
+  vm.enterprises = [];
   vm.choosen = {};
   vm.state = 'default';
   vm.view = 'default';
@@ -21,6 +22,12 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
   vm.cancel = cancel;
   vm.submit = submit;
   vm.del    = del;
+  vm.more   = more;
+
+
+  function handler(error) {
+    vm.state.error();
+  }
 
   // sets the module view state
   function setState(state) {
@@ -32,9 +39,11 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
     // load Services
     refreshServices();
 
-    // Cost Center Assignment - not yet implemented in 2.x
-    // Profit Center Assignment - not yet implemented in 2.x
-
+    // load Enterprises
+    Enterprises.read().then(function (data) {
+      vm.enterprises = data;
+    }).catch(handler);
+    
     setState('default');
   }
 
@@ -55,6 +64,7 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
     vm.service= data;
     vm.view = 'update';
   }
+
   // switch to view more information about
   // data is an object that contains all the information of a service
   function more(data) {
@@ -82,34 +92,34 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
   // switch to delete warning mode
   function del(service) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
-     // if the user clicked cancel, reset the view and return
-       if (!bool) {
+      .then(function (bool){
+        // if the user clicked cancel, reset the view and return
+        if (!bool) {
           vm.view = 'default';
           return;
-       }
+        }
 
-      // if we get there, the user wants to delete a service
-      vm.view = 'delete_confirm';
-      Services.delete(service.id)
-      .then(function () {
-         vm.view = 'delete_success';
-         return refreshServices();
-      })
-      .catch(function (error) {
-        vm.HTTPError = error;
-        vm.view = 'delete_error';
+        // if we get there, the user wants to delete a service
+        vm.view = 'delete_confirm';
+        Services.delete(service.id)
+          .then(function () {
+            vm.view = 'delete_success';
+            return refreshServices();
+          })
+          .catch(function (error) {
+            vm.HTTPError = error;
+            vm.view = 'delete_error';
+          });
       });
-    });
   }
 
 
   // refresh the displayed Services
   function refreshServices() {
     return Services.read(null, { detailed : 1 })
-    .then(function (data) {
-      vm.services = data;
-    });
+      .then(function (data) {
+        vm.services = data;
+      });
   }
 
   // form submission
@@ -132,7 +142,7 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
         update(service.id);
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(Notify.handleError);
+      .catch(handler);
   }
 
   startup();
