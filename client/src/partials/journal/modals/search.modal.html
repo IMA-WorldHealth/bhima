@@ -87,6 +87,22 @@
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
+      <label class="control-label">
+        {{ 'FORM.LABELS.TRANSACTION' | translate }}
+      </label>
+      <span style="display:inline-block;" class="pull-right">
+        <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
+          <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+        </a>
+      </span>
+      <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.options.trans_id">
+      <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">
