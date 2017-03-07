@@ -65,6 +65,12 @@ function StockEntryController(Depots, Inventory, Notify,
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/entry/templates/lot.tmpl.html' },
 
+      { field            : 'expiration_date',
+        width            : 150,
+        displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
+        headerCellFilter : 'translate',
+        cellTemplate     : 'partials/stock/entry/templates/expiration.tmpl.html' },
+
       { field            : 'unit_price',
         width            : 150,
         displayName      : 'TABLE.COLUMNS.UNIT_PRICE',
@@ -83,12 +89,6 @@ function StockEntryController(Depots, Inventory, Notify,
         displayName      : 'TABLE.COLUMNS.AMOUNT',
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/entry/templates/cost.tmpl.html' },
-
-      { field            : 'expiration_date',
-        width            : 150,
-        displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
-        headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/entry/templates/expiration.tmpl.html' },
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/entry/templates/actions.tmpl.html' },
     ],
@@ -185,6 +185,7 @@ function StockEntryController(Depots, Inventory, Notify,
         item.inventory = findInventory(items[index].inventory_uuid);
         item.unit_cost = items[index].unit_price;
         item.quantity = items[index].quantity;
+        item.cost = item.quantity * item.unit_cost;
         configureItem(item);
       });
     } catch (err) {

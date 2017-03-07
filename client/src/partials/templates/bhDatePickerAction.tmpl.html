@@ -1,0 +1,10 @@
+<span class="text-action" ng-click="$ctrl.open()">
+  <span ng-show="$ctrl.label">
+    <i class="fa fa-calendar-check-o"></i> 
+    {{ $ctrl.label | date }}
+  </span>
+  <span ng-hide="$ctrl.label">
+    <i class="fa fa-calendar-o"></i>
+    <span translate>FORM.SELECT.DATE</span> 
+  </span>
+</span>

@@ -1,0 +1,26 @@
+<form name="DatePickerForm" bh-submit="$ctrl.submit()" data-confirm-modal bh-form-defaults novalidate>
+
+<div class="modal-body" style="margin: auto;">
+  <div
+    class="well well-sm"
+    uib-datepicker 
+    ng-model="$ctrl.selected" 
+    datepicker-options="$ctrl.options">
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="text-center">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="$ctrl.cancel()"
+      translate>FORM.BUTTONS.CANCEL</button>
+
+    <bh-loading-button loading-state="$ctrl.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</div>
+
+</form>

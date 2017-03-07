@@ -807,6 +807,7 @@
       "COUNTRY"            : "Select Country",
       "CREDITOR"           : "Select a Creditor",
       "CREDITOR_GROUP"     : "Select a Creditor Group",
+      "DATE"               : "Select a date",
       "DATE_INTERVAL"      : "Select a date interval",
       "DEBTOR_GROUP"       : "Select a Debtor Group",
       "ENTERPRISE"         : "Select an Enterprise",
