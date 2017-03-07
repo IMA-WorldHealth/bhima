@@ -1320,6 +1320,7 @@
     "DOCUMENT"        : "Document",
     "ENTRY"           : "Stock Entry",
     "ENTRY_DATE"      : "Entry Date",
+    "ENTRY_PURCHASE"  : "Purchase",
     "EXPIRATION_DATE" : "Expiration Date",
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_RISK" : "Expiration Risk",
@@ -1373,7 +1374,7 @@
     "UNIT_COST"       : "Unit cost"
   },
   "STOCK_FLUX" : {
-    "FROM_PURCHASE"    : "From Purchase",
+    "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
     "FROM_ADJUSTMENT"  : "From Adjustment",
     "FROM_PATIENT"     : "From Patient",

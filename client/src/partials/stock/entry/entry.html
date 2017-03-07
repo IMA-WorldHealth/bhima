@@ -8,7 +8,7 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title"><span translate>STOCK.EXIT</span> <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.exit_type}}</span></li>
+      <li class="title"><span translate>STOCK.ENTRY</span> <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.entry_type}}</span></li>
     </ol>
 
     <div class="toolbar">
@@ -30,83 +30,29 @@
 
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" bh-form-defaults novalidate>
 
-    <!-- destination -->
+    <!-- Activator -->
     <div class="row">
-      <!--patient -->
+
+      <!--  -->
       <div class="col-xs-3">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'patient'}" 
-          ng-click="StockCtrl.selectExitType('patient')">
-          <div class="panel-body text-center">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                PATIENT
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'patient'" translate>STOCK.EXIT_PATIENT</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'patient'">
-                  {{ StockCtrl.movement.entity.instance.reference }} - {{ StockCtrl.movement.entity.instance.display_name }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!--service -->
-      <div class="col-xs-3">
-        <button class="btn-block panel panel-default segment" type="button" ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'service'}" ng-click="StockCtrl.selectExitType('service')">
-          <div class="panel-body text-center">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                SERVICE
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'service'" translate>STOCK.EXIT_SERVICE</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'service'">
-                  {{ StockCtrl.movement.entity.instance.name }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!--depot -->
-      <div class="col-xs-3">
-        <button class="btn-block panel panel-default segment" type="button" ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'depot'}" ng-click="StockCtrl.selectExitType('depot')">
-          <div class="panel-body text-center">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                DEPOT
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'depot'" translate>STOCK.EXIT_DEPOT</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'depot'">
-                  {{ StockCtrl.movement.entity.instance.text }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!--depot -->
-      <div class="col-xs-3">
-        <button class="btn-block panel panel-default segment" type="button" ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'loss'}" ng-click="StockCtrl.selectExitType('loss')">
+          ng-class="{'bg-primary': StockCtrl.movement.entry_type === 'purchase'}" 
+          ng-click="StockCtrl.selectEntryType('purchase')">
           <div class="panel-body text-center">
             <div class="ui lg ima-blue statistic">
               <div class="value" translate>
-                STOCK.EXIT_LOSS
+                STOCK.ENTRY_PURCHASE
               </div>
-              <div class="uilabel" translate>
-                STOCK.EXIT_LOSS
+              <div class="uilabel">
+                <span ng-hide="StockCtrl.movement.entity.type === 'purchase'" translate>STOCK_FLUX.FROM_PURCHASE</span>
+                <span ng-show="StockCtrl.movement.entity.type === 'purchase'">
+                  {{ StockCtrl.movement.entity.instance.reference }}
+                </span>
               </div>
             </div>
           </div>
         </button>
       </div>
-
 
     </div>
 
@@ -148,7 +94,7 @@
         <p
           style="padding-top : 10px;"
           class="text-info"
-          ng-show="!StockCtrl.movement.exit_type">
+          ng-show="!StockCtrl.movement.entry_type">
           <span class="fa fa-info-circle"></span>
           {{ "FORM.INFO.NO_DESTINATION" | translate }}
         </p>
@@ -172,7 +118,7 @@
               type="button"
               id="btn-add-rows"
               class="btn btn-default"
-              ng-disabled="!StockCtrl.movement.exit_type"
+              ng-disabled="!StockCtrl.movement.entry_type"
               ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
               <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
             </button>
@@ -182,13 +128,13 @@
             class="form-control"
             ng-model="StockCtrl.itemIncrement"
             style="max-width : 40px;"
-            ng-disabled="!StockCtrl.movement.exit_type">
+            ng-disabled="!StockCtrl.movement.entry_type">
           </div>
       </div>
     </div>
 
     <!-- grid -->
-    <div id="stock-exit-grid" 
+    <div id="stock-entry-grid" 
       ui-grid="StockCtrl.gridOptions" 
       style="height: {{ ::StockCtrl.bhConstants.GRID_HEIGHT }}px; width: 100%;"
       ui-grid-auto-resize

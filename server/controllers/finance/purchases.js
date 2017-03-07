@@ -103,7 +103,8 @@ function lookupPurchaseOrder(uid) {
       record = row;
 
       sql = `
-        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, i.text
+        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, 
+          BUID(pi.inventory_uuid) AS inventory_uuid, i.text
         FROM purchase_item AS pi
         JOIN inventory AS i ON i.uuid = pi.inventory_uuid
         WHERE pi.purchase_uuid = ?;

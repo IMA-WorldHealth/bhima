@@ -1349,6 +1349,7 @@
     "DOCUMENT"        : "Document",
     "ENTRY"           : "Entrée de stock",
     "ENTRY_DATE"      : "Date d'entrée",
+    "ENTRY_PURCHASE"  : "Achat",
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque à Perimer",
     "EXPIRATION"      : "Expiration",
@@ -1402,7 +1403,7 @@
     "UNIT_COST"       : "Cout unitaire"
   },
   "STOCK_FLUX" : {
-    "FROM_PURCHASE"    : "Achat",
+    "FROM_PURCHASE"    : "Commande d'achat",
     "FROM_OTHER_DEPOT" : "En provenance d'un depot",
     "FROM_ADJUSTMENT"  : "En provenance d'un ajustement",
     "FROM_PATIENT"     : "En provenance d'un patient",

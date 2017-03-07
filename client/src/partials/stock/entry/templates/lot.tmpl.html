@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+  <input
+    type="text"
+    class="form-control"
+    style="padding-left : 5px !important;"
+    ng-model="row.entity.lot"
+    ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+    ng-change="grid.appScope.handleChange()">
+</div>

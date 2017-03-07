@@ -25,7 +25,12 @@ angular.module('bhima.routes')
         controller  : 'StockExitController as StockCtrl',
         templateUrl : 'partials/stock/exit/exit.html',
       })
-      ;
 
-  }
+      .state('stockEntry', {
+        url         : '/stock/entry',
+        controller  : 'StockEntryController as StockCtrl',
+        templateUrl : 'partials/stock/entry/entry.html',
+      })
+      ;
+  },
   ]);
