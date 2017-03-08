@@ -41,7 +41,7 @@ describe('Subsidies', () => {
     FU.input('SubsidyCtrl.subsidy.label', 'Updated');
     FU.input('SubsidyCtrl.subsidy.description', ' IMCK Tshikaji');
 
-    element(by.id('change_subsidy')).click();
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);
@@ -53,7 +53,7 @@ describe('Subsidies', () => {
     // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
-    element(by.id('submit-subsidy')).click();
+    FU.buttons.submit();
 
     // the following fields should be required
     FU.validation.error('SubsidyCtrl.subsidy.label');
