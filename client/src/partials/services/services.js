@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', 'SessionService', 'ModalService', 'util', 'FeeCenterService'
+  'ServiceService', 'EnterpriseService', 'SessionService', 'ModalService', 'util', 'FeeCenterService'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, SessionService, ModalService, util, FeeCenterService) {
+function ServicesController(Services, Enterprises, SessionService, ModalService, util, FeeCenterService) {
   var vm = this;
 
   vm.enterprises = [];

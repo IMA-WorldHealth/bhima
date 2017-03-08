@@ -33,12 +33,12 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT 
-        s.id, s.name, s.enterprise_id, s.fc_id, e.name AS enterprise_name, fc.label AS label 
+        s.id, s.name, s.enterprise_id, s.fc_id, e.name AS enterprise_name, fc.label 
       FROM 
         service AS s
       JOIN 
         enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN fee_center AS fc ON fc.id = s.id`;
+      LEFT JOIN fee_center AS fc ON fc.id = s.fc_id`;
  }
 
   sql += ' ORDER BY s.name;';
