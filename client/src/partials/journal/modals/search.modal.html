@@ -7,8 +7,8 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.POSTING_JOURNAL" | translate }}</li>
-      <li class="title">{{ "FORM.INFO.SEARCH" | translate }}</li>
+      <li class="static" translate> TREE.POSTING_JOURNAL </li>
+      <li class="title" translate> FORM.INFO.SEARCH </li>
     </ol>
   </div>
 
@@ -24,12 +24,12 @@
 
     <!-- description fuzzy search -->
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
-      <label class="control-label">
-        {{ 'FORM.LABELS.DESCRIPTION' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.DESCRIPTION
       </label>
       <span style="display:inline-block;" class="pull-right">
         <a href ng-click="ModalCtrl.clear('description')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          <i class="fa fa-eraser"></i><span translate> FORM.BUTTONS.CLEAR </span>
         </a>
       </span>
       <textarea
@@ -45,12 +45,12 @@
 
     <!-- users ui-select -->
     <div class="form-group" ng-class="{'has-error' : ModalCtrl.user.$invalid && ModalForm.$submitted}">
-      <label class="control-label">
-        {{ 'FORM.LABELS.USER' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.USER
       </label>
       <span style="display:inline-block;" class="pull-right">
         <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          <i class="fa fa-eraser"></i><span translate> FORM.BUTTONS.CLEAR </span>
         </a>
       </span>
       <ui-select name="user" ng-model="ModalCtrl.options.user_id">
@@ -67,12 +67,12 @@
 
     <!-- account ui-select -->
     <div class="form-group" ng-class="{'has-error' : ModalCtrl.account.$invalid && ModalForm.$submitted}">
-      <label class="control-label">
-        {{ 'FORM.LABELS.ACCOUNT' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.ACCOUNT
       </label>
       <span style="display:inline-block;" class="pull-right">
         <a href ng-click="ModalCtrl.clear('account_id')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          <i class="fa fa-eraser"></i><span translate> FORM.BUTTONS.CLEAR </span>
         </a>
       </span>
       <ui-select name="account" ng-model="ModalCtrl.options.account_id">
@@ -89,11 +89,11 @@
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
-      <label class="control-label">
-        {{ 'FORM.LABELS.TRANSACTION' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.TRANSACTION
       </label>
       <span style="display:inline-block;" class="pull-right">
-        <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
+        <a href ng-click="ModalCtrl.clear('trans_id')" tabindex="-1">
           <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
         </a>
       </span>
@@ -106,11 +106,11 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" trans_id>
+      FORM.BUTTONS.CLOSE
     </button>
-    <button type="submit" class="btn btn-primary" data-method="submit">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    <button type="submit" class="btn btn-primary" data-method="submit" trans_id>
+      FORM.BUTTONS.SUBMIT
     </button>
   </div>
 </form>
