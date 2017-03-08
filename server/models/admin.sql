@@ -103,4 +103,24 @@ BEGIN
   CALL PostCash(cUuid);
 END $$
 
+/*
+ zRecalculatePeriodTotals
+
+ Removes all data from the period_total table and rebuilds it.
+*/
+CREATE PROCEDURE zRecalculatePeriodTotals()
+BEGIN
+
+  -- wipe the period total table
+  TRUNCATE period_total;
+
+  INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+    SELECT project.enterprise_id, period.fiscal_year_id, period_id, account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) AS debit
+    FROM general_ledger
+      JOIN period ON general_ledger.period_id = period.id
+      JOIN project ON general_ledger.project_id = project.id
+    GROUP BY account_id, period_id;
+
+END $$
+
 DELIMITER ;
