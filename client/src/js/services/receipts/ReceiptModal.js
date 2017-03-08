@@ -276,6 +276,7 @@ function ReceiptModal(Modal, Receipts) {
   service.stockEntryDepotReceipt = stockEntryDepotReceipt;
   service.stockExitServiceReceipt = stockExitServiceReceipt;
   service.stockExitLossReceipt = stockExitLossReceipt;
+  service.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -390,6 +391,31 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var request = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockEntryPurchaseReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryPurchaseReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.ENTRY_PURCHASE',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
         receipt : function receiptProvider() { return { promise: request }; },

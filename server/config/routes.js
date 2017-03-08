@@ -622,6 +622,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
 
   app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
+  app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
 
   app.get('/diagnoses', diagnoses.list);
 };

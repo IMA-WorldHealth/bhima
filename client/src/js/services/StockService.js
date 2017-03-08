@@ -5,7 +5,10 @@ StockService.$inject = [ 'PrototypeApiService' ];
 
 function StockService(Api) {
 
-    // API for stock lots 
+  // API for stock lots
+  var stocks = new Api('/stock/lots');
+
+    // API for stock lots in depots 
   var lots = new Api('/stock/lots/depots');
 
     // API for stock lots movements 
@@ -15,6 +18,7 @@ function StockService(Api) {
   var inventories = new Api('/stock/inventories/depots');
 
   var service = {
+    stocks      : stocks,
     lots        : lots,
     movements   : movements,
     inventories : inventories,

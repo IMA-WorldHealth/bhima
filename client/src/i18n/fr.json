@@ -440,6 +440,7 @@
       "NO_RECIPIENT"         : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
       "NO_RECORDS_DATABASE"  : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
       "NO_SUPPLIER"          : "Un ordre d'achat doit avoir un fournisseur avant de préciser les éléments.",
+      "NO_SOURCE"            : "Aucune source definie",
       "OPERATION_SUCCESS"    : "Opération effectuée avec succès",
       "OTHER_ACTIONS"        : "Autres actions",
       "PATIENTS"             : "Patients",
@@ -1378,13 +1379,15 @@
     "NO_ORDER"        : "Pas de commandes",
     "OUTPUT"          : "Sortie",
     "ORDERS"          : "Commandes",
+    "PURCHASE_ORDER"  : "Commande d'Achat",
     "QUANTITY"        : "Quantité",
     "RECEIPT"         : {
-      "ENTRY_DEPOT"   : "Entrée de Stock",
-      "EXIT_PATIENT"  : "Sortie de Stock - Patient",
-      "EXIT_DEPOT"    : "Sortie de Stock - Depot",
-      "EXIT_SERVICE"  : "Sortie de Stock - Service",
-      "EXIT_LOSS"     : "Sortie de Stock - Perte"
+      "ENTRY_DEPOT"    : "Entrée de Stock",
+      "ENTRY_PURCHASE" : "Entree de Stock - Achat",
+      "EXIT_PATIENT"   : "Sortie de Stock - Patient",
+      "EXIT_DEPOT"     : "Sortie de Stock - Depot",
+      "EXIT_SERVICE"   : "Sortie de Stock - Service",
+      "EXIT_LOSS"      : "Sortie de Stock - Perte"
     },
     "RECEIVER"        : "Recepteur",
     "RESPONSIBLE"     : "Gestionnaire du depot",

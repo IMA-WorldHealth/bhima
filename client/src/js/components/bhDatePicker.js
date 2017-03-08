@@ -35,7 +35,7 @@ function DatePickerController(Modal) {
   function open() {
     openDatePicker({ mode: vm.mode })
     .then(function (res) {
-      vm.label = res;
+      vm.date = res;
     });
   }
 

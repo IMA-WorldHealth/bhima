@@ -149,8 +149,8 @@
           style="padding-top : 10px;"
           class="text-info"
           ng-show="!StockCtrl.movement.exit_type">
-          <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFO.NO_DESTINATION" | translate }}
+          <span class="fa fa-info-circle"></span> 
+          <span translate>FORM.INFO.NO_DESTINATION</span>
         </p>
 
         <!-- "Recover Items" button -->
@@ -161,7 +161,8 @@
             ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
             ng-click="StockCtrl.readCache()"
             ng-disabled="!StockCtrl.hasCacheAvailable">
-            <span class="fa fa-recycle"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
+            <span class="fa fa-recycle"></span> 
+            <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
           </button>
         </div>
 
@@ -174,7 +175,8 @@
               class="btn btn-default"
               ng-disabled="!StockCtrl.movement.exit_type"
               ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
+              <span class="fa fa-plus-circle"></span> 
+              <span translate>FORM.BUTTONS.ADD</span>
             </button>
           </span>
           <input
@@ -199,12 +201,12 @@
     <div class="row" style="margin-top: 5px;">
       <div class="col-xs-6 col-xs-offset-6">
         <div class="text-right">
-          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button">
-            {{ "FORM.BUTTONS.SUSPEND" | translate }}
+          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
+            FORM.BUTTONS.SUSPEND
           </button>
 
           <bh-loading-button loading-state="StockCtrl.$loading">
-            {{ "FORM.BUTTONS.SUBMIT" | translate }}
+            <span translate>FORM.BUTTONS.SUBMIT</span>
           </bh-loading-button>
         </div>
       </div>

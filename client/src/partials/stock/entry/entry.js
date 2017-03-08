@@ -189,8 +189,7 @@ function StockEntryController(Depots, Inventory, Notify,
         configureItem(item);
       });
     } catch (err) {
-      // Notify.errorHandler(err);
-      console.log(err)
+      Notify.errorHandler(err);
     }
   }
 
@@ -218,22 +217,25 @@ function StockEntryController(Depots, Inventory, Notify,
       entity_uuid : vm.movement.entity.uuid,
       date        : vm.movement.date,
       description : vm.movement.description,
-      is_exit     : 0,
       flux_id     : bhConstants.flux.FROM_PURCHASE,
       user_id     : Session.user.id,
     };
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
-        uuid      : row.lot.uuid,
-        quantity  : row.quantity,
-        unit_cost : row.lot.unit_cost,
+        label            : row.lot,
+        initial_quantity : row.quantity,
+        quantity         : row.quantity,
+        unit_cost        : row.unit_cost,
+        expiration_date  : row.expiration_date,
+        inventory_uuid   : row.inventory.uuid,
+        purchase_uuid    : vm.movement.entity.uuid,
       };
     });
 
     movement.lots = lots;
 
-    Stock.movements.create(movement)
+    Stock.stocks.create(movement)
     .then(function (document) {
       Purchase.update(vm.movement.entity.uuid, { is_received: 1 });
       return document;
