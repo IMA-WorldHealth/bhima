@@ -4,8 +4,8 @@ angular.module('bhima.services')
 FeeCenterService.$inject = ['PrototypeApiService', '$translate'];
 
 function FeeCenterService(PrototypeApiService, translate) {
-  let service = new PrototypeApiService('/fee_centers/');
-
+  const baseUrl = '/fee_centers/';
+  let service = new PrototypeApiService(baseUrl);
 
   function formatRecord(list) {
     list.forEach(function (item) {
@@ -14,7 +14,16 @@ function FeeCenterService(PrototypeApiService, translate) {
     return list;
   }
 
+  //Gives the value of the fee center result
+
+  function getFeeValue(feeId) {
+    var url = baseUrl + feeId + '/value';
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
+  }
+
   service.formatRecord = formatRecord;
+  service.getFeeValue = getFeeValue;
 
   return service;
 }

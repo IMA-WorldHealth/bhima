@@ -159,7 +159,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fee_center_id.$invalid }">
                 <label class="control-label" translate>FORM.LABELS.FEE_CENTER</label>
                 <div>
-                  <select class="form-control" name="fee_center_id" ng-model="ServicesCtrl.service.fc_id" id="bhima-service-fee_center_id" ng-options="fc.id as fc.label for c in ServicesCtrl.feeCenters | orderBy:'label'">
+                  <select class="form-control" name="fee_center_id" ng-model="ServicesCtrl.service.fc_id" id="bhima-service-fee_center_id" ng-options="fc.id as fc.label for fc in ServicesCtrl.feeCenters | orderBy:'label'">
                     <option value=""> -- {{ 'FORM.SELECT.FEE_CENTER' | translate }} -- </option>
                   </select>
                 </div>
@@ -191,7 +191,7 @@
                 <tbody>
                 <tr  ng-if="true">
                   <td>{{ServicesCtrl.choosen.service}}</td>
-                  <td>{{(ServicesCtrl.choosen.value) | currency}}</td>
+                  <td>{{(ServicesCtrl.choosen.result) | currency}}</td>
                 </tr>
                 <tr ng-if="false">
                   <td colspan="2"><div class="alert alert-warning square" translate>TABLE.INFOS.NOT_AVAILABLE</div></td>

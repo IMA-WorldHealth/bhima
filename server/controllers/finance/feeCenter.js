@@ -111,7 +111,6 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-
    db.exec(updateFeeCenterQuery, [queryData, feeCenterId])
     .then(function (res) {
 
@@ -220,10 +219,10 @@ function getFeeValue (req, res, next){
           ) AS t;
          `;
 
-      return db.one(sql, req.params.id);
+      return db.exec(sql, req.params.id);
     })
     .then(function (result){
-      res.status(200).json(result);
+      res.status(200).json(result[0]);
     })
     .catch(next)
     .done();

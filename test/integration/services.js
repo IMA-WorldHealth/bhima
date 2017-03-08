@@ -4,32 +4,19 @@ const helpers = require('./helpers');
 
 describe('(/services) The Service API', function () {
 
-  var newService = {
+  let newService = {
     enterprise_id : 1,
     name : 'tested Service',
-    cc_id : 1,
-    pc_id : 7
+    fc_id : 2
   };
-
-  var serviceWithoutCostCenter = {
-    name : 'without cost and profit center',
+  let serviceWithoutFeeCenter = {
+    name : 'without fee and profit center',
     enterprise_id : 1,
-    cc_id : null,
-    pc_id : null
+    fc_id : null
   };
-
-  var wrongUpdateService = {
-    cc_id : null,
-    pc_id : 'wrong value'
-  };
-
-  var undefinedProfitService = {
-    cc_id : null,
-    pc_id : undefined
-  };
-
-  var responseKeys = [
-    'id', 'cc_id', 'pc_id', 'name', 'enterprise_id'
+  let unknownService = {name : 'unkwon name'};
+  let responseKeys = [
+    'id', 'fc_id', 'name', 'enterprise_id'
   ];
 
   it('POST /services adds a services', function () {
@@ -47,13 +34,13 @@ describe('(/services) The Service API', function () {
      .catch(helpers.handler);
   });
 
-  it('POST /services adds a services with a null cost center', function () {
+  it('POST /services adds a services with a null fee center', function () {
     return agent.post('/services')
-      .send(serviceWithoutCostCenter)
+      .send(serviceWithoutFeeCenter)
       .then(function (res) {
         helpers.api.created(res);
-        serviceWithoutCostCenter.id = res.body.id;
-        return agent.get('/services/' + serviceWithoutCostCenter.id);
+        serviceWithoutFeeCenter.id = res.body.id;
+        return agent.get('/services/' + serviceWithoutFeeCenter.id);
       })
       .then(function (res){
         expect(res).to.have.status(200);
@@ -95,24 +82,13 @@ describe('(/services) The Service API', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /services/:id refuses to update a service with a string as profit_center_id', function () {
-    return agent.put('/services/' + newService.id)
-      .send(wrongUpdateService)
+  it('PUT /services/:id refuses to update an unknown service', function () {
+    return agent.put('/services/unknown')
+      .send(unknownService)
       .then(function (res) {
-        helpers.api.errored(res, 400);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
-  });
-
-  it('PUT /services/:id ignores an undefined profit center and update a service with defined properties', function () {
-  return agent.put('/services/' + newService.id)
-    .send(undefinedProfitService)
-    .then(function (res) {
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
-      expect(res.body.id).to.equal(newService.id);
-    })
-    .catch(helpers.handler);
   });
 
   it('DELETE /services/:id deletes a service', function () {

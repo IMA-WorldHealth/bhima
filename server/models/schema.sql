@@ -329,36 +329,35 @@ CREATE TABLE `fee_center` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cost_assignation`;
+DROP TABLE IF EXISTS `fee_assignation`;
 
-CREATE TABLE `cost_assignation` (
+CREATE TABLE `fee_assignation` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `auxiliary_cost_id` smallint(6) NOT NULL,
+  `auxiliary_fee_id` smallint(6) NOT NULL,
   `cost` float DEFAULT 0,
   `period_id` mediumint(8) UNSIGNED NOT NULL,
-  `auxi_cc_id` smallint(6) NOT NULL,
   `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `note` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `cost_assignation_1` (`auxiliary_cost_id`, `period_id`),
-  KEY `auxiliary_cost_id` (`auxiliary_cost_id`),
+  UNIQUE KEY `cost_assignation_1` (`auxiliary_fee_id`, `period_id`),
+  KEY `auxiliary_fee_id` (`auxiliary_fee_id`),
   KEY `period_id` (`period_id`),
-  FOREIGN KEY (`auxiliary_cost_id`) REFERENCES `fee_center` (`id`),
+  FOREIGN KEY (`auxiliary_fee_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cost_assignation_item`;
+DROP TABLE IF EXISTS `fee_assignation_item`;
 
-CREATE TABLE `cost_assignation_item` (
+CREATE TABLE `fee_assignation_item` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `cost_assignation_id` int(10) unsigned NOT NULL,
-  `principal_cost_id` smallint(6) NOT NULL,
+  `fee_assignation_id` int(10) unsigned NOT NULL,
+  `principal_fee_id` smallint(6) NOT NULL,
   `allocated_value` float DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `cost_assignation_id` (`cost_assignation_id`),
-  KEY `principal_cost_id` (`principal_cost_id`),
-  FOREIGN KEY (`cost_assignation_id`) REFERENCES `cost_assignation` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`principal_cost_id`) REFERENCES `fee_center` (`id`) ON DELETE CASCADE
+  KEY `fee_assignation_id` (`fee_assignation_id`),
+  KEY `principal_fee_id` (`principal_fee_id`),
+  FOREIGN KEY (`fee_assignation_id`) REFERENCES `fee_assignation` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`principal_fee_id`) REFERENCES `fee_center` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

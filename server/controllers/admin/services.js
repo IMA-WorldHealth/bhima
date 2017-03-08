@@ -33,9 +33,11 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT 
-        s.id, s.name, s.enterprise_id, s.fc_id, e.name AS enterprise_name, fc.label AS fee_center_name 
-      FROM service AS s
-      JOIN enterprise AS e ON s.enterprise_id = e.id
+        s.id, s.name, s.enterprise_id, s.fc_id, e.name AS enterprise_name, fc.label AS label 
+      FROM 
+        service AS s
+      JOIN 
+        enterprise AS e ON s.enterprise_id = e.id
       LEFT JOIN fee_center AS fc ON fc.id = s.id`;
  }
 
@@ -96,17 +98,18 @@ function create(req, res, next) {
 
 function update(req, res, next) {
   let queryData = req.body;
-  let sql = 'UPDATE service SET ? WHERE id = ?;';
+  const serviceId = req.params.id;
+  const sql = 'UPDATE service SET ? WHERE id = ?';
 
   delete queryData.id;
-
-  db.exec(sql, [queryData, req.params.id])
+  db.exec(sql, [queryData, serviceId])
     .then(function (result) {
-      if (!result.affectedRows) {
-        throw new NotFound(`Could not find a service with id ${req.params.id}.`);
+
+      if (result.affectedRows === 0) {
+        throw new NotFound(`Could not find a service with id ${serviceId}.`);
       }
 
-      return lookupService(req.params.id);
+      return lookupService(serviceId);
     })
     .then(function (service) {
 
@@ -114,7 +117,7 @@ function update(req, res, next) {
         event: Topic.events.UPDATE,
         entity: Topic.entities.SERVICE,
         user_id: req.session.user.id,
-        id : req.params.id
+        id : serviceId
       });
 
       res.status(200).json(service);
@@ -179,7 +182,7 @@ function detail(req, res, next) {
  */
 function lookupService(id) {
   const sql =`
-    SELECT s.id, s.name, s.enterprise_id, s.cc_id, s.pc_id
+    SELECT s.id, s.name, s.enterprise_id, s.fc_id 
     FROM service AS s WHERE s.id = ?;
   `;
 

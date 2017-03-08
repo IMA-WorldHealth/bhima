@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', 'SessionService', 'ModalService', 'util'
+  'ServiceService', 'EnterpriseService', 'FinancialService', 'SessionService', 'ModalService', 'util', 'FeeCenterService'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, SessionService, ModalService, util) {
+function ServicesController(Services, Enterprises, FinancialService, SessionService, ModalService, util, FeeCenterService) {
   var vm = this;
 
   vm.enterprises = [];
@@ -43,7 +43,12 @@ function ServicesController(Services, Enterprises, FinancialService, SessionServ
     Enterprises.read().then(function (data) {
       vm.enterprises = data;
     }).catch(handler);
-    
+
+    //loading fee centers
+    FeeCenterService.read().then(function (data) {
+      vm.feeCenters = data;
+    }).catch(handler);
+
     setState('default');
   }
 
@@ -61,7 +66,7 @@ function ServicesController(Services, Enterprises, FinancialService, SessionServ
   // data is an object that contains all the information of a service
   function update(data) {
     setState('default');
-    vm.service= data;
+    vm.service= angular.copy(data);
     vm.view = 'update';
   }
 
@@ -71,21 +76,12 @@ function ServicesController(Services, Enterprises, FinancialService, SessionServ
     setState('default');
     vm.service= data;
     vm.choosen.service = data.name;
-    var ccId = data.cc_id;
-    var pcId = data.pc_id;
 
-    // load Cost Center value for a specific service
-    FinancialService.getFeeValue(ccId).
+    // load Fee Center value for a specific service
+    FeeCenterService.getFeeValue(data.fc_id).
     then(function (data) {
-      vm.choosen.charge = data.value;
+      vm.choosen.result = data.value || 0;
     }).catch(handler);
-
-    // load Profit Center value for a specific service
-    FinancialService.getFeeValue(pcId).
-    then(function (data) {
-      vm.choosen.profit = data.value;
-    }).catch(handler);
-
     vm.view = 'more';
   }
 

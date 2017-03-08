@@ -24,10 +24,8 @@ function ServiceService ($http, util) {
   }
 
   function update(id, service) {
-    delete service.abbr;
     delete service.enterprise_name;
-    delete service.cost_center_name;
-    delete service.profit_center_name;
+    delete service.label; //fee center label
 
     return $http.put(baseUrl + id, service)
     .then(util.unwrapHttpResponse);
