@@ -35,7 +35,7 @@
             <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
               <td>{{ service.id }}</td>
               <td>{{ service.name }}</td>
-              <td>{{ service.fee_center_name }}</td>
+              <td>{{ service.label }}</td>
               <td>
                 <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index+1 }}">
                   <span class="glyphicon glyphicon-pencil"></span>

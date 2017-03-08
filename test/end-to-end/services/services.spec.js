@@ -25,8 +25,7 @@ describe('Services', () => {
 
     FU.input('ServicesCtrl.service.name', SERVICE.name);
     FU.select('ServicesCtrl.service.enterprise_id', 'Test Enterprise');
-    FU.select('ServicesCtrl.service.cc_id', 'fee center 2');
-    FU.select('ServicesCtrl.service.pc_id', 'fee center 7');
+    FU.select('ServicesCtrl.service.fc_id', 'fee center 2');
 
     // submit the page to the server
     FU.buttons.submit();
@@ -55,8 +54,7 @@ describe('Services', () => {
     // FU.validation.error('ServicesCtrl.service.enterprise_id');
 
     // The following fields is not required
-    FU.validation.ok('ServicesCtrl.service.cc_id');
-    FU.validation.ok('ServicesCtrl.service.pc_id');
+    FU.validation.ok('ServicesCtrl.service.fc_id');
   });
 
   it('successfully delete an service', () => {

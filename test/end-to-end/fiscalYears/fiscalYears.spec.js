@@ -21,6 +21,45 @@ describe('Fiscal Year', () => {
     previous : 'Test Fiscal Year 2016',
   };
 
+
+
+
+  it('closing a fiscal year in normal way', () => {
+      helpers.navigate(path);
+
+    // the last in the list is the oldest
+    const updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // this fix multiple element found take first
+    const submitButton = element.all(by.css('[data-method="submit"]')).first();
+
+    // click on the opening balance button
+    element(by.css('[data-action="closing-fiscal-year"]')).click();
+
+    // inner constiables
+    const resultAccount = 'Test Capital One';
+    const fiscalYearPattern = 'Test Fiscal Year 2015';
+
+    // set the result account
+    FU.uiSelect('$ctrl.resultAccount', resultAccount);
+
+    // submit to next step
+    submitButton.click();
+
+    // submit to confirm info
+    submitButton.click();
+
+    // set the pattern to confirm
+    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
+
+    // submit to confirm the action
+    submitButton.click();
+
+    // check notification
+    components.notification.hasSuccess();
+  });
+
   it('blocks invalid form submission with relevant error classes', () => {
 
     // switch to the create form
@@ -153,41 +192,5 @@ describe('Fiscal Year', () => {
     FU.buttons.submit();
     components.notification.hasDanger();
     expect(element(by.css('[data-status="not-positive"]')).isPresent()).to.eventually.equal(true);
-  });
-
-  it('closing a fiscal year in normal way', () => {
-    helpers.navigate(path);
-
-    // the last in the list is the oldest
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    updateButton.all(by.css('[data-method="update"]')).last().click();
-
-    // this fix multiple element found take first
-    const submitButton = element.all(by.css('[data-method="submit"]')).first();
-
-    // click on the opening balance button
-    element(by.css('[data-action="closing-fiscal-year"]')).click();
-
-    // inner constiables
-    const resultAccount = 'Test Capital One';
-    const fiscalYearPattern = 'Test Fiscal Year 2015';
-
-    // set the result account
-    FU.uiSelect('$ctrl.resultAccount', resultAccount);
-
-    // submit to next step
-    submitButton.click();
-
-    // submit to confirm info
-    submitButton.click();
-
-    // set the pattern to confirm
-    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
-
-    // submit to confirm the action
-    submitButton.click();
-
-    // check notification
-    components.notification.hasSuccess();
   });
 });

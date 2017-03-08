@@ -34,7 +34,7 @@ function FeeCenterPage() {
    *  listed in the grid to show the dialog for editing
    **/
   function editFeeCenter(n) {
-    const editLinkColumn = 6; //column indexing begin with 0
+    const editLinkColumn = 5; //column indexing begin with 0
 
     const row = feeCenterGrid
       .$('.ui-grid-render-container-body')

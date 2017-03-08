@@ -23,7 +23,6 @@ describe('Fee Center Management Page', function () {
   const mockFeeCenterCreate = {
     label : 'Fee Center Test',
     project : 'Test Project C',
-    isCost : 1,
     isPrincipal :1,
     note : 'end to end test mock for fee center'
   };
@@ -48,8 +47,6 @@ describe('Fee Center Management Page', function () {
     feeCenterCreateUpdatePage.submitFeeCenter();
     expect(feeCenterCreateUpdatePage.isFeeCenterLabelInvalid()).to.eventually.equal(true);
     expect(feeCenterCreateUpdatePage.isProjectInvalid()).to.eventually.equal(true);
-    expect(feeCenterCreateUpdatePage.isCostRadioInvalid()).to.eventually.equal(true);
-    expect(feeCenterCreateUpdatePage.isProfitRadioInvalid()).to.eventually.equal(true);
 
     feeCenterCreateUpdatePage.close();
   });
@@ -58,7 +55,6 @@ describe('Fee Center Management Page', function () {
     feeCenterPage.createFeeCenter();
     feeCenterCreateUpdatePage.setFeeCenterLabel(mockFeeCenterCreate.label);
     feeCenterCreateUpdatePage.setProjectValue(mockFeeCenterCreate.project, false);
-    feeCenterCreateUpdatePage.chooseCostCenter();
     feeCenterCreateUpdatePage.checkPrincipal();
     feeCenterCreateUpdatePage.setFeeCenterNote(mockFeeCenterCreate.note);
     feeCenterCreateUpdatePage.submitFeeCenter();
@@ -69,7 +65,6 @@ describe('Fee Center Management Page', function () {
     feeCenterPage.editFeeCenter(4);
     feeCenterCreateUpdatePage.setFeeCenterLabel(mockFeeCenterEdit.label);
     feeCenterCreateUpdatePage.setProjectValue(mockFeeCenterEdit.project);
-    feeCenterCreateUpdatePage.chooseCostCenter();
     feeCenterCreateUpdatePage.checkPrincipal();
     feeCenterCreateUpdatePage.setFeeCenterNote(mockFeeCenterEdit.note);
 
