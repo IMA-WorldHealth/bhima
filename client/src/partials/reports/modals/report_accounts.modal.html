@@ -1,10 +1,3 @@
-<!-- <div class="modal-header"> -->
-<!--   <ol class="headercrumb"> -->
-<!--     <li class="static"><span translate> {{ReportConfigCtrl.report.title_key}} </span></li> -->
-<!--     <li class="title"><span translate> FORM.LABELS.CREATE </span></li> -->
-<!--   </ol> -->
-<!-- </div> -->
-
 <div ng-if="ReportConfigCtrl.previewGenerated">
 <div class="row">
   <div class="col-md-12">
@@ -31,8 +24,9 @@
 
 <div class="row">
 <div class="col-md-12">
-  <h3>Account Details Report</h3>
-  <p class="text-info">This report will show all transactions against an individual account for a given period of time.</p>
+  <h3>REPORTS.ACCOUNT_REPORT.TITLE</h3>
+  <p class="text-info">REPORTS.ACCOUNT_REPORT.DESCRIPTION</p>
+  <!-- <p class="text-info">This report will show all transactions against an individual account for a given period of time.</p> -->
 </div>
 </div>
 <div class="row" style="margin-top : 10px">
@@ -44,73 +38,40 @@
 </div>
 
 <div class="panel-body">
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" bh-form-defaults novalidate>
-  <!-- <div class="modal-body"> -->
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" bh-form-defaults novalidate>
+  <!-- account selection  -->
+  <bh-account-select
+    id="account-id"
+    account-id="ReportConfigCtrl.account"
+    label="FORM.SELECT.ACCOUNT"
+    name="account"
+    on-select-callback="ReportConfigCtrl.selectAccount(account)">
+  </bh-account-select>
 
-    <!-- <div class="form-group" -->
-    <!--   ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }"> -->
-    <!--   <label class="control-label" translate> FORM.LABELS.LABEL </label> -->
-    <!--   <input class="form-control" name="label" autocomplete="off" ng-model="ReportConfigCtrl.label" required /> -->
+  <bh-report-source
+    value="ReportConfigCtrl.reportDetails.source"
+    on-select-callback="ReportConfigCtrl.selectSource(source)"></bh-report-source>
+  {{ReportConfigCtrl.sourceValue}}
 
-    <!--   <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted"> -->
-    <!--     <div ng-messages-include="partials/templates/messages.tmpl.html"></div> -->
-    <!--   </div> -->
-    <!-- </div> -->
+  <!-- included Date interval  -->
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
+      <span translate>FORM.LABELS.INCLUDE_DATE_INTERVAL</span>
+    </label>
+  </div>
 
-    <!-- account selection  -->
-    <bh-account-select
-      id="account-id"
-      account-id="ReportConfigCtrl.account"
-      label="FORM.SELECT.ACCOUNT"
-      name="account"
-      on-select-callback="ReportConfigCtrl.onAccountSelect(account)">
-    </bh-account-select>
-
-    <div class="form-group"
-      ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.source.$invalid }">
-      <label class="control-label">
-        <span translate> FORM.SELECT.SOURCE </span>
-      </label>
-      <select
-        class="form-control"
-        name="source"
-        ng-model="ReportConfigCtrl.source"
-        ng-options="source as (source.label | translate) for source in ReportConfigCtrl.reportSource track by source.id"
-        required>
-        <option value="" disabled translate>FORM.SELECT.SOURCE<option>
-      </select>
-      <div class="help-block" ng-messages="ConfigForm.source.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
-    <!-- included Date interval  -->
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
-        <span translate>FORM.LABELS.INCLUDE_DATE_INTERVAL</span>
-      </label>
-    </div>
-
-    <!-- Date interval  -->
-    <div ng-if="ReportConfigCtrl.dateInterval === 1">
-      <bh-date-interval
-        date-from="ReportConfigCtrl.dateFrom"
-        date-to="ReportConfigCtrl.dateTo">
-      </bh-date-interval>
-    </div>
-
-  <!-- </div> -->
-
-  <!-- <div class="modal-footer"> -->
-    <!-- <button type="button" class="btn btn-default" ng-click="ReportConfigCtrl.cancel()" data-method="cancel"> -->
-      <!-- <span translate> FORM.BUTTONS.CANCEL </span> -->
-    <!-- </button> -->
-
-    <bh-loading-button loading-state="ConfigForm.$loading">
-      <span translate>FORM.BUTTONS.PREVIEW</span>
-    </bh-loading-button>
-  <!-- </div> -->
+  <!-- Date interval  -->
+  <!-- @TODO this should use a component that callsback with well defined dates -->
+  <div ng-if="ReportConfigCtrl.dateInterval === 1">
+    <bh-date-interval
+      date-from="ReportConfigCtrl.reportDetails.dateFrom"
+      date-to="ReportConfigCtrl.reportDetails.dateTo">
+    </bh-date-interval>
+  </div>
+  <bh-loading-button loading-state="ConfigForm.$loading">
+    <span translate>FORM.BUTTONS.PREVIEW</span>
+  </bh-loading-button>
 </form>
 </div>
 </div>
