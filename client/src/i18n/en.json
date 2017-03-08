@@ -718,6 +718,7 @@
       "TO_ACCOUNT"             : "To Account",
       "TO"                     : "To",
       "TO_LOCK"                : "To lock",
+      "TRANS_ID"               : "Transaction ID",
       "TRANSACTION"            : "Transaction",
       "TRANSACTION_DATE"       : "Transaction Date",
       "TRANSFER_ACCOUNT"       : "Transfer Account",

@@ -721,6 +721,7 @@
       "TOTAL_SELECTED_INVOICES": "Total des factures selectionnées",
       "TO_ACCOUNT"             : "Au Compte",
       "TO_LOCK"                : "Bloquer",
+      "TRANS_ID"               : "ID de la transaction",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TRANSFER_TYPE"          : "Type de Transfert",

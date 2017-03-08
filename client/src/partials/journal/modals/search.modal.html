@@ -7,8 +7,8 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.POSTING_JOURNAL" | translate }}</li>
-      <li class="title">{{ "FORM.INFO.SEARCH" | translate }}</li>
+      <li class="static" translate> TREE.POSTING_JOURNAL </li>
+      <li class="title" translate> FORM.INFO.SEARCH </li>
     </ol>
   </div>
 
@@ -24,14 +24,10 @@
 
     <!-- description fuzzy search -->
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
-      <label class="control-label">
-        {{ 'FORM.LABELS.DESCRIPTION' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.DESCRIPTION
       </label>
-      <span style="display:inline-block;" class="pull-right">
-        <a href ng-click="ModalCtrl.clear('description')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-        </a>
-      </span>
+      <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
       <textarea
         class="form-control"
         name="description"
@@ -45,14 +41,10 @@
 
     <!-- users ui-select -->
     <div class="form-group" ng-class="{'has-error' : ModalCtrl.user.$invalid && ModalForm.$submitted}">
-      <label class="control-label">
-        {{ 'FORM.LABELS.USER' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.USER
       </label>
-      <span style="display:inline-block;" class="pull-right">
-        <a href ng-click="ModalCtrl.clear('user_id')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-        </a>
-      </span>
+      <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
       <ui-select name="user" ng-model="ModalCtrl.options.user_id">
         <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter:$select.search">
@@ -67,14 +59,11 @@
 
     <!-- account ui-select -->
     <div class="form-group" ng-class="{'has-error' : ModalCtrl.account.$invalid && ModalForm.$submitted}">
-      <label class="control-label">
-        {{ 'FORM.LABELS.ACCOUNT' | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.ACCOUNT
       </label>
-      <span style="display:inline-block;" class="pull-right">
-        <a href ng-click="ModalCtrl.clear('account_id')" tabindex="-1">
-          <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
-        </a>
-      </span>
+      <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+
       <ui-select name="account" ng-model="ModalCtrl.options.account_id">
         <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}"><strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span></ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="account.id as account in ModalCtrl.accounts | filter:$select.search">
@@ -87,14 +76,25 @@
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.TRANSACTION
+      </label>
+      <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
+      <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.options.trans_id">
+      <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
     </button>
-    <button type="submit" class="btn btn-primary" data-method="submit">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
     </button>
   </div>
 </form>
