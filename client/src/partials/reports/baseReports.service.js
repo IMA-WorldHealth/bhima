@@ -12,6 +12,8 @@ function BaseReportService($http, Modal, util) {
   service.requestPDF = requestPDF;
   service.deleteReport = deleteReport;
 
+  service.requestPreview = requestPreview;
+
   function requestKey(key) {
     var url = '/reports/keys/';
     return $http.get(url.concat(key))
@@ -57,6 +59,18 @@ function BaseReportService($http, Modal, util) {
     // });
   }
 
+  function requestPreview(url, reportId, reportOptions) {
+    var htmlParams = {
+      reportId : reportId,
+      saveReport : '0',
+      renderer : 'html'
+    };
+
+    var options = angular.merge(reportOptions, htmlParams);
+    return $http.get(url, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+
   /**
    * @function requestPDF
    *
@@ -68,7 +82,7 @@ function BaseReportService($http, Modal, util) {
     var pdfParams = {
       // @TODO This should be known by the server
       reportId : report.id,
-      saveReport : true,
+      saveReport : '1',
       renderer : 'pdf'
     };
 
