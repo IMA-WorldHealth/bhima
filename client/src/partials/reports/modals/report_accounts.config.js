@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('report_accountsController', ReportAccountsConfigController);
 
 ReportAccountsConfigController.$inject = [
-  '$state', 'NotifyService', 'LanguageService', 'BaseReportService', 'bhConstants'
+  '$sce', '$state', 'NotifyService', 'LanguageService', 'BaseReportService', 'bhConstants', 'reportData'
 ];
 
 /**
@@ -12,7 +12,7 @@ ReportAccountsConfigController.$inject = [
  * This controller is responsible for the configuration of the ReportAccounts report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function ReportAccountsConfigController($state, Notify, Languages, SavedReports, bhConstants) {
+function ReportAccountsConfigController($sce, $state, Notify, Languages, SavedReports, bhConstants, reportData) {
   var vm = this;
   // var report = reportDetails;
 
@@ -23,16 +23,15 @@ function ReportAccountsConfigController($state, Notify, Languages, SavedReports,
   vm.bhConstants = bhConstants;
   vm.onAccountSelect = onAccountSelect;
 
-  console.log('firing account report controller');
-
-  // default value for General Ledger
-  vm.source = 1;
+  vm.previewGenerated = false;
 
   vm.reportSource = [
     {id: 1, label : 'FORM.LABELS.GENERAL_LEDGER'},
     {id: 2, label : 'FORM.LABELS.POSTING_JOURNAL'},
     {id: 3, label : 'FORM.LABELS.ALL'}
   ];
+
+  vm.source = vm.reportSource[0];
 
   function onAccountSelect(account) {
     vm.accountId = account.id;
@@ -44,6 +43,8 @@ function ReportAccountsConfigController($state, Notify, Languages, SavedReports,
     if (form.$invalid) { return; }
 
     var url = 'reports/finance/account';
+
+    var reportId = reportData.id;
 
     if(!vm.dateInterval){
       vm.dateTo = null;
@@ -63,10 +64,16 @@ function ReportAccountsConfigController($state, Notify, Languages, SavedReports,
       reportType      : vm.type
     };
 
-    return SavedReports.requestPDF(url, report, options)
+    return SavedReports.requestPreview(url, reportId, options)
       .then(function (result) {
-        // ModalInstance.dismiss();
-        $state.reload();
+
+        vm.previewGenerated = true;
+        vm.previewResult = $sce.trustAsHtml(result);
       });
+  }
+
+  vm.removePreview = function removePreview() {
+    vm.previewGenerated = false;
+    vm.previewResult = null;
   }
 }

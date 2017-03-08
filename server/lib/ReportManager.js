@@ -128,6 +128,10 @@ class ReportManager {
     // set the render timestamp
     metadata.timestamp = new Date();
 
+    // @TODO fit this better into the code flow
+    // sanitise save report option
+    this.options.saveReport = Boolean(Number(this.options.saveReport));
+
     // merge the data object before templating
     _.merge(data, { metadata });
 
@@ -151,6 +155,8 @@ class ReportManager {
 
       // FIXME this branching logic should be promised based
       if (this.options.saveReport) {
+
+        console.log('SAVING REPORT', this.options);
         // FIXME This is not correctly deferred
         // FIXME PDF report is sent back to the client even though this is a save operation
         // FIXME Errors are not propagated

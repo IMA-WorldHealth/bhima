@@ -5,17 +5,18 @@
       <li class="static" translate>TREE.REPORTS</li>
       <li class="title" translate>{{ReportCtrl.report.title_key}}</li>
     </ol>
-
+    {{ReportCtrl.current}}
     <div class="toolbar">
-      <div class="toolbar-item">
+      <div
+        class="toolbar-item"
+        ng-if="!ReportCtrl.isArchive()">
         <button
+          ui-sref="reportsBase.reportsArchive({key : ReportCtrl.report.report_key})"
           class="btn btn-default"
-          data-method="create"
-          id="create-report"
-          ng-click="ReportCtrl.createReport()">
-          <span class="fa fa-plus"></span>
-          <span translate>FORM.BUTTONS.NEW</span>
-          <span translate>{{ReportCtrl.report.title_key}}</span>
+          data-method="archive"
+          id="view-report-archive">
+          <span class="fa fa-archive"></span>
+          <span translate>FORM.BUTTONS.VIEW_REPORT_ARCHIVE</span>
         </button>
       </div>
     </div>
@@ -25,22 +26,6 @@
 <div class="flex-content">
 
   <div class="container-fluid">
-    Content
+    <div ui-view></div>
   </div>
-
-  <div ui-view></div>
-  <!-- <div class="container-fluid"> -->
-
-  <!--   <div -->
-  <!--     id="report-grid" -->
-  <!--     class="grid-full-height" -->
-  <!--     ui-grid="ReportCtrl.gridOptions"> -->
-
-  <!--     <bh-grid-loading-indicator -->
-  <!--       loading-state="ReportCtrl.loading" -->
-  <!--       empty-state="ReportCtrl.gridOptions.data.length === 0" -->
-  <!--       error-state="ReportCtrl.hasError"> -->
-  <!--     </bh-grid-loading-indicator> -->
-  <!--   </div> -->
-  <!-- </div> -->
 </div>
