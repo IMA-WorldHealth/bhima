@@ -1515,6 +1515,7 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Billing Services",
     "CASHBOX_MANAGEMENT"         : "Cashbox Management",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Cash Payment Registry",
     "CASH_WINDOW"                : "Cash Window",
     "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
