@@ -163,7 +163,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     }
 
     // validate that this uses multiple accounts in the transaction
-    if(uniqueAccountsArray.length !== 0) {
+    
+    // To prevent calling the validation function when selecting the transaction type before selecting accounts
+    var hasNullAccounts = (uniqueAccountsArray.length === 0);
+
+    if(!hasNullAccounts) {
       var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
       if (!hasUniqueAccounts) {
         err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
