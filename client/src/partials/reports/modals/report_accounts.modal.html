@@ -1,80 +1,63 @@
-<div ng-if="ReportConfigCtrl.previewGenerated">
-<div class="row">
-  <div class="col-md-12">
-    <!-- remove-preview-click=ReportConfigCtrl.removePreview()" -->
-    <button ng-click="ReportConfigCtrl.clearPreview()" class="btn btn-default"><i class="fa fa-close"></i> <span translate>REPORTS.CANCEL_PREVIEW</span></button>
-    <button class="btn btn-default"><i class="fa fa-save"></i> <span translate>REPORTS.SAVE_AS</span></button>
-  </div>
-</div>
-<div class="row" style="margin-top : 5px">
-  <div class="col-md-12">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <i class="fa fa-file-o"></i> <span translte>REPORT.DOCUMENT_PREVIEW</span>
-    </div>
-    <div class="panel-body" style="padding : 5px;">
-      <iframe style="border : none; width : 100%; height : 60vh; overflow-x : hidden;" scrolling="yes" srcdoc="{{ReportConfigCtrl.previewResult}}"></iframe>
-    </div>
-  </div>
-  </div>
-</div>
-</div>
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()">
+</bh-report-preview>
 
 <div ng-show="!ReportConfigCtrl.previewGenerated">
-
-<div class="row">
-<div class="col-md-12">
-  <h3>REPORTS.ACCOUNT_REPORT.TITLE</h3>
-  <p class="text-info">REPORTS.ACCOUNT_REPORT.DESCRIPTION</p>
-  <!-- <p class="text-info">This report will show all transactions against an individual account for a given period of time.</p> -->
-</div>
-</div>
-<div class="row" style="margin-top : 10px">
-
-<div class="col-md-6">
-<div class="panel panel-default">
-<div class="panel-heading">
-  <span translte>REPORTS.CONFIGURATION</span>
-</div>
-
-<div class="panel-body">
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" bh-form-defaults novalidate>
-  <!-- account selection  -->
-  <bh-account-select
-    id="account-id"
-    account-id="ReportConfigCtrl.account"
-    label="FORM.SELECT.ACCOUNT"
-    name="account"
-    on-select-callback="ReportConfigCtrl.selectAccount(account)">
-  </bh-account-select>
-
-  <bh-report-source
-    value="ReportConfigCtrl.reportDetails.source"
-    on-select-callback="ReportConfigCtrl.selectSource(source)"></bh-report-source>
-  {{ReportConfigCtrl.sourceValue}}
-
-  <!-- included Date interval  -->
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
-      <span translate>FORM.LABELS.INCLUDE_DATE_INTERVAL</span>
-    </label>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>REPORTS.ACCOUNT_REPORT.TITLE</h3>
+      <p class="text-info">REPORTS.ACCOUNT_REPORT.DESCRIPTION</p>
+      <!-- <p class="text-info">This report will show all transactions against an individual account for a given period of time.</p> -->
+    </div>
   </div>
 
-  <!-- Date interval  -->
-  <!-- @TODO this should use a component that callsback with well defined dates -->
-  <div ng-if="ReportConfigCtrl.dateInterval === 1">
-    <bh-date-interval
-      date-from="ReportConfigCtrl.reportDetails.dateFrom"
-      date-to="ReportConfigCtrl.reportDetails.dateTo">
-    </bh-date-interval>
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translte>REPORTS.CONFIGURATION</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" bh-form-defaults novalidate>
+            <!-- account selection  -->
+            <bh-account-select
+              id="account-id"
+              account-id="ReportConfigCtrl.account"
+              label="FORM.SELECT.ACCOUNT"
+              name="account"
+              on-select-callback="ReportConfigCtrl.selectAccount(account)">
+            </bh-account-select>
+
+            <bh-report-source
+              value="ReportConfigCtrl.reportDetails.source"
+              on-select-callback="ReportConfigCtrl.selectSource(source)">
+            </bh-report-source>
+
+            <!-- included Date interval  -->
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.LABELS.INCLUDE_DATE_INTERVAL</span>
+              </label>
+            </div>
+
+            <!-- Date interval  -->
+            <!-- @TODO this should use a component that callsback with well defined dates -->
+            <div ng-if="ReportConfigCtrl.dateInterval === 1">
+              <bh-date-interval
+                date-from="ReportConfigCtrl.reportDetails.dateFrom"
+                date-to="ReportConfigCtrl.reportDetails.dateTo">
+              </bh-date-interval>
+            </div>
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>FORM.BUTTONS.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-  <bh-loading-button loading-state="ConfigForm.$loading">
-    <span translate>FORM.BUTTONS.PREVIEW</span>
-  </bh-loading-button>
-</form>
-</div>
-</div>
-</div>
-</div>
 </div>
