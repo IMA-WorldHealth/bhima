@@ -1,7 +1,8 @@
 <bh-report-preview
   ng-if="ReportConfigCtrl.previewGenerated"
   source-document="ReportConfigCtrl.previewResult"
-  on-clear-callback="ReportConfigCtrl.clearPreview()">
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
 </bh-report-preview>
 
 <div ng-show="!ReportConfigCtrl.previewGenerated">
