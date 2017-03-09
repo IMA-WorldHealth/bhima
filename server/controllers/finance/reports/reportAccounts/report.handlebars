@@ -33,9 +33,21 @@
             <td>{{this.trans_id}}</td>
             <td>{{this.document_reference}}</td>
             <td>{{this.description}}</td>
-            <td class="text-right">{{currency this.debit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency this.credit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency this.cumsum ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">
+              {{#if this.debit}}
+                {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
+            <td class="text-right">
+              {{#if this.credit}}
+                {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
+            <td class="text-right">
+              {{#if this.cumsum}}
+                {{currency this.cumsum ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
           </tr>
         {{else}}
           {{> emptyTable columns=7}}
