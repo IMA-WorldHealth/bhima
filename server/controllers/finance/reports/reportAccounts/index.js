@@ -2,13 +2,28 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 
+const Accounts = require('../../accounts');
+
 const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /**
  * global constants
  */
-const sourceMap = { 1: 'general_ledger', 2: 'posting_journal', 3: 'combined_ledger' };
+const sourceMap = {
+  1 : {
+    table : 'general_ledger',
+    key : 'FORM.LABELS.GENERAL_LEDGER'
+  },
+  2 : {
+    table : 'posting_journal',
+    key : 'FORM.LABELS.POSTING_JOURNAL'
+  },
+  3 : {
+    table : 'combined_ledger',
+    key : 'FORM.LABELS.ALL'
+  }
+};
 
 /**
  * Expose to controllers
@@ -27,15 +42,8 @@ function document(req, res, next) {
 
   const params = req.query;
 
-  const title = {
-    accountNumber : params.account_number,
-    accountLabel  : params.account_label,
-    source        : params.sourceLabel,
-    dateFrom      : params.dateFrom,
-    dateTo        : params.dateTo,
-  };
-
   params.user = req.session.user;
+  params.sourceLabel = sourceMap[params.source].key;
 
   if (!params.account_id) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
@@ -47,9 +55,10 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return getAccountTransactions(params.account_id, params.sourceId, params.dateFrom, params.dateTo)
+  return getAccountTransactions(params.account_id, params.source, params.dateFrom, params.dateTo)
     .then((result) => {
-      _.extend(bundle, { transactions: result.transactions, sum: result.sum, title });
+      _.extend(bundle, result);
+      _.extend(bundle, { params });
 
       return report.render(bundle);
     })
@@ -66,10 +75,10 @@ function document(req, res, next) {
  * This feature select all transactions for a specific account
 */
 function getAccountTransactions(accountId, source, dateFrom, dateTo) {
-  const sourceId = parseInt(source, 10);
+  const sourceId = Number(source);
 
   // get the table name
-  const tableName = sourceMap[sourceId];
+  const tableName = sourceMap[sourceId].table;
   const params = [accountId];
 
   let dateCondition = '';
@@ -110,7 +119,14 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
 
   const bundle = {};
 
-  return db.exec(sql, params)
+  return Accounts.lookupAccount(accountId)
+    .then((accountDetails) => {
+      _.extend(bundle, { accountDetails });
+      return db.exec(csum);
+    })
+    .then(() => {
+      return db.exec(sql, params);
+    })
     .then((transactions) => {
       _.extend(bundle, { transactions });
       return db.one(sqlAggrega, params);

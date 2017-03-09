@@ -16,7 +16,7 @@ function ReportAccountsConfigController($sce, Notify, SavedReports, AppCache, re
   checkCachedConfiguration();
 
   vm.selectAccount = function selectAccount(account) {
-    vm.reportDetails.account = account.id;
+    vm.reportDetails.account_id = account.id;
   }
 
   vm.selectSource = function selectSource(source) {

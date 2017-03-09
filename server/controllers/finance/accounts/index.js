@@ -256,6 +256,8 @@ function lookupAccount(id) {
 
   return db.exec(sql, id)
     .then(function(rows) {
+
+      console.log('db exec finished', rows);
       if (rows.length === 0) {
         throw new NotFound(`Could not find account with id ${id}.`);
       }
