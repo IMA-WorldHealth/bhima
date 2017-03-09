@@ -46,7 +46,7 @@ function login(req, res, next) {
   let param = {}; 
 
   let sql = `
-    SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
+    SELECT user.id, user.username, user.display_name, user.email, user.deactivated, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
     WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;
@@ -80,9 +80,16 @@ function login(req, res, next) {
       let permission = param.permission.length;
       let user = param.user.length;
 
-      if((connect === 1) && (permission === 0)){
-        throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
-      
+      if(connect === 1){
+
+        if(Boolean(param.connect[0].deactivated)){
+          throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
+        }
+
+        if(permission === 0){
+          throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
+        }
+
       } else if(connect === 0){
 
         if(user === 0){

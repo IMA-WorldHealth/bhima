@@ -1767,6 +1767,7 @@ CREATE TABLE `user` (
   `display_name`  TEXT NOT NULL,
   `email`         VARCHAR(100) DEFAULT NULL,
   `active`        TINYINT(4) NOT NULL DEFAULT 0,
+  `deactivated`   TINYINT(1) NOT NULL DEFAULT 0,
   `pin`           CHAR(4) NOT NULL DEFAULT 0,
   `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
