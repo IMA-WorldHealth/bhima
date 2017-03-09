@@ -28,6 +28,28 @@ function ReportAccountsConfigController($sce, Notify, SavedReports, AppCache, re
     vm.previewResult = null;
   }
 
+  vm.requestSaveAs = function requestSaveAs() {
+
+    parseDateInterval(vm.reportDetails);
+
+    var options = {
+      url : reportUrl,
+      report : reportData,
+      reportOptions : angular.copy(vm.reportDetails)
+    };
+
+    //url
+    //report
+    //reportOptions
+    SavedReports.saveAsModal(options)
+      .then(function (result) {
+        console.log('res', result);
+      })
+      .catch(function (error) {
+        console.log('err', error);
+      });
+  }
+
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
 

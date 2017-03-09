@@ -8,11 +8,12 @@ function BaseReportService($http, Modal, util) {
 
   service.requestKey = requestKey;
   service.listSavedReports = listSavedReports;
-  service.openConfiguration = openConfiguration;
-  service.requestPDF = requestPDF;
   service.deleteReport = deleteReport;
 
+  service.saveReport = saveReport;
   service.requestPreview = requestPreview;
+
+  service.saveAsModal = saveAsModal;
 
   function requestKey(key) {
     var url = '/reports/keys/';
@@ -24,39 +25,6 @@ function BaseReportService($http, Modal, util) {
     var url = '/reports/saved/';
     return $http.get(url.concat(reportId))
       .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * @function openConfiguration
-   *
-   * @description
-   * This function uses a convention based template/ controller loading
-   * standard to initialise a modal based on provided key.
-   *
-   * @param {Object} report   A detailed report object that should provide
-   *                          id, key and title_key
-   */
-  function openConfiguration(report) {
-    // modal is not opened through $stateProvider to allow dynamic controller
-    // this should be updated if possible to allow deep linking
-
-    // controller and template are linked by convention
-    // template : /partials/reports/modals/:report_key:.modal.html
-    // controller : :report_key:Controller
-
-    // var templateString = '/partials/reports/modals/'.concat(report.report_key, '.modal.html');
-    // var controllerString = report.report_key.concat('Controller as ReportConfigCtrl');
-
-    // return Modal.open({
-    //   templateUrl : templateString,
-    //   controller : controllerString,
-    //   size : 'md',
-    //   resolve : {
-    //     reportDetails : function () {
-    //       return report;
-    //     }
-    //   }
-    // });
   }
 
   function requestPreview(url, reportId, reportOptions) {
@@ -78,16 +46,14 @@ function BaseReportService($http, Modal, util) {
    * Formats a reports configuration options with the PDF report API and returns
    * a request for the PDF document generation.
    */
-  function requestPDF(url, report, reportOptions) {
-    var pdfParams = {
+  function saveReport(url, report, reportOptions) {
+    var params = {
       // @TODO This should be known by the server
       reportId : report.id,
-      saveReport : '1',
-      renderer : 'pdf'
+      saveReport : '1'
     };
+    var options = angular.merge(reportOptions, params);
 
-    var options = angular.merge(reportOptions, pdfParams);
-    
     return $http.get(url, { params : options });
   }
 
@@ -95,5 +61,20 @@ function BaseReportService($http, Modal, util) {
     var url = '/reports/archive/'.concat(uuid);
     return $http.delete(url)
       .then(util.unwrapHttpResponse);
+  }
+
+  function saveAsModal(options) {
+    var instance = Modal.open({
+      animation : false,
+      keyboard : true,
+      size : 'md',
+      resolve : {
+        options : function resolveOptions() { return options; }
+      },
+      controller : 'SaveReportController as SaveCtrl',
+      templateUrl : '/partials/templates/modals/report.save.html'
+    });
+
+    return instance.result;
   }
 }
