@@ -404,7 +404,8 @@
       "MISSING_DEBTOR_ID"   : "Identifying missing Debtor",
       "RECORD_ERROR"        : "Please resolve any errors on the form (marked in red).",
       "REQUIRED"            : "This value is required.",
-      "INVALID"             : "invalid data"
+      "INVALID"             : "invalid data",
+      "LOCKED_USER"         : "You are locked, contact the administrator of the System"
     },
     "INFO": {
       "BY"                   : "by",
@@ -460,6 +461,7 @@
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
+      "ACTIVE"                 : "Active",
       "ADD"                    : "Add",
       "ADDRESS"                : "Address",
       "ADDRESS1"               : "Address",
@@ -1059,8 +1061,6 @@
     "SUPER"         : "Super User",
     "TITLE"         : "Users and Permissions Management",
     "UPDATING_USER" : "Edits a user's metadata",
-    "CREATE"        : "Create",
-    "UPDATE"        : "Update",
     "UPDATED"       : "Updated",
     "CREATED"       : "Created"
   },
