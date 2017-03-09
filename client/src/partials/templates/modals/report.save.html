@@ -1,9 +1,7 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">
-      REPORT_NAME
-    </li>
-    <li class="title" translate>REPORTS.SAVE</li>
+    <li class="static" translate>{{SaveCtrl.report.title_key}}</li>
+    <li class="title" translate>REPORT.UTIL.SAVE_AS</li>
   </ol>
 </div>
 
@@ -20,8 +18,8 @@
   </div>
 
   <div class="form-group">
-    <label class="control-label" translate>REPORT.FILE_TYPE</label>
-    <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as type.label for type in SaveCtrl.supportedRenderTypes">
+    <label class="control-label" translate>REPORT.UTIL.SAVE_AS</label>
+    <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as (type.label | translate) for type in SaveCtrl.supportedRenderTypes">
     </select>
   </div>
 </div>

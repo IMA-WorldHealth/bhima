@@ -6,14 +6,18 @@ SaveReportController.$inject = ['$uibModalInstance', 'NotifyService', 'BaseRepor
 function SaveReportController(ModalInstance, Notify, SavedReports, options) {
   var vm = this;
   vm.documentOptions = {};
+  vm.report = options.report;
+
+  console.log('using options', options);
 
   vm.dismiss = ModalInstance.dismiss;
 
   /* @TODO verify that options passed in are valid */
 
+  // @TODO this should be derived from the server or compiled in during the build process
+  //       it should also be possible to override this depending on the support of each individual report
   vm.supportedRenderTypes = [
-    { key : 'pdf', label : 'REPORTS.FILES.PDF' },
-    { key : 'csv', label : 'REPORTS.FILES.CSV' }
+    { key : 'pdf', label : 'REPORT.UTIL.PDF' }
   ];
   vm.documentOptions.renderer = vm.supportedRenderTypes[0].key;
 
@@ -25,7 +29,7 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options) {
 
     return SavedReports.saveReport(options.url, options.report, reportOptions)
       .then(function (result) {
-        Notify.success('REPORTS.SAVE_SUCCESS');
+        Notify.success('REPORT.UTIL.SAVE_SUCCESS');
         ModalInstance.close(result);
       })
       .catch(Notify.handleError);

@@ -1254,13 +1254,27 @@
     "PRODUCED_BY"      : "Produced by",
     "PRODUCED_DATE"    : "Production Date",
     "PRODUCED_ON"      : "Produced on",
-    "REPORT_ACCOUNTS"  : "Report accounts",
+    "REPORT_ACCOUNTS"  : {
+      "TITLE"          : "Report accounts",
+      "DESCRIPTION"    : "This report displays all transactions against an individual account for a given period of time."
+    },
     "INCOME_REPORT"    : "Incomes Report",
     "EXPENSE_REPORT"   : "Expenses Report",
     "SINCE"            : "Since",
     "INCOME_EXPENSE"   : "Income Expense Report",
     "VIEW_RECEIPT"     : "View Receipt",
-    "VIEW_CREDIT_NOTE" : "View Credit Note"
+    "VIEW_CREDIT_NOTE" : "View Credit Note",
+    "UTIL" : {
+      "OPTIONS"  : "Report Options",
+      "PREVIEW"  : "Preview Report",
+      "DOCUMENT_PREVIEW" : "Report Preview",
+      "CANCEL_PREVIEW" : "Cancel Preview",
+      "SAVE_AS" : "Save As",
+      "VIEW_ARCHIVE" : "View report archive",
+      "BACK" : "Back to report options",
+      "PDF" : "PDF",
+      "SAVE_SUCCESS" : "Report saved. It can be viewed at any time in the archive."
+    }
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",
