@@ -12,7 +12,7 @@ angular.module('bhima.components')
   });
 
 FindPatientComponent.$inject = [
-  'PatientService', 'AppCache', 'NotifyService',
+  'PatientService', 'AppCache', 'NotifyService', 'SessionService', 'bhConstants'
 ];
 
 /**
@@ -35,7 +35,7 @@ FindPatientComponent.$inject = [
  *   - validationTrigger: binds a boolean to indicate if the components validation
  *     should be run
  */
-function FindPatientComponent(Patients, AppCache, Notify) {
+function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhConstants) {
   var vm = this;
 
   /* cache to remember which the search type of the component */
@@ -107,19 +107,22 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   /**
    * @method searchByReference
    *
-   * @param {string} ref -patient hospital referenece (e.g. HBB123)
+   * @param {string} ref -patient hospital reference (e.g. HBB123 or 123)
    *
-   * @description This function make a call to BHIMA API for finding a patient
+   * @description This function makes a call to BHIMA API for finding a patient
    * who is identified by a hospital reference. (e.g. HBB123)
+   * if the user sends the number XXX instead of HBBXXX, the service will tail the number
+   * with the current user project abbreviation to have HBBXXX for example.
    */
   function searchByReference(reference) {
     var options;
 
     vm.loadStatus = 'loading';
+    let isNumber = Boolean(Number(reference));
 
     options = {
-      reference : reference,
-      limit     : 1,
+      reference : isNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
+      limit     : 1
     };
 
     // query the patient's search endpoint for the
