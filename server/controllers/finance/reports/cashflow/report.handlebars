@@ -65,7 +65,9 @@
           <td class="text-left"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
           {{#each periodStartArray as |period $index|}}
           <td class="text-right">
-            {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}
+            {{#if (look ../periodicOpenningBalance period)}}
+              {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}
+            {{/if}}
           </td>
           {{/each}}
         </tr>
@@ -75,7 +77,9 @@
           <td class="text-left"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
           {{#each periodStartArray as |period $index|}}
           <td class="text-right">
-            {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
+            {{#if (look ../periodicBalance period)}}
+              {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
+            {{/if}}
           </td>
           {{/each}}
         </tr>
@@ -111,7 +115,11 @@
             <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
             <td class="text-right" style="background-color: #ccc;">
-              <strong>{{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}</strong>
+              <strong>
+                {{#if (look ../periodicOpenningBalance period)}}
+                  {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}} 
+                {{/if}}
+              </strong>
             </td>
             {{/each}}
           </tr>
@@ -131,7 +139,9 @@
             <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../periodStartArray as |period $index|}}
             <td class="text-right">
-              {{currency (look ../../incomes period label) ../../metadata.enterprise.currency_id}}
+              {{#if (look ../../incomes period label)}}
+                {{currency (look ../../incomes period label) ../../metadata.enterprise.currency_id}}
+              {{/if}}  
             </td>
             {{/each}}
           </tr>
@@ -167,7 +177,9 @@
             <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../periodStartArray as |period $index|}}
             <td class="text-right">
-              {{currency (look ../../expenses period label) ../../metadata.enterprise.currency_id}}
+              {{#if (look ../../expenses period label)}}
+                {{currency (look ../../expenses period label) ../../metadata.enterprise.currency_id}}
+              {{/if}}  
             </td>
             {{/each}}
           </tr>

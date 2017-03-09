@@ -1535,6 +1535,7 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Registre des paiements",
     "CASH_WINDOW"                : "Paiements",
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
