@@ -8,11 +8,7 @@ ReportsArchiveController.$inject = [
 function ReportsArchiveController($state, SavedReports, Notify, reportData) {
   var vm = this;
 
-  console.log('child state got report data', reportData);
-  // @TODO
-  var reportId = 6;
-
-  console.log($state);
+  var reportId = reportData.id;
   vm.key = $state.params.key;
 
   vm.deleteReport = deleteReport;
@@ -24,8 +20,6 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
     enableSorting : false,
     appScopeProvider : vm
   };
-
-  console.log('VM', vm.gridOptions);
 
   var typeTemplate = '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
   var dateTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)</div>';

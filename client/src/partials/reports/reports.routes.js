@@ -31,7 +31,7 @@ angular.module('bhima.routes')
           $stateProvider.state('reportsBase.'.concat(key), {
             url : '/'.concat(key, '/preview'),
             controller : key.concat('Controller as ReportConfigCtrl'),
-            templateUrl : '/partials/reports/modals/'.concat(key, '.modal.html'),
+            templateUrl : '/partials/reports/generate/'.concat(key, '.html'),
             params : { key : key }
           });
        });

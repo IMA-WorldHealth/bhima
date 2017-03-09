@@ -3,9 +3,8 @@
 
     <ol class="headercrumb">
       <li class="static" translate>TREE.REPORTS</li>
-      <li class="title" translate>{{ReportCtrl.report.title_key}}</li>
+      <li class="title text-capitalize" translate>{{ReportCtrl.report.title_key}}</li>
     </ol>
-    {{ReportCtrl.current}}
     <div class="toolbar">
       <div
         class="toolbar-item"
@@ -16,7 +15,7 @@
           data-method="archive"
           id="view-report-archive">
           <span class="fa fa-archive"></span>
-          <span translate>FORM.BUTTONS.VIEW_REPORT_ARCHIVE</span>
+          <span translate>REPORT.UTIL.VIEW_ARCHIVE</span>
         </button>
       </div>
     </div>
@@ -24,7 +23,6 @@
 </div>
 
 <div class="flex-content">
-
   <div class="container-fluid">
     <div ui-view></div>
   </div>

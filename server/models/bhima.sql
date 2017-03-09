@@ -50,7 +50,7 @@ INSERT INTO unit VALUES
   (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense'),
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
-  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
+  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts/preview'),
   (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
   (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
   (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
@@ -73,7 +73,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
   (4, 'balance', 'REPORT.BALANCE'),
   (5, 'agedDebtors', 'TREE.CUSTOMER_DEBTS'),
-  (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS'),
+  (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS.TITLE'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
   (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS_REPORT');

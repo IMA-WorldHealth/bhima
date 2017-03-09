@@ -8,9 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3>REPORTS.ACCOUNT_REPORT.TITLE</h3>
-      <p class="text-info">REPORTS.ACCOUNT_REPORT.DESCRIPTION</p>
-      <!-- <p class="text-info">This report will show all transactions against an individual account for a given period of time.</p> -->
+      <h3 class="text-capitalize" translate>REPORT.REPORT_ACCOUNTS.TITLE</h3>
+      <p class="text-info" translate>REPORT.REPORT_ACCOUNTS.DESCRIPTION</p>
     </div>
   </div>
 
@@ -18,7 +17,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span translte>REPORTS.CONFIGURATION</span>
+          <span translate>REPORT.UTIL.OPTIONS</span>
         </div>
 
         <div class="panel-body">
@@ -54,7 +53,7 @@
               </bh-date-interval>
             </div>
             <bh-loading-button loading-state="ConfigForm.$loading">
-              <span translate>FORM.BUTTONS.PREVIEW</span>
+              <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
           </form>
         </div>
