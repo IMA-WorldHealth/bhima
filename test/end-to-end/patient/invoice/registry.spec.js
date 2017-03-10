@@ -21,6 +21,7 @@ describe('Invoice Registry', () => {
   before(() => helpers.navigate(path));
 
   it('displays all invoices loaded from the database', () => {
+    showAllTransactions();
     expect(page.getInvoiceNumber()).to.eventually.equal(numInvoices);
   });
 
@@ -33,6 +34,8 @@ describe('Invoice Registry', () => {
   describe('Search', Search);
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
+    showAllTransactions();
+
     // element(by.id("IV.TPA.3")).click();
     page.clickOnMethod(0, 'createCreditNote');
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
@@ -44,5 +47,15 @@ describe('Invoice Registry', () => {
     page.clickOnMethod(0, 'creditNoteReceipt');
     FU.modal.close();
   });
+
+  function showAllTransactions() {
+    // @FIXME patch for restricting invoices
+    // set up the page to show all invoices
+    FU.buttons.search();
+    $('[data-date-range="day"]').click();
+    components.dateInterval.dateFrom('01/01/2015');
+    FU.modal.submit();
+
+  }
 
 });

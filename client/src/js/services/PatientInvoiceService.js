@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'util', 'SessionService', 'PrototypeApiService'
+  '$uibModal', 'util', 'SessionService', 'PrototypeApiService', 'FilterService'
 ];
 
 /**
@@ -12,8 +12,10 @@ PatientInvoiceService.$inject = [
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
-function PatientInvoiceService(Modal, util, Session, Api) {
+function PatientInvoiceService(Modal, util, Session, Api, Filters) {
   var service = new Api('/invoices/');
+
+  var filter = new Filters();
 
   service.create = create;
   service.openSearchModal = openSearchModal;
@@ -124,7 +126,8 @@ function PatientInvoiceService(Modal, util, Session, Api) {
       { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
       { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
-      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' }
+      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' },
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' }
     ];
 
     // returns columns from filters
@@ -133,6 +136,11 @@ function PatientInvoiceService(Modal, util, Session, Api) {
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        // @FIXME tempoarary hack for default period
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
+        }
         return true;
       } else {
         return false;

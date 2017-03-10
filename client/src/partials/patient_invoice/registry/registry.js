@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'ReceiptModal', 'appcache', 'uiGridConstants',
-  'ModalService', 'CashService', 'GridSortingService', '$state',
+  'ModalService', 'CashService', 'GridSortingService', '$state', 'FilterService',
 ];
 
 /**
@@ -12,10 +12,13 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting, $state) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Receipt, AppCache, uiGridConstants, ModalService, Cash, Sorting, $state, Filters) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
+
+  var filter = new Filters();
+  vm.filter = filter;
 
   // Background color for make the difference betwen the valid and cancel invoice
   var reversedBackgroundColor = { 'background-color': '#ffb3b3'};
@@ -127,7 +130,9 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
+    filters = filter.applyDefaults(filters);
     vm.filters = cache.filters = filters;
+
     vm.filtersFmt = Invoices.formatFilterParameters(filters);
 
     // show filter bar as needed
@@ -144,7 +149,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
   // clears the filters by forcing a cache of an empty array
   function clearFilters() {
     cacheFilters({});
-    load();
+    load(vm.filters);
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
@@ -155,7 +160,10 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       cacheFilters($state.params.filters);
     }
 
-    vm.filters = cache.filters;
+    if (!cache.filters) { cache.filters = {}; }
+    var filters = filter.applyDefaults(cache.filters);
+
+    vm.filters = filters;
     vm.filtersFmt = Invoices.formatFilterParameters(vm.filters || {});
     load(vm.filters);
 
