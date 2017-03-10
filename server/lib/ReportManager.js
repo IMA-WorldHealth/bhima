@@ -153,8 +153,6 @@ class ReportManager {
 
       // FIXME this branching logic should be promised based
       if (this.options.saveReport) {
-
-        console.log('SAVING REPORT', this.options);
         // FIXME This is not correctly deferred
         // FIXME PDF report is sent back to the client even though this is a save operation
         // FIXME Errors are not propagated

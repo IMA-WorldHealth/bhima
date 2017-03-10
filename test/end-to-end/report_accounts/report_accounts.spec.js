@@ -9,7 +9,7 @@ const helpers = require('../shared/helpers');
 const GU = require('../shared/GridUtils');
 helpers.configure(chai);
 
-describe('Report Accounts generator', () => {
+describe.skip('Report Accounts generator', () => {
 
   function getInvoiceNumber(gridId) {
     return GU.getRows(gridId).count();

@@ -42,12 +42,16 @@ function document(req, res, next) {
 
   const params = req.query;
 
-  params.user = req.session.user;
-  params.sourceLabel = sourceMap[params.source].key;
+  if (!params.source) {
+    throw new BadRequest('A source ID `source` must be specified.', 'ERRORS.BAD_REQUEST');
+  }
 
   if (!params.account_id) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
   }
+
+  params.user = req.session.user;
+  params.sourceLabel = sourceMap[params.source].key;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -122,9 +126,6 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   return Accounts.lookupAccount(accountId)
     .then((accountDetails) => {
       _.extend(bundle, { accountDetails });
-      return db.exec(csum);
-    })
-    .then(() => {
       return db.exec(sql, params);
     })
     .then((transactions) => {
