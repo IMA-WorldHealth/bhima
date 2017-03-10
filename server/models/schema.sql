@@ -1508,6 +1508,7 @@ CREATE TABLE `invoice` (
   `user_id`             SMALLINT(5) UNSIGNED NOT NULL,
   `date`                DATETIME NOT NULL,
   `description`         TEXT NOT NULL,
+  `reversed`            TINYINT NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
