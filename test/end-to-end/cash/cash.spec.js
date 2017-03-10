@@ -115,7 +115,7 @@ describe('Cash Payments', function () {
 
     // This payment against patient invoices should succeed
     const mockInvoicesPayment = {
-      patientId : 'PA.TPA.2',
+      patientId : '2', //we are using PA.TPA.X at patient invoice already
       date      : new Date('2016-03-01'),
       amount    : 5.12,
     };
