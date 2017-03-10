@@ -33,11 +33,11 @@ INSERT INTO `account` VALUES
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
 
 -- create test users
-INSERT INTO user (id, username, password, display_name, email) VALUES
-  (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org'),
-  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org'),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org'),
-  (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org');
+INSERT INTO user (id, username, password, display_name, email, deactivated) VALUES
+  (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org', 0),
+  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org', 0),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 0),
+  (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org', 1);
 
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
