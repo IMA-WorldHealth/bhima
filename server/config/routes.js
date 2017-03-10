@@ -269,7 +269,7 @@ exports.configure = function configure(app) {
   app.get('/inventory/metadata/search', inventory.searchInventoryItems);
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
-  
+
   // route for inventory list receipt
 
   /**

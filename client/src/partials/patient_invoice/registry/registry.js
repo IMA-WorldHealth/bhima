@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
-  'SessionService', 'ReceiptModal', 'appcache',
-  'uiGridConstants', 'ModalService', 'CashService', 'GridSortingService', '$state'
+  'SessionService', 'ReceiptModal', 'appcache', 'uiGridConstants',
+  'ModalService', 'CashService', 'GridSortingService', '$state',
 ];
 
 /**
@@ -18,7 +18,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
   var cache = AppCache('InvoiceRegistry');
 
   // Background color for make the difference betwen the valid and cancel invoice
-  var reversedBackgroundColor = {'background-color': '#ffb3b3' };
+  var reversedBackgroundColor = { 'background-color': '#ffb3b3'};
   var regularBackgroundColor = { 'background-color': 'none' };
   var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
@@ -49,12 +49,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     { field : 'cost',
       displayName : 'TABLE.COLUMNS.COST',
       headerCellFilter : 'translate',
-      cellTemplate: '/partials/patient_invoice/registry/templates/cost.cell.tmpl.html',
+      cellFilter: 'currency:' + Session.enterprise.currency_id,
       aggregationType: uiGridConstants.aggregationTypes.sum,
       aggregationHideLabel : true,
       footerCellClass : 'text-right',
       type: 'number',
-      footerCellFilter: 'currency:' + Session.enterprise.currency_id
+      footerCellFilter: 'currency:' + Session.enterprise.currency_id,
     },
     { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
@@ -63,14 +63,14 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
 
   //setting columns names
   vm.uiGridOptions = {
-    appScopeProvider : vm,
-    showColumnFooter : true,
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
     enableColumnMenus : false,
-    enableSorting : true,
-    fastWatch: true,
-    flatEntityAccess : true,
-    columnDefs : columnDefs,
-    rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
+    enableSorting     : true,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    columnDefs        : columnDefs,
+    rowTemplate       : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html',
   };
 
   function handler(error) {
@@ -99,10 +99,8 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     // hook the returned patients up to the grid.
     request.then(function (invoices) {
       invoices.forEach(function (invoice) {
-        invoice._backgroundColor =
-          (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE) ?  reversedBackgroundColor : regularBackgroundColor;
-
-        invoice._is_cancelled = (invoice.type_id === bhConstants.transactionType.CREDIT_NOTE);
+        invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor
+        invoice._is_cancelled = invoice.reversed;
       });
 
       // put data in the grid
