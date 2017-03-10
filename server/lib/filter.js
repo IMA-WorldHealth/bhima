@@ -1,8 +1,16 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const RESERVED_KEYWORDS = ['limit', 'detailed'];
 const DEFAULT_LIMIT_KEY = 'limit';
 const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
+
+// @FIXME patch code - this could be implemented in another library
+const PERIODS = {
+  today : () => { return { start : moment().toDate(), end : moment().toDate() } },
+  week : () => { return { start : moement().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
+  month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
+};
 /**
  * @class FilterParser
  *
@@ -66,6 +74,22 @@ class FilterParser {
       delete this._filters[filterKey];
     }
   }
+
+  period(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+    let tableString = this._formatTableAlias(tableAlias);
+
+    if (this._filters[filterKey]) {
+      const targetPeriod = PERIODS[this._filters[filterKey]]();
+
+      let periodFromStatement = `DATE(${tableString}${columnAlias}) >= DATE(?)`;
+      let periodToStatement = `DATE(${tableString}${columnAlias}) <= DATE(?)`;
+
+      this._addFilter(periodFromStatement, targetPeriod.start);
+      this._addFilter(periodToStatement, targetPeriod.end);
+      delete this._filters[filterKey];
+    }
+  }
+
 
   /**
    * @method dateFrom

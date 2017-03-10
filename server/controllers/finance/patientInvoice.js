@@ -225,6 +225,8 @@ function find(options) {
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
 
+  filters.period('defaultPeriod', 'date');
+
   // support credit note toggle
   // filters.reversed('reversed');
 

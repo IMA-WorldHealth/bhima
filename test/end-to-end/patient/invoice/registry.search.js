@@ -115,7 +115,7 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it('clear filters should remove all filters on the registry', () => {
+  it.skip('clear filters should remove all filters on the registry', () => {
     FU.buttons.search();
     FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
     FU.modal.submit();

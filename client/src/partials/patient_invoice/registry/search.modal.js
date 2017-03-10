@@ -22,6 +22,9 @@ function InvoiceRegistrySearchModalController(ModalInstance, Users, Services, Da
   vm.periods = Dates.period();
   vm.today = new Date();
 
+  // @FIXME patch hack - this should be handled by FilterService
+  delete(vm.params.defaultPeriod);
+
   // set controller methods
   vm.submit = submit;
   vm.clear = clear;
