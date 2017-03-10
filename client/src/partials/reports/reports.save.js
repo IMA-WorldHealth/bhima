@@ -8,12 +8,9 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options) {
   vm.documentOptions = {};
   vm.report = options.report;
 
-  console.log('using options', options);
-
   vm.dismiss = ModalInstance.dismiss;
 
   /* @TODO verify that options passed in are valid */
-
   // @TODO this should be derived from the server or compiled in during the build process
   //       it should also be possible to override this depending on the support of each individual report
   vm.supportedRenderTypes = [

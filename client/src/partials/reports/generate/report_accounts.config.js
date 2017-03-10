@@ -38,16 +38,8 @@ function ReportAccountsConfigController($sce, Notify, SavedReports, AppCache, re
       reportOptions : angular.copy(vm.reportDetails)
     };
 
-    //url
-    //report
-    //reportOptions
-    SavedReports.saveAsModal(options)
-      .then(function (result) {
-        console.log('res', result);
-      })
-      .catch(function (error) {
-        console.log('err', error);
-      });
+    //@TODO modal currently responds to error/ success - this should be standardised
+    SavedReports.saveAsModal(options);
   }
 
   vm.preview = function preview(form) {

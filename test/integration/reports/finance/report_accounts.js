@@ -9,7 +9,7 @@ describe(`(${target}) Report Account`, function () {
 
   const parameters = {
     account_id : '3627',
-    sourceId : 2
+    source : 2
   };
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
