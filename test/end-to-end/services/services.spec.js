@@ -57,13 +57,6 @@ describe('Services', () => {
     FU.validation.ok('ServicesCtrl.service.fc_id');
   });
 
-  it('successfully delete an service', () => {
-    element(by.id(`service-del-${DELETE_SUCCESS}`)).click();
-    components.modalAction.confirm();
-
-    FU.exists(by.id('delete_success'), true);
-  });
-
   it('no way to delete a service', () => {
     element(by.id(`service-del-${DELETE_ERROR}`)).click();
     components.modalAction.confirm();
@@ -74,5 +67,13 @@ describe('Services', () => {
     element(by.id(`service-del-${DELETE_ERROR}`)).click();
     components.modalAction.dismiss();
     FU.exists(by.id('default'), true);
+  });
+
+  it('successfully delete an service', () => {
+    element(by.id(`service-del-${DELETE_SUCCESS}`)).click();
+  components.modalAction.confirm();
+
+  FU.exists(by.id('delete_success'), true);
+  browser.refresh();
   });
 });

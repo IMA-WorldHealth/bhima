@@ -95,13 +95,13 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
         Services.delete(service.id)
           .then(function () {
             vm.view = 'delete_success';
+            Notify.success('FORM.INFO.UPDATE_SUCCESS');
             return refreshServices();
           })
           .catch(function (error) {
             vm.HTTPError = error;
             vm.view = 'delete_error';
             Notify.handleError(error);
-
           });
       });
   }
