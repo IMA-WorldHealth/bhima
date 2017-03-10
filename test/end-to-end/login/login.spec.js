@@ -53,6 +53,16 @@ describe('Login Page', () => {
   });
 
 
+  it('rejects a deactivated user to login with a growl notification', () => {
+    FU.input('LoginCtrl.credentials.username', 'admin');
+  FU.input('LoginCtrl.credentials.password', '1');
+  FU.buttons.submit();
+
+  FU.exists(by.css('.help-block'), false);
+  components.notification.hasDanger();
+  });
+
+
   it('has a default project value', () => {
     const defaultProject = element(by.model('LoginCtrl.credentials.project'))
         .$('option:checked').getText();
