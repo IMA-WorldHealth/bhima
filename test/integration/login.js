@@ -20,6 +20,12 @@ describe('(/auth/login) The login API', function () {
     password: 'unauthorized'
   };
 
+  const deactivatedUser = {
+    username : 'admin',
+    password : '1',
+    project : 1
+  }
+
   it('rejects access to non-existant routes', function () {
     return chai.request(url)
       .get('/non-existant')
@@ -60,6 +66,16 @@ describe('(/auth/login) The login API', function () {
       .catch(helpers.handler);
   });
 
+  it('rejects a deactivated user', function () {
+    return chai.request(url)
+      .post('/auth/login')
+      .send(deactivatedUser)
+      .then(function (res) {
+        helpers.api.errored(res, 401);
+        expect(res.body.code).to.equal('FORM.ERRORS.LOCKED_USER');
+      })
+      .catch(helpers.handler);
+  });
 
   it('rejects a recognized user user without a project', function () {
     return chai.request(url)
