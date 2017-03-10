@@ -116,12 +116,12 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    */
   function searchByReference(reference) {
     var options;
-    var isNumber = angular.isNumber(Number(reference));
+    var isValidNumber = !isNaN(Number(reference));
 
     vm.loadStatus = 'loading';
 
     options = {
-      reference : isNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
+      reference : isValidNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
       limit     : 1
     };
 
