@@ -182,7 +182,7 @@ function lookupFeeCenter(id) {
   return db.one(sql, id)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new NotFound(`Could not find a fee center with id ${id}`);
+        throw new NotFound(`Could not find a fee center with id ${id}`, 'FORM.ERRORS.NO_FEE_CENTER');
       }
       return rows;
     });

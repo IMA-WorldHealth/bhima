@@ -410,6 +410,7 @@
       "MISSING"            : "Informations manquantes",
       "MISSING_CASHBOX_ID" : "Caisse non definie",
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
+      "NO_FEE_CENTER"      : "Le centre de frai inexistent ou non defini",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
       "REQUIRED"           : "Cette valeur est requise.",
       "INVALID"            : "Donnees Invalides"

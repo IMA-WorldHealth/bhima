@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'SessionService', 'ModalService', 'util', 'FeeCenterService'
+  'ServiceService', 'EnterpriseService', 'SessionService', 'ModalService', 'util', 'FeeCenterService', 'NotifyService'
 ];
 
-function ServicesController(Services, Enterprises, SessionService, ModalService, util, FeeCenterService) {
+function ServicesController(Services, Enterprises, SessionService, ModalService, util, FeeCenterService, Notify) {
   var vm = this;
 
   vm.enterprises = [];
@@ -24,11 +24,6 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
   vm.del    = del;
   vm.more   = more;
 
-
-  function handler(error) {
-    vm.state.error();
-  }
-
   // sets the module view state
   function setState(state) {
     vm.state = state;
@@ -42,12 +37,12 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
     // load Enterprises
     Enterprises.read().then(function (data) {
       vm.enterprises = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     //loading fee centers
     FeeCenterService.read().then(function (data) {
       vm.feeCenters = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     setState('default');
   }
@@ -81,7 +76,7 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
     FeeCenterService.getFeeValue(data.fc_id).
     then(function (data) {
       vm.choosen.result = data.value || 0;
-    }).catch(handler);
+    }).catch(Notify.handleError);
     vm.view = 'more';
   }
 
@@ -105,6 +100,8 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
           .catch(function (error) {
             vm.HTTPError = error;
             vm.view = 'delete_error';
+            Notify.handleError(error);
+
           });
       });
   }
@@ -131,14 +128,14 @@ function ServicesController(Services, Enterprises, SessionService, ModalService,
       Services.update(service.id, service);
 
     promise
-      .then(function (response) {
+      .then(function () {
         return refreshServices();
       })
       .then(function () {
         update(service.id);
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();

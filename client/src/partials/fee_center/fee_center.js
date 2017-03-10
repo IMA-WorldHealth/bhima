@@ -4,7 +4,6 @@ angular.module('bhima.controllers')
 FeeCenterController.$inject = ['FeeCenterService', 'NotifyService', '$state', 'SessionService'];
 
 function FeeCenterController(FeeCenterService, Notify, $state, Session) {
-  window.state = $state;
   let vm = this;
 
   vm.enterprise = Session.enterprise;
@@ -51,7 +50,10 @@ function FeeCenterController(FeeCenterService, Notify, $state, Session) {
     .then(function (list) {
       vm.gridOptions.data = FeeCenterService.formatRecord(list);
     })
-    .catch(Notify.handleError)
+    .catch(function (error){
+      vm.hasError = true;
+      Notify.handleError(error);
+    })
     .finally(function(){
       vm.loading = false;
     });

@@ -29,7 +29,8 @@ const util = require('util');
  *
  * @requires util
  */
-function NotFound(description) {
+function NotFound(description, key) {
+  console.log(description, key);
 
   // make sure we have a working stack trace
   Error.captureStackTrace(this, this.constructor);
@@ -38,7 +39,7 @@ function NotFound(description) {
   this.status = 404;
 
   // bhima status code (for $translation)
-  this.code = 'ERRORS.NOT_FOUND';
+  this.code = key || 'ERRORS.NOT_FOUND';
 
   // default to an empty string if no description passed in
   this.description = description || '';
