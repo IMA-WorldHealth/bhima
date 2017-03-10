@@ -116,9 +116,9 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    */
   function searchByReference(reference) {
     var options;
+    var isNumber = angular.isNumber(Number(reference));
 
     vm.loadStatus = 'loading';
-    let isNumber = Boolean(Number(reference));
 
     options = {
       reference : isNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
