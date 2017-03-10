@@ -199,7 +199,7 @@ SET @fiscalYear2017 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2016, 1, 'Test Fiscal Year 2017', 12, DATE('2017-01-01'), DATE('2017-12-31'), 'Note for 2017', @fiscalYear2017);
 
 -- give test permission to both projects
-INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1);
+INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1), (4, 4, 1);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),
