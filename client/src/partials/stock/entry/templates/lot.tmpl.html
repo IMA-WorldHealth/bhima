@@ -1,9 +1,13 @@
 <div class="ui-grid-cell-contents">
-  <input
-    type="text"
-    class="form-control"
-    style="padding-left : 5px !important;"
-    ng-model="row.entity.lot"
-    ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-    ng-change="grid.appScope.handleChange()">
+  <a href ng-click="grid.appScope.setLots(row.entity)">
+    <span ng-hide="row.entity.lots.length">
+      <i class="fa fa-clone"></i> 
+      <span translate>STOCK.LOTS</span>
+    </span>
+
+    <span ng-show="row.entity.lots.length">
+      <strong>{{ row.entity.lots.length }}</strong>
+      <span translate>STOCK.LOTS</span>
+    </span>
+  </a>
 </div>

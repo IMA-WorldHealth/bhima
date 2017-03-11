@@ -147,6 +147,9 @@ function StockFormService(Store, AppCache, Session, $timeout) {
     self.amount = 0;
     self.expiration_date = null;
 
+    // lots
+    self.lots = [];
+
     // validation
     self.validation = function () {
       self.no_missing = self.inventory_uuid && self.lot_uuid &&

@@ -1,0 +1,13 @@
+<div ng-hide="row.entity.is_valid" class="ui-grid-cell-contents text-center"
+  ng-class="{
+    'bg-danger text-danger' : !row.entity.quantity,
+    'bg-warning text-warning' : row.entity.quantity
+  }"
+  style="padding: 5px;">
+  <span ng-show="row.entity.quantity" class="fa fa-circle-o"></span>
+  <span ng-hide="row.entity.quantity" class="fa fa-times-circle"></span>
+</div>
+
+<div ng-show="row.entity.is_valid" class="ui-grid-cell-contents bg-success text-center">
+  <span class="text-success fa fa-check-circle"></span>
+</div>

@@ -6,6 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
   'SessionService', 'util', 'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
   'StockFormService', 'StockService', 'StockModalService', 'uiGridGroupingConstants',
+  'uiGridConstants',
 ];
 
 /**
@@ -15,7 +16,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(Depots, Inventory, Notify,
   Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridGroupingConstants) {
+  StockForm, Stock, StockModal, uiGridGroupingConstants, uiGridConstants) {
   var vm = this;
   var mapEntry = {
     purchase : { find: findPurchase, submit: submitPurchase },
@@ -32,9 +33,10 @@ function StockEntryController(Depots, Inventory, Notify,
   vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.maxDate = new Date();
-  vm.configureItem = configureItem;
   vm.selectEntryType = selectEntryType;
   vm.setupDepot = setupDepot;
+  vm.configureItem = configureItem;
+  vm.setLots = setLots;
   vm.submit = submit;
 
   // grid options
@@ -65,35 +67,17 @@ function StockEntryController(Depots, Inventory, Notify,
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/entry/templates/lot.tmpl.html' },
 
-      { field            : 'expiration_date',
+      { field            : 'quantity',
         width            : 150,
-        displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
+        displayName      : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/entry/templates/expiration.tmpl.html' },
-
-      { field            : 'unit_price',
-        width            : 150,
-        displayName      : 'TABLE.COLUMNS.UNIT_PRICE',
-        headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/entry/templates/price.tmpl.html' },
-
-      { field               : 'quantity',
-        width               : 150,
-        displayName         : 'TABLE.COLUMNS.QUANTITY',
-        headerCellFilter    : 'translate',
-        cellTemplate        : 'partials/stock/entry/templates/quantity.tmpl.html',
-        treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
-
-      { field            : 'cost',
-        width            : 150,
-        displayName      : 'TABLE.COLUMNS.AMOUNT',
-        headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/entry/templates/cost.tmpl.html' },
+        cellTemplate     : 'partials/stock/entry/templates/quantity.tmpl.html',
+        aggregationType  : uiGridConstants.aggregationTypes.sum },
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/entry/templates/actions.tmpl.html' },
     ],
-    onRegisterApi,
-    data : vm.Stock.store.data,
+    onRegisterApi : onRegisterApi,
+    data          : vm.Stock.store.data,
   };
 
   vm.gridOptions = gridOptions;
@@ -118,6 +102,11 @@ function StockEntryController(Depots, Inventory, Notify,
     vm.Stock.store.clear();
   }
 
+  // configure items
+  function configureItem(item) {
+    item._initialised = true;
+  }
+
   // add items
   function addItems(n) {
     vm.Stock.addItems(n);
@@ -126,11 +115,6 @@ function StockEntryController(Depots, Inventory, Notify,
   // remove item
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
-  }
-
-  // configure item
-  function configureItem(item) {
-    item._initialised = true;
   }
 
   // init actions
@@ -203,6 +187,17 @@ function StockEntryController(Depots, Inventory, Notify,
     }
   }
 
+  // ============================ lots management ===========================
+  function setLots(inventory) {
+    StockModal.openDefineLots({ inventory: inventory })
+    .then(function (rows) {
+      if (!rows) { return; }
+      inventory.lots = rows.lots;
+      inventory.givenQuantity = rows.quantity;
+    })
+    .catch(Notify.errorHandler);
+  }
+
 
   // ================================ submit ================================
   function submit(form) {
@@ -221,17 +216,19 @@ function StockEntryController(Depots, Inventory, Notify,
       user_id     : Session.user.id,
     };
 
-    var lots = vm.Stock.store.data.map(function (row) {
-      return {
-        label            : row.lot,
-        initial_quantity : row.quantity,
-        quantity         : row.quantity,
-        unit_cost        : row.unit_cost,
-        expiration_date  : row.expiration_date,
-        inventory_uuid   : row.inventory.uuid,
-        purchase_uuid    : vm.movement.entity.uuid,
-      };
-    });
+    var lots = vm.Stock.store.data.reduce(function (current, previous) {
+      return previous.lots.map(function (lot) {
+        return {
+          label            : lot.lot,
+          initial_quantity : lot.quantity,
+          quantity         : lot.quantity,
+          unit_cost        : previous.unit_cost,
+          expiration_date  : lot.expiration_date,
+          inventory_uuid   : previous.inventory.uuid,
+          purchase_uuid    : vm.movement.entity.uuid,
+        };
+      }).concat(current);
+    }, []);
 
     movement.lots = lots;
 

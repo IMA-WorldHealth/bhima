@@ -21,6 +21,7 @@ function StockModalService(Modal) {
   service.openFindService = openFindService;
   service.openFindDepot = openFindDepot;
   service.openFindPurchase = openFindPurchase;
+  service.openDefineLots = openDefineLots;
 
     /** search stock lots */
   function openSearchLots(request) {
@@ -135,6 +136,24 @@ function StockModalService(Modal) {
     var params = angular.extend(modalParameters, {
       templateUrl  : 'partials/stock/entry/modals/findPurchase.modal.html',
       controller   : 'StockFindPurchaseModalController',
+      controllerAs : '$ctrl',
+      size         : 'md',
+      backdrop     : 'static',
+      animation    : false,
+      resolve      : {
+        data : function dataProvider() { return request; },
+      },
+    });
+
+    var instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** lots definition */
+  function openDefineLots(request) {
+    var params = angular.extend(modalParameters, {
+      templateUrl  : 'partials/stock/entry/modals/lots.modal.html',
+      controller   : 'StockDefineLotsModalController',
       controllerAs : '$ctrl',
       size         : 'md',
       backdrop     : 'static',

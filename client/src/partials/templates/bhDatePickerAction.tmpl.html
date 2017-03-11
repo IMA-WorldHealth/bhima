@@ -1,10 +1,10 @@
-<span class="text-action" ng-click="$ctrl.open()">
-  <span ng-show="$ctrl.date">
-    <i class="fa fa-calendar-check-o"></i> 
-    {{ $ctrl.date | date }}
-  </span>
-  <span ng-hide="$ctrl.date">
-    <i class="fa fa-calendar-o"></i>
-    <span translate>FORM.SELECT.DATE</span> 
-  </span>
+<span class="text-action" ng-dblclick="$ctrl.open()">
+  <input 
+    uib-datepicker-popup="{{ $ctrl.format || 'dd/MM/yyyy' }}"
+    class="form-control text-right" 
+    type="text" 
+    ng-change="$ctrl.onChange"
+    ng-model="$ctrl.date"
+    ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+    ng-required="$ctrl.required">
 </span>

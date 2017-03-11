@@ -3,8 +3,11 @@ angular.module('bhima.components')
   templateUrl : '/partials/templates/bhDatePickerAction.tmpl.html',
   controller  : DatePickerController,
   bindings    : {
-    date : '=',
-    mode : '<',
+    date     : '=',
+    format   : '<',
+    mode     : '<',
+    required : '<',
+    onChange : '<',
   },
 });
 
