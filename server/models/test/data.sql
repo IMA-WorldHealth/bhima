@@ -33,11 +33,11 @@ INSERT INTO `account` VALUES
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
 
 -- create test users
-INSERT INTO user (id, username, password, display_name, email) VALUES
-  (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org'),
-  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org'),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org'),
-  (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org');
+INSERT INTO user (id, username, password, display_name, email, deactivated) VALUES
+  (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org', 0),
+  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org', 0),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 0),
+  (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org', 1);
 
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
@@ -202,7 +202,7 @@ SET @fiscalYear2017 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2016, 1, 'Test Fiscal Year 2017', 12, DATE('2017-01-01'), DATE('2017-12-31'), 'Note for 2017', @fiscalYear2017);
 
 -- give test permission to both projects
-INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1);
+INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1), (4, 4, 1);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),

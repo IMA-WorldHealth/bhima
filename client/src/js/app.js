@@ -374,6 +374,12 @@ function constantConfig() {
       height : UTIL_BAR_HEIGHT,
       expandedHeightStyle : { 'height' : 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
       collapsedHeightStyle : {}
+    },
+    identifiers : {
+      PATIENT : {
+        key : 'PA',
+        table : 'patient'
+      }
     }
   };
 }

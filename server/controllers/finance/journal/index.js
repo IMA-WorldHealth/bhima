@@ -524,10 +524,14 @@ function transformColumns(rows, newRecord) {
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-
   const voucherUuid = uuid.v4();
-  const recordUuid  = db.bid(req.params.uuid);
-  const params = [ recordUuid, req.session.user.id, req.body.description, db.bid(voucherUuid) ];
+  const recordUuid = db.bid(req.params.uuid);
+  const params = [
+    recordUuid,
+    req.session.user.id,
+    req.body.description,
+    db.bid(voucherUuid),
+  ];
 
   /**
    * Check already cancelled

@@ -163,27 +163,33 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     }
 
     // validate that this uses multiple accounts in the transaction
-    var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
-    if (!hasUniqueAccounts) {
-      err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
-    }
+    
+    // To prevent calling the validation function when selecting the transaction type before selecting accounts
+    var hasNullAccounts = (uniqueAccountsArray.length === 0);
 
-    // validate that the number of rows in the grid is > 1
-    var hasEnoughRows = (items.length > 1);
-    if (!hasEnoughRows) {
-      err = ERROR_SINGLE_ROW_TRANSACTION;
-    }
+    if(!hasNullAccounts) {
+      var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
+      if (!hasUniqueAccounts) {
+        err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
+      }
 
-    var hasBalancedDebitsAndCredits = (this.totals.debit === this.totals.credit);
-    if (!hasBalancedDebitsAndCredits) {
-      err = ERROR_IMBALANCED_TRANSACTION;
-    }
+      // validate that the number of rows in the grid is > 1
+      var hasEnoughRows = (items.length > 1);
+      if (!hasEnoughRows) {
+        err = ERROR_SINGLE_ROW_TRANSACTION;
+      }
 
-    // attach error to the form
-    this._error = err;
+      var hasBalancedDebitsAndCredits = (this.totals.debit === this.totals.credit);
+      if (!hasBalancedDebitsAndCredits) {
+        err = ERROR_IMBALANCED_TRANSACTION;
+      }
 
-    // return the boolean condition to the caller
-    return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
+      // attach error to the form
+      this._error = err;
+
+      // return the boolean condition to the caller
+      return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
+    }  
   };
 
   /**
