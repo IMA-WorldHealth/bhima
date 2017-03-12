@@ -5,7 +5,7 @@ ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'CurrencyService', 'SessionService',
   'FindEntityService', 'FindReferenceService', 'NotifyService',
   'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'GridAggregatorService',
-  'uiGridConstants', 'VoucherForm'
+  'uiGridConstants', 'VoucherForm',
 ];
 
 /**
@@ -45,27 +45,27 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // bread crumb paths
   vm.paths = [{
-    label : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
-    current: true
+    label   : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
+    current : true,
   }];
 
   // breadcrumb dropdown
   vm.dropdown = [{
-    label: 'VOUCHERS.GLOBAL.TOOLS',
-    color: 'btn-default',
-    icon: 'fa-cogs',
-    option: Toolkit.options
+    label  : 'VOUCHERS.GLOBAL.TOOLS',
+    color  : 'btn-default',
+    icon   : 'fa-cogs',
+    option : Toolkit.options,
   }];
 
   // ui-grid options
   vm.gridOptions = {
     appScopeProvider  : vm,
     fastWatch         : true,
-    flatEntityAccess : true,
+    flatEntityAccess  : true,
     enableSorting     : false,
     enableColumnMenus : false,
     showColumnFooter  : true,
-    onRegisterApi     : onRegisterApi
+    onRegisterApi     : onRegisterApi,
   };
 
   function onRegisterApi(api) {
@@ -133,13 +133,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
       .then(function (document) {
-        row.configure({ document : document });
+        row.configure({ document: document });
       });
   }
 
   /** Get the selected currency symbol */
   function currencySymbol(currency_id) {
-    if (!currency_id) { return ; }
+    if (!currency_id) { return; }
     return Currencies.symbol(currency_id);
   }
 
@@ -163,51 +163,52 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // grid default options
   vm.gridOptions.columnDefs = [{
-    field : 'isValid',
-    displayName : '...',
-    cellTemplate: 'partials/vouchers/templates/status.grid.tmpl.html',
-    aggregationType: uiGridConstants.aggregationTypes.count,
+    field                : 'isValid',
+    displayName          : '...',
+    cellTemplate         : 'partials/vouchers/templates/status.grid.tmpl.html',
+    aggregationType      : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
-    footerCellClass : 'text-center',
-    width: 40,
+    footerCellClass      : 'text-center',
+    width                : 40,
   }, {
-    field : 'account',
-    displayName : 'FORM.LABELS.ACCOUNT',
-    headerCellFilter: 'translate',
-    cellTemplate: 'partials/vouchers/templates/account.grid.tmpl.html',
-    width: '35%',
+    field            : 'account',
+    displayName      : 'FORM.LABELS.ACCOUNT',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'partials/vouchers/templates/account.grid.tmpl.html',
+    width            : '35%',
   }, {
-    field : 'debit',
-    displayName : 'FORM.LABELS.DEBIT',
-    headerCellFilter: 'translate',
-    cellTemplate: 'partials/vouchers/templates/debit.grid.tmpl.html',
-    aggregationType: uiGridConstants.aggregationTypes.sum,
+    field                : 'debit',
+    displayName          : 'FORM.LABELS.DEBIT',
+    headerCellFilter     : 'translate',
+    cellTemplate         : 'partials/vouchers/templates/debit.grid.tmpl.html',
+    aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
-    footerCellFilter: 'currency:' + Session.enterprise.currency_id,
-    footerCellClass : 'text-right'
+    footerCellFilter     : 'currency:grid.appScope.Voucher.details.currency_id',
+    footerCellClass      : 'text-right',
   }, {
-    field : 'credit',
-    displayName : 'FORM.LABELS.CREDIT',
-    headerCellFilter: 'translate',
-    cellTemplate: 'partials/vouchers/templates/credit.grid.tmpl.html',
-    aggregationType: uiGridConstants.aggregationTypes.sum,
+    field                : 'credit',
+    displayName          : 'FORM.LABELS.CREDIT',
+    headerCellFilter     : 'translate',
+    cellTemplate         : 'partials/vouchers/templates/credit.grid.tmpl.html',
+    aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
-    footerCellFilter: 'currency:' + Session.enterprise.currency_id,
-    footerCellClass : 'text-right'
+    footerCellFilter     : 'currency:grid.appScope.Voucher.details.currency_id',
+    footerCellClass      : 'text-right',
   }, {
-    field : 'entity',
-    displayName : 'FORM.LABELS.DEBTOR_CREDITOR',
-    headerCellFilter: 'translate',
-    cellTemplate: 'partials/vouchers/templates/entity.grid.tmpl.html',
+    field            : 'entity',
+    displayName      : 'FORM.LABELS.DEBTOR_CREDITOR',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'partials/vouchers/templates/entity.grid.tmpl.html',
   }, {
-    field : 'reference',
-    displayName : 'FORM.LABELS.REFERENCE',
-    headerCellFilter: 'translate',
-    cellTemplate: 'partials/vouchers/templates/reference.grid.tmpl.html',
+    field            : 'reference',
+    displayName      : 'FORM.LABELS.REFERENCE',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'partials/vouchers/templates/reference.grid.tmpl.html',
   }, {
-    field : 'action', displayName : '...',
-    width: 25,
-    cellTemplate: 'partials/vouchers/templates/remove.grid.tmpl.html',
+    field        : 'action',
+    displayName  : '...',
+    width        : 25,
+    cellTemplate : 'partials/vouchers/templates/remove.grid.tmpl.html',
   }];
 
   /* ============================= End Grid ================================== */
