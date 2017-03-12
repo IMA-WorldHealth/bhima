@@ -6,30 +6,31 @@ describe('bhFindPatient Controller Tests', ControllerTests);
  * @todo - finish the DOM tests to compliment this controller test suite.
  */
 function ControllerTests() {
-  'use strict';
-
   // test patient to search for
   const patient = {
-    uuid: '234c51ae-efcc-4238-98c6-f402bfb39866',
-    reference:'TPA1',
-    dob: '1990-03-31T23:00:00.000Z',
-    first_name: 'Gorgia',
-    middle_name: 'Faith',
-    last_name: 'Miller',
+    uuid              : '234c51ae-efcc-4238-98c6-f402bfb39866',
+    reference         : 'TPA1',
+    dob               : '1990-03-31T23:00:00.000Z',
+    first_name        : 'Gorgia',
+    middle_name       : 'Faith',
+    last_name         : 'Miller',
     registration_date : '2015-11-26T22:23:003Z',
-    sex : 'F'
+    sex               : 'F',
   };
 
-  let $scope, $httpBackend, $controller, $componentController, bindings;
+  let $scope;
+  let $httpBackend;
+  let $controller;
+  let $componentController;
+  let bindings;
 
   beforeEach(module(
     'pascalprecht.translate', 'ngStorage', 'angularMoment', 'ui.bootstrap',
-    'bhima.services', 'bhima.components', 'templates'
+    'bhima.services', 'bhima.components', 'templates', 'bhima'
   ));
 
   // component setup
-  beforeEach(inject((_$rootScope_,  _$httpBackend_, _$componentController_) => {
-
+  beforeEach(inject((_$rootScope_, _$httpBackend_, _$componentController_) => {
     // setup initial imports
     $scope = _$rootScope_.$new();
     $httpBackend = _$httpBackend_;
@@ -38,13 +39,11 @@ function ControllerTests() {
     // bindings refreshed every time
     bindings = {
       onSearchComplete : chai.spy(),
-      onRegisterApi : chai.spy()
+      onRegisterApi    : chai.spy(),
     };
 
     // create the controller
-    $controller = $componentController('bhFindPatient', {
-      $scope : $scope,
-    }, bindings);
+    $controller = $componentController('bhFindPatient', { $scope }, bindings);
 
     // trigger a digest
     $scope.$digest();
@@ -59,7 +58,6 @@ function ControllerTests() {
   });
 
   it('#submit() searches by id when an id is set', () => {
-
     // fake array of patient responses
     const response = [patient];
     const id = 'TPA1';
@@ -130,14 +128,14 @@ function ControllerTests() {
     $controller.submit = chai.spy();
 
     // all these are not the ENTER key
-    $controller.onKeyPress({ keyCode : 12 });
-    $controller.onKeyPress({ keyCode : 101 });
-    $controller.onKeyPress({ keyCode : 0 });
+    $controller.onKeyPress({ keyCode: 12 });
+    $controller.onKeyPress({ keyCode: 101 });
+    $controller.onKeyPress({ keyCode: 0 });
 
     expect($controller.submit).to.have.not.been.called();
 
     // when the ENTER key is pressed, submit should be called
-    $controller.onKeyPress({ keyCode : ENTER_KEY, preventDefault: angular.noop });
+    $controller.onKeyPress({ keyCode: ENTER_KEY, preventDefault: angular.noop });
     expect($controller.submit).to.have.been.called();
   });
 
@@ -147,16 +145,13 @@ function ControllerTests() {
   });
 
   it('#onRegisterApi() exposes an API object', () => {
-
     let controllerApi;
 
     bindings = {
-      onRegisterApi : (api) => { controllerApi = api; }
+      onRegisterApi : (api) => { controllerApi = api; },
     };
 
-    $controller = $componentController('bhFindPatient', {
-      $scope : $scope
-    }, bindings);
+    $controller = $componentController('bhFindPatient', { $scope }, bindings);
 
     $controller.$onInit();
 
