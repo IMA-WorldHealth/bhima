@@ -28,7 +28,7 @@
     <!-- Activator -->
     <div class="row">
 
-      <!--  -->
+      <!-- stock from purchase -->
       <div class="col-xs-3">
         <button class="btn-block panel panel-default segment" type="button" 
           ng-class="{'bg-primary': StockCtrl.movement.entry_type === 'purchase'}" 
@@ -94,18 +94,6 @@
           <span translate>FORM.INFO.NO_SOURCE</span>
         </p>
 
-        <!-- "Recover Items" button -->
-        <div class="btn-group pull-right" role="group">
-          <button
-            type="button"
-            class="btn btn-default"
-            ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
-            ng-click="StockCtrl.readCache()"
-            ng-disabled="!StockCtrl.hasCacheAvailable">
-            <span class="fa fa-recycle"></span> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
-          </button>
-        </div>
-
         <!-- "Add number of grid rows" input-group -->
         <div class="input-group">
           <span class="input-group-btn">
@@ -113,7 +101,7 @@
               type="button"
               id="btn-add-rows"
               class="btn btn-default"
-              ng-disabled="!StockCtrl.movement.entry_type"
+              ng-disabled="!StockCtrl.movement.entry_type || StockCtrl.movement.entry_type === 'purchase'"
               ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
               <span class="fa fa-plus-circle"></span> <span translate>FORM.BUTTONS.ADD</span>
             </button>

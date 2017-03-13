@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('StockEntryController', StockEntryController);
+  .controller('StockEntryController', StockEntryController);
 
 // dependencies injections
 StockEntryController.$inject = [
@@ -97,7 +97,7 @@ function StockEntryController(Depots, Inventory, Notify,
   function setupDepot(depot) {
     if (!depot || !depot.uuid) { return; }
     vm.depot = depot;
-    loadInventories(vm.depot);
+    loadInventories();
     vm.Stock.setup();
     vm.Stock.store.clear();
   }
@@ -122,7 +122,6 @@ function StockEntryController(Depots, Inventory, Notify,
     vm.movement = { date: new Date(), entity: {} };
     loadInventories();
     setupDepot(vm.depot);
-    checkValidity();
   }
 
   // ============================ Inventories ==========================
@@ -132,14 +131,6 @@ function StockEntryController(Depots, Inventory, Notify,
         vm.inventories = inventories;
       })
       .catch(Notify.errorHandler);
-  }
-
-  // check validity
-  function checkValidity() {
-    vm.validForSubmit = vm.Stock.store.data.every(function (item) {
-      return item.quantity > 0 && item.lot.uuid;
-    });
-    return vm.validForSubmit;
   }
 
   // ============================ Modals ================================

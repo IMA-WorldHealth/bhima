@@ -4,20 +4,10 @@
   bh-form-defaults
   novalidate>
 
-  <div class="modal-header space-between">
+  <div class="modal-header">
     <div class="headercrumb">
       <i class="fa fa-tags"></i> 
       <span translate>FORM.LABELS.LOTS_DEFINITION</span>
-    </div>
-
-    <div class="toolbar">
-      <div class="toolbar-item">
-        <button type="button"
-          ng-click="$ctrl.addLot()"
-          class="btn btn-default">
-          <span class="fa fa-plus"></span>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -32,9 +22,13 @@
       {{ $ctrl.inventory.unit_cost | currency: $ctrl.enterprise.currency_id }}
     </h4>
 
-    <div ng-if="$ctrl.maxLotReached" class="text-warning">
-      <i class="fa fa-warning"></i> 
-      <span translate>FORM.INFO.MAX_LOT_REACHED</span>
+    <div class="text-right" style="margin-bottom: 5px;"> 
+      <button type="button"
+        ng-click="$ctrl.addLot()"
+        class="btn btn-default">
+        <span class="fa fa-plus-circle"></span> 
+        <span translate>FORM.LABELS.ADD</span>
+      </button>
     </div>
 
     <div class="row">
@@ -52,6 +46,11 @@
         </bh-grid-loading-indicator>
       </div>
     </div>
+
+    <p ng-if="$ctrl.maxLotReached" class="alert alert-warning" style="margin: 5px 0px;">
+      <i class="fa fa-warning"></i> 
+      <span translate>FORM.INFO.MAX_LOT_REACHED</span>
+    </p>
   </div>
 
   <div class="modal-footer">
