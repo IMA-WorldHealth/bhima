@@ -48,7 +48,7 @@ function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin
+      user.active, user.last_login AS lastLogin, user.deactivated 
     FROM user WHERE user.id = ?;
   `;
 
@@ -91,7 +91,7 @@ function lookupUser(id) {
 function list(req, res, next) {
   let sql =
     `SELECT user.id, display_name,
-      user.username FROM user;`;
+      user.username, user.deactivated FROM user;`;
 
   db.exec(sql)
   .then(function (rows) {
