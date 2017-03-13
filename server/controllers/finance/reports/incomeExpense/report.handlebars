@@ -61,7 +61,11 @@
             <tr>
               <td class="text-left">{{ trans_id }}</td>
               <td class="text-left">{{ description }}</td>
-              <td class="text-right">{{ currency debit ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">
+                {{#if debit}}
+                  {{ currency debit ../metadata.enterprise.currency_id}}
+                {{/if}}  
+              </td>
               <td class="text-left">{{ date trans_date }}</td>
               <td class="text-left">{{ translate transactionType }}</td>
               <td class="text-left">{{ username }}</td>
