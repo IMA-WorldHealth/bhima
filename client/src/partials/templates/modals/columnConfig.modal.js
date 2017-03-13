@@ -29,12 +29,15 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
    * @description for submitting a dialog content
    */
   function submit() {
+    if (vm.notification) { return; }
+
     Columns.setVisibleColumns(vm.map);
     ModalInstance.close();
   }
 
   // reset the column visibility to their default configuration
   function resetDefaults() {
+    vm.notification = false;
     Columns.resetDefaultVisibility();
     vm.map = Columns.getColumnVisibilityMap();
   }
@@ -44,7 +47,14 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
     ModalInstance.dismiss();
   }
 
+  function checkVisible(){
+    var columnNumber = Columns.checkColumnMap(vm.map);
+    vm.notification = !columnNumber ? true : false; 
+
+  }
+
   vm.submit = submit;
   vm.cancel = cancel;
   vm.resetDefaults = resetDefaults;
+  vm.checkVisible = checkVisible;
 }

@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout', 'NotifyService'
+  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout'
 ];
 
 /**
@@ -19,7 +19,7 @@ GridColumnService.$inject = [
  *
  * @todo - investigate using ui-grid-saveState for caching the column
  */
-function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout, Notify) {
+function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
 
   /** @const cache alias for this service */
   var serviceKey = '-Columns';
@@ -117,11 +117,39 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout, Not
    */
   Columns.prototype.setVisibleColumns = function setVisibleColumns(columns) {
     var grid = this.gridApi.grid;
-    var visibleColumn = 0;
 
-    /*
-    *This structure is used to count the number of selected columns
-    */
+    angular.forEach(columns, function (visible, field) {
+      var column = grid.getColumn(field);
+      if (visible) {
+        column.showColumn();
+      } else {
+        column.hideColumn();
+      }
+    });
+
+    // store the selected columns in the cache
+    if (this.cache) {
+      cacheColumnVisibility.call(this, columns);
+    }
+
+
+    // redraw the grid
+    this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
+
+
+  /**
+   * @method checkColumnMap
+   *
+   * @description
+   * This structure is used to count the number of selected columns
+   *
+   */
+  Columns.prototype.checkColumnMap = function checkColumnMap(columns) {
+    var grid = this.gridApi.grid;
+    var visibleColumn = 0;
+    var defaultValueColumn = 2;
+
     angular.forEach(columns, function (visible, field) {
       var column = grid.getColumn(field);
       if (visible) {
@@ -129,30 +157,15 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout, Not
       }
     });
 
-    // There are three elements that are initialized to true
-    if(visibleColumn > 3){
-      angular.forEach(columns, function (visible, field) {
-        var column = grid.getColumn(field);
-        if (visible) {
-          column.showColumn();
-        } else {
-          column.hideColumn();
-        }
-      });
-
-      // store the selected columns in the cache
-      if (this.cache) {
-        cacheColumnVisibility.call(this, columns);
-      }
-
-      // redraw the grid
-      this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);      
+    // There are two elements that are initialized to true
+    if(visibleColumn > defaultValueColumn){
+      return true;
     } else {
-      Notify.danger('FORM.ERRORS.AT_LEAST_1_COL');
+      return false;
     }
 
-
   };
+
 
   /**
    * @method resetDefaultVisibility
