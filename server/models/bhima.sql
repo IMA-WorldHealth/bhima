@@ -40,7 +40,6 @@ INSERT INTO unit VALUES
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
-  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/partials/finance/reports', '/finance/reports'),
   (145, 'Cashflow', 'REPORT.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/reports/cashflow'),

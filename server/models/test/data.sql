@@ -136,9 +136,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Voucher records
 (141, 1),
 
--- purchase order creation
-(142, 1),
-
 -- Update permission for Regular user
 
 -- Account Management
