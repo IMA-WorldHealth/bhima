@@ -31,7 +31,7 @@ script:
   - ./node_modules/.bin/karma start --single-run
   - sh sh/install.sh
   - ./node_modules/.bin/webdriver-manager update
-  - sleep 8
+  - sleep 10
   - ./node_modules/.bin/protractor protractor.conf.js
 
 git:
