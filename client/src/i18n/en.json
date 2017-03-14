@@ -105,6 +105,8 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "PAYMENT_DESCRIPTION"    : "Cash payment by {{patientName}} ({{patientReference}}) against invoice(s) {{invoiceReferences}}.",
+    "PREPAYMENT_DESCRIPTION" : "Prepayment by {{patientName}} ({{patientReference}}).",
     "REGISTRY" : {
       "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
       "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
@@ -115,10 +117,10 @@
       "MISSING_CASH"       : "Missing Cash",
       "TITLE"              : "Select a Cashbox"
     },
-    "TITLE"           : "Cash Window",
-    "TOOLS"         : "Tools",
-    "RECEIPT": {
-      "TITLE" : "Cash Receipt",
+    "TITLE" : "Cash Window",
+    "TOOLS" : "Tools",
+    "RECEIPT"   : {
+      "TITLE"   : "Cash Receipt",
       "SUCCESS" : "Successfully created a Cash Payment"
     },
     "TRANSFER": {
@@ -417,7 +419,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",

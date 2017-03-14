@@ -138,7 +138,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
 
   // submit payment
   function submitPayment(form) {
-
     // make a copy of the data before submitting
     var copy = angular.copy(vm.Payment.details);
 
@@ -158,7 +157,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
         clear(form);
 
         if (vm.openBarcodeModalOnSuccess) {
-          $state.go('^.scan', { id : vm.cashbox.id });
+          $state.go('^.scan', { id: vm.cashbox.id });
         }
       })
       .catch(Notify.handleError);
