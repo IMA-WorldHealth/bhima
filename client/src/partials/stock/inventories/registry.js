@@ -113,14 +113,6 @@ function StockInventoriesController($state, Stock, Notify,
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
 
-  // aggregation total cost
-  function totalCost(items, value) {
-    var total = items.reduce(function (previous, current) {
-      return current.entity.quantity * current.entity.unit_cost + previous;
-    }, 0);
-    return total;
-  }
-
   // on remove one filter
   function onRemoveFilter(key) {
     SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);

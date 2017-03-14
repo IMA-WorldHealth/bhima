@@ -132,7 +132,7 @@
             FORM.BUTTONS.SUSPEND
           </button>
 
-          <bh-loading-button loading-state="StockCtrl.$loading">
+          <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.hasValidInput">
             <span translate>FORM.BUTTONS.SUBMIT</span>
           </bh-loading-button>
         </div>

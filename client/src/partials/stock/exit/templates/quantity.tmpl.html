@@ -1,5 +1,6 @@
 <div class="ui-grid-cell-contents">
   <input
+    name="quantity"
     min="0"
     max="{{ row.entity.lot.quantity }}"
     type="number"
@@ -7,5 +8,5 @@
     class="form-control"
     style="padding-left : 5px !important;text-align: right;"
     ng-model="row.entity.quantity"
-    ng-change="grid.appScope.handleChange()">
+    ng-change="grid.appScope.checkValidity()" required>
 </div>

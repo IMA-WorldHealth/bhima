@@ -562,6 +562,7 @@ exports.configure = function configure(app) {
   app.get('/purchases/:uuid', purchases.detail);
   app.put('/purchases/:uuid', purchases.update);
   app.get('/purchases/:uuid/stock_status', purchases.stockStatus);
+  app.get('/purchases/:uuid/stock_balance', purchases.stockBalance);
 
   // functions api
   app.get('/functions', functions.list);

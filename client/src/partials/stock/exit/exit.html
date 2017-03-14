@@ -187,7 +187,7 @@
     <!-- grid -->
     <div id="stock-exit-grid" 
       ui-grid="StockCtrl.gridOptions" 
-      style="height: {{ ::StockCtrl.bhConstants.GRID_HEIGHT }}px; width: 100%;"
+      style="height: 300px; width: 100%;"
       ui-grid-auto-resize
       ui-grid-resize-columns>
     </div>
@@ -200,7 +200,7 @@
             FORM.BUTTONS.SUSPEND
           </button>
 
-          <bh-loading-button loading-state="StockCtrl.$loading">
+          <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
             <span translate>FORM.BUTTONS.SUBMIT</span>
           </bh-loading-button>
         </div>

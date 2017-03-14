@@ -1384,11 +1384,11 @@ DROP TABLE IF EXISTS `purchase_item`;
 
 CREATE TABLE `purchase_item` (
   `uuid` BINARY(16) NOT NULL,
-  `purchase_uuid` BINARY(16) NOT NULL,
-  `inventory_uuid` BINARY(16) NOT NULL,
-  `quantity` int(10) unsigned DEFAULT 0,
-  `unit_price` decimal(10,4) unsigned NOT NULL,
-  `total` decimal(10,4) unsigned DEFAULT NULL,
+  `purchase_uuid`   BINARY(16) NOT NULL,
+  `inventory_uuid`  BINARY(16) NOT NULL,
+  `quantity`        int(11) NOT NULL DEFAULT 0,
+  `unit_price`      decimal(10,4) unsigned NOT NULL,
+  `total`           decimal(10,4) unsigned DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_item_1` (`purchase_uuid`, `inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),

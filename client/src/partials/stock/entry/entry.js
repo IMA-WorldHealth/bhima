@@ -110,11 +110,13 @@ function StockEntryController(Depots, Inventory, Notify,
   // add items
   function addItems(n) {
     vm.Stock.addItems(n);
+    hasValidInput();
   }
 
   // remove item
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
+    hasValidInput();
   }
 
   // init actions
@@ -137,14 +139,14 @@ function StockEntryController(Depots, Inventory, Notify,
   // find purchase
   function findPurchase() {
     StockModal.openFindPurchase()
-    .then((purchase) => {
+    .then(function(purchase) {
       if (!purchase) { return; }
       vm.movement.entity = {
-        uuid     : purchase.uuid,
+        uuid     : purchase[0].uuid,
         type     : 'purchase',
-        instance : purchase,
+        instance : purchase[0],
       };
-      populate(purchase.items);
+      populate(purchase);
     })
     .catch(Notify.errorHandler);
   }
@@ -159,7 +161,7 @@ function StockEntryController(Depots, Inventory, Notify,
       vm.Stock.store.data.forEach(function (item, index) {
         item.inventory = findInventory(items[index].inventory_uuid);
         item.unit_cost = items[index].unit_price;
-        item.quantity = items[index].quantity;
+        item.quantity = items[index].balance;
         item.cost = item.quantity * item.unit_cost;
         configureItem(item);
       });
@@ -185,10 +187,17 @@ function StockEntryController(Depots, Inventory, Notify,
       if (!rows) { return; }
       inventory.lots = rows.lots;
       inventory.givenQuantity = rows.quantity;
+      vm.hasValidInput = hasValidInput();
     })
     .catch(Notify.errorHandler);
   }
 
+  // validation
+  function hasValidInput() {
+    return vm.Stock.store.data.every(function (line) {
+      return line.lots.length > 0;
+    });
+  }
 
   // ================================ submit ================================
   function submit(form) {
@@ -225,11 +234,12 @@ function StockEntryController(Depots, Inventory, Notify,
 
     Stock.stocks.create(movement)
     .then(function (document) {
-      Purchase.refreshStockStatus(vm.movement.entity.uuid);
+      Purchase.stockStatus(vm.movement.entity.uuid);
       return document;
     })
     .then(function (document) {
       vm.Stock.store.clear();
+      vm.movement = {};
       ReceiptModal.stockEntryPurchaseReceipt(document.uuid, bhConstants.flux.FROM_PURCHASE);
     })
     .catch(Notify.errorHandler);

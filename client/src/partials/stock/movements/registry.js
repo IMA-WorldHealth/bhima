@@ -148,9 +148,9 @@ function StockMovementsController($state, Stock, Notify,
   }
 
   // aggregation total cost
-  function totalCost(items, value) {
-    var total = items.reduce((previous, current) => {
-      return current.entity.quantity * current.entity.unit_cost + previous;
+  function totalCost(items) {
+    var total = items.reduce(function (previous, current) {
+      return (current.entity.quantity * current.entity.unit_cost) + previous;
     }, 0);
     return total;
   }
@@ -167,7 +167,14 @@ function StockMovementsController($state, Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    Stock.movements.read(null, filters).then((rows) => {
+    var defaultDate = { dateFrom: new Date(), dateTo: new Date() };
+
+    if (!filters) {
+      vm.filters = { display: defaultDate, identifiers: defaultDate };
+      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
+    }
+
+    Stock.movements.read(null, filters || defaultDate).then((rows) => {
       vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);

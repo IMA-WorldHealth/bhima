@@ -105,6 +105,7 @@ function StockExitController(Depots, Inventory, Notify,
   };
 
   vm.gridOptions = gridOptions;
+  vm.checkValidity = checkValidity;
 
   // expose the API so that scrolling methods can be used
   function onRegisterApi(api) {
@@ -129,12 +130,14 @@ function StockExitController(Depots, Inventory, Notify,
   // add items
   function addItems(n) {
     vm.Stock.addItems(n);
+    checkValidity();
   }
 
   // remove item
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
     pushInventory(item.inventory);
+    checkValidity();
   }
 
   // configure item
@@ -142,7 +145,7 @@ function StockExitController(Depots, Inventory, Notify,
     item._initialised = true;
     // get lots
     Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
-      .then((lots) => {
+      .then(function (lots) {
         item.lots = lots;
         popInventory(item);
       })
@@ -161,7 +164,7 @@ function StockExitController(Depots, Inventory, Notify,
   function loadInventories(depot) {
     var givenDepot = depot || vm.depot;
     Stock.inventories.read(null, { depot_uuid: givenDepot.uuid })
-      .then((inventories) => {
+      .then(function (inventories) {
         vm.selectableInventories = angular.copy(inventories);
       })
       .catch(Notify.errorHandler);
@@ -183,17 +186,17 @@ function StockExitController(Depots, Inventory, Notify,
 
   // check validity
   function checkValidity() {
-    vm.validForSubmit = vm.Stock.store.data.every(function (item) {
+    var lotsExists = vm.Stock.store.data.every(function (item) {
       return item.quantity > 0 && item.lot.uuid;
     });
-    return vm.validForSubmit;
+    vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
   }
 
   // ============================ Modals ================================
   // find patient
   function findPatient() {
     StockModal.openFindPatient()
-    .then((patient) => {
+    .then(function (patient) {
       if (!patient) { return; }
       vm.movement.entity = {
         uuid     : patient.uuid,
@@ -207,7 +210,7 @@ function StockExitController(Depots, Inventory, Notify,
   // find service
   function findService() {
     StockModal.openFindService()
-    .then((service) => {
+    .then(function (service) {
       if (!service) { return; }
       vm.movement.entity = {
         uuid     : service.uuid,
@@ -221,7 +224,7 @@ function StockExitController(Depots, Inventory, Notify,
   // find depot
   function findDepot() {
     StockModal.openFindDepot({ depot: vm.depot })
-    .then((depot) => {
+    .then(function (depot) {
       if (!depot) { return; }
       vm.movement.entity = {
         uuid     : depot.uuid,
@@ -244,7 +247,11 @@ function StockExitController(Depots, Inventory, Notify,
   // ================================ submit ================================
   function submit(form) {
     if (form.$invalid) { return; }
-    mapExit[vm.movement.exit_type].submit();
+    mapExit[vm.movement.exit_type].submit()
+      .then(function () {
+        vm.validForSubmit = false;
+      })
+      .catch(Notify.errorHandler);
   }
 
   // submit patient
@@ -269,7 +276,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     movement.lots = lots;
 
-    Stock.movements.create(movement)
+    return Stock.movements.create(movement)
     .then(function (document) {
       vm.Stock.store.clear();
       ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
@@ -299,7 +306,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     movement.lots = lots;
 
-    Stock.movements.create(movement)
+    return Stock.movements.create(movement)
     .then(function (document) {
       vm.Stock.store.clear();
       ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
@@ -327,7 +334,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     movement.lots = lots;
 
-    Stock.movements.create(movement)
+    return Stock.movements.create(movement)
     .then(function (document) {
       vm.Stock.store.clear();
       ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
@@ -357,7 +364,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     movement.lots = lots;
 
-    Stock.movements.create(movement)
+    return Stock.movements.create(movement)
     .then(function (document) {
       vm.Stock.store.clear();
       ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
