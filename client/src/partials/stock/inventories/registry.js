@@ -2,74 +2,100 @@ angular.module('bhima.controllers')
 .controller('StockInventoriesController', StockInventoriesController);
 
 StockInventoriesController.$inject = [
-    '$state', 'StockService', 'NotifyService',
-    'uiGridConstants', '$translate', 'StockModalService',
-    'SearchFilterFormatService', 'LanguageService', 'SessionService',    
+  '$state', 'StockService', 'NotifyService',
+  'uiGridConstants', '$translate', 'StockModalService',
+  'SearchFilterFormatService', 'LanguageService', 'SessionService',
+  'GridGroupingService',
 ];
 
 /**
  * Stock movements Controller
- * This module is a registry page for stock movements 
+ * This module is a registry page for stock movements
  */
-function StockInventoriesController($state, Stock, Notify, uiGridConstants, $translate, Modal, SearchFilterFormat, Languages, Session) {
+function StockInventoriesController($state, Stock, Notify,
+  uiGridConstants, $translate, Modal,
+  SearchFilterFormat, Languages, Session, Grouping) {
   var vm = this;
 
-  // global variables 
-  vm.filters         = { lang: Languages.key };
+  // global variables
+  vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
-  vm.enterprise      = Session.enterprise;
+  vm.enterprise = Session.enterprise;
 
-  // grid columns 
+  // grid columns
   var columns = [
-      { field : 'depot_text', displayName : 'STOCK.DEPOT', headerCellFilter: 'translate' },
+    { field            : 'depot_text',
+      displayName      : 'STOCK.DEPOT',
+      headerCellFilter : 'translate' },
 
-      { field : 'code', displayName : 'STOCK.CODE', headerCellFilter: 'translate' },
+    { field            : 'code',
+      displayName      : 'STOCK.CODE',
+      headerCellFilter : 'translate' },
 
-      { field : 'text', displayName : 'STOCK.INVENTORY', headerCellFilter: 'translate',
-        width: '20%' },
-      
-      { field : 'quantity', 
-        displayName : 'STOCK.QUANTITY', 
-        headerCellFilter: 'translate',
-        aggregationType : uiGridConstants.aggregationTypes.sum,
-        cellClass: 'text-right',
-        footerCellClass: 'text-right'
-      },
+    { field            : 'text',
+      displayName      : 'STOCK.INVENTORY',
+      headerCellFilter : 'translate',
+      width            : '20%' },
 
-      { field : 'status', displayName : 'STOCK.STATUS.LABEL', headerCellFilter: 'translate', 
-        enableFiltering: false, enableSorting: false, 
-        cellTemplate: 'partials/stock/inventories/templates/status.cell.html' },
+    { field            : 'quantity',
+      displayName      : 'STOCK.QUANTITY',
+      headerCellFilter : 'translate',
+      aggregationType  : uiGridConstants.aggregationTypes.sum,
+      cellClass        : 'text-right',
+      footerCellClass  : 'text-right',
+    },
 
-      { field : 'avg_consumption', displayName : 'CM',  
-        enableFiltering: false, enableSorting: false,
-        cellClass: 'text-right', 
-        cellTemplate: '' },
+    { field            : 'status',
+      displayName      : 'STOCK.STATUS.LABEL',
+      headerCellFilter : 'translate',
+      enableFiltering  : false,
+      enableSorting    : false,
+      cellTemplate     : 'partials/stock/inventories/templates/status.cell.html' },
 
-      { field : 'S_MONTH', displayName : 'STOCK.MONTH', headerCellFilter: 'translate', 
-        enableFiltering: false, enableSorting: false, 
-        cellClass: 'text-right',
-        cellTemplate: '' },
+    { field           : 'avg_consumption',
+      displayName     : 'CM',
+      enableFiltering : false,
+      enableSorting   : false,
+      cellClass       : 'text-right',
+      cellTemplate    : '' },
 
-      { field : 'S_SEC', displayName : 'SS',  
-        enableFiltering: false, enableSorting: false, 
-        cellClass: 'text-right',
-        cellTemplate: '' },
+    { field            : 'S_MONTH',
+      displayName      : 'STOCK.MONTH',
+      headerCellFilter : 'translate',
+      enableFiltering  : false,
+      enableSorting    : false,
+      cellClass        : 'text-right',
+      cellTemplate     : '' },
 
-      { field : 'S_MIN', displayName : 'MIN',  
-        enableFiltering: false, enableSorting: false, 
-        cellClass: 'text-right',
-        cellTemplate: '' },
+    { field           : 'S_SEC',
+      displayName     : 'SS',
+      enableFiltering : false,
+      enableSorting   : false,
+      cellClass       : 'text-right',
+      cellTemplate    : '' },
 
-      { field : 'S_MAX', displayName : 'MAX',  
-        enableFiltering: false, enableSorting: false, 
-        cellClass: 'text-right',
-        cellTemplate: '' },
+    { field           : 'S_MIN',
+      displayName     : 'MIN',
+      enableFiltering : false,
+      enableSorting   : false,
+      cellClass       : 'text-right',
+      cellTemplate    : '' },
 
-      { field : 'S_Q', displayName : 'STOCK.ORDERS', headerCellFilter: 'translate',
-        enableFiltering: false, enableSorting: false, 
-        cellClass: 'text-right',
-        cellTemplate: 'partials/stock/inventories/templates/appro.cell.html' }
-    ];
+    { field           : 'S_MAX',
+      displayName     : 'MAX',
+      enableFiltering : false,
+      enableSorting   : false,
+      cellClass       : 'text-right',
+      cellTemplate    : '' },
+
+    { field            : 'S_Q',
+      displayName      : 'STOCK.ORDERS',
+      headerCellFilter : 'translate',
+      enableFiltering  : false,
+      enableSorting    : false,
+      cellClass        : 'text-right',
+      cellTemplate     : 'partials/stock/inventories/templates/appro.cell.html' },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -77,15 +103,17 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
     enableColumnMenus : false,
     columnDefs        : columns,
     enableSorting     : true,
-    showColumnFooter  : true
+    showColumnFooter  : true,
   };
 
-  // expose to the view 
+  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+
+  // expose to the view
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
 
-  // aggregation total cost 
+  // aggregation total cost
   function totalCost(items, value) {
     var total = items.reduce(function (previous, current) {
       return current.entity.quantity * current.entity.unit_cost + previous;
@@ -98,7 +126,7 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
     SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
   }
 
-  // clear all filters 
+  // clear all filters
   function clearFilters() {
     SearchFilterFormat.clearFilters(reload);
   }
@@ -121,7 +149,7 @@ function StockInventoriesController($state, Stock, Notify, uiGridConstants, $tra
     .catch(Notify.handleError);
   }
 
-  // reload 
+  // reload
   function reload(filters) {
     vm.filters = filters;
     vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);

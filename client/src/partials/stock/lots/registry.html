@@ -23,6 +23,34 @@
       </div>
 
       <div class="toolbar-item">
+        <div class="btn-group" uib-dropdown>
+          <a class="btn btn-default" 
+            ng-class="{ 'btn-info' : StockLotsCtrl.grouped }" 
+            ng-click="StockLotsCtrl.toggleGroup(StockLotsCtrl.selectedGroup.value)">
+            <span>
+              <i class="fa fa-object-group"></i>
+              <span ng-hide="StockLotsCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span 
+                ng-show="StockLotsCtrl.selectedGroup.label" 
+                translate>
+                {{ StockLotsCtrl.selectedGroup.label }}
+              </span>
+            </span>
+          </a>
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li ng-repeat="option in StockLotsCtrl.groupingBox">
+              <a href ng-click="StockLotsCtrl.selectGroup(option)">
+                <span translate>{{ option.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item">
         <bh-renderer-dropdown
           report-url="/reports/stock/lots"
           report-options="StockLotsCtrl.filters">
@@ -60,7 +88,8 @@
       ui-grid="StockLotsCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-resize-columns
-      ui-grid-auto-resize>
+      ui-grid-auto-resize
+      ui-grid-grouping>
     </div>
 
   </div>

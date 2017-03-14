@@ -17,6 +17,7 @@ function PurchaseOrderService(Api, Session) {
 
   // bind public methods to the instance
   service.create = create;
+  service.refreshStockStatus = refreshStockStatus;
 
   /**
    * @method create
@@ -42,6 +43,11 @@ function PurchaseOrderService(Api, Session) {
     });
 
     return Api.create.call(service, data);
+  }
+
+  function refreshStockStatus(id) {
+    var url = ''.concat(id, '/stock_status');
+    return Api.read.call(service, url);
   }
 
   return service;

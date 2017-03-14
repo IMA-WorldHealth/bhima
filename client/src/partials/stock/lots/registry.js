@@ -2,41 +2,63 @@ angular.module('bhima.controllers')
 .controller('StockLotsController', StockLotsController);
 
 StockLotsController.$inject = [
-    '$state', 'StockService', 'NotifyService',
-    'uiGridConstants', '$translate', 'StockModalService',
-    'SearchFilterFormatService', 'LanguageService'
+  '$state', 'StockService', 'NotifyService',
+  'uiGridConstants', '$translate', 'StockModalService',
+  'SearchFilterFormatService', 'LanguageService',
+  'GridGroupingService',
 ];
 
 /**
  * Stock lots Controller
- * This module is a registry page for stock lots 
+ * This module is a registry page for stock lots
  */
-function StockLotsController($state, Stock, Notify, uiGridConstants, $translate, Modal, SearchFilterFormat, Languages) {
+function StockLotsController($state, Stock, Notify,
+  uiGridConstants, $translate, Modal,
+  SearchFilterFormat, Languages, Grouping) {
   var vm = this;
 
-  // global variables 
-  vm.filters         = { lang: Languages.key };
+  // grouping box
+  vm.groupingBox = [
+    { label: 'TABLE.COLUMNS.REFERENCE', value: 'purchase_reference' },
+    { label: 'STOCK.INVENTORY', value: 'text' },
+  ];
+
+  // global variables
+  vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
 
-  // grid columns 
+  // grid columns
   var columns = [
-      { field : 'code', 
-        displayName : 'STOCK.CODE', 
-        headerCellFilter: 'translate', 
-        aggregationType : uiGridConstants.aggregationTypes.count 
-      },
-      { field : 'text', displayName : 'STOCK.INVENTORY', headerCellFilter: 'translate' },
-      { field : 'label', displayName : 'STOCK.LOT', headerCellFilter: 'translate' },
-      { field : 'quantity', 
-        displayName : 'STOCK.QUANTITY', 
-        headerCellFilter: 'translate',
-        aggregationType : uiGridConstants.aggregationTypes.sum
-      },
-      { field : 'entry_date', displayName : 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-      { field : 'expiration_date', displayName : 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-      { field : 'delay_expiration', displayName : 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
-      { field : 'depot_text', displayName : 'STOCK.DEPOT', headerCellFilter: 'translate'  }
-    ];
+    { field            : 'purchase_reference',
+      displayName      : 'TABLE.COLUMNS.REFERENCE',
+      headerCellFilter : 'translate' },
+
+    { field            : 'depot_text',
+      displayName      : 'STOCK.DEPOT',
+      headerCellFilter : 'translate' },
+
+    { field            : 'code',
+      displayName      : 'STOCK.CODE',
+      headerCellFilter : 'translate',
+      aggregationType  : uiGridConstants.aggregationTypes.count },
+
+    { field            : 'text',
+      displayName      : 'STOCK.INVENTORY',
+      headerCellFilter : 'translate' },
+
+    { field            : 'label',
+      displayName      : 'STOCK.LOT',
+      headerCellFilter : 'translate' },
+
+    { field            : 'quantity',
+      displayName      : 'STOCK.QUANTITY',
+      headerCellFilter : 'translate',
+      aggregationType  : uiGridConstants.aggregationTypes.sum },
+    
+    { field: 'entry_date', displayName: 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
+    { field: 'expiration_date', displayName: 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
+    { field: 'delay_expiration', displayName: 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -44,20 +66,42 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate,
     enableColumnMenus : false,
     columnDefs        : columns,
     enableSorting     : true,
-    showColumnFooter  : true
+    showColumnFooter  : true,
   };
 
-  // expose to the view 
+  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+
+  // expose to the view
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.selectGroup = selectGroup;
+  vm.toggleGroup = toggleGroup;
 
   // on remove one filter
   function onRemoveFilter(key) {
     SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
   }
 
-  // clear all filters 
+  // select group
+  function selectGroup(group) {
+    if (!group) { return; }
+
+    vm.selectedGroup = group;
+  }
+
+  // toggle group
+  function toggleGroup(column) {
+    if (vm.grouped) {
+      vm.grouping.removeGrouping(column);
+      vm.grouped = false;
+    } else {
+      vm.grouping.changeGrouping(column);
+      vm.grouped = true;
+    }
+  }
+
+  // clear all filters
   function clearFilters() {
     SearchFilterFormat.clearFilters(reload);
   }
@@ -80,7 +124,7 @@ function StockLotsController($state, Stock, Notify, uiGridConstants, $translate,
     .catch(Notify.handleError);
   }
 
-  // reload 
+  // reload
   function reload(filters) {
     vm.filters = filters;
     vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);

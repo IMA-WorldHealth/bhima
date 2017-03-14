@@ -5,7 +5,7 @@ StockMovementsController.$inject = [
   '$state', 'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'FluxService', 'ReceiptModal',
+  'FluxService', 'ReceiptModal', 'GridGroupingService',
 ];
 
 /**
@@ -14,8 +14,10 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController($state, Stock, Notify,
   uiGridConstants, $translate, Modal, SearchFilterFormat,
-  Languages, Session, Flux, ReceiptModal) {
+  Languages, Session, Flux, ReceiptModal, Grouping) {
   var vm = this;
+
+  vm.gridApi = {};
 
   // bind flux id with receipt
   var mapFlux = {
@@ -27,6 +29,14 @@ function StockMovementsController($state, Stock, Notify,
     11 : { receipt: ReceiptModal.stockExitLossReceipt },
   };
 
+  // grouping box
+  vm.groupingBox = [
+    { label: 'TABLE.COLUMNS.REFERENCE', value: 'purchase_reference' },
+    { label: 'STOCK.INVENTORY', value: 'text' },
+    { label: 'STOCK.IO', value: 'io' },
+    { label: 'STOCK.LOT', value: 'label' },
+  ];
+
   // global variables
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
@@ -34,6 +44,10 @@ function StockMovementsController($state, Stock, Notify,
 
   // grid columns
   var columns = [
+    { field            : 'purchase_reference',
+      displayName      : 'TABLE.COLUMNS.REFERENCE',
+      headerCellFilter : 'translate',
+    },
     { field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
       headerCellFilter : 'translate',
@@ -90,7 +104,10 @@ function StockMovementsController($state, Stock, Notify,
     columnDefs        : columns,
     enableSorting     : true,
     showColumnFooter  : true,
+    onRegisterApi     : onRegisterApi,
   };
+
+  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
 
   // expose to the view
   vm.search = search;
@@ -98,6 +115,31 @@ function StockMovementsController($state, Stock, Notify,
   vm.clearFilters = clearFilters;
   vm.getFluxName = getFluxName;
   vm.openReceiptModal = openReceiptModal;
+  vm.toggleGroup = toggleGroup;
+  vm.selectGroup = selectGroup;
+
+  // grid api
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  // select group
+  function selectGroup(group) {
+    if (!group) { return; }
+
+    vm.selectedGroup = group;
+  }
+
+  // toggle group
+  function toggleGroup(column) {
+    if (vm.grouped) {
+      vm.grouping.removeGrouping(column);
+      vm.grouped = false;
+    } else {
+      vm.grouping.changeGrouping(column);
+      vm.grouped = true;
+    }
+  }
 
   // generate document by type of flux
   function openReceiptModal(documentUuid, fluxId) {

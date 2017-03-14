@@ -225,7 +225,7 @@ function StockEntryController(Depots, Inventory, Notify,
 
     Stock.stocks.create(movement)
     .then(function (document) {
-      Purchase.update(vm.movement.entity.uuid, { is_received: 1 });
+      Purchase.refreshStockStatus(vm.movement.entity.uuid);
       return document;
     })
     .then(function (document) {
