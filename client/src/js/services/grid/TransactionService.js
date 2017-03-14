@@ -401,7 +401,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   Transactions.prototype.edit = function edit(gridRow) {
 
     if (this.isEditing() && !MULTIPLE_EDITS) {
-      Notify.warn('JOURNAL.SINGLE_EDIT_ONLY');
+      Notify.warn('POSTING_JOURNAL.SINGLE_EDIT_ONLY');
       return;
     }
 
