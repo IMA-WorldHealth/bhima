@@ -2,8 +2,6 @@
 
 # A small script to set up virtual machine instances for deployment or testing.
 
-export ENV="staging"
-
 # make sure we are using the correct SQL mode
 mysql -h $DB_HOST -u root -e "SET GLOBAL sql_mode='STRICT_ALL_TABLES';"
 
