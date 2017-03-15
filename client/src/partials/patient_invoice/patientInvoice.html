@@ -27,16 +27,15 @@
                   </bh-find-patient>
                 </div>
 
-                <div
-                  class="form-group"
+                <div class="form-group"
                   ng-class="{'has-error' : detailsForm.$submitted && detailsForm.service.$invalid }">
                   <label class="control-label" translate>FORM.LABELS.SERVICE</label>
                   <select
                     class="form-control"
                     name="service"
                     ng-model="PatientInvoiceCtrl.Invoice.service"
-                    ng-options="service as service.name for service in PatientInvoiceCtrl.services"
-                    ng-change="PatientInvoiceCtrl.handleServiceChange()"
+                    ng-options="service as service.name for service in PatientInvoiceCtrl.Invoice.services"
+                    ng-change="PatientInvoiceCtrl.Invoice.setService(PatientInvoiceCtrl.Invoice.service)"
                     required>
                     <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
                   </select>

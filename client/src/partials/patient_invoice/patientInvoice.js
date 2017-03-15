@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
-.controller('PatientInvoiceController', PatientInvoiceController);
+  .controller('PatientInvoiceController', PatientInvoiceController);
 
 PatientInvoiceController.$inject = [
-  'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
-  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate',
-  'ExchangeRateService'
+  'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'SessionService',
+  'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate',
+  'ExchangeRateService',
 ];
 
 /**
@@ -17,7 +17,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants, translate, Exchange) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Session, Dates, Receipts, Notify, Constants, $translate, Exchange) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -31,21 +31,13 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
 
-  translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value;});
-
-  // read in services and bind to the view
-  Services.read()
-    .then(function (services) {
-      vm.services = services;
-      setDefaultService();
-    })
-    .catch(Notify.handleError);
+  $translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value; });
 
   var gridOptions = {
-    appScopeProvider : vm,
-    enableSorting : false,
+    appScopeProvider  : vm,
+    enableSorting     : false,
     enableColumnMenus : false,
-    rowTemplate: 'partials/templates/grid/error.row.html',
+    rowTemplate       : 'partials/templates/grid/error.row.html',
     columnDefs : [
       { field: 'status', width: 25, displayName : '', cellTemplate: 'partials/patient_invoice/templates/grid/status.tmpl.html' },
       { field: 'code', displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'partials/patient_invoice/templates/grid/code.tmpl.html' },
@@ -53,10 +45,10 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       { field: 'quantity', displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
       { field: 'transaction_price', displayName: 'FORM.LABELS.UNIT_PRICE', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
       { field: 'amount', displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
-      { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
+      { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' },
     ],
     onRegisterApi : exposeGridScroll,
-    data : vm.Invoice.store.data
+    data          : vm.Invoice.store.data,
   };
 
 
@@ -65,22 +57,25 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.gridApi = gridApi;
   }
 
-  function setPatient(patient) {
-    var uuid = patient.uuid;
+  function setPatient(p) {
+    var uuid = p.uuid;
     Patients.read(uuid)
-    .then(function (patient) {
-      vm.Invoice.setPatient(patient);
-      updateDescription();
-
-      return Patients.balance(patient.debtor_uuid);
-    })
-    .then(function (balance) {
-      vm.patientBalance = balance;
-    });
+      .then(function (patient) {
+        vm.Invoice.setPatient(patient);
+        updateDescription();
+        return Patients.balance(patient.debtor_uuid);
+      })
+      .then(function (balance) {
+        vm.patientBalance = balance;
+      });
   }
 
   // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
+    var items;
+    var invalidItems;
+    var firstInvalidItem;
+
     vm.Invoice.writeCache();
 
     // update value for form validation
@@ -93,11 +88,10 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     }
 
     // ask service items to validate themselves - if anything is returned it is invalid
-    var invalidItems = vm.Invoice.validate(true);
+    invalidItems = vm.Invoice.validate(true);
 
     if (invalidItems.length) {
-
-      var firstInvalidItem = invalidItems[0];
+      firstInvalidItem = invalidItems[0];
       Notify.danger(firstInvalidItem._message);
 
       // show the user where the error is
@@ -111,8 +105,10 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       return;
     }
 
+    console.log('vm.Invoice:', vm.Invoice);
+
     // copy the rows for insertion
-    var items = angular.copy(vm.Invoice.store.data);
+    items = angular.copy(vm.Invoice.store.data);
 
     // invoice consists of
     // 1. Invoice details
@@ -130,7 +126,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   }
 
   // this function will be called whenever items change in the grid.
-  function handleChange() {
+  function handleUIGridChange() {
     vm.Invoice.digest();
   }
 
@@ -153,36 +149,22 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.patientSearchApi = api;
   }
 
-  function setDefaultService() {
-
-    // select service based on criteria (currently 0th element)
-    var SERVICE_INDEX = 0;
-
-    if (angular.isDefined(vm.services) && vm.services.length) {
-      vm.Invoice.setService(vm.services[SERVICE_INDEX]);
-    }
-  }
-
-  function handleServiceChange () {
-    vm.Invoice.setService(vm.Invoice.service);
-    updateDescription();
-  }
-
   function updateDescription() {
-    if(vm.Invoice.recipient){
-      vm.Invoice.details.description = [vm.descriptionPrefix, vm.Invoice.recipient.display_name, vm.Invoice.service.name].join('/');
+    if (vm.Invoice.recipient) {
+      vm.Invoice.details.description = [
+        vm.descriptionPrefix,
+        vm.Invoice.recipient.display_name,
+        vm.Invoice.service.name,
+      ].join('/');
     }
   }
 
   // reset everything in the controller - default values
   function clear(detailsForm) {
-
     // set timestamp to today
     vm.timestamp = Dates.current.day();
 
     vm.Invoice.setup();
-    setDefaultService();
-    /** @todo this is a bad pattern, clean this up */
 
     if (detailsForm) {
       detailsForm.$setPristine();
@@ -203,8 +185,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.submit = submit;
   vm.clear = clear;
   vm.addItems = addItems;
-  vm.handleChange = handleChange;
-  vm.handleServiceChange = handleServiceChange;
+  vm.handleChange = handleUIGridChange;
 
   // Set initial default values
   clear();
