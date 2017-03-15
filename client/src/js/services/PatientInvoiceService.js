@@ -31,10 +31,11 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, billingServices, subsidies) {
+  function create(invoice, invoiceItems, billingServices, subsidies, description) {
+    var cp = angular.copy(invoice);
 
     // add project id from session
-    invoice.project_id = Session.project.id;
+    cp.project_id = Session.project.id;
 
     // a patient invoice is not required to qualify for billing services or subsidies
     // default to empty arrays
@@ -42,17 +43,19 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
     subsidies = subsidies || [];
 
     // concatenate into a single object to send back to the client
-    invoice.items = invoiceItems.map(filterInventorySource);
+    cp.items = invoiceItems.map(filterInventorySource);
 
-    invoice.billingServices = billingServices.map(function (billingService) {
+    cp.billingServices = billingServices.map(function (billingService) {
       return billingService.billing_service_id;
     });
 
-    invoice.subsidies = subsidies.map(function (subsidy) {
+    cp.subsidies = subsidies.map(function (subsidy) {
       return subsidy.subsidy_id;
     });
 
-    return Api.create.call(this, { invoice: invoice });
+    cp.description = description;
+
+    return Api.create.call(this, { invoice: cp });
   }
 
   /**
@@ -65,7 +68,7 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
    * @param {String} debtorUuid - the amount due to the debtor
    */
   function balance(uuid) {
-    var url = '/invoices/'.concat(uuid).concat('/balance');
+    var url = '/invoices/'.concat(uuid, '/balance');
     return this.$http.get(url)
       .then(this.util.unwrapHttpResponse);
   }

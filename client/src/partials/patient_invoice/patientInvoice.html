@@ -33,9 +33,8 @@
                   <select
                     class="form-control"
                     name="service"
-                    ng-model="PatientInvoiceCtrl.Invoice.service"
-                    ng-options="service as service.name for service in PatientInvoiceCtrl.Invoice.services"
-                    ng-change="PatientInvoiceCtrl.Invoice.setService(PatientInvoiceCtrl.Invoice.service)"
+                    ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
+                    ng-options="service.id as service.name for service in PatientInvoiceCtrl.Invoice.services"
                     required>
                     <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
                   </select>
@@ -65,8 +64,7 @@
                     placeholder="{{'FORM.PLACEHOLDERS.NOTES' | translate}}..."
                     class="form-control"
                     ng-maxlength="PatientInvoiceCtrl.maxLength"
-                    rows="4"
-                    required>
+                    rows="4">
                   </textarea>
                   <div class="help-block" ng-messages="detailsForm.notes.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

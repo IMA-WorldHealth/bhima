@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('PatientInvoiceForm', PatientInvoiceFormService);
 
 PatientInvoiceFormService.$inject = [
-  'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
-  'Pool', 'PatientInvoiceItemService', 'bhConstants', 'ServiceService', '$q',
+  'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store', 'Pool',
+  'PatientInvoiceItemService', 'bhConstants', 'ServiceService', '$q', '$translate',
 ];
 
 /**
@@ -18,9 +18,10 @@ PatientInvoiceFormService.$inject = [
  * @todo (required) billing services and subsidies should be ignored for
  *   specific debtors.
  */
-function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants, Services, $q) {
+function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants, Services, $q, $translate) {
   var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
   var DEFAULT_SERVICE_IDX = 0;
+  var DESCRIPTION_KEY = 'PATIENT_INVOICE.DESCRIPTION';
 
   // Reduce method - assigns the current billing services charge to the billing
   // service and adds to the running total
@@ -63,7 +64,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     var hasServices = angular.isDefined(this.services) && this.services.length;
 
     if (hasServices) {
-      this.setService(this.services[DEFAULT_SERVICE_IDX]);
+      this.details.service_id = this.services[DEFAULT_SERVICE_IDX].id;
     }
   }
 
@@ -151,6 +152,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     this._valid = false;
     this._invalid = true;
+
     // trigger a totals digest
     this.digest();
   };
@@ -278,14 +280,30 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
   };
 
   /**
-   * @method updateDescription
+   * @method getTemplatedDescription
    *
    * @description
-   * This method updates the description based on the currently selected service
-   *
+   * This method return the description based on the currently selected service and items
+   * in the invoice.
    */
-  PatientInvoiceForm.prototype.updateDescription = function updateDescription() {
-    // TODO(@jniles)
+  PatientInvoiceForm.prototype.getTemplatedDescription = function getTemplatedDescription() {
+    var self = this;
+    var selectedService;
+
+    // compute the selected service
+    this.services.forEach(function (service) {
+      if (service.id === self.details.service_id) {
+        selectedService = service;
+      }
+    });
+
+    return $translate.instant(DESCRIPTION_KEY, {
+      patientName      : self.recipient.display_name,
+      patientReference : self.recipient.reference,
+      numItems         : self.store.data.length,
+      serviceName      : selectedService.name,
+      description      : self.details.description,
+    });
   };
 
 
@@ -435,9 +453,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     // set the patient
     this.setPatient(cp.recipient);
 
-    // set the service
-    this.setService(cp.service);
-
     // setPatient() adds an item.  Remove it before configuring data
     this.clear();
 
@@ -468,7 +483,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
   PatientInvoiceForm.prototype.writeCache = function writeCache() {
     this.cache.details = this.details;
     this.cache.recipient = this.recipient;
-    this.cache.service = this.service;
     this.cache.items = angular.copy(this.store.data);
   };
 
@@ -482,7 +496,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     delete this.cache.details;
     delete this.cache.recipient;
     delete this.cache.items;
-    delete this.cache.service;
   };
 
   /**
