@@ -30,7 +30,7 @@
                 <div
                   class="form-group"
                   ng-class="{'has-error' : detailsForm.$submitted && detailsForm.service.$invalid }">
-                  <label class="control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
+                  <label class="control-label" translate>FORM.LABELS.SERVICE</label>
                   <select
                     class="form-control"
                     name="service"
@@ -38,7 +38,7 @@
                     ng-options="service as service.name for service in PatientInvoiceCtrl.services"
                     ng-change="PatientInvoiceCtrl.handleServiceChange()"
                     required>
-                    <option disabled="disabled" value="">{{ "FORM.LABELS.SERVICE" | translate }}</option>
+                    <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
                   </select>
                   <div class="help-block" ng-messages="detailsForm.service.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -59,7 +59,7 @@
 
                 <div class="form-group"
                   ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid }">
-                  <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <label class="control-label" translate>FORM.LABELS.NOTES</label>
                   <textarea
                     ng-model="PatientInvoiceCtrl.Invoice.details.description"
                     name="notes"
@@ -83,7 +83,7 @@
     <div ng-show="PatientInvoiceCtrl.patientBalance < 0" class="row">
       <div class="col-xs-12">
         <div class="alert alert-warning">
-          <strong class="text-capitalize">{{ 'CASH.CAUTION_REMAINING' | translate }}</strong>:
+          <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
           {{PatientInvoiceCtrl.patientBalance * -1 | currency:PatientInvoiceCtrl.enterprise.currency_id}}
         </div>
       </div>
@@ -92,7 +92,7 @@
     <div ng-show="PatientInvoiceCtrl.Invoice._error" class="row">
       <div class="col-xs-12">
         <div class="alert alert-danger">
-          <i class="fa fa-warning"></i> {{ PatientInvoiceCtrl.Invoice._error | translate }}
+          <i class="fa fa-warning"></i> <span translate>{{ PatientInvoiceCtrl.Invoice._error }}</span>
         </div>
       </div>
     </div>
@@ -109,7 +109,7 @@
             ng-class="{ 'btn-primary' : PatientInvoiceCtrl.Invoice.hasCacheAvailable() && PatientInvoiceCtrl.Invoice.recipient }"
             ng-click="PatientInvoiceCtrl.Invoice.readCache()"
             ng-disabled="!PatientInvoiceCtrl.Invoice.hasCacheAvailable() || !PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.hasRecoveredCache || detailsForm.$submitted">
-            <i class="fa fa-recycle"></i> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
+            <i class="fa fa-recycle"></i> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
           </button>
         </div>
 
@@ -121,7 +121,7 @@
               class="btn btn-default"
               ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
               ng-click="PatientInvoiceCtrl.addItems(PatientInvoiceCtrl.itemIncrement)">
-              <i class="fa fa-plus-circle"></i> {{ "FORM.BUTTONS.ADD" | translate }}
+              <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
             </button>
           </span>
           <input
@@ -138,7 +138,7 @@
           class="text-warning"
           ng-show="PatientInvoiceCtrl.inventory.size() > 0 && PatientInvoiceCtrl.Invoice.inventory.available.data.length === 0">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFO.ITEMS_FULL" | translate }}
+          <span translate>FORM.INFO.ITEMS_FULL</span>
         </p>
 
         <p
@@ -146,7 +146,7 @@
           class="text-info"
           ng-show="!PatientInvoiceCtrl.Invoice.recipient">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFO.NO_RECIPIENT" | translate }}
+          <span translate>FORM.INFO.NO_RECIPIENT</span>
         </p>
       </div>
     </div>
@@ -166,7 +166,7 @@
           class="fixedColumn">
 
           <div style="text-align : right;">
-            <h4>{{ "FORM.LABELS.TOTAL" | translate }}</h4>
+            <h4 translate>FORM.LABELS.TOTAL</h4>
 
 
             <!-- expand billing services -->
@@ -179,32 +179,30 @@
             </div>
 
             <h4>
-              {{ "FORM.LABELS.BILLING_SERVICES" | translate }}
+              <span translate>FORM.LABELS.BILLING_SERVICES</span>
               <span
                 class="text-info fa fa-info-circle"
                 ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
                 uib-popover-template="'billingServicesPopover.tmpl.html'"
                 popover-placement="right"
                 popover-append-to-body="true"
-                popover-trigger="mouseenter"
-                >
+                popover-trigger="mouseenter">
               </span>
             </h4>
 
             <h4>
-              {{ "FORM.LABELS.SUBSIDIES" | translate }}
+              <span translate>FORM.LABELS.SUBSIDIES</span>
               <span
                 class="text-info fa fa-info-circle"
                 ng-show="PatientInvoiceCtrl.Invoice.subsidies.length > 0"
                 uib-popover-template="'subsidiesPopover.tmpl.html'"
                 popover-placement="right"
                 popover-append-to-body="true"
-                popover-trigger="mouseenter"
-                >
+                popover-trigger="mouseenter">
               </span>
             </h4>
 
-            <h4><strong>{{ "FORM.LABELS.DUE" | translate }}</strong></h4>
+            <h4><strong translate>FORM.LABELS.DUE</strong></h4>
           </div>
         </div>
 
@@ -237,13 +235,13 @@
           class="btn btn-primary"
           ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
           ng-click="PatientInvoiceCtrl.submit(detailsForm)">
-          {{ "FORM.BUTTONS.SUBMIT" | translate }}
+          <span translate>FORM.BUTTONS.SUBMIT</span>
         </button>
         <button
           id="clear"
           class="btn btn-default"
           ng-click="PatientInvoiceCtrl.clear(detailsForm)">
-          {{ "FORM.BUTTONS.CLEAR" | translate }}
+          <span translate>FORM.BUTTONS.CLEAR</span>
         </button>
       </div>
     </div>
@@ -255,7 +253,7 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th colspan="2">{{ "PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN" | translate }}</th>
+        <th colspan="2" translate>PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN</th>
       </tr>
     </thead>
     <tbody>
@@ -266,7 +264,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <th>{{ "FORM.LABELS.TOTAL" | translate }}</th>
+        <th translate>FORM.LABELS.TOTAL</th>
         <th class="text-right">
           {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
         </th>
@@ -280,12 +278,12 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th colspan="2">{{ "PATIENT_INVOICE.SUBSIDY_BREAKDOWN" | translate }}</th>
+        <th colspan="2" translate>PATIENT_INVOICE.SUBSIDY_BREAKDOWN</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>{{ "PATIENT_INVOICE.COMBINED_SUBSIDIES" | translate  }}</td>
+        <td translate>PATIENT_INVOICE.COMBINED_SUBSIDIES</td>
         <td class="text-right">
           {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
         </td>
@@ -293,7 +291,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <th>{{ "FORM.LABELS.TOTAL" | translate }}</th>
+        <th translate>FORM.LABELS.TOTAL</th>
         <th class="text-right">
           {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
         </th>
