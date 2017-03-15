@@ -1,5 +1,4 @@
 /* global element, by, browser */
-
 'use strict';
 
 const FU = require('../../shared/FormUtils');
@@ -12,15 +11,14 @@ function PatientInvoicePage() {
   const page = this;
 
   const btns = {
-    submit : element(by.id('btn-submit-invoice')),
-    add : element(by.id('btn-add-rows')),
-    // distributable : element(by.id('distributable')),
-    // notDistributable : element(by.id('not-distributable')),
-    clear : element(by.id('clear')),
-    recover : element(by.id('recover'))
+    submit  : element(by.id('btn-submit-invoice')),
+    add     : element(by.id('btn-add-rows')),
+    clear   : element(by.id('clear')),
+    recover : element(by.id('recover')),
   };
 
-  const gridId = page.gridId = 'invoice-grid';
+  const gridId = 'invoice-grid';
+  page.gridId = gridId;
 
   // sets a patient to the id passed in
   page.patient = function patient(id) {
@@ -29,7 +27,6 @@ function PatientInvoicePage() {
 
   // sets a default patient, service, date, and note
   page.prepare = function prepare() {
-
     // set a patient with id TPA1
     findPatient.findById('PA.TPA.1');
 
@@ -42,11 +39,8 @@ function PatientInvoicePage() {
       'This is a temporary description.  It can be pretty long.'
     );
 
-    // set this invoice to be distributable
-    // btns.distributable.click();
-
     // select the first enabled service in the list
-    FU.select('PatientInvoiceCtrl.Invoice.service', 'Administration');
+    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
   };
 
   // try to click the submit button
@@ -77,7 +71,6 @@ function PatientInvoicePage() {
 
   // add an inventory item to the grid
   page.addInventoryItem = function addInvoiceItem(rowNumber, itemLabel) {
-
     // first column of the nth row
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
@@ -97,7 +90,6 @@ function PatientInvoicePage() {
    * @param {Number} price - the new transaction price to set
    */
   page.adjustItemPrice = function adjustItemPrice(rowNumber, price) {
-
     // fourth column of the last nth row
     const priceCell = GU.getCell(gridId, rowNumber, 4);
     FU.input('row.entity.transaction_price', price, priceCell);
@@ -112,7 +104,6 @@ function PatientInvoicePage() {
    * @param {Number} quantity - the number of items expected to have
    */
   page.adjustItemQuantity = function adjustItemQuantity(rowNumber, quantity) {
-
     // third column column of the nth row
     const quantityCell = GU.getCell(gridId, rowNumber, 3);
     FU.input('row.entity.quantity', quantity, quantityCell);

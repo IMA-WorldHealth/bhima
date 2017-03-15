@@ -3,8 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'SessionService',
-  'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', '$translate',
-  'ExchangeRateService',
+  'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', 'ExchangeRateService',
 ];
 
 /**
@@ -17,7 +16,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Session, Dates, Receipts, Notify, Constants, $translate, Exchange) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Session, Dates, Receipts, Notify, Constants, Exchange) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -30,8 +29,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
-
-  $translate('FORM.LABELS.SALE').then(function (value) { vm.descriptionPrefix = value; });
 
   var gridOptions = {
     appScopeProvider  : vm,
@@ -62,7 +59,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
       .then(function (patient) {
         vm.Invoice.setPatient(patient);
-        updateDescription();
         return Patients.balance(patient.debtor_uuid);
       })
       .then(function (balance) {
@@ -105,17 +101,17 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       return;
     }
 
-    console.log('vm.Invoice:', vm.Invoice);
-
     // copy the rows for insertion
     items = angular.copy(vm.Invoice.store.data);
+
+    var description = vm.Invoice.getTemplatedDescription();
 
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
     // 3. Charged billing services - each of these have the global charge calculated by the client
     // 4. Charged subsidies - each of these have the global charge calculated by the client
-    PatientInvoices.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
+    PatientInvoices.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies, description)
       .then(function (result) {
         detailsForm.$setPristine();
         detailsForm.$setUntouched();
@@ -147,16 +143,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   // register the patient search api
   function onPatientSearchApiCallback(api) {
     vm.patientSearchApi = api;
-  }
-
-  function updateDescription() {
-    if (vm.Invoice.recipient) {
-      vm.Invoice.details.description = [
-        vm.descriptionPrefix,
-        vm.Invoice.recipient.display_name,
-        vm.Invoice.service.name,
-      ].join('/');
-    }
   }
 
   // reset everything in the controller - default values
