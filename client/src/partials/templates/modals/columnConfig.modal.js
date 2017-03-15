@@ -29,7 +29,7 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
    * @description for submitting a dialog content
    */
   function submit() {
-    if (vm.notification) { return; }
+    if (vm.hasTooFewColumns) { return; }
 
     Columns.setVisibleColumns(vm.map);
     ModalInstance.close();
@@ -37,7 +37,7 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
 
   // reset the column visibility to their default configuration
   function resetDefaults() {
-    vm.notification = false;
+    vm.hasTooFewColumns = false;
     Columns.resetDefaultVisibility();
     vm.map = Columns.getColumnVisibilityMap();
   }
@@ -48,8 +48,8 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
   }
 
   function checkVisible(){
-    var columnNumber = Columns.checkColumnMap(vm.map);
-    vm.notification = !columnNumber ? true : false; 
+    var columnNumber = Columns.hasEnoughColumns(vm.map);
+    vm.hasTooFewColumns = !columnNumber ? true : false; 
 
   }
 
