@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Journal Reports
@@ -7,15 +6,12 @@
  * This module contains all the code for rendering PDFs of Journal
  */
 
-const _    = require('lodash');
-const ReportManager  = require('../../../../lib/ReportManager');
-const NotFound = require('../../../../lib/errors/NotFound');
+const ReportManager = require('../../../../lib/ReportManager');
 const Journal = require('../../journal');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/journal/report.handlebars';
 
 exports.report = report;
-
 
 /**
  * GET reports/finance/journal
@@ -25,19 +21,15 @@ exports.report = report;
 function report(req, res, next) {
   const options = req.query;
   let report;
-  let data;
 
-  try  {
+  try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, options);
-  } catch(e) {
+  } catch (e) {
     return next(e);
   }
 
   Journal.journalEntryList(options)
-    .then(rows => {
-      data = { rows: rows };
-      return report.render(data);
-    })
+    .then(rows => report.render({ rows }))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
