@@ -27,8 +27,11 @@ function LatestInvoice(Patient, moment, Notify, Session) {
   /** getting patient document */
   function startup() {
     if (!vm.debtorUuid) { return; }
+    vm.loading = true;
+
     Patient.latest(vm.debtorUuid)
       .then(function (patientInvoice) {
+        vm.loading = false;
         vm.patientInvoice = patientInvoice;
         vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
       })
