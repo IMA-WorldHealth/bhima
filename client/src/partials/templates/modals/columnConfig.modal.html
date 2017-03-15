@@ -8,9 +8,9 @@
   </div>
 
   <div class="modal-body">
-    <div class="row" ng-if="ColumnsConfigModalCtrl.notification">
-      <div class="bg-danger text-danger">
-        <h4><i class="fa fa-warning"></i> <span translate> FORM.ERRORS.AT_LEAST_1_COL </span></h4>
+    <div class="row" ng-if="ColumnsConfigModalCtrl.hasTooFewColumns">
+      <div class="alert alert-danger">
+        <h4><span class="fa fa-warning"></span>  <span translate> FORM.ERRORS.AT_LEAST_1_COL </span></h4>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
       ng-click="ColumnsConfigModalCtrl.cancel()"
       translate>FORM.BUTTONS.CANCEL</button>
 
-    <bh-loading-button loading-state="ColumnConfigForm.$loading" ng-disabled="ColumnsConfigModalCtrl.notification">
+    <bh-loading-button loading-state="ColumnConfigForm.$loading" ng-disabled="ColumnsConfigModalCtrl.hasTooFewColumns">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
