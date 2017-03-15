@@ -78,7 +78,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       vm.patientBalance = balance;
     });
   }
-  
+
   // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
     vm.Invoice.writeCache();
