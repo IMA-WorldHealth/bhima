@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
-  'GridSortingService', '$state'
+  'GridSortingService', '$state', 'FilterService'
 ];
 
 /**
@@ -14,7 +14,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry.`j
  */
-function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting, $state) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages, AppCache, Receipt, Modal, Sorting, $state, Filters) {
   var vm = this;
 
   var cache = AppCache('CashRegistry');
@@ -24,8 +24,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   var regularBackgroundColor = { 'background-color': 'none' };
   var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
+  var filter = new Filters();
+  vm.filter = filter;
+
   // global variables
-  vm.filters = { lang: Languages.key };
+  // vm.filters = { lang: Languages.key };
   vm.filtersFmt = [];
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
@@ -104,7 +107,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   // remove a filter with from the filter object, save the filters and reload
   function clearFilters() {
     // @TODO standardise all client side filters
-    cacheFilters({ display : {} });
+    cacheFilters({ display : {}, identifiers : {} });
     load(vm.filters.identifiers);
   }
 
@@ -148,6 +151,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   }
 
   function cacheFilters(filters) {
+    applyDefaultFilters(filters);
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Cash.formatFilterParameters(filters.display);
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
@@ -158,17 +162,28 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
       cacheFilters($state.params.filters);
     }
 
-    vm.filters = cache.filters;
-
-    // ensure that filters exists, filter object is assumed by a number of methods
-    if (!vm.filters) {
-      cacheFilters({ display : {} });
+    if (!cache.filters) {
+      cache.filters = { display : {}, identifiers : {} };
     }
+
+    vm.filters = cache.filters;
+    applyDefaultFilters(vm.filters);
 
     vm.filtersFmt = Cash.formatFilterParameters(vm.filters.display);
     load(vm.filters.identifiers);
 
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
+  }
+
+  function applyDefaultFilters(filters) {
+    if (!filters.identifiers) { filters.identifiers = {}; }
+
+    filters.identifiers = filter.applyDefaults(filters.identifiers);
+
+    // @FIXME hack specifically for demonstrating default filter on cash page
+    if (filters.identifiers.defaultPeriod) {
+      filters.display.defaultPeriod = filter.lookupPeriod(filters.identifiers.defaultPeriod).label;
+    }
   }
 
   startup();
