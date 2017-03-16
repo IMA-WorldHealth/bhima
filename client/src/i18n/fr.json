@@ -1128,6 +1128,7 @@
    "RECORDS"               : "Données",
    "REFRESH"               : "Rafraichir",
    "SAVE_TRANSACTION"      : "Enregistrer une transaction",
+   "SINGLE_EDIT_ONLY"      : "Modifier une seule transaction à la fois",
    "SPLIT"                 : "Diviser",
    "SPLIT_TRANSACTION"     : "Split Transaction",
    "TITLE"                 : "Journal de Saisie",

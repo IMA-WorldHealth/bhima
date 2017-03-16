@@ -1105,6 +1105,7 @@
     "RECORDS" : "records",
     "REFRESH" : "Refresh",
     "SAVE_TRANSACTION" : "Save Transaction",
+    "SINGLE_EDIT_ONLY" : "Single Edit Only",
     "SPLIT" : "Split",
     "SPLIT_TRANSACTION" : "Split transaction",
     "TRANSACTION" : "Transaction",
