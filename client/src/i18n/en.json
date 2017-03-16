@@ -1244,6 +1244,7 @@
     "CASHFLOW"         : "Cashflow",
     "CASHFLOW_BY_SERVICE" : "Cashflow By Service",
     "CHART_OF_ACCOUNTS" : "Chart of Accounts",
+    "CLIENTS_REPORT"    : "Client Report",
     "CLOSING_BALANCE"  : "Closing Balance",
     "CONFIGURATION"    : "Report Configuration",
     "GENERATED"        : "Generated Report",

@@ -1,45 +1,39 @@
 /**
- * Clients report Controller
- *
+ * Clients report Controller server side
  *
  * This controller is responsible for processing Clients report.
  *
- * @module finance/clientsReport
+ * @module finance/clientsReport/index.js
  *
  * @requires lodash
  * @requires lib/db
  * @requires lib/ReportManager
+ * @requires lib/filter
  */
 
 'use strict';
 
-const _          = require('lodash');
-
-const db         = require('../../../../lib/db');
+const _             = require('lodash');
+const db            = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-
 const TEMPLATE = './server/controllers/finance/reports/clientsReport/report.handlebars';
 
 /**
  * @function document
- * @description processes and renders the client report document
+ * @description processes and renders clients report document
  */
 function document(req, res, next) {
-  const session = {};
-  const params = req.query;
+  let params = req.query;
+  let session = {};
   let report;
 
-  session.dateFrom = new Date(params.dateFrom);
-  session.dateTo = new Date(params.dateTo);
-  session.detailPrevious = params.detailPrevious;
-  session.ignoredClients = params.ignoredClients;
-  session.enterprise = req.session.enterprise;
 
+  _.defaults(session, { dateFrom : new Date(params.dateFrom), dateTo : new Date(params.dateTo), detailPrevious : params.detailPrevious, ignoredClients : params.ignoredClients, enterprise : req.session.enterprise });
   _.defaults(params, {user : req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
+  } catch (next) {
     return next(e);
   }
 
@@ -59,82 +53,101 @@ function document(req, res, next) {
  * @description
  * Fetch client data for current and previous fiscal year
  **/
-function fetchClientsData(session) {  
-  //will contain data to fill in the report
-  var clientsData = {};
-  var ignoredClients, ignoredToken = '';
+function fetchClientsData(session) {
 
-  //attaching the enterprise to the context (good ???)
-  clientsData.enterprise = session.enterprise;
-
-  //Attaching the describing choice to the context (true | false)
-  clientsData.detailPrevious = session.detailPrevious;
-  
-  //Attache the dateTo and dateFrom (just attache the session??)
-  clientsData.dateFrom = session.dateFrom;
-  clientsData.dateTo = session.dateTo;
+  let clientsData = {}, ignoredClients, notInStatement = '';
+  _.defaults(clientsData, session);
 
   if(session.ignoredClients){
     ignoredClients = (Array.isArray(session.ignoredClients))? session.ignoredClients : [session.ignoredClients];
-    ignoredToken = ` AND dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
+    notInStatement = `AND dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
   }
 
   //request to fetch data of previous year
-  var request =
-    `SELECT ac.number, dg.name, IFNULL(SUM(gl.debit_equiv), 0) AS debit, 
-     IFNULL(SUM(gl.credit_equiv), 0) AS credit FROM debtor_group dg JOIN account ac 
-     ON ac.id = dg.account_id LEFT JOIN general_ledger gl ON ac.id = gl.account_id
-      WHERE gl.fiscal_year_id = ? ${ignoredToken} GROUP BY ac.number`;
+  const previousDetailSql =
+    `    
+    SELECT 
+     t.number, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
+	   0 AS finalBalance, IFNULL(t.balance, 0) AS balance
+    FROM
+    (
+      SELECT
+       ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
+		   SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+      FROM debtor_group dg 
+      JOIN account ac ON ac.id = dg.account_id 
+      LEFT JOIN period_total pt ON ac.id = pt.account_id
+      WHERE pt.fiscal_year_id = ? ${notInStatement} GROUP BY ac.number
+    ) AS t`;
 
   //getting a fiscal year and the previous fiscal year ID form the date start defined by the user
   return getFiscalYear(session.dateFrom)
     .then(function (rows) {
       clientsData.fy = rows[0];
       clientsData.fy.openningBalanceDate = new Date(clientsData.fy.start_date);
-      var openningDay = clientsData.fy.openningBalanceDate.getDate() - 1;
-      clientsData.fy.openningBalanceDate.setDate(openningDay);
+      clientsData.fy.openningBalanceDate.setDate(clientsData.fy.openningBalanceDate.getDate() - 1); //just correcting the date value
 
       //getting the client data for the previous fiscal year
-      return db.exec(request, [clientsData.fy.previous_fiscal_year_id]);
+      return db.exec(previousDetailSql, [clientsData.fy.previous_fiscal_year_id]);
     })
     .then(function (data){
-      //init totals of previous fiscal year
-      clientsData.totalInitialCredit = 0; clientsData.totalInitialDebit = 0; clientsData.totalBalance = 0; clientsData.totalFinalBalance = 0;
 
       //from previous fiscal year data, building the object containing all previous info to print
       clientsData.lines = data.reduce(function (obj, clientInfo) {
-        var number = clientInfo.number;
+        const number = clientInfo.number;
         obj[number] = {};
         obj[number].initCredit = clientInfo.credit;
         obj[number].initDebit = clientInfo.debit;
-        obj[number].balance = (clientInfo.debit - clientInfo.credit);
+        obj[number].balance = clientInfo.balance;
         obj[number].credit = 0;
         obj[number].debit = 0;
-        obj[number].finalBalance = (obj[number].balance - obj[number].credit) + obj[number].debit;
+        obj[number].finalBalance = clientInfo.finalBalance;
         obj[number].accountNumber = clientInfo.number;
         obj[number].name = clientInfo.name;
-        clientsData.totalInitialCredit += clientInfo.credit;
-        clientsData.totalInitialDebit += clientInfo.debit;
-        clientsData.totalBalance += obj[number].balance;
-        clientsData.totaFinalBalance += obj[number].finalBalance;
         return obj;
       }, {});
 
+      //getting total for previous fiscal year
+      const previousTotalSql =
+        `
+        SELECT 
+          IFNULL(debit, 0) AS totalInitialDebit, IFNULL(credit, 0) AS totalInitialCredit, IFNULL(balance, 0) AS totalBalance 
+        FROM 
+        (
+          SELECT 
+            SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+          FROM period_total pt
+          JOIN debtor_group dg ON dg.account_id = pt.account_id 
+          WHERE pt.fiscal_year_id = ? ${notInStatement} 
+        ) AS t`;
+
+      return db.one(previousTotalSql, [clientsData.fy.previous_fiscal_year_id]);
+    })
+    .then(function (previousTotal) {
+      _.merge(clientsData, previousTotal);
+
       //request to fetch the current fiscal year data of a client
-      request =
-        `SELECT ac.number, dg.name, IFNULL(SUM(gl.debit_equiv), 0) AS debit, 
-     IFNULL(SUM(gl.credit_equiv), 0) AS credit FROM debtor_group dg JOIN account ac 
-     ON ac.id = dg.account_id LEFT JOIN general_ledger gl ON ac.id = gl.account_id
-      WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?) ${ignoredToken} 
-      GROUP BY ac.number`;
+      const currentDetailSql =
+        `
+        SELECT 
+          t.number, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
+           IFNULL(t.balance, 0) AS totalBalance
+        FROM 
+        (
+          SELECT 
+            ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
+            SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
+          FROM debtor_group dg 
+          JOIN account ac ON ac.id = dg.account_id 
+          LEFT JOIN posting_journal gl ON ac.id = gl.account_id
+          WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?) ${notInStatement} 
+          GROUP BY ac.number
+        ) AS t`;
 
       //fetching data of the current fiscal year
-      return db.exec(request, [session.dateFrom, session.dateTo]);
+      return db.exec(currentDetailSql, [session.dateFrom, session.dateTo]);
     })
     .then(function (data) {
-      //init total
-      clientsData.totalCredit = 0; clientsData.totalDebit = 0;
-
       //completing the object {clientsData} by adding current info
       data.forEach(function (dt) {
 
@@ -152,20 +165,34 @@ function fetchClientsData(session) {
         clientsData.lines[dt.number].credit = dt.credit;
         clientsData.lines[dt.number].debit = dt.debit;
 
-        //adding the final balance of the client
-        clientsData.lines[dt.number].finalBalance = (clientsData.lines[dt.number].balance + dt.debit) - dt.credit;
-
-        //total of credit, debit, and finalBalance
-        clientsData.totalCredit += dt.credit;
-        clientsData.totalDebit += dt.debit;
-        clientsData.totalFinalBalance += clientsData.lines[dt.number].finalBalance;
+        //adding the final balance of the client, no way to get it from the database directly without altering the current requests
+        clientsData.lines[dt.number].finalBalance = clientsData.lines[dt.number].balance + dt.balance;
       });
 
-      //processing totals
+      const currentTotalSql =
+        `
+        SELECT 
+          IFNULL(t.debit, 0) AS totalDebit, IFNULL(t.credit, 0) AS totalCredit, 
+          IFNULL(t.balance, 0) AS totalFinalBalance
+        FROM 
+        (
+          SELECT 
+            SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
+            SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
+          FROM debtor_group dg 
+          JOIN account ac ON ac.id = dg.account_id 
+          JOIN general_ledger gl ON ac.id = gl.account_id
+          WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?) ${notInStatement} 
+        ) AS t`;
+
+      return db.one(currentTotalSql, [session.dateFrom, session.dateTo]);
+    })
+    .then(function (currentTotal) {
+      _.merge(clientsData, currentTotal);
       return clientsData;
     })
-    .catch(function (err){
-      throw err;
+    .catch(function (e){
+      return next(e);
     });
 }
 
@@ -185,10 +212,10 @@ function getFiscalYear(date) {
 
 /**
  * @function escape
- * @param {Array} list a list of IDs
- * @return {Array} a list of escaped IDs
+ * @param {Array} list a list of debtor group uuids
+ * @return {Array} a list of escaped debtor group uuids
  * @description
- * This function is responsible of returning am escaped list of string
+ * This function is responsible of returning an escaped list of string
  * in : [1, 2] out : ["1", "2"]
  */
 function escapeItems (list) {

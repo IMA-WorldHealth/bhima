@@ -1264,6 +1264,7 @@
     "CASHFLOW"         : "Cashflow",
     "CASHFLOW_BY_SERVICE" : "Cashflow par Service",
     "CHART_OF_ACCOUNTS": "Plan Comptable",
+    "CLIENTS_REPORT"   : "Rapport Client",
     "CLOSING_BALANCE"  : "Balance à la cloture",
     "CONFIGURATION"    : "Configuration rapport",
     "DELETE"           : "Supprimer un rapport",

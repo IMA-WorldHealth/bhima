@@ -1,12 +1,10 @@
-'use strict';
-
 angular.module('bhima.controllers')
   .controller('clients_reportController', ClientsReportController);
 
 ClientsReportController.$inject = [ '$state', '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails' ];
 
 /**
- * Clients config controller
+ * Clients report controller
  *
  * @description
  * This controller is responsible for the configuration of the clients report. All report
@@ -24,7 +22,7 @@ function ClientsReportController($state, ModalInstance, Clients, Notify, Languag
   vm.clients = [];
   vm.$loading = false;
 
-  Clients.read(null)
+  Clients.read()
     .then(function (list) {
       vm.clients = list;
     })

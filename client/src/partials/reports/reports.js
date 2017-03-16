@@ -2,14 +2,15 @@ angular.module('bhima.controllers')
   .controller('ReportsController', ReportsController);
 
 ReportsController.$inject = [
-  '$state', 'BaseReportService', '$uibModal', 'NotifyService'
+  '$state', 'BaseReportService', 'NotifyService'
 ];
 
-function ReportsController($state, SavedReports, Modal, Notify) {
+function ReportsController($state, SavedReports, Notify) {
+  window.state = $state;
   var vm = this;
   var keyTarget = $state.params.key;
 
-  // report configuratoion
+  // report configuration
   vm.report = {};
 
   vm.createReport = createReport;

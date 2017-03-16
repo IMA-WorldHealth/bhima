@@ -2,8 +2,8 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.REPORTS" | translate }}</li>
-      <li class="title">{{ReportCtrl.report.title_key | translate}}</li>
+      <li class="static" translate>TREE.REPORTS</li>
+      <li class="title" translate>{{ReportCtrl.report.title_key}}</li>
     </ol>
 
     <div class="toolbar">
@@ -14,8 +14,8 @@
           id="create-report"
           ng-click="ReportCtrl.createReport()">
           <span class="fa fa-plus"></span>
-          {{ "FORM.BUTTONS.NEW" | translate }}
-          {{ReportCtrl.report.title_key | translate}}
+          <span translate>FORM.BUTTONS.NEW</translate>
+          <span translate>{{ReportCtrl.report.title_key}}</span>
         </button>
       </div>
     </div>
