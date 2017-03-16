@@ -118,7 +118,7 @@ function find(options) {
   filters.fullText('description');
   filters.fullText('comment');
 
-  filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
+  filters.customMultiParameters('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   filters.setOrder('ORDER BY p.trans_date DESC');
 
