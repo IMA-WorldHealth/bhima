@@ -76,7 +76,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
   (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (9, 'clients_report', 'REPORT.CLIENTS_REPORT');
+  (9, 'clients_report','REPORT.CLIENTS_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

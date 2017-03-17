@@ -6,7 +6,6 @@ ReportsController.$inject = [
 ];
 
 function ReportsController($state, SavedReports, Notify) {
-  window.state = $state;
   var vm = this;
   var keyTarget = $state.params.key;
 

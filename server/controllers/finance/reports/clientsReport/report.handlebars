@@ -39,14 +39,14 @@
           <td>{{this.accountNumber}}</td>
           <td>{{this.name}}</td>
           {{#if ../detailPrevious}}
-            <td class='text-right'> {{currency this.initDebit enterprise.currency_id}} </td>
-            <td class='text-right'> {{currency this.initCredit enterprise.currency_id}} </td>
+            <td class='text-right'> {{currency this.initDebit ../enterprise.currency_id}} </td>
+            <td class='text-right'> {{currency this.initCredit ../enterprise.currency_id}} </td>
             {{else}}
-            <td class='text-right'> {{currency this.balance enterprise.currency_id}} </td>
+            <td class='text-right'> {{currency this.initBalance ../enterprise.currency_id}} </td>
           {{/if}}
-          <td class='text-right'> {{currency this.debit enterprise.currency_id}} </td>
-          <td class='text-right'> {{currency this.credit enterprise.currency_id}} </td>
-          <td class='text-right'> {{currency this.finalBalance enterprise.currency_id}} </td>
+          <td class='text-right'> {{currency this.debit ../enterprise.currency_id}} </td>
+          <td class='text-right'> {{currency this.credit ../enterprise.currency_id}} </td>
+          <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
         </tr>
       {{/each}}
     </tbody>
@@ -57,7 +57,7 @@
           <th class="text-right">{{currency totalInitDebit enterprise.currency_id}}</th>
           <th class="text-right">{{currency totalInitCredit enterprise.currency_id}}</th>
         {{else}}
-          <th class="text-right">{{currency totalBalance enterprise.currency_id}}</th>
+          <th class="text-right">{{currency totalInitBalance enterprise.currency_id}}</th>
         {{/if}}
         <th class="text-right">{{currency totalDebit enterprise.currency_id}}</th>
         <th class="text-right">{{currency totalCredit enterprise.currency_id}}</th>

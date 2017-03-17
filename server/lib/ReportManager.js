@@ -92,14 +92,12 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-
       throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
     if (this.options.saveReport && !this.options.user) {
       let invalidSaveDescription = 'Report cannot be saved without providing a `user` entity to ReportManager';
-      console.error(invalidSaveDescription);
       throw new InternalServerError(invalidSaveDescription);
     }
 
