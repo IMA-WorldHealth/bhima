@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 IncomeExpenseConfigController.$inject = [
   '$state', '$uibModalInstance', 'CashboxService', 'NotifyService',
-  'LanguageService', 'BaseReportService', 'reportDetails',
+  'LanguageService', 'BaseReportService', 'reportDetails', 'SessionService'
 ];
 
 /**
@@ -13,7 +13,7 @@ IncomeExpenseConfigController.$inject = [
  * This controller is responsible for the configuration of the income/expense report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, Languages, SavedReports, reportDetails) {
+function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, Languages, SavedReports, reportDetails, Session) {
   var vm = this;
   var report = reportDetails;
 
@@ -21,6 +21,7 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
   vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
+  vm.currency_id = Session.enterprise.currency_id;
 
   vm.reportType = [
     { id: 1, label: 'FORM.LABELS.INCOME_EXPENSE' },
@@ -45,12 +46,13 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
     if (form.$invalid) { return; }
 
     options = {
-      account_id : vm.cashbox.account_id,
-      dateFrom   : vm.dateFrom,
-      label      : vm.label,
-      dateTo     : vm.dateTo,
-      lang       : Languages.key,
-      reportType : vm.type,
+      account_id  : vm.cashbox.account_id,
+      dateFrom    : vm.dateFrom,
+      label       : vm.label,
+      dateTo      : vm.dateTo,
+      lang        : Languages.key,
+      reportType  : vm.type,
+      currency_id : vm.currency_id 
     };
 
     return SavedReports.requestPDF(url, report, options)

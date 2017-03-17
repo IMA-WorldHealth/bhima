@@ -1849,11 +1849,11 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
 -- a view to make SQL statements look nicer.
 CREATE VIEW combined_ledger AS
   SELECT record_uuid, trans_id, trans_date, account_id, credit_equiv, debit_equiv,
-    reference_uuid, description, entity_uuid
+    reference_uuid, description, entity_uuid, user_id, origin_id
   FROM posting_journal
   UNION ALL
   SELECT record_uuid, trans_id, trans_date, account_id, credit_equiv, debit_equiv,
-    reference_uuid, description, entity_uuid
+    reference_uuid, description, entity_uuid, user_id, origin_id
   FROM general_ledger;
 
 SET foreign_key_checks = 1;

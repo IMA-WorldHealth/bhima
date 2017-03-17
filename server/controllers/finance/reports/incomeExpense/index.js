@@ -24,6 +24,7 @@ const db         = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const InternalServerError = require('../../../../lib/errors/InternalServerError');
+const Exchange = require('../../exchange');
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
 
@@ -73,15 +74,20 @@ function report(req, res, next) {
 /** processingIncomeExpenseReport */
 function processingIncomeExpenseReport(params) {
   let glb = {};
+  let exchangeRate;
 
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing.');
   }
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, params.current_date)
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
 
-  return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
+      return getIncomeReport(params.account_id, params.dateFrom, params.dateTo, exchangeRate);
+    })
     .then(function (incomes) {
       glb.incomes = incomes;
-      return getExpenseReport(params.account_id, params.dateFrom, params.dateTo);
+      return getExpenseReport(params.account_id, params.dateFrom, params.dateTo, exchangeRate);
     })
     .then(function (expenses) {
       glb.expenses = expenses;
@@ -133,33 +139,21 @@ function processingExpenseReport(params) {
  * @param {date} dateFrom A starting date
  * @param {date} dateTo A stop date
  */
-function getIncomeReport(accountId, dateFrom, dateTo) {
+function getIncomeReport(accountId, dateFrom, dateTo, exchangeRate) {
+
   let query = `
-    SELECT t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-    BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, t.user_id, u.username,
-    a.number, tr.text AS transactionType, a.label
-    FROM
-    (
-      (
-      SELECT posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id=? AND (posting_journal.trans_date >=? AND posting_journal.trans_date <=?)
-      ) UNION (
-      SELECT general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, general_ledger.record_uuid, general_ledger.entity_uuid,  general_ledger.reference_uuid,
-        general_ledger.currency_id, general_ledger.trans_id, general_ledger.description, general_ledger.comment, general_ledger.origin_id, general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id=? AND (general_ledger.trans_date >=? AND general_ledger.trans_date <=?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.debit > 0 GROUP BY t.trans_id;
+    SELECT combined_ledger.trans_date, (combined_ledger.debit_equiv * ${exchangeRate}) AS debit_equiv, (combined_ledger.credit_equiv * ${exchangeRate}) AS credit_equiv,
+      combined_ledger.account_id, combined_ledger.record_uuid, combined_ledger.entity_uuid,  combined_ledger.reference_uuid,
+      combined_ledger.trans_id, combined_ledger.description, combined_ledger.user_id, u.username, a.number, a.label, tr.text AS transactionType
+    FROM combined_ledger
+    JOIN user u ON combined_ledger.user_id = u.id
+    JOIN account a ON combined_ledger.account_id = a.id
+    LEFT JOIN transaction_type tr ON combined_ledger.origin_id = tr.id 
+    WHERE combined_ledger.account_id=? AND (DATE(combined_ledger.trans_date) >=DATE(?) AND DATE(combined_ledger.trans_date) <=DATE(?)) AND combined_ledger.debit_equiv > 0 
+    GROUP BY combined_ledger.trans_id;
   `;
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+
+  return db.exec(query, [accountId, dateFrom, dateTo]);
 }
 
 
@@ -169,33 +163,20 @@ function getIncomeReport(accountId, dateFrom, dateTo) {
  * @param {date} dateFrom A starting date
  * @param {date} dateTo A stop date
  */
-function getExpenseReport(accountId, dateFrom, dateTo) {
+function getExpenseReport(accountId, dateFrom, dateTo, exchangeRate) {
   let query = `
-    SELECT t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-    BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, t.user_id, u.username,
-    a.number, tr.text AS transactionType, a.label
-    FROM
-    (
-      (
-      SELECT posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id= ? AND (posting_journal.trans_date >= ? AND posting_journal.trans_date <= ?)
-      ) UNION (
-      SELECT general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, general_ledger.record_uuid, general_ledger.entity_uuid,  general_ledger.reference_uuid,
-        general_ledger.currency_id, general_ledger.trans_id, general_ledger.description, general_ledger.comment, general_ledger.origin_id, general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id= ? AND (general_ledger.trans_date >= ? AND general_ledger.trans_date <= ?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.credit > 0 GROUP BY t.trans_id;`;
+      SELECT combined_ledger.trans_date, (combined_ledger.debit_equiv * ${exchangeRate}) AS debit_equiv, (combined_ledger.credit_equiv * ${exchangeRate}) AS credit_equiv,
+        combined_ledger.account_id, combined_ledger.record_uuid, combined_ledger.entity_uuid,  combined_ledger.reference_uuid,
+        combined_ledger.trans_id, combined_ledger.description, combined_ledger.user_id, u.username, a.number, a.label, tr.text AS transactionType
+      FROM combined_ledger
+      JOIN user u ON combined_ledger.user_id = u.id
+      JOIN account a ON combined_ledger.account_id = a.id
+      LEFT JOIN transaction_type tr ON combined_ledger.origin_id = tr.id     
+      WHERE combined_ledger.account_id=? AND (DATE(combined_ledger.trans_date) >= DATE(?) AND DATE(combined_ledger.trans_date) <= DATE(?)) AND combined_ledger.credit_equiv > 0 GROUP 
+      BY combined_ledger.trans_id;
+  `;
 
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+  return db.exec(query, [accountId, dateFrom, dateTo]);
 }
 
 
@@ -214,8 +195,9 @@ function document(req, res, next) {
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
   session.reportType = params.reportType;
+  session.currency_id = params.currency_id;
 
-  _.defaults(params, { orientation : 'landscape', user : req.session.user });
+  _.defaults(params, { orientation : 'landscape', user : req.session.user, current_date : new Date() });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -230,6 +212,7 @@ function document(req, res, next) {
       incomeExpense.reportExpense = false;
       incomeExpense.dateFrom = session.dateFrom;
       incomeExpense.dateTo = session.dateTo;
+      incomeExpense.currency_id = session.currency_id;
 
       // pick the cashbox account name
       incomeExpense.accountName = !incomeExpense.accountName && incomeExpense.incomes.length ? incomeExpense.incomes[0].label :
@@ -243,7 +226,7 @@ function document(req, res, next) {
 
       if (session.reportType === 1 || session.reportType === 2) {
         incomeExpense.incomes.forEach(function (income) {
-          sumIncome += income.debit;
+          sumIncome += income.debit_equiv;
         });
 
         incomeExpense.reportIncome = true;
@@ -252,7 +235,7 @@ function document(req, res, next) {
 
       if (session.reportType === 1 || session.reportType === 3) {
         incomeExpense.expenses.forEach(function (expense) {
-          sumExpense += expense.credit;
+          sumExpense += expense.credit_equiv;
         });
 
         incomeExpense.reportExpense = true;

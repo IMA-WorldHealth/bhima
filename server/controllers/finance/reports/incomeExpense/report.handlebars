@@ -56,14 +56,13 @@
               <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </td>
             </tr>
             {{/if}}
-
             {{#each incomeExpense.incomes}}
             <tr>
               <td class="text-left">{{ trans_id }}</td>
               <td class="text-left">{{ description }}</td>
               <td class="text-right">
-                {{#if debit}}
-                  {{ currency debit ../metadata.enterprise.currency_id}}
+                {{#if debit_equiv}}
+                  {{ currency debit_equiv ../incomeExpense.currency_id}}
                 {{/if}}  
               </td>
               <td class="text-left">{{ date trans_date }}</td>
@@ -75,7 +74,7 @@
 
           <tfoot>
             <tr style="background-color: #efefef; font-weight: bold; ">
-              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumIncome metadata.enterprise.currency_id}}</td>
+              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumIncome incomeExpense.currency_id}}</td>
             </tr>
           </tfoot>
         </table>
@@ -98,7 +97,6 @@
           <tr>
             <td colspan="6"></td>
           </tr>
-
           <tbody>
             {{#if incomeExpense.sumExpense }}
             <tr style="background-color: #efefef; font-weight: bold; text-align: center; ">
@@ -115,7 +113,10 @@
             <tr>
               <td class="text-left">{{ trans_id }}</td>
               <td class="text-left">{{ description }}</td>
-              <td class="text-right">{{ currency credit ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">
+                {{#if credit_equiv}}
+                  {{ currency credit_equiv ../incomeExpense.currency_id}}</td>
+                {{/if}} 
               <td class="text-left">{{ date trans_date }}</td>
               <td class="text-left">{{ translate transactionType }}</td>
               <td class="text-left">{{ username }}</td>
@@ -125,7 +126,7 @@
 
           <tfoot>
             <tr style="background-color: #efefef; font-weight: bold; ">
-              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumExpense metadata.enterprise.currency_id}}</td>
+              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumExpense incomeExpense.currency_id}}</td>
             </tr>
           </tfoot>
         </table>
