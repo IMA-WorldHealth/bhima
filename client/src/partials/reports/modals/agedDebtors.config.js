@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('agedDebtorsController', AgedDebtorsConfigController);
 
 AgedDebtorsConfigController.$inject = [
-  '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService', 'reportDetails'
+  '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService', 'reportDetails', 'SessionService'
 ];
 
 /**
@@ -12,13 +12,14 @@ AgedDebtorsConfigController.$inject = [
  * This controller is responsible of Aged Debtors report, that report include
  * all incomes minus all depenses
  */
-function AgedDebtorsConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails) {
+function AgedDebtorsConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails, Session) {
   var vm = this;
 
   // expose to the view
   vm.generate = requestPDF;
   vm.cancel = ModalInstance.dismiss;
   vm.report = reportDetails;
+  vm.currency_id = Session.enterprise.currency_id;
 
   vm.date = new Date();
 
@@ -35,7 +36,8 @@ function AgedDebtorsConfigController($state, $http, ModalInstance, Notify, Langu
       zeroes      : vm.zeroes,
       lang        : Languages.key,
       renderer    : 'pdf',
-      saveReport  : true
+      saveReport  : true,
+      currency_id : vm.currency_id
     };
 
     return $http.get(url, { params : pdfParams })

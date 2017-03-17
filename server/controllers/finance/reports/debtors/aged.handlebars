@@ -9,7 +9,7 @@
     </h3>
 
     <h4 class="text-center">
-      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date this.timestamp }}
+      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date this.date}}
     </h4>
 
     <!-- margin is the cell size -->
@@ -35,25 +35,25 @@
               <td class="text-left">{{this.number}}</td>
               <td class="text-right">
                 {{#if this.thirty}}
-                  {{currency this.thirty ../metadata.enterprise.currency_id}}
+                  {{currency this.thirty ../this.currency_id}}
                 {{/if}}  
               </td>
               <td class="text-right">
                 {{#if this.sixty}}
-                  {{currency this.sixty ../metadata.enterprise.currency_id}}
+                  {{currency this.sixty ../this.currency_id}}
                 {{/if}}
               </td>
               <td class="text-right">
                 {{#if this.ninety}}
-                  {{currency this.ninety ../metadata.enterprise.currency_id}}
+                  {{currency this.ninety ../this.currency_id}}
                 {{/if}}
               </td>
               <td class="text-right">
                 {{#if this.excess}}
-                  {{currency this.excess ../metadata.enterprise.currency_id}}
+                  {{currency this.excess ../this.currency_id}}
                 {{/if}}
               </td>
-              <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency this.total ../this.currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=7}}
@@ -63,11 +63,11 @@
           <tfoot>
             <tr>
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
-              <th class="text-right">{{currency aggregates.thirty metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.sixty metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.ninety metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.excess metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.total metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.thirty this.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.sixty this.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.ninety this.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.excess this.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.total this.currency_id}}</th>
             </tr>
           </tfoot>
         {{/if}}

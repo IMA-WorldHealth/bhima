@@ -16,13 +16,14 @@
  */
 
 
-const _           = require('lodash');
+const _             = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
-const db          = require('../../../../lib/db');
+const db            = require('../../../../lib/db');
 
 // path to the template to render
-const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
-const REPORT_KEY = 'AGED_DEBTOR';
+const TEMPLATE      = './server/controllers/finance/reports/debtors/aged.handlebars';
+const REPORT_KEY    = 'AGED_DEBTOR';
+const Exchange      = require('../../exchange');
 
 /**
  * @method agedDebtorReport
@@ -31,7 +32,7 @@ const REPORT_KEY = 'AGED_DEBTOR';
  * The HTTP interface which actually creates the report.
  */
 function agedDebtorReport(req, res, next) {
-  const qs = _.extend(req.query, { csvKey : 'debtors' });
+  const qs = _.extend(req.query, { csvKey : 'debtors' , user : req.session.user});
   const metadata = _.clone(req.session);
 
   let report;
@@ -62,6 +63,7 @@ function agedDebtorReport(req, res, next) {
  */
 function queryContext(queryParams) {
   const params = queryParams || {};
+
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useCombinedLedger = Boolean(Number(params.combinedLedger));
@@ -69,47 +71,57 @@ function queryContext(queryParams) {
   // format the dates for MySQL escape
   const dates = _.fill(Array(4), new Date(params.date));
 
-  const data = {};
+  const data        = {};
+  data.date         = params.date;
+  data.currency_id  = params.currency_id;
+
   const source = useCombinedLedger ? 'combined_ledger' : 'general_ledger';
+  let exchangeRate;
 
-  // selects into columns of 30, 60, 90, and >90
-  const debtorSql = `
-    SELECT BUID(dg.uuid) AS id, dg.name, a.number,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
-      SUM(gl.debit_equiv - gl.credit_equiv) AS total
-    FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
-      LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
-      JOIN account AS a ON a.id = dg.account_id
-    GROUP BY dg.uuid
-    ${includeZeroes ? '' : havingNonZeroValues}
-    ORDER BY dg.name;
-  `;
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, new Date())
+  .then(function (exchange) {
+    exchangeRate = exchange.rate ? exchange.rate : 1;
 
-  // aggregates the data above as totals into columns of 30, 60, 90, and >90
-  const aggregateSql = `
-    SELECT
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
-      SUM(gl.debit_equiv - gl.credit_equiv) AS total
-    FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
-      LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
-    ${includeZeroes ? '' : havingNonZeroValues}
-  `;
+    // selects into columns of 30, 60, 90, and >90
+    const debtorSql = `
+      SELECT BUID(dg.uuid) AS id, dg.name, a.number,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS thirty,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS sixty,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS ninety,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS excess,
+        SUM(gl.debit_equiv - gl.credit_equiv) * ${exchangeRate} AS total
+      FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
+        LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
+        JOIN account AS a ON a.id = dg.account_id
+      GROUP BY dg.uuid
+      ${includeZeroes ? '' : havingNonZeroValues}
+      ORDER BY dg.name;
+    `;
 
-  return db.exec(debtorSql, dates)
-    .then(debtors => {
-      data.debtors = debtors;
-      return db.exec(aggregateSql, dates);
-    })
-    .then(aggregates => {
-      data.aggregates = aggregates[0];
-      return data;
-    });
+    return db.exec(debtorSql, dates);
+  })
+  .then(debtors => {
+
+    // aggregates the data above as totals into columns of 30, 60, 90, and >90
+    const aggregateSql = `
+      SELECT
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS thirty,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS sixty,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS ninety,
+        SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) * ${exchangeRate} AS excess,
+        SUM(gl.debit_equiv - gl.credit_equiv) * ${exchangeRate} AS total
+      FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
+        LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
+      ${includeZeroes ? '' : havingNonZeroValues}
+    `;
+
+    data.debtors = debtors;
+    return db.exec(aggregateSql, dates);
+  })
+  .then(aggregates => {
+    data.aggregates = aggregates[0];
+    return data;
+  });
 }
 
 exports.context = queryContext;
