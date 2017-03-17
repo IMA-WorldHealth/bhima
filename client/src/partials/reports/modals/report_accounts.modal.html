@@ -59,6 +59,12 @@
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <!-- currency selection -->
+    <bh-currency-select
+      currency-id="ReportConfigCtrl.currency_id"
+      validation-trigger="ConfigForm.$submitted">
+    </bh-currency-select>
   </div>
 
   <div class="modal-footer">

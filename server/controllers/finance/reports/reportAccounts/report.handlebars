@@ -35,17 +35,17 @@
             <td>{{this.description}}</td>
             <td class="text-right">
               {{#if this.debit}}
-                {{currency this.debit ../metadata.enterprise.currency_id}}
+                {{currency this.debit ../title.currency_id}}
               {{/if}}
             </td>
             <td class="text-right">
               {{#if this.credit}}
-                {{currency this.credit ../metadata.enterprise.currency_id}}
+                {{currency this.credit ../title.currency_id}}
               {{/if}}
             </td>
             <td class="text-right">
               {{#if this.cumsum}}
-                {{currency this.cumsum ../metadata.enterprise.currency_id}}
+                {{currency this.cumsum ../title.currency_id}}
               {{/if}}
             </td>
           </tr>
@@ -56,16 +56,16 @@
       <tfoot>
         <tr style="background-color: #ddd;">
           <td colspan="4"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
-          <td class="text-right"><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
-          <td class="text-right"><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
-          <td class="text-right"><strong>{{currency sum.balance metadata.enterprise.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.debit title.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.credit title.currency_id}}</strong></td>
+          <td class="text-right"><strong>{{currency sum.balance title.currency_id}}</strong></td>
         </tr>
       </tfoot>
     </table>
     <table class="table table-condensed">
       <tr>
         <th colspan="5" class="text-right">
-          <strong>{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance metadata.enterprise.currency_id}}</strong>
+          <strong>{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance title.currency_id}}</strong>
         </th>
       </tr>
       <tr>

@@ -4,6 +4,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 
 const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
 const BadRequest = require('../../../../lib/errors/BadRequest');
+const Exchange = require('../../exchange');
 
 /**
  * global constants
@@ -24,6 +25,7 @@ exports.getAccountTransactions = getAccountTransactions;
 function document(req, res, next) {
   let report;
   const bundle = {};
+  let exchangeRate;
 
   const params = req.query;
 
@@ -33,9 +35,11 @@ function document(req, res, next) {
     source        : params.sourceLabel,
     dateFrom      : params.dateFrom,
     dateTo        : params.dateTo,
+    currency_id   : params.currency_id
   };
 
   params.user = req.session.user;
+  params.current_date = new Date();
 
   if (!params.account_id) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
@@ -47,7 +51,12 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return getAccountTransactions(params.account_id, params.sourceId, params.dateFrom, params.dateTo)
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, params.current_date)
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+
+      return getAccountTransactions(params.account_id, params.sourceId, params.dateFrom, params.dateTo, exchangeRate);
+    })  
     .then((result) => {
       _.extend(bundle, { transactions: result.transactions, sum: result.sum, title });
 
@@ -65,7 +74,7 @@ function document(req, res, next) {
  * @function getAccountTransactions
  * This feature select all transactions for a specific account
 */
-function getAccountTransactions(accountId, source, dateFrom, dateTo) {
+function getAccountTransactions(accountId, source, dateFrom, dateTo, exchangeRate) {
   const sourceId = parseInt(source, 10);
 
   // get the table name
@@ -80,8 +89,8 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   }
 
   const sql = `
-    SELECT groups.trans_id, groups.debit, groups.credit, groups.trans_date,
-      groups.document_reference, groups.cumsum, groups.description
+    SELECT groups.trans_id, (groups.debit * ${exchangeRate}) AS debit, (groups.credit * ${exchangeRate}) AS credit, groups.trans_date,
+      groups.document_reference, (groups.cumsum * ${exchangeRate}) AS cumsum, groups.description
     FROM (
       SELECT trans_id, description, trans_date, document_reference, debit, credit,
         @cumsum := balance + @cumsum AS cumsum
@@ -98,7 +107,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   `;
 
   const sqlAggrega = `
-    SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
+    SELECT (SUM(t.debit) * ${exchangeRate}) AS debit, (SUM(t.credit) * ${exchangeRate}) AS credit, (SUM(t.debit - t.credit) * ${exchangeRate}) AS balance
     FROM (
       SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
       FROM ${tableName}

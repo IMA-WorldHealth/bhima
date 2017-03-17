@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('report_accountsController', ReportAccountsConfigController);
 
 ReportAccountsConfigController.$inject = [
-  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants'
+  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'bhConstants', 'SessionService'
 ];
 
 /**
@@ -12,7 +12,7 @@ ReportAccountsConfigController.$inject = [
  * This controller is responsible for the configuration of the ReportAccounts report modal. All report
  * settings are sent to the server to generate a report document.
  */
-function ReportAccountsConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails, bhConstants) {
+function ReportAccountsConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails, bhConstants, Session) {
   var vm = this;
   var report = reportDetails;
 
@@ -22,6 +22,8 @@ function ReportAccountsConfigController($state, ModalInstance, Notify, Languages
   vm.report = report;
   vm.bhConstants = bhConstants;
   vm.onAccountSelect = onAccountSelect;
+
+  vm.currency_id = Session.enterprise.currency_id;
 
   // default value for General Ledger
   vm.source = 1;
@@ -58,7 +60,8 @@ function ReportAccountsConfigController($state, ModalInstance, Notify, Languages
       lang            : Languages.key,
       dateTo          : vm.dateTo,
       dateFrom        : vm.dateFrom,
-      reportType      : vm.type
+      reportType      : vm.type,
+      currency_id     : vm.currency_id
     };
 
     return SavedReports.requestPDF(url, report, options)
