@@ -184,7 +184,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (154, 1), (155, 1), (156, 1),
 
 -- Stock 
-(160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1);
+(160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1), (166, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -404,7 +404,7 @@ INSERT INTO `depot` VALUES
   (@second_depot_uuid, 'Depot Secondaire', 1, 0);
 
 -- stock lots 
-INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `purchase_uuid`, `delay`, `entry_date`) VALUES 
+INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`) VALUES 
   (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 100, 1.2000, '2019-04-30', HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 20, 0.5000, '2020-04-30', HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 200, 0.8000, '2018-04-30', HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),

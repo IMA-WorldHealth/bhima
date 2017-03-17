@@ -324,7 +324,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid 
     JOIN depot d ON d.uuid = m.depot_uuid 
     JOIN user u ON u.id = m.user_id 
-    JOIN purchase p ON p.uuid = l.purchase_uuid
+    JOIN purchase p ON p.uuid = l.origin_uuid
     JOIN supplier s ON s.uuid = p.supplier_uuid
     JOIN project proj ON proj.id = p.project_id
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ? 

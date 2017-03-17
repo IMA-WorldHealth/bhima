@@ -61,7 +61,8 @@ INSERT INTO unit VALUES
   (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/partials/stock/movements', '/stock/movements'),
   (163, 'Stock Inventory', 'TREE.STOCK_INVENTORY', 'The stock inventory registry', 160, '/partials/stock/inventories', '/stock/inventories'),
   (164, 'Stock Exit', 'STOCK.EXIT', 'The stock exit module', 160, '/partials/stock/exit', '/stock/exit'),
-  (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entrt module', 160, '/partials/stock/entry', '/stock/entry');
+  (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/partials/stock/entry', '/stock/entry'),
+  (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -126,5 +127,6 @@ INSERT INTO `flux` VALUES
   (9,  'STOCK_FLUX.TO_PATIENT'),
   (10, 'STOCK_FLUX.TO_SERVICE'),
   (11, 'STOCK_FLUX.TO_LOSS'),
-  (12, 'STOCK_FLUX.TO_ADJUSTMENT');
+  (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
+  (13, 'STOCK_FLUX.FROM_INTEGRATION');
 

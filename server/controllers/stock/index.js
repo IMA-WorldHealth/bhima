@@ -18,27 +18,27 @@
  *
  */
 
-'use strict';
-
-const _      = require('lodash');
-const uuid   = require('node-uuid');
+const _ = require('lodash');
+const uuid = require('node-uuid');
 const moment = require('moment');
 
-const util        = require('../../lib/util');
-const db          = require('../../lib/db');
-const core        = require('./core');
+const util = require('../../lib/util');
+const db = require('../../lib/db');
+const core = require('./core');
 
-const BadRequest  = require('../../lib/errors/BadRequest');
-const NotFound    = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+const NotFound = require('../../lib/errors/NotFound');
 
 // expose to the API
-exports.createStock        = createStock;
-exports.createMovement     = createMovement;
-exports.listLots           = listLots;
-exports.listLotsDepot      = listLotsDepot;
+exports.createStock = createStock;
+exports.createMovement = createMovement;
+exports.listLots = listLots;
+exports.listLotsDepot = listLotsDepot;
 exports.listInventoryDepot = listInventoryDepot;
-exports.listLotsMovements  = listLotsMovements;
-exports.listStockFlux      = listStockFlux;
+exports.listLotsMovements = listLotsMovements;
+exports.listStockFlux = listStockFlux;
+exports.listLotsOrigins = listLotsOrigins;
+exports.createIntegration = createIntegration;
 
 
 /**
@@ -50,12 +50,12 @@ function createStock(req, res, next) {
 
   let createLotQuery, createLotObject, createMovementQuery, createMovementObject, date;
 
-  const transaction  = db.transaction();
+  const transaction = db.transaction();
 
   const document = {
     uuid : uuid.v4(),
     date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
-    user : req.session.user.id
+    user : req.session.user.id,
   };
 
   params.lots.forEach((lot) => {
@@ -73,8 +73,8 @@ function createStock(req, res, next) {
       unit_cost        : lot.unit_cost,
       expiration_date  : date,
       inventory_uuid   : db.bid(lot.inventory_uuid),
-      purchase_uuid    : db.bid(lot.purchase_uuid),
-      delay            : 0
+      origin_uuid      : db.bid(lot.origin_uuid),
+      delay            : 0,
     };
 
         // entering movement prepare query
@@ -89,7 +89,7 @@ function createStock(req, res, next) {
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       is_exit       : 0,
-      user_id       : document.user
+      user_id       : document.user,
     };
 
         // transaction - add lot
@@ -280,6 +280,43 @@ function listInventoryDepot(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * GET /stock/lots/origins/
+ * returns list of lots with their origins as reference
+ */
+function listLotsOrigins(req, res, next) {
+  const params = req.query;
+
+  core.getLotsOrigins(null, params)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * POST /stock/integration
+ * create a new integration entry
+ */
+function createIntegration (req, res, next) {
+  const params = req.body;
+  const identifier = uuid.v4();
+  const integration = {
+    uuid        : db.bid(identifier),
+    project_id  : req.session.project.id,
+    description : params.description || 'INTEGRATION',
+    date        : new Date(),
+  };
+  const sql = `
+    INSERT INTO integration SET ?
+  `;
+  db.exec(sql, [integration])
+  .then(() => res.status(200).json(identifier))
+  .catch(next)
+  .done();
 }
 
 /**

@@ -1827,14 +1827,12 @@ CREATE TABLE `lot` (
   `unit_cost`         DECIMAL(19, 4) UNSIGNED NOT NULL,
   `expiration_date`   DATE NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
-  `purchase_uuid`     BINARY(16) NOT NULL,
+  `origin_uuid`       BINARY(16) NOT NULL,
   `delay`             INT(11) NOT NULL DEFAULT 0,
   `entry_date`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
-  KEY `purchase_uuid` (`purchase_uuid`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
-  FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`)
+  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `stock_movement`;
@@ -1862,4 +1860,37 @@ CREATE TABLE `stock_movement` (
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- donor
+DROP TABLE IF EXISTS `donor`;
+CREATE TABLE `donor` (
+  `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `display_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- donation
+DROP TABLE IF EXISTS `donation`;
+CREATE TABLE `donation` (
+  `uuid`            BINARY(16) NOT NULL,
+  `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
+  `description`     TEXT NULL,
+  `date`            DATE NOT NULL,
+  `donor_id`        INT(11) NOT NULL,
+  PRIMARY KEY (`reference`),
+  UNIQUE KEY `donation_uuid` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- integration
+DROP TABLE IF EXISTS `integration`;
+CREATE TABLE `integration` (
+  `uuid`            BINARY(16) NOT NULL,
+  `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
+  `description`     TEXT NULL,
+  `date`            DATE NOT NULL,
+  PRIMARY KEY (`reference`),
+  UNIQUE KEY `integration_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

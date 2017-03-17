@@ -25,75 +25,76 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
 
   /** paths in the headercrumb */
   vm.bcPaths = [
-    { label : 'TREE.PURCHASE' },
-    { label : 'TREE.PURCHASE_REGISTRY' }
+    { label: 'TREE.PURCHASE' },
+    { label: 'TREE.PURCHASE_REGISTRY' },
   ];
 
   /** buttons in the headercrumb */
   vm.bcButtons = [
-    { icon: 'fa fa-search', label: $translate.instant('FORM.BUTTONS.SEARCH'),
-      action: search, color: 'btn-default',
-      dataMethod: 'search'
-    }
+    { icon       : 'fa fa-search', label      : $translate.instant('FORM.BUTTONS.SEARCH'),
+      action     : search, color      : 'btn-default',
+      dataMethod : 'search',
+    },
   ];
 
   var columnDefs  = [{
-    field : 'reference',
-    displayName : 'FORM.LABELS.REFERENCE',
-    headerCellFilter : 'translate',
-    aggregationType: uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel: true
+    field                : 'reference',
+    displayName          : 'FORM.LABELS.REFERENCE',
+    headerCellFilter     : 'translate',
+    aggregationType      : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
-        field : 'date',
-        displayName : 'FORM.LABELS.DATE',
-        headerCellFilter : 'translate',
-        cellFilter: 'date' },
+    field            : 'date',
+    displayName      : 'FORM.LABELS.DATE',
+    headerCellFilter : 'translate',
+    cellFilter       : 'date' },
 
-    {
-        field : 'supplier',
-        displayName : 'FORM.LABELS.SUPPLIER',
-        headerCellFilter : 'translate' },
+  {
+    field            : 'supplier',
+    displayName      : 'FORM.LABELS.SUPPLIER',
+    headerCellFilter : 'translate' },
 
-    {
-        field : 'note',
-        displayName : 'FORM.LABELS.DESCRIPTION',
-        headerCellFilter : 'translate' },
+  {
+    field            : 'note',
+    displayName      : 'FORM.LABELS.DESCRIPTION',
+    headerCellFilter : 'translate' },
 
-    {
-        cellTemplate: '/partials/purchases/templates/cellCost.tmpl.html',
-        field : 'cost',
-        displayName : 'FORM.LABELS.COST',
-        headerCellFilter : 'translate',
-        footerCellFilter : 'currency:' + Session.enterprise.currency_id,
-        aggregationType : uiGridConstants.aggregationTypes.sum,
-      aggregationHideLabel: true
-    }, {
-        field : 'author',
-        displayName : 'FORM.LABELS.AUTHOR',
-        headerCellFilter : 'translate' },
+  {
+    cellTemplate         : '/partials/purchases/templates/cellCost.tmpl.html',
+    field                : 'cost',
+    displayName          : 'FORM.LABELS.COST',
+    headerCellFilter     : 'translate',
+    footerCellFilter     : 'currency:' + Session.enterprise.currency_id,
+    aggregationType      : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true },
 
-    {
-        cellTemplate: '/partials/purchases/templates/cellStatus.tmpl.html',
-        field : 'status',
-        displayName : 'FORM.LABELS.STATUS',
-        headerCellFilter : 'translate',
-        enableFiltering: false,
-        enableSorting: false },
+  {
+    field            : 'author',
+    displayName      : 'FORM.LABELS.AUTHOR',
+    headerCellFilter : 'translate' },
 
-    {
-        field : 'uuid',
-        cellTemplate : '/partials/purchases/templates/cellDocument.tmpl.html',
-        displayName : 'FORM.LABELS.DOCUMENT',
-        headerCellFilter : 'translate',
-        enableFiltering: false,
-        enableSorting: false },
-    {
-      field : 'action',
-      displayName : '',
-      cellTemplate: '/partials/purchases/templates/cellEdit.tmpl.html',
-      enableFiltering: false,
-      enableSorting: false
-  }];
+  {
+    cellTemplate     : '/partials/purchases/templates/cellStatus.tmpl.html',
+    field            : 'status',
+    displayName      : 'FORM.LABELS.STATUS',
+    headerCellFilter : 'translate',
+    enableFiltering  : false,
+    enableSorting    : false },
+  {
+    field           : 'action',
+    displayName     : '',
+    cellTemplate    : '/partials/purchases/templates/cellEdit.tmpl.html',
+    enableFiltering : false,
+    enableSorting   : false },
+
+  {
+    field            : 'uuid',
+    cellTemplate     : '/partials/purchases/templates/cellDocument.tmpl.html',
+    displayName      : 'FORM.LABELS.DOCUMENT',
+    headerCellFilter : 'translate',
+    enableFiltering  : false,
+    enableSorting    : false },
+  ];
 
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -103,7 +104,7 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     flatEntityAccess  : true,
     columnDefs        : columnDefs,
     enableColumnMenus : false,
-    onRegisterApi     : onRegisterApi
+    onRegisterApi     : onRegisterApi,
   };
 
   // API register function

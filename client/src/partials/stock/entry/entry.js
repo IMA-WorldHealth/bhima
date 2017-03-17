@@ -12,14 +12,15 @@ StockEntryController.$inject = [
 /**
  * StockEntryController
  * @description This controller is responsible to handle stock entry module
- * @todo Implement caching data feature
  */
 function StockEntryController(Depots, Inventory, Notify,
   Session, util, bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, uiGridGroupingConstants, uiGridConstants) {
   var vm = this;
   var mapEntry = {
-    purchase : { find: findPurchase, submit: submitPurchase },
+    purchase    : { find: findPurchase, submit: submitPurchase },
+    donation    : { find: angular.noop, submit: angular.noop },
+    integration : { find: angular.noop, submit: submitIntegration },
   };
 
   vm.Stock = new StockForm('StockEntry');
@@ -182,7 +183,10 @@ function StockEntryController(Depots, Inventory, Notify,
 
   // ============================ lots management ===========================
   function setLots(inventory) {
-    StockModal.openDefineLots({ inventory: inventory })
+    StockModal.openDefineLots({
+      inventory  : inventory,
+      entry_type : vm.movement.entry_type,
+    })
     .then(function (rows) {
       if (!rows) { return; }
       inventory.lots = rows.lots;
@@ -225,7 +229,7 @@ function StockEntryController(Depots, Inventory, Notify,
           unit_cost        : previous.unit_cost,
           expiration_date  : lot.expiration_date,
           inventory_uuid   : previous.inventory.uuid,
-          purchase_uuid    : vm.movement.entity.uuid,
+          origin_uuid      : vm.movement.entity.uuid,
         };
       }).concat(current);
     }, []);
@@ -241,6 +245,45 @@ function StockEntryController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       vm.movement = {};
       ReceiptModal.stockEntryPurchaseReceipt(document.uuid, bhConstants.flux.FROM_PURCHASE);
+    })
+    .catch(Notify.errorHandler);
+  }
+
+  // submit integration
+  function submitIntegration() {
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      flux_id     : bhConstants.flux.FROM_INTEGRATION,
+      user_id     : Session.user.id,
+    };
+
+    Stock.integration.create({ description : vm.movement.description })
+    .then(function (uuid) {
+      var lots = vm.Stock.store.data.reduce(function (current, previous) {
+        return previous.lots.map(function (lot) {
+          return {
+            label            : lot.lot,
+            initial_quantity : lot.quantity,
+            quantity         : lot.quantity,
+            unit_cost        : previous.unit_cost,
+            expiration_date  : lot.expiration_date,
+            inventory_uuid   : previous.inventory.uuid,
+            origin_uuid      : uuid,
+          };
+        }).concat(current);
+      }, []);
+
+      movement.lots = lots;
+      return Stock.stocks.create(movement);
+    })
+    .then(function (document) {
+      vm.Stock.store.clear();
+      vm.movement = {};
+      // Add integration receipt
+      // ReceiptModal.stockEntryPurchaseReceipt(document.uuid, bhConstants.flux.FROM_PURCHASE);
     })
     .catch(Notify.errorHandler);
   }

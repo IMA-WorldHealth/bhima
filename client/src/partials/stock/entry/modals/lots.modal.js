@@ -3,14 +3,17 @@ angular.module('bhima.controllers')
 
 StockDefineLotsModalController.$inject = [
   '$uibModalInstance', 'NotifyService', 'uiGridConstants', 'data',
+  'SessionService',
 ];
 
-function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data) {
+function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
   var vm = this;
   
   // globals
   vm.inventory = { lots: [] };
   vm.gridApi = {};
+  vm.enterprise = Session.enterprise;
+  vm.entryType = Data.entry_type;
 
   /* ======================= Grid configurations ============================ */
   vm.gridOptions = {
