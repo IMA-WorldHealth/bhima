@@ -51,6 +51,11 @@ function bhFiltersAppliedController($filter) {
     filters = changes.filters.currentValue;
 
     filters.forEach(function (filter) {
+      // @FIXME patch hack - this should be managed by the FilterService
+      if (filter.field === 'defaultPeriod') {
+        filter.isDefault = true;
+      }
+
       if (filter.ngFilter) {
         filter.viewValue = $filter(filter.ngFilter)(filter.value);
       } else {

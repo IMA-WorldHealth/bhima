@@ -266,6 +266,7 @@ exports.configure = function configure(app) {
   /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
+  app.get('/inventory/metadata/search', inventory.searchInventoryItems);
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
 

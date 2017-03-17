@@ -33,10 +33,26 @@
             <tr>
               <th>{{this.name}}</th>
               <td class="text-left">{{this.number}}</td>
-              <td class="text-right">{{currency this.thirty ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.sixty ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.ninety ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.excess ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">
+                {{#if this.thirty}}
+                  {{currency this.thirty ../metadata.enterprise.currency_id}}
+                {{/if}}  
+              </td>
+              <td class="text-right">
+                {{#if this.sixty}}
+                  {{currency this.sixty ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">
+                {{#if this.ninety}}
+                  {{currency this.ninety ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">
+                {{#if this.excess}}
+                  {{currency this.excess ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
               <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}

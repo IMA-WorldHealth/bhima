@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
+  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
 ];
 
 /**
@@ -12,13 +12,9 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment) {
-  var service     = new Api('/cash/');
-  var urlCheckin  = '/cash/checkin/';
-
-  // templates for descriptions
-  var PAYMENT_DESCRIPTION = 'Cash Payment / :date / :name \n ';
-  var CAUTION_DESCRIPTION = 'Caution Payment / :date / :name';
+function CashService(Modal, Api, Exchange, Session, moment, $translate) {
+  var service = new Api('/cash/');
+  var urlCheckin = '/cash/checkin/';
 
   // custom methods
   service.create = create;
@@ -34,17 +30,13 @@ function CashService(Modal, Api, Exchange, Session, moment) {
    * invoice until it is decimated.
    */
   function allocatePaymentAmounts(data) {
-
-    // the global amount paid
-    var totalAmount = data.amount;
-
     // default to an empty array if necessary -- the server will throw an error
     var items = (data.invoices || [])
 
     // loop through the invoices, allocating a sum to the invoice until there
     // is no more left to allocate.
       .map(function (invoice) {
-        return { invoice_uuid : invoice.uuid };
+        return { invoice_uuid: invoice.uuid };
       });
 
     return items;
@@ -76,7 +68,7 @@ function CashService(Modal, Api, Exchange, Session, moment) {
     delete data.invoices;
 
     // call the prototype create method with the formatted data
-    return Api.create.call(service, { payment : data });
+    return Api.create.call(service, { payment: data });
   }
 
   /*
@@ -86,12 +78,21 @@ function CashService(Modal, Api, Exchange, Session, moment) {
     var isCaution = payment.is_caution;
     var date = payment.date;
 
-    var tmpl = isCaution ? CAUTION_DESCRIPTION : PAYMENT_DESCRIPTION;
+    // invoice references
+    var invoicesReferences = payment.invoices.map(function (invoice) {
+      return invoice.reference;
+    });
 
-    return tmpl
-      .replace(':date', moment(date).format('YYYY-MM-DD'))
-      .replace(':name', patient.display_name)
-      .trim();
+    var referencesString = invoicesReferences.join(', ');
+
+    var tmpl = isCaution ? 'CASH.PREPAYMENT_DESCRIPTION' : 'CASH.PAYMENT_DESCRIPTION';
+
+    return $translate.instant(tmpl, {
+      patientName       : patient.display_name,
+      invoiceReferences : referencesString,
+      patientReference  : patient.reference,
+      amount            : payment.amount,
+    });
   }
 
   /**
@@ -132,11 +133,11 @@ function CashService(Modal, Api, Exchange, Session, moment) {
       { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter: 'date' },
+      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter: 'date' },
       { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' },
       { field: 'reversed', displayName: 'CASH.REGISTRY.REVERSED_RECORDS' },
-      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'}
+      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT' },
     ];
 
     // returns columns from filters
@@ -156,12 +157,12 @@ function CashService(Modal, Api, Exchange, Session, moment) {
   function openCancelCashModal(invoice) {
     return Modal.open({
       templateUrl : 'partials/cash/modals/modalCancelCash.html',
-      resolve : { data : { invoice : invoice } },
-      size : 'md',
-      animation : false,
-      keyboard  : false,
-      backdrop : 'static',
-      controller : 'ModalCancelCashController as ModalCtrl',
+      resolve     : { data: { invoice: invoice } },
+      size        : 'md',
+      animation   : false,
+      keyboard    : false,
+      backdrop    : 'static',
+      controller  : 'ModalCancelCashController as ModalCtrl',
     }).result;
   }
 

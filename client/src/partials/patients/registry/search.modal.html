@@ -21,7 +21,7 @@
       <ul class="list-inline" data-date-registration>
         <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
           <a ng-click="ModalCtrl.setDateRange('registration', view.cacheKey)" data-date-range="{{ key }}" href>
-            {{ ::view.translateKey | translate }}
+            <span translate>{{ ::view.translateKey }}</span>
           </a>
         </li>
         <li class="pull-right">

@@ -56,12 +56,12 @@
           {{#each accounts as |account|}}
           <tr class="text-right">
             <td class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-            <td>{{currency account.beginDebit ../metadata.enterprise.currency_id }}</td>
-            <td>{{currency account.beginCredit ../metadata.enterprise.currency_id }}</td>
-            <td>{{currency account.middleDebit ../metadata.enterprise.currency_id }}</td>
-            <td>{{currency account.middleCredit ../metadata.enterprise.currency_id }}</td>
-            <td>{{currency account.endDebit ../metadata.enterprise.currency_id }}</td>
-            <td>{{currency account.endCredit ../metadata.enterprise.currency_id }}</td>
+            <td>{{#if account.beginDebit}}{{currency account.beginDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.beginCredit}}{{currency account.beginCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.middleDebit}}{{currency account.middleDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.middleCredit}}{{currency account.middleCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.endDebit}}{{currency account.endDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.endCredit}}{{currency account.endCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
           </tr>
           {{/each}}
         </tbody>

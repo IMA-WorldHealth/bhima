@@ -1,4 +1,3 @@
-
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');

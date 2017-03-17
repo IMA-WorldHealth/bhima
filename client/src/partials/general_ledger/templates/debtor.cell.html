@@ -1,8 +1,8 @@
-<div class="ui-grid-cell-contents">
-    <div class="text-right" ng-show="row.entity.debtor_balance" style="border-left: 5px solid cyan;">
-        {{ row.entity.debtor_balance | currency: grid.appScope.enterprise.currency_id }}
-    </div>
-    <div class="text-right" ng-show="!row.entity.debtor_balance">
-        {{ row.entity.debtor_balance | currency: grid.appScope.enterprise.currency_id }}
-    </div>
+<div class="ui-grid-cell-contents text-right">
+  <div ng-show="row.entity.debtor_balance" style="border-left: 5px solid cyan;">
+      {{ row.entity.debtor_balance | currency: grid.appScope.enterprise.currency_id }}
+  </div>
+  <div ng-hide="row.entity.debtor_balance">
+      {{ row.entity.debtor_balance | currency: grid.appScope.enterprise.currency_id }}
+  </div>
 </div>

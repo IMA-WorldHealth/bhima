@@ -8,33 +8,58 @@
     <div class="toolbar">
 
       <div class="toolbar-item">
+        <button
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : InventoryCtrl.filterEnabled }"
+          ng-click="InventoryCtrl.toggleFilter()"
+          data-method="filter">
+          <i class="fa fa-filter"></i>
+        </button>
+        
         <a
           class="btn btn-default"
           ui-sref="inventory.create"
           data-method="create">
           <i class="fa fa-plus"></i> <span translate>INVENTORY.ADD_METADATA</span>
         </a>
-      </div>
 
-      <div class="toolbar-item">
         <button
+          ng-click="InventoryCtrl.research()"
+          data-method="research"
           class="btn btn-default"
-          ng-class="{ 'btn-info' : InventoryCtrl.filterEnabled }"
-          ng-click="InventoryCtrl.toggleFilter()"
-          data-method="filter">
-          <i class="fa fa-filter"></i> <span translate>FORM.BUTTONS.FILTER</span>
+          id="research">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
         </button>
-      </div>
 
-      <div class="toolbar-item">
         <bh-pdf-print
           pdf-url="/reports/inventory/items"
           disable-cache="true">
         </bh-pdf-print>
-      </div>
+
+      </div>      
     </div>
+
   </div>
 </div>
+
+<div class="flex-util bh-filter-bar" ng-if="InventoryCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="InventoryCtrl.filtersFmt"
+    on-remove-filter="InventoryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="InventoryCtrl.clearFilters()"
+    ng-show="InventoryCtrl.filtersFmt.length > 0"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-close text-danger"></i>
+    <span translate> FORM.INFO.CLEAR_FILTERS </span>
+  </a>
+</div>
+
 
 <!-- grid content  -->
 <div class="flex-content">

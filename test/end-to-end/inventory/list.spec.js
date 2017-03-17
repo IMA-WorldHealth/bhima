@@ -5,6 +5,7 @@ const uuid   = require('node-uuid');
 const chai   = require('chai');
 const expect = chai.expect;
 
+const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
@@ -42,6 +43,10 @@ describe('Inventory List', () => {
     unit_volume : 7
   };
 
+  let metadataSearch = {
+    label : 'First'
+  };
+
   it('successfully creates a new inventory item (metadata)', () => {
     FU.buttons.create();
     FU.input('$ctrl.item.label', metadata.text);
@@ -56,6 +61,17 @@ describe('Inventory List', () => {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
+
+  // demonstrates that filtering works
+  it(`should find one Inventory with Label "${metadataSearch.label}"`, () => {
+    element(by.id('research')).click();
+    //FU.buttons.research();
+    FU.input('ModalCtrl.params.text', metadataSearch.label);
+    FU.modal.submit();
+
+    GU.expectRowCount('inventoryListGrid', 1);
+    FU.buttons.clear();
+  }); 
 
   it('dont creates a new inventory item (metadata) for invalid data', () => {
     FU.buttons.create();
@@ -97,4 +113,5 @@ describe('Inventory List', () => {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
+
 });

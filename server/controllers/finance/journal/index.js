@@ -24,9 +24,9 @@ const uuid = require('node-uuid');
 // module dependencies
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
-const NotFound  = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
+const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
-const barcode = require('../../../lib/db');
 
 // expose to the api
 exports.list = list;
@@ -44,8 +44,7 @@ exports.editTransaction = editTransaction;
  * @returns {Promise} object - a promise resolving to the part of transaction object.
  */
 function lookupTransaction(record_uuid) {
-
-  let sql = `
+  const sql = `
       SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
         p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
         dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
@@ -68,10 +67,8 @@ function lookupTransaction(record_uuid) {
       ORDER BY p.trans_date DESC
     `;
 
-  return db.exec(sql, [ db.bid(record_uuid) ])
-    .then(function (rows) {
-      return addAggregateData(rows);
-    })
+  return db.exec(sql, [db.bid(record_uuid)])
+    .then(rows => addAggregateData(rows))
     .then(function (result) {
 
       // if no records matching, throw a 404
@@ -92,25 +89,9 @@ function lookupTransaction(record_uuid) {
  * return all items in the posting journal
  */
 function find(options) {
-  // remove the limit first thing, if it exists
-  let limit = Number(options.limit);
-  delete options.limit;
+  const filters = new FilterParser(options, { tableAlias : 'p' });
 
-  // support flexible queries by keeping a growing list of conditions and
-  // statements
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
-
-  // if nothing is passed in as an option, throw an error
-  if (_.isEmpty(options)) {
-    return q.reject(
-      new BadRequest('The request requires at least one parameter.', 'ERRORS.PARAMETERS_REQUIRED')
-    );
-  }
-
-  let sql = `
+  const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
@@ -129,76 +110,21 @@ function find(options) {
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-    WHERE
-      SQL_CONDITIONS
-    ORDER BY p.trans_date DESC
   `;
 
-  // filter on a record uuid
-  if (options.record_uuid) {
-    const recordUuid = db.bid(options.record_uuid);
-    conditions.statements.push('p.record_uuid = ?');
-    conditions.parameters.push(recordUuid);
-    delete options.record_uuid;
-  }
+  filters.dateFrom('dateFrom', 'trans_date');
+  filters.dateTo('dateTo', 'trans_date');
 
-  // filter on reference uuid
-  if (options.reference_uuid) {
-    const referenceUuid = db.bid(options.reference_uuid);
-    conditions.statements.push('p.reference_uuid = ?');
-    conditions.parameters.push(referenceUuid);
-    delete options.reference_uuid;
-  }
+  filters.fullText('description');
+  filters.fullText('comment');
 
-  // TODO - will this have SQL injection?
-  if (options.description) {
-    conditions.statements.push(`p.description LIKE "%${options.description}%"`);
-    delete options.description;
-  }
+  filters.customMultiParameters('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
-  // filter on uuid
-  if (options.uuid) {
-    const id = db.bid(options.uuid);
-    conditions.statements.push('p.uuid = ?');
-    conditions.parameters.push(id);
-    delete options.uuid;
-  }
+  filters.setOrder('ORDER BY p.trans_date DESC');
 
-  // filter on min date
-  if (options.dateFrom) {
-    conditions.statements.push('DATE(p.trans_date) >= ?');
-    conditions.parameters.push(new Date(options.dateFrom));
-    delete options.dateFrom;
-  }
-
-  // filter on max date
-  if (options.dateTo) {
-    conditions.statements.push('DATE(p.trans_date) <= ?');
-    conditions.parameters.push(new Date(options.dateTo));
-    delete options.dateTo;
-  }
-
-  if (options.comment) {
-    conditions.statements.push(`p.comment LIKE "%${options.comment}%"`);
-    delete options.comment;
-  }
-
-  // this accounts for currency_id, user_id, trans_id, account_id, etc ..
-
-  // assign query parameters as needed
-  let destruct = util.parseQueryStringToSQL(options, 'p');
-  conditions.statements = _.concat(conditions.statements, destruct.statements);
-  conditions.parameters = _.concat(conditions.parameters, destruct.parameters);
-
-  sql = sql.replace('SQL_CONDITIONS', conditions.statements.join(' AND '));
-
-  // finally, apply the LIMIT query
-  if (!isNaN(limit)) {
-    sql += ' LIMIT ?;';
-    conditions.parameters.push(limit);
-  }
-
-  return db.exec(sql, conditions.parameters);
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
 
 /**
@@ -206,11 +132,9 @@ function find(options) {
 * Allows you to select which transactions to print
 */
 function journalEntryList(options) {
-  let uuids =  options.uuids.map(function(uuid) {
-    return db.bid(uuid);
-  });
+  const uuids = options.uuids.map(uid => db.bid(uid));
 
-  let sql = `
+  const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
@@ -312,8 +236,8 @@ function addAggregateData(journalRows) {
     .then(function (aggregateResults) {
       // format object according to API specification
       return {
-        journal : journalRows,
-        aggregate : aggregateResults
+        journal   : journalRows,
+        aggregate : aggregateResults,
       };
     });
 }
@@ -330,14 +254,14 @@ function addAggregateData(journalRows) {
 function queryTransactionAggregates(journalRows) {
   let transactionIds = journalRows
     .map(row => row.record_uuid)
-    .filter((transactionId, index, allTransactionIds) => {
-      // only keep elements that are unique
-      return allTransactionIds.indexOf(transactionId) === index;
-    })
+
+    // only keep elements that are unique
+    .filter((transactionId, index, allTransactionIds) => allTransactionIds.indexOf(transactionId) === index)
+
     .map(transactionId => db.bid(transactionId));
 
-  let emptyTransactions = transactionIds.length === 0;
-  let aggregateQuery = `
+  const emptyTransactions = transactionIds.length === 0;
+  const aggregateQuery = `
     SELECT
       trans_id, SUM(credit_equiv) as credit_equiv, BUID(record_uuid) as record_uuid,
       SUM(debit_equiv) as debit_equiv, COUNT(uuid) as totalRows
@@ -350,6 +274,7 @@ function queryTransactionAggregates(journalRows) {
   if (emptyTransactions) {
     return Promise.resolve([]);
   }
+
   return db.exec(aggregateQuery, [transactionIds]);
 }
 
@@ -373,7 +298,7 @@ function editTransaction(req, res, next) {
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?';
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?';
 
-  let transaction = db.transaction();
+  const transaction = db.transaction();
 
   let rowsChanged = req.body.changed;
   let rowsAdded = req.body.added;
@@ -381,7 +306,6 @@ function editTransaction(req, res, next) {
 
   rowsRemoved.forEach((row) => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
   // _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
-
 
   transformColumns(rowsAdded, true)
     .then((result) => {
@@ -394,13 +318,11 @@ function editTransaction(req, res, next) {
       return transformColumns(rowsChanged, false);
     })
     .then((result) => {
-
       _.each(result, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
       return transaction.execute();
     })
     .then((result) => {
       res.status(200).json(result);
-
     })
     .catch(next);
 
@@ -419,9 +341,9 @@ function transformColumns(rows, newRecord) {
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
 
-  let databaseRequests = [];
-  let databaseValues = [];
-  let assignments = [];
+  const databaseRequests = [];
+  const databaseValues = [];
+  const assignments = [];
 
   let promises = [];
 
@@ -508,9 +430,7 @@ function transformColumns(rows, newRecord) {
   });
 
   return q.all(promises)
-    .then((results) => {
-      return rows;
-    });
+    .then(() => rows);
 }
 
 
@@ -524,19 +444,24 @@ function transformColumns(rows, newRecord) {
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-
   const voucherUuid = uuid.v4();
-  const recordUuid  = db.bid(req.params.uuid);
-  const params = [ recordUuid, req.session.user.id, req.body.description, db.bid(voucherUuid) ];
+  const recordUuid = db.bid(req.params.uuid);
+  const params = [
+    recordUuid,
+    req.session.user.id,
+    req.body.description,
+    db.bid(voucherUuid),
+  ];
 
   /**
    * Check already cancelled
    * Transaction type for cancelled operation is 10
    */
   const CANCELLED_ID = 10;
-  const query =
-    `SELECT uuid FROM voucher
-     WHERE voucher.type_id = ${CANCELLED_ID} AND voucher.reference_uuid = ?`;
+  const query = `
+    SELECT uuid FROM voucher
+    WHERE voucher.type_id = ${CANCELLED_ID} AND voucher.reference_uuid = ?
+  `;
 
   // create and execute a transaction if necessary
   db.exec(query, [recordUuid])
@@ -547,7 +472,7 @@ function reverse(req, res, next) {
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
     })
-    .then(() => res.status(201).json({ uuid : voucherUuid }))
+    .then(() => res.status(201).json({ uuid: voucherUuid }))
     .catch(next)
     .done();
 }

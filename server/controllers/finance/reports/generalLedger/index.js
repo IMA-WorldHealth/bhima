@@ -1,9 +1,9 @@
-
 /**
  * @overview General Ledger Accounts Reports
  *
  * @description
- * This module contains all the code for rendering PDFs of Journal
+ * This module contains all the code for rendering PDFs of the general ledgers.
+ * It should really use the same code as the accounts reports.
  */
 
 const _ = require('lodash');
@@ -14,6 +14,8 @@ const Accounts = require('../../accounts');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/generalLedger/report.handlebars';
 const ACCOUNT_SLIP_TEMPLATE = './server/controllers/finance/reports/generalLedger/accountSlip.handlebars';
+
+const GENERAL_LEDGER_SOURCE = 1;
 
 exports.report = renderReport;
 exports.accountSlip = renderAccountSlip;
@@ -53,7 +55,6 @@ function renderReport(req, res, next) {
  * @method accountSlip
  */
 function renderAccountSlip(req, res, next) {
-  const GENERAL_LEDGER_SOURCE = 1;
   const params = req.params;
   const options = _.extend(req.query, { filename: 'GENERAL_LEDGER.ACCOUNT_SLIP', csvKey: 'rows' });
   let report;

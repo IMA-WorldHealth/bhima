@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'util', 'SessionService', 'PrototypeApiService'
+  '$uibModal', 'util', 'SessionService', 'PrototypeApiService', 'FilterService'
 ];
 
 /**
@@ -12,8 +12,10 @@ PatientInvoiceService.$inject = [
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
-function PatientInvoiceService(Modal, util, Session, Api) {
+function PatientInvoiceService(Modal, util, Session, Api, Filters) {
   var service = new Api('/invoices/');
+
+  var filter = new Filters();
 
   service.create = create;
   service.openSearchModal = openSearchModal;
@@ -29,10 +31,11 @@ function PatientInvoiceService(Modal, util, Session, Api) {
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, billingServices, subsidies) {
+  function create(invoice, invoiceItems, billingServices, subsidies, description) {
+    var cp = angular.copy(invoice);
 
     // add project id from session
-    invoice.project_id = Session.project.id;
+    cp.project_id = Session.project.id;
 
     // a patient invoice is not required to qualify for billing services or subsidies
     // default to empty arrays
@@ -40,17 +43,19 @@ function PatientInvoiceService(Modal, util, Session, Api) {
     subsidies = subsidies || [];
 
     // concatenate into a single object to send back to the client
-    invoice.items = invoiceItems.map(filterInventorySource);
+    cp.items = invoiceItems.map(filterInventorySource);
 
-    invoice.billingServices = billingServices.map(function (billingService) {
+    cp.billingServices = billingServices.map(function (billingService) {
       return billingService.billing_service_id;
     });
 
-    invoice.subsidies = subsidies.map(function (subsidy) {
+    cp.subsidies = subsidies.map(function (subsidy) {
       return subsidy.subsidy_id;
     });
 
-    return Api.create.call(this, { invoice: invoice });
+    cp.description = description;
+
+    return Api.create.call(this, { invoice: cp });
   }
 
   /**
@@ -63,7 +68,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
    * @param {String} debtorUuid - the amount due to the debtor
    */
   function balance(uuid) {
-    var url = '/invoices/'.concat(uuid).concat('/balance');
+    var url = '/invoices/'.concat(uuid, '/balance');
     return this.$http.get(url)
       .then(this.util.unwrapHttpResponse);
   }
@@ -124,7 +129,8 @@ function PatientInvoiceService(Modal, util, Session, Api) {
       { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
       { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
-      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' }
+      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' },
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' }
     ];
 
     // returns columns from filters
@@ -133,6 +139,11 @@ function PatientInvoiceService(Modal, util, Session, Api) {
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        // @FIXME tempoarary hack for default period
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
+        }
         return true;
       } else {
         return false;

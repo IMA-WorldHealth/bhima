@@ -1125,13 +1125,19 @@ CREATE PROCEDURE ReverseTransaction(
 )
 BEGIN
   -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
+  -- This is done in JS currently, but could be done here.
+  DECLARE isInvoice BOOLEAN;
+  DECLARE reversalType INT;
 
-  -- the voucher type is credit note (id: 10)
+  SET reversalType = 10;
+
+  SET isInvoice = (SELECT IFNULL((SELECT 1 FROM invoice WHERE invoice.uuid = uuid), 0));
+
   -- @fixme - why do we have `amount` in the voucher table?
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(REVERSAL)', description), user_id, 10, uuid
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(REVERSAL)', description), user_id, reversalType, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL
@@ -1152,7 +1158,13 @@ BEGIN
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 
+  -- make sure we update the invoice with the fact that it got reversed.
+  IF (isInvoice) THEN
+    UPDATE invoice SET reversed = 1 WHERE invoice.uuid = uuid;
+  END IF;
+
   CALL PostVoucher(voucher_uuid);
+
 END $$
 
 

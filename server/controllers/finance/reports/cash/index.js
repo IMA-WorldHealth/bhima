@@ -11,11 +11,10 @@
  * @module finance/reports/cash
  */
 
-const _    = require('lodash');
-const q    = require('q');
+const _ = require('lodash');
+const q = require('q');
 const moment = require('moment');
 
-const BadRequest = require('../../../../lib/errors/BadRequest');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const pdf = require('../../../../lib/renderers/pdf');
@@ -45,10 +44,9 @@ function receipt(req, res, next) {
   const options = req.query;
 
   let report;
-
   let template = RECEIPT_TEMPLATE;
 
-  if (Boolean(Number(options.posReceipt))) {
+  if (Number(options.posReceipt)) {
     template = POS_RECEIPT_TEMPLATE;
     _.extend(options, pdf.posReceiptOptions);
   }
@@ -63,20 +61,17 @@ function receipt(req, res, next) {
   const data = {};
 
   CashPayments.lookup(req.params.uuid)
-    .then(payment => {
+    .then((payment) => {
       data.payment = payment;
 
       // create a description for the cash payment's receipt
-      let descriptionParts = payment.description.split(' -- ');
-
+      const descriptionParts = payment.description.split(' -- ');
       let renderedDescription;
 
       if (descriptionParts.length > 1) {
-
         // render everything after the descriptor
         renderedDescription = _.drop(descriptionParts, 1).join('');
       } else {
-
         // unable to parse ... use the whole description.
         renderedDescription = payment.description;
       }
@@ -84,20 +79,21 @@ function receipt(req, res, next) {
       payment.renderedDescription = renderedDescription;
 
       // lookup balances on all invoices
-      let invoices = payment.items.map(invoices => invoices.invoice_uuid);
+      const invoices = payment.items.map(invoices => invoices.invoice_uuid);
+
       return q.all([
         Users.lookup(payment.user_id),
         Patients.lookupByDebtorUuid(payment.debtor_uuid),
         Enterprises.lookupByProjectId(payment.project_id),
         Debtors.invoiceBalances(payment.debtor_uuid, invoices),
-        Debtors.balance(payment.debtor_uuid)
+        Debtors.balance(payment.debtor_uuid),
       ]);
     })
     .spread((user, patient, enterprise, invoices, totalInvoices) => {
       _.assign(data, { user, patient, enterprise, invoices, totalInvoices });
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
-    .then(exchange => {
+    .then((exchange) => {
       data.rate = exchange.rate;
       data.currentDateFormatted = (new moment()).format('L');
       data.hasRate = (data.rate && !data.payment.is_caution);
@@ -109,7 +105,7 @@ function receipt(req, res, next) {
 
       data.debtorTotalBalance = data.totalInvoices.balance;
 
-      data.payment.items.forEach(invoiceItem => {
+      data.payment.items.forEach((invoiceItem) => {
         invoiceItem.balance = data.balances[invoiceItem.invoice_uuid];
 
         // if the payment is anything other than the enterprise rate, exchange it
@@ -120,7 +116,7 @@ function receipt(req, res, next) {
 
       return report.render(data);
     })
-    .then(result => {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)

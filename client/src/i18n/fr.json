@@ -102,6 +102,8 @@
     "CAUTION_REMAINING" : "Caution Restante",
     "CONFIRM_PAYMENT_WHEN_CAUTION" : "Procéder au paiement alors que le patient dispose d'une caution ?",
     "CURRENT_CASHBOX" : "Caisse courante",
+    "PAYMENT_DESCRIPTION" : "Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
+    "PREPAYMENT_DESCRIPTION" : "Paiement caution par {{patientName}} ({{patientReference}}).",
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
@@ -116,7 +118,7 @@
       "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "SELECTION": {
-      "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
+      "GO_TO_CASHBOX_PAGE" : "Allez a la page de gestion de caisse",
       "MISSING_CASH"       : "Caisse manquante",
       "TITLE"              : "Selection caisse"
     },
@@ -406,7 +408,8 @@
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
       "REQUIRED"           : "Cette valeur est requise.",
-      "INVALID"            : "Donnees Invalides"
+      "INVALID"            : "Donnees Invalides",
+      "LOCKED_USER"        : "Votre compte a ete bloque, contacter votre administrateur"
     },
     "INFO": {
       "BY"                   : "Par",
@@ -417,7 +420,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -461,6 +464,7 @@
       "ACCOUNT_NUMBER"         : "Numéro de Compte",
       "ACCOUNT_TITLE"          : "Libelle de Compte",
       "ACCOUNT_TYPE"           : "Type de Compte",
+      "ACTIVE"                 : "Actif",
       "ADD"                    : "Ajouter",
       "ADDRESS"                : "Adresse",
       "ADDRESS1"               : "Adresse",
@@ -715,6 +719,7 @@
       "TOTAL_SELECTED_INVOICES": "Total des factures selectionnées",
       "TO_ACCOUNT"             : "Au Compte",
       "TO_LOCK"                : "Bloquer",
+      "TRANS_ID"               : "ID de la transaction",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TRANSFER_TYPE"          : "Type de Transfert",
@@ -991,6 +996,7 @@
       "MISSING_SALES_ACCOUNT" : "L'enregistrement contient un item d'inventaire qui n'a pas de compte de vente associé à son groupe",
       "NOT_CONFIGURED"        : "L'enregistrement ne contient pas d'item inventaire. Veuillez inserer un item ou supprimer la ligne."
     },
+    "DESCRIPTION"        : "Facture a {{ patientName }} ({{ patientReference }} pour {{ numItems }} items dans le service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "LABEL_PAID"         : "Cette facture a été payé.",
@@ -1068,8 +1074,6 @@
     "SUPER"         : "super utilisateur",
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur",
-    "CREATE"        : "Creer",
-    "UPDATE"        : "Editer",
     "UPDATED"       : "Modifie avec succes",
     "CREATED"       : "Creee avec succes"
   },
@@ -1115,6 +1119,7 @@
    "RECORDS"               : "Données",
    "REFRESH"               : "Rafraichir",
    "SAVE_TRANSACTION"      : "Enregistrer une transaction",
+   "SINGLE_EDIT_ONLY"      : "Modifier une seule transaction à la fois",
    "SPLIT"                 : "Diviser",
    "SPLIT_TRANSACTION"     : "Split Transaction",
    "TITLE"                 : "Journal de Saisie",
@@ -1242,7 +1247,7 @@
     "ACCOUNT"       : "Rapport du Compte",
     "BALANCE"       : "Rapport de la Balance",
     "AGED_DEBTORS"  : {
-      "TITLE": "Aged Debtors",
+      "TITLE": "Dettes des clients",
       "ZERO_TO_THIRTY_DAYS" : "Moins de 30 jours",
       "THIRTY_TO_SIXTY_DAYS"  : "30 a 60 jours",
       "SIXTY_TO_NINETY_DAYS" : "60 a 90 jours",
@@ -1534,6 +1539,7 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Registre des paiements",
     "CASH_WINDOW"                : "Paiements",
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",

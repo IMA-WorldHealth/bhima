@@ -37,8 +37,10 @@
     on-remove-filter="InvoiceRegistryCtrl.onRemoveFilter(filter)">
   </bh-filters-applied>
 
+  <!-- @FIXME patch hack -->
   <a
     href
+    ng-if="InvoiceRegistryCtrl.filter.customFiltersApplied(InvoiceRegistryCtrl.filters)"
     ng-click="InvoiceRegistryCtrl.clearFilters()"
     class="text-danger"
     data-method="clear">

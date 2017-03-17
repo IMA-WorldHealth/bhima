@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('PatientInvoiceForm', PatientInvoiceFormService);
 
 PatientInvoiceFormService.$inject = [
-  'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
-  'Pool', 'PatientInvoiceItemService', 'bhConstants'
+  'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store', 'Pool',
+  'PatientInvoiceItemService', 'bhConstants', 'ServiceService', '$q', '$translate',
 ];
 
 /**
@@ -18,9 +18,10 @@ PatientInvoiceFormService.$inject = [
  * @todo (required) billing services and subsidies should be ignored for
  *   specific debtors.
  */
-function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants) {
-
+function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants, Services, $q, $translate) {
   var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
+  var DEFAULT_SERVICE_IDX = 0;
+  var DESCRIPTION_KEY = 'PATIENT_INVOICE.DESCRIPTION';
 
   // Reduce method - assigns the current billing services charge to the billing
   // service and adds to the running total
@@ -59,6 +60,13 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     }, 0);
   }
 
+  function setDefaultService() {
+    var hasServices = angular.isDefined(this.services) && this.services.length;
+
+    if (hasServices) {
+      this.details.service_id = this.services[DEFAULT_SERVICE_IDX].id;
+    }
+  }
 
   /**
    * @constructor
@@ -82,10 +90,19 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // set up the inventory
     // this will be referred to as PatientInvoiceForm.inventory.available.data
-    this.inventory = new Pool({ identifier: 'uuid', data : [] });
+    this.inventory = new Pool({ identifier: 'uuid', data: [] });
+
+    // set up the services
+    Services.read()
+      .then(function (services) {
+        this.services = services;
+
+        // compute the default service once
+        setDefaultService.call(this);
+      }.bind(this));
 
     // set up the inventory
-    Inventory.read(null, { detailed : 1 })
+    Inventory.read(null, { detailed: 1 })
       .then(function (data) {
 
         // make sure both the label and code is searchable
@@ -98,23 +115,22 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // setup the rows of the grid as a store
     // this will be referred to as PatientInvoiceForm.store.data
-    this.store = new Store({ identifier : 'uuid', data: [] });
+    this.store = new Store({ identifier: 'uuid', data: [] });
 
     this.setup();
   }
 
   // initial setup and clearing of the invoice
   PatientInvoiceForm.prototype.setup = function setup() {
-
     // the invoice details
     this.details = {
-      date : new Date(),
-      cost : 0,
-      description : null
+      date        : new Date(),
+      cost        : 0,
+      description : null,
     };
 
     // tracks the price list of the inventory items
-    this.prices = new Store({ identifier : 'inventory_uuid' });
+    this.prices = new Store({ identifier: 'inventory_uuid' });
 
     // the recipient is null
     this.recipient = null;
@@ -126,15 +142,15 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     // this object holds the totals for the invoice.
     this.totals = {
       billingServices : 0,
-      subsidies : 0,
-      rows : 0,
-      grandTotal : 0
+      subsidies       : 0,
+      rows            : 0,
+      grandTotal      : 0,
     };
 
     // remove all items from the store as needed
     this.clear();
 
-    this._valid = false ;
+    this._valid = false;
     this._invalid = true;
 
     // trigger a totals digest
@@ -189,28 +205,36 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    */
   PatientInvoiceForm.prototype.setPatient = function setPatient(patient) {
     var invoice = this;
+    var promises = [];
+
+    var billingServicePromise;
+    var subsidyPromise;
+    var priceListPromise;
 
     // load the billing services and bind to the invoice
-    Patients.billingServices(patient.uuid)
-    .then(function (billingServices) {
-      invoice.billingServices = billingServices;
-      invoice.digest();
-    });
+    billingServicePromise = Patients.billingServices(patient.uuid)
+      .then(function (billingServices) {
+        invoice.billingServices = billingServices;
+      });
+
+    promises.push(billingServicePromise);
 
     // load the subsidies and bind to the invoice
-    Patients.subsidies(patient.uuid)
-    .then(function (subsidies) {
-      invoice.subsidies = subsidies;
-      invoice.digest();
-    });
+    subsidyPromise = Patients.subsidies(patient.uuid)
+      .then(function (subsidies) {
+        invoice.subsidies = subsidies;
+      });
+
+    promises.push(subsidyPromise);
 
     // the patient's price list when complete
     if (patient.price_list_uuid) {
-      PriceLists.read(patient.price_list_uuid)
-      .then(function (priceList) {
-        invoice.setPriceList(priceList);
-        invoice.digest();
-      });
+      priceListPromise = PriceLists.read(patient.price_list_uuid)
+        .then(function (priceList) {
+          invoice.setPriceList(priceList);
+        });
+
+      promises.push(priceListPromise);
     }
 
     invoice.recipient = patient;
@@ -218,6 +242,12 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // add a single item to the invoice to begin
     invoice.addItem();
+
+    // once all HTTP requests have returned, re-digest the invoice.
+    $q.all(promises)
+      .finally(function () {
+        invoice.digest();
+      });
 
     // run validation and calculation
     invoice.digest();
@@ -247,6 +277,33 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
   PatientInvoiceForm.prototype.setService = function setService(service) {
     this.service = service;
     this.details.service_id = service.id;
+  };
+
+  /**
+   * @method getTemplatedDescription
+   *
+   * @description
+   * This method return the description based on the currently selected service and items
+   * in the invoice.
+   */
+  PatientInvoiceForm.prototype.getTemplatedDescription = function getTemplatedDescription() {
+    var self = this;
+    var selectedService;
+
+    // compute the selected service
+    this.services.forEach(function (service) {
+      if (service.id === self.details.service_id) {
+        selectedService = service;
+      }
+    });
+
+    return $translate.instant(DESCRIPTION_KEY, {
+      patientName      : self.recipient.display_name,
+      patientReference : self.recipient.reference,
+      numItems         : self.store.data.length,
+      serviceName      : selectedService.name,
+      description      : self.details.description,
+    });
   };
 
 
@@ -313,7 +370,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * configured with inventory items.
    */
   PatientInvoiceForm.prototype.addItem = function addItem() {
-
     // we cannot insert more rows than our max inventory size
     var maxRows = this.inventory.size();
     if (this.store.data.length >= maxRows) {
@@ -357,15 +413,15 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * @param {Object} item - the item/row to be configured
    */
   PatientInvoiceForm.prototype.configureItem = function configureItem(item) {
-
     // remove the item from the pool
     var inventoryItem = this.inventory.use(item.inventory_uuid);
+    var price;
 
     // configure the PatientPatientInvoiceFormItem with the inventory values
     item.configure(inventoryItem);
 
     // apply the price list, if it exists
-    var price = this.prices.get(item.inventory_uuid);
+    price = this.prices.get(item.inventory_uuid);
     if (angular.isDefined(price)) {
       item.applyPriceList(price);
     }
@@ -387,7 +443,6 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * perform validation and computer totals.
    */
   PatientInvoiceForm.prototype.readCache = function readCache() {
-
     // copy the cache temporarily
     var cp = angular.copy(this.cache);
 
@@ -449,7 +504,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * @description
    * Checks to see if the invoice has cached items to recover.
    */
-  PatientInvoiceForm.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+  PatientInvoiceForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
   };
 

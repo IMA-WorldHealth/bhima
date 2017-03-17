@@ -105,6 +105,8 @@
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
+    "PAYMENT_DESCRIPTION"    : "Cash payment by {{patientName}} ({{patientReference}}) against invoice(s) {{invoiceReferences}}.",
+    "PREPAYMENT_DESCRIPTION" : "Prepayment by {{patientName}} ({{patientReference}}).",
     "REGISTRY" : {
       "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed cash payments",
       "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed cash payments",
@@ -115,10 +117,10 @@
       "MISSING_CASH"       : "Missing Cash",
       "TITLE"              : "Select a Cashbox"
     },
-    "TITLE"           : "Cash Window",
-    "TOOLS"         : "Tools",
-    "RECEIPT": {
-      "TITLE" : "Cash Receipt",
+    "TITLE" : "Cash Window",
+    "TOOLS" : "Tools",
+    "RECEIPT"   : {
+      "TITLE"   : "Cash Receipt",
       "SUCCESS" : "Successfully created a Cash Payment"
     },
     "TRANSFER": {
@@ -404,7 +406,8 @@
       "MISSING_DEBTOR_ID"   : "Identifying missing Debtor",
       "RECORD_ERROR"        : "Please resolve any errors on the form (marked in red).",
       "REQUIRED"            : "This value is required.",
-      "INVALID"             : "invalid data"
+      "INVALID"             : "invalid data",
+      "LOCKED_USER"         : "You are locked, contact the administrator of the System"
     },
     "INFO": {
       "BY"                   : "by",
@@ -416,7 +419,7 @@
       "CURRENT"              : "Current",
       "CLEAR_FILTERS"        : "Clear Filters",
       "CREDIT_NOTE"          : "Credit Note",
-      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} ({{ invoiceAmount }}) of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
+      "CREDIT_NOTE_INVOICE"  : "Credit Note reversing invoice {{ invoiceReference }} of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Successfully deleted a record",
       "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
@@ -460,6 +463,7 @@
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
+      "ACTIVE"                 : "Active",
       "ADD"                    : "Add",
       "ADDRESS"                : "Address",
       "ADDRESS1"               : "Address",
@@ -713,6 +717,7 @@
       "TO_ACCOUNT"             : "To Account",
       "TO"                     : "To",
       "TO_LOCK"                : "To lock",
+      "TRANS_ID"               : "Transaction ID",
       "TRANSACTION"            : "Transaction",
       "TRANSACTION_DATE"       : "Transaction Date",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
@@ -982,6 +987,7 @@
       "MISSING_SALES_ACCOUNT" : "The record contains an inventory item missing a sales account.  You cannot make an invoice without a sales account.",
       "NOT_CONFIGURED" : "The record is missing an inventory item. Please put in an inventory item or remove the row."
     },
+    "DESCRIPTION"        : "Invoice to {{ patientName }} ({{ patientReference }} for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",
@@ -1058,8 +1064,6 @@
     "SUPER"         : "Super User",
     "TITLE"         : "Users and Permissions Management",
     "UPDATING_USER" : "Edits a user's metadata",
-    "CREATE"        : "Create",
-    "UPDATE"        : "Update",
     "UPDATED"       : "Updated",
     "CREATED"       : "Created"
   },
@@ -1093,6 +1097,7 @@
     "RECORDS" : "records",
     "REFRESH" : "Refresh",
     "SAVE_TRANSACTION" : "Save Transaction",
+    "SINGLE_EDIT_ONLY" : "Single Edit Only",
     "SPLIT" : "Split",
     "SPLIT_TRANSACTION" : "Split transaction",
     "TRANSACTION" : "Transaction",
@@ -1514,6 +1519,7 @@
     "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Billing Services",
     "CASHBOX_MANAGEMENT"         : "Cashbox Management",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_PAYMENT_REGISTRY"      : "Cash Payment Registry",
     "CASH_WINDOW"                : "Cash Window",
     "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
@@ -1598,9 +1604,9 @@
       "CREATE_SUCCESS"        : "Successfully posted",
       "CREATE_ERROR"          : "An error occurred when post",
       "CREDITOR"              : "Creditor (C)",
-      "DEBTOR"                : "Debitor (D)",
+      "DEBTOR"                : "Debtor (D)",
       "DEB_CRED"              : "Debtor/Creditor",
-      "DESCRIPTION"           : "This Module allows you to make advanced journal transactions manually",
+      "DESCRIPTION"           : "This module allows you to make advanced journal transactions manually",
       "ENTITY"                : "Entity (Debtor/Creditor)",
       "ERROR_ACCOUNT"         : "Selected accounts are invalid",
       "ERROR_AMOUNT"          : "Amount's values are invalid",
@@ -1657,10 +1663,10 @@
     "SINGLE_ROW_TRANSACTION" : "This transaction only has a single row, but two rows are required.  Please add one or more lines."
   },
   "GRAPHS" : {
-    "PATIENT_REGISTRATIONS" : "Patient Registrations",
-    "PATIENT_INVOICES" : "Patient Invoices",
+    "PATIENT_REGISTRATIONS"  : "Patient Registrations",
+    "PATIENT_INVOICES"       : "Patient Invoices",
     "MEDICINE_DISTRIBUTIONS" : "Medicine Distributions",
-    "LOGINS" : "Logins",
-    "PURCHASES" : "Purchases"
+    "LOGINS"                 : "Logins",
+    "PURCHASES"              : "Purchases"
   }
 }

@@ -203,45 +203,44 @@ function find(options) {
   // ensure expected options are parsed as binary
   db.convert(options, ['patientUuid']);
 
-  let filters = new FilterParser(options, { tableAlias : 'invoice' });
+  const filters = new FilterParser(options, { tableAlias : 'invoice' });
 
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
 
-  let sql =`
+  const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
-      service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id,
-      invoice.user_id
+      service.name as serviceName, user.display_name, invoice.user_id, invoice.reversed
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
-    JOIN enterprise ON enterprise.id = project.enterprise_id
   `;
 
   filters.equals('patientUuid', 'uuid', 'patient');
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
 
-  // support credit note toggle
-  filters.reversed('reversed');
+  filters.period('defaultPeriod', 'date');
 
-  let referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
+  // support credit note toggle
+  // filters.reversed('reversed');
+
+  const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
-  let patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
+  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
   filters.custom('patientReference', patientReferenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
 
-  let query = filters.applyQuery(sql);
-  let parameters = filters.parameters();
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
   return db.exec(query, parameters);
 }
 
