@@ -1,4 +1,5 @@
 /* global expect, chai, agent */
+'use strict';
 
 /**
  * @overview CashPaymentsSearch
