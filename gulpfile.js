@@ -223,7 +223,6 @@ gulp.task('lint-i18n', (cb) => {
 // watches for any change and builds the appropriate route
 gulp.task('watch-client', () => {
   gulp.watch(paths.client.css, ['client-compile-css']);
-
   // client-compile-assets calls client-compute-hashes which in turn runs client-compile-js
   gulp.watch(paths.client.javascript, ['client-compile-assets']);
   gulp.watch(paths.client.static, ['client-mv-static']);

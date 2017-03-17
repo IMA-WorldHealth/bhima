@@ -1,0 +1,16 @@
+<a ui-sref="^.{{ArchiveCtrl.key}}">
+  <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+  <span translate>REPORT.UTIL.BACK</translate>
+</a>
+
+<div
+id="report-grid"
+  style="height : calc(100vh - 85px)"
+  ui-grid="ArchiveCtrl.gridOptions">
+
+  <bh-grid-loading-indicator
+    loading-state="ArchiveCtrl.loading"
+    empty-state="ArchiveCtrl.gridOptions.data.length === 0"
+    error-state="ArchiveCtrl.hasError">
+  </bh-grid-loading-indicator>
+</div>

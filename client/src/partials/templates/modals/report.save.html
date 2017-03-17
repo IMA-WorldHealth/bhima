@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>{{SaveCtrl.report.title_key}}</li>
+    <li class="title" translate>REPORT.UTIL.SAVE_AS</li>
+  </ol>
+</div>
+
+<form name="SaveForm" bh-submit="SaveCtrl.submit(SaveForm)" bh-form-defaults autocomplete="off" novalidate>
+<div class="modal-body">
+  <div class="form-group"
+    ng-class="{ 'has-error' : SaveForm.$submitted && SaveForm.label.$invalid }">
+    <label class="control-label" translate>FORM.LABELS.LABEL</label>
+    <input class="form-control" id="label" name="label" autocomplete="off" ng-model="SaveCtrl.documentOptions.label" required />
+
+    <div class="help-block" ng-messages="SaveForm.label.$error" ng-show="SaveForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label" translate>REPORT.UTIL.SAVE_AS</label>
+    <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as (type.label | translate) for type in SaveCtrl.supportedRenderTypes">
+    </select>
+  </div>
+</div>
+
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="SaveCtrl.dismiss()" data-modal-action="dismiss">
+    <span translate>FORM.BUTTONS.CANCEL</span>
+  </button>
+
+  <bh-loading-button loading-state="SaveForm.$loading">
+    <span translate>FORM.BUTTONS.SUBMIT</span>
+  </bh-loading-button>
+</div>
+</form>

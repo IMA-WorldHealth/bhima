@@ -126,6 +126,10 @@ class ReportManager {
     // set the render timestamp
     metadata.timestamp = new Date();
 
+    // @TODO fit this better into the code flow
+    // sanitise save report option
+    this.options.saveReport = Boolean(Number(this.options.saveReport));
+
     // merge the data object before templating
     _.merge(data, { metadata });
 

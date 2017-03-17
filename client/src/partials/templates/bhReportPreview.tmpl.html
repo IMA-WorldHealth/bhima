@@ -1,0 +1,23 @@
+<div>
+  <div class="row">
+    <div class="col-md-12">
+      <button ng-click="$ctrl.onClearCallback()" class="btn btn-default"><i class="fa fa-close"></i> <span translate>REPORT.UTIL.CANCEL_PREVIEW</span></button>
+      <button ng-click="$ctrl.onSaveCallback()" class="btn btn-default"><i class="fa fa-save"></i> <span translate>REPORT.UTIL.SAVE_AS</span></button>
+    </div>
+  </div>
+  <div class="row" style="margin-top : 5px">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.DOCUMENT_PREVIEW</span>
+        </div>
+        <div class="panel-body" style="padding : 5px;">
+          <!-- HTML rendered report presented in `iframe`, this ensures that -->
+          <!-- the classes within the document do not clash with the page -->
+          <iframe style="border : none; width : 100%; height : 60vh;" srcdoc="{{$ctrl.sourceDocument}}"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
