@@ -142,10 +142,29 @@ class FilterParser {
     }
   }
 
+  /**
+   * @method custom
+   * @public
+   *
+   * @description
+   * Allows a user to write custom SQL with either single or multiple
+   * parameters.  The syntax is reminiscent of db.exec() in dealing with
+   * arrays.
+   */
   custom(filterKey, preparedStatement, preparedValue) {
     if (this._filters[filterKey]) {
       const searchValue = preparedValue || this._filters[filterKey];
-      this._addFilter(preparedStatement, searchValue);
+      const isParameterArray = _.isArray(searchValue);
+
+      this._statements.push(preparedStatement);
+
+      // gracefully handle array-like parameters by spreading them
+      if (isParameterArray) {
+        this._parameters.push(...searchValue);
+      } else {
+        this._parameters.push(searchValue);
+      }
+
       delete this._filters[filterKey];
     }
   }
