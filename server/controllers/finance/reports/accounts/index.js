@@ -30,7 +30,7 @@ function chart(req, res, next) {
     return next(e);
   }
 
-  Accounts.lookupAccount()
+  Accounts.lookupAccount()  
     .then(Accounts.processAccountDepth)
     .then(accounts => {
 

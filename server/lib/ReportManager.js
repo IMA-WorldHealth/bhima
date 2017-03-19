@@ -10,12 +10,16 @@
  *    sending them back to the client.
  *  2. Complete the methods for saving reports
  *
- *
- *
  * @requires lodash
  * @requires path
  * @requires fs
+ * @requires q
+ * @requires mkdirp
+ * @requires node-uuid
+ * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
+ * @requires lib/errors/InternalServerError
+ * @requires lib/db
  */
 
 const _ = require('lodash');
@@ -64,7 +68,7 @@ class ReportManager {
    * @description
    * The ReportManager takes in a template path information and rendering
    * options.  It returns an instance of the report manager, ready to be
-   * prepared with session data and the rendered with data.
+   * prepared with session data and rendered with data.
    *
    * @param {String} templatePath - the path to the template file
    * @param {Object} metadata - any metadata that needs to appear in the report
@@ -88,14 +92,12 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-
       throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
     if (this.options.saveReport && !this.options.user) {
       let invalidSaveDescription = 'Report cannot be saved without providing a `user` entity to ReportManager';
-      console.error(invalidSaveDescription);
       throw new InternalServerError(invalidSaveDescription);
     }
 
