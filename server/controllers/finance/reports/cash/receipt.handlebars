@@ -13,6 +13,7 @@
           <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
         </p>
       </div>
+
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">
@@ -44,26 +45,29 @@
         <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
-        {{#if hasRate}} <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}} <br>{{/if}}
+        {{#if hasRate}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.EXCHANGE_RATE'}} {{currency rate payment.currency_id}}</span> <br>
+        {{/if}}
         <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{user.display_name}}
       </div>
     </div>
   </header>
 
+  <!-- describe the payment -->
+  <p>{{payment.description}}</p>
+
   <!-- list of items paid -->
   <table class="table table-condensed">
     <thead>
       <tr>
-
-          {{#with payment}}
-            {{#if is_caution}}
-              <th>{{translate "CASH.CAUTION"}}</th>
-            {{else}}
-              <th>{{translate "FORM.LABELS.INVOICE"}}</th>
-              <th>{{translate "FORM.LABELS.SERVICE"}}</th>
-            {{/if}}
-          {{/with}}
-
+        {{#with payment}}
+          {{#if is_caution}}
+            <th>{{translate "CASH.CAUTION"}}</th>
+          {{else}}
+            <th>{{translate "FORM.LABELS.INVOICE"}}</th>
+            <th>{{translate "FORM.LABELS.SERVICE"}}</th>
+          {{/if}}
+        {{/with}}
         <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
       </tr>
     </thead>
@@ -88,14 +92,13 @@
           <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
       </tr>
 
-      <tr>
-        {{#if payment.is_caution}}
-          <th>{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
-        {{else}}
+      <!-- the balance only makes sense to show if the debtor is paying an invoice -->
+      {{#unless payment.is_caution}}
+        <tr>
           <th colspan="2">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
-        {{/if }}
-        <th class="text-right">{{currency debtorTotalBalance enterprise.currency_id}}</th>
-      </tr>
+          <th class="text-right">{{currency debtorTotalBalance enterprise.currency_id}}</th>
+        </tr>
+      {{/unless }}
     </tfoot>
   </table>
 

@@ -133,16 +133,13 @@ describe('Patient Invoice', () => {
     page.adjustItemQuantity(1, 2);
 
     // change the prices
+    // make the form invalid by adjusting the final price to 0.00
     page.adjustItemPrice(0, 1.11);
-    page.adjustItemPrice(1, 2.22);
-
-    const description = element(by.model('PatientInvoiceCtrl.Invoice.details.description'));
-
-    // make the form invalid by clearing the description
-    description.clear();
+    page.adjustItemPrice(1, 0.00);
 
     // submit the form and clear the error message
     page.submit();
+
     components.notification.hasDanger();
 
     // refresh the browser
@@ -157,8 +154,11 @@ describe('Patient Invoice', () => {
     // make sure that information was correctly recovered
     page.expectRowCount(2);
 
-    description.sendKeys('A real description!');
+    // make the price something more reasonable that validation will accept
+    page.adjustItemPrice(1, 2.22);
+
     page.submit();
+
     FU.exists(by.id('receipt-confirm-created'), true);
     FU.modal.close();
   });

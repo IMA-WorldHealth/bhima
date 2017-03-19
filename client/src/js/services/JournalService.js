@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('JournalService', JournalService);
+  .service('JournalService', JournalService);
 
 // Dependencies injection
 JournalService.$inject = ['PrototypeApiService'];
@@ -18,10 +18,10 @@ function JournalService(Api) {
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
-   * this method wil always request aggregate information
+   * this method will always request aggregate information
    */
   function grid(id, parameters) {
-    var gridOptions = angular.extend({aggregates : 1}, parameters);
+    var gridOptions = angular.extend({ aggregates : 1 }, parameters);
     return this.read(id, gridOptions);
   }
 
@@ -31,8 +31,8 @@ function JournalService(Api) {
     // format request for server
     var saveRequest = {
       changed : changes,
-      added : sanitiseNewRows(added),
-      removed : entity.removedRows
+      added   : sanitiseNewRows(added),
+      removed : entity.removedRows,
     };
 
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
@@ -67,8 +67,10 @@ function JournalService(Api) {
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'account_id', displayName: 'FORM.LABELS.ACCOUNT' },
       { field: 'description', displayName: 'FORM.LABELS.DESCRIPTION', truncate: 8 },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
+      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter: 'date' },
+      { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
+      { field: 'amount', displayName: 'FORM.LABELS.AMOUNT' },
+      { field: 'project_id', displayName: 'FORM.LABELS.PROJECT' },
     ];
 
     // returns columns from filters

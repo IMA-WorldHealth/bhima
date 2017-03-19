@@ -11,7 +11,7 @@
       name="account_id"
       ng-model="$ctrl.accountId"
       on-select="$ctrl.onSelect($item, $model)"
-      required>
+      ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
         <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
       </ui-select-match>

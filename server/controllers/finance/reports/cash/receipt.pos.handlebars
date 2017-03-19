@@ -34,8 +34,9 @@
 
 <!-- if !payment.is_caution -->
 {{#each payment.items as |item| }}
-
-<p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">{{translate "FORM.LABELS.INVOICE"}} {{item.reference}} / {{translate "FORM.LABELS.SERVICE"}} {{item.serviceName}}</p>
+  <p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">
+    {{translate "FORM.LABELS.INVOICE"}} {{item.reference}} -- {{item.serviceName}}
+  </p>
 <table style="width : 100%">
   <thead>
     <tr>
