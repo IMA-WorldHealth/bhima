@@ -176,9 +176,14 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- The Report accounts
 (152,1),
 
+-- Cashflow By Service
+(153,1),
 
 -- Report Customer Debts
 (151,1),
+
+-- Open Debtor
+(157,1),
 
 -- Posted Journal
 (158,1),
