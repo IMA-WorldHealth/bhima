@@ -1361,6 +1361,7 @@
     "ENTRY_DATE"      : "Date d'entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",
     "ENTRY_PURCHASE"  : "Achat",
+    "ENTRY_INTEGRATION" : "Integration",
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque à Perimer",
     "EXPIRATION"      : "Expiration",
@@ -1399,6 +1400,7 @@
     "RECEIPT"         : {
       "ENTRY_DEPOT"    : "Entrée de Stock",
       "ENTRY_PURCHASE" : "Entree de Stock - Achat",
+      "ENTRY_INTEGRATION" : "Entree de Stock - Integration",
       "EXIT_PATIENT"   : "Sortie de Stock - Patient",
       "EXIT_DEPOT"     : "Sortie de Stock - Depot",
       "EXIT_SERVICE"   : "Sortie de Stock - Service",

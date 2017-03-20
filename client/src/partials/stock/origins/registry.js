@@ -25,6 +25,7 @@ function StockOriginsController($state, Stock, Notify,
   // map entry
   var mapEntryDocument = {
     1 : Receipts.stockEntryPurchaseReceipt,
+    13 : Receipts.stockEntryIntegrationReceipt,
   };
 
   // grouping box

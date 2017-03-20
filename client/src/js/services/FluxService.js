@@ -20,7 +20,8 @@ function FluxService(Api) {
         9: 'STOCK_FLUX.TO_PATIENT',
         10: 'STOCK_FLUX.TO_SERVICE',
         11: 'STOCK_FLUX.TO_LOSS',
-        12: 'STOCK_FLUX.TO_ADJUSTMENT'
+        12: 'STOCK_FLUX.TO_ADJUSTMENT',
+        13: 'STOCK_FLUX.FROM_INTEGRATION',
     };
 
     return service;

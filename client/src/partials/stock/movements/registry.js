@@ -27,6 +27,7 @@ function StockMovementsController($state, Stock, Notify,
     9  : { receipt: ReceiptModal.stockExitPatientReceipt },
     10 : { receipt: ReceiptModal.stockExitServiceReceipt },
     11 : { receipt: ReceiptModal.stockExitLossReceipt },
+    13 : { receipt: ReceiptModal.stockEntryIntegrationReceipt },
   };
 
   // grouping box

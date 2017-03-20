@@ -282,8 +282,7 @@ function StockEntryController(Depots, Inventory, Notify,
     .then(function (document) {
       vm.Stock.store.clear();
       vm.movement = {};
-      // Add integration receipt
-      // ReceiptModal.stockEntryPurchaseReceipt(document.uuid, bhConstants.flux.FROM_PURCHASE);
+      ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
     })
     .catch(Notify.errorHandler);
   }
