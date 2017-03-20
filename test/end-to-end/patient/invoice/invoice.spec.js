@@ -93,10 +93,10 @@ describe('Patient Invoice', () => {
     page.patient('TPA1.1');
 
     // make sure the "add rows" button is still disabled
-    expect(page.btns.add.isEnabled()).to.eventually.equal(false);
+    expect(page.btns.add.isEnabled(), 'The add rows button is not disabled').to.eventually.equal(false);
 
-    // make sure the "submit" button is still disabled
-    expect(page.btns.submit.isEnabled()).to.eventually.equal(false);
+    // make sure the "clear" button is disabled
+    expect(page.btns.clear.isEnabled(), 'The clear button is not disabled').to.eventually.equal(false);
   });
 
   it('blocks submission for an invalid grid', () => {
