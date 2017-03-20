@@ -14,6 +14,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
@@ -28,6 +29,7 @@ function build(req, res, next) {
   const metadata = _.clone(req.session);
 
   let report;
+  let exchangeRate;
 
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
@@ -67,54 +69,65 @@ function build(req, res, next) {
     break;
   }
 
-  /*
-   * The SQL query first looks for all entity_uuids in the combined Posting
-   * Journal and General Ledger to find unbalanced accounts, then links them
-   * with invoices and cash payments.
-   */
-  const debtorsSql = `
-    SELECT patient.display_name, entity_map.text AS reference, MAX(invoice.date) AS lastInvoiceDate,
-      MAX(cash.date) AS lastPaymentDate, ledger.balance AS debt
-    FROM patient JOIN entity_map ON patient.uuid = entity_map.uuid
-      JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
-      JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
-      JOIN (
-        SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
-          SUM(debit_equiv - credit_equiv) AS balance
-        FROM combined_ledger
-        WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-        GROUP BY entity_uuid
-        HAVING balance > 0
-      ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
-    GROUP BY patient.debtor_uuid
-    ORDER BY ${ordering};
-  `;
+  return Exchange.getExchangeRate(metadata.user.enterprise_id, qs.currency_id, new Date())
+  .then(function (exchange) {
+    exchangeRate = exchange.rate ? exchange.rate : 1;
 
-  /*
-   * Aggregate SQL for totalling all debts up to the present
-   */
-  const aggregateSql = `
-    SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) AS debit,
-      SUM(credit_equiv) AS credit, SUM(debit_equiv - credit_equiv) AS balance
-    FROM combined_ledger
-    WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
-  `;
+    /*
+     * The SQL query first looks for all entity_uuids in the combined Posting
+     * Journal and General Ledger to find unbalanced accounts, then links them
+     * with invoices and cash payments.
+     */
+    const debtorsSql = `
+      SELECT patient.display_name, entity_map.text AS reference, MAX(invoice.date) AS lastInvoiceDate,
+        MAX(cash.date) AS lastPaymentDate, ledger.balance * ${exchangeRate} AS debt
+      FROM patient JOIN entity_map ON patient.uuid = entity_map.uuid
+        JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
+        JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
+        JOIN (
+          SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
+            SUM(debit_equiv - credit_equiv) AS balance
+          FROM combined_ledger
+          WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
+          GROUP BY entity_uuid
+          HAVING balance > 0
+        ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
+      GROUP BY patient.debtor_uuid
+      ORDER BY ${ordering};
+    `;
 
-  const data = {};
+    /*
+     * Aggregate SQL for totalling all debts up to the present
+     */
+    const aggregateSql = `
+      SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) * ${exchangeRate} AS debit,
+        SUM(credit_equiv) * ${exchangeRate} AS credit, SUM(debit_equiv - credit_equiv) * ${exchangeRate} AS balance
+      FROM combined_ledger
+      WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
+    `;
 
-  // execute the query and build the report
-  return db.exec(debtorsSql)
-    .then((debtors) => {
-      data.debtors = debtors;
-      return db.one(aggregateSql);
-    })
-    .then((aggregates) => {
-      data.aggregates = aggregates;
-      return report.render(data);
-    })
-    .then(result => res.set(result.headers).send(result.report))
-    .catch(next)
-    .done();
+    const data = {};
+    data.currency_id =  qs.currency_id;
+    
+    // execute the query and build the report
+    return db.exec(debtorsSql)
+      .then((debtors) => {
+        data.debtors = debtors;
+        return db.one(aggregateSql);
+      })
+      .then((aggregates) => {
+        data.aggregates = aggregates;
+        return report.render(data);
+      })
+      .then(result => res.set(result.headers).send(result.report))
+      .catch(next)
+      .done();
+
+
+
+
+  });
+
 }
 
 exports.report = build;

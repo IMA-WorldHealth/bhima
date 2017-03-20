@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('openDebtorsController', OpenDebtorsConfigController);
 
 OpenDebtorsConfigController.$inject = [
-  '$state', '$uibModalInstance', 'LanguageService', 'BaseReportService', 'reportDetails'
+  '$state', '$uibModalInstance', 'LanguageService', 'BaseReportService', 'reportDetails', 'SessionService'
 ];
 
 /**
@@ -14,7 +14,7 @@ OpenDebtorsConfigController.$inject = [
  * debts to the hospital. It provides the accountant a few different ways to
  * investigate their institution.
  */
-function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedReports, reportDetails) {
+function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedReports, reportDetails, Session) {
   var vm = this;
   var report = reportDetails;
 
@@ -22,6 +22,7 @@ function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedRepo
   vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
+  vm.currency_id = Session.enterprise.currency_id;
 
   // how the report should be ordered
   vm.orders = [
@@ -48,6 +49,7 @@ function OpenDebtorsConfigController($state, ModalInstance, Languages, SavedRepo
       label : vm.label,
       lang  : Languages.key,
       order : vm.order,
+      currency_id  : vm.currency_id
     };
 
     return SavedReports.requestPDF(url, report, options)

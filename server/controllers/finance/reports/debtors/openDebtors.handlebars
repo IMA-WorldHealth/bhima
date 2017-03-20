@@ -28,7 +28,7 @@
               <td>{{debtor.display_name }}</td>
               <td>{{date debtor.lastInvoiceDate}}</td>
               <td>{{date debtor.lastPaymentDate}}</td>
-              <td class="text-right">{{currency debtor.debt ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency debtor.debt ../currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=5}}
@@ -38,7 +38,7 @@
           <tfoot>
             <tr>
               <th colspan="4">{{translate "TABLE.COLUMNS.TOTAL"}} {{aggregates.numDebtors}} {{translate "TABLE.AGGREGATES.RECORDS"}}</th>
-              <th class="text-right">{{currency aggregates.balance metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.balance currency_id}}</th>
             </tr>
           </tfoot>
         {{/if}}
