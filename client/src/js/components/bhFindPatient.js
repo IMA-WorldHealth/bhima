@@ -154,16 +154,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
       limit        : LIMIT,
     };
 
-    return Patients.search(options)
-      .then(function (patients) {
-
-        // loop through each
-        patients.forEach(function (patient) {
-          patient.label = formatPatient(patient);
-        });
-
-        return patients;
-      });
+    return Patients.searchByName(options);
   }
 
   /**
@@ -176,7 +167,9 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
     if (vm.selected === vm.options.findById && vm.idInput) {
       searchByReference(vm.idInput);
     } else if (vm.selected === vm.options.findByName && vm.nameInput) {
-      selectPatient(vm.nameInput);
+      // patient has been selected from a list of names/ references
+      // very limited information is known about the patient - get details by UUID
+      searchByUuid(vm.nameInput.uuid);
     }
   }
 

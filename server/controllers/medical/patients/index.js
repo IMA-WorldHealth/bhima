@@ -64,6 +64,7 @@ exports.list = list;
 
 // search patients
 exports.search = search;
+exports.searchByName = searchByName;
 exports.find = find;
 
 // check if a hospital file number is assigned to any patients
@@ -325,6 +326,37 @@ function hospitalNumberExists(req, res, next) {
     .done();
 }
 
+/*
+ * @method searchByName
+ *
+ * @description
+ * This method implements a patient search that will only ever return very limited
+ * information, it does not require many JOINs and will respond with UUIDs for patients
+ * that match the requested name.
+ */
+function searchByName(req, res, next) {
+  // filter parser not implemented - all other params should be ignored
+  const searchValue = req.query.display_name;
+  const searchParameter = `%${searchValue}%`;
+
+  // current default limit - this could be defined through req.query if there is a need for this
+  const limit = 10;
+
+  const sql = `
+    SELECT
+      BUID(uuid) as uuid, display_name,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) as reference
+    FROM patient
+    JOIN project ON patient.project_id = project.id
+    WHERE LOWER(display_name) LIKE ?
+    LIMIT ${limit}
+  `;
+
+  return db.exec(sql, [searchParameter])
+    .then((results) => res.send(results))
+    .catch(next)
+    .done();
+}
 
 /**
  * @method find

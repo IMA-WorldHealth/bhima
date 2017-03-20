@@ -36,6 +36,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
   // uses the "search" endpoint to pass query strings to the database
   service.search = search;
+  service.searchByName = searchByName;
   service.formatFilterParameters = formatFilterParameters;
 
   // document exposition definition
@@ -154,6 +155,15 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
     options = angular.copy(options || {});
 
     var target = baseUrl.concat('search');
+
+    return $http.get(target, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+
+  function searchByName(options) {
+    options = angular.copy(options || {});
+
+    var target = baseUrl.concat('search/name');
 
     return $http.get(target, { params : options })
       .then(util.unwrapHttpResponse);
