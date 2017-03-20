@@ -79,6 +79,7 @@ function processingIncomeExpenseReport(params) {
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing.');
   }
+  
   return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, params.current_date)
     .then(function (exchange) {
       exchangeRate = exchange.rate ? exchange.rate : 1;

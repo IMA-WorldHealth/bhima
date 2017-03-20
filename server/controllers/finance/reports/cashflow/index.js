@@ -29,6 +29,7 @@ const identifiers = require('../../../../config/identifiers');
 
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
 const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/reportByService.handlebars';
+const Exchange = require('../../exchange');
 
 // expose to the API
 exports.report = report;
@@ -43,6 +44,7 @@ exports.byService = reportByService;
  */
 function report(req, res, next) {
   let params = req.query;
+  params.user = req.session.user;
 
   processingCashflowReport(params)
     .then(result => {
@@ -54,6 +56,7 @@ function report(req, res, next) {
 /** processingCashflowReport */
 function processingCashflowReport(params) {
   let glb = {};
+  let exchangeRate;
 
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
@@ -62,20 +65,25 @@ function processingCashflowReport(params) {
   params.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD').toString();
   params.dateTo = moment(params.dateTo).format('YYYY-MM-DD').toString();
 
-  // get all periods for the the current fiscal year
-  return getPeriods(params.dateFrom, params.dateTo)
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, new Date())
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+
+      // get all periods for the the current fiscal year
+      return getPeriods(params.dateFrom, params.dateTo);
+    })      
     .then(function (periods) {
       // get the closing balance (previous fiscal year) for the selected cashbox
       if (!periods.length) {
         throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
       }
       glb.periods = periods;
-      return closingBalance(params.account_id, glb.periods[0].start_date);
+      return closingBalance(params.account_id, glb.periods[0].start_date, exchangeRate);
     })
     .then(function (balance) {
       if (!balance.length) { balance[0] = { balance: 0, account_id: params.account_id }; }
       glb.openningBalance = balance[0];
-      return queryIncomeExpense(params);
+      return queryIncomeExpense(params, exchangeRate);
     })
     .then(function (result) {
       return groupByPeriod(glb.periods, result);
@@ -93,7 +101,7 @@ function processingCashflowReport(params) {
  * @param {object} dateTo The stop date to considerate
  * @description returns incomes and expenses data in a promise
  */
-function queryIncomeExpense (params, dateFrom, dateTo) {
+function queryIncomeExpense (params, exchangeRate, dateFrom, dateTo) {
   if (params && dateFrom && dateTo) {
     params.dateFrom = dateFrom;
     params.dateTo = dateTo;
@@ -101,7 +109,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 
   let requette = `
       SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
-        SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
+        SUM(t.debit_equiv) * ${exchangeRate} AS debit_equiv, SUM(t.credit_equiv) * ${exchangeRate} AS credit_equiv,
         t.debit, t.credit, t.currency_id, t.description, t.comment,
         BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name,
         x.text AS transactionType
@@ -136,6 +144,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
  */
 function groupingIncomeExpenseByPeriod(periodicFlows) {
   var grouping = [];
+
   periodicFlows.forEach(function (pf) {
     var incomes, expenses;
     incomes = pf.flows.filter(function (posting) {
@@ -192,6 +201,7 @@ function weeklyReport(req, res, next) {
 /** @function processingWeekCashflow */
 function processingWeekCashflow(params) {
   let glb = {};
+  let exchangeRate;
 
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
@@ -207,8 +217,14 @@ function processingWeekCashflow(params) {
     throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
   }
 
-  // get all periods for the the current fiscal year
-  return queryIncomeExpense(params)
+
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, new Date())
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+
+      // get all periods for the the current fiscal year
+      return queryIncomeExpense(params, exchangeRate);
+    }) 
     .then(function (result) {
       return groupByPeriod(glb.periods, result);
     })
@@ -246,9 +262,9 @@ function getWeeks(dateFrom, dateTo) {
  * @param {date} periodStart The first period start of a given fiscal year (current fiscal year)
  * @desc This function help us to get the balance at cloture for a set of accounts
  */
-function closingBalance(accountId, periodStart) {
+function closingBalance(accountId, periodStart, exchangeRate) {
   var query = `
-      SELECT SUM(debit_equiv - credit_equiv) as balance, account_id
+      SELECT SUM(debit_equiv - credit_equiv) * ${exchangeRate} as balance, account_id
       FROM
       (
         (
@@ -310,6 +326,7 @@ function document(req, res, next) {
 
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
+  session.currency_id = params.currency_id;
 
   // weekly parameter
   session.weekly = params.weekly;
