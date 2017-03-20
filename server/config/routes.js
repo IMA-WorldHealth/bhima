@@ -411,6 +411,10 @@ exports.configure = function configure(app) {
   app.delete('/patients/groups/:uuid', patientGroups.remove);
 
   app.get('/patients/search', patients.search);
+
+  // route specifically for quick searches on patient name, it will return minimal info
+  app.get('/patients/search/name', patients.searchByName);
+
   app.get('/patients/visits', patients.visits.list);
 
   // Patients API
