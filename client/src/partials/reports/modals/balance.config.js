@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('balanceController', BalanceReportConfigController);
 
 BalanceReportConfigController.$inject = [
-  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails'
+  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'SessionService'
 ];
 
 /**
@@ -11,9 +11,11 @@ BalanceReportConfigController.$inject = [
  * @description
  * This controller is responsible for the configuration of the balance report modal.
  */
-function BalanceReportConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails) {
+function BalanceReportConfigController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails, Session) {
   var vm = this;
   var report = reportDetails;
+
+  vm.currency_id = Session.enterprise.currency_id;
 
   // global variables
   vm.classes = [
@@ -51,11 +53,12 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
     if (form.$invalid) { return; }
 
     var options = {
-      accountOption: vm.accountOption,
-      label: vm.label,
-      classe: vm.classe.number,
-      classe_name: vm.classe.name,
-      lang: Languages.key
+      accountOption     : vm.accountOption,
+      label             : vm.label,
+      classe            : vm.classe.number,
+      classe_name       : vm.classe.name,
+      lang              : Languages.key,
+      currency_id       : vm.currency_id
     };
 
     if (vm.dateOption === 'date-range') {

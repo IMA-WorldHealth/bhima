@@ -20,6 +20,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
 
 const TITLE_ACCOUNT_TYPE = 4;
+const Exchange   = require('../../exchange');
 
 // expose to the API
 exports.document = document;
@@ -44,6 +45,7 @@ function document(req, res, next) {
   session.classe = params.classe;
   session.classe_name = params.classe_name;
   session.enterprise = req.session.enterprise;
+  session.currency_id = params.currency_id;
 
   _.defaults(params, { orientation: 'landscape', user: req.session.user });
 
@@ -55,10 +57,16 @@ function document(req, res, next) {
 
   let accounts;
   let totals;
+  let exchangeRate;
 
   params.enterpriseId = session.enterprise.id;
 
-  balanceReporting(params)
+  return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, new Date())
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+
+      return balanceReporting(params, exchangeRate);
+    })      
     .then(balances => processAccounts(balances, accounts, totals))
     .then((result) => {
       return report.render({ accounts: result.accounts, totals: result.totals, session });
@@ -171,7 +179,7 @@ function getSold(item) {
  * @description return the balance needed according the given params
  * @param {object} params An object which contains dates range and the account class
  */
-function balanceReporting(params) {
+function balanceReporting(params, exchangeRate) {
   let sql, hasClasse, dateRange, queryParameters,
       query = params,
       data = {};
@@ -181,21 +189,21 @@ function balanceReporting(params) {
 
   // gets the amount up to the current period
   sql =
-    'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-    'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-    'JOIN period AS p ON pt.period_id = p.id ' +
-    'WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ? ' +
+    `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) * ${exchangeRate} AS credit, SUM(pt.debit) * ${exchangeRate} AS debit
+      FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+      JOIN period AS p ON pt.period_id = p.id
+      WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ? ` +
      (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id ';
+    `GROUP BY a.id `;
 
   if (dateRange) {
     sql =
-    'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-    'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-    'JOIN period AS p ON pt.period_id = p.id ' +
-    'WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ? ' +
+    `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) * ${exchangeRate} AS credit, SUM(pt.debit) * ${exchangeRate} AS debit
+      FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+      JOIN period AS p ON pt.period_id = p.id 
+      WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ? ` +
      (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id ';
+    `GROUP BY a.id `;
   }
 
   queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
@@ -205,12 +213,12 @@ function balanceReporting(params) {
     data.beginning = rows;
 
     sql =
-      'SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-      'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ? ' +
+      `SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) * ${exchangeRate} AS credit, SUM(pt.debit) * ${exchangeRate} AS debit
+        FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+        JOIN period AS p ON pt.period_id = p.id
+        WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ? ` +
        (hasClasse ? 'AND a.classe = ? ' : '') +
-      'GROUP BY a.id;';
+      `GROUP BY a.id;`;
 
     query.date = (dateRange) ? query.dateTo : query.date;
 

@@ -56,24 +56,24 @@
           {{#each accounts as |account|}}
           <tr class="text-right">
             <td class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-            <td>{{#if account.beginDebit}}{{currency account.beginDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.beginCredit}}{{currency account.beginCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.middleDebit}}{{currency account.middleDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.middleCredit}}{{currency account.middleCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.endDebit}}{{currency account.endDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.endCredit}}{{currency account.endCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
+            <td>{{#if account.beginDebit}}{{currency account.beginDebit ../session.currency_id }}{{/if}}</td>
+            <td>{{#if account.beginCredit}}{{currency account.beginCredit ../session.currency_id }}{{/if}}</td>
+            <td>{{#if account.middleDebit}}{{currency account.middleDebit ../session.currency_id }}{{/if}}</td>
+            <td>{{#if account.middleCredit}}{{currency account.middleCredit ../session.currency_id }}{{/if}}</td>
+            <td>{{#if account.endDebit}}{{currency account.endDebit ../session.currency_id }}{{/if}}</td>
+            <td>{{#if account.endCredit}}{{currency account.endCredit ../session.currency_id }}{{/if}}</td>
           </tr>
           {{/each}}
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
-            <td>{{currency totals.beginDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.beginCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endCredit metadata.enterprise.currency_id }}</td>
+            <td>{{currency totals.beginDebit session.currency_id }}</td>
+            <td>{{currency totals.beginCredit session.currency_id }}</td>
+            <td>{{currency totals.middleDebit session.currency_id }}</td>
+            <td>{{currency totals.middleCredit session.currency_id }}</td>
+            <td>{{currency totals.endDebit session.currency_id }}</td>
+            <td>{{currency totals.endCredit session.currency_id }}</td>
           </tr>
         </tfoot>
       </table>

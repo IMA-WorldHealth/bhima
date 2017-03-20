@@ -85,6 +85,12 @@
       </bh-date-interval>
     </div>
 
+    <!-- currency selection -->
+    <bh-currency-select
+      currency-id="ReportConfigCtrl.currency_id"
+      validation-trigger="ConfigForm.$submitted">
+    </bh-currency-select>  
+
     <!-- choose date until  -->
     <div ng-if="ReportConfigCtrl.dateOption === 'date-until'">
       <bh-date-editor
