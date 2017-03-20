@@ -102,6 +102,8 @@
     "CAUTION_REMAINING" : "Caution Restante",
     "CONFIRM_PAYMENT_WHEN_CAUTION" : "Procéder au paiement alors que le patient dispose d'une caution ?",
     "CURRENT_CASHBOX" : "Caisse courante",
+    "PAYMENT_DESCRIPTION" : "Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
+    "PREPAYMENT_DESCRIPTION" : "Paiement caution par {{patientName}} ({{patientReference}}).",
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
     },
@@ -116,7 +118,7 @@
       "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "SELECTION": {
-      "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
+      "GO_TO_CASHBOX_PAGE" : "Allez a la page de gestion de caisse",
       "MISSING_CASH"       : "Caisse manquante",
       "TITLE"              : "Selection caisse"
     },
@@ -419,7 +421,7 @@
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CREDIT_NOTE"          : "Note de crédit",
-      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} ({{ invoiceAmount }}) de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
+      "CREDIT_NOTE_INVOICE"  : "Note de credit concernant la facture {{ invoiceReference }} de debiteur {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
@@ -503,6 +505,7 @@
       "CHARGE"                 : "Charge",
       "CLIENT"                 : "Client",
       "CLIENT_ID"              : "Identifiant client",
+      "CLIENT_TO_IGNORE"       : "Client(s) à ignorer",
       "CODE"                   : "Code",
       "COLUMNS"                : "Colonnes",
       "CONFIRMATION"           : "Confirmation",
@@ -537,6 +540,7 @@
       "DETAILS"                : "Details",
       "DEFAULT_QUANTITY"       : "Quantité par Défaut",
       "DELAY"                  : "Delai de livraison",
+      "DETAIL_PREVIOUS"        : "Detailler Année Précédente",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DISABLED"               : "Désactivée",
@@ -1006,6 +1010,7 @@
       "MISSING_SALES_ACCOUNT" : "L'enregistrement contient un item d'inventaire qui n'a pas de compte de vente associé à son groupe",
       "NOT_CONFIGURED"        : "L'enregistrement ne contient pas d'item inventaire. Veuillez inserer un item ou supprimer la ligne."
     },
+    "DESCRIPTION"        : "Facture a {{ patientName }} ({{ patientReference }} pour {{ numItems }} items dans le service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "LABEL_PAID"         : "Cette facture a été payé.",
@@ -1272,6 +1277,7 @@
     "CASHFLOW"         : "Cashflow",
     "CASHFLOW_BY_SERVICE" : "Cashflow par Service",
     "CHART_OF_ACCOUNTS": "Plan Comptable",
+    "CLIENTS_REPORT"   : "Rapport Client",
     "CLOSING_BALANCE"  : "Balance à la cloture",
     "CONFIGURATION"    : "Configuration rapport",
     "DELETE"           : "Supprimer un rapport",
@@ -1290,7 +1296,12 @@
     "EXPENSE_REPORT"   : "Rapport des dépenses",
     "SINCE"            : "Depuis",
     "VIEW_RECEIPT"     : "Voir le document",
-    "VIEW_CREDIT_NOTE" : "Voir la note de credit"
+    "VIEW_CREDIT_NOTE" : "Voir la note de credit",
+    "CLIENTS_REPORT"   : {
+      "TITLE" : "Rapport Clients",
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Mouvement Precedent"
+    }
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",

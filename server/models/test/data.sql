@@ -186,6 +186,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Stock 
 (160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1);
 
+ -- Clients report
+ (159, 1);
+
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
 CALL CreateFiscalYear(1, NULL, 1, 'Test Fiscal Year 2015', 12, DATE('2015-01-01'), DATE('2015-12-31'), 'Note for 2015', @fiscalYear2015);

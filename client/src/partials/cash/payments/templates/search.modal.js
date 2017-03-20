@@ -23,6 +23,9 @@ function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, fi
   vm.submit = submit;
   vm.cancel = Instance.close;
 
+  // @FIXME patch hack - this should be handled by FilterService
+  delete(vm.bundle.defaultPeriod);
+
   // cashboxes
   Cashboxes.read()
     .then(function (list) {

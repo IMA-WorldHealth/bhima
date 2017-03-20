@@ -47,7 +47,7 @@
       <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
       <ui-select name="user" ng-model="ModalCtrl.options.user_id">
         <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter:$select.search">
+        <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter: { 'display_name': $select.search }">
           <span ng-bind-html="user.display_name | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
@@ -57,22 +57,33 @@
       </div>
     </div>
 
-    <!-- account ui-select -->
-    <div class="form-group" ng-class="{'has-error' : ModalCtrl.account.$invalid && ModalForm.$submitted}">
-      <label class="control-label" translate>
-        FORM.LABELS.ACCOUNT
-      </label>
-      <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+    <bh-account-select
+      account-id="ModalCtrl.options.account_id"
+      name="account_id"
+      on-select-callback="ModalCtrl.onSelectAccount(account)"
+      required="0">
+    </bh-account-select>
 
-      <ui-select name="account" ng-model="ModalCtrl.options.account_id">
-        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}"><strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span></ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="account.id as account in ModalCtrl.accounts | filter:$select.search">
-          <span ng-bind-html="account.number | highlight:$select.search"></span>
-          <small ng-bind-html="account.label | highlight:$select.search"></small>
-        </ui-select-choices>
-      </ui-select>
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.PROJECT</label>
+      <bh-clear on-clear="ModalCtrl.clear('project_id')"></bh-clear>
+      <select
+        class="form-control"
+        name="project_id"
+        ng-model="ModalCtrl.options.project_id"
+        ng-options="project.id as project.name for project in ModalCtrl.projects">
+        <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
+      </select>
+      <div class="help-block" ng-messages="ModalForm.project_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
 
-      <div class="help-block" ng-messages="ModalForm.account.$error" ng-show="ModalForm.$submitted">
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.AMOUNT</label>
+      <bh-clear on-clear="ModalCtrl.clear('amount')"></bh-clear>
+      <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.options.amount">
+      <div class="help-block" ng-messages="ModalForm.amount.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>

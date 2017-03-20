@@ -3,15 +3,18 @@ angular.module('bhima.components')
     templateUrl : 'partials/templates/bhAccountSelect.tmpl.html',
     controller : AccountSelectController,
     bindings: {
-      accountId:   '<',
-      disable:     '<',
+      accountId        : '<',
+      disable          : '<',
       onSelectCallback : '&?',
-      label : '@?',
-      name : '@?'
+      required         : '<?',
+      label            : '@?',
+      name             : '@?',
     }
   });
 
-AccountSelectController.$inject = [ 'AccountService', 'appcache', '$timeout', 'bhConstants', '$scope' ];
+AccountSelectController.$inject = [
+  'AccountService', 'appcache', '$timeout', 'bhConstants', '$scope',
+];
 
 /**
  * Account selection component
@@ -28,7 +31,6 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function () {
-
     // load accounts
     loadAccounts();
 
@@ -46,6 +48,11 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
+
+    if (!angular.isDefined($ctrl.required)) {
+      $ctrl.required = true;
+    }
+
 
     // alias the name as AccountForm
     $timeout(aliasComponentForm);

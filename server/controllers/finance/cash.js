@@ -89,12 +89,12 @@ function lookup(id) {
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
       LEFT JOIN service AS s ON i.service_id = s.id
-    WHERE ci.cash_uuid = ?;
+    WHERE ci.cash_uuid = ?
+    ORDER BY i.date ASC;
   `;
 
-  return db.exec(cashRecordSql, [ bid ])
-    .then(function (rows) {
-
+  return db.exec(cashRecordSql, [bid])
+    .then((rows) => {
       if (!rows.length) {
         throw new NotFound(`No cash record by uuid: ${id}`);
       }
@@ -104,8 +104,7 @@ function lookup(id) {
 
       return db.exec(cashItemsRecordSql, bid);
     })
-    .then(function (rows) {
-
+    .then((rows) => {
       // bind the cash items to the "items" property and return
       record.items = rows;
 
@@ -127,7 +126,7 @@ function lookup(id) {
  */
 function list(req, res, next) {
   listPayment()
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -140,7 +139,7 @@ function list(req, res, next) {
  */
  function search(req, res, next) {
    listPayment(req.query)
-     .then(rows => {
+     .then((rows) => {
        res.status(200).json(rows);
      })
      .catch(next)
@@ -172,6 +171,7 @@ function listPayment(options) {
 
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
+  filters.period('defaultPeriod', 'date');
 
   let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);

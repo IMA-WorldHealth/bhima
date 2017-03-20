@@ -72,7 +72,7 @@ function BaseReportService($http, Modal, util) {
     };
 
     var options = angular.merge(reportOptions, pdfParams);
-
+    
     return $http.get(url, { params : options });
   }
 

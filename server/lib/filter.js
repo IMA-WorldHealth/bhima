@@ -176,9 +176,20 @@ class FilterParser {
 
   custom(filterKey, preparedStatement, preparedValue) {
     if (this._filters[filterKey]) {
-      let searchValue = preparedValue || this._filters[filterKey];
-
+      const searchValue = preparedValue || this._filters[filterKey];
       this._addFilter(preparedStatement, searchValue);
+      delete this._filters[filterKey];
+    }
+  }
+
+  customMultiParameters(filterKey, preparedStatement, preparedValues) {
+    if (this._filters[filterKey]) {
+      const parameters = preparedValues || this._filters[filterKey];
+
+      // add the filters to the custom query, destructing parameters
+      this._statements.push(preparedStatement);
+      this._parameters.push(...parameters);
+
       delete this._filters[filterKey];
     }
   }
