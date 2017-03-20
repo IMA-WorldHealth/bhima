@@ -27,11 +27,11 @@ function StockMovementsController($state, Stock, Notify,
     9  : { receipt: ReceiptModal.stockExitPatientReceipt },
     10 : { receipt: ReceiptModal.stockExitServiceReceipt },
     11 : { receipt: ReceiptModal.stockExitLossReceipt },
+    13 : { receipt: ReceiptModal.stockEntryIntegrationReceipt },
   };
 
   // grouping box
   vm.groupingBox = [
-    { label: 'TABLE.COLUMNS.REFERENCE', value: 'purchase_reference' },
     { label: 'STOCK.INVENTORY', value: 'text' },
     { label: 'STOCK.IO', value: 'io' },
     { label: 'STOCK.LOT', value: 'label' },
@@ -44,10 +44,6 @@ function StockMovementsController($state, Stock, Notify,
 
   // grid columns
   var columns = [
-    { field            : 'purchase_reference',
-      displayName      : 'TABLE.COLUMNS.REFERENCE',
-      headerCellFilter : 'translate',
-    },
     { field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
       headerCellFilter : 'translate',

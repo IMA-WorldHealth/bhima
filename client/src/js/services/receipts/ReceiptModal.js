@@ -277,6 +277,8 @@ function ReceiptModal(Modal, Receipts) {
   service.stockExitServiceReceipt = stockExitServiceReceipt;
   service.stockExitLossReceipt = stockExitLossReceipt;
   service.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
+  service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
+  service.stockEntryDonationReceipt = stockEntryDonationReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -416,6 +418,56 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var request = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockEntryIntegrationReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryIntegrationReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: request }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  /**
+   * @method stockEntryDonationReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryDonationReceipt(documentUuid, notifyCreated) {
+    var options = {
+      title         : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated,
+    };
+
+    var request = Receipts.stockEntryDonationReceipt(documentUuid, { renderer: options.renderer });
     var reportProvider = {
       resolve : {
         receipt : function receiptProvider() { return { promise: request }; },

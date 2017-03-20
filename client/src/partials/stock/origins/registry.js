@@ -1,21 +1,32 @@
 angular.module('bhima.controllers')
-.controller('StockLotsController', StockLotsController);
+.controller('StockOriginsController', StockOriginsController);
 
-StockLotsController.$inject = [
+StockOriginsController.$inject = [
   '$state', 'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService',
-  'GridGroupingService',
+  'GridGroupingService', 'ReceiptModal',
 ];
 
 /**
- * Stock lots Controller
+ * Stock Origin Controller
  * This module is a registry page for stock lots
  */
-function StockLotsController($state, Stock, Notify,
+function StockOriginsController($state, Stock, Notify,
   uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Grouping) {
+  SearchFilterFormat, Languages, Grouping, Receipts) {
   var vm = this;
+
+  // map receipts
+  var mapOriginDocument = {
+    'STOCK.PURCHASE_ORDER' : Receipts.purchase,
+  };
+
+  // map entry
+  var mapEntryDocument = {
+    1 : Receipts.stockEntryPurchaseReceipt,
+    13 : Receipts.stockEntryIntegrationReceipt,
+  };
 
   // grouping box
   vm.groupingBox = [
@@ -28,8 +39,13 @@ function StockLotsController($state, Stock, Notify,
 
   // grid columns
   var columns = [
-    { field            : 'depot_text',
-      displayName      : 'STOCK.DEPOT',
+    { field            : 'reference',
+      displayName      : 'STOCK.ORIGIN_DOCUMENT',
+      headerCellFilter : 'translate' },
+
+    { field            : 'display_name',
+      displayName      : 'STOCK.ORIGIN',
+      cellFilter       : 'translate',
       headerCellFilter : 'translate' },
 
     { field            : 'code',
@@ -45,14 +61,22 @@ function StockLotsController($state, Stock, Notify,
       displayName      : 'STOCK.LOT',
       headerCellFilter : 'translate' },
 
-    { field            : 'quantity',
-      displayName      : 'STOCK.QUANTITY',
+    { field            : 'entry_date',
+      displayName      : 'STOCK.ENTRY_DATE',
       headerCellFilter : 'translate',
-      aggregationType  : uiGridConstants.aggregationTypes.sum },
-    
-    { field: 'entry_date', displayName: 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-    { field: 'expiration_date', displayName: 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-    { field: 'delay_expiration', displayName: 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
+      cellFilter       : 'date' },
+
+    { field            : 'expiration_date',
+      displayName      : 'STOCK.EXPIRATION_DATE',
+      headerCellFilter : 'translate',
+      cellFilter       : 'date' },
+
+    {
+      field           : 'action',
+      displayName     : '',
+      cellTemplate    : '/partials/stock/origins/templates/action.tmpl.html',
+      enableFiltering : false,
+      enableSorting   : false },
   ];
 
   // options for the UI grid
@@ -64,7 +88,7 @@ function StockLotsController($state, Stock, Notify,
     showColumnFooter  : true,
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'reference', vm.grouped, true);
 
   // expose to the view
   vm.search = search;
@@ -72,6 +96,8 @@ function StockLotsController($state, Stock, Notify,
   vm.clearFilters = clearFilters;
   vm.selectGroup = selectGroup;
   vm.toggleGroup = toggleGroup;
+  vm.getOriginDocument = getOriginDocument;
+  vm.getEntryDocument = getEntryDocument;
 
   // on remove one filter
   function onRemoveFilter(key) {
@@ -96,6 +122,18 @@ function StockLotsController($state, Stock, Notify,
     }
   }
 
+  function getOriginDocument(uuid, origin) {
+    if (!mapOriginDocument[origin]) { return; }
+
+    mapOriginDocument[origin](uuid);
+  }
+
+  function getEntryDocument(uuid, fluxId) {
+    if (!mapEntryDocument[fluxId]) { return; }
+
+    mapEntryDocument[fluxId](uuid);
+  }
+
   // clear all filters
   function clearFilters() {
     SearchFilterFormat.clearFilters(reload);
@@ -103,7 +141,7 @@ function StockLotsController($state, Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    Stock.lots.read(null, filters).then(function (lots) {
+    Stock.stocks.read('/origins', filters).then(function (lots) {
       vm.gridOptions.data = lots;
     })
     .catch(Notify.handleError);

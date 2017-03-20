@@ -31,6 +31,7 @@ const flux = {
   TO_SERVICE       : 10,
   TO_LOSS          : 11,
   TO_ADJUSTMENT    : 12,
+  FROM_INTEGRATION : 13,
 };
 
 // exports
@@ -38,6 +39,7 @@ exports.flux = flux;
 exports.getLots = getLots;
 exports.getLotsDepot = getLotsDepot;
 exports.getLotsMovements = getLotsMovements;
+exports.getLotsOrigins = getLotsOrigins;
 
 /**
  * @function getLots
@@ -52,14 +54,11 @@ function getLots(sqlParameter, parameters, finalClauseParameter) {
   let finalClause = finalClauseParameter;
   const params = parameters;
   const sql = sqlParameter || `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost,
-            l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
-            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
-            CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference
+        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+            l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
-        JOIN purchase p ON p.uuid = l.purchase_uuid
-        JOIN project proj ON proj.id = p.project_id
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
@@ -89,12 +88,6 @@ function getLots(sqlParameter, parameters, finalClauseParameter) {
   if (params.label) {
     params['l.label'] = params.label;
     delete params.label;
-  }
-
-  if (params.purchase_reference) {
-    const havingReference = ` HAVING purchase_reference LIKE "${params.purchase_reference}" `;
-    finalClause = finalClause ? finalClause + havingReference : havingReference;
-    delete params.purchase_reference;
   }
 
   if (params.expiration_date_from && params.expiration_date_to) {
@@ -243,14 +236,11 @@ function getLotsDepot(depot_uuid, params, finalClause) {
   const sql = `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, 
             SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, d.text AS depot_text,
-            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
+            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-            i.avg_consumption, i.purchase_interval, i.delay,
-            CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference 
+            i.avg_consumption, i.purchase_interval, i.delay
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN purchase p ON p.uuid = l.purchase_uuid
-        JOIN project proj ON proj.id = p.project_id
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
@@ -285,18 +275,53 @@ function getLotsMovements(depot_uuid, params) {
 
   const sql = `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
-            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.purchase_uuid) AS purchase_uuid, 
+            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
             m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
-            f.label AS flux_label, i.delay,
-            CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference      
+            f.label AS flux_label, i.delay
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN purchase p ON p.uuid = l.purchase_uuid
-        JOIN project proj ON proj.id = p.project_id
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN depot d ON d.uuid = m.depot_uuid 
         JOIN flux f ON f.id = m.flux_id  
+    `;
+
+  return getLots(sql, params);
+}
+
+/**
+ * @function getLotsOrigins
+ *
+ * @description returns lot's origins
+ *
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot
+ *
+ * @param {object} params - A request query object
+ */
+function getLotsOrigins(depot_uuid, params) {
+  if (depot_uuid) {
+    params.depot_uuid = depot_uuid;
+  }
+
+  const sql = `
+        SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date, 
+            BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+            l.entry_date, i.code, i.text, origin.display_name, origin.reference, 
+            BUID(m.document_uuid) AS document_uuid, m.flux_id
+        FROM lot l 
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN (
+          SELECT p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, 'STOCK.PURCHASE_ORDER' AS display_name 
+            FROM purchase p JOIN project proj ON proj.id = p.project_id
+          UNION 
+          SELECT d.uuid, CONCAT_WS('.', '${identifiers.DONATION.key}', proj.abbr, d.reference) AS reference, 'STOCK.DONATION' AS display_name 
+            FROM donation d JOIN project proj ON proj.id = d.project_id
+          UNION 
+          SELECT i.uuid, CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, i.reference) AS reference, 'STOCK.INTEGRATION' AS display_name 
+            FROM integration i JOIN project proj ON proj.id = i.project_id 
+        ) AS origin ON origin.uuid = l.origin_uuid 
+        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.is_exit = 0 
+          AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
     `;
 
   return getLots(sql, params);

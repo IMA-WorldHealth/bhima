@@ -31,7 +31,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       unit_cost        : 1.2,
       expiration_date  : new Date('2018-05-01'),
       inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
-      purchase_uuid    : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+      origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
 
@@ -42,7 +42,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       unit_cost        : 0.8,
       expiration_date  : new Date('2018-05-01'),
       inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
-      purchase_uuid    : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+      origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
 
@@ -53,7 +53,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       unit_cost        : 2,
       expiration_date  : new Date('2017-05-01'),
       inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
-      purchase_uuid    : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+      origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
 
@@ -64,7 +64,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       unit_cost        : 1.2,
       expiration_date  : new Date('2019-05-01'),
       inventory_uuid   : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-      purchase_uuid    : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+      origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
 
@@ -75,7 +75,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       unit_cost        : 0.5,
       expiration_date  : new Date('2020-05-01'),
       inventory_uuid   : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-      purchase_uuid    : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+      origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
   ];

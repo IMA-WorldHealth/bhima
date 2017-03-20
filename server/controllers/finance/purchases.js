@@ -330,7 +330,7 @@ function purchaseStatus(req, res, next) {
     SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid 
-    JOIN purchase p ON p.uuid = l.purchase_uuid
+    JOIN purchase p ON p.uuid = l.origin_uuid
     WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0;
   `;
 
@@ -386,13 +386,13 @@ function purchaseBalance(req, res, next) {
     JOIN user u ON u.id = p.user_id
     LEFT JOIN 
     (
-      SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.purchase_uuid
+      SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.origin_uuid
       FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-      WHERE m.flux_id = ? AND m.is_exit = 0 AND l.purchase_uuid = ?
-      GROUP BY l.purchase_uuid, l.inventory_uuid
-    ) AS distributed ON distributed.inventory_uuid = pi.inventory_uuid AND distributed.purchase_uuid = p.uuid
+      WHERE m.flux_id = ? AND m.is_exit = 0 AND l.origin_uuid = ?
+      GROUP BY l.origin_uuid, l.inventory_uuid
+    ) AS distributed ON distributed.inventory_uuid = pi.inventory_uuid AND distributed.origin_uuid = p.uuid
     WHERE p.uuid = ? HAVING balance > 0 AND balance <= pi.quantity
   `;
 

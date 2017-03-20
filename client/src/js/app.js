@@ -361,6 +361,7 @@ function constantConfig() {
       TO_SERVICE       : 10,
       TO_LOSS          : 11,
       TO_ADJUSTMENT    : 12,
+      FROM_INTEGRATION : 13,
     },
     reports : {
       AGED_DEBTOR    : 'AGED_DEBTOR',

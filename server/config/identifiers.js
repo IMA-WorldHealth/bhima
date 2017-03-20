@@ -10,47 +10,55 @@
 
 module.exports = {
   VOUCHER : {
-    key : 'VO',
-    table : 'voucher'
+    key   : 'VO',
+    table : 'voucher',
   },
   EMPLOYEE : {
-    key : 'EM',
-    table : 'employee'
+    key   : 'EM',
+    table : 'employee',
   },
   INVOICE : {
-    key : 'IV',
-    table : 'invoice'
+    key   : 'IV',
+    table : 'invoice',
   },
   CASH_PAYMENT : {
-    key : 'CP',
-    table : 'cash'
+    key   : 'CP',
+    table : 'cash',
   },
   PATIENT : {
-    key : 'PA',
-    table : 'patient',
-    redirectPath : '/#/patients/?'
+    key          : 'PA',
+    table        : 'patient',
+    redirectPath : '/#/patients/?',
   },
   DOCUMENT : {
-    key : 'DO'
+    key : 'DO',
   },
   STOCK_ENTRY : {
-    key : 'SN'
+    key : 'SN',
   },
   STOCK_EXIT : {
-    key : 'SX'
+    key : 'SX',
   },
   STOCK_MOVEMENT : {
-    key : 'SM'
+    key : 'SM',
   },
   STOCK_LOT : {
-    key : 'SL'
+    key : 'SL',
   },
   INVENTORY_ITEM : {
-    key : 'II',
-    table : 'inventory'
+    key   : 'II',
+    table : 'inventory',
   },
   PURCHASE_ORDER : {
-    key : 'PO',
-    table : 'purchase_order'
-  }
+    key   : 'PO',
+    table : 'purchase_order',
+  },
+  DONATION : {
+    key   : 'DON',
+    table : 'donation',
+  },
+  INTEGRATION : {
+    key   : 'INT',
+    table : 'integration',
+  },
 };
