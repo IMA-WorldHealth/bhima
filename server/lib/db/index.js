@@ -76,7 +76,7 @@ class DatabaseConnector {
 
       // format the SQL statement using MySQL's escapes
       const statement = mysql.format(sql.trim(), params);
-    
+
       connection.query(statement, (err, rows) => {
         connection.release();
         return (err) ? deferred.reject(err) : deferred.resolve(rows);

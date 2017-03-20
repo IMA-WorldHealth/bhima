@@ -1,21 +1,22 @@
-
 const q = require('q');
 const winston = require('winston');
 
 /** @const the number of times a transaction is restarted in case of deadlock*/
-const MAX_TRANSACTION_DEADLOCK_RESTARTS = 10;
+const MAX_TRANSACTION_DEADLOCK_RESTARTS = 5;
 
 /** @const the number of milliseconds delayed before restarting the transaction */
-const TRANSACTION_DEADLOCK_RESTART_DELAY = 100;
+const TRANSACTION_DEADLOCK_RESTART_DELAY = 50;
 
 // Uses an already existing connection to query the database, returning a promise
 function queryConnection(connection, sql, params) {
   const deferred = q.defer();
 
   const query = connection.query(sql, params, (error, result) => {
-    return (error) ?
-      deferred.reject(error) :
+    if (error) {
+      deferred.reject(error);
+    } else {
       deferred.resolve(result);
+    }
   });
 
   winston.debug(`[Transaction] ${query.sql.trim()}`);
@@ -106,7 +107,7 @@ class Transaction {
       if (error) { return deferred.reject(error); }
 
       // with the acquired connection, get a transaction object
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) { return deferred.reject(error); }
 
         // map promises through to database queries
@@ -116,8 +117,7 @@ class Transaction {
 
         // make sure that all queries are executed successfully.
         return q.all(promises)
-          .then(results => {
-
+          .then((results) => {
             // all queries completed - attempt to commit
             connection.commit((error) => {
               if (error) { throw error; }
@@ -125,8 +125,7 @@ class Transaction {
               deferred.resolve(results);
             });
           })
-          .catch(error => {
-
+          .catch((error) => {
             // individual query did not work - rollback transaction
             connection.rollback(() => {
               connection.destroy();
