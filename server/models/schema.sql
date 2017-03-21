@@ -101,6 +101,7 @@ CREATE TABLE `cash` (
   `description`     TEXT,
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `reversed`        TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
