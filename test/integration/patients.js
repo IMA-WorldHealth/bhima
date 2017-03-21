@@ -95,12 +95,37 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with \'name\' parameter', function () {
+    it('GET /patients/search with \'display_name\' parameter', function () {
       let conditions = { display_name : 'Test' };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 2);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /patients/search/name with display_name parameter should return only a small subset of patient information', function () {
+      let conditions = { display_name : 'Test' };
+
+      return agent.get('/patients/search/name')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 2);
+
+          const firstRecord = res.body[0];
+          expect(firstRecord).to.have.all.keys(['uuid', 'display_name', 'reference']);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /patients/search/name results in bad request with no name provided', function () {
+      let conditions = {};
+
+      return agent.get('/patients/search/name')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });
