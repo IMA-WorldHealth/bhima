@@ -38,18 +38,18 @@ function JournalConfigurationModal() {
     page.expectColumnCount(modifiedVisibleColumnCount);
   });
 
-  it.skip('resets the columns to the defaults', () => {
-    page.openGridConfigurationModal();
+  // it.skip('resets the columns to the defaults', () => {
+  //   page.openGridConfigurationModal();
 
-    page.setDefaultColumnCheckboxes();
+  //   page.setDefaultColumnCheckboxes();
 
-    FU.modal.submit();
+  //   FU.modal.submit();
 
-    // sleep for a second to let angular adjust the grid's columns
-    browser.sleep(1000);
+  //   // sleep for a second to let angular adjust the grid's columns
+  //   browser.sleep(1000);
 
-    page.expectColumnCount(defaultVisibleColumnCount);
-  });
+  //   page.expectColumnCount(defaultVisibleColumnCount);
+  // });
 }
 
 module.exports = JournalConfigurationModal;
