@@ -16,27 +16,31 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   $stateProvider
   .state('index', {
-    abstract    : true,
     url         : '/',
     controller  : 'HomeController as HomeCtrl',
     templateUrl : 'partials/home/home.html',
   })
-  .state('index.details', {
-    url   : '',
+  .state('details', {
+    abstract : true,
+    url : '/details',
+    templateUrl : 'partials/home/details.html'
+  })
+  .state('details.more', {
+    url : '',
     views : {
-      'debtors@index' : {
+      'debtors@details' : {
         templateUrl : 'partials/home/units/debtors.html',
         controller  : 'DashboardDebtorController as DebtorCtrl',
       },
-      'invoices@index' : {
+      'invoices@details' : {
         templateUrl : 'partials/home/units/invoices.html',
         controller  : 'DashboardInvoiceController as InvoiceCtrl',
       },
-      'patients@index' : {
+      'patients@details' : {
         templateUrl : 'partials/home/units/patients.html',
         controller  : 'DashboardPatientController as PatientCtrl',
       },
-    },
+    }
   })
   .state('exchange', {
     abstract    : true,
