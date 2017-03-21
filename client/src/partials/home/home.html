@@ -104,13 +104,11 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6">
-        <div ui-view="debtors"></div>
-      </div>
-
-      <div class="col-md-6">
-        <div ui-view="invoices"></div>
-        <div ui-view="patients"></div>
+      <div class="col-md-12">
+        <span translate>HOME.MORE_DETAILS</span>
+        <a ui-sref="details.more">
+          <span translate>HOME.CLICK_HERE</span>
+        </a>        
       </div>
     </div>
   </div>

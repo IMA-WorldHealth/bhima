@@ -388,6 +388,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.report);
+  app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
 

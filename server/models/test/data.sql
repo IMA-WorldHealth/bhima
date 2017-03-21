@@ -183,8 +183,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Posted Journal
 (158,1),
 
--- Purchase order folder 
-(154, 1), (155, 1), (156, 1);
+-- Purchase order folder
+(154, 1), (155, 1), (156, 1),
+
+ -- Clients report
+ (159, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

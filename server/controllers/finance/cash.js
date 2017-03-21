@@ -171,6 +171,7 @@ function listPayment(options) {
 
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
+  filters.period('defaultPeriod', 'date');
 
   let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);

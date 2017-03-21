@@ -40,7 +40,7 @@ const REPORT_PATH = path.resolve(path.join(__dirname, '../reports/'));
  */
 function keys(req, res, next) {
   let key = req.params.key;
-  let sql = 'SELECT * FROM report WHERE report_key = ?;';
+  let sql = `SELECT * FROM report WHERE report_key = ?;`;
 
   db.exec(sql, [key])
     .then(function (keyDetail) {
