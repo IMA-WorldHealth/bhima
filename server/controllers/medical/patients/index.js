@@ -339,6 +339,10 @@ function searchByName(req, res, next) {
   const searchValue = req.query.display_name;
   const searchParameter = `%${searchValue}%`;
 
+  if (_.isUndefined(searchValue)) {
+    return next(new BadRequest('display_name attribute must be specified for a name search'));
+  }
+
   // current default limit - this could be defined through req.query if there is a need for this
   const limit = 10;
 
