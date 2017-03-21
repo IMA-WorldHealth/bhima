@@ -57,7 +57,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
   vm.gridOptions.columnDefs = [{
     field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true, sortingAlgorithm : Sorting.algorithms.sortByReference
+    aggregationHideLabel : true, sortingAlgorithm : Sorting.algorithms.sortByReference,
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {
@@ -123,7 +123,7 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     request.then(function (rows) {
 
         rows.forEach(function (row) {
-          var hasCreditNote = (row.type_id === bhConstants.transactionType.CREDIT_NOTE);
+          var hasCreditNote = row.reversed;
           row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
           row._hasCreditNote = hasCreditNote;
         });
