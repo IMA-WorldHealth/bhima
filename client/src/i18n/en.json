@@ -533,6 +533,7 @@
       "DEFAULT_QUANTITY"       : "Default Quantity",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
+      "DETAIL_PREVIOUS"        : "Detail Previous",
       "DETAILS"                : "Details",
       "DETAIL_PREVIOUS"        : "Previous Year Details",
       "DEBTOR_CREDITOR"        : "Debtor/Creditor",

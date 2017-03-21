@@ -28,28 +28,28 @@ function TrialBalanceTest() {
   });
 
   // skipped pending trial balance re-write
-  it.skip('it should switch the view successfully', () => {
-    journal.checkRow(2);
-    journal.openTrialBalanceModal();
+  // it.skip('it should switch the view successfully', () => {
+  //   journal.checkRow(2);
+  //   journal.openTrialBalanceModal();
 
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    trialBalance.switchView(); // from group by account to transaction
+  //   expect(trialBalance.getLineCount()).to.eventually.equal(2);
+  //   trialBalance.switchView(); // from group by account to transaction
 
-    expect(trialBalance.getLineCount()).to.eventually.equal(3);
-    trialBalance.switchView(); // from group by transaction to account
+  //   expect(trialBalance.getLineCount()).to.eventually.equal(3);
+  //   trialBalance.switchView(); // from group by transaction to account
 
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    trialBalance.viewErrorList(); // will print error grid
+  //   expect(trialBalance.getLineCount()).to.eventually.equal(2);
+  //   trialBalance.viewErrorList(); // will print error grid
 
-    expect(trialBalanceError.getLineCount()).to.eventually.equal(2);
-    trialBalanceError.reset(); // back to the group by account view
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
+  //   expect(trialBalanceError.getLineCount()).to.eventually.equal(2);
+  //   trialBalanceError.reset(); // back to the group by account view
+  //   expect(trialBalance.getLineCount()).to.eventually.equal(2);
 
-    trialBalance.showAccountDetailInTransaction(0); // will print list of transaction relative to selected account line
-    expect(trialBalanceDetail.getLineCount()).to.eventually.equal(3);
-    trialBalanceDetail.reset();
-    trialBalance.closeTrialBalance();
-  });
+  //   trialBalance.showAccountDetailInTransaction(0); // will print list of transaction relative to selected account line
+  //   expect(trialBalanceDetail.getLineCount()).to.eventually.equal(3);
+  //   trialBalanceDetail.reset();
+  //   trialBalance.closeTrialBalance();
+  // });
 
   it('it should print a transaction', () => {
     browser.refresh(); // Fix me, How to check the report in PDF

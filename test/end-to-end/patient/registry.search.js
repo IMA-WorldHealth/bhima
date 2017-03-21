@@ -24,10 +24,10 @@ function PatientRegistrySearch() {
     dateBirthFrom: '01/05/2016',
     dateBirthTo: '16/05/2016',
     dateBirthFrom2: '30/01/1960',
-    dateBirthTo2: '16/05/2016'
+    dateBirthTo2: '16/05/2016',
   };
 
-  const defaultVisibleRowNumber = 3;
+  const defaultVisibleRowNumber = 1;
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
@@ -46,9 +46,9 @@ function PatientRegistrySearch() {
   }
 
   // ensure the grid loads!
-  it('grid should have 3 visible rows', function () {
+  it('grid should have 1 visible rows', function () {
     expectNumberOfGridRows(defaultVisibleRowNumber);
-    expectNumberOfFilters(0);
+    expectNumberOfFilters(1);
   });
 
   // demonstrates that filtering works
@@ -146,7 +146,7 @@ function PatientRegistrySearch() {
 
     // the filter bar shouldn't exist
     expectNumberOfGridRows(defaultVisibleRowNumber);
-    expectNumberOfFilters(0);
+    expectNumberOfFilters(1);
   });
 
   it('should remember the cached filters', () => {
