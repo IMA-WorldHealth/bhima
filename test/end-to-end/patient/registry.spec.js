@@ -5,7 +5,7 @@ const PatientRegistrySearch = require('./registry.search');
 // const PatientRegistryPrint = require('./registry.print');
 
 // patient registry tests
-describe.only('Patient Registry', function () {
+describe('Patient Registry', function () {
   'use strict';
 
   before(() => helpers.navigate('#/patients'));
