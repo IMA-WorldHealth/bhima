@@ -105,7 +105,7 @@ class FilterParser {
 
     if (this._filters[filterKey]) {
       let preparedStatement = `DATE(${tableString}${columnAlias}) >= DATE(?)`;
-      this._addFilter(preparedStatement, new Date(this._filters[filterKey]));
+      this._addFilter(preparedStatement, moment(this._filters[filterKey]).format('YYYY-MM-DD').toString());
 
       delete this._filters[filterKey];
     }
@@ -126,7 +126,7 @@ class FilterParser {
     if (this._filters[filterKey]) {
       let preparedStatement = `DATE(${tableString}${columnAlias}) <= DATE(?)`;
 
-      this._addFilter(preparedStatement, new Date(this._filters[filterKey]));
+      this._addFilter(preparedStatement, moment(this._filters[filterKey]).format('YYYY-MM-DD').toString());
       delete this._filters[filterKey];
     }
   }

@@ -349,6 +349,9 @@ function find(options) {
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
 
+  // default registration date
+  filters.period('defaultPeriod', 'registration_date');
+
   const patientGroupStatement =
     '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);

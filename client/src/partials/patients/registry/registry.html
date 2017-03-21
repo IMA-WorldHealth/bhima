@@ -50,8 +50,8 @@
 
   <a
     href
+    ng-if="PatientRegistryCtrl.filter.customFiltersApplied(PatientRegistryCtrl.filters)"
     ng-click="PatientRegistryCtrl.clearFilters()"
-    ng-show="PatientRegistryCtrl.filtersFmt.length > 0"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-close text-danger"></i>
@@ -63,9 +63,9 @@
   <div class="container-fluid">
     <div
       id="patient-registry"
-      ui-grid="PatientRegistryCtrl.uiGridOptions"
       class="grid-full-height"
       ng-style="PatientRegistryCtrl.filterBarHeight"
+      ui-grid="PatientRegistryCtrl.uiGridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns>
