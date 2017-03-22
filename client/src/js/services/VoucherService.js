@@ -16,7 +16,7 @@ VoucherService.$inject = [
 function VoucherService(Api, $http, util, TransactionTypeStore, Modal) {
   var service = new Api('/vouchers/');
 
-  // @tdoo - remove this reference to baseUrl
+  // @todo - remove this reference to baseUrl
   var baseUrl = '/journal/';
 
   service.create = create;

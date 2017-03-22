@@ -8,6 +8,12 @@
   </div>
 
   <div class="modal-body">
+    <div class="row" ng-if="ColumnsConfigModalCtrl.hasTooFewColumns">
+      <div class="alert alert-danger">
+        <h4><span class="fa fa-warning"></span>  <span translate> FORM.ERRORS.AT_LEAST_1_COL </span></h4>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-xs-6">
         <strong translate>FORM.LABELS.COLUMNS</strong>
@@ -24,7 +30,7 @@
       <div class="col-xs-6">
         <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : 0 track by col.field">
           <label>
-            <input type="checkbox" data-column="{{ ::col.field }}"
+            <input type="checkbox" data-column="{{ ::col.field }}" ng-click="ColumnsConfigModalCtrl.checkVisible()"
               ng-model="ColumnsConfigModalCtrl.map[col.field]">
               <span translate>{{ ::col.displayName }}</span>
           </label>
@@ -34,7 +40,7 @@
       <div class="col-xs-6">
         <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.columns.length : ColumnsConfigModalCtrl.middle track by col.field">
           <label>
-            <input type="checkbox" data-column="{{ ::col.field }}"
+            <input type="checkbox" data-column="{{ ::col.field }}" ng-click="ColumnsConfigModalCtrl.checkVisible()"
               ng-model="ColumnsConfigModalCtrl.map[col.field]">
               <span translate>{{ ::col.displayName }}</span>
           </label>
@@ -50,7 +56,7 @@
       ng-click="ColumnsConfigModalCtrl.cancel()"
       translate>FORM.BUTTONS.CANCEL</button>
 
-    <bh-loading-button loading-state="ColumnConfigForm.$loading">
+    <bh-loading-button loading-state="ColumnConfigForm.$loading" ng-disabled="ColumnsConfigModalCtrl.hasTooFewColumns">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

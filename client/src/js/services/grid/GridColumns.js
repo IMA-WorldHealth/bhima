@@ -137,6 +137,47 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
+
+  /**
+   * @method hasEnoughColumns
+   *
+   * @description
+   * This structure is used to count the number of selected columns
+   *
+   */
+  Columns.prototype.hasEnoughColumns = function hasEnoughColumns(columns) {
+    var grid = this.gridApi.grid;
+    var visibleColumn = 0;
+    var defaultValueColumn = 3;
+    var totalColumn = 0;
+
+    angular.forEach(columns, function (visible, field) {
+      var column = grid.getColumn(field);
+      
+      /**
+        *This alternative structure checks if the first element of the grid is visible or not, 
+        *finally to reinitialize the number of column by default
+      */
+      if((column.name === "treeBaseRowHeaderCol") && !visible){
+        defaultValueColumn--;
+      }
+
+      if (visible) {
+        visibleColumn++;
+      }
+      
+    });
+
+    // There are 'defaultValueColumn' elements that are initialized to true
+    if(visibleColumn > defaultValueColumn){
+      return true;
+    } else {
+      return false;
+    }
+
+  };
+
+
   /**
    * @method resetDefaultVisibility
    *

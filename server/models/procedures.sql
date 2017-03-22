@@ -1116,7 +1116,6 @@ BEGIN
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
 
-
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
@@ -1127,11 +1126,17 @@ BEGIN
   -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
   -- This is done in JS currently, but could be done here.
   DECLARE isInvoice BOOLEAN;
+  DECLARE isCashPayment BOOLEAN;
   DECLARE reversalType INT;
 
   SET reversalType = 10;
 
   SET isInvoice = (SELECT IFNULL((SELECT 1 FROM invoice WHERE invoice.uuid = uuid), 0));
+
+  -- avoid a scan of the cash table if we already know this is an invoice reversal
+  IF NOT isInvoice THEN
+    SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
+  END IF;
 
   -- @fixme - why do we have `amount` in the voucher table?
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
@@ -1159,12 +1164,16 @@ BEGIN
     ) AS zz;
 
   -- make sure we update the invoice with the fact that it got reversed.
-  IF (isInvoice) THEN
+  IF isInvoice THEN
     UPDATE invoice SET reversed = 1 WHERE invoice.uuid = uuid;
   END IF;
 
-  CALL PostVoucher(voucher_uuid);
+  -- make sure we update the cash payment that was reversed
+  IF isCashPayment THEN
+    UPDATE cash SET reversed = 1 WHERE cash.uuid = uuid;
+  END IF;
 
+  CALL PostVoucher(voucher_uuid);
 END $$
 
 

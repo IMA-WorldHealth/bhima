@@ -115,19 +115,19 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it.skip('clear filters should remove all filters on the registry', () => {
-    FU.buttons.search();
-    FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
-    FU.modal.submit();
+  // it.skip('clear filters should remove all filters on the registry', () => {
+  //   FU.buttons.search();
+  //   FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
+  //   FU.modal.submit();
 
-    expectNumberOfGridRows(1);
-    expectNumberOfFilters(1);
+  //   expectNumberOfGridRows(1);
+  //   expectNumberOfFilters(1);
 
-    FU.buttons.clear();
+  //   FU.buttons.clear();
 
-    expectNumberOfGridRows(NUM_INVOICES);
-    expectNumberOfFilters(0);
-  });
+  //   expectNumberOfGridRows(NUM_INVOICES);
+  //   expectNumberOfFilters(0);
+  // });
 }
 
 module.exports = InvoiceRegistrySearch;

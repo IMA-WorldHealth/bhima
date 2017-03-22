@@ -59,7 +59,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       type: 'number',
       footerCellFilter: 'currency:' + Session.enterprise.currency_id,
     },
-    { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
+    { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate' },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
     { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/action.cell.html', enableSorting: false }
   ];
@@ -168,7 +168,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     load(vm.filters);
 
     // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
   }
 
  // Call the opening of Modal

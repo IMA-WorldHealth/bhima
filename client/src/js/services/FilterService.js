@@ -6,18 +6,18 @@ FilterService.$inject = ['Store'];
 function FilterService(Store) {
   // @FIXME this should be defined as a constant accross the server and the client
   /* @const */
-  var PERIODS = new Store({ identifier : 'key' });
+  var PERIODS = new Store({ identifier: 'key' });
   PERIODS.setData([
     {
-      key : 'today',
-      label : 'FORM.LABELS.TODAY'
+      key   : 'today',
+      label : 'FORM.LABELS.TODAY',
     },{
-      key : 'week',
-      label : 'FORM.LABELS.THIS_WEEK'
+      key   : 'week',
+      label : 'FORM.LABELS.THIS_WEEK',
     },{
-      key : 'month',
-      label : 'FORM.LABELS.THIS_MONTH'
-    }
+      key   : 'month',
+      label : 'FORM.LABELS.THIS_MONTH',
+    },
   ]);
   var DEFAULT_PERIOD = 'today';
 
