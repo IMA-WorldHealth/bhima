@@ -30,7 +30,7 @@ BEGIN
 END $$
 
 /*
- zRecomputDocumentMap
+ zRecomputeDocumentMap
 
  Abolishes and recomputes the document_map entries from the base tables in the
  database.  This is useful in case of data corruption.

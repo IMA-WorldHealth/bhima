@@ -317,14 +317,35 @@ BEGIN
  -- cursor for debtor's cautions
   DECLARE curse CURSOR FOR
     SELECT c.id, c.date, c.description, SUM(c.credit - c.debit) AS balance FROM (
-        SELECT debit_equiv as debit, credit_equiv as credit, combined_ledger.trans_date as date, combined_ledger.description, record_uuid AS id
-        FROM combined_ledger JOIN cash
-          ON cash.uuid = combined_ledger.record_uuid
+
+        -- get the record_uuids in the posting journal
+        SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, record_uuid AS id
+        FROM posting_journal JOIN cash
+          ON cash.uuid = posting_journal.record_uuid
         WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
-      UNION
-        SELECT debit_equiv as debit, credit_equiv as credit, combined_ledger.trans_date as date, combined_ledger.description, reference_uuid AS id
-        FROM combined_ledger JOIN cash
-          ON cash.uuid = combined_ledger.reference_uuid
+
+      UNION ALL
+
+        -- get the record_uuids in the general ledger
+        SELECT debit_equiv as debit, credit_equiv as credit, general_ledger.trans_date as date, general_ledger.description, record_uuid AS id
+        FROM general_ledger JOIN cash
+          ON cash.uuid = general_ledger.record_uuid
+        WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
+
+      UNION ALL
+
+        -- get the reference_uuids in the posting_journal
+        SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, reference_uuid AS id
+        FROM posting_journal JOIN cash
+          ON cash.uuid = posting_journal.reference_uuid
+        WHERE entity_uuid = ientityId AND cash.is_caution = 0
+
+      UNION ALL
+
+        -- get the reference_uuids in the general_ledger
+        SELECT debit_equiv as debit, credit_equiv as credit, general_ledger.trans_date as date, general_ledger.description, reference_uuid AS id
+        FROM general_ledger JOIN cash
+          ON cash.uuid = general_ledger.reference_uuid
         WHERE entity_uuid = ientityId AND cash.is_caution = 0
     ) AS c
     GROUP BY c.id
