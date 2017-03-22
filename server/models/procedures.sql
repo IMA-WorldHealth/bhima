@@ -776,7 +776,8 @@ BEGIN
 
   IF (`no_cash_item_stage` = 1) THEN
     CREATE TEMPORARY TABLE stage_cash_item
-      (SELECT uuid, cash_uuid, invoice_uuid);
+      (INDEX invoice_uuid (invoice_uuid))
+      SELECT uuid, cash_uuid, invoice_uuid;
 
   ELSE
     INSERT INTO stage_cash_item
@@ -788,15 +789,20 @@ END $$
 CREATE PROCEDURE VerifyCashTemporaryTables()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP,
+    INDEX uuid (uuid),
+    INDEX entity_uuid (entity_uuid)
   );
 
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP,
+    INDEX uuid (uuid),
+    INDEX entity_uuid (entity_uuid)
   );
 
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
-    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP,
+    INDEX uuid (uuid)
   );
 END $$
 
@@ -830,18 +836,36 @@ BEGIN
   CALL VerifyCashTemporaryTables();
 
   INSERT INTO stage_cash_records
-    SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
-    FROM combined_ledger AS cl
-    WHERE cl.record_uuid IN (
-      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
-    ) AND cl.entity_uuid = cashDebtorUuid;
+    SELECT p.record_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.entity_uuid, p.trans_date as date
+    FROM posting_journal AS p
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = p.record_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND p.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_records
+    SELECT g.record_uuid AS uuid, g.debit_equiv as debit, g.credit_equiv as credit, g.entity_uuid, g.trans_date as date
+    FROM general_ledger AS g
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = g.record_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND g.entity_uuid = cashDebtorUuid;
 
   INSERT INTO stage_cash_references
-    SELECT cl.reference_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
-    FROM combined_ledger AS cl
-    WHERE cl.reference_uuid IN (
-      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
-    ) AND cl.entity_uuid = cashDebtorUuid;
+    SELECT p.reference_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.entity_uuid, p.trans_date as date
+    FROM posting_journal AS p
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = p.reference_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND p.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_references
+    SELECT g.reference_uuid AS uuid, g.debit_equiv as debit, g.credit_equiv as credit, g.entity_uuid, g.trans_date as date
+    FROM general_ledger AS g
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = g.reference_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND g.entity_uuid = cashDebtorUuid;
 
   INSERT INTO stage_cash_invoice_balances
     SELECT zz.uuid, zz.balance, zz.date

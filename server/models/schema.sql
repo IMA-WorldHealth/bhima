@@ -124,6 +124,7 @@ CREATE TABLE `cash_item` (
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
+  INDEX (`invoice_uuid`),
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
