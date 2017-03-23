@@ -10,7 +10,7 @@
 
       <!-- page title  -->
       <h2 class="text-center text-capitalize">
-        {{translate 'CASHFLOW.BY_SERVICE'}}
+        {{translate 'REPORT.CASHFLOW_BY_SERVICE'}}
       </h2>
 
       <table class="table table-bordered table-condensed"  style="font-size:0.75em;">
@@ -21,17 +21,26 @@
             {{#each services as |service| }}
               <th>{{ service }}</th>
             {{/each}}
+            <th>{{translate "FORM.LABELS.BALANCE"}}</th>
           </tr>
         </thead>
         <tbody>
           {{#each matrix as | row |}}
             <tr>
               {{#each row as |value |}}
-                <td {{#unless @first}}class="text-right"{{/unless}}>
-                  {{#if value}}
-                    {{value}}
-                  {{/if}}
-                </td>
+
+                {{! this is the balance calculation }}
+                {{#if @last}}
+                  <th class="text-right">{{value}}</th>
+
+                {{! this is the rest of the matrix }}
+                {{else}}
+                  <td {{#unless @first}}class="text-right"{{/unless}}>
+                    {{#if value}}
+                      {{value}}
+                    {{/if}}
+                  </td>
+                {{/if}}
               {{/each}}
             </tr>
           {{else}}
@@ -43,7 +52,7 @@
           <tr>
             <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
             {{#each aggregates as | aggregate |}}
-              <th class="text-right">{{currency aggregate.totalCashIncome ../metadata.enterprise.currency_id }}</th>
+              <th class="text-right">{{aggregate.totalCashIncome}}</th>
             {{/each}}
           </tr>
         </tfoot>
