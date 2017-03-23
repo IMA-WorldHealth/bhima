@@ -610,8 +610,7 @@ function loadLatestInvoice(inv) {
     `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
-       WHERE debtor_uuid = ? AND invoice.uuid NOT IN
-         (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+       WHERE debtor_uuid = ? AND invoice.reversed = 0
        ORDER BY date DESC`;
 
 
