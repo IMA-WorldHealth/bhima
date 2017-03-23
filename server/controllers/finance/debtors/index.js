@@ -269,13 +269,20 @@ function balance(debtorUid) {
       SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
-        FROM combined_ledger
+        FROM posting_journal
         WHERE entity_uuid = ?
+
+        UNION ALL
+
+        SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
+        FROM general_ledger
+        WHERE entity_uuid = ?
+
       ) AS ledger
       GROUP BY ledger.entity_uuid;
     `;
 
-    return db.one(sql, [debtorUid]);
+    return db.one(sql, [debtorUid, debtorUid]);
   });
 }
 
