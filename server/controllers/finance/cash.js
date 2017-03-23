@@ -175,9 +175,6 @@ function listPayment(options) {
   const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
   filters.custom('patientReference', patientReferenceStatement);
 
-  // filter reversed cash records
-  // filters.reversed('reversed');
-
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
 

@@ -134,9 +134,6 @@ function find(options) {
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
-  // filter reversed cash records
-  filters.reversed('reversed');
-
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
 
