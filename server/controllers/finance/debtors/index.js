@@ -190,6 +190,8 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
 
 
   // select all invoice and payments against invoices from the combined ledger
+  // @TODO this query is used in many places and is crucial for finding balances
+  //       it currently uses 5 sub queries - this should be improved
   let sql = `
     SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
@@ -197,12 +199,27 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
       FROM (
         SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-        FROM combined_ledger
-        WHERE record_uuid IN (?) AND entity_uuid = ?
-      UNION ALL
+        FROM posting_journal
+        WHERE posting_journal.record_uuid IN (?) AND entity_uuid = ?
+
+        UNION ALL
+
+        SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+         FROM  general_ledger
+         WHERE general_ledger.record_uuid IN (?) AND entity_uuid = ?
+
+         UNION ALL
+
         SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-        FROM  combined_ledger
-        WHERE reference_uuid IN (?) AND entity_uuid = ?
+        FROM posting_journal
+        WHERE posting_journal.reference_uuid IN (?) AND entity_uuid = ?
+
+        UNION ALL
+
+        SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+        FROM general_ledger
+        WHERE general_ledger.reference_uuid IN (?) AND entity_uuid = ?
+
       ) AS ledger
       GROUP BY ledger.uuid ${balanced}
     ) AS i
@@ -211,7 +228,7 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
     ORDER BY invoice.date ASC, invoice.reference;
   `;
 
-  return db.exec(sql, [invoices, debtorUid, invoices, debtorUid]);
+  return db.exec(sql, [invoices, debtorUid, invoices, debtorUid, invoices, debtorUid, invoices, debtorUid]);
 }
 
 /**
