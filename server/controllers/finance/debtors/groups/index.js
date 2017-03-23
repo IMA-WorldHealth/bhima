@@ -14,12 +14,13 @@
 * @requires lib/errors/NotFound
 */
 
-const q  = require('q');
 const uuid = require('node-uuid');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const NotFound = require('../../../../lib/errors/NotFound');
 const BadRequest = require('../../../../lib/errors/BadRequest');
+
+const identifiers = require('../../../../config/identifiers');
 
 /** Create a new debtor group */
 exports.create = create;
@@ -58,19 +59,16 @@ function lookupDebtorGroup(uid) {
   `;
 
   return db.one(sql, [db.bid(uid)], uid, 'debtor group')
-    .then(function (group) {
+    .then((group) => {
       debtorGroup = group;
-
       return lookupBillingServices(uid);
     })
-    .then(function (billingServices) {
+    .then((billingServices) => {
       debtorGroup.billingServices = billingServices;
-
       return lookupSubsidies(uid);
     })
-    .then(function (subsidies) {
+    .then((subsidies) => {
       debtorGroup.subsidies = subsidies;
-
       return debtorGroup;
     });
 }
@@ -197,38 +195,37 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-   let sql =
+  let sql =
     'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
 
   if (req.query.detailed === '1') {
-
     /**
      * JOIN -> GROUP favoured over nested SELECT for potential performance reasons,
      * more modular solution would be:
      * (SELECT COUNT(uuid) from debtor where group_uuid = debtor_group.uuid) as total_debtors
      */
-    sql =
-      `
-      SELECT BUID(debtor_group.uuid) as uuid, name, account_id, BUID(location_id) as location_id, phone, email, note, locked,
-        max_credit, is_convention, BUID(price_list_uuid) as price_list_uuid, debtor_group.created_at,
+    sql = `
+      SELECT BUID(debtor_group.uuid) as uuid, name, account_id, BUID(location_id) as location_id, phone, email, note,
+        locked, max_credit, is_convention, BUID(price_list_uuid) as price_list_uuid, debtor_group.created_at,
         apply_subsidies, apply_discounts, apply_billing_services, COUNT(debtor.uuid) as total_debtors
       FROM debtor_group
       LEFT JOIN debtor
       ON debtor.group_uuid = debtor_group.uuid
-      GROUP BY debtor_group.uuid `;
+      GROUP BY debtor_group.uuid
+    `;
 
     delete req.query.detailed;
   }
 
-  let queryObject = util.queryCondition(sql, req.query);
-  sql = queryObject.query + ' ORDER BY name;' ;
+  const queryObject = util.queryCondition(sql, req.query);
+  sql = queryObject.query + ' ORDER BY name;';
 
   db.exec(sql, queryObject.conditions)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -245,7 +242,7 @@ function invoices(req, res, next) {
   options.debtor_uuid = req.params.uuid;
 
   loadInvoices(options)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -254,48 +251,76 @@ function invoices(req, res, next) {
 
 /**
  * @method loadInvoices
- * @description This method returns invoices of a debtor group
+ * @description
+ * This method returns the balances on invoices of debtor group
+ *
  * @param {string} params A object which contains :
  * {
  *  debtor_uuid : ... // required
  *  balanced: ... // for balanced invoices
  * }
+ *
+ * FIXME(@jniles) - this function should just use the debtor group's account, right?  Why
+ * do we need to look at each individual invoice?
  */
 function loadInvoices(params) {
-
   // cancelled transaction type
   const CANCELED_TRANSACTION_TYPE = 10;
 
   // get debtors of the group
-  let sqlDebtors =
-    `SELECT uuid FROM debtor WHERE debtor.group_uuid = ?;`;
+  const sqlDebtors = `
+    SELECT uuid FROM debtor WHERE debtor.group_uuid = ?;
+  `;
 
   // get invoices balance for each debtor
-  let sqlInvoices =
-    `SELECT BUID(i.uuid) as uuid, i.date, CONCAT(project.abbr, i.reference) as reference,
-      debit, credit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
+  let sqlInvoices = `
+    SELECT BUID(i.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, i.reference) AS reference,
+      SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit - credit) AS balance, BUID(entity_uuid) AS entity_uuid,
+      i.date
     FROM (
-      SELECT record_uuid as uuid, combined_ledger.trans_date as date, SUM(debit_equiv) as debit, SUM(credit_equiv) as credit,
+      SELECT record_uuid AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
         entity_uuid, invoice.reference, invoice.project_id
-      FROM combined_ledger
-      JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
-      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
-      GROUP BY uuid
+      FROM posting_journal AS pj JOIN invoice ON pj.record_uuid = invoice.uuid
+      WHERE entity_uuid IN (?) AND invoice.reversed <> 1
+
+      UNION ALL
+
+      SELECT reference_uuid AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
+        entity_uuid, invoice.reference, invoice.project_id
+      FROM posting_journal AS pj JOIN invoice ON pj.reference_uuid = invoice.uuid
+      WHERE entity_uuid IN (?) AND invoice.reversed <> 1
+
+      UNION ALL
+
+      SELECT reference_uuid  AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
+        entity_uuid, invoice.reference, invoice.project_id
+      FROM general_ledger AS gl JOIN invoice ON gl.reference_uuid = invoice.uuid
+      WHERE entity_uuid IN (?) AND invoice.reversed <> 1
+
+      UNION ALL
+
+      SELECT record_uuid AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
+        entity_uuid, invoice.reference, invoice.project_id
+      FROM general_ledger AS gl JOIN invoice ON gl.record_uuid = invoice.uuid
+      WHERE entity_uuid IN (?) AND invoice.reversed <> 1
     ) AS i
     JOIN project ON i.project_id = project.id
-    WHERE i.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
-    `;
+    WHERE i.uuid NOT IN (
+      SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
+    )
+    GROUP BY i.uuid
+  `;
 
   // balanced or not
   sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance <> 0 ';
 
-  let bid = db.bid(params.debtor_uuid);
+  const bid = db.bid(params.debtor_uuid);
 
   return db.exec(sqlDebtors, [bid])
-    .then(result => {
+    .then((result) => {
       if (!result.length) { return []; }
-      let uuids = result.map(item => item.uuid);
-      return db.exec(sqlInvoices, [uuids]);
+      const uuids = result.map(item => item.uuid);
+      return db.exec(sqlInvoices, [uuids, uuids, uuids, uuids]);
     });
 }
 
@@ -309,9 +334,12 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM debtor_group WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
   db.exec(sql, [uid])
-    .then(rows => {
+    .then((rows) => {
       if (!rows.affectedRows) {
-        throw new BadRequest(`Cannot delete the debtor group with id ${req.params.uuid}`, 'DEBTOR_GROUP.FAILURE_DELETE');
+        throw new BadRequest(
+          `Cannot delete the debtor group with id ${req.params.uuid}`,
+          'DEBTOR_GROUP.FAILURE_DELETE'
+        );
       }
 
       res.sendStatus(204);
