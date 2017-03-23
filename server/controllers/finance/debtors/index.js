@@ -161,7 +161,7 @@ function getDebtorInvoices (debtorUid){
   let sql =`
     SELECT BUID(invoice.uuid) as uuid
     FROM invoice
-    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?)
+    WHERE debtor_uuid = ? AND invoice.reversed = 0
     ORDER BY invoice.date ASC, invoice.reference;
   `;
 
