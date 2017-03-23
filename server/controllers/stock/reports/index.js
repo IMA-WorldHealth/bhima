@@ -26,6 +26,7 @@ const STOCK_EXIT_LOSS_TEMPLATE = './server/controllers/stock/reports/stock_exit_
 const STOCK_ENTRY_DEPOT_TEMPLATE = './server/controllers/stock/reports/stock_entry_depot.receipt.handlebars';
 const STOCK_ENTRY_PURCHASE_TEMPLATE = './server/controllers/stock/reports/stock_entry_purchase.receipt.handlebars';
 const STOCK_ENTRY_INTEGRATION_TEMPLATE = './server/controllers/stock/reports/stock_entry_integration.receipt.handlebars';
+const STOCK_ADJUSTMENT_TEMPLATE = './server/controllers/stock/reports/stock_adjustment.receipt.handlebars';
 
 // reports
 const STOCK_LOTS_REPORT_TEMPLATE = './server/controllers/stock/reports/stock_lots.report.handlebars';
@@ -38,7 +39,7 @@ const STOCK_INVENTORIES_REPORT_TEMPLATE = './server/controllers/stock/reports/st
  * @method stockExitPatientReceipt
  *
  * @description
- * This method builds the stock inventory report as either a JSON, PDF, or HTML
+ * This method builds the stock exit to patient receipt
  * file to be sent to the client.
  *
  * GET /receipts/stock/exit_patient/:document_uuid
@@ -92,6 +93,71 @@ function stockExitPatientReceipt(req, res, next) {
         date                 : line.date,
         document_uuid        : line.document_uuid,
         document_reference   : line.document_reference,
+      };
+
+      data.rows = rows;
+      return report.render(data);
+    })
+    .then((result) => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method stockAdjustmentReceipt
+ *
+ * @description
+ * This method builds the stock adjustment receipt
+ * file to be sent to the client.
+ *
+ * GET /receipts/stock/adjustment/:document_uuid
+ */
+function stockAdjustmentReceipt(req, res, next) {
+  let report;
+  const data = {};
+  const documentUuid = req.params.document_uuid;
+  const optionReport = _.extend(req.query, { filename: 'STOCK.REPORTS.ADJUSTMENT' });
+
+  // set up the report with report manager
+  try {
+    report = new ReportManager(STOCK_ADJUSTMENT_TEMPLATE, req.session, optionReport);
+  } catch (e) {
+    return next(e);
+  }
+
+  const sql = `
+    SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid, m.is_exit,
+      m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description, 
+      u.display_name AS user_display_name,
+      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+      l.label, l.expiration_date, d.text AS depot_name  
+    FROM stock_movement m 
+    JOIN lot l ON l.uuid = m.lot_uuid 
+    JOIN inventory i ON i.uuid = l.inventory_uuid 
+    JOIN depot d ON d.uuid = m.depot_uuid 
+    JOIN user u ON u.id = m.user_id 
+    WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
+  `;
+
+  return db.exec(sql, [db.bid(documentUuid)])
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound('document not found');
+      }
+      const line = rows[0];
+
+      data.enterprise = req.session.enterprise;
+
+      data.details = {
+        is_exit            : line.is_exit,
+        depot_name         : line.depot_name,
+        user_display_name  : line.user_display_name,
+        description        : line.description,
+        date               : line.date,
+        document_uuid      : line.document_uuid,
+        document_reference : line.document_reference,
       };
 
       data.rows = rows;
@@ -342,19 +408,19 @@ function stockEntryPurchaseReceipt(req, res, next) {
       data.enterprise = req.session.enterprise;
 
       data.details = {
-        depot_name           : line.depot_name,
-        user_display_name    : line.user_display_name,
-        description          : line.description,
-        date                 : line.date,
-        document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
-        purchase_reference   : line.purchase_reference,
-        p_note               : line.note,
-        p_cost               : line.cost,
-        p_date               : line.purchase_date,
-        p_method             : line.payment_method,
+        depot_name            : line.depot_name,
+        user_display_name     : line.user_display_name,
+        description           : line.description,
+        date                  : line.date,
+        document_uuid         : line.document_uuid,
+        document_reference    : line.document_reference,
+        purchase_reference    : line.purchase_reference,
+        p_note                : line.note,
+        p_cost                : line.cost,
+        p_date                : line.purchase_date,
+        p_method              : line.payment_method,
         supplier_display_name : line.supplier_display_name,
-        project_display_name : line.project_display_name,
+        project_display_name  : line.project_display_name,
       };
 
       data.rows = rows;
@@ -417,15 +483,15 @@ function stockEntryIntegrationReceipt(req, res, next) {
       data.enterprise = req.session.enterprise;
 
       data.details = {
-        depot_name           : line.depot_name,
-        user_display_name    : line.user_display_name,
-        description          : line.description,
-        date                 : line.date,
-        document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
+        depot_name            : line.depot_name,
+        user_display_name     : line.user_display_name,
+        description           : line.description,
+        date                  : line.date,
+        document_uuid         : line.document_uuid,
+        document_reference    : line.document_reference,
         integration_reference : line.integration_reference,
-        integration_date     : line.integration_date,
-        project_display_name : line.project_display_name,
+        integration_date      : line.integration_date,
+        project_display_name  : line.project_display_name,
       };
 
       data.rows = rows;
@@ -664,3 +730,4 @@ exports.stockExitServiceReceipt = stockExitServiceReceipt;
 exports.stockExitLossReceipt = stockExitLossReceipt;
 exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
 exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
+exports.stockAdjustmentReceipt = stockAdjustmentReceipt;

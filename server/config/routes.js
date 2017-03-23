@@ -636,5 +636,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
   app.get('/receipts/stock/entry_integration/:document_uuid', stockReports.stockEntryIntegrationReceipt);
 
+  app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
+
   app.get('/diagnoses', diagnoses.list);
 };

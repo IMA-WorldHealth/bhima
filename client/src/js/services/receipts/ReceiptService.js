@@ -156,6 +156,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
+  service.stockAdjustmentReceipt = stockAdjustmentReceipt;
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
@@ -202,6 +203,12 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   // stock entry donation receipt
   function stockEntryDonationReceipt(uuid, options) {
     var route = '/receipts/stock/entry_donation/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock adjustment receipt
+  function stockAdjustmentReceipt(uuid, options) {
+    var route = '/receipts/stock/adjustment/'.concat(uuid);
     return fetch(route, options);
   }
 

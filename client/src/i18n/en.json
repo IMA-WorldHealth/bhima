@@ -1329,12 +1329,15 @@
   },
   "STOCK" : {
     "ALERT"           : "Alert",
-    "ADJUSTEMENT"     : "Adjustment",
+    "ADJUSTMENT"      : "Adjustment",
+    "ADJUSTMENT_TYPE" : "Adjustment Type",
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantity to order",
     "CACHED_DATA"     : "Data saved",
     "CODE"            : "Code",
     "COST"            : "Cost",
+    "DECREASE"        : "Decrease",
+    "DECREASE_HELP"   : "Adjustment of stock by decreasing the quantity of lots of products in stock",
     "DEPOT"           : "Depot",
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
@@ -1356,6 +1359,8 @@
     "FLUX"            : "Reason",
     "FROM"            : "From",
     "GROUPING"        : "Grouping",
+    "INCREASE"        : "Increase",
+    "INCREASE_HELP"   : "Adjustment of stock by increasing the quantity of lots of products in stock",
     "INVENTORY"       : "Inventory",
     "INPUT"           : "Input",
     "INTEGRATION"     : "Integration",
@@ -1380,6 +1385,7 @@
     "PURCHASE_ORDER"  : "Purchase Order",
     "QUANTITY"        : "Quantity",
     "RECEIPT"         : {
+      "ADJUSTMENT"     : "Adjustment",
       "ENTRY_DEPOT"    : "Stock Entry",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
       "ENTRY_INTEGRATION" : "Stock Entry - Integration",
@@ -1408,7 +1414,7 @@
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
-    "FROM_ADJUSTMENT"  : "From Adjustment",
+    "FROM_ADJUSTMENT"  : "Adjustment (Positive)",
     "FROM_PATIENT"     : "From Patient",
     "FROM_SERVICE"     : "From Service",
     "FROM_DONATION"    : "From Donation",
@@ -1418,7 +1424,7 @@
     "TO_PATIENT"       : "To Patient",
     "TO_SERVICE"       : "To Service",
     "TO_LOSS"          : "To Loss",
-    "TO_ADJUSTMENT"    : "To Adjustment"
+    "TO_ADJUSTMENT"    : "Adjustment (Negative)"
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",

@@ -23,10 +23,12 @@ function StockMovementsController($state, Stock, Notify,
   var mapFlux = {
     1  : { receipt: ReceiptModal.stockEntryPurchaseReceipt },
     2  : { receipt: ReceiptModal.stockEntryDepotReceipt },
+    3  : { receipt: ReceiptModal.stockAdjustmentReceipt },
     8  : { receipt: ReceiptModal.stockExitDepotReceipt },
     9  : { receipt: ReceiptModal.stockExitPatientReceipt },
     10 : { receipt: ReceiptModal.stockExitServiceReceipt },
     11 : { receipt: ReceiptModal.stockExitLossReceipt },
+    12 : { receipt: ReceiptModal.stockAdjustmentReceipt },
     13 : { receipt: ReceiptModal.stockEntryIntegrationReceipt },
   };
 

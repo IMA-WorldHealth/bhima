@@ -1362,12 +1362,15 @@
   },
   "STOCK" : {
     "ALERT"           : "Alert",
-    "ADJUSTEMENT"     : "Ajustement",
+    "ADJUSTMENT"      : "Ajustement",
+    "ADJUSTMENT_TYPE" : "Type d'Ajustement",
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
     "CACHED_DATA"     : "Donnees mises en cache",
     "CODE"            : "Code",
     "COST"            : "Cout",
+    "DECREASE"        : "Diminution",
+    "DECREASE_HELP"   : "Ajustement de stock en reduisant la quantité des lots des produits en stock",
     "DEPOT"           : "Depot",
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
@@ -1389,6 +1392,8 @@
     "FLUX"            : "Raison",
     "FROM"            : "Provenance",
     "GROUPING"        : "Groupage",
+    "INCREASE"        : "Augmentation",
+    "INCREASE_HELP"   : "Ajustement de stock en augmentant la quantité des lots des produits en stock",
     "INVENTORY"       : "Inventaire",
     "IO"              : "Entrée/Sortie",
     "INPUT"           : "Entrée",
@@ -1413,6 +1418,7 @@
     "PURCHASE_ORDER"  : "Commande d'Achat",
     "QUANTITY"        : "Quantité",
     "RECEIPT"         : {
+      "ADJUSTMENT"     : "Ajustement",
       "ENTRY_DEPOT"    : "Entrée de Stock",
       "ENTRY_PURCHASE" : "Entree de Stock - Achat",
       "ENTRY_INTEGRATION" : "Entree de Stock - Integration",
@@ -1441,7 +1447,7 @@
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "Commande d'achat",
     "FROM_OTHER_DEPOT" : "En provenance d'un depot",
-    "FROM_ADJUSTMENT"  : "En provenance d'un ajustement",
+    "FROM_ADJUSTMENT"  : "Ajustement (Positif)",
     "FROM_PATIENT"     : "En provenance d'un patient",
     "FROM_SERVICE"     : "En provenance d'un service",
     "FROM_DONATION"    : "En provenance d'une donation",
@@ -1451,7 +1457,7 @@
     "TO_PATIENT"       : "Vers un patient",
     "TO_SERVICE"       : "Vers un service",
     "TO_LOSS"          : "Vers une perte",
-    "TO_ADJUSTMENT"    : "Vers un ajustement"
+    "TO_ADJUSTMENT"    : "Ajustement (Negatif)"
   },
   "SUPPLIER": {
     "ADD_SUPPLIER"     : "Ajouter un fournisseur",

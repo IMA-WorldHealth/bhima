@@ -100,7 +100,7 @@ function StockExitController(Depots, Inventory, Notify,
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/exit/templates/actions.tmpl.html' },
     ],
-    onRegisterApi,
+    onRegisterApi : onRegisterApi,
     data : vm.Stock.store.data,
   };
 
