@@ -142,38 +142,6 @@ class FilterParser {
     }
   }
 
-  /**
-   * @method reversed
-   *
-   * @description
-   * 'reversed criteria' currently stands as joining with the voucher table on reference_uuid
-   * if a voucher exists for this record it will contain a `type_id`
-   *
-   * @TODO this is the first example of a 'toggle' filter, this should be more carefully
-   * designed
-   */
-  reversed(filterKey) {
-    const REVERSE_VOUCHER_ID = 10;
-
-    if (this._filters[filterKey]) {
-      let includeReversed = Boolean(Number(this._filters[filterKey]));
-      let preparedStatement = '';
-
-      if (includeReversed) {
-        // return only records that meet the reversed criteria
-        preparedStatement = `voucher.type_id = ?`;
-      } else {
-        // exclude all record that meet the reversed criteria
-        preparedStatement = `(voucher.type_id IS NULL OR voucher.type_id <> ?)`;
-      }
-
-      // using the reversal voucher id as the parameter is a hack, this will be
-      // addressed in standardising filters on the server and the client
-      this._addFilter(preparedStatement, REVERSE_VOUCHER_ID);
-      delete this._filters[filterKey];
-    }
-  }
-
   custom(filterKey, preparedStatement, preparedValue) {
     if (this._filters[filterKey]) {
       const searchValue = preparedValue || this._filters[filterKey];
