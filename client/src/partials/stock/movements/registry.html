@@ -71,7 +71,7 @@
 
   <a
     href
-    ng-if="StockCtrl.Filter.customFiltersApplied(StockCtrl.filters.identifiers)"
+    ng-if="!StockCtrl.isToday"
     ng-click="StockCtrl.clearFilters()"
     class="text-danger"
     data-method="clear">

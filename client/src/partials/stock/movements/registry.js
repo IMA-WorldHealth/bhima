@@ -5,7 +5,7 @@ StockMovementsController.$inject = [
   '$state', 'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'FluxService', 'ReceiptModal', 'GridGroupingService', 'FilterService',
+  'FluxService', 'ReceiptModal', 'GridGroupingService',
 ];
 
 /**
@@ -14,8 +14,10 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController($state, Stock, Notify,
   uiGridConstants, $translate, Modal, SearchFilterFormat,
-  Languages, Session, Flux, ReceiptModal, Grouping, Filters) {
+  Languages, Session, Flux, ReceiptModal, Grouping) {
   var vm = this;
+
+  vm.gridApi = {};
 
   // bind flux id with receipt
   var mapFlux = {
@@ -38,8 +40,6 @@ function StockMovementsController($state, Stock, Notify,
   ];
 
   // global variables
-  vm.gridApi = {};
-  vm.Filter = new Filters();
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
   vm.enterprise = Session.enterprise;
@@ -163,19 +163,22 @@ function StockMovementsController($state, Stock, Notify,
     SearchFilterFormat.clearFilters(reload);
   }
 
-  // init filters
-  function initFilters(filters) {
-    var appliedFilters = vm.Filter.applyDefaults(filters || {});
-    vm.filters = { display: appliedFilters, identifiers: appliedFilters };
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    return appliedFilters;
-  }
-
   // load stock lots in the grid
   function load(filters) {
-    var params = initFilters(filters);
+    var today = { defaultPeriod: 'today' };
+    var params = filters;
 
-    Stock.movements.read(null, params).then(function (rows) {
+    var noFilter = (!filters);
+    var noAttributes = (noFilter || (Object.keys(filters).length === 0));
+
+    if (noAttributes) {
+      params = today;
+      vm.isToday = true;
+      vm.filters = { display: today, identifiers: today };
+      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
+    }
+
+    Stock.movements.read(null, params).then((rows) => {
       vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);
@@ -184,15 +187,19 @@ function StockMovementsController($state, Stock, Notify,
   // search modal
   function search() {
     Modal.openSearchMovements()
-    .then(function (filters) {
+    .then((filters) => {
       if (!filters) { return; }
-      load(filters.identifiers);
+
+      vm.isToday = false;
+      reload(filters);
     })
     .catch(Notify.handleError);
   }
 
   // reload
   function reload(filters) {
+    vm.filters = filters;
+    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
     load(filters.identifiers);
   }
 

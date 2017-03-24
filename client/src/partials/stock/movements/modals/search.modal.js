@@ -54,6 +54,10 @@ function SearchMovementsModalController(Depots, Inventory, Notify, Instance, Sea
   }
 
   function submit() {
+    if (!vm.bundle.dateFrom && !vm.bundle.dateTo) {
+      delete vm.bundle.dateFrom;
+      delete vm.bundle.dateTo;
+    }
     var params = SearchFilterFormat.formatFilter(vm.bundle, true);
     Instance.close(params);
   }
