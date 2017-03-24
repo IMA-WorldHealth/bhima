@@ -555,24 +555,20 @@ function document(req, res, next) {
 
         if (tempExpense[item.origin_id] === true) {
 
-          var value = expenses.reduce(function (a, b) {
+          const value = expenses.reduce(function (a, b) {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
 
           session.summationExpense[period].push({
-            'transfer_type' : item.transactionType,
-            'currency_id'   : item.currency_id,
-            'value'         : value
+            value,
+            transfer_type : item.transactionType,
+            currency_id   : item.currency_id,
           });
         }
       });
     }
   }
 }
-
-
-// the ID of a voucher for cash return
-const CASH_RETURN_ID = 8;
 
 /**
  * This function creates a cashflow report by service, reporting the realized income
@@ -582,14 +578,13 @@ const CASH_RETURN_ID = 8;
  * @todo - factor in posting journal balances
  */
 function reportByService(req, res, next) {
-
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
 
   let report;
 
   const options = _.clone(req.query);
-  _.extend(options, { orientation : 'landscape' });
+  _.extend(options, { orientation: 'landscape' });
 
   try {
     report = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);
@@ -602,17 +597,24 @@ function reportByService(req, res, next) {
 
   // get the cash flow data
   const cashflowByServiceSql = `
-    SELECT BUID(cash.uuid) AS uuid, CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
-      cash.date, cash.amount AS cashAmount, invoice.cost AS invoiceAmount, cash.currency_id, service.id AS service_id,
-      patient.display_name, service.name
-    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
-      JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-      JOIN project ON cash.project_id = project.id
-      JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
-      JOIN service ON invoice.service_id = service.id
-    WHERE cash.is_caution = 0
-      AND cash.date >= DATE(?) AND cash.date <= DATE(?)
-    ORDER BY cash.date;
+    SELECT uuid, reference, date, cashAmount, invoiceAmount, currency_id, service_id,
+      display_name, name, (@cumsum := cashAmount + @cumsum) AS cumsum
+    FROM (
+      SELECT BUID(cash.uuid) AS uuid,
+        CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
+        cash.date, cash.amount AS cashAmount, SUM(invoice.cost) AS invoiceAmount, cash.currency_id,
+        service.id AS service_id, patient.display_name, service.name
+      FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+        JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
+        JOIN project ON cash.project_id = project.id
+        JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
+        JOIN service ON invoice.service_id = service.id
+      WHERE cash.is_caution = 0 AND cash.reversed = 0
+        AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
+      GROUP BY cash.uuid
+      ORDER BY cash.date, cash.reference
+    )c, (SELECT @cumsum := 0)z
+    ORDER BY date, reference;
   `;
 
   // get all service names in alphabetical order
@@ -626,13 +628,14 @@ function reportByService(req, res, next) {
     FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
       JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
       JOIN service ON invoice.service_id = service.id
-    WHERE cash.uuid IN (?)
+    WHERE cash.is_caution = 0 AND cash.reversed = 0
+      AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
     GROUP BY service.name
     ORDER BY service.name;
   `;
 
   db.exec(cashflowByServiceSql, [dateFrom, dateTo])
-    .then(rows => {
+    .then((rows) => {
       data.rows = rows;
 
       // return an empty array if no rows
@@ -642,34 +645,31 @@ function reportByService(req, res, next) {
       }
 
       // get a list of unique service ids
-      let serviceIds = rows
+      const serviceIds = rows
         .map(row => row.service_id)
         .filter((id, index, array) => array.indexOf(id) === index);
 
       // execute the service SQL
       return db.exec(serviceSql, [serviceIds]);
     })
-    .then(services => {
-
+    .then((services) => {
       // if nothing matches the selection criteria, continue with nothing
       if (emptyCashValues) {
         return [];
       }
 
-      let rows = data.rows;
-      let uuids = rows.map(row => db.bid(row.uuid));
+      const rows = data.rows;
       delete data.rows;
 
       // map services to their service names
       data.services = services.map(service => service.name);
 
-      let xAxis = data.services.length;
+      const xAxis = data.services.length;
 
       // fill the matrix with nulls except the correct columns
-      let matrix = rows.map(row => {
-
+      const matrix = rows.map((row) => {
         // fill line with each service + two lines for cash payment identifier and patient name
-        let line = _.fill(Array(xAxis + 2), null);
+        const line = _.fill(Array(xAxis + 3), null);
 
         // each line has the cash payment reference and then the patient name
         line[0] = row.reference;
@@ -678,6 +678,9 @@ function reportByService(req, res, next) {
         // get the index of the service name and fill in the correct cell in the matrix
         const idx = data.services.indexOf(row.name) + 2;
         line[idx] = row.cashAmount;
+
+        // get the far right row as the total
+        line[xAxis + 2] = row.cumsum;
         return line;
       });
 
@@ -685,13 +688,19 @@ function reportByService(req, res, next) {
       data.matrix = matrix;
 
       // query the aggregates
-      return db.exec(serviceAggregationSql, [uuids]);
+      return db.exec(serviceAggregationSql, [dateFrom, dateTo]);
     })
-    .then(aggregates => {
+    .then((aggregates) => {
       data.aggregates = aggregates;
+
+      // the total of everything is just the last running balance amount
+      const lastRow = data.matrix[data.matrix.length - 1];
+      const lastRowTotalIdx = lastRow.length - 1;
+      aggregates.push({ totalCashIncome: lastRow[lastRowTotalIdx] });
+
       return report.render(data);
     })
-    .then(result => {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)

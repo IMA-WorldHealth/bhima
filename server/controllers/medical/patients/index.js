@@ -339,6 +339,10 @@ function searchByName(req, res, next) {
   const searchValue = req.query.display_name;
   const searchParameter = `%${searchValue}%`;
 
+  if (_.isUndefined(searchValue)) {
+    return next(new BadRequest('display_name attribute must be specified for a name search'));
+  }
+
   // current default limit - this could be defined through req.query if there is a need for this
   const limit = 10;
 
@@ -606,8 +610,7 @@ function loadLatestInvoice(inv) {
     `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
-       WHERE debtor_uuid = ? AND invoice.uuid NOT IN
-         (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+       WHERE debtor_uuid = ? AND invoice.reversed = 0
        ORDER BY date DESC`;
 
 

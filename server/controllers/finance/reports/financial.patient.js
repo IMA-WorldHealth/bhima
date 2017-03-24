@@ -8,6 +8,7 @@
  * @requires ReportManager
  */
 
+const _ = require('lodash');
 const q = require('q');
 const db = require('../../../lib/db');
 const ReportManager = require('../../../lib/ReportManager');
@@ -52,40 +53,60 @@ function financialActivities(debtorUuid) {
   const data = {};
 
   const sql = `
-
     SELECT trans_id, entity_uuid, description, record_uuid, trans_date, debit, credit, document,
       (@cumsum := balance + @cumsum) AS cumsum
     FROM (
-      SELECT combined_ledger.trans_id, combined_ledger.entity_uuid, combined_ledger.description,
-        combined_ledger.record_uuid, combined_ledger.trans_date, SUM(combined_ledger.debit_equiv) AS debit,
-        SUM(combined_ledger.credit_equiv) AS credit, document_map.text AS document,
-        (SUM(combined_ledger.debit_equiv) - SUM(combined_ledger.credit_equiv)) AS balance
-      FROM combined_ledger
-        LEFT JOIN document_map ON document_map.uuid = combined_ledger.record_uuid
-      WHERE combined_ledger.entity_uuid = ?
-      GROUP BY combined_ledger.record_uuid
-      ORDER BY combined_ledger.trans_date ASC, combined_ledger.trans_id
+      SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
+        SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
+        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance
+      FROM posting_journal AS p
+        LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
+      WHERE p.entity_uuid = ?
+      GROUP BY p.record_uuid
+
+      UNION ALL
+
+      SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
+        SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
+        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance
+      FROM general_ledger AS g
+        LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
+      WHERE g.entity_uuid = ?
+      GROUP BY g.record_uuid
     )c, (SELECT @cumsum := 0)z
     ORDER BY trans_date ASC, trans_id;
   `;
 
   const aggregateQuery = `
-    SELECT SUM(combined_ledger.debit_equiv) AS debit, SUM(combined_ledger.credit_equiv) AS credit,
-      SUM(combined_ledger.debit_equiv - combined_ledger.credit_equiv) AS balance
-    FROM combined_ledger
-    WHERE combined_ledger.entity_uuid = ?
-    GROUP BY entity_uuid;
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance
+    FROM (
+      SELECT debit_equiv, credit_equiv, entity_uuid FROM posting_journal WHERE entity_uuid = ?
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid FROM general_ledger WHERE entity_uuid = ?
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
   `;
 
   return Patients.lookupByDebtorUuid(debtorUuid)
     .then((patient) => {
       data.patient = patient;
       const buid = db.bid(debtorUuid);
-      return q.all([db.exec(sql, buid), db.one(aggregateQuery, buid)]);
+      return q.all([
+        db.exec(sql, [buid, buid]),
+        db.exec(aggregateQuery, [buid, buid]),
+      ]);
     })
     .spread((transactions, aggregates) => {
       const patient = data.patient;
-      aggregates.hasDebitBalance = aggregates.balance > 0;
+
+      if (!aggregates.length) {
+        aggregates = { balance: 0 };
+      } else {
+        aggregates = aggregates[0];
+      }
+
+      _.extend(aggregates, { hasDebitBalance: aggregates.balance > 0 });
       return { transactions, patient, aggregates };
     });
 }

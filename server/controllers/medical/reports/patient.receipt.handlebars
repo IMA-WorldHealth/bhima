@@ -8,7 +8,7 @@
     }
   </style>
   <div class="row">
-      
+
     <h4 style="margin-bottom : 0px;"><strong>{{patient.enterprise_name}} - {{translate "PATIENT_REG.IDENTITY"}}</strong></h4>
     <hr>
 
@@ -26,9 +26,9 @@
         <span><u>{{translate "FORM.LABELS.TELEPHONE"}}</u> {{patient.telephone}}</span><br />
       {{/if}}
 
-      <span><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u></span><br /> 
+      <span><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u></span><br />
       <span>{{ patient.debtor_group_name }}</span>
-      
+
       {{#unless simplified}}
       <!-- Information only shown on larger form identities -->
       <br />
@@ -44,6 +44,7 @@
     <div class="col-xs-5" style="text-align:right;">
       <h2 style="margin-top : 0px"><strong>{{patient.reference}}</strong></h2>
       <span>{{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }}</span><br />
+      <span><b>{{translate "FORM.LABELS.HOSPITAL_NO"}}:</b> {{patient.hospital_no}}</span><br />
     </div>
   </div>
 

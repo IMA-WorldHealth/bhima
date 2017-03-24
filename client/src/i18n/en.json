@@ -1005,7 +1005,7 @@
       "MISSING_SALES_ACCOUNT" : "The record contains an inventory item missing a sales account.  You cannot make an invoice without a sales account.",
       "NOT_CONFIGURED" : "The record is missing an inventory item. Please put in an inventory item or remove the row."
     },
-    "DESCRIPTION"        : "Invoice to {{ patientName }} ({{ patientReference }} for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
+    "DESCRIPTION"        : "Invoice to {{ patientName }} ({{ patientReference }}) for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",

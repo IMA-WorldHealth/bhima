@@ -124,6 +124,7 @@ CREATE TABLE `cash_item` (
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
+  INDEX (`invoice_uuid`),
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -761,6 +762,7 @@ CREATE TABLE `general_ledger` (
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
   INDEX `trans_date` (`trans_date`),
+  INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
   INDEX `reference_uuid` (`record_uuid`),
   INDEX `entity_uuid` (`entity_uuid`),
@@ -1287,6 +1289,7 @@ CREATE TABLE `posting_journal` (
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
   INDEX `trans_date` (`trans_date`),
+  INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
   INDEX `reference_uuid` (`record_uuid`),
   INDEX `entity_uuid` (`entity_uuid`),
