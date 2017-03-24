@@ -20,7 +20,12 @@ function currency(value, currencyId) {
   return accountingjs.formatMoney(value || 0, fmt);
 }
 
-
+/**
+ * @function numberToText
+ * @value is the ammount to convert
+ * @lang is the selected language
+ * @currencyName is the Name of currency
+ */
 function numberToText(value, lang, currencyName) {
   const numberText = NumberToText.convert(value, lang, currencyName);
       
