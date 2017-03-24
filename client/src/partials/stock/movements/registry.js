@@ -173,9 +173,9 @@ function StockMovementsController($state, Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    var appliedFilters = initFilters(filters);
+    var params = initFilters(filters);
 
-    Stock.movements.read(null, appliedFilters).then((rows) => {
+    Stock.movements.read(null, params).then(function (rows) {
       vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);
@@ -184,7 +184,7 @@ function StockMovementsController($state, Stock, Notify,
   // search modal
   function search() {
     Modal.openSearchMovements()
-    .then((filters) => {
+    .then(function (filters) {
       if (!filters) { return; }
       load(filters.identifiers);
     })
@@ -193,8 +193,6 @@ function StockMovementsController($state, Stock, Notify,
 
   // reload
   function reload(filters) {
-    // vm.filters = filters;
-    // vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
     load(filters.identifiers);
   }
 
