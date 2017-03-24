@@ -7,7 +7,9 @@
  * @requires lodash
  * @requires util
  * @requires lib/db
- *
+ * @requires lib/filter
+ * @requires config/identifiers
+ * 
  */
 
 'use strict';
@@ -16,6 +18,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const util = require('../../lib/util');
 const db = require('../../lib/db');
+const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
 
 const flux = {
@@ -50,10 +53,10 @@ exports.getLotsOrigins = getLotsOrigins;
  * @param {object} params - A request query object
  * @param {string} finalClause - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
-function getLots(sqlParameter, parameters, finalClauseParameter) {
-  let finalClause = finalClauseParameter;
+function getLots(sqlQuery, parameters, finalClauseParameter) {
+  const finalClause = finalClauseParameter;
   const params = parameters;
-  const sql = sqlParameter || `
+  const sql = sqlQuery || `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
             l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
             i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
@@ -63,151 +66,27 @@ function getLots(sqlParameter, parameters, finalClauseParameter) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  let queryExpiration;
-  let paramExpiration;
-  let queryEntry;
-  let paramEntry;
-  const queryArray = [];
-  const paramArray = [];
+  const filters = new FilterParser(params);
 
-  if (params.uuid) {
-    params['l.uuid'] = params.uuid;
-    delete params.uuid;
-  }
+  filters.equals('uuid', 'uuid', 'l');
+  filters.equals('depot_text', 'text', 'd');
+  filters.equals('text', 'text', 'i');
+  filters.equals('label', 'label', 'l');
 
-  if (params.depot_text) {
-    params['d.text'] = params.depot_text;
-    delete params.depot_text;
-  }
+  filters.period('defaultPeriod', 'date');
 
-  if (params.text) {
-    params['i.text'] = params.text;
-    delete params.text;
-  }
+  filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
+  filters.dateTo('expiration_date_to', 'expiration_date', 'l');
 
-  if (params.label) {
-    params['l.label'] = params.label;
-    delete params.label;
-  }
+  filters.dateFrom('entry_date_from', 'entry_date', 'l');
+  filters.dateTo('entry_date_to', 'entry_date', 'l');
 
-  if (params.expiration_date_from && params.expiration_date_to) {
-    queryExpiration = ` DATE(l.expiration_date) BETWEEN DATE(?) AND DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.expiration_date_from),
-      util.dateString(params.expiration_date_to),
-    ];
+  filters.dateFrom('dateFrom', 'date', 'm');
+  filters.dateTo('dateTo', 'date', 'm');
 
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.expiration_date_from;
-    delete params.expiration_date_to;
-  } else if (params.expiration_date_from && !params.expiration_date_to) {
-    queryExpiration = ` DATE(l.expiration_date) >= DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.expiration_date_from),
-    ];
-
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.expiration_date_from;
-  } else if (!params.expiration_date_from && params.expiration_date_to) {
-    queryExpiration = ` DATE(l.expiration_date) <= DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.expiration_date_to),
-    ];
-
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.expiration_date_to;
-  }
-
-  if (params.entry_date_from && params.entry_date_to) {
-    queryEntry = ` DATE(l.entry_date) BETWEEN DATE(?) AND DATE(?) `;
-    paramEntry = [
-      util.dateString(params.entry_date_from),
-      util.dateString(params.entry_date_to),
-    ];
-
-    queryArray.push(queryEntry);
-    paramArray.push(paramEntry);
-
-    delete params.entry_date_from;
-    delete params.entry_date_to;
-  } else if (params.entry_date_from && !params.entry_date_to) {
-    queryEntry = ` DATE(l.entry_date) >= DATE(?) `;
-    paramEntry = [
-      util.dateString(params.entry_date_from),
-    ];
-
-    queryArray.push(queryEntry);
-    paramArray.push(paramEntry);
-
-    delete params.entry_date_from;
-  } else if (!params.entry_date_from && params.entry_date_to) {
-    queryEntry = ` DATE(l.entry_date) <= DATE(?) `;
-    paramEntry = [
-      util.dateString(params.entry_date_to),
-    ];
-
-    queryArray.push(queryEntry);
-    paramArray.push(paramEntry);
-
-    delete params.entry_date_to;
-  }
-
-  if (params.dateFrom && params.dateTo) {
-    queryExpiration = ` DATE(m.date) BETWEEN DATE(?) AND DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.dateFrom),
-      util.dateString(params.dateTo),
-    ];
-
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.dateFrom;
-    delete params.dateTo;
-  } else if (params.dateFrom && !params.dateTo) {
-    queryExpiration = ` DATE(m.date) >= DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.dateFrom),
-    ];
-
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.dateFrom;
-  } else if (!params.dateFrom && params.dateTo) {
-    queryExpiration = ` DATE(m.date) <= DATE(?) `;
-    paramExpiration = [
-      util.dateString(params.dateTo),
-    ];
-
-    queryArray.push(queryExpiration);
-    paramArray.push(paramExpiration);
-
-    delete params.dateTo;
-  }
-
-    // build query and parameters correctly
-  const builder = util.queryCondition(sql, params);
-
-    // dates queries and parameters
-  const hasOtherParams = (Object.keys(params).length > 0);
-
-  if (paramArray.length) {
-    builder.query += hasOtherParams ? ' AND ' + queryArray.join(' AND ') : ' WHERE ' + queryArray.join(' AND ');
-    builder.conditions = _.concat(builder.conditions, paramArray);
-    builder.conditions = _.flattenDeep(builder.conditions);
-  }
-
-    // finalize the query
-  builder.query += finalClause || '';
-
-  return db.exec(builder.query, builder.conditions);
+  const query = filters.applyQuery(sql).concat(finalClause || '');
+  const queryParameters = filters.parameters();
+  return db.exec(query, queryParameters);
 }
 
 /**
@@ -221,11 +100,11 @@ function getLots(sqlParameter, parameters, finalClauseParameter) {
  *
  * @param {string} finalClause - An optional final clause (GROUP BY, ...) to add to query built
  */
-function getLotsDepot(depot_uuid, params, finalClause) {
+function getLotsDepot(depotUuid, params, finalClause) {
   let status;
 
-  if (depot_uuid) {
-    params.depot_uuid = depot_uuid;
+  if (depotUuid) {
+    params.depot_uuid = depotUuid;
   }
 
   if (params.status) {
@@ -235,8 +114,9 @@ function getLotsDepot(depot_uuid, params, finalClause) {
 
   const sql = `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, 
-            SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, d.text AS depot_text,
-            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+            SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, 
+            d.text AS depot_text, l.unit_cost, l.expiration_date, 
+            BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
             i.avg_consumption, i.purchase_interval, i.delay
         FROM stock_movement m 
@@ -245,13 +125,13 @@ function getLotsDepot(depot_uuid, params, finalClause) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  finalClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid `;
+  const clause = finalClause || ' GROUP BY l.uuid, m.depot_uuid ';
 
-  return getLots(sql, params, finalClause)
+  return getLots(sql, params, clause)
         .then(stockManagementProcess)
-        .then(rows => {
+        .then((rows) => {
           if (status) {
-            return rows.filter(row => {
+            return rows.filter((row) => {
               return row.status === status;
             });
           }
@@ -268,17 +148,18 @@ function getLotsDepot(depot_uuid, params, finalClause) {
  *
  * @param {object} params - A request query object
  */
-function getLotsMovements(depot_uuid, params) {
-  if (depot_uuid) {
-    params.depot_uuid = depot_uuid;
+function getLotsMovements(depotUuid, params) {
+  if (depotUuid) {
+    params.depot_uuid = depotUuid;
   }
 
   const sql = `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
-            l.unit_cost, l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
-            l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
-            m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
-            f.label AS flux_label, i.delay
+        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, 
+          IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost, l.expiration_date, 
+          BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+          l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date,
+          BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+          f.label AS flux_label, i.delay
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -298,9 +179,9 @@ function getLotsMovements(depot_uuid, params) {
  *
  * @param {object} params - A request query object
  */
-function getLotsOrigins(depot_uuid, params) {
-  if (depot_uuid) {
-    params.depot_uuid = depot_uuid;
+function getLotsOrigins(depotUuid, params) {
+  if (depotUuid) {
+    params.depot_uuid = depotUuid;
   }
 
   const sql = `
@@ -332,15 +213,16 @@ function getLotsOrigins(depot_uuid, params) {
  */
 function stockManagementProcess(inventories) {
   const current = moment();
-  let CM, Q;
+  let CM;
+  let Q;
   let delay;
 
-  return inventories.map(inventory => {
+  return inventories.map((inventory) => {
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-    inventory.S_MAX = CM * inventory.purchase_interval + inventory.S_MIN; // stock maximum
+    inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
     inventory.S_MONTH = inventory.quantity / CM; // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
         // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots

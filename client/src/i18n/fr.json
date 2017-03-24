@@ -1372,6 +1372,7 @@
     "DECREASE"        : "Diminution",
     "DECREASE_HELP"   : "Ajustement de stock en reduisant la quantité des lots des produits en stock",
     "DEPOT"           : "Depot",
+    "DEPOT_RESPONSIBLE" : "Gestionnaire du depot",
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
@@ -1428,7 +1429,7 @@
       "EXIT_LOSS"      : "Sortie de Stock - Perte"
     },
     "RECEIVER"        : "Recepteur",
-    "RESPONSIBLE"     : "Gestionnaire du depot",
+    "RESPONSIBLE"     : "Gestionnaire du stock",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
     "STATUS"          : {

@@ -2,15 +2,17 @@ angular.module('bhima.services')
 .service('SearchFilterFormatService', SearchFilterFormatService);
 
 // dependencies injection 
-SearchFilterFormatService.$inject = [];
+SearchFilterFormatService.$inject = ['FilterService'];
 
 /**
  * SearchFilterFormatService
  * @description This service help to format filters which are displayed for a search 
  */
-function SearchFilterFormatService() {
+function SearchFilterFormatService(Filters) {
 
     var service = this;
+
+    var filter = new Filters();
 
     // expose the service 
     service.formatFilter = formatFilter;
@@ -98,18 +100,19 @@ function SearchFilterFormatService() {
       { field: 'supplier_uuid', displayName: 'FORM.LABELS.SUPPLIER' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter: 'date' },
+      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter: 'date' },
       { field: 'depot_uuid', displayName: 'STOCK.DEPOT' },
       { field: 'inventory_uuid', displayName: 'STOCK.INVENTORY' },
       { field: 'label', displayName: 'FORM.LABELS.LABEL' },
-      { field: 'entry_date_from', displayName: 'STOCK.ENTRY_DATE', comparitor: '>', ngFilter:'date' },
-      { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter:'date' },
-      { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter:'date' },
-      { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter:'date' },
+      { field: 'entry_date_from', displayName: 'STOCK.ENTRY_DATE', comparitor: '>', ngFilter: 'date' },
+      { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter: 'date' },
+      { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter: 'date' },
+      { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter: 'date' },
       { field: 'flux_id', displayName: 'STOCK.FLUX' },
       { field: 'is_exit', displayName: 'STOCK.OUTPUT' },
       { field: 'status', displayName: 'STOCK.STATUS.LABEL' },
+      { field: 'defaultPeriod', displayName: 'TABLE.COLUMNS.PERIOD', ngFilter: 'translate' },
     ];
 
     // returns columns from filters
@@ -118,6 +121,11 @@ function SearchFilterFormatService() {
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        // @FIXME tempoarary hack for default period
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
+        }
         return true;
       } else {
         return false;

@@ -5,7 +5,7 @@ StockMovementsController.$inject = [
   '$state', 'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'FluxService', 'ReceiptModal', 'GridGroupingService',
+  'FluxService', 'ReceiptModal', 'GridGroupingService', 'FilterService',
 ];
 
 /**
@@ -14,10 +14,8 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController($state, Stock, Notify,
   uiGridConstants, $translate, Modal, SearchFilterFormat,
-  Languages, Session, Flux, ReceiptModal, Grouping) {
+  Languages, Session, Flux, ReceiptModal, Grouping, Filters) {
   var vm = this;
-
-  vm.gridApi = {};
 
   // bind flux id with receipt
   var mapFlux = {
@@ -40,6 +38,8 @@ function StockMovementsController($state, Stock, Notify,
   ];
 
   // global variables
+  vm.gridApi = {};
+  vm.Filter = new Filters();
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
   vm.enterprise = Session.enterprise;
@@ -163,16 +163,19 @@ function StockMovementsController($state, Stock, Notify,
     SearchFilterFormat.clearFilters(reload);
   }
 
+  // init filters
+  function initFilters(filters) {
+    var appliedFilters = vm.Filter.applyDefaults(filters || {});
+    vm.filters = { display: appliedFilters, identifiers: appliedFilters };
+    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
+    return appliedFilters;
+  }
+
   // load stock lots in the grid
   function load(filters) {
-    var defaultDate = { dateFrom: new Date(), dateTo: new Date() };
+    var appliedFilters = initFilters(filters);
 
-    if (!filters) {
-      vm.filters = { display: defaultDate, identifiers: defaultDate };
-      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    }
-
-    Stock.movements.read(null, filters || defaultDate).then((rows) => {
+    Stock.movements.read(null, appliedFilters).then((rows) => {
       vm.gridOptions.data = rows;
     })
     .catch(Notify.handleError);
@@ -183,15 +186,15 @@ function StockMovementsController($state, Stock, Notify,
     Modal.openSearchMovements()
     .then((filters) => {
       if (!filters) { return; }
-      reload(filters);
+      load(filters.identifiers);
     })
     .catch(Notify.handleError);
   }
 
   // reload
   function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
+    // vm.filters = filters;
+    // vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
     load(filters.identifiers);
   }
 

@@ -71,8 +71,8 @@
 
   <a
     href
+    ng-if="StockCtrl.Filter.customFiltersApplied(StockCtrl.filters.identifiers)"
     ng-click="StockCtrl.clearFilters()"
-    ng-show="StockCtrl.formatedFilters.length > 0"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-ban text-danger"></i>
@@ -91,6 +91,12 @@
       ui-grid-resize-columns
       ui-grid-auto-resize
       ui-grid-grouping>
+
+      <bh-grid-loading-indicator
+        loading-state="StockCtrl.loading"
+        empty-state="StockCtrl.gridOptions.data.length === 0"
+        error-state="StockCtrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
 
   </div>
