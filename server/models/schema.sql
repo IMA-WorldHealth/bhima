@@ -1096,7 +1096,7 @@ CREATE TABLE `patient` (
   `debtor_uuid`          BINARY(16) NOT NULL,
   `display_name`         VARCHAR(150) NOT NULL,
   `dob`                  DATE NOT NULL,
-  `dob_unknown_date`      BOOLEAN NOT NULL DEFAULT FALSE,
+  `dob_unknown_date`     BOOLEAN NOT NULL DEFAULT FALSE,
   `father_name`          VARCHAR(150),
   `mother_name`          VARCHAR(150),
   `profession`           VARCHAR(150),
@@ -1128,6 +1128,15 @@ CREATE TABLE `patient` (
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `origin_location_id` (`origin_location_id`),
   KEY `current_location_id` (`current_location_id`),
+
+  /* @TODO analyse performance implications of indexing frequently searched columns */
+  INDEX `registration_date` (`registration_date`),
+  INDEX `dob` (`dob`),
+  INDEX `sex` (`sex`), 
+
+  /* @TODO fulltext index may degrade INSERT performance over time */
+  FULLTEXT `display_name` (`display_name`),
+
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
