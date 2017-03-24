@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('cashflowByServiceController', CashflowByServiceConfigController);
 
 CashflowByServiceConfigController.$inject = [
-  '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService', 'reportDetails'
+  '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService', 'reportDetails', 'SessionService'
 ];
 
 /**
@@ -12,13 +12,14 @@ CashflowByServiceConfigController.$inject = [
  * This controller is responsible for setting up the Cashflow by Service report
  * in the standard report controller.
  */
-function CashflowByServiceConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails) {
+function CashflowByServiceConfigController($state, $http, ModalInstance, Notify, Languages, reportDetails, Session) {
   var vm = this;
 
   // expose to the view
-  vm.generate = requestPDF;
-  vm.cancel = ModalInstance.dismiss;
-  vm.report = reportDetails;
+  vm.generate       = requestPDF;
+  vm.cancel         = ModalInstance.dismiss;
+  vm.report         = reportDetails;
+  vm.currency_id    = Session.enterprise.currency_id;
 
   vm.date = new Date();
 
@@ -34,7 +35,8 @@ function CashflowByServiceConfigController($state, $http, ModalInstance, Notify,
       dateTo      : vm.dateTo,
       lang        : Languages.key,
       renderer    : 'pdf',
-      saveReport  : true
+      saveReport  : true,
+      currency_id : vm.currency_id
     };
 
     return $http.get(url, { params : pdfParams })

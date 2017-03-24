@@ -71,7 +71,7 @@ function processingCashflowReport(params) {
 
       // get all periods for the the current fiscal year
       return getPeriods(params.dateFrom, params.dateTo);
-    })      
+    }) 
     .then(function (periods) {
       // get the closing balance (previous fiscal year) for the selected cashbox
       if (!periods.length) {
@@ -144,7 +144,6 @@ function queryIncomeExpense (params, exchangeRate, dateFrom, dateTo) {
  */
 function groupingIncomeExpenseByPeriod(periodicFlows) {
   var grouping = [];
-
   periodicFlows.forEach(function (pf) {
     var incomes, expenses;
     incomes = pf.flows.filter(function (posting) {
@@ -217,14 +216,13 @@ function processingWeekCashflow(params) {
     throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
   }
 
-
   return Exchange.getExchangeRate(params.user.enterprise_id, params.currency_id, new Date())
     .then(function (exchange) {
       exchangeRate = exchange.rate ? exchange.rate : 1;
 
       // get all periods for the the current fiscal year
       return queryIncomeExpense(params, exchangeRate);
-    }) 
+    })
     .then(function (result) {
       return groupByPeriod(glb.periods, result);
     })
@@ -597,8 +595,11 @@ function document(req, res, next) {
 function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
+  const currency_id = req.query.currency_id;
+  const enterprise_id = req.session.user.enterprise_id;
 
   let report;
+  let exchangeRate;
 
   const options = _.clone(req.query);
   _.extend(options, { orientation: 'landscape' });
@@ -619,7 +620,7 @@ function reportByService(req, res, next) {
     FROM (
       SELECT BUID(cash.uuid) AS uuid,
         CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
-        cash.date, cash.amount AS cashAmount, SUM(invoice.cost) AS invoiceAmount, cash.currency_id,
+        cash.date, cash.amount * ${exchangeRate}  AS cashAmount, SUM(invoice.cost) * ${exchangeRate} AS invoiceAmount, cash.currency_id,
         service.id AS service_id, patient.display_name, service.name
       FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
         JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
@@ -641,7 +642,7 @@ function reportByService(req, res, next) {
 
   // get the totals of the captured records
   const serviceAggregationSql = `
-    SELECT service.name, SUM(cash.amount) AS totalCashIncome, SUM(invoice.cost) AS totalAcruelIncome
+    SELECT service.name, SUM(cash.amount) * ${exchangeRate}  AS totalCashIncome, SUM(invoice.cost) * ${exchangeRate} AS totalAcruelIncome
     FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
       JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
       JOIN service ON invoice.service_id = service.id

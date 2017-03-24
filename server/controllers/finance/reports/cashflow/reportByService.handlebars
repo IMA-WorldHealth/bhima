@@ -1,18 +1,29 @@
-{{> head title="CASHFLOW.BY_SERVICE" }}
+{{> head title="REPORT.CASHFLOW_BY_SERVICE" }}
 
-<body>
-
-  {{> header}}
-
-  <!-- body  -->
+<div class="container-fluid">
+  <!-- heading  -->
   <div class="row">
+    <div class="col-xs-4">
+      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
+      <p style="margin:2px;">
+        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
+        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
+        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
+        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
+      </p>
+    </div>
+
+    <div class="col-xs-4">
+      <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{translate 'REPORT.CASHFLOW_BY_SERVICE'}}<br>
+        <small>{{date dateFrom }} - {{date dateTo }}</small>
+      </h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- the generated report  -->
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-capitalize">
-        {{translate 'REPORT.CASHFLOW_BY_SERVICE'}}
-      </h2>
-
       <table class="table table-bordered table-condensed"  style="font-size:0.75em;">
         <thead>
           <tr>
@@ -52,11 +63,11 @@
           <tr>
             <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
             {{#each aggregates as | aggregate |}}
-              <th class="text-right">{{aggregate.totalCashIncome}}</th>
+              <th class="text-right">{{currency aggregate.totalCashIncome ../currency_id }}</th>
             {{/each}}
           </tr>
         </tfoot>
       </table>
     </div>
   </div>
-</body>
+</div>
