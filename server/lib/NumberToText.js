@@ -14,6 +14,18 @@ exports.convert = convert;
 let dictionary;
 let languageKey;
 
+/**
+*
+* Source: http://stackoverflow.com/questions/14766951/convert-digits-into-words-with-javascript
+* >> Comment number 15
+* "Deceptively simple task." – Potatoswatter
+* Indeed. There's many little devils hanging out in the details of this problem. It was very fun to solve tho.
+* EDIT: This update takes a much more compositional approach. 
+*  Previously there was one big function which wrapped a couple other proprietary functions. 
+*  Instead, this time we define generic reusable functions which could be used for many varieties of tasks. 
+*  More about those after we take a look at numToWords itself …
+*/
+
 function convert(number, lang, currencyName){
   //Round to at most 2 decimal places
   number = Math.round(number * 100) / 100;
@@ -85,7 +97,9 @@ function convert(number, lang, currencyName){
         .reverse()
         .join(' ');
   };
-
+  /**
+  *
+  */
 
   var numberString = String(number);
   var numberPart = numberString.split(".");
