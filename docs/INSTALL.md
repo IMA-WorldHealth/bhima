@@ -43,14 +43,15 @@ The database structure is contained in the following files:
 
 For an initial setup, bhima also includes a file `server/models/test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.  Note that the database must be running SQL strict mode for all the logic to behave correctly.
 
-Alternative, you might use the `install.sh` script, customized with your environmental variables as shown below:
+Alternative, you might use the `build-database.sh` script, customized with your environmental variables as shown below:
 
 ```sh
 # install the database
-./sh/install.sh
+DB_USER='me' DB_PASS='MyPassword' DB_NAME='bhima' ./sh/build-database.sh
 ```
 
 ###### Configuring the Application
+The development data is bundled with the application.
 Copy the `.env.sample` environmental variable file into `.env.production` and set your preferred environmental variables where required.  Make sure this file is in the root directory.
 
 ###### Running the Application
@@ -62,8 +63,9 @@ Navigate to [https://localhost:8080](https://localhost:8080) in the browser to v
 ###### Testing the Application
 Our tests are broken into unit tests, end to end tests, and integration tests.  There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
  1. **Integration Tests** - These test the server + database integration and generally our APIs.  All reachable API endpoints should generally have an integration test associated with them.  To run them, type `npm run test:integration`.
- 2. **Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies.  Karma launches a chrome browser to execute the tests.  To run them, type `npm run karma`.
+ 2. **Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies.  Karma launches a chrome browser to execute the tests.  To run them, type `npm run test:client-unit`.
  3. **End to End Tests** - The entire stack is tested with (often flaky) end to end tests using [protractor](protractortest.org).  Protractor depends on `webdriver-manager` which must be installed separately.  See their documentation for more information.  The end to end tests can be run with `npm run test:ends`.
 
+You can run all tests by simply typing `npm run test`.
 
 Enjoy using bhima!
