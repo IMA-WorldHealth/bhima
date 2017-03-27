@@ -36,7 +36,7 @@ describe('Inventory List', () => {
     code : uniqueIdentifier.concat('_updated'),
     text : '[E2E] Inventory Article updated',
     price : 7.77,
-    group : 'Inventory Group',
+    group : 'Test inventory group',
     type  : 'Service',
     unit  : 'Pill',
     unit_weight : 7,
@@ -71,7 +71,7 @@ describe('Inventory List', () => {
 
     GU.expectRowCount('inventoryListGrid', 1);
     FU.buttons.clear();
-  }); 
+  });
 
   it('dont creates a new inventory item (metadata) for invalid data', () => {
     FU.buttons.create();
