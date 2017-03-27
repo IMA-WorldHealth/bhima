@@ -64,6 +64,7 @@ exports.list = list;
 
 // search patients
 exports.search = search;
+exports.searchByName = searchByName;
 exports.find = find;
 
 // check if a hospital file number is assigned to any patients
@@ -325,6 +326,41 @@ function hospitalNumberExists(req, res, next) {
     .done();
 }
 
+/*
+ * @method searchByName
+ *
+ * @description
+ * This method implements a patient search that will only ever return very limited
+ * information, it does not require many JOINs and will respond with UUIDs for patients
+ * that match the requested name.
+ */
+function searchByName(req, res, next) {
+  // filter parser not implemented - all other params should be ignored
+  const searchValue = req.query.display_name;
+  const searchParameter = `%${searchValue}%`;
+
+  if (_.isUndefined(searchValue)) {
+    return next(new BadRequest('display_name attribute must be specified for a name search'));
+  }
+
+  // current default limit - this could be defined through req.query if there is a need for this
+  const limit = 10;
+
+  const sql = `
+    SELECT
+      BUID(uuid) as uuid, display_name,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) as reference
+    FROM patient
+    JOIN project ON patient.project_id = project.id
+    WHERE LOWER(display_name) LIKE ?
+    LIMIT ${limit}
+  `;
+
+  return db.exec(sql, [searchParameter])
+    .then((results) => res.send(results))
+    .catch(next)
+    .done();
+}
 
 /**
  * @method find
@@ -338,9 +374,9 @@ function hospitalNumberExists(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid']);
+  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias: 'q' });
+  const filters = new FilterParser(options, { tableAlias: 'p' });
   const sql = patientEntityQuery(options.detailed);
 
   filters.fullText('display_name');
@@ -349,12 +385,20 @@ function find(options) {
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
 
+  // default registration date
+  filters.period('defaultPeriod', 'registration_date');
+
   const patientGroupStatement =
-    '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = q.uuid AND patient_group_uuid = ?) = 1';
+    '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
+  filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+
+  const referenceStatement =
+    `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
+  filters.custom('reference', referenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
-  filters.setOrder('ORDER BY q.registration_date DESC');
+  filters.setOrder('ORDER BY p.registration_date DESC');
 
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
@@ -368,11 +412,11 @@ function patientEntityQuery(detailed) {
   // if the find should included detailed results
   if (detailed) {
     detailedColumns = `
-      , q.abbr, q.father_name, q.mother_name, q.profession, q.employer, q.hospital_no,
-      q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
-      q.phone, q.email, q.address_1, q.address_2, BUID(q.origin_location_id) as origin_location_id,
-      BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.text,
-      q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked
+      , proj.abbr, p.father_name, p.mother_name, p.profession, p.employer,
+      p.spouse, p.spouse_profession, p.spouse_employer, p.religion, p.marital_status,
+      p.phone, p.email, p.address_1, p.address_2, BUID(p.origin_location_id) as origin_location_id,
+      BUID(p.current_location_id) as current_location_id, p.registration_date, p.title, p.notes, d.text,
+      dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
     `;
   }
 
@@ -380,28 +424,18 @@ function patientEntityQuery(detailed) {
   //       _before_selecting.
   // build the main part of the SQL query
   const sql = `
-    SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
-      q.sex, q.dob, q.registration_date, BUID(q.debtor_group_uuid) as debtor_group_uuid, q.hospital_no,
-      q.last_visit, q.userName, q.originVillageName, q.originSectorName ${detailedColumns}
-    FROM (
-      SELECT p.uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
-        p.display_name, p.debtor_uuid AS debtor_uuid, p.sex, p.dob, p.father_name, p.mother_name, p.profession,
-        p.employer, p.spouse, p.spouse_profession, p.spouse_employer, p.religion, p.marital_status, p.phone,
-        p.email, p.address_1, p.address_2, p.origin_location_id, p.current_location_id,
-        p.registration_date, p.title, p.notes, p.hospital_no, p.user_id, d.text, proj.abbr, dg.account_id,
-        dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.start_date) AS last_visit,
-        dg.uuid AS debtor_group_uuid, u.display_name AS userName, originVillage.name AS originVillageName,
-        originSector.name AS originSectorName
-        FROM patient AS p
-        JOIN project AS proj ON p.project_id = proj.id
-        JOIN debtor AS d ON p.debtor_uuid = d.uuid
-        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-        JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
-        JOIN sector AS originSector on originVillage.sector_uuid = originSector.uuid
-        JOIN user AS u ON p.user_id = u.id
-        LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
-        GROUP BY p.uuid
-      ) AS q
+    SELECT BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
+      p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
+      p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
+      u.display_name as userName, originVillage.name as originVillageName,
+      originSector.name as originSectorName ${detailedColumns}
+    FROM patient AS p
+      JOIN project AS proj ON p.project_id = proj.id
+      JOIN debtor AS d ON p.debtor_uuid = d.uuid
+      JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
+      JOIN sector AS originSector on originVillage.sector_uuid = originSector.uuid
+      JOIN user AS u ON p.user_id = u.id
   `;
 
   return sql;
@@ -571,8 +605,7 @@ function loadLatestInvoice(inv) {
     `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
-       WHERE debtor_uuid = ? AND invoice.uuid NOT IN
-         (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+       WHERE debtor_uuid = ? AND invoice.reversed = 0
        ORDER BY date DESC`;
 
 

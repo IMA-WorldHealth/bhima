@@ -396,6 +396,7 @@
       "CONFIRM_MODAL"          : "Confirmation Needed"
     },
     "ERRORS": {
+      "AT_LEAST_1_COL"      : "At least one column must be selected",
       "CONNECTION"          : "Connection error",
       "GENERIC"             : "The form contains errors.",
       "HAS_ERROR"           : "Contains an error",
@@ -532,6 +533,7 @@
       "DEFAULT_QUANTITY"       : "Default Quantity",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
+      "DETAIL_PREVIOUS"        : "Detail Previous",
       "DETAILS"                : "Details",
       "DETAIL_PREVIOUS"        : "Previous Year Details",
       "DEBTOR_CREDITOR"        : "Debtor/Creditor",
@@ -992,7 +994,7 @@
       "MISSING_SALES_ACCOUNT" : "The record contains an inventory item missing a sales account.  You cannot make an invoice without a sales account.",
       "NOT_CONFIGURED" : "The record is missing an inventory item. Please put in an inventory item or remove the row."
     },
-    "DESCRIPTION"        : "Invoice to {{ patientName }} ({{ patientReference }} for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
+    "DESCRIPTION"        : "Invoice to {{ patientName }} ({{ patientReference }}) for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
     "PAGE_TITLE"         : "Patient Invoice",

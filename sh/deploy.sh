@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # post install script to deploy the application for testing
-export NODE_ENV="staging"
+NODE_ENV="production"
 
 # remove the progress bar for fun and profit
 npm set progress=false
@@ -17,6 +17,8 @@ npm install
 
 # cd into the built directory
 cd bin
+
+export NODE_ENV="staging"
 
 # start the application
 node server/app.js &

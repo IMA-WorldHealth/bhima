@@ -227,9 +227,6 @@ function find(options) {
 
   filters.period('defaultPeriod', 'date');
 
-  // support credit note toggle
-  // filters.reversed('reversed');
-
   const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
 

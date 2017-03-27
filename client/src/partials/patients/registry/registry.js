@@ -2,8 +2,10 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal',
-  'uiGridConstants', '$translate', 'GridColumnService', 'GridSortingService', 'bhConstants'
+  '$state', 'PatientService', 'NotifyService', 'AppCache',
+  'util', 'ReceiptModal', 'uiGridConstants', '$translate',
+  'GridColumnService', 'GridSortingService', 'bhConstants',
+  'FilterService',
 ];
 
 /**
@@ -11,8 +13,13 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController($state, Patients, Notify, AppCache, util, Receipts, uiGridConstants, $translate, Columns, Sorting, bhConstants) {
+function PatientRegistryController($state, Patients, Notify, AppCache,
+  util, Receipts, uiGridConstants, $translate,
+  Columns, Sorting, bhConstants, Filters) {
   var vm = this;
+
+  var filter = new Filters();
+  vm.filter = filter;
 
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
@@ -29,36 +36,77 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   vm.loading = false;
 
   var columnDefs = [
-    { field : 'reference',
-      displayName : 'TABLE.COLUMNS.REFERENCE',
-      aggregationType: uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true, headerCellFilter: 'translate',
-      cellTemplate : '/partials/templates/grid/patient.card.cell.html',
-      footerCellClass : 'text-center',
-      sortingAlgorithm : Sorting.algorithms.sortByReference
+    { field                : 'reference',
+      displayName          : 'TABLE.COLUMNS.REFERENCE',
+      aggregationType      : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true, headerCellFilter     : 'translate',
+      cellTemplate         : '/partials/templates/grid/patient.card.cell.html',
+      footerCellClass      : 'text-center',
+      sortingAlgorithm     : Sorting.algorithms.sortByReference,
     },
-    { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/patient.cell.html' },
-    { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter: 'translate', type: 'number' },
-    { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter: 'translate' },
-    { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter: 'translate' },
-    { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter: 'translate' },
-    { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter: 'translate', type: 'date' },
-    { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter: 'translate', type: 'date' },
-    { field : 'userName', displayName : 'TABLE.COLUMNS.USER', headerCellFilter: 'translate' },
-    { field : 'originVillageName', displayName : 'FORM.LABELS.ORIGIN_VILLAGE', headerCellFilter: 'translate', visible: false },
-    { field : 'originSectorName', displayName : 'FORM.LABELS.ORIGIN_SECTOR', headerCellFilter: 'translate', visible: false },
-    { name : 'actions', displayName : '', cellTemplate : '/partials/patients/templates/action.cell.html', enableSorting: false }
+    { field            : 'display_name',
+      displayName      : 'TABLE.COLUMNS.NAME',
+      headerCellFilter : 'translate',
+      cellTemplate     : '/partials/templates/grid/patient.cell.html',
+    },
+    { field            : 'patientAge',
+      displayName      : 'TABLE.COLUMNS.AGE',
+      headerCellFilter : 'translate',
+      type             : 'number',
+    },
+    { field            : 'sex', 
+      displayName      : 'TABLE.COLUMNS.GENDER',
+      headerCellFilter : 'translate',
+    },
+    { field            : 'hospital_no',
+      displayName      : 'TABLE.COLUMNS.HOSPITAL_FILE_NR',
+      headerCellFilter : 'translate',
+    },
+    { field            : 'registration_date',
+      cellFilter       : 'date',
+      displayName      : 'TABLE.COLUMNS.DATE_REGISTERED',
+      headerCellFilter : 'translate',
+    },
+    { field            : 'last_visit',
+      cellFilter       : 'date',
+      displayName      : 'TABLE.COLUMNS.LAST_VISIT',
+      headerCellFilter : 'translate',
+      type             : 'date',
+    },
+    { field            : 'dob',
+      cellFilter       : 'date',
+      displayName      : 'TABLE.COLUMNS.DOB',
+      headerCellFilter : 'translate',
+      type             : 'date',
+    },
+    { field            : 'userName',
+      displayName      : 'TABLE.COLUMNS.USER',
+      headerCellFilter : 'translate',
+    },
+    { field            : 'originVillageName',
+      displayName      : 'FORM.LABELS.ORIGIN_VILLAGE',
+      headerCellFilter : 'translate',
+      visible          : false,
+    },
+    { field            : 'originSectorName',
+      displayName      : 'FORM.LABELS.ORIGIN_SECTOR',
+      headerCellFilter : 'translate',
+      visible          : false },
+    { name          : 'actions',
+      displayName   : '',
+      cellTemplate  : '/partials/patients/templates/action.cell.html',
+      enableSorting : false },
   ];
 
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
-    appScopeProvider : vm,
-    showColumnFooter : true,
-    enableSorting : true,
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
+    enableSorting     : true,
     enableColumnMenus : false,
-    flatEntityAccess : true,
-    fastWatch: true,
-    columnDefs : columnDefs
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    columnDefs        : columnDefs,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -110,6 +158,10 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
         // no parameters means the modal was dismissed.
         if (!parameters) { return; }
 
+        if (parameters.defaultPeriod) {
+          delete parameters.defaultPeriod;
+        }
+
         cacheFilters(parameters);
         return load(vm.filters);
       });
@@ -121,6 +173,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
+    filters = filter.applyDefaults(filters);
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Patients.formatFilterParameters(filters);
 
@@ -138,7 +191,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
   // clears the filters by forcing a cache of an empty array
   function clearFilters() {
     cacheFilters({});
-    load();
+    load(vm.filters);
   }
 
   // toggles the loading indicator on or off
@@ -159,13 +212,15 @@ function PatientRegistryController($state, Patients, Notify, AppCache, util, Rec
       cacheFilters($state.params.filters);
     }
 
-    vm.filters = cache.filters;
-    vm.filtersFmt = Patients.formatFilterParameters(cache.filters || {});
+    if (!cache.filters) { cache.filters = {}; }
+    var filters = filter.applyDefaults(cache.filters);
+    
+    vm.filters = filters;
+    vm.filtersFmt = Patients.formatFilterParameters(vm.filters || {});
     load(vm.filters);
 
     // check if there are filters applied
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      { 'height' : 'calc(100vh - 105px)' } : {};
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
   }
 
   // fire up the module

@@ -2,7 +2,8 @@ angular.module('bhima.services')
 .service('PatientService', PatientService);
 
 PatientService.$inject = [
-  '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'
+  '$http', 'util', 'SessionService', '$uibModal',
+  'DocumentService', 'VisitService', 'FilterService',
 ];
 
 /**
@@ -20,9 +21,11 @@ PatientService.$inject = [
  *   Patients.create(medicalDetails, financeDetails).then(callback);
  *  }
  */
-function PatientService($http, util, Session, $uibModal, Documents, Visits) {
+function PatientService($http, util, Session, $uibModal,
+  Documents, Visits, Filters) {
   var service = this;
   var baseUrl = '/patients/';
+  var filter = new Filters();
 
   service.read = read;
   service.create = create;
@@ -36,6 +39,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
   // uses the "search" endpoint to pass query strings to the database
   service.search = search;
+  service.searchByName = searchByName;
   service.formatFilterParameters = formatFilterParameters;
 
   // document exposition definition
@@ -159,6 +163,15 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
       .then(util.unwrapHttpResponse);
   }
 
+  function searchByName(options) {
+    options = angular.copy(options || {});
+
+    var target = baseUrl.concat('search/name');
+
+    return $http.get(target, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+
   /**
    * Fetches all billing services subslected by a patient entity
    *
@@ -232,7 +245,8 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
       { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
       { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
       { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' }
+      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
     ];
 
 
@@ -246,6 +260,10 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
         if (column.field === 'debtor_group_uuid' || column.field === 'patient_group_uuid') {
           column.value = column.value.slice(0, LIMIT_UUID_LENGTH);
+        }
+
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
         }
 
         return true;

@@ -398,6 +398,7 @@
       "CONFIRM_MODAL"          : "La confirmation est nécessaire"
     },
     "ERRORS": {
+      "AT_LEAST_1_COL"     : "Au moins une colonne doit être sélectionnée",
       "CONNECTION"         : "Erreur de connexion",
       "GENERIC"            : "Le formulaire contient des erreurs",
       "HAS_ERROR"          : "Contiens une erreur",
@@ -1001,7 +1002,7 @@
       "MISSING_SALES_ACCOUNT" : "L'enregistrement contient un item d'inventaire qui n'a pas de compte de vente associé à son groupe",
       "NOT_CONFIGURED"        : "L'enregistrement ne contient pas d'item inventaire. Veuillez inserer un item ou supprimer la ligne."
     },
-    "DESCRIPTION"        : "Facture a {{ patientName }} ({{ patientReference }} pour {{ numItems }} items dans le service {{ serviceName }}. {{ description }}",
+    "DESCRIPTION"        : "Facture a {{ patientName }} ({{ patientReference }}) pour {{ numItems }} items dans le service {{ serviceName }}. {{ description }}",
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "LABEL_PAID"         : "Cette facture a été payé.",

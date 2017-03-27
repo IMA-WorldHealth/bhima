@@ -83,7 +83,8 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
       return invoice.reference;
     });
 
-    var referencesString = invoicesReferences.join(', ');
+    // this must be semicolons, otherwise the CSV file breaks.
+    var referencesString = invoicesReferences.join('; ');
 
     var tmpl = isCaution ? 'CASH.PREPAYMENT_DESCRIPTION' : 'CASH.PAYMENT_DESCRIPTION';
 

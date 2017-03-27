@@ -21,11 +21,9 @@
  * @requires lib/errors/BadRequest
  */
 
-const uuid = require('node-uuid');
 const _ = require('lodash');
 
-const db   = require('../../lib/db');
-const util = require('../../lib/util');
+const db = require('../../lib/db');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -151,17 +149,15 @@ function list(req, res, next) {
  * @description list all payment made
  */
 function listPayment(options) {
-  let filters = new FilterParser(options, { tableAlias : 'cash' });
+  const filters = new FilterParser(options, { tableAlias: 'cash' });
 
-  let sql = `
+  const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
       CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
-      voucher.type_id, p.display_name AS patientName
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.reversed,
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, p.display_name AS patientName
     FROM cash
-      LEFT JOIN voucher ON voucher.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN patient p on p.debtor_uuid = d.uuid
@@ -173,20 +169,17 @@ function listPayment(options) {
   filters.dateTo('dateTo', 'date');
   filters.period('defaultPeriod', 'date');
 
-  let referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
+  const referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
-  let patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
+  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
   filters.custom('patientReference', patientReferenceStatement);
-
-  // filter reversed cash records
-  filters.reversed('reversed');
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
 
-  let query = filters.applyQuery(sql);
-  let parameters = filters.parameters();
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
   return db.exec(query, parameters);
 }
 
@@ -200,7 +193,7 @@ function listPayment(options) {
  */
 function detail(req, res, next) {
   lookup(req.params.uuid)
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -221,15 +214,13 @@ function update(req, res, next) {
   // protected database fields that are unavailable for updates.
   const protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
-    'currency_id', 'date', 'project_id'
+    'currency_id', 'date', 'project_id',
   ];
 
   // loop through update keys and ensure that we are only updating non-protected
   // fields
-  let keys = Object.keys(req.body);
-  let hasProtectedKey = keys.some(function (key) {
-      return protect.indexOf(key) > -1;
-  });
+  const keys = Object.keys(req.body);
+  const hasProtectedKey = keys.some(key => protect.indexOf(key) > -1);
 
   // if we have a protected key, emit an error
   if (hasProtectedKey) {
@@ -240,23 +231,18 @@ function update(req, res, next) {
   delete req.body.uuid;
 
   // properly parse date if it exists
-  if (req.body.date) { req.body.date = new Date(req.body.date); }
+  if (req.body.date) {
+    _.extend(req.body, { date: new Date(req.body.date) });
+  }
 
   // if checks pass, we are free to continue with our updates to the db
   lookup(req.params.uuid)
-    .then(function (record) {
 
       // if we get here, we know we have a cash record by this UUID.
       // we can try to update it.
-      return db.exec(sql, [ req.body, db.bid(req.params.uuid)]);
-    })
-    .then(function () {
-
-      // fetch the changed object from the database
-      return lookup(req.params.uuid);
-    })
-    .then(function (record) {
-
+    .then(() => db.exec(sql, [req.body, db.bid(req.params.uuid)]))
+    .then(() => lookup(req.params.uuid))
+    .then((record) => {
       // all updates completed successfully, return full object to client
       res.status(200).json(record);
     })
@@ -269,18 +255,18 @@ function update(req, res, next) {
  * retrieves cash payment uuids from a reference string (e.g. HBB123)
  */
 function reference(req, res, next) {
-
   // alias the reference
   var ref = req.params.reference;
 
-  const sql =
-    `SELECT BUID(c.uuid) AS uuid FROM (
+  const sql = `
+    SELECT BUID(c.uuid) AS uuid FROM (
       SELECT cash.uuid
       FROM cash JOIN project ON cash.project_id = project.id
-    )c WHERE c.reference = ?;`;
+    )c WHERE c.reference = ?;
+  `;
 
-  db.one(sql, [ ref ], ref, 'cash')
-    .then(function (payment) {
+  db.one(sql, [ref], ref, 'cash')
+    .then((payment) => {
       // references should be unique - return the first one
       res.status(200).json(payment);
     })
@@ -295,18 +281,14 @@ function reference(req, res, next) {
 function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
 
-  const REVERSAL_TYPE_ID = 10;
-
   const sql = `
-    SELECT cash_item.cash_uuid, cash_item.invoice_uuid FROM cash_item
-    WHERE cash_item.invoice_uuid = ?
-    AND cash_item.cash_uuid NOT IN (
-      SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSAL_TYPE_ID}
-    );
+    SELECT cash.reversed, cash_item.cash_uuid, cash_item.invoice_uuid FROM cash JOIN cash_item
+    WHERE cash_item.invoice_uuid = ? AND cash.reversed <> 1
+    GROUP BY cash_item.invoice_uuid;
   `;
 
   db.exec(sql, [bid])
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)

@@ -317,14 +317,35 @@ BEGIN
  -- cursor for debtor's cautions
   DECLARE curse CURSOR FOR
     SELECT c.id, c.date, c.description, SUM(c.credit - c.debit) AS balance FROM (
-        SELECT debit_equiv as debit, credit_equiv as credit, combined_ledger.trans_date as date, combined_ledger.description, record_uuid AS id
-        FROM combined_ledger JOIN cash
-          ON cash.uuid = combined_ledger.record_uuid
+
+        -- get the record_uuids in the posting journal
+        SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, record_uuid AS id
+        FROM posting_journal JOIN cash
+          ON cash.uuid = posting_journal.record_uuid
         WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
-      UNION
-        SELECT debit_equiv as debit, credit_equiv as credit, combined_ledger.trans_date as date, combined_ledger.description, reference_uuid AS id
-        FROM combined_ledger JOIN cash
-          ON cash.uuid = combined_ledger.reference_uuid
+
+      UNION ALL
+
+        -- get the record_uuids in the general ledger
+        SELECT debit_equiv as debit, credit_equiv as credit, general_ledger.trans_date as date, general_ledger.description, record_uuid AS id
+        FROM general_ledger JOIN cash
+          ON cash.uuid = general_ledger.record_uuid
+        WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
+
+      UNION ALL
+
+        -- get the reference_uuids in the posting_journal
+        SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, reference_uuid AS id
+        FROM posting_journal JOIN cash
+          ON cash.uuid = posting_journal.reference_uuid
+        WHERE entity_uuid = ientityId AND cash.is_caution = 0
+
+      UNION ALL
+
+        -- get the reference_uuids in the general_ledger
+        SELECT debit_equiv as debit, credit_equiv as credit, general_ledger.trans_date as date, general_ledger.description, reference_uuid AS id
+        FROM general_ledger JOIN cash
+          ON cash.uuid = general_ledger.reference_uuid
         WHERE entity_uuid = ientityId AND cash.is_caution = 0
     ) AS c
     GROUP BY c.id
@@ -776,7 +797,8 @@ BEGIN
 
   IF (`no_cash_item_stage` = 1) THEN
     CREATE TEMPORARY TABLE stage_cash_item
-      (SELECT uuid, cash_uuid, invoice_uuid);
+      (INDEX invoice_uuid (invoice_uuid))
+      SELECT uuid, cash_uuid, invoice_uuid;
 
   ELSE
     INSERT INTO stage_cash_item
@@ -788,15 +810,20 @@ END $$
 CREATE PROCEDURE VerifyCashTemporaryTables()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP,
+    INDEX uuid (uuid),
+    INDEX entity_uuid (entity_uuid)
   );
 
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
-    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP,
+    INDEX uuid (uuid),
+    INDEX entity_uuid (entity_uuid)
   );
 
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
-    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP,
+    INDEX uuid (uuid)
   );
 END $$
 
@@ -830,18 +857,36 @@ BEGIN
   CALL VerifyCashTemporaryTables();
 
   INSERT INTO stage_cash_records
-    SELECT cl.record_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
-    FROM combined_ledger AS cl
-    WHERE cl.record_uuid IN (
-      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
-    ) AND cl.entity_uuid = cashDebtorUuid;
+    SELECT p.record_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.entity_uuid, p.trans_date as date
+    FROM posting_journal AS p
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = p.record_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND p.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_records
+    SELECT g.record_uuid AS uuid, g.debit_equiv as debit, g.credit_equiv as credit, g.entity_uuid, g.trans_date as date
+    FROM general_ledger AS g
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = g.record_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND g.entity_uuid = cashDebtorUuid;
 
   INSERT INTO stage_cash_references
-    SELECT cl.reference_uuid AS uuid, cl.debit_equiv as debit, cl.credit_equiv as credit, cl.entity_uuid, cl.trans_date as date
-    FROM combined_ledger AS cl
-    WHERE cl.reference_uuid IN (
-      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
-    ) AND cl.entity_uuid = cashDebtorUuid;
+    SELECT p.reference_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.entity_uuid, p.trans_date as date
+    FROM posting_journal AS p
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = p.reference_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND p.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_references
+    SELECT g.reference_uuid AS uuid, g.debit_equiv as debit, g.credit_equiv as credit, g.entity_uuid, g.trans_date as date
+    FROM general_ledger AS g
+    JOIN stage_cash_item AS ci ON
+      ci.invoice_uuid = g.reference_uuid
+    WHERE ci.cash_uuid = cashUuid
+    AND g.entity_uuid = cashDebtorUuid;
 
   INSERT INTO stage_cash_invoice_balances
     SELECT zz.uuid, zz.balance, zz.date
@@ -1116,7 +1161,6 @@ BEGIN
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
 
-
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
@@ -1127,11 +1171,17 @@ BEGIN
   -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
   -- This is done in JS currently, but could be done here.
   DECLARE isInvoice BOOLEAN;
+  DECLARE isCashPayment BOOLEAN;
   DECLARE reversalType INT;
 
   SET reversalType = 10;
 
   SET isInvoice = (SELECT IFNULL((SELECT 1 FROM invoice WHERE invoice.uuid = uuid), 0));
+
+  -- avoid a scan of the cash table if we already know this is an invoice reversal
+  IF NOT isInvoice THEN
+    SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
+  END IF;
 
   -- @fixme - why do we have `amount` in the voucher table?
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
@@ -1159,12 +1209,16 @@ BEGIN
     ) AS zz;
 
   -- make sure we update the invoice with the fact that it got reversed.
-  IF (isInvoice) THEN
+  IF isInvoice THEN
     UPDATE invoice SET reversed = 1 WHERE invoice.uuid = uuid;
   END IF;
 
-  CALL PostVoucher(voucher_uuid);
+  -- make sure we update the cash payment that was reversed
+  IF isCashPayment THEN
+    UPDATE cash SET reversed = 1 WHERE cash.uuid = uuid;
+  END IF;
 
+  CALL PostVoucher(voucher_uuid);
 END $$
 
 

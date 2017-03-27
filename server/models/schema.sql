@@ -101,6 +101,7 @@ CREATE TABLE `cash` (
   `description`     TEXT,
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `reversed`        TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
@@ -123,6 +124,7 @@ CREATE TABLE `cash_item` (
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
+  INDEX (`invoice_uuid`),
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -759,6 +761,12 @@ CREATE TABLE `general_ledger` (
   KEY `user_id` (`user_id`),
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
+  INDEX `trans_date` (`trans_date`),
+  INDEX `trans_id` (`trans_id`),
+  INDEX `record_uuid` (`record_uuid`),
+  INDEX `reference_uuid` (`record_uuid`),
+  INDEX `entity_uuid` (`entity_uuid`),
+  INDEX `account_id` (`account_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
@@ -1088,7 +1096,7 @@ CREATE TABLE `patient` (
   `debtor_uuid`          BINARY(16) NOT NULL,
   `display_name`         VARCHAR(150) NOT NULL,
   `dob`                  DATE NOT NULL,
-  `dob_unknown_date`      BOOLEAN NOT NULL DEFAULT FALSE,
+  `dob_unknown_date`     BOOLEAN NOT NULL DEFAULT FALSE,
   `father_name`          VARCHAR(150),
   `mother_name`          VARCHAR(150),
   `profession`           VARCHAR(150),
@@ -1120,6 +1128,15 @@ CREATE TABLE `patient` (
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `origin_location_id` (`origin_location_id`),
   KEY `current_location_id` (`current_location_id`),
+
+  /* @TODO analyse performance implications of indexing frequently searched columns */
+  INDEX `registration_date` (`registration_date`),
+  INDEX `dob` (`dob`),
+  INDEX `sex` (`sex`), 
+
+  /* @TODO fulltext index may degrade INSERT performance over time */
+  FULLTEXT `display_name` (`display_name`),
+
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
@@ -1298,6 +1315,7 @@ CREATE TABLE `posting_journal` (
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
   INDEX `trans_date` (`trans_date`),
+  INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
   INDEX `reference_uuid` (`record_uuid`),
   INDEX `entity_uuid` (`entity_uuid`),
