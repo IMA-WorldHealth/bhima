@@ -27,7 +27,6 @@ class DatabaseConnector {
 
   /** @constructor */
   constructor() {
-    const url = process.env.DB_URL;
     const params = {
       host     : process.env.DB_HOST,
       user     : process.env.DB_USER,
@@ -35,8 +34,7 @@ class DatabaseConnector {
       database : process.env.DB_NAME,
     };
 
-    // favors a connection URL over the pre-defined parameters
-    this.pool = mysql.createPool(url || params);
+    this.pool = mysql.createPool(params);
   }
 
   /**
