@@ -41,6 +41,9 @@ function LatestInvoice(Patient, moment, Notify, Session) {
       .then(function (balance) {
         vm.patientBalance = balance;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });      
   }
 }
