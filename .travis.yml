@@ -21,18 +21,11 @@ node_js:
 
 before_script:
   - "export DISPLAY=:99.0"
-  - "sh sh/install.sh"
-  - npm run lint
+  - "./sh/travis.sh"
+  - "./sh/dependencies.sh"
 
 script:
-  - sh sh/deploy.sh
-  - sleep 3
-  - ./node_modules/.bin/mocha test/integration/
-  - ./node_modules/.bin/karma start --single-run
-  - sh sh/install.sh
-  - ./node_modules/.bin/webdriver-manager update
-  - sleep 10
-  - ./node_modules/.bin/protractor protractor.conf.js
+  - npm run test
 
 git:
   depth: 3

@@ -15,22 +15,25 @@ describe('Complex Vouchers', function () {
   it('creates a complex voucher', function () {
     const page = new ComplexVoucherPage();
 
+    // set a new timeout to avoid warnings
+    this.timeout(45000);
+
     /*
      * the voucher we will use in this page
      * NOTA: the Test Capital One is a financial account which involve that we
      * specify the transfer type
      */
     const voucher = {
-      date : new Date(),
+      date        : new Date(),
       description : 'Complex voucher test e2e',
-      rows : [
-        { account : 'Test Debtor Accounts1', debit: 18, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
-        { account : 'Test Capital One', debit: 0, credit: 8, reference : { type : 'voucher', index : 0 }},
-        { account : 'Test Capital Two', debit: 0, credit: 5, reference : { type : 'voucher', index : 2 }},
-        { account : 'First Test Item Account', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }},
-        { account : 'Test Capital One', debit: 7, credit: 0, entity : { type : 'C', name : 'Fournisseur' }},
-        { account : 'Test Capital Two', debit: 0, credit: 7, reference : { type : 'patient-invoice', index : 1 }}
-      ]
+      rows        : [
+        { account: 'Test Debtor Accounts1', debit: 18, credit: 0, entity: { type: 'D', name: 'Patient/2/Patient' } },
+        { account: 'Test Capital One', debit: 0, credit: 8, reference: { type: 'voucher', index: 0 } },
+        { account: 'Test Capital Two', debit: 0, credit: 5, reference: { type: 'voucher', index: 2 } },
+        { account: 'First Test Item Account', debit: 0, credit: 5, reference: { type: 'voucher', index: 1 } },
+        { account: 'Test Capital One', debit: 7, credit: 0, entity: { type: 'C', name: 'Fournisseur' } },
+        { account: 'Test Capital Two', debit: 0, credit: 7, reference: { type: 'patient-invoice', index: 1 } },
+      ],
     };
 
     // configure the date to today
