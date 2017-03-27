@@ -14,12 +14,8 @@
     </span>
   </div>
   <div class="panel-body">
-    <div ng-if="$ctrl.loading" class="text-center alert alert-info fade in">
-      <loading-indicator></loading-indicator>
-    </div>
 
-    <div ng-if="!$ctrl.loading" class="row">
-
+    <div class="row">
       <!-- general info  -->
       <div class="col-xs-6 col-md-3">
 
@@ -99,6 +95,10 @@
 
       </div>
 
+    </div>
+
+    <div ng-if="$ctrl.loading" class="text-center grid-msg-overlay" style="top:20%;">
+      <loading-indicator></loading-indicator>
     </div>
 
   </div>
