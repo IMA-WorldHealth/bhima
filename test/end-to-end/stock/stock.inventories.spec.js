@@ -6,18 +6,18 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
-function StockLotsRegistryTests() {
+function StockInventoriesRegistryTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/stock/lots'));
+  before(() => helpers.navigate('#/stock/inventories'));
 
-  const LOTS_INSIDE_REGISTRY = 5;
+  const INVENTORIES_INSIDE_REGISTRY = 5;
 
-  const gridId = 'stock-lots-grid';
+  const gridId = 'stock-inventory-grid';
 
   const depotGroupingRow = 1;
 
-  it('find lots by depot', () => {
+  it('find inventory by depot', () => {
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
@@ -27,57 +27,54 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
   });
 
-  it('find lots by inventory', () => {
+  it('find inventory by name', () => {
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 3 + depotGroupingRow);
-
-    // clear filters
-    FU.buttons.clear();
-  });
-
-
-  it('find lot by name', () => {
-
-    FU.buttons.search();
-    FU.input('$ctrl.bundle.label', 'VITAMINE-A');
-    FU.modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
   });
 
-  it('find lots by entry date', () => {
-
+  it('find inventories by state', () => {
+    // sold out
     FU.buttons.search();
-    components.dateInterval.range('02/02/2017', '02/02/2017', 'entry-date');
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
-
-    FU.buttons.search();
-    components.dateInterval.range('01/01/2015', '30/01/2015', 'entry-date');
+    FU.radio('$ctrl.bundle.status', 0);
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
 
-    // clear filters
-    FU.buttons.clear();
-  });
-
-  it('find lots by expiration date', () => {
-
+    // in stock
     FU.buttons.search();
-    components.dateInterval.range('01/01/2017', '31/12/2017', 'expiration-date');
+    FU.radio('$ctrl.bundle.status', 1);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 0);
+
+    // security reached
+    FU.buttons.search();
+    FU.radio('$ctrl.bundle.status', 2);
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 0);
+
+    // minimum reached
+    FU.buttons.search();
+    FU.radio('$ctrl.bundle.status', 3);
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 0);
+
+    // over maximum
+    FU.buttons.search();
+    FU.radio('$ctrl.bundle.status', 4);
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+
 
     // clear filters
     FU.buttons.clear();
@@ -85,4 +82,4 @@ function StockLotsRegistryTests() {
 
 }
 
-describe('Stock Lots Registry', StockLotsRegistryTests);
+describe.only('Stock Inventory Registry', StockInventoriesRegistryTests);

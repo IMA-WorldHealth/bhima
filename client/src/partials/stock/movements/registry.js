@@ -180,6 +180,8 @@ function StockMovementsController($state, Stock, Notify,
 
     Stock.movements.read(null, params).then((rows) => {
       vm.gridOptions.data = rows;
+      // force expand grid
+      vm.grouping.unfoldAllGroups();
     })
     .catch(Notify.handleError);
   }
