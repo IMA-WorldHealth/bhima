@@ -66,7 +66,6 @@ function bhCurrencySelect(Currencies, Session) {
 
   $ctrl.currencyId = Session.enterprise.currency_id;;
 
-
   $ctrl.$onInit = function onInit() {
     // load all the available currencies
     Currencies.read()
