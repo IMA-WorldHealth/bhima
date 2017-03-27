@@ -2,15 +2,16 @@
   "name": "bhima",
   "version": "0.2.0",
   "description": "A rural hospital information management system.",
-  "main": "sh/deploy.sh",
+  "main": "npm run build",
   "scripts": {
-    "app": "NODE_ENV=production gulp build && cd bin && NODE_ENV=production node server/app.js",
-    "dev": "NODE_ENV=development gulp build && cd bin && NODE_ENV=development node server/app.js",
-    "start": "sh/deploy.sh",
-    "karma": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
-    "lint": "./sh/lint.sh",
-    "test:ends": "./sh/test-ends.sh",
+    "app": "NODE_ENV=production ./node_modules/.bin/gulp build && cd bin && NODE_ENV=production node server/app.js",
+    "dev": "NODE_ENV=development ./node_modules/.bin/gulp build && cd bin && NODE_ENV=development node server/app.js",
+    "test" : "npm run test:lint && npm run test:integration && npm run test:client-unit && npm run test:server-unit && npm run test:ends",
     "test:integration": "./sh/integration-tests.sh",
+    "test:ends": "./sh/test-ends.sh",
+    "test:lint": "./sh/lint.sh",
+    "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
+    "test:server-unit" : "echo 'Not yet implemented.'",
     "build": "./node_modules/.bin/gulp build",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
@@ -21,19 +22,12 @@
     "url": "git+https://github.com/IMA-WorldHealth/bhima-2.X.git"
   },
   "keywords": [
-    "bhima",
-    "health",
-    "HIS",
-    "hospital information system",
-    "rural accounting"
+    "bhima", "health", "HIS", "hospital information system", "rural accounting"
   ],
   "author": "IMA World Health",
   "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
-  },
-  "engines": {
-    "node": "5.3.0"
   },
   "dependencies": {
     "accounting-js": "^1.1.1",

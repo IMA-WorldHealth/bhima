@@ -26,4 +26,3 @@ test/artifacts/
 
 # ignore configuration
 .env.production
-.env.development
