@@ -1,0 +1,4 @@
+{"TRANSACTIONS":{"SINGLE_ACCOUNT_TRANSACTION":"This transaction only concerns a single account.  Please select multiple accounts to complete the transaction.",
+"MISSING_TRANSACTION_TYPE":"Transactions involving cash accounts (banks or cashboxes) must have a transaction type specified to differentiate them in the cashflow report. Please select a transaction type.",
+"IMBALANCED_TRANSACTION":"This transaction's debits and credits must balance.  Please correct the imbalances before submitting.",
+"SINGLE_ROW_TRANSACTION":"This transaction only has a single row, but two rows are required.  Please add one or more lines."}}
