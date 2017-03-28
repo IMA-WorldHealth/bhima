@@ -1,0 +1,426 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static"><span translate>TREE.HOSPITAL</span></li>
+      <li class="static"><span><a ui-sref="patientRegistry" translate>PATIENT_RECORDS.TITLE</a></span></li>
+      <li class="title">{{ PatientEditCtrl.medical.name }}</li>
+    </ol>
+
+    <!-- ng-show to stop flickering on load -->
+    <span
+        ng-show="PatientEditCtrl.medical.name"
+        style="margin-left : 5px"
+        class="label label-warning">
+      <span style="text-transform : uppercase" translate>FORM.LABELS.EDIT</span>
+    </span>
+
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <div class="row" ng-if="PatientEditCtrl.unknownId">
+      <div class="col-md-12">
+        <div class="alert alert-danger">
+          <i class="fa fa-search"></i> <span translate>PATIENT_EDIT.PAGE_FAIL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ng-show is used as ng-if creates new scope - form values are not availble on the $scope object -->
+    <div class="row" ng-show="PatientEditCtrl.medical">
+      <div class="col-md-5 col-md-push-7">
+
+        <div class="panel panel-default">
+          <div class="panel-heading" translate>
+            PATIENT_EDIT.FINANCIAL_INFO
+          </div>
+          <div class="panel-body">
+            <form name="finance" bh-form-defaults novalidate>
+
+              <!-- Patient Group -->
+              <div class="form-group">
+                <label class="control-label" translate>FORM.LABELS.GROUPS_PATIENT_TITLE</label>
+
+                <!-- Iterate through patient groups -->
+                 <ul>
+                  <li
+                    class="form-control-static"
+                    ng-repeat="group in PatientEditCtrl.finance.patientGroups | orderBy:'name'">
+                    {{group.name}}
+                  </li>
+                 </ul>
+
+                 <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">
+                  <span class="fa fa-info-circle"></span> <span translate>FORM.LABELS.GROUPS_PATIENT_EMPTY</span>
+                 </p>
+
+              </div>
+
+              <div class="form-group">
+                <button
+                  data-update-group-patient
+                  class="btn btn-warning btn-block"
+                  ng-click="PatientEditCtrl.updatePatientGroups()"><span translate>FORM.BUTTONS.GROUPS_PATIENT_UPDATE</span>
+                </button>
+              </div>
+
+              <!-- Debtor Group -->
+              <div class="form-group">
+                <label class="control-label"><span translate>FORM.LABELS.GROUPS_DEBTOR_TITLE</span></label>
+
+                <ul class="form-control-static">
+                  <li>{{ PatientEditCtrl.medical.debtor_group_name }}</li>
+                </ul>
+
+              </div>
+
+              <div class="form-group">
+                <button
+                  data-update-group-debtor
+                  class="btn btn-warning btn-block"
+                  ng-click="PatientEditCtrl.updateDebtorGroup()"><span translate>FORM.BUTTONS.GROUPS_DEBTOR_UPDATE</span></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7 col-md-pull-5">
+
+        <form name="patientDetails" bh-submit="PatientEditCtrl.updatePatient(patientDetails)"  bh-form-defaults novalidate>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+            </div>
+            <div class="panel-body">
+
+              <!-- Copied from patient registration -->
+              <!-- TODO Should this all be one page/operation - question of state complexity -->
+              <div class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-md-3 control-label">{{ "PATIENT_EDIT.REGISTERED" | translate }}</label>
+                  <div class="col-md-9">
+                    <p class="form-control-static"><span am-time-ago="PatientEditCtrl.medical.registration_date"></span></p>
+                  </div>
+                </div>
+
+                <!-- Display Name -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : patientDetails.display_name.$invalid && patientDetails.$submitted}">
+
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }} </label>
+                  <div class="col-md-9">
+                    <input class="form-control" ng-maxlength="PatientEditCtrl.length150" name="display_name" autocomplete="off" ng-model="PatientEditCtrl.medical.display_name" required>
+                    <div class="help-block" ng-messages="patientDetails.display_name.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hospital File Number -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : patientDetails.hospital_no.$invalid && patientDetails.$submitted || patientDetails.$error.hospitalNumber}">
+
+                  <label for="new-hospital-number" class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
+                  <div class="col-md-9">
+
+                    <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
+                    <input
+                      id="new-hospital-number"
+                      name="hospital_no"
+                      class="form-control"
+                      ng-model="PatientEditCtrl.medical.hospital_no"
+                      hospital-number
+                      autocomplete="off"
+                      registered-value="::PatientEditCtrl.medical.hospital_no"
+                      ng-maxlength="PatientEditCtrl.length150"
+                      required>
+                    <div class="help-block" ng-messages="patientDetails.hospital_no.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                    <span ng-if="patientDetails.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    <span ng-if="patientDetails.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+                    <!-- <p ng-if="patientDetails.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
+
+                    <p id="hospitalNumber-alert" ng-if="patientDetails.$error.hospitalNumber" class="help-block">{{ "FORM.LABELS.PATIENT_EXIST" | translate }}</p>
+                  </div>
+                </div>
+
+                 <!-- Date of birth -->
+                <div class="form-group has-feedback"
+                  ng-class="{'has-error' : patientDetails.dob.$invalid && patientDetails.$submitted}">
+
+                  <label for="patient-dob" class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
+                  <div class="col-md-9">
+                  <div class="input-group">
+                    <input
+                      name="dob"
+                      type="text"
+                      class="form-control"
+                      uib-datepicker-popup="{{PatientEditCtrl.datePickerOptions.popup}}"
+                      datepicker-options="PatientEditCtrl.datePickerOptions"
+                      is-open="PatientEditCtrl.datePickerIsOpen"
+                      show-button-bar="false"
+                      ng-model="PatientEditCtrl.medical.dob"
+                      required>
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-click="PatientEditCtrl.datePickerIsOpen =! PatientEditCtrl.datePickerIsOpen">
+                          <i class="fa fa-calendar-plus-o"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="help-block" ng-messages="patientDetails.dob.$error" ng-show="patientDetails.$submitted && patientDetails.dob.$error">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gender -->
+                <div id="gender" class="form-group has-feedback"
+                  ng-class="{'has-error' : patientDetails.sex.$invalid && patientDetails.$submitted}">
+                  <label for="male" class="col-md-3 control-label">{{ "FORM.LABELS.GENDER" | translate}}</label>
+                  <div class="col-md-9">
+
+                    <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
+                    <label class="radio-inline">
+                      <input
+                        type="radio"
+                        name="sex"
+                        id="male"
+                        value="M"
+                        ng-model="PatientEditCtrl.medical.sex"
+                        ng-click="patientDetails.sex.$setDirty()"
+                        required>
+                      {{ "FORM.LABELS.MALE" | translate }}
+                    </label>
+
+                    <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
+                    <label class="radio-inline">
+                      <input
+                        type="radio"
+                        name="sex"
+                        id="female"
+                        value="F"
+                        ng-model="PatientEditCtrl.medical.sex"
+                        ng-click="patientDetails.sex.$setDirty()"
+                        required>
+                      {{ "FORM.LABELS.FEMALE" | translate }}
+                    </label>
+                  </div>
+                </div>
+
+                <hr>
+                <div class="form-group">
+                    <div class="col-md-5 col-md-offset-1">
+                      <h4><span translate>FORM.LABELS.ORIGIN_LOCATION</span></h4>
+                      <bh-location-select
+                        name="origin_location_id"
+                        id="origin-location-id"
+                        validation-trigger="patientDetails.$submitted"
+                        location-uuid="PatientEditCtrl.medical.origin_location_id">
+                      </bh-location-select>
+                    </div>
+
+                    <!-- separate location searches given a certain screen size -->
+                    <div class="visible-sm-block visible-xs-block"><hr></div>
+
+                    <div class="col-md-5 col-md-offset-1">
+                      <h4><span translate>FORM.LABELS.CURRENT_LOCATION</span></h4>
+                      <bh-location-select
+                        name="current_location_id"
+                        id="current-location-id"
+                        validation-trigger="patientDetails.$submitted"
+                        location-uuid="PatientEditCtrl.medical.current_location_id">
+                      </bh-location-select>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submission -->
+            <div class="panel-footer text-right" id="submission">
+              <bh-loading-button loading-state="patientDetails.$loading">
+                {{ "FORM.BUTTONS.SUBMIT_CHANGES" | translate }}
+              </bh-loading-button>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {{ "FORM.LABELS.OPTIONAL_INFO" | translate }}
+            </div>
+            <div class="panel-body">
+              <div class="form-horizontal">
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.title.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.TITLE" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" name="title" autocomplete="off" ng-maxlength="PatientEditCtrl.length30" class="form-control" ng-model="PatientEditCtrl.medical.title">
+                    <div class="help-block" ng-messages="patientDetails.title.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.phone.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length12" autocomplete="off" name="phone" ng-model="PatientEditCtrl.medical.phone">
+                    <div class="help-block" ng-messages="patientDetails.phone.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.email.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="email" class="form-control" name="email" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.email">
+                    <div class="help-block" ng-messages="patientDetails.email.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.address_1.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS1" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control"  name="address_1" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.address_1">
+                    <div class="help-block" ng-messages="patientDetails.address_1.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.address_2.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS2" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" name="address_2" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.address_2">
+                    <div class="help-block" ng-messages="patientDetails.address_2.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.father_name.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.FATHER_NAME" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" name="father_name" autocomplete="off" ng-maxlength="PatientEditCtrl.length150" ng-model="PatientEditCtrl.medical.father_name">
+                    <div class="help-block" ng-messages="patientDetails.father_name.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.mother_name.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.MOTHER_NAME" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="mother_name" autocomplete="off" ng-model="PatientEditCtrl.medical.mother_name">
+                    <div class="help-block" ng-messages="patientDetails.mother_name.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.religion.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.RELIGION" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length50" name="religion" autocomplete="off" ng-model="PatientEditCtrl.medical.religion">
+                    <div class="help-block" ng-messages="patientDetails.religion.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.marital.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.MARITAL_STATUS" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length50" name="marital_status" autocomplete="off" ng-model="PatientEditCtrl.medical.marital_status">
+                    <div class="help-block" ng-messages="patientDetails.marital.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.profession.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.PROFESSION" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control"  ng-maxlength="PatientEditCtrl.length150" name="profession" autocomplete="off" ng-model="PatientEditCtrl.medical.profession">
+                    <div class="help-block" ng-messages="patientDetails.profession.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.employer.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.EMPLOYER" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="employer" autocomplete="off" ng-model="PatientEditCtrl.medical.employer">
+                    <div class="help-block" ng-messages="patientDetails.employer.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.spouse.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse">
+                    <div class="help-block" ng-messages="patientDetails.spouse.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.spouse_profession.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_PROFESSION" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse_profession" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse_profession">
+                    <div class="help-block" ng-messages="patientDetails.spouse_profession.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.spouse_employer.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_EMPLOYER" | translate }}</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse_employer" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse_employer">
+                    <div class="help-block" ng-messages="patientDetails.spouse_employer.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{'has-error' : patientDetails.notes.$invalid && patientDetails.$submitted}">
+                  <label class="col-md-3 control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <div class="col-md-9">
+                    <textarea class="form-control" name="notes" ng-maxlength="PatientEditCtrl.maxLength" ng-model="PatientEditCtrl.medical.notes" rows="4"></textarea>
+                    <div class="help-block" ng-messages="patientDetails.notes.$error" ng-show="patientDetails.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Link to submission -->
+              <div class="col-md-9 col-md-offset-3">
+                <p class="text-center text-info">
+                  <a href ng-click="PatientEditCtrl.scrollToSubmission()" id="submissionLink">
+                    <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

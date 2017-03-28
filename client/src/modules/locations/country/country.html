@@ -1,0 +1,136 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+      <li class="title" translate>COUNTRY.TITLE</li>
+    </ol>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="CountryCtrl.create()" data-method="create">
+          <i class="fa fa-plus-square"></i> <span translate>COUNTRY.NEW_COUNTRY</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Links to the main menu of management maps as well as the button for adding countries -->
+<div class="flex-util">
+  <button ui-sref="locations" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
+  </button>
+</div>
+
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Complete list of registred Countries -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ 'COUNTRY.REGISTERED' | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+               <tr>
+                <th>{{ 'TABLE.COLUMNS.COUNTRY' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.ACTION' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="CountryCtrl.session.loading" class="text-center">
+                <td colspan="2"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="country in CountryCtrl.countries | orderBy:'name'">
+                <td>{{ country.name }}</td>
+                <td>
+                  <a class="btn btn-xs btn-default" data-country-name="{{ country.name }}" ng-click="CountryCtrl.update(country)" >
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-xs-6" ng-switch="CountryCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ 'COUNTRY.CONFIGURATION' | translate }}</h4>
+            <p>{{ 'COUNTRY.DESCRIPTION' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Form for adding country -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'COUNTRY.REGISTER' | translate }}</div>
+          <div class="panel-body">
+            <form name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" autocomplete="off" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-country" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Form for updating country -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'COUNTRY.EDIT' | translate }}</div>
+          <div class="panel-body">
+            <form name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" autocomplete="off" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_country" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<form
+  name="ProjectForm"
+  bh-submit="$ctrl.submit(ProjectForm)"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <i class="fa fa-hospital-o"></i> {{ 'FORM.LABELS.ENTERPRISE' | translate }} / {{ 'TREE.PROJECT' | translate }}
+    <span ng-if="$ctrl.action === 'edit'" class="label label-info text-uppercase">{{ 'FORM.LABELS.EDIT' | translate }}</span>
+    <span ng-if="$ctrl.action === 'create'" class="label label-success text-uppercase">{{ 'FORM.LABELS.CREATE' | translate }}</span>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.name.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }} <i>({{ 'FORM.LABELS.PROJECT' | translate }})</i></label>
+      <input type="text" class="form-control" name="name" ng-maxlength="$ctrl.maxLength" ng-model="$ctrl.project.name" required>
+      <div class="help-block" ng-messages="ProjectForm.name.$error" ng-show="ProjectForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.abbr.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }} <i>({{ 'FORM.LABELS.PROJECT' | translate }})</i></label>
+      <input type="text" class="form-control" name="abbr"ng-maxlength="$ctrl.length3" ng-model="$ctrl.project.abbr" required >
+      <div class="help-block" ng-messages="ProjectForm.abbr.$error" ng-show="ProjectForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div ng-if="$ctrl.showLock" class="form-group" ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.locked.$invalid }">
+      <label class="control-label">
+        <input
+          type="checkbox"
+          name="locked"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="$ctrl.project.locked">
+          {{ "FORM.LABELS.LOCKED" | translate }}
+      </label>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default"
+      ng-click="$ctrl.close()">
+      {{ 'FORM.BUTTONS.CLOSE' | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary"
+      data-method="submit">
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+
+</form>

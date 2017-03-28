@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static"><span translate>FORM.INFO.PATIENTS</span></li>
+    <li class="title"><span translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</span></li>
+  </ol>
+</div>
+
+<form name="VisitForm" bh-submit="AdmitCtrl.admit(VisitForm)" bh-form-defaults novalidate>
+<div class="modal-body">
+
+  <div ng-if="!AdmitCtrl.isAdmission" class="form-group">
+    <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
+    <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
+  </div>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">
+
+    <label class="control-label"><span translate>FORM.LABELS.DIAGNOSIS</span></label>
+
+    <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
+    <input
+      type="text"
+      name="diagnosis"
+      class="form-control"
+      ng-model="AdmitCtrl.visit.diagnosis"
+      uib-typeahead="diagnosis as diagnosis.label for diagnosis in AdmitCtrl.diagnoses | filter:$viewValue | limitTo:8"
+      typeahead-on-select="AdmitCtrl.select()"
+      autocomplete="off"
+      typeahead-min-length="3"
+      required>
+    </label>
+
+    <div class="help-block" ng-messages="VisitForm.diagnosis.$error" ng-show="VisitForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
+    <label class="control-label"><span translate>FORM.LABELS.NOTES</span></label>
+    <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
+
+    <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
+    <span translate>FORM.BUTTONS.CANCEL</span>
+  </button>
+  <bh-loading-button loading-state="AdmitCtrl.$loading">
+    <span translate>FORM.BUTTONS.SUBMIT</span>
+  </bh-loading-button>
+</div>
+</form>

@@ -1,0 +1,9 @@
+<div style="padding: 5px;" ng-show="row.entity.uuid">
+  <i style="cursor: pointer;" class="text-primary fa fa-info-circle"
+    uib-popover-template="'modules/templates/popover/periodInfo.tmpl.html'"
+    popover-placement="top"
+    popover-trigger="mouseenter"
+    popover-append-to-body="true">
+  </i>
+  {{ row.entity.period_end | date:"MMMM" }} {{ row.entity.period_end | date:"yyyy" }}
+</div>;

@@ -1,0 +1,111 @@
+<form name="ClosingFiscalYear" bh-submit="$ctrl.stepForward(ClosingFiscalYear)" bh-form-defaults novalidate>
+  <div class="modal-header bg-danger text-danger">
+    <i class="fa fa-lock"></i>
+    <strong>{{ 'FISCAL.CLOSING_FISCAL_YEAR' | translate }}</strong>
+  </div>
+
+  <div class="modal-body">
+    <div ng-show="!$ctrl.fiscal.locked">
+
+      <h1 class="text-center">
+        {{'FORM.INFO.CLOSE_FISCAL_YEAR' | translate }}<br>
+        <strong>{{ $ctrl.fiscal.label }}</strong>
+      </h1>
+
+      <div ng-switch="$ctrl.steps">
+
+        <div ng-switch-default>
+
+          <!-- first step  -->
+          <dl class="dl-horizontal">
+            <!-- incomes  -->
+            <h3 class="bg-success text-success">
+              <dt>{{ 'FORM.LABELS.PROFIT' | translate }}</dt>
+              <dd>
+                <div class="text-right">
+                  {{ $ctrl.profit | currency: $ctrl.currency_id }}
+                </div>
+              </dd>
+            </h3>
+
+            <!-- expenses  -->
+            <h3 style="margin: 10px 0px;" class="bg-danger text-danger">
+              <dt>{{ 'FORM.LABELS.CHARGE' | translate }}</dt>
+              <dd>
+                <div class="text-right">
+                  {{ $ctrl.charge | currency: $ctrl.currency_id }}
+                </div>
+              </dd>
+            </h3>
+
+            <!-- results  -->
+            <h3 style="border-top: 1px dashed #ccc; margin-top: 10px;" class="text-bold">
+              <dt>{{ 'FORM.LABELS.RESULT' | translate }}</dt>
+              <dd>
+                <div class="text-right" ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
+                  {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
+                </div>
+              </dd>
+            </h3>
+          </dl>
+
+          <br>
+
+          <div class="form-group" ng-class="{ 'has-error' : ClosingFiscalYear.$submitted && ClosingFiscalYear.resultAccount.$invalid }">
+            <label class="control-label">
+              {{ "FORM.LABELS.RESULT_ACCOUNT_SCT" | translate }}
+            </label>
+
+            <ui-select name="resultAccount" ng-model="$ctrl.resultAccount" theme="bootstrap" required>
+              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accounts | filter:$select.search">
+                <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                <span ng-bind-html="account.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+
+            <div class="help-block" ng-messages="ClosingFiscalYear.resultAccount.$error" ng-show="ClosingFiscalYear.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="text-center" ng-switch-when="summary">
+          <h3>{{ 'FISCAL.SOLD_DESCRIPTION' | translate }}</h3>
+          <h3 class="text-primary">{{ $ctrl.resultAccount.number + ' - ' + $ctrl.resultAccount.label }}</h3>
+          <h3>
+            {{ 'FISCAL.RESULT_AMOUNT' | translate }}:
+            <span ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
+              {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
+            </span>
+          </h3>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div ng-show="$ctrl.fiscal.locked">
+      <h1 class="text-center">
+        <strong>{{ $ctrl.fiscal.label }}</strong><br>
+        {{ 'FISCAL.ALREADY_CLOSED' | translate }}
+      </h1>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <!-- cancel  -->
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <!-- submit  -->
+    <bh-loading-button loading-state="ClosingFiscalYear.$loading" ng-disabled="$ctrl.fiscal.locked">
+      {{ "FORM.BUTTONS.VALIDATE" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

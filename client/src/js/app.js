@@ -10,167 +10,9 @@ var bhima = angular.module('bhima', [
   'ui.router.state.events',
 ]);
 
-function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
+function bhimaConfig($urlMatcherFactoryProvider) {
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
-
-  $stateProvider
-  .state('index', {
-    url         : '/',
-    controller  : 'HomeController as HomeCtrl',
-    templateUrl : 'partials/home/home.html',
-  })
-  .state('landing', {
-    abstract : true,
-    url : '/landing',
-    controller : ['SessionService', function (Session) { this.enterprise = Session.enterprise; }],
-    controllerAs : 'LandingCtrl',
-    templateUrl : 'partials/home/details.html',
-  })
-  .state('landing.stats', {
-    url : '/stats',
-    views : {
-      'debtors' : {
-        templateUrl : 'partials/home/units/debtors.html',
-        controller  : 'DashboardDebtorController as DebtorCtrl',
-      },
-      'invoices' : {
-        templateUrl : 'partials/home/units/invoices.html',
-        controller  : 'DashboardInvoiceController as InvoiceCtrl',
-      },
-      'patients' : {
-        templateUrl : 'partials/home/units/patients.html',
-        controller  : 'DashboardPatientController as PatientCtrl',
-      }
-
-    },
-  })
-  .state('exchange', {
-    abstract    : true,
-    url         : '/exchange',
-    templateUrl : 'partials/application/exchange.html',
-  })
-  .state('exchange.index', {
-    url   : '',
-    views : {
-      'exchange@exchange' : {
-        templateUrl : 'partials/enterprises/exchange/exchange.html',
-        controller  : 'ExchangeController as ExchangeCtrl',
-      },
-    },
-  })
-  .state('login', {
-    url         : '/login',
-    controller  : 'LoginController as LoginCtrl',
-    templateUrl : 'partials/login/login.html',
-  })
-  .state('settings', {
-    url         : '/settings?previous',
-    controller  : 'settings as SettingsCtrl',
-    templateUrl : 'partials/settings/settings.html',
-  })
-  .state('services', {
-    url         : '/services',
-    controller  : 'ServicesController as ServicesCtrl',
-    templateUrl : 'partials/services/services.html',
-  })
-
-  .state('invoiceRegistry', {
-    url         : '/invoices',
-    controller  : 'InvoiceRegistryController as InvoiceRegistryCtrl',
-    templateUrl : '/partials/patient_invoice/registry/registry.html',
-    params      : {
-      filters : null,
-      display : null,
-    },
-  })
-  .state('configBilan', {
-    url         : '/section_bilan',
-    controller  : 'sectionBilanController as sectionBilanCtrl',
-    templateUrl : 'partials/section_bilan/section_bilan.html',
-  })
-  .state('configResultat', {
-    url         : '/section_resultat',
-    controller  : 'sectionResultatController as sectionResultatCtrl',
-    templateUrl : 'partials/section_resultat/section_resultat.html',
-  })
-  .state('subsidies', {
-    url         : '/subsidies',
-    controller  : 'SubsidyController as SubsidyCtrl',
-    templateUrl : 'partials/subsidies/subsidies.html',
-  })
-
-  /* admin : depot management */
-  .state('depots', {
-    url         : '/depots',
-    controller  : 'DepotManagementController as DepotCtrl',
-    templateUrl : 'partials/depots/depots.html',
-  })
-
-  /* employees routes */
-  .state('employees', {
-    url         : '/employees',
-    controller  : 'EmployeeController as EmployeeCtrl',
-    templateUrl : 'partials/employees/employees.html',
-  })
-
-  /** General ledger routes **/
-  .state('generalLedger', {
-    url         : '/general_ledger',
-    controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
-    templateUrl : 'partials/general_ledger/general_ledger_accounts.html',
-  })
-
-  /** Posted Journal **/
-  .state('postedJournal', {
-    url         : '/journal/posted',
-    controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
-    templateUrl : 'partials/general_ledger/general_ledger.html',
-  })
-
-  /* references routes */
-
-  .state('references', {
-    url         : '/references',
-    controller  : 'ReferenceController as ReferenceCtrl',
-    templateUrl : 'partials/references/references.html',
-  })
-
-  .state('referenceGroups', {
-    url         : '/references/groups',
-    controller  : 'ReferenceGroupController as ReferenceGroupCtrl',
-    templateUrl : 'partials/references/groups/groups.html',
-  })
-
-  .state('prices', {
-    url         : '/prices',
-    controller  : 'PriceListController as PriceListCtrl',
-    templateUrl : 'partials/price_list/pricelist.html',
-  })
-
-  /* creditor routes */
-  .state('suppliers', {
-    url         : '/suppliers',
-    controller  : 'SupplierController as SupplierCtrl',
-    templateUrl : '/partials/suppliers/suppliers.html',
-  })
-
-  /* transaction type */
-  .state('transactionType', {
-    url         : '/admin/transaction_type',
-    controller  : 'TransactionTypeController as TypeCtrl',
-    templateUrl : 'partials/admin/transaction_type/transaction_type.html',
-  })
-
-  .state('403', {
-    templateUrl : 'partials/errors/403.html',
-  })
-
-  // this is a catch-all state.  It matches all URLs and preserves the URL in the top bar.
-  .state('404', {
-    url         : '{path:.*}',
-    templateUrl : 'partials/errors/404.html',
-  });
 }
 
 function translateConfig($translateProvider) {
@@ -435,7 +277,7 @@ function qConfig($qProvider) {
 bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
-bhima.config(['$stateProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
+bhima.config(['$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['uiSelectConfig', uiSelectConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);

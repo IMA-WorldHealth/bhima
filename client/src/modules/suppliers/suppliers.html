@@ -1,0 +1,253 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "SUPPLIER.TITLE" | translate }}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button ng-click="SupplierCtrl.create()" class="btn btn-default" data-method="create">
+          <i class="fa fa-plus"></i> {{ "SUPPLIER.ADD_SUPPLIER" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Complete list of registered Supplier -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "SUPPLIER.REGISTERED" | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.PHONE" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="SupplierCtrl.loading" class="text-center">
+                <td colspan="3"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="supplier in (SupplierCtrl.suppliers | orderBy:'display_name') track by supplier.uuid">
+                <td>{{ supplier.display_name }} <i class="fa fa-lock" ng-show="supplier.locked"></i></td>
+                <td>{{ supplier.phone | telephone }}</td>
+                <td>
+                  <a id="supplier-upd-{{$index+1}}" ng-click="SupplierCtrl.update(supplier)" href>
+                    <i class="fa fa-pencil-square-o"></i> {{ "FORM.BUTTONS.UPDATE" | translate }}
+                  </a>
+                </td>
+              </tr>
+              <tr ng-if="!SupplierCtrl.suppliers.length && !SupplierCtrl.loading">
+                <td colspan="5">{{ "SUPPLIER.NO_SUPPLIER" | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-xs-6" ng-switch="SupplierCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <h4>{{ "SUPPLIER.TITLE" | translate }}</h4>
+            <p>{{ "SUPPLIER.INFO" | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Form for adding supplier -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "SUPPLIER.NEW_SUPPLIER" | translate }}</div>
+          <div class="panel-body">
+            <form name="CreateForm" ng-submit="SupplierCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+                <input type="text" autocomplete="off" class="form-control" name="display_name" ng-model="SupplierCtrl.supplier.display_name" required>
+                <div class="help-block" ng-messages="CreateForm.display_name.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="international" ng-true-value="1" ng-false-value="0" ng-model="SupplierCtrl.supplier.international">
+                  {{ "FORM.LABELS.INTL" | translate }}
+                </label>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_group_uuid.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
+                <select class="form-control" name="creditor_group_uuid" ng-model="SupplierCtrl.supplier.creditor_group_uuid" ng-options="group.uuid as group.name for group in SupplierCtrl.groups | orderBy:'name'" required>
+                  <option value="" disabled>{{ "FORM.SELECT.CREDITOR_GROUP" | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.creditor_group_uuid.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.phone.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
+                <input type="phone" autocomplete="off" class="form-control" name="phone" ng-model="SupplierCtrl.supplier.phone">
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                <input type="email" autocomplete="off" class="form-control" name="email" ng-model="SupplierCtrl.supplier.email">
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.address_1.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.ADDR_1" | translate }}</label>
+                <input type="address" autocomplete="off" class="form-control" name="address_1" ng-model="SupplierCtrl.supplier.address_1" required>
+                <div class="help-block" ng-messages="CreateForm.address_1.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"  name="locked" ng-true-value="1" ng-false-value="0" ng-model="SupplierCtrl.supplier.locked">
+                  {{ "FORM.LABELS.LOCKED" | translate }}
+                </label>
+              </div>
+
+              <fieldset>
+                <legend>{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</legend>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.address_2.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.ADDR_2" | translate }}</label>
+                  <input type="address" autocomplete="off" class="form-control" name="address_2" ng-model="SupplierCtrl.supplier.address_2">
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fax.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.FAX" | translate }}</label>
+                  <input type="text" autocomplete="off" class="form-control" name="fax" ng-model="SupplierCtrl.supplier.fax">
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
+                  <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <textarea class="form-control" name="note" ng-maxlength="SupplierCtrl.maxLength" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
+                  <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-group">
+                <button class="btn btn-default" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SupplierCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Form for updating supplier -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading"><b> {{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
+          <div class="panel-body">
+            <form name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.display_name.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+                <input type="text" autocomplete="off" class="form-control" name="display_name" ng-model="SupplierCtrl.supplier.display_name" required>
+                <div class="help-block" ng-messages="UpdateForm.display_name.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="international" ng-true-value="1" ng-false-value="0" ng-model="SupplierCtrl.supplier.international"> {{ "FORM.LABELS.INTL" | translate }}
+                </label>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.creditor_group_uuid.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
+                <select class="form-control" name="creditor_group_uuid" ng-model="SupplierCtrl.supplier.creditor_group_uuid" ng-options="group.uuid as group.name for group in SupplierCtrl.groups | orderBy:'name'" required>
+                  <option value="" disabled>{{ "FORM.SELECT.CREDITOR_GROUP" | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.creditor_group_uuid.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.phone.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
+                <input autocomplete="off" type="phone" class="form-control" name="phone" ng-model="SupplierCtrl.supplier.phone">
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                <input autocomplete="off" type="email" class="form-control" name="email" ng-model="SupplierCtrl.supplier.email">
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.address_1.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.ADDR_1" | translate }}</label>
+                <input autocomplete="off" type="address" class="form-control" name="address_1" ng-model="SupplierCtrl.supplier.address_1" required>
+                <div class="help-block" ng-messages="UpdateForm.address_1.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" ng-model="SupplierCtrl.supplier.locked">  {{ "FORM.LABELS.LOCKED" | translate }}
+                </label>
+              </div>
+
+              <fieldset>
+                <legend>{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</legend>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.address_2.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.ADDR_2" | translate }}</label>
+                  <input autocomplete="off" type="address" class="form-control" name="address_2" ng-model="SupplierCtrl.supplier.address_2">
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fax.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.FAX" | translate }}</label>
+                  <input autocomplete="off" type="text" class="form-control" name="fax" ng-model="SupplierCtrl.supplier.fax">
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
+                  <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <textarea class="form-control" name="note" ng-maxlength="SupplierCtrl.maxLength" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
+                  <div class="help-block" ng-messages="UpdateForm.note.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+              </fieldset>
+              <div class="form-group">
+                <button class="btn btn-default" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SupplierCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

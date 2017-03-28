@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * BHIMA fork of angular's native currency filter.
  * Allows currency to be defined for each filter individually.
@@ -16,7 +14,7 @@ angular.module('bhima.filters')
   .filter('currency', CurrencyFilter);
 
 CurrencyFilter.$inject = [
-  'currencyFormat', 'SessionService'
+  'currencyFormat', 'SessionService',
 ];
 
 
