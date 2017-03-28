@@ -3,7 +3,6 @@ angular.module('bhima.components')
     controller  : bhCurrencySelect,
     templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
     bindings    : {
-      currencyId        : '=',
       validationTrigger : '<',
       disableIds        : '<?',
       onChange          : '&?',
@@ -11,7 +10,7 @@ angular.module('bhima.components')
     },
   });
 
-bhCurrencySelect.$inject = ['CurrencyService'];
+bhCurrencySelect.$inject = ['CurrencyService', 'SessionService'];
 
 /**
  * @class bhCurrencySelect
@@ -61,9 +60,11 @@ bhCurrencySelect.$inject = ['CurrencyService'];
  *
  * @requires services/CurrencyService
  */
-function bhCurrencySelect(Currencies) {
+function bhCurrencySelect(Currencies, Session) {
   var $ctrl = this;
   var isArray = angular.isArray;
+
+  $ctrl.currencyId = Session.enterprise.currency_id;;
 
   $ctrl.$onInit = function onInit() {
     // load all the available currencies
