@@ -76,15 +76,26 @@ function document(req, res, next) {
 */
 function getAccountTransactions(accountId, source, dateFrom, dateTo, exchangeRate) {
   const sourceId = parseInt(source, 10);
-
-  // get the table name
-  const tableName = sourceMap[sourceId];
+  const reqCombinedLedger = `
+    (
+      (
+        SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, record_uuid, account_id 
+          FROM posting_journal 
+      ) UNION (
+        SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, record_uuid, account_id 
+          FROM general_ledger
+      )
+    )`;
+  
+  // get the table name OR union of posting-journal and combined ledger
+  const tableName = sourceId === 3 ? reqCombinedLedger : sourceMap[sourceId];
+  
   const params = [accountId];
 
   let dateCondition = '';
 
   if (dateFrom && dateTo) {
-    dateCondition = 'AND DATE(trans_date) BETWEEN DATE(?) AND DATE(?)';
+    dateCondition = 'AND DATE(tab.trans_date) BETWEEN DATE(?) AND DATE(?)';
     params.push(new Date(dateFrom), new Date(dateTo));
   }
 
@@ -95,13 +106,13 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, exchangeRat
       SELECT trans_id, description, trans_date, document_reference, debit, credit,
         @cumsum := balance + @cumsum AS cumsum
       FROM (
-        SELECT trans_id, description, trans_date, document_map.text AS document_reference,
-          SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
-        FROM ${tableName}
-        LEFT JOIN document_map ON record_uuid = document_map.uuid
-        WHERE account_id = ? ${dateCondition}
-        GROUP BY record_uuid
-        ORDER BY trans_date ASC
+        SELECT tab.trans_id, tab.description, tab.trans_date, document_map.text AS document_reference,
+          SUM(tab.debit_equiv) as debit, SUM(tab.credit_equiv) as credit, (SUM(tab.debit_equiv) - SUM(tab.credit_equiv)) AS balance
+        FROM ${tableName} AS tab
+        LEFT JOIN document_map ON tab.record_uuid = document_map.uuid
+        WHERE tab.account_id = ? ${dateCondition}
+        GROUP BY tab.record_uuid
+        ORDER BY tab.trans_date ASC
       )c, (SELECT @cumsum := 0)z
     ) AS groups
   `;
@@ -109,11 +120,11 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, exchangeRat
   const sqlAggrega = `
     SELECT (SUM(t.debit) * ${exchangeRate}) AS debit, (SUM(t.credit) * ${exchangeRate}) AS credit, (SUM(t.debit - t.credit) * ${exchangeRate}) AS balance
     FROM (
-      SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
-      FROM ${tableName}
-      WHERE account_id = ? ${dateCondition}
-      GROUP BY record_uuid
-      ORDER BY trans_date ASC
+      SELECT SUM(tab.debit_equiv) as debit, SUM(tab.credit_equiv) AS credit
+      FROM ${tableName} AS tab
+      WHERE tab.account_id = ? ${dateCondition}
+      GROUP BY tab.record_uuid
+      ORDER BY tab.trans_date ASC
     ) AS t
   `;
 

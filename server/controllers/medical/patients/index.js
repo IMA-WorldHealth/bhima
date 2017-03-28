@@ -573,13 +573,29 @@ function loadLatestInvoice(inv) {
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
         FROM (
-          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM combined_ledger
-          WHERE record_uuid IN (?) AND entity_uuid = ?
+          SELECT rec.record_uuid as uuid, rec.debit_equiv as debit, rec.credit_equiv as credit, rec.entity_uuid
+          FROM (
+            (
+              SELECT record_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM posting_journal
+            ) UNION (
+              SELECT record_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM general_ledger
+            )
+          ) AS rec
+          WHERE rec.record_uuid IN (?) AND rec.entity_uuid = ?
         UNION ALL
-          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM  combined_ledger
-          WHERE reference_uuid IN (?) AND entity_uuid = ?
+          SELECT ref.reference_uuid as uuid, ref.debit_equiv as debit, ref.credit_equiv as credit, ref.entity_uuid
+          FROM  (
+            (
+              SELECT reference_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM  posting_journal          
+            ) UNION (
+              SELECT reference_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM  general_ledger
+            )
+          ) AS ref
+          WHERE ref.reference_uuid IN (?) AND ref.entity_uuid = ?
         ) AS ledger
         GROUP BY entity_uuid
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
@@ -590,13 +606,29 @@ function loadLatestInvoice(inv) {
       FROM (
         SELECT uuid,  debit, credit, entity_uuid
         FROM (
-          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM combined_ledger
-          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
+          SELECT rec.record_uuid as uuid, rec.debit_equiv as debit, rec.credit_equiv as credit, rec.entity_uuid
+          FROM (
+            (
+              SELECT record_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM posting_journal
+            ) UNION (
+              SELECT record_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM general_ledger
+            )
+          ) AS rec
+          WHERE rec.record_uuid IN (?) AND rec.entity_uuid = ? AND rec.debit_equiv = 0
         UNION ALL
-          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM  combined_ledger
-          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
+          SELECT ref.reference_uuid as uuid, ref.debit_equiv as debit, ref.credit_equiv as credit, ref.entity_uuid
+          FROM  (
+            (
+              SELECT reference_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM  posting_journal          
+            ) UNION (
+              SELECT reference_uuid, debit_equiv, credit_equiv, entity_uuid
+              FROM  general_ledger
+            )
+          ) AS ref
+          WHERE ref.reference_uuid IN (?) AND ref.entity_uuid = ? AND ref.debit_equiv = 0
         ) AS ledger
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
@@ -608,6 +640,8 @@ function loadLatestInvoice(inv) {
        WHERE debtor_uuid = ? AND invoice.reversed = 0
        ORDER BY date DESC`;
 
+  console.log('JJJJJJJJJJ');
+  console.log(sql2);
 
   const execSql = db.one(sql, [invoiceID, debtorID, invoiceID, debtorID]);
   const execSql2 = db.one(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
