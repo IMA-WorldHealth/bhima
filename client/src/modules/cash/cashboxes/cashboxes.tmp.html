@@ -1,0 +1,185 @@
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-6" ng-switch="CashCtrl.view">
+
+        <div class="alert alert-info" ng-switch-default>
+          <h4>{{ "CASHBOX.TITLE" | translate }}</h4>
+          <p>{{ "CASHBOX.DESCRIPTION" | translate }}</p>
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">
+            {{ "CASHBOX.ADD_CASHBOX" | translate }}
+          </div>
+          <div class="panel-body">
+            <form
+              name="CreateForm"
+              bh-submit="CashCtrl.submit(CreateForm)"
+              bh-form-defaults
+              novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.NAME" | translate }}
+                </label>
+                <input class="form-control" name="label" ng-model="CashCtrl.box.label" ng-maxlength="CashCtrl.maxLength" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.TYPE" | translate }}
+                </label>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
+                    {{ "FORM.LABELS.PRINCIPAL" | translate }}
+                  </label>
+                </div>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="type" ng-model="CashCtrl.box.type" value="auxiliary" required>
+                    {{ "FORM.LABELS.AUXILIARY" | translate }}
+                  </label>
+                </div>
+                <div class="help-block" ng-messages="CreateForm.type.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.PROJECT" | translate }}
+                </label>
+                <select
+                  class="form-control"
+                  name="project"
+                  ng-model="CashCtrl.box.project_id"
+                  ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
+                  required>
+                  <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <bh-loading-button loading-state="CreateForm.$loading">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </bh-loading-button>
+                <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div ng-switch-when="update">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              {{ "FORM.LABELS.EDIT" | translate }}
+            </div>
+            <div class="panel-body">
+              <form
+                name="UpdateForm"
+                bh-submit="CashCtrl.submit(UpdateForm)"
+                bh-form-defaults
+                novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.NAME" | translate }}
+                  </label>
+                  <input class="form-control" name="label" ng-model="CashCtrl.box.label" ng-maxlength="CashCtrl.maxLength" required>
+                  <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.type.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.TYPE" | translate }}
+                  </label>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
+                      {{ "FORM.LABELS.PRINCIPAL" | translate }}
+                    </label>
+                  </div>
+
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="type" ng-model="CashCtrl.box.type" value="auxiliary" required>
+                      {{ "FORM.LABELS.AUXILIARY" | translate }}
+                    </label>
+                  </div>
+                  <div class="help-block" ng-messages="UpdateForm.type.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "FORM.LABELS.CURRENCIES" | translate }}</label>
+                  <div ng-repeat="currency in CashCtrl.currencies | orderBy:currency.name track by currency.id">
+                    <p ng-class="{ 'text-danger' : !currency.configured }">
+                      <i class="glyphicon glyphicon-alert" ng-if="!currency.configured"></i> {{ currency.name }} ({{ currency.symbol}})
+                      <a class="btn btn-xs btn-default" href ng-click="CashCtrl.configureCurrency(currency)" data-currency-id="{{ currency.id }}">
+                        <i class="fa fa-pencil-square-o"></i> {{ "FORM.BUTTONS.CONFIGURE" | translate }}
+                      </a>
+                    </p>
+                    <p ng-if="!currency.configured" class="help-block">
+                      {{ "FORM.INFO.NOT_CONFIGURED" | translate }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.PROJECT" | translate }}
+                  </label>
+                  <select
+                    class="form-control"
+                    name="project"
+                    ng-model="CashCtrl.box.project_id"
+                    ng-options="project.id as project.name for project in CashCtrl.projects"
+                    required>
+                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
+                  </select>
+                  <div class="help-block" ng-messages="UpdateForm.project.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <bh-loading-button loading-state="UpdateForm.$loading">
+                    <span translate>FORM.BUTTONS.SUBMIT</span>
+                  </bh-loading-button>
+                  <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()" data-method="cancel" translate>
+                    FORM.BUTTONS.CANCEL
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <i class="fa fa-lock"></i> {{ "CASHBOX.DANGER_ZONE" | translate }}
+            </div>
+            <div class="panel-body">
+              <button class="btn btn-danger" type="button" ng-click="CashCtrl.delete(CashCtrl.box)" data-method="delete">
+                <i class="fa fa-trash-o"></i> {{ "FORM.BUTTONS.DELETE" | translate }} {{ "CASHBOX.CASHBOX" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

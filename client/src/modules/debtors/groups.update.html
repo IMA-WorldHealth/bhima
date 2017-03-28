@@ -1,0 +1,248 @@
+<div class="container-fluid" ng-form="debtorGroup" bh-form-defaults novalidate>
+  <div class="row" ng-if="GroupUpdateCtrl.$loading">
+    <div class="col-xs-12">
+      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
+    </div>
+  </div>
+  <div ng-if="GroupUpdateCtrl.$loaded">
+    <div class="row">
+      <div class="col-xs-12">
+        <p>
+          <a ui-sref="debtorGroups.list">
+            <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+            <span translate>DEBTOR_GROUP.BACK</translate>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-5">
+        <!-- Debtor group details form elements -->
+        <div>
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
+            <label class="control-label" translate>FORM.LABELS.NAME</label>
+            <input name="name" ng-model="GroupUpdateCtrl.group.name" autocomplete="off" class="form-control" required>
+
+            <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <bh-account-select
+            name="account_id"
+            account-id="GroupUpdateCtrl.group.account_id"
+            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)">
+          </bh-account-select>
+
+          <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.price_list.$invalid && debtorGroup.$submitted}">
+
+            <label class="control-label" translate>TABLE.COLUMNS.PRICE_LIST</label>
+            <select
+              name="price_list_uuid"
+              ng-model="GroupUpdateCtrl.group.price_list_uuid"
+              ng-options="priceList.uuid as priceList.label for priceList in GroupUpdateCtrl.priceLists"
+              class="form-control">
+              <option value="" translate>PRICE_LIST.NONE</option>
+            </select>
+
+            <div class="help-block" ng-messages="debtorGroup.price_list.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.max_credit.$invalid && debtorGroup.$submitted}">
+
+            <label class="control-label" translate>FORM.LABELS.MAX_CREDIT</label>
+            <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> <span translate>FORM.LABELS.MAX_CREDIT_INFO</span></p>
+            <input type="number" ng-model="GroupUpdateCtrl.group.max_credit" autocomplete="off" name="max_credit" class="form-control" bh-integer required>
+
+            <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : debtorGroup.$submitted && debtorGroup.note.$invalid }">
+            <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+            <textarea class="form-control" ng-model="GroupUpdateCtrl.group.note" name="note"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
+            <input name="phone" ng-model="GroupUpdateCtrl.group.phone" autocomplete="off" class="form-control">
+          </div>
+
+          <div
+            class="form-group"
+            ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
+            <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+            <input name="email" ng-model="GroupUpdateCtrl.group.email" type="email" autocomplete="off" class="form-control">
+
+            <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <!-- required -->
+            <bh-location-select
+              id="location"
+              name="location_id"
+              validation-trigger="debtorGroup.$submitted"
+              location-uuid="GroupUpdateCtrl.group.location_id"
+              required></bh-location-select>
+          </div>
+        </div>
+
+        <!-- @todo remove temporary style hack -->
+        <div class="clearfix" style="margin-bottom : 5px">
+          <div class="pull-right" style="text-align : right">
+
+            <!-- @todo remove temporary style hack -->
+            <div ng-if="GroupUpdateCtrl.state.current.name==='debtorGroups.create'" class="checkbox" style="display : inline-block; padding-right : 5px;">
+              <label>
+                <input type="checkbox" ng-model="GroupUpdateCtrl.resetOnCompletion">
+                {{ "DEBTOR_GROUP.CREATE_ANOTHER" | translate }}
+              </label>
+            </div>
+
+            <!-- <button class="btn btn-default">Cancel</button> -->
+            <button data-method="submit" type="submit" ng-click="GroupUpdateCtrl.submit(debtorGroup)" class="btn btn-primary">
+              {{ "FORM.BUTTONS.SUBMIT" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+
+        <hr class="visible-sm"></hr>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="fa fa-book" aria-hidden="true"></span>
+            {{ "DEBTOR_GROUP.POLICIES.TITLE" | translate }}
+          </div>
+          <div class="panel panel-body">
+
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</b></h5>
+
+                <!-- Only show if the subsidies option is unchecked -->
+                <p ng-if="GroupUpdateCtrl.group.apply_subsidies===false" class="text-info">
+                  <span class="glyphicon glyphicon-info-sign"></span> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupUpdateCtrl.group.apply_subsidies" name="apply_subsidies" type="checkbox">
+                    {{"DEBTOR_GROUP.POLICIES.SUBSIDIES.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{"DEBTOR_GROUP.POLICIES.DISCOUNTS.TITLE" | translate }}</b></h5>
+                <p ng-if="GroupUpdateCtrl.group.apply_discounts===false" class="text-info">
+                  <span class="fa fa-info-circle" aria-hidden="true"></span> {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupUpdateCtrl.group.apply_discounts" name="apply_discounts" type="checkbox">
+                    {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</b></h5>
+                <p ng-if="GroupUpdateCtrl.group.apply_billing_services===false" class="text-info">
+                  <span class="fa fa-info-circle" aria-hidden="true"></span> {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupUpdateCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
+                    {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- These operations should be hidden for a new account -->
+            <div class="row">
+              <div class="col-md-12">
+                <!-- @todo -->
+                <!-- Placeholder - these features are not yet supported in 2.x -->
+                <!--
+                <hr>
+
+                <button class="btn btn-default">
+                  <span class="glyphicon glyphicon-lock"></span>
+                  Lock Debtor Group
+                </button>
+
+                <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete Debtor Group</button>
+                -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default" ng-if="GroupUpdateCtrl.state.current.name==='debtorGroups.update'">
+          <div class="panel-heading">
+            <i class="fa fa-list-alt"></i>
+            {{ "DEBTOR_GROUP.SUBSCRIPTIONS" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <div class="form-group">
+              <label>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</label>
+
+              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.billingServices.length === 0">
+                <i class="fa fa-info-circle"></i>  {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY" | translate }}
+              </p>
+              <ul>
+                <li
+                  ng-repeat="billingService in GroupUpdateCtrl.group.billingServices | orderBy:'label'"
+                  class="form-control-static">
+                  {{ billingService.label }}
+                </li>
+              </ul>
+
+              <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.billingServiceSubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE" | translate }}
+              </button>
+            </div>
+            <div class="form-group">
+              <label>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</label>
+
+              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.subsidies.length === 0">
+              <i class="fa fa-info-circle"></i> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.EMPTY" | translate }}
+              </p>
+              <ul>
+                <li
+                  ng-repeat="subsidy in GroupUpdateCtrl.group.subsidies | orderBy:'label'"
+                  class="form-control-static">
+                  {{ subsidy.label }}
+                </li>
+              </ul>
+
+              <button id="subsidySubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.subsidySubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.UPDATE" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,7 @@
  */
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
-const concat = require('gulp-concat'); 
+const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const template = require('gulp-template');
@@ -123,7 +123,7 @@ const paths = {
       'client/src/**/*',
       '!client/src/index.html',
       '!client/src/js/**/*.js',
-      '!client/src/partials/**/*.js',
+      '!client/src/modules/**/*.js',
       '!client/src/**/*.css',
       '!client/src/i18n/en/*',
       '!client/src/i18n/fr/*',

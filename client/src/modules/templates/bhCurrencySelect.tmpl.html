@@ -1,0 +1,39 @@
+<ng-form name="$ctrl.form">
+  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || !$ctrl.valid }" data-bh-currency-select>
+    <p class="control-label" style="margin-bottom:5px;">
+      <strong translate>FORM.LABELS.CURRENCY</strong>
+    </p>
+
+    <!-- repeat each currency in the application -->
+    <label
+      ng-repeat="currency in $ctrl.currencies track by currency.id"
+      class="radio-inline"
+      title="{{currency.title | translate}}"
+      ng-class="{ 'disabled text-muted' : currency.disabled }">
+      <input
+        name="currency"
+        type="radio"
+        ng-model="$ctrl.currencyId"
+        ng-value="currency.id"
+        ng-change="$ctrl.onChange({ currency : $ctrl.currencyId })"
+        data-currency-option="{{ currency.id }}"
+        ng-disabled="currency.disabled"
+        required>
+      {{ currency.label }}
+    </label>
+
+    <!-- radio button validation messages -->
+    <div class="help-block" ng-messages="$ctrl.form.currency.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+
+    <!-- show danger message if all currencies are disabled -->
+    <p class="help-block" ng-hide="$ctrl.valid">
+      <i class="fa fa-exclamation-circle"></i> <span translate>CASHBOX.NO_SUPPORTED_CURRENCIES</span>
+      <br />
+      <a ng-show="$ctrl.cashboxId" ui-sref="cashboxes.edit({ uuid: $ctrl.cashboxId })" class="text-danger" href>
+        <strong><i class="fa fa-link"></i> <span translate>CASHBOX.SET_CURRENCY_ACCOUNTS</span></strong>
+      </a>
+    </p>
+  </div>
+</ng-form>
