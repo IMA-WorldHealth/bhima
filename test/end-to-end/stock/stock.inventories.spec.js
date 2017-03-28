@@ -82,4 +82,4 @@ function StockInventoriesRegistryTests() {
 
 }
 
-describe.only('Stock Inventory Registry', StockInventoriesRegistryTests);
+describe('Stock Inventory Registry', StockInventoriesRegistryTests);
