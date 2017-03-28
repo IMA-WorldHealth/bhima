@@ -47,16 +47,24 @@ function invoiceStat(req, res, next) {
 
   // query invoices
   let sqlBalance =
-    `SELECT (debit - credit) as balance, project_id, cost
+    `SELECT SUM(i.debit - i.credit) as balance, i.project_id, i.cost, i.uuid
      FROM (
-      SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
-      FROM combined_ledger
-      JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
-      WHERE invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
-        AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
-      GROUP BY uuid
+      (
+        SELECT posting_journal.debit_equiv as debit, posting_journal.credit_equiv as credit, invoice.project_id, invoice.cost
+        FROM posting_journal
+        JOIN invoice ON posting_journal.record_uuid = invoice.uuid OR posting_journal.reference_uuid = invoice.uuid
+        WHERE invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
+          AND ${DATE_CLAUSE} AND posting_journal.entity_uuid IS NOT NULL
+      ) UNION (
+        SELECT general_ledger.debit_equiv as debit, general_ledger.credit_equiv as credit, invoice.project_id, invoice.cost
+        FROM general_ledger
+        JOIN invoice ON general_ledger.record_uuid = invoice.uuid OR general_ledger.reference_uuid = invoice.uuid
+        WHERE invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
+          AND ${DATE_CLAUSE} AND general_ledger.entity_uuid IS NOT NULL      
+      ) 
      ) AS i
      JOIN project ON i.project_id = project.id
+     GROUP BY i.uuid
      `;
 
   // promises requests

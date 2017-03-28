@@ -74,7 +74,7 @@ function build(req, res, next) {
     exchangeRate = exchange.rate ? exchange.rate : 1;
 
     /*
-     * The SQL query first looks for all entity_uuids in the combined Posting
+     * The SQL query first looks for all entity_uuids in 
      * Journal and General Ledger to find unbalanced accounts, then links them
      * with invoices and cash payments.
      */
@@ -85,11 +85,18 @@ function build(req, res, next) {
         JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
         JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
         JOIN (
-          SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
-            SUM(debit_equiv - credit_equiv) AS balance
-          FROM combined_ledger
-          WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-          GROUP BY entity_uuid
+          SELECT l.entity_uuid, SUM(l.debit_equiv) AS debit, SUM(l.credit_equiv) AS credit,
+            SUM(l.debit_equiv - l.credit_equiv) AS balance
+          FROM (
+            ( SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.debit_equiv, posting_journal.credit_equiv
+              FROM posting_journal
+            ) UNION (
+              SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.debit_equiv, general_ledger.credit_equiv
+              FROM general_ledger                      
+            )
+          ) AS l
+          WHERE l.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
+          GROUP BY l.entity_uuid
           HAVING balance > 0
         ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
       GROUP BY patient.debtor_uuid
@@ -100,10 +107,18 @@ function build(req, res, next) {
      * Aggregate SQL for totalling all debts up to the present
      */
     const aggregateSql = `
-      SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) * ${exchangeRate} AS debit,
-        SUM(credit_equiv) * ${exchangeRate} AS credit, SUM(debit_equiv - credit_equiv) * ${exchangeRate} AS balance
-      FROM combined_ledger
-      WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
+      SELECT COUNT(DISTINCT(c.entity_uuid)) AS numDebtors, SUM(c.debit_equiv) * ${exchangeRate} AS debit,
+        SUM(c.credit_equiv) * ${exchangeRate} AS credit, SUM(c.debit_equiv - c.credit_equiv) * ${exchangeRate} AS balance
+      FROM (
+      (
+        SELECT entity_uuid, debit_equiv, credit_equiv, trans_id
+        FROM posting_journal
+      ) UNION (
+        SELECT entity_uuid, debit_equiv, credit_equiv, trans_id
+        FROM general_ledger   
+      )
+    ) AS c
+      WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
     `;
 
     const data = {};

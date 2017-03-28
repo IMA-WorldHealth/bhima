@@ -119,7 +119,7 @@ function lookupDebtor(uid) {
  *
  * The algorithm works like this:
  *  1) Look up all invoices billed to that debtor
- *  2) Look up those invoices in the combined ledger, as well as payments
+ *  2) Look up those invoices in the posting_journal and general_ledger, as well as payments
  *    against them.  These are summed into debits and credits.
  *
  * The database will optionally filter invoices based on whether they are
@@ -189,7 +189,7 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
   }
 
 
-  // select all invoice and payments against invoices from the combined ledger
+  // select all invoice and payments against invoices from the posting_journal and general_ledger
   // @TODO this query is used in many places and is crucial for finding balances
   //       it currently uses 5 sub queries - this should be improved
   let sql = `
@@ -264,7 +264,7 @@ function balance(debtorUid) {
       );
     }
 
-    // select all invoice and payments against invoices from the combined ledger
+    // select all invoice and payments against invoices from the  posting_journal and general_ledger
     sql = `
       SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
@@ -301,13 +301,26 @@ function financialPatient(debtorUuid) {
 
   // build the main part of the SQL query
   let sql = `
-    SELECT combined_ledger.trans_id, combined_ledger.entity_uuid, combined_ledger.description, combined_ledger.record_uuid,
-      combined_ledger.trans_date, SUM(combined_ledger.debit_equiv) AS debit, SUM(combined_ledger.credit_equiv) AS credit, document_map.text AS document
-    FROM combined_ledger
-      LEFT JOIN document_map ON document_map.uuid = combined_ledger.record_uuid
-    WHERE combined_ledger.entity_uuid = ?
-    GROUP BY combined_ledger.record_uuid
-    ORDER BY combined_ledger.trans_date ASC, combined_ledger.trans_id`;
+    SELECT f.trans_id, f.entity_uuid, f.description, f.record_uuid,
+      f.trans_date, SUM(f.debit_equiv) AS debit, SUM(f.credit_equiv) AS credit, f.text AS document
+    FROM (
+      (
+        SELECT posting_journal.trans_id, posting_journal.entity_uuid, posting_journal.description, posting_journal.record_uuid,
+          posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv, document_map.text
+        FROM posting_journal
+          LEFT JOIN document_map ON document_map.uuid = posting_journal.record_uuid
+        WHERE posting_journal.entity_uuid = ?       
+      ) UNION (
+        SELECT general_ledger.trans_id, general_ledger.entity_uuid, general_ledger.description, general_ledger.record_uuid,
+          general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, document_map.text
+        FROM general_ledger
+          LEFT JOIN document_map ON document_map.uuid = general_ledger.record_uuid
+        WHERE general_ledger.entity_uuid = ?         
+      )
+    )AS f
+    GROUP BY f.record_uuid
+    ORDER BY f.trans_date ASC, f.trans_id
+  `;
 
-  return db.exec(sql, [buid]);
+  return db.exec(sql, [buid, buid]);
 }
