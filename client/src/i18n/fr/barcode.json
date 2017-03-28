@@ -1,0 +1,5 @@
+{"BARCODE":{"SCAN":"Scanner le Code à Barres",
+"AWAITING_INPUT":"En Attente d'Entrée",
+"AWAITING_HTTP":"Code à barres lu! Recherche de factures ....",
+"READ_SUCCESS":"Facture Trouvée",
+"READ_ERROR":"Code à barres illisible! Entrez le code à barres manuellement."}}

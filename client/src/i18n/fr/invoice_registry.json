@@ -1,0 +1,4 @@
+{"INVOICE_REGISTRY":{"TITLE":"Registre des Factures",
+"RECEIPT_CURRENCY":"Monnaie du reçu",
+"EXCLUDE_REVERSE":"Exclure toutes les factures inversees",
+"INCLUDE_REVERSE":"Inclure uniquement les factures inversees"}}
