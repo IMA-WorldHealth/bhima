@@ -1,0 +1,168 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "ENTERPRISE.TITLE" | translate }}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item"></div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- enterprise form  -->
+      <div class="col-md-6">
+        <form
+          name="EnterpriseForm"
+          bh-submit="EnterpriseCtrl.submit(EnterpriseForm)"
+          bh-form-defaults
+          novalidate>
+
+          <!-- enterprise main info  -->
+          <div class="panel panel-primary">
+
+            <div class="panel-heading">
+              <b><i class="fa fa-building"></i> {{ 'TREE.ENTERPRISE' | translate }} :
+                <span class="text-uppercase" ng-if="EnterpriseCtrl.enterprise.name">{{ EnterpriseCtrl.enterprise.name }}</span>
+              </b>
+            </div>
+
+            <div class="panel-body">
+
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.name.$invalid }">
+                <label class="control-label">
+                  {{ 'FORM.LABELS.NAME' | translate }}
+                </label>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" autocomplete="off" ng-maxlength="EnterpriseCtrl.maxLength" required>
+                <div class="help-block" ng-messages="EnterpriseForm.name.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.abbr.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.ABBREVIATION" | translate }}
+                </label>
+                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required >
+                <div class="help-block" ng-messages="EnterpriseForm.abbr.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <!-- gain account  -->
+              <bh-account-select
+                id="gain-account-id"
+                account-id="EnterpriseCtrl.enterprise.gain_account_id"
+                label="FORM.LABELS.GAIN_ACCOUNT"
+                name="gain_account_id"
+                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)">
+              </bh-account-select>
+
+              <bh-account-select
+                id="loss-account-id"
+                account-id="EnterpriseCtrl.enterprise.loss_account_id"
+                label="FORM.LABELS.LOSS_ACCOUNT"
+                name="loss_account_id"
+                on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
+              </bh-account-select>
+
+            </div>
+
+            <div class="panel-footer text-right">
+              <bh-loading-button loading-state="EnterpriseForm.$loading">
+                <span translate>FORM.BUTTONS.UPDATE</span>
+              </bh-loading-button>
+            </div>
+          </div>
+
+          <!-- enterprise optional info  -->
+          <div class="panel panel-default">
+
+            <div class="panel-heading">
+              <i class="fa fa-info-circle"></i> {{ 'TREE.ENTERPRISE' | translate }} ({{ 'FORM.LABELS.OPTIONAL_INFO' | translate }})
+            </div>
+
+            <div class="panel-body">
+
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.po_box.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.PO_BOX" | translate }}
+                </label>
+                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.email.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.EMAIL" | translate }}
+                </label>
+                <input type="email" class="form-control" autocomplete="off" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
+                <div class="help-block" ng-messages="EnterpriseForm.email.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.phone.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.PHONE" | translate }}
+                </label>
+                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
+                <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <bh-location-select
+                validation-trigger="EnterpriseForm.$submitted"
+                location-uuid="EnterpriseCtrl.enterprise.location_id">
+              </bh-location-select>
+
+
+              <button class="btn btn-block btn-default" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)">
+                <i class="fa fa-save"></i> {{ "FORM.BUTTONS.UPDATE" | translate }}
+              </button>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+
+      <!-- project form  -->
+      <div class="col-md-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <b><i class="fa fa-cube"></i> {{ 'TREE.PROJECT' | translate }}</b>
+          </div>
+
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
+              <i class="fa fa-hospital-o"></i>
+              <span>{{ p.name }} ({{ p.abbr }})</span>
+              <a data-delete="{{ p.abbr }}" class="badge badge-danger" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)"><i class="fa fa-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}</a>
+              <a data-update="{{ p.abbr }}" class="badge badge-info" ng-click="EnterpriseCtrl.editProject(p.id)"><i class="fa fa-edit"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}</a>
+            </li>
+          </ul>
+
+          <div class="panel-footer text-right">
+            <button type="submit" class="btn btn-default"
+              data-method="create"
+              ng-click="EnterpriseCtrl.addProject()">
+              <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- embedded exchange rate -->
+        <div ui-view="exchange"></div>
+      </div>
+    </div>
+  </div>
+</div>

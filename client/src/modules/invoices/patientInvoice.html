@@ -1,0 +1,309 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>PATIENT_INVOICE.PAGE_TITLE</li>
+      <li class="title" ng-show="PatientInvoiceCtrl.Invoice.recipient">{{ PatientInvoiceCtrl.Invoice.recipient.display_name }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <form name="InvoiceForm" bh-submit="PatientInvoiceCtrl.submit(InvoiceForm)" bh-form-defaults novalidate>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-6">
+
+                  <div class="form-group">
+                    <bh-find-patient
+                      suppress-reset="true"
+                      on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
+                      on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)"
+                      validation-trigger="InvoiceForm.$submitted">
+                    </bh-find-patient>
+                  </div>
+
+                  <div class="form-group"
+                    ng-class="{'has-error' : InvoiceForm.$submitted && InvoiceForm.service.$invalid }">
+                    <label class="control-label" translate>FORM.LABELS.SERVICE</label>
+                    <select
+                      class="form-control"
+                      name="service"
+                      ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
+                      ng-options="service.id as service.name for service in PatientInvoiceCtrl.Invoice.services"
+                      required>
+                      <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
+                    </select>
+                    <div class="help-block" ng-messages="InvoiceForm.service.$error" ng-show="InvoiceForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!--
+                    @todo - since we know this is a financial date, we could set min and max for periods etc.
+                  -->
+                  <bh-date-editor
+                    date-value="PatientInvoiceCtrl.Invoice.details.date"
+                    validation-trigger="InvoiceForm.$submitted"
+                    min-date="PatientInvoiceCtrl.minimumDate"
+                    max-date="PatientInvoiceCtrl.timestamp">
+                  </bh-date-editor>
+
+                  <div class="form-group"
+                    ng-class="{'has-error' : InvoiceForm.$submitted && InvoiceForm.notes.$invalid }">
+                    <label class="control-label" translate>FORM.LABELS.NOTES</label>
+                    <textarea
+                      ng-model="PatientInvoiceCtrl.Invoice.details.description"
+                      name="notes"
+                      placeholder="{{'FORM.PLACEHOLDERS.NOTES' | translate}}..."
+                      class="form-control"
+                      ng-maxlength="PatientInvoiceCtrl.maxLength"
+                      rows="4">
+                    </textarea>
+                    <div class="help-block" ng-messages="InvoiceForm.notes.$error" ng-show="InvoiceForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- End panel -->
+          </div><!-- End (12) columns -->
+        </div><!-- End row -->
+
+      <div ng-show="PatientInvoiceCtrl.patientBalance < 0" class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-warning">
+            <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
+            {{PatientInvoiceCtrl.patientBalance * -1 | currency:PatientInvoiceCtrl.enterprise.currency_id}}
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="PatientInvoiceCtrl.Invoice._error" class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-danger">
+            <i class="fa fa-warning"></i> <span translate>{{ PatientInvoiceCtrl.Invoice._error }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODO Move padding to generic CSS class -->
+      <div class="row" style="padding-bottom : 5px;">
+        <div class="col-xs-12">
+
+          <!-- "Recover Items" button -->
+          <div class="pull-right">
+            <button
+              class="btn btn-default"
+              type="button"
+              id="recover"
+              ng-class="{ 'btn-primary' : PatientInvoiceCtrl.Invoice.hasCacheAvailable() && PatientInvoiceCtrl.Invoice.recipient }"
+              ng-click="PatientInvoiceCtrl.Invoice.readCache()"
+              ng-disabled="!PatientInvoiceCtrl.Invoice.hasCacheAvailable() || !PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.hasRecoveredCache || InvoiceForm.$submitted">
+              <i class="fa fa-recycle"></i> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
+            </button>
+          </div>
+
+          <!-- "Add number of grid rows" input-group -->
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button
+                id="btn-add-rows"
+                type="button"
+                class="btn btn-default"
+                ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
+                ng-click="PatientInvoiceCtrl.addItems(PatientInvoiceCtrl.itemIncrement)">
+                <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
+              </button>
+            </span>
+            <input
+              type="number"
+              class="form-control"
+              ng-model="PatientInvoiceCtrl.itemIncrement"
+              style="max-width : 40px;"
+              ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
+          </div>
+
+          <!-- @todo - hacky check for inventory to prevent local variables -->
+          <p
+            style="padding-top : 10px;"
+            class="text-warning"
+            ng-show="PatientInvoiceCtrl.inventory.size() > 0 && PatientInvoiceCtrl.Invoice.inventory.available.data.length === 0">
+            <span class="fa fa-info-circle"></span>
+            <span translate>FORM.INFO.ITEMS_FULL</span>
+          </p>
+
+          <p
+            style="padding-top : 10px;"
+            class="text-info"
+            ng-show="!PatientInvoiceCtrl.Invoice.recipient">
+            <span class="fa fa-info-circle"></span>
+            <span translate>FORM.INFO.NO_RECIPIENT</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- TODO Research performance hit using ui-grid-auto-resize -->
+      <div id="invoice-grid" ui-grid="PatientInvoiceCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize>
+      </div>
+
+      <div class="row" ng-show="PatientInvoiceCtrl.Invoice.recipient">
+        <div
+          totals-footer
+          grid="PatientInvoiceCtrl.gridOptions"
+          leading-columns="5">
+
+          <div
+            style="width : {{ PatientInvoiceCtrl.trackColumns.width }}px"
+            class="fixedColumn">
+
+            <div style="text-align : right;">
+              <h4 translate>FORM.LABELS.TOTAL</h4>
+
+
+              <!-- expand billing services -->
+              <div ng-show="PatientInvoiceCtrl.expandBillingServices">
+                <hr>
+                <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+                  {{ service.label }}({{ service.value }}%)
+                </h4>
+                <hr>
+              </div>
+
+              <h4>
+                <span translate>FORM.LABELS.BILLING_SERVICES</span>
+                <span
+                  class="text-info fa fa-info-circle"
+                  ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
+                  uib-popover-template="'billingServicesPopover.tmpl.html'"
+                  popover-placement="right"
+                  popover-append-to-body="true"
+                  popover-trigger="mouseenter">
+                </span>
+              </h4>
+
+              <h4>
+                <span translate>FORM.LABELS.SUBSIDIES</span>
+                <span
+                  class="text-info fa fa-info-circle"
+                  ng-show="PatientInvoiceCtrl.Invoice.subsidies.length > 0"
+                  uib-popover-template="'subsidiesPopover.tmpl.html'"
+                  popover-placement="right"
+                  popover-append-to-body="true"
+                  popover-trigger="mouseenter">
+                </span>
+              </h4>
+
+              <h4><strong translate>FORM.LABELS.DUE</strong></h4>
+            </div>
+          </div>
+
+          <div
+            class="fixedColumn"
+            style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{ PatientInvoiceCtrl.trackColumns.trackedWidth }}px;">
+
+            <!-- totals of the rows in the grid -->
+            <h4>
+              {{ PatientInvoiceCtrl.Invoice.totals.rows | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+            </h4>
+            <h4>
+              + {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+            </h4>
+            <h4>
+              - {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+            </h4>
+
+            <!-- This is actually what causes all of the values referenced to be updated on every change -->
+            <h4><strong>{{ PatientInvoiceCtrl.Invoice.totals.grandTotal | currency:PatientInvoiceCtrl.enterprise.currency_id }}</strong></h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODO Temporary styles -->
+      <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
+        <div class="col-md-12 text-right">
+          <bh-loading-button
+            id="btn-submit-invoice"
+            loading-state="InvoiceForm.$loading"
+            disabled="!PatientInvoiceCtrl.Invoice.recipient">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
+
+          <button
+            id="clear"
+            type="button"
+            class="btn btn-default"
+            ng-disabled="InvoiceForm.$loading"
+            ng-click="PatientInvoiceCtrl.clear(InvoiceForm)">
+            <span translate>FORM.BUTTONS.CLEAR</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- billing service breakdown popover -->
+<script type="text/ng-template" id="billingServicesPopover.tmpl.html">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th colspan="2" translate>PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+        <td>{{ service.label }}</td>
+        <td class="text-right">{{ service.value }}%</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th translate>FORM.LABELS.TOTAL</th>
+        <th class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</script>
+
+<!-- subsidy breakdown popover -->
+<script type="text/ng-template" id="subsidiesPopover.tmpl.html">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th colspan="2" translate>PATIENT_INVOICE.SUBSIDY_BREAKDOWN</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td translate>PATIENT_INVOICE.COMBINED_SUBSIDIES</td>
+        <td class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th translate>FORM.LABELS.TOTAL</th>
+        <th class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</script>
+
+<script type="text/ng-template" id="typePopover.tmpl.html">
+  <dl style="margin-bottom: 0; padding-bottom:0">
+    <dt translate>PATIENT_INVOICE.DISTRIBUTION_TYPE</dt>
+    <dd translate>PATIENT_INVOICE.DISTRIBUTION_TYPE_EXPLANATION</dd>
+  </dl>
+</script>

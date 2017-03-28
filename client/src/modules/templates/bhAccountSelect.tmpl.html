@@ -1,0 +1,31 @@
+<div ng-form="{{ $ctrl.name }}" bh-account-select>
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : AccountForm.$$parent.$submitted && AccountForm.account_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+
+    <ui-select
+      name="account_id"
+      ng-model="$ctrl.accountId"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+        <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        ui-disable-choice="account.type_id === $ctrl.TITLE_ACCOUNT_ID"
+        repeat="account.id as account in $ctrl.accounts | filter: { 'hrlabel' : $select.search }">
+        <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+        <span ng-bind-html="account.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountForm.account_id.$error" ng-show="AccountForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

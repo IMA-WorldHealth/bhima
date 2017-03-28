@@ -1,0 +1,249 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+      <li class="title" translate>VILLAGE.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="VillageCtrl.create()" data-method="create">
+          <i class="fa fa-plus-square"></i> <span translate>VILLAGE.NEW_VILLAGE</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Links to the main menu of management maps as well as the button for adding Villages -->
+<div class="flex-util">
+  <button ui-sref="locations" class="btn btn-default btn-sm" style="margin: 0 2px;">
+    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
+  </button>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+    <!-- Complete list of registered villages -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ 'VILLAGE.REGISTERED' | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+               <tr>
+                <th>{{ 'TABLE.COLUMNS.NAME' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.SECTOR' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.ACTION' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="VillageCtrl.session.loading" class="text-center">
+                <td colspan="4"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="village in VillageCtrl.locations | orderBy:'village'">
+                <td>{{ village.village }}</td>
+                <td>{{ village.sector }}</td>
+                <td>
+                  <a class="btn btn-xs btn-default" data-village-name="{{::village.village}}"  ng-click="VillageCtrl.update(village)">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-xs-6" ng-switch="VillageCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ 'VILLAGE.CONFIG' | translate }}</h4>
+            <p>{{ 'VILLAGE.INFO' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Form for adding Village -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'VILLAGE.REGISTER' | translate }}</div>
+          <div class="panel-body">
+            <form name="CreateForm" ng-submit="VillageCtrl.submit(CreateForm)" bh-form-defaults  novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="VillageCtrl.village.country_uuid"
+                  id="country"
+                  ng-options="c.uuid as c.name for c in VillageCtrl.countries | orderBy:'name'"
+                  ng-change="VillageCtrl.loadProvinces()"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.country | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="province"
+                  ng-model="VillageCtrl.village.province_uuid"
+                  id="province"
+                  ng-options="p.uuid as p.name for p in VillageCtrl.provinces | orderBy:'name'"
+                  ng-change="VillageCtrl.loadSectors()"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.province | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sector.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="sector"
+                  ng-model="VillageCtrl.village.sector_uuid"
+                  id="sector"
+                  ng-options="s.uuid as s.name for s in VillageCtrl.sectors | orderBy:'name'"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.sector | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.sector.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.village.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" autocomplete="off" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
+                <div class="help-block" ng-messages="CreateForm.village.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-village" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+
+              <!-- error feedback area -->
+              <div ng-if="VillageCtrl.state.errored && CreateForm.$submitted"
+                class="text-danger" data-role="feedback" style="margin-top:10px;">
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Form for updating Village -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'VILLAGE.EDIT' | translate }}</div>
+          <div class="panel-body">
+            <form name="UpdateForm" ng-submit="VillageCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="VillageCtrl.village.country_uuid"
+                  id="country"
+                  ng-options="c.uuid as c.name for c in VillageCtrl.countries | orderBy:'name'"
+                  ng-change="VillageCtrl.loadProvinces()"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.country | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="province"
+                  ng-model="VillageCtrl.village.province_uuid"
+                  id="province"
+                  ng-options="p.uuid as p.name for p in VillageCtrl.provinces | orderBy:'name'"
+                  ng-change="VillageCtrl.loadSectors()"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.province | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sector.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <select
+                  class="form-control"
+                  name="sector"
+                  ng-model="VillageCtrl.village.sector_uuid"
+                  id="sector"
+                  ng-options="s.uuid as s.name for s in VillageCtrl.sectors | orderBy:'name'"
+                  required>
+                  <option value="" disabled>{{ VillageCtrl.messages.sector | translate }}</option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.sector.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.village.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" autocomplete="off" ng-maxlength="VillageCtrl.maxLength" class="form-control" name="village" ng-model="VillageCtrl.village.name" required>
+                <div class="help-block" ng-messages="UpdateForm.village.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_village" type="submit" data-method="submit">
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.RESET" | translate }}
+                </button>
+              </div>
+
+              <!-- error feedback area -->
+              <div ng-if="VillageCtrl.state.errored && UpdateForm.$submitted"
+                class="text-danger" data-role="feedback" style="margin-top:10px;">
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

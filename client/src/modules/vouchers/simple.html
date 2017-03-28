@@ -1,0 +1,188 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title text-capitalize" translate>VOUCHERS.SIMPLE.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span translate>FORM.LABELS.TOOLS</span> <span class="caret"></span>
+          </a>
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href ui-sref="simpleVouchers.barcode" data-action="patient-invoice-debt-transfer">
+                <i class="fa fa-barcode"></i> <span translate>VOUCHERS.SIMPLE.TRANSFER_PATIENT_INVOICE_AMOUNT</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-6">
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span translate>VOUCHERS.SIMPLE.TITLE</span>
+          </div>
+
+          <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" bh-form-defaults novalidate ng-disabled="SimpleVoucherForm.$loading">
+            <div class="panel-body">
+
+              <bh-date-editor
+                date-value="SimpleVoucherCtrl.Voucher.details.date"
+                validation-trigger="SimpleVoucherForm.$submitted"
+                max-date="SimpleVoucherCtrl.timestamp" >
+              </bh-date-editor>
+
+              <div class="form-group" ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.type_id.$invalid }">
+
+                <label class="control-label">
+                  <span translate>FORM.LABELS.TRANSACTION_TYPE</span>
+                  <span uib-popover="{{ ::'VOUCHERS.GLOBAL.TRANSFER_TYPE_INFO' | translate }}"
+                    popover-trigger="'mouseenter'"
+                    popover-placement="top"
+                    class="text-info fa fa-info-circle">
+                  </span>
+                </label>
+
+                <ui-select
+                  name="type_id"
+                  ng-model="SimpleVoucherCtrl.Voucher.details.type_id"
+                  ng-required="SimpleVoucherCtrl.Voucher.hasCashboxAccount"
+                  append-to-body="true">
+
+                  <ui-select-match placeholder="{{ ::'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+                    <span translate>{{ $select.selected.text }}</span>
+                  </ui-select-match>
+
+                  <ui-select-choices
+                    ui-select-focus-patch
+                    repeat="item.id as item in SimpleVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
+                    group-by="'type'">
+                    <div ng-bind-html="item.hrText | highlight: $select.search"></div>
+                  </ui-select-choices>
+                </ui-select>
+
+                <div class="help-block" ng-show="SimpleVoucherCtrl.Voucher.hasCashboxAccount">
+                  <p class="text-info">
+                    <i class="fa fa-info-circle"></i> <span translate>VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT</span>
+                  </p>
+                </div>
+
+                <div class="help-block" ng-messages="SimpleVoucherForm.type_id.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div
+                class="form-group"
+                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
+                <label class="control-label">
+                  <span translate>FORM.LABELS.DESCRIPTION</span>
+                </label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  ng-model="SimpleVoucherCtrl.Voucher.details.description"
+                  placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+                  ng-maxlength="SimpleVoucherCtrl.maxLength"
+                  required>
+                </textarea>
+                <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+               <div
+                 class="form-group"
+                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.fromAccount.$invalid }">
+                 <label class="control-label">
+                   <span translate>FORM.LABELS.DEBIT</span> (D)
+                 </label>
+
+                 <ui-select
+                   name="fromAccount"
+                   ng-model="SimpleVoucherCtrl.Voucher.store.data[0].account_id"
+                   required>
+                   <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                   </ui-select-match>
+                   <ui-select-choices
+                     ui-select-focus-patch
+                     ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
+                     repeat="account.id as account in SimpleVoucherCtrl.Voucher.accounts | filter: { 'hrlabel' : $select.search }">
+                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                     <span ng-bind-html="account.label | highlight:$select.search"></span>
+                   </ui-select-choices>
+                 </ui-select>
+
+                 <div class="help-block" ng-messages="SimpleVoucherForm.fromAccount.$error" ng-show="SimpleVoucherForm.$submitted">
+                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                 </div>
+               </div>
+
+               <div
+                 class="form-group"
+                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.toAccount.$invalid }">
+                 <label class="control-label">
+                   <span translate>FORM.LABELS.CREDIT</span> (C)
+                 </label>
+                <ui-select
+                  name="toAccount"
+                   ng-model="SimpleVoucherCtrl.Voucher.store.data[1].account_id"
+                  required>
+                  <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                     <ui-select-choices
+                       ui-select-focus-patch
+                       ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
+                       repeat="account.id as account in SimpleVoucherCtrl.Voucher.accounts  | filter: { 'hrlabel' : $select.search }">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
+                 <div class="help-block" ng-messages="SimpleVoucherForm.toAccount.$error" ng-show="SimpleVoucherForm.$submitted">
+                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                 </div>
+               </div>
+
+               <bh-currency-select
+                 currency-id="SimpleVoucherCtrl.Voucher.details.currency_id"
+                 validation-trigger="SimpleVoucherForm.$submitted">
+               </bh-currency-select>
+
+              <bh-currency-input
+                data-voucher-currency-input
+                currency-id="SimpleVoucherCtrl.Voucher.details.currency_id"
+                model="SimpleVoucherCtrl.amount"
+                validation-trigger="SimpleVoucherForm.$submitted">
+              </bh-currency-input>
+            </div>
+
+            <div class="panel-footer text-right">
+              <button type="button" class="btn btn-default" ng-click="SimpleVoucherCtrl.clear()">
+                <span translate>FORM.BUTTONS.CLEAR</span>
+              </button>
+
+              <bh-loading-button loading-state="SimpleVoucherForm.$loading">
+                <span translate>FORM.BUTTONS.SUBMIT</span>
+              </bh-loading-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

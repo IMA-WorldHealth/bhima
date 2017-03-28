@@ -1,0 +1,170 @@
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" bh-form-defaults novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.INVENTORY</li>
+      <li class="title text-capitalize" ng-show="$ctrl.isCreateState" translate>
+        INVENTORY.ADD_METADATA
+      </li>
+      <li class="title text-capitalize" ng-show="$ctrl.isUpdateState" translate>
+        INVENTORY.EDIT_METADATA
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="max-height:500px; overflow-y: scroll;">
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CODE</label>
+      <input ng-model="$ctrl.item.code"
+        class="form-control"
+        type="text"
+        name="code"
+        autocomplete="off"
+        placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
+      <input ng-model="$ctrl.item.label"
+        class="form-control"
+        type="text"
+        name="text"
+        autocomplete="off"
+        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
+        <span translate>FORM.LABELS.CONSUMABLE</span>
+      </label>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.PRICE</label>
+      <input class="form-control"
+        type="number"
+        ng-min="0"
+        name="price"
+        autocomplete="off"
+        ng-model="$ctrl.item.price"
+        placeholder="{{ 'FORM.PLACEHOLDERS.PRICE' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.price.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- default quantity -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.default_quantity.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.DEFAULT_QUANTITY
+      </label>
+        <bh-info template="default_quantity.tmpl.html" direction="right"></bh-info>
+      <input class="form-control"
+        type="number"
+        ng-min="1"
+        name="default_quantity"
+        autocomplete="off"
+        ng-model="$ctrl.item.default_quantity"
+        placeholder="{{ 'FORM.PLACEHOLDERS.QUANTITY' | translate }}...">
+      <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group_uuid.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.GROUP</label>
+      <select class="form-control" name="group_uuid"
+        ng-model="$ctrl.item.group_uuid"
+        ng-options="group.uuid as group.name for group in $ctrl.groups"
+        required>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_GROUP</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.group_uuid.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.type_id.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.TYPE</label>
+      <select
+        class="form-control"
+        name="type_id"
+        ng-model="$ctrl.item.type_id"
+        ng-options="type.id as type.text for type in $ctrl.types"
+        required>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_TYPE</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.type_id.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit_id.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.UNIT</label>
+      <select
+        class="form-control"
+        name="unit_id"
+        ng-model="$ctrl.item.unit_id"
+        ng-options="unit.id as unit.text for unit in $ctrl.units"
+        required>
+        <option value="" disabled translate>FORM.SELECT.INVENTORY_UNIT</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.unit_id.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.UNIT_WEIGHT</label>
+      <input class="form-control" type="number" step="1" name="unit_weight"
+        ng-model="$ctrl.item.unit_weight"
+        placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_WEIGHT' | translate }}...">
+    </div>
+
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.UNIT_VOLUME</label>
+      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume" placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
+    </div>
+  </div>
+
+  <div class="modal-footer">
+
+    <div class="checkbox" style="display : inline-block" ng-if="$ctrl.isCreateState">
+      <label>
+        <input type="checkbox" ng-model="$ctrl.createAnotherItem"> <span translate>INVENTORY.CREATE_ANOTHER</span>
+      </label>
+    </div>
+
+    <button type="button" class="btn btn-default" data-method="cancel" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ActionForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
+
+<script type="text/ng-template" id="default_quantity.tmpl.html">
+  <dl style="margin-bottom: 0; padding-bottom:0">
+    <dt translate>FORM.LABELS.DEFAULT_QUANTITY</dt>
+    <dd translate>INVENTORY.DEFAULT_QUANTITY_DEFINITION</dd>
+  </dl>
+</script>

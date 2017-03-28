@@ -1,0 +1,102 @@
+<!--
+  global "disable" allows external controller to disable the entire component
+  a child form is added for validation purposes, and to make the HTML easier
+  to read.
+-->
+<!--
+  ng-form name is dynamically set by the controller - this form is aliased
+  as 'LocationForm' and made available to the template through `aliasComponentForm()`
+-->
+
+<!-- name="LocationForm" -->
+<fieldset
+  ng-disabled="$ctrl.disable"
+  ng-form="{{$ctrl.name}}"
+  novalidate
+  bh-form-defaults
+  data-bh-location-select>
+
+  <!-- allows a user to select a country -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.country.$invalid }">
+
+    <label class="control-label" translate>FORM.LABELS.COUNTRY</label>
+    <select
+      class="form-control"
+      ng-model="$ctrl.country"
+      name="country"
+      ng-options="country as country.name for country in $ctrl.countries track by country.uuid"
+      ng-change="$ctrl.loadProvinces()"
+      data-country-select
+      required>
+      <option value="" disabled translate>{{ $ctrl.messages.country }}</option>
+    </select>
+  </div>
+
+  <!-- allows a user to select a province based on the selected country uuid -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.province.$invalid }"
+    >
+    <label class="control-label" translate>FORM.LABELS.PROVINCE</label>
+    <select
+      class="form-control"
+      ng-model="$ctrl.province"
+      name="province"
+      ng-options="province as province.name for province in $ctrl.provinces track by province.uuid"
+      ng-change="$ctrl.loadSectors()"
+      ng-disabled="$ctrl.disabled.province"
+      data-province-select
+      required>
+      <option ng-if="$ctrl.country" value="" disabled translate>{{ $ctrl.messages.province }}</option>
+    </select>
+  </div>
+
+  <!-- allows a user to select a sector based on the selected province uuid -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.sector.$invalid }"
+    >
+    <label class="control-label" translate>FORM.LABELS.SECTOR</label>
+    <select
+      class="form-control"
+      ng-model="$ctrl.sector"
+      name="sector"
+      ng-options="sector as sector.name for sector in $ctrl.sectors track by sector.uuid"
+      ng-change="$ctrl.loadVillages()"
+      ng-disabled="$ctrl.disabled.sector"
+      data-sector-select
+      required>
+      <option ng-if="$ctrl.province" value="" disabled translate>{{ $ctrl.messages.sector }}</option>
+    </select>
+  </div>
+
+  <!-- allows a user to select a village based on the selected sector uuid -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.village.$invalid }"
+    >
+    <label class="control-label" translate>FORM.LABELS.VILLAGE</label>
+    <select
+      class="form-control"
+      ng-model="$ctrl.village"
+      name="village"
+      ng-change="$ctrl.updateLocationUuid()"
+      ng-options="village as village.name for village in $ctrl.villages track by village.uuid"
+      ng-disabled="$ctrl.disabled.village"
+      data-village-select
+      required>
+      <option ng-if="$ctrl.sector" value="" disabled translate>{{ $ctrl.messages.village }}</option>
+    </select>
+
+    <!-- validation messages shown on form errors-->
+    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="$ctrl.validationTrigger">
+      <span ng-messages-include="modules/templates/messages.tmpl.html"></span>
+    </p>
+  </div>
+
+  <!-- link to location create modal -->
+  <p class="text-right">
+    <a href ng-click="$ctrl.modal()" data-location-modal-open>
+      <span class="glyphicon glyphicon-modal-window"></span>
+      <span translate>FORM.LABELS.LOCATION_REGISTER</span>
+    </a>
+  </p>
+</fieldset>

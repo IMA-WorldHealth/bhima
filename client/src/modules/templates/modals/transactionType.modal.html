@@ -1,0 +1,78 @@
+<form
+  name="TransactionTypeForm"
+  bh-submit="$ctrl.submit(TransactionTypeForm)"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    {{ 'TREE.TRANSACTION_TYPE' | translate }}
+    <span ng-if="$ctrl.action === 'edit'" class="label label-info text-uppercase">{{ 'FORM.LABELS.EDIT' | translate }}</span>
+    <span ng-if="$ctrl.action === 'create'" class="label label-success text-uppercase">{{ 'FORM.LABELS.CREATE' | translate }}</span>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.text.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.TEXT' | translate }}</label>
+      <input type="text" class="form-control" name="text" autocomplete="off" ng-model="$ctrl.transactionType.text" required>
+      <div class="help-block" ng-messages="TransactionTypeForm.text.$error" ng-show="TransactionTypeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.description.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</i></label>
+      <input type="text" class="form-control" name="description" autocomplete="off" ng-model="$ctrl.transactionType.description" required>
+      <div class="help-block" ng-messages="TransactionTypeForm.description.$error" ng-show="TransactionTypeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.prefix.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.PREFIX" | translate }}</i></label>
+      <input type="text" class="form-control" name="prefix" autocomplete="off" ng-model="$ctrl.transactionType.prefix" required>
+      <div class="help-block" ng-messages="TransactionTypeForm.prefix.$error" ng-show="TransactionTypeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.type.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.TYPE" | translate }}</label>
+      <select class="form-control"
+        name="type"
+        ng-model="$ctrl.transactionType.type" required>
+        <option value="" disabled>-- {{ 'FORM.SELECT.TYPE' | translate }} --</option>
+        <option value="{{opt.value}}" ng-repeat="opt in $ctrl.optionType">{{opt.label | translate}}</option>
+      </select>
+      <div class="help-block" ng-messages="TransactionTypeForm.type.$error" ng-show="TransactionTypeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.otherType.$invalid }">
+      <input ng-if="$ctrl.transactionType.type === 'other'"
+        type="text"
+        class="form-control"
+        name="otherType"
+        autocomplete="off"
+        placeholder="{{ 'FORM.PLACEHOLDERS.TYPE' | translate }}..."
+        ng-model="$ctrl.otherType" required>
+      <div class="help-block" ng-messages="TransactionTypeForm.otherType.$error" ng-show="TransactionTypeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default"
+      data-method="cancel"
+      ng-click="$ctrl.close()">
+      {{ 'FORM.BUTTONS.CLOSE' | translate }}
+    </button>
+    <bh-loading-button loading-state="TransactionTypeForm.$loading">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
+  </div>
+
+</form>

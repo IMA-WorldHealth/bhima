@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ReportConfigCtrl.report.title_key | translate}}</li>
+    <li class="title">{{ "FORM.LABELS.CREATE" | translate }}</li>
+  </ol>
+</div>
+
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" bh-form-defaults novalidate>
+<div class="modal-body">
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
+    <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
+    <input class="form-control" autocomplete="off" id="label" name="label" ng-model="ReportConfigCtrl.label" required />
+
+    <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="ReportConfigCtrl.cancel()"
+    data-method="cancel">
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
+  </button>
+
+  <bh-loading-button
+    loading-state="ReportConfigCtrl.$loading"
+    ng-disabled="ConfigForm.$invalid">
+    {{ "FORM.BUTTONS.GENERATE" | translate }}
+  </bh-loading-button>
+</div>
+</form>
