@@ -1,0 +1,102 @@
+<form
+  name="ModalForm"
+  ng-submit="ModalCtrl.submit(ModalForm)"
+  data-modal="invoice-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.INVOICES</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow: auto; max-height: 400px;">
+
+    <!-- billing date fieldset -->
+    <fieldset>
+      <legend translate>FORM.LABELS.BILLING_DATE</legend>
+
+      <bh-date-interval
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.billingDateFrom"
+        date-to="ModalCtrl.params.billingDateTo"
+        mode="clean">
+      </bh-date-interval>
+    </fieldset>
+
+    <br />
+
+    <!-- invoice details fieldset -->
+    <fieldset>
+      <legend translate> FORM.LABELS.INVOICES_DETAILS </legend>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+        <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+        <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
+        <bh-clear on-clear="ModalCtrl.clear('reversed')"></bh-clear>
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="0" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.EXCLUDE_REVERSE</span>
+          </label>
+        </div>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsReversal" value="1" ng-model="ModalCtrl.params.reversed">
+            <span translate>INVOICE_REGISTRY.INCLUDE_REVERSE</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.SERVICE</label>
+        <bh-clear on-clear="ModalCtrl.clear('service_id')"></bh-clear>
+        <select
+          class="form-control"
+          name="service"
+          ng-model="ModalCtrl.params.service_id"
+          ng-options="s.id as s.name for s in ModalCtrl.services | orderBy:'name'">
+          <option value="" disabled translate>FORM.SELECT.SERVICE</option>
+        </select>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.user.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.USER</label>
+        <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+        <select
+          class="form-control"
+          name="user"
+          ng-model="ModalCtrl.params.user_id"
+          ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
+          <option value="" disabled translate>FORM.SELECT.USER</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+        <bh-clear on-clear="ModalCtrl.clear('patientReference')"></bh-clear>
+        <input type="text" class="form-control" ng-model="ModalCtrl.params.patientReference"/>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button class="btn btn-primary" type="submit" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

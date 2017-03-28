@@ -1,0 +1,156 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="ComplexVoucherCtrl.paths"
+  dropdown="ComplexVoucherCtrl.dropdown">
+</bh-breadcrumb>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <form name="ComplexVoucherForm" bh-submit="ComplexVoucherCtrl.submit(ComplexVoucherForm)" bh-form-defaults novalidate>
+
+      <!-- description -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+
+              <!-- left  -->
+              <div class="col-md-6">
+                <bh-date-editor
+                  date-value="ComplexVoucherCtrl.Voucher.details.date"
+                  validation-trigger="ComplexVoucherForm.$submitted"
+                  max-date="ComplexVoucherCtrl.timestamp">
+                </bh-date-editor>
+
+                <div
+                  class="form-group"
+                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
+                  <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+                  <textarea
+                    class="form-control"
+                    name="description"
+                    ng-model="ComplexVoucherCtrl.Voucher.details.description"
+                    placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+                    required>
+                  </textarea>
+                  <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- right  -->
+              <div class="col-md-6">
+
+                <div class="form-group" ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.type_id.$invalid }">
+                  <label class="control-label">
+                    <span translate>FORM.LABELS.TRANSACTION_TYPE</span>
+                    <span uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSFER_TYPE_INFO' | translate }}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="bottom"
+                      class="text-info fa fa-info-circle">
+                    </span>
+                  </label>
+
+                  <!-- financial transaction  -->
+                  <ui-select
+                    name="type_id"
+                    ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
+                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount"
+                    ng-change="ComplexVoucherCtrl.Voucher.validate()"
+                    append-to-body="true">
+
+                    <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+                      <span translate>{{$select.selected.text}}</span>
+                    </ui-select-match>
+
+                    <ui-select-choices
+                      ui-select-focus-patch
+                      repeat="item.id as item in ComplexVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
+                      group-by="'type'">
+                      <div ng-bind-html="item.hrText | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+
+                  <div class="help-block" ng-show="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
+                    <p class="text-info">
+                      <i class="fa fa-info-circle"></i> <span translate>VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT</span>
+                    </p>
+                  </div>
+
+                  <div class="help-block" ng-messages="ComplexVoucherForm.type_id.$error" ng-show="ComplexVoucherForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <bh-currency-select
+                  currency-id="ComplexVoucherCtrl.Voucher.details.currency_id"
+                  validation-trigger="ComplexVoucherForm.$submitted">
+                </bh-currency-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom : 5px;">
+        <div class="col-md-12">
+
+          <!-- "Recover Cache" button -->
+          <div class="pull-right">
+            <button
+              class="btn btn-default"
+              id="recover"
+              ng-class="{ 'btn-primary' : ComplexVoucherCtrl.Voucher.hasCacheAvailable() }"
+              ng-click="ComplexVoucherCtrl.Voucher.readCache()"
+              ng-disabled="!ComplexVoucherCtrl.Voucher.hasCacheAvailable() || ComplexVoucherCtrl.Voucher.hasRecoveredCache || ComplexVoucherForm.$submitted">
+              <i class="fa fa-recycle"></i> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
+            </button>
+          </div>
+
+          <!-- "Add number of grid rows" input-group -->
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                id="btn-add-rows"
+                class="btn btn-default"
+                ng-click="ComplexVoucherCtrl.Voucher.addItems(ComplexVoucherCtrl.itemIncrement)">
+                <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
+              </button>
+            </span>
+            <input
+              type="number"
+              class="form-control"
+              ng-model="ComplexVoucherCtrl.itemIncrement"
+              style="max-width : 40px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- the grid  -->
+      <div id="voucherGridId" ui-grid="ComplexVoucherCtrl.gridOptions" ui-grid-auto-resize>
+      </div>
+
+
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-md-6">
+          <p ng-if="ComplexVoucherCtrl.Voucher._error" class="text-danger">
+            <i class="fa fa-warning"></i> <span translate>{{ ComplexVoucherCtrl.Voucher._error }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-6 text-right">
+          <button class="btn btn-default" ng-click="ComplexVoucherCtrl.clear(ComplexVoucherForm)" type="button">
+            <span translate>FORM.BUTTONS.CLEAR</span>
+          </button>
+
+          <bh-loading-button loading-state="ComplexVoucherForm.$loading">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
