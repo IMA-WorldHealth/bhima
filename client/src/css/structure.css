@@ -892,3 +892,10 @@ a[disabled] {
   pointer-events: none;
   cursor: default;
 }
+
+.tab-body {
+  padding : 10px;
+  max-height : 360px;
+  min-height : 360px;
+  overflow : auto;
+}
