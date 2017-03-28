@@ -28,7 +28,7 @@ let languageKey;
 
 function convert(number, lang, currencyName){
   //Round to at most 2 decimal places
-  number = Math.round(number * 100) / 100;
+  number = _.round(number, 2);
   
   languageKey = lang;  
   dictionary = (String(lang).toLowerCase() === 'fr') ? fr : en;
@@ -59,9 +59,9 @@ function convert(number, lang, currencyName){
   let num = x => Number(x) || 0;
   let str = x => String(x);
   let isEmpty = xs => xs.length === 0;
-  let take = n => xs => xs.slice(0,n);
-  let drop = n => xs => xs.slice(n);
-  let reverse = xs => xs.slice(0).reverse();
+  let take = n => xs => _.slice(xs, 0, n);
+  let drop = n => xs => _.slice(xs, n);
+  let reverse = xs => _.slice(xs, 0).reverse();
   let comp = f => g => x => f (g (x));
   let not = x => !x;
   let chunk = n => xs =>
@@ -71,8 +71,8 @@ function convert(number, lang, currencyName){
   let numToWords = number => {
     
     let makeGroup = ([ones,tens,huns]) => {
-      huns =  parseInt(huns);
-      ones = parseInt(ones);
+      huns =  _.parseInt(huns);
+      ones = _.parseInt(ones);
 
       return [
         num(huns) === 0 ? '' :
@@ -102,9 +102,9 @@ function convert(number, lang, currencyName){
   */
 
   var numberString = String(number);
-  var numberPart = numberString.split(".");
+  var numberPart = _.split(numberString, '.');
   var numberText = numToWords(numberPart[0]);
-
+  
   numberText = numberPart[1] ? numberText + _.get(dictionary, 'NUMBERS.POINT') + ' ' + numToWords(numberPart[1]) : numberText;
   return numberText + ' ' + currencyName;
 }
