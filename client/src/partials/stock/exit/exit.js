@@ -60,7 +60,6 @@ function StockExitController(Depots, Inventory, Notify,
         cellTemplate     : 'partials/stock/exit/templates/code.tmpl.html' },
 
       { field            : 'description',
-        width            : 300,
         displayName      : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/exit/templates/description.tmpl.html' },

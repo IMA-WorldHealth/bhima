@@ -93,7 +93,6 @@ function StockExiTests() {
     // submit
     page.submit();
   });
-
 }
 
 describe('Stock Exit Test', StockExiTests);
