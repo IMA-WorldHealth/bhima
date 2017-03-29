@@ -1,16 +1,16 @@
 angular.module('bhima.components')
-  .component('bhVisits', {
+  .component('bhPatientVisit', {
     bindings : {
       patientUuid : '<',
     },
-    templateUrl : 'partials/templates/bhVisits.tmpl.html',
+    templateUrl : 'modules/patients/record/bh-patient-visit.html',
     controller  : VisitsController,
   });
 
 VisitsController.$inject = ['PatientService', 'NotifyService', 'moment'];
 
 function VisitsController(Patients, Notify, Moment) {
-  var vm = this;
+  var $ctrl = this;
   var mostRecentVisit;
 
   // Currently not limited on client to give accurate representation of total
@@ -18,34 +18,34 @@ function VisitsController(Patients, Notify, Moment) {
   var DEFAULT_VISIT_LIMIT = 3;
 
   this.$onInit = function $onInit() {
-    vm.viewLimit = DEFAULT_VISIT_LIMIT;
-    vm.loaded = false;
-    vm.loading = true;
-    vm.visiting = false;
+    $ctrl.viewLimit = DEFAULT_VISIT_LIMIT;
+    $ctrl.loaded = false;
+    $ctrl.loading = true;
+    $ctrl.visiting = false;
 
     refreshVisitFeed();
   };
 
   // expose methods to the view
-  vm.admit = admit;
+  $ctrl.admit = admit;
 
   function refreshVisitFeed() {
-    vm.loading = true;
-    vm.loaded = false;
-    Patients.Visits.read(vm.patientUuid)
+    $ctrl.loading = true;
+    $ctrl.loaded = false;
+    Patients.Visits.read($ctrl.patientUuid)
       .then(function (results) {
-        vm.visits = results;
-        vm.visits.forEach(calculateDays);
-        mostRecentVisit = vm.visits[0];
+        $ctrl.visits = results;
+        $ctrl.visits.forEach(calculateDays);
+        mostRecentVisit = $ctrl.visits[0];
 
         if (mostRecentVisit) {
-          vm.visiting = Boolean(mostRecentVisit.is_open);
+          $ctrl.visiting = Boolean(mostRecentVisit.is_open);
         }
-        vm.loaded = true;
+        $ctrl.loaded = true;
       })
       .catch(Notify.handleError)
       .finally(function () {
-        vm.loading = false;
+        $ctrl.loading = false;
       });
   }
 
@@ -56,8 +56,8 @@ function VisitsController(Patients, Notify, Moment) {
   }
 
   function admit() {
-    var isAdmission = !vm.visiting;
-    Patients.Visits.openAdmission(vm.patientUuid, isAdmission, mostRecentVisit)
+    var isAdmission = !$ctrl.visiting;
+    Patients.Visits.openAdmission($ctrl.patientUuid, isAdmission, mostRecentVisit)
       .then(function (result) {
         refreshVisitFeed();
       })

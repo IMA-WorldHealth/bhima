@@ -4,7 +4,7 @@ angular.module('bhima.components')
  * Location Selection Component - bhLocationSelect
  */
 .component('bhLocationSelect', {
-  templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
+  templateUrl : 'modules/templates/bhLocationSelect.tmpl.html',
   controller  : LocationSelectController,
   bindings    : {
     locationUuid      : '=', // two-way binding

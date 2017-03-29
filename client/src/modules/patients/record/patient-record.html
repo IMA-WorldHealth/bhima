@@ -98,9 +98,7 @@
       </div> <!-- End patient details row -->
 
       <div class="row">
-
         <div class="col-sm-6">
-          <!-- find document  -->
           <bh-find-document
             patient-uuid="PatientRecordCtrl.patient.uuid"
             enable-patient-details="false"
@@ -109,12 +107,11 @@
             display="default"
             height="250px">
           </bh-find-document>
-          <!-- end find document  -->
         </div>
 
-        <!-- Patient Bill Panel -->
         <div class="col-sm-6">
-          <bh-visits patient-uuid="PatientRecordCtrl.patient.uuid"></bh-visits>
+          <bh-patient-visit patient-uuid="PatientRecordCtrl.patient.uuid">
+          </bh-patient-visit>
         </div>
       </div>
 
@@ -122,13 +119,8 @@
 
         <!-- Patient Bill Panel -->
         <div class="col-sm-12">
-          <!-- Latest Invoice  -->
-          <bh-latest-invoice
-            debtor-uuid="PatientRecordCtrl.patient.debtor_uuid"
-          >
-          </bh-latest-invoice>
-          <!-- end Latest Invoice  -->
-
+          <bh-latest-patient-invoice debtor-uuid="PatientRecordCtrl.patient.debtor_uuid">
+          </bh-latest-patient-invoice>
         </div>
       </div>
     </div>

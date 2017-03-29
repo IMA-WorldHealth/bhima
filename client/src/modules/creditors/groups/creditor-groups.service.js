@@ -6,9 +6,9 @@ CreditorGroupService.$inject = ['PrototypeApiService'];
 /**
 * Creditor Group Service
 *
-* This service implements CRUD operations for the /creditor_groups API endpoint
+* This service implements CRUD operations for the /creditor-groups API endpoint
 */
 function CreditorGroupService(Api) {
-  var service = Api('/creditor_groups/');
+  var service = Api('/creditors/groups/');
   return service;
 }

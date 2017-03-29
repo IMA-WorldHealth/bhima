@@ -1,6 +1,6 @@
 angular.module('bhima.components')
 .component('bhFiltersApplied', {
-  templateUrl : 'partials/templates/bhFiltersApplied.tmpl.html',
+  templateUrl : 'modules/templates/bhFiltersApplied.tmpl.html',
   controller  : bhFiltersAppliedController,
   bindings    : {
     filters        : '<',

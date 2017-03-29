@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhReceiptCurrency', {
-    templateUrl : 'partials/templates/bhReceiptCurrency.tmpl.html',
+    templateUrl : 'modules/templates/bhReceiptCurrency.tmpl.html',
     controller  : ReceiptCurrencyController,
     bindings    : {
       onUpdate : '&',

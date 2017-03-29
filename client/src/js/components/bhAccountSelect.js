@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhAccountSelect', {
-    templateUrl : 'partials/templates/bhAccountSelect.tmpl.html',
+    templateUrl : 'modules/templates/bhAccountSelect.tmpl.html',
     controller : AccountSelectController,
     bindings: {
       accountId        : '<',
