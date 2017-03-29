@@ -1,0 +1,13 @@
+{"EXCHANGE":{"ADDING_RATE":"Ajout d'un taux",
+"ADD_EXCHANGE":"Ajouter taux",
+"DESCRIPTION":"Cette interface vous permet d'ajouter un taux d'echange",
+"ENTERPRISE_CURRENCY":"Monnaie de l'entreprise",
+"EXCHANGE_RATES":"Taux de change",
+"NEW_RATE":"Nouveau taux",
+"RATE_SET":"Taux configuré",
+"REVIEW_RATE":"Revoir le taux",
+"TITLE":"Gestion taux d'echange",
+"REVIEW":"Revoir le taux",
+"INVOICE_DISCLAIMER":"Taux de Change basé sur le dernier taux de l'entreprise",
+"SET_AS":"Defini comme",
+"ON":"sur"}}

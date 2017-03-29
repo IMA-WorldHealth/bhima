@@ -1,0 +1,5 @@
+{"BARCODE":{"SCAN":"Scan Invoice Barcode",
+"AWAITING_INPUT":"Waiting for Input",
+"AWAITING_HTTP":"Barcode Read!  Looking up Invoice...",
+"READ_SUCCESS":"Found Invoice",
+"READ_ERROR":"Unreadable Barcode!  Please enter the barcode manually."}}

@@ -1,0 +1,9 @@
+{"BILLING_SERVICES":{"BTN":{"CREATE":"Créer un service de facturation",
+"DELETE":"Supprimer ce service de facturation"},
+"CREATED":"Créer un nouveau service de facturation.",
+"FORM":{"CREATE":"Nouveau service de facturation",
+"UPDATE":"Mettre à jour un service de facturation"},
+"NOT_FOUND":"Il y'a aucun service de facturation avec cet ID. Veuillez revenir en arrière et réessayez",
+"TITLE":"Services de facturation",
+"UPDATED":"Mettre à jour le service de facturation.",
+"VIEW":"Voir tous les services de facturation."}}

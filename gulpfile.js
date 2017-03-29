@@ -11,7 +11,8 @@
  */
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
-const concat = require('gulp-concat'); const uglify = require('gulp-uglify');
+const concat = require('gulp-concat'); 
+const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const template = require('gulp-template');
 const rev = require('gulp-rev');
@@ -20,6 +21,7 @@ const iife = require('gulp-iife');
 const pump = require('pump');
 const rimraf = require('rimraf');
 const less = require('gulp-less');
+const merge = require('gulp-merge-json');
 
 // child process for custom scripts
 const exec = require('child_process').exec;
@@ -111,6 +113,9 @@ const paths = {
       // ngStorage
       'client/vendor/ngstorage/ngStorage.min.js',
     ],
+    translate_en : ['client/src/i18n/en/*.json'],
+
+    translate_fr : ['client/src/i18n/fr/*.json'],
 
     // these must be globs ("**" syntax) to retain their folder structures
     static : [
@@ -120,6 +125,10 @@ const paths = {
       '!client/src/js/**/*.js',
       '!client/src/partials/**/*.js',
       '!client/src/**/*.css',
+      '!client/src/i18n/en/*',
+      '!client/src/i18n/fr/*',
+      '!client/src/i18n/fr/',
+      '!client/src/i18n/en/'
     ],
     index : 'client/src/index.html',
   },
@@ -210,8 +219,8 @@ gulp.task('client-mv-static', ['lint-i18n'], () =>
 // custom task: compare the English and French for missing tokens
 gulp.task('lint-i18n', (cb) => {
   const progPath = './utilities/translation/tfcomp.js';
-  const enPath = 'client/src/i18n/en.json';
-  const frPath = 'client/src/i18n/fr.json';
+  const enPath = 'client/src/i18n/en/';
+  const frPath = 'client/src/i18n/fr/';
 
   exec(`node ${progPath} ${enPath} ${frPath}`, (err, _, warning) => {
     if (err) { throw err; }
@@ -219,6 +228,20 @@ gulp.task('lint-i18n', (cb) => {
     cb();
   });
 });
+
+//compile i18n files english
+gulp.task('client-compile-i18n-en', () =>
+gulp.src(paths.client.translate_en)
+  .pipe(merge({fileName : 'en.json'}))
+  .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/'))
+);
+
+//compile i18n files french
+gulp.task('client-compile-i18n-fr', () =>
+gulp.src(paths.client.translate_fr)
+  .pipe(merge({fileName : 'fr.json'}))
+  .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/'))
+);
 
 // watches for any change and builds the appropriate route
 gulp.task('watch-client', () => {
@@ -253,7 +276,7 @@ gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes']
 // Then the last thing will be to rewrite index.html, replacing the values
 // with gulp-replace and then replacing the manifest itself.
 gulp.task('build-client', () => {
-  gulp.start('client-compile-assets', 'client-vendor-build-bootstrap', 'client-mv-vendor-style');
+  gulp.start('client-compile-assets', 'client-vendor-build-bootstrap', 'client-mv-vendor-style', 'client-compile-i18n-en', 'client-compile-i18n-fr');
 });
 
 /* -------------------------------------------------------------------------- */
