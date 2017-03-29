@@ -1061,7 +1061,7 @@ CREATE TABLE `price_list` (
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `price_list_1` (`label`),
+  UNIQUE KEY `prices_1` (`label`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1132,7 +1132,7 @@ CREATE TABLE `patient` (
   /* @TODO analyse performance implications of indexing frequently searched columns */
   INDEX `registration_date` (`registration_date`),
   INDEX `dob` (`dob`),
-  INDEX `sex` (`sex`), 
+  INDEX `sex` (`sex`),
 
   /* @TODO fulltext index may degrade INSERT performance over time */
   FULLTEXT `display_name` (`display_name`),

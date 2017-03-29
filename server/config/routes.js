@@ -580,11 +580,11 @@ exports.configure = function configure(app) {
   app.delete('/grades/:uuid', grades.delete);
 
   // creditor groups API
-  app.post('/creditor_groups', creditorGroups.create);
-  app.get('/creditor_groups', creditorGroups.list);
-  app.get('/creditor_groups/:uuid', creditorGroups.detail);
-  app.put('/creditor_groups/:uuid', creditorGroups.update);
-  app.delete('/creditor_groups/:uuid', creditorGroups.remove);
+  app.post('/creditors/groups', creditorGroups.create);
+  app.get('/creditors/groups', creditorGroups.list);
+  app.get('/creditors/groups/:uuid', creditorGroups.detail);
+  app.put('/creditors/groups/:uuid', creditorGroups.update);
+  app.delete('/creditors/groups/:uuid', creditorGroups.remove);
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);

@@ -230,7 +230,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
   Columns.prototype.openConfigurationModal = function openConfigurationModal() {
     var self = this;
     return Modal.open({
-      templateUrl: 'partials/templates/modals/columnConfig.modal.html',
+      templateUrl: 'modules/templates/modals/columnConfig.modal.html',
       controller:  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
       size : 'lg',
       resolve : {

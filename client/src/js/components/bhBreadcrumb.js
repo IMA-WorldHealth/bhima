@@ -8,7 +8,7 @@ angular.module('bhima.components')
     print : '<',
     download : '<'
   },
-  templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
+  templateUrl  : 'modules/templates/breadcrumb.tmpl.html',
   controller   : BreadcrumbController,
   controllerAs : 'vm'
 });

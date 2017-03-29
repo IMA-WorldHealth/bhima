@@ -3,6 +3,8 @@
 # bash script mode
 set -euo pipefail
 
+trap 'kill $(jobs -p)' EXIT
+
 echo "Building Test Databases"
 
 set -a
@@ -12,9 +14,6 @@ set +a
 ./sh/build-database.sh
 
 echo "[test]"
-
-# set the build timeout
-TIMEOUT=${BUILD_TIMEOUT:-8}
 
 # set build timeout
 TIMEOUT=${BUILD_TIMEOUT:-8}
@@ -32,8 +31,5 @@ echo "[test] Running tests using protractor."
 ../node_modules/.bin/protractor ../protractor.conf.js
 
 echo "[test] cleaning up node process $NODE_PID."
-
-# kill the server
-kill $NODE_PID
 
 echo "[/test]"
