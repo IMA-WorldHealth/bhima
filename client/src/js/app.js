@@ -20,27 +20,30 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     controller  : 'HomeController as HomeCtrl',
     templateUrl : 'partials/home/home.html',
   })
-  .state('details', {
+  .state('landing', {
     abstract : true,
-    url : '/details',
-    templateUrl : 'partials/home/details.html'
+    url : '/landing',
+    controller : ['SessionService', function (Session) { this.enterprise = Session.enterprise; }],
+    controllerAs : 'LandingCtrl',
+    templateUrl : 'partials/home/details.html',
   })
-  .state('details.more', {
-    url : '',
+  .state('landing.stats', {
+    url : '/stats',
     views : {
-      'debtors@details' : {
+      'debtors' : {
         templateUrl : 'partials/home/units/debtors.html',
         controller  : 'DashboardDebtorController as DebtorCtrl',
       },
-      'invoices@details' : {
+      'invoices' : {
         templateUrl : 'partials/home/units/invoices.html',
         controller  : 'DashboardInvoiceController as InvoiceCtrl',
       },
-      'patients@details' : {
+      'patients' : {
         templateUrl : 'partials/home/units/patients.html',
         controller  : 'DashboardPatientController as PatientCtrl',
-      },
-    }
+      }
+
+    },
   })
   .state('exchange', {
     abstract    : true,
@@ -256,7 +259,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     var path = $location.path();
 
     var paths = SessionService.paths;
-    var publicRoutes = ['/', '/settings', '/login'];
+    var publicRoutes = ['/', '/settings', '/login', '/landing/stats'];
 
     var isPublicPath = publicRoutes.indexOf(path) > -1;
 

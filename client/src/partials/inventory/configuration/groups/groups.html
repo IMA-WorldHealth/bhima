@@ -48,7 +48,15 @@
             <a href
               ng-click="GroupsCtrl.editInventoryGroup(group.uuid)"
               data-edit-group="{{ group.code }}">
-              <i class="fa fa-edit"></i><span translate> FORM.LABELS.EDIT </span>
+              <i class="fa fa-edit"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
+            </a>
+          </td>
+          <td>
+            <a href
+              ng-click="GroupsCtrl.deleteInventoryGroup(group.uuid)"
+              class="text-danger"
+              data-delete-group="{{ group.code }}">
+              <i class="fa fa-remove"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}
             </a>
           </td>
         </tr>

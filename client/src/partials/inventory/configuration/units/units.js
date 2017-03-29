@@ -16,6 +16,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
   // expose to the view
   vm.addInventoryUnit = addInventoryUnit;
   vm.editInventoryUnit = editInventoryUnit;
+  vm.deleteInventoryUnit = deleteInventoryUnit;
 
   // startup
   startup();
@@ -32,8 +33,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
           Notify.success('FORM.INFO.CREATE_SUCCESS');
         }
       })
-      .then(startup)
-      .catch(Notify.handleError);
+      .then(startup) .catch(Notify.handleError);
   }
 
   /** edit inventory unit */
@@ -46,6 +46,27 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
       })
       .then(startup)
       .catch(Notify.handleError);
+  }
+
+  /** delete inventory unit */
+  function deleteInventoryUnit(id) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool) {
+       // if the user clicked cancel, reset the view and return
+       if (!bool) {
+          vm.view = 'default';
+          return;
+       }
+      // if we get there, the user wants to delete
+      InventoryUnit.delete(id)
+        .then(function () {
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+          startup();
+          return;
+        })
+        .catch(Notify.handleError);
+    });
+
   }
 
   /** initializes the view */

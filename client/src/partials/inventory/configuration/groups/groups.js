@@ -27,6 +27,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   // expose to the view
   vm.editInventoryGroup = editInventoryGroup;
   vm.addInventoryGroup = addInventoryGroup;
+  vm.deleteInventoryGroup = deleteInventoryGroup;
 
   // startup
   startup();
@@ -56,6 +57,27 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     .then(startup)
     .catch(Notify.handleError);
   }
+
+  /** delete inventory group */
+  function deleteInventoryGroup(id) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool) {
+       // if the user clicked cancel, reset the view and return
+       if (!bool) {
+          vm.view = 'default';
+          return;
+       }
+      // if we get there, the user wants to delete
+      InventoryGroup.remove(id)
+        .then(function () {
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+          startup();
+          return;
+        })
+        .catch(Notify.handleError);
+    });
+  }
+
 
   /** init the module */
   function startup() {
