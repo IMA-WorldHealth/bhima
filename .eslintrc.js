@@ -29,6 +29,7 @@ module.exports = {
     "no-use-before-define": ["error", {
       "functions": false
     }],
+    "no-param-reassign": ["error", { "props": false }],
     "no-var" : "off",
     "max-len": ["warn", 120],
     "func-names" : ["warn", "as-needed"],

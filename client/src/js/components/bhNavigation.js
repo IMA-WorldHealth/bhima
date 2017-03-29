@@ -1,7 +1,7 @@
 angular.module('bhima.components')
   .component('bhNavigation', {
     controller : NavigationController,
-    templateUrl : 'partials/templates/navigation.tmpl.html'
+    templateUrl : 'modules/templates/navigation.tmpl.html'
   });
 
 NavigationController.$inject = [

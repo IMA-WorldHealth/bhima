@@ -4,11 +4,11 @@ const helpers = require('./helpers');
 const uuid = require('node-uuid');
 
 /*
- * The /creditor_groups API endpoint
+ * The /creditors/groups API endpoint
  *
- * This test suite implements full CRUD on the /creditor_groups HTTP API endpoint.
+ * This test suite implements full CRUD on the /creditors/groups HTTP API endpoint.
  */
-describe('(/creditor_groups) Creditor Groups', function () {
+describe('(/creditors/groups) Creditor Groups', function () {
 
   // creditor group we will add during this test suite.
   var creditorGroup = {
@@ -16,15 +16,15 @@ describe('(/creditor_groups) Creditor Groups', function () {
     uuid          : uuid.v4(),
     name          : 'Creditor Test',
     account_id    : 3629,
-    locked        : 0
+    locked        : 0,
   };
 
   var responseKeys = ['enterprise_id', 'uuid', 'name', 'account_id', 'locked'];
   var numCreditorGroups = 2;
 
 
-  it('GET /creditor_groups returns a list of creditor group', function () {
-    return agent.get('/creditor_groups')
+  it('GET /creditors/groups returns a list of creditor group', function () {
+    return agent.get('/creditors/groups')
     .then(function (res) {
       helpers.api.listed(res, numCreditorGroups);
     })
@@ -32,8 +32,8 @@ describe('(/creditor_groups) Creditor Groups', function () {
   });
 
 
-  it('POST /creditor_groups  should create a new creditor group', function () {
-    return agent.post('/creditor_groups')
+  it('POST /creditors/groups  should create a new creditor group', function () {
+    return agent.post('/creditors/groups')
     .send(creditorGroup)
     .then(function (res) {
       helpers.api.created(res);
@@ -41,16 +41,16 @@ describe('(/creditor_groups) Creditor Groups', function () {
     .catch(helpers.handler);
   });
 
-  it('GET /creditor_groups/:uuid should not be found for unknown uuid', function () {
-    return agent.get('/creditor_groups/unknown')
+  it('GET /creditors/groups/:uuid should not be found for unknown uuid', function () {
+    return agent.get('/creditors/groups/unknown')
     .then(function (res) {
       helpers.api.errored(res, 404);
     })
     .catch(helpers.handler);
   });
 
-  it('PUT /creditor_groups  should update an existing creditor group', function () {
-    return agent.put('/creditor_groups/' + creditorGroup.uuid)
+  it('PUT /creditors/groups  should update an existing creditor group', function () {
+    return agent.put('/creditors/groups/' + creditorGroup.uuid)
       .send({ name : 'Creditor Group Update' })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -60,8 +60,8 @@ describe('(/creditor_groups) Creditor Groups', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /creditor_groups/:uuid returns a single creditor group', function () {
-    return agent.get('/creditor_groups/' + creditorGroup.uuid)
+  it('GET /creditors/groups/:uuid returns a single creditor group', function () {
+    return agent.get('/creditors/groups/' + creditorGroup.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;

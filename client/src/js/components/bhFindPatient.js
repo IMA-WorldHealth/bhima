@@ -1,7 +1,7 @@
 angular.module('bhima.components')
   .component('bhFindPatient', {
     controller: FindPatientComponent,
-    templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
+    templateUrl : 'modules/templates/bhFindPatient.tmpl.html',
     bindings: {
       onSearchComplete:  '&',  // bind callback to call when data is available
       onRegisterApi:     '&',  // expose force refresh API

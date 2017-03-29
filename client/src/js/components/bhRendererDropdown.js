@@ -4,7 +4,7 @@ angular.module('bhima.components')
       reportUrl     : '@',
       reportOptions : '<',
     },
-    templateUrl : 'partials/templates/bhRendererDropdown.tmpl.html',
+    templateUrl : 'modules/templates/bhRendererDropdown.tmpl.html',
     controller  : bhRendererController,
   });
 

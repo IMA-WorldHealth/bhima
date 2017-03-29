@@ -3,6 +3,8 @@
 # bash script mode
 set -euo pipefail
 
+trap 'kill $(jobs -p)' EXIT
+
 set -a
 source .env.development
 set +a
@@ -28,12 +30,10 @@ echo "[test] Sleeping for $TIMEOUT seconds."
 sleep $TIMEOUT
 
 echo "[test] running tests using mocha"
+
 # run the tests
 ../node_modules/.bin/mocha --recursive ../test/integration/
 
 echo "[test] cleaning up node process $NODE_PID."
-
-# kill the server
-kill $NODE_PID
 
 echo "[/test]"

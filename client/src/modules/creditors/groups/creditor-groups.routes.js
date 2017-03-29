@@ -2,26 +2,26 @@ angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
     $stateProvider
       .state('creditorGroups', {
-        url         : '/creditor_groups',
+        url         : '/creditors/groups',
         controller  : 'CreditorGroupController as CreditorGroupCtrl',
-        templateUrl : 'modules/creditor_groups/creditor_groups.html',
+        templateUrl : 'modules/creditors/groups/creditor-groups.html',
       })
 
       .state('creditorGroups.create', {
         url         : '/create',
         controller  : 'CreditorGroupController as CreditorGroupCtrl',
-        templateUrl : 'modules/creditor_groups/creditor_groups.manage.html',
+        templateUrl : 'modules/creditors/groups/creditor-groups-manage.html',
       })
 
       .state('creditorGroups.list', {
         url         : '/',
         controller  : 'CreditorGroupController as CreditorGroupCtrl',
-        templateUrl : 'modules/creditor_groups/creditor_groups.list.html',
+        templateUrl : 'modules/creditors/groups/creditor-groups-list.html',
       })
 
       .state('creditorGroups.update', {
         url         : '/:uuid/update',
         controller  : 'CreditorGroupController as CreditorGroupCtrl',
-        templateUrl : 'modules/creditor_groups/creditor_groups.manage.html',
+        templateUrl : 'modules/creditors/groups/creditor-groups-manage.html',
       });
   }]);

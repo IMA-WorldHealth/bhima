@@ -36,7 +36,7 @@ angular.module('bhima.routes')
         abstract    : true,
         url         : '/patients/:patientID',
         params      : { patientID: null },
-        templateUrl : 'modules/patients/record/patient_record.html',
+        templateUrl : 'modules/patients/record/patient-record.html',
         controller  : 'PatientRecordController as PatientRecordCtrl',
       })
       .state('patientRecord.details', {

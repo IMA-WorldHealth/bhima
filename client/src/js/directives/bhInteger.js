@@ -13,7 +13,7 @@ IntegerValidatorDirective.$inject = [];
  * <input name="int" type="number" bhInteger>
  * 
  * <div ng-messages="form.int.$error">
- *   <p ng-messages-include="partials/templates/messages.tmpl.html"></p>
+ *   <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
  * </div>
  *
  * @module directives/IntegerValidatorDirective

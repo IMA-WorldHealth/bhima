@@ -13,7 +13,7 @@
  */
 angular.module('bhima.components')
   .component('bhDateInterval', {
-    templateUrl : '/partials/templates/bhDateInterval.tmpl.html',
+    templateUrl : '/modules/templates/bhDateInterval.tmpl.html',
     controller : bhDateInterval,
     bindings : {
       validationTrigger : '<', // validation trigger action

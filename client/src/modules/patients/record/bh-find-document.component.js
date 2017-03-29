@@ -2,7 +2,7 @@ angular.module('bhima.components')
 .component('bhFindDocument', {
   controller   : FindDocumentComponent,
   controllerAs : '$ctrl',
-  templateUrl  : 'partials/templates/bhFindDocument.tmpl.html',
+  templateUrl  : 'modules/patients/record/bh-find-document.html',
   bindings     : {
     enablePatientDetails : '<',  // bind boolean  Enable patient details option
     enableOptionBar      : '<',  // bind boolean  Enable option for add, display list or display thumbnail in a bar
