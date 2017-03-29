@@ -1,0 +1,27 @@
+<a href ng-click="$ctrl.toggleSelectionOptions()">
+  <i class="fa" ng-class="{ 'fa-calendar-plus-o' : !$ctrl.expanded, 'fa-calendar-minus-o' : $ctrl.expanded }"></i>
+  Select period
+</a>
+<div ng-show="$ctrl.expanded">
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <ul>
+        <li ng-repeat="period in $ctrl.Periods.categories.THIS"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <ul>
+        <li ng-repeat="period in $ctrl.Periods.categories.LAST"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ul>
+        <li ng-repeat="period in $ctrl.Periods.categories.OTHER"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <hr>
+</div>

@@ -1700,5 +1700,17 @@
     "MEDICINE_DISTRIBUTIONS" : "Distribution des medicaments",
     "LOGINS" : "Connexion",
     "PURCHASES" : "Achats"
+  },
+  "PERIODS" : {
+    "TODAY" : "Aujourd'hui",
+    "THIS_WEEK" : "Cette semaine",
+    "THIS_MONTH" : "Ce Mois",
+    "THIS_YEAR" : "Cette Année",
+    "YESTERDAY" : "Hier",
+    "LAST_WEEK" : "Semaine derniére",
+    "LAST_MONTH" : "Mois dernier",
+    "LAST_YEAR" : "Année derniére",
+    "ALL_TIME" : "Tout le temps"
   }
+
 }

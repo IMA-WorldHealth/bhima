@@ -117,37 +117,9 @@
             <p class="form-static">Today (28/03/2017)</p>
 
             <!-- start period selection component -->
-            <a href><i class="fa fa-calendar-plus-o"></i> Select new period</a>
-            <div>
-              <hr>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <ul>
-                    <li>Today</li>
-                    <li>This Week</li>
-                    <li>This Month</li>
-                    <li>This Year</li>
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <ul>
-                    <li>Yesteray</li>
-                    <li>Last Week</li>
-                    <li>Last Month</li>
-                    <li>Last Year</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <ul>
-                    <li>All Time</li>
-                  </ul>
-                </div>
-              </div>
-              <hr>
-            </div>
+            <bh-period-select
+              on-select-callback="ModalCtrl.onSelectPeriod()">
+            </bh-period-select>
             <!-- end period selection component -->
           </div>
 

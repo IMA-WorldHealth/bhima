@@ -26,6 +26,10 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
     vm.options.account_id = account.id;
   };
 
+  vm.onSelectPeriod = function onSelectPeriod(key) {
+    console.log('controller on select called with', key);
+  };
+
   // deletes a filter from the options/parameters
   vm.clear = function clear(key) {
     delete vm.options[key];

@@ -1677,5 +1677,16 @@
     "MEDICINE_DISTRIBUTIONS" : "Medicine Distributions",
     "LOGINS"                 : "Logins",
     "PURCHASES"              : "Purchases"
+  },
+  "PERIODS" : {
+    "TODAY" : "Today",
+    "THIS_WEEK" : "This Week",
+    "THIS_MONTH" : "This Month",
+    "THIS_YEAR" : "This Year",
+    "YESTERDAY" : "Yesterday",
+    "LAST_WEEK" : "Last Week",
+    "LAST_MONTH" : "Last Month",
+    "LAST_YEAR" : "Last Year",
+    "ALL_TIME" : "All Time"
   }
 }
