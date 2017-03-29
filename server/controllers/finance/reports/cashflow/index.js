@@ -44,7 +44,6 @@ exports.byService = reportByService;
  */
 function report(req, res, next) {
   let params = req.query;
-  params.user = req.session.user;
 
   processingCashflowReport(params)
     .then(result => {
@@ -71,7 +70,7 @@ function processingCashflowReport(params) {
 
       // get all periods for the the current fiscal year
       return getPeriods(params.dateFrom, params.dateTo);
-    }) 
+    })
     .then(function (periods) {
       // get the closing balance (previous fiscal year) for the selected cashbox
       if (!periods.length) {
@@ -324,7 +323,6 @@ function document(req, res, next) {
 
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
-  session.currency_id = params.currency_id;
 
   // weekly parameter
   session.weekly = params.weekly;
@@ -595,8 +593,8 @@ function document(req, res, next) {
 function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
-  const currency_id = req.query.currency_id;
-  const enterprise_id = req.session.user.enterprise_id;
+  const currencyId = req.query.currency_id;
+  const enterpriseId =  req.session.user.enterprise_id;
 
   let report;
   let exchangeRate;
@@ -611,50 +609,48 @@ function reportByService(req, res, next) {
   }
 
   const data = {};
+  data.currencyId = currencyId;
+  data.dateFrom   = dateFrom;
+  data.dateTo     = dateTo;
+
   let emptyCashValues = false;
 
-  // get the cash flow data
-  const cashflowByServiceSql = `
-    SELECT uuid, reference, date, cashAmount, invoiceAmount, currency_id, service_id,
-      display_name, name, (@cumsum := cashAmount + @cumsum) AS cumsum
-    FROM (
-      SELECT BUID(cash.uuid) AS uuid,
-        CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
-        cash.date, cash.amount * ${exchangeRate}  AS cashAmount, SUM(invoice.cost) * ${exchangeRate} AS invoiceAmount, cash.currency_id,
-        service.id AS service_id, patient.display_name, service.name
-      FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
-        JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-        JOIN project ON cash.project_id = project.id
-        JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
-        JOIN service ON invoice.service_id = service.id
-      WHERE cash.is_caution = 0 AND cash.reversed = 0
-        AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
-      GROUP BY cash.uuid
-      ORDER BY cash.date, cash.reference
-    )c, (SELECT @cumsum := 0)z
-    ORDER BY date, reference;
-  `;
 
-  // get all service names in alphabetical order
-  const serviceSql = `
-    SELECT DISTINCT service.name FROM service WHERE service.id IN (?) ORDER BY name;
-  `;
+  return Exchange.getExchangeRate(enterpriseId, currencyId, new Date())
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+      // get the cash flow data
+      const cashflowByServiceSql = `
+        SELECT uuid, reference, date, cashAmount, invoiceAmount, currency_id, service_id,
+          display_name, name, (@cumsum := cashAmount + @cumsum) AS cumsum
+        FROM (
+          SELECT BUID(cash.uuid) AS uuid,
+            CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
+            cash.date, cash.amount * ${exchangeRate} AS cashAmount, SUM(invoice.cost) * ${exchangeRate} AS invoiceAmount, cash.currency_id,
+            service.id AS service_id, patient.display_name, service.name
+          FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+            JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
+            JOIN project ON cash.project_id = project.id
+            JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
+            JOIN service ON invoice.service_id = service.id
+          WHERE cash.is_caution = 0 AND cash.reversed = 0
+            AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
+          GROUP BY cash.uuid
+          ORDER BY cash.date, cash.reference
+        )c, (SELECT @cumsum := 0)z
+        ORDER BY date, reference;
+      `;
 
-  // get the totals of the captured records
-  const serviceAggregationSql = `
-    SELECT service.name, SUM(cash.amount) * ${exchangeRate}  AS totalCashIncome, SUM(invoice.cost) * ${exchangeRate} AS totalAcruelIncome
-    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
-      JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-      JOIN service ON invoice.service_id = service.id
-    WHERE cash.is_caution = 0 AND cash.reversed = 0
-      AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
-    GROUP BY service.name
-    ORDER BY service.name;
-  `;
 
-  db.exec(cashflowByServiceSql, [dateFrom, dateTo])
+      return db.exec(cashflowByServiceSql, [dateFrom, dateTo]);
+    })
     .then((rows) => {
       data.rows = rows;
+
+      // get all service names in alphabetical order
+      const serviceSql = `
+        SELECT DISTINCT service.name FROM service WHERE service.id IN (?) ORDER BY name;
+      `;
 
       // return an empty array if no rows
       if (!rows.length) {
@@ -675,6 +671,18 @@ function reportByService(req, res, next) {
       if (emptyCashValues) {
         return [];
       }
+
+      // get the totals of the captured records
+      const serviceAggregationSql = `
+        SELECT service.name, SUM(cash.amount) * ${exchangeRate} AS totalCashIncome, SUM(invoice.cost) * ${exchangeRate} AS totalAcruelIncome
+        FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+          JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
+          JOIN service ON invoice.service_id = service.id
+        WHERE cash.is_caution = 0 AND cash.reversed = 0
+          AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
+        GROUP BY service.name
+        ORDER BY service.name;
+      `;
 
       const rows = data.rows;
       delete data.rows;

@@ -640,9 +640,6 @@ function loadLatestInvoice(inv) {
        WHERE debtor_uuid = ? AND invoice.reversed = 0
        ORDER BY date DESC`;
 
-  console.log('JJJJJJJJJJ');
-  console.log(sql2);
-
   const execSql = db.one(sql, [invoiceID, debtorID, invoiceID, debtorID]);
   const execSql2 = db.one(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
   const execSql3 = db.one(sql3, [debtorID]);

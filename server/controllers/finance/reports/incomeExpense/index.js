@@ -74,7 +74,7 @@ function report(req, res, next) {
 /** processingIncomeExpenseReport */
 function processingIncomeExpenseReport(params) {
   let glb = {};
-
+  let exchangeRate;
   if (!params.account_id) {
     throw new BadRequest('Cashbox is missing.');
   }
@@ -220,6 +220,7 @@ function document(req, res, next) {
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
   session.reportType = params.reportType;
+  session.currency_id = params.currency_id;
 
   _.defaults(params, { orientation : 'landscape', user : req.session.user, current_date : new Date() });
 
@@ -236,6 +237,7 @@ function document(req, res, next) {
       incomeExpense.reportExpense = false;
       incomeExpense.dateFrom = session.dateFrom;
       incomeExpense.dateTo = session.dateTo;
+      incomeExpense.currency_id = session.currency_id;
 
       // pick the cashbox account name
       incomeExpense.accountName = !incomeExpense.accountName && incomeExpense.incomes.length ? incomeExpense.incomes[0].label :

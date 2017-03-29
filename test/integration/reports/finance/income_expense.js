@@ -15,7 +15,8 @@ describe(`(${target}) Income Expense Reports`, function () {
     account_id: 3627,
     dateFrom: '2016-01-01',
     dateTo: '2016-12-31',
-    reportType : 1
+    reportType : 1,
+    currency_id : 2
   };
 
   describe(`${target} Rendering`, RenderingTests(target, null, parameters));
