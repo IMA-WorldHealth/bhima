@@ -13,10 +13,9 @@
  * DELETE /prices/:uuid
  */
 
-const db    = require('../../lib/db');
-const uuid  = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
+const db = require('../../lib/db');
+const uuid = require('node-uuid');
+const NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Lists all price lists in the database

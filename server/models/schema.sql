@@ -1061,7 +1061,7 @@ CREATE TABLE `price_list` (
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `price_list_1` (`label`),
+  UNIQUE KEY `prices_1` (`label`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

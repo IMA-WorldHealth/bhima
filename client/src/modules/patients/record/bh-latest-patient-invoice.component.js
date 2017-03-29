@@ -1,8 +1,8 @@
 angular.module('bhima.components')
-.component('bhLatestInvoice', {
+.component('bhLatestPatientInvoice', {
   controller   : LatestInvoice,
   controllerAs : '$ctrl',
-  templateUrl  : 'partials/templates/bhLatestInvoice.tmpl.html',
+  templateUrl  : 'modules/patients/record/bh-latest-patient-invoice.html',
   bindings     : {
     debtorUuid : '<',  // Required patient uuid
   },

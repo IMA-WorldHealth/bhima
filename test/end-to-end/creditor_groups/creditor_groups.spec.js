@@ -9,7 +9,7 @@ const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 
 describe('Creditor Groups Management', () => {
-  const path = '#!/creditor_groups';
+  const path = '#!/creditors/groups';
   before(() => helpers.navigate(path));
 
   const INITIAL_GROUP = 2;

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('PatientRecordController', PatientRecordController);
+  .controller('PatientRecordController', PatientRecordController);
 
 PatientRecordController.$inject = ['$stateParams', 'PatientService', 'NotifyService', 'moment', 'Upload', '$timeout'];
 
@@ -59,5 +59,4 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       vm.loading = false;
       Notify.handleError(error);
     });
-
 }

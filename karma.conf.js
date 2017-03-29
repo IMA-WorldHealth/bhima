@@ -17,7 +17,7 @@ module.exports = function(config) {
       'bin/client/js/vendor.min.js',
       'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/bhima.min.js',
-      'bin/client/partials/**/*.html',
+      'bin/client/modules/**/*.html',
       'test/client-unit/**/*.spec.js'
     ],
 

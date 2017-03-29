@@ -9,7 +9,7 @@ CreditorGroupController.$inject = [
  * This controller is responsible for loading creditor groups and providing basic
  * crud operations for creditor groups
  *
- * @module admin/creditor_groups
+ * @module admin/creditor-groups
  */
 function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   var vm = this;

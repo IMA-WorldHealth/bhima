@@ -95,7 +95,7 @@ function ModalService(Modal) {
       size : opts.size || 'md',
       controller : 'ConfirmModalController as ConfirmModalCtrl',
       resolve : { prompt : function provider() { return prompt;} },
-      templateUrl : '/partials/templates/modals/confirm.modal.html'
+      templateUrl : '/modules/templates/modals/confirm.modal.html'
     });
 
     return instance.result;
@@ -111,7 +111,7 @@ function ModalService(Modal) {
       size : opts.size || 'md',
       controller : 'AlertModalController as AlertModalCtrl',
       resolve : { prompt : function provider() { return prompt;} },
-      templateUrl : '/partials/templates/modals/alert.modal.html'
+      templateUrl : '/modules/templates/modals/alert.modal.html'
     });
   }
 
@@ -120,7 +120,7 @@ function ModalService(Modal) {
    */
   function openSelectCashbox(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/selectCashbox.modal.html',
+      templateUrl : 'modules/cash/modals/selectCashbox.modal.html',
       controller  : 'SelectCashboxModalController as $ctrl',
       resolve     : {
         cashboxId : function cashboxIdProvider() { return request.cashboxId; }
@@ -136,7 +136,7 @@ function ModalService(Modal) {
   function openUploadDocument(request) {
 
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/patients/documents/modals/documents.modal.html',
+      templateUrl  : 'modules/patients/documents/modals/documents.modal.html',
       controller   : 'PatientDocumentsModalController',
       controllerAs : '$ctrl',
       resolve : {
@@ -154,7 +154,7 @@ function ModalService(Modal) {
    function openReports(request) {
 
      var params = angular.extend(modalParameters, {
-       templateUrl  : 'partials/templates/modals/reports.modal.html',
+       templateUrl  : 'modules/templates/modals/reports.modal.html',
        controller   : 'ReportsModalController',
        controllerAs : '$ctrl',
        size         : 'lg',
@@ -174,7 +174,7 @@ function ModalService(Modal) {
     function openInventoryGroupActions(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/inventory/configuration/groups/modals/actions.tmpl.html',
+        templateUrl  : 'modules/inventory/configuration/groups/modals/actions.tmpl.html',
         controller   : 'InventoryGroupsActionsModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -193,7 +193,7 @@ function ModalService(Modal) {
     function openInventoryTypeActions(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/inventory/configuration/types/modals/actions.tmpl.html',
+        templateUrl  : 'modules/inventory/configuration/types/modals/actions.tmpl.html',
         controller   : 'InventoryTypeActionsModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -211,7 +211,7 @@ function ModalService(Modal) {
     /** Inventory Units Modals for actions */
     function openInventoryUnitActions(data) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/inventory/configuration/units/modals/actions.tmpl.html',
+        templateUrl  : 'modules/inventory/configuration/units/modals/actions.tmpl.html',
         controller   : 'InventoryUnitActionsModalController',
         controllerAs : '$ctrl',
         resolve : {
@@ -226,7 +226,7 @@ function ModalService(Modal) {
     /** Inventory List Modals for actions */
     function openInventoryListActions(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/inventory/list/modals/actions.tmpl.html',
+        templateUrl  : 'modules/inventory/list/modals/actions.tmpl.html',
         controller   : 'InventoryListActionsModalController',
         controllerAs : '$ctrl',
         resolve : {
@@ -242,7 +242,7 @@ function ModalService(Modal) {
     function openDateInterval(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/templates/modals/dateInterval.tmpl.html',
+        templateUrl  : 'modules/templates/modals/dateInterval.tmpl.html',
         controller   : 'DateIntervalModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -272,7 +272,7 @@ function ModalService(Modal) {
     function openConfirmDialog(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/templates/modals/confirmDialog.modal.html',
+        templateUrl  : 'modules/templates/modals/confirmDialog.modal.html',
         controller   : 'ConfirmDialogModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -290,7 +290,7 @@ function ModalService(Modal) {
     /** project modal actions */
     function openProjectActions(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/templates/modals/project.modal.html',
+        templateUrl  : 'modules/templates/modals/project.modal.html',
         controller   : 'ProjectModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -308,7 +308,7 @@ function ModalService(Modal) {
     /** transaction type modal actions */
     function openTransactionTypeActions(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/templates/modals/transactionType.modal.html',
+        templateUrl  : 'modules/templates/modals/transactionType.modal.html',
         controller   : 'TransactionTypeModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -326,7 +326,7 @@ function ModalService(Modal) {
     /** closing fiscal year modal */
     function openClosingFiscalYear(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/fiscal/templates/modals/fiscal.closing.modal.html',
+        templateUrl  : 'modules/fiscal/templates/modals/fiscal.closing.modal.html',
         controller   : 'ClosingFiscalYearModalController',
         controllerAs : '$ctrl',
         size         : 'lg',
@@ -344,7 +344,7 @@ function ModalService(Modal) {
     /** searchCashPayment */
     function openSearchCashPayment(filters) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/cash/payments/templates/search.modal.html',
+        templateUrl  : 'modules/cash/payments/templates/search.modal.html',
         controller   : 'SearchCashPaymentModalController',
         controllerAs : '$ctrl',
         size         : 'md',
@@ -362,7 +362,7 @@ function ModalService(Modal) {
     /** purchase order status */
     function openPurchaseOrderStatus(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/purchases/modals/status.tmpl.html',
+        templateUrl  : 'modules/purchases/modals/status.tmpl.html',
         controller   : 'PurchaseOrderStatusModalController',
         controllerAs : '$ctrl',
         size         : 'md',
@@ -380,7 +380,7 @@ function ModalService(Modal) {
     /** search purchase order */
     function openSearchPurchaseOrder(request) {
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/purchases/modals/search.tmpl.html',
+        templateUrl  : 'modules/purchases/modals/search.tmpl.html',
         controller   : 'SearchPurchaseOrderModalController',
         controllerAs : '$ctrl',
         size         : 'md',
