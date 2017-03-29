@@ -32,6 +32,35 @@ function StockExitPage() {
   };
 
   /**
+   * @method setService
+   * @param {string} service - the service name
+   */
+  page.setService = function setService(service) {
+    element(by.css('[name="btn-service"]')).click();
+    const modalContent = element(by.css('[class="modal-content"]'));
+    FU.uiSelect('$ctrl.selected', service, modalContent);
+    FU.modal.submit();
+  };
+
+  /**
+   * @method setDestinationDepot
+   * @param {string} depot - the depot name
+   */
+  page.setDestinationDepot = function setDestinationDepot(depot) {
+    element(by.css('[name="btn-depot"]')).click();
+    const modalContent = element(by.css('[class="modal-content"]'));
+    FU.uiSelect('$ctrl.selected', depot, modalContent);
+    FU.modal.submit();
+  };
+
+  /**
+   * @method setLoss
+   */
+  page.setLoss = function setLoss() {
+    element(by.css('[name="btn-loss"]')).click();
+  };
+
+  /**
    * @method setDescription
    * @param {string} descrition - the exit description
    */
@@ -53,6 +82,46 @@ function StockExitPage() {
   page.addRows = function addRows(n) {
     FU.input('StockCtrl.itemIncrement', n);
     element(by.css('[id="btn-add-rows"]')).click();
+  };
+
+  /**
+   * @method setItem
+   */
+  page.setItem = function setInventory(rowNumber, code, lot, quantity) {
+
+    // inventory code column
+    const itemCell = GU.getCell(gridId, rowNumber, 1);
+
+    // inventory lot column
+    const lotCell = GU.getCell(gridId, rowNumber, 3);
+
+    // inventory quantity column
+    const quantityCell = GU.getCell(gridId, rowNumber, 5);
+
+    // enter data into the typeahead input.
+    FU.input('row.entity.inventory', code, itemCell);
+
+    // the typeahead should be open - use an id to click the right item
+    element(by.id(`inv-code-${code}`)).click();
+
+    // select the inventory lot
+    FU.uiSelectAppended('row.entity.lot', lot, lotCell);
+
+    // set the quantity
+    FU.input('row.entity.quantity', quantity, quantityCell);
+  };
+
+  /**
+   * @method submit
+   */
+  page.submit = function submit() {
+    FU.buttons.submit();
+
+    // the receipt modal is displayed
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-action="close"]').click();
   };
 }
 

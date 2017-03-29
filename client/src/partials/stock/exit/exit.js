@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
   'SessionService', 'util', 'bhConstants', 'ReceiptModal',
-  'StockFormService', 'StockService', 'StockModalService', 'uiGridGroupingConstants',
+  'StockFormService', 'StockService', 'StockModalService',
+  'uiGridGroupingConstants', '$translate',
 ];
 
 /**
@@ -14,13 +15,15 @@ StockExitController.$inject = [
  * @todo Implement caching data feature
  */
 function StockExitController(Depots, Inventory, Notify,
-  Session, util, bhConstants, ReceiptModal, StockForm, Stock, StockModal, uiGridGroupingConstants) {
+  Session, util, bhConstants, ReceiptModal,
+  StockForm, Stock, StockModal,
+  uiGridGroupingConstants, $translate) {
   var vm = this;
   var mapExit = {
-    patient : { find: findPatient, submit: submitPatient },
-    service : { find: findService, submit: submitService },
-    depot   : { find: findDepot, submit: submitDepot },
-    loss    : { find: configureLoss, submit: submitLoss },
+    patient : { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
+    service : { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
+    depot   : { description: 'STOCK.EXIT_DEPOT', find: findDepot, submit: submitDepot },
+    loss    : { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
   };
 
   vm.Stock = new StockForm('StockExit');
@@ -57,6 +60,7 @@ function StockExitController(Depots, Inventory, Notify,
         cellTemplate     : 'partials/stock/exit/templates/code.tmpl.html' },
 
       { field            : 'description',
+        width            : 300,
         displayName      : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
         cellTemplate     : 'partials/stock/exit/templates/description.tmpl.html' },
@@ -79,6 +83,12 @@ function StockExitController(Depots, Inventory, Notify,
         headerCellFilter    : 'translate',
         cellTemplate        : 'partials/stock/exit/templates/quantity.tmpl.html',
         treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
+
+      { field               : 'unit_type',
+        width               : 75,
+        displayName         : 'TABLE.COLUMNS.UNIT',
+        headerCellFilter    : 'translate',
+        cellTemplate        : 'partials/stock/exit/templates/unit.tmpl.html' },
 
       { field            : 'available_lot',
         width            : 150,
@@ -116,6 +126,8 @@ function StockExitController(Depots, Inventory, Notify,
   function selectExitType(exitType) {
     vm.movement.exit_type = exitType;
     mapExit[exitType].find();
+    // FIXME: textarea default value must be translated in the view
+    vm.movement.description = $translate.instant(mapExit[exitType].description);
   }
 
   // configure depot
@@ -136,7 +148,7 @@ function StockExitController(Depots, Inventory, Notify,
   // remove item
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
-    pushInventory(item.inventory);
+    // pushInventory(item.inventory);
     checkValidity();
   }
 
@@ -147,7 +159,7 @@ function StockExitController(Depots, Inventory, Notify,
     Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
       .then(function (lots) {
         item.lots = lots;
-        popInventory(item);
+        // popInventory(item);
       })
       .catch(Notify.errorHandler);
   }

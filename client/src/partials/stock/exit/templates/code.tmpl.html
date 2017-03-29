@@ -1,6 +1,7 @@
 <div style="padding : 5px;">
   <div ng-if="!row.entity._initialised">
     <input
+      id="inv-code-{{ row.entity.code }}"
       name="code"
       class="form-control"
       ng-model="row.entity.inventory"

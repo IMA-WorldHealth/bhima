@@ -45,6 +45,12 @@ function StockInventoriesController($state, Stock, Notify,
       footerCellClass  : 'text-right',
     },
 
+    { field            : 'unit_type',
+      width            : 75,
+      displayName      : 'TABLE.COLUMNS.UNIT',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'partials/stock/inventories/templates/unit.tmpl.html' },
+
     { field            : 'status',
       displayName      : 'STOCK.STATUS.LABEL',
       headerCellFilter : 'translate',

@@ -59,9 +59,11 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const sql = sqlQuery || `
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
             l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text
+            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
+            iu.text AS unit_type 
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
@@ -118,10 +120,12 @@ function getLotsDepot(depotUuid, params, finalClause) {
             d.text AS depot_text, l.unit_cost, l.expiration_date, 
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-            i.avg_consumption, i.purchase_interval, i.delay
+            i.avg_consumption, i.purchase_interval, i.delay,
+            iu.text AS unit_type
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
@@ -159,10 +163,12 @@ function getLotsMovements(depotUuid, params) {
           BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
           l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date,
           BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
-          f.label AS flux_label, i.delay
+          f.label AS flux_label, i.delay,
+          iu.text AS unit_type
         FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN depot d ON d.uuid = m.depot_uuid 
         JOIN flux f ON f.id = m.flux_id  
     `;
@@ -188,9 +194,11 @@ function getLotsOrigins(depotUuid, params) {
         SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date, 
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, origin.display_name, origin.reference, 
-            BUID(m.document_uuid) AS document_uuid, m.flux_id
+            BUID(m.document_uuid) AS document_uuid, m.flux_id,
+            iu.text AS unit_type
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN (
           SELECT p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, 'STOCK.PURCHASE_ORDER' AS display_name 
             FROM purchase p JOIN project proj ON proj.id = p.project_id
