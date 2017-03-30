@@ -20,7 +20,7 @@ function StockFindPatientModalController(Instance, Patient, Notify) {
   .then(function (patients) {
     vm.patients = patients;
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.handleError);
 
   // set patient
   function setPatient(patient) {

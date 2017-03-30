@@ -35,7 +35,7 @@
     <div class="form-group">
       <label class="control-label" translate>STOCK.DEPOT</label>
 
-      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid" theme="bootstrap">
+      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
         <ui-select-match>
           <span>{{$select.selected.text}}</span>
         </ui-select-match>
@@ -49,7 +49,7 @@
     <div class="form-group">
       <label class="control-label" translate>STOCK.INVENTORY</label>
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid" theme="bootstrap">
+      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
         <ui-select-match>
           <span>{{$select.selected.label}}</span>
         </ui-select-match>
@@ -69,7 +69,7 @@
     <div class="form-group">
       <label class="control-label" translate>STOCK.FLUX</label>
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.flux_id" theme="bootstrap">
+      <ui-select name="inventory" ng-model="$ctrl.bundle.flux_id">
         <ui-select-match>
           <span translate>{{$select.selected.label}}</span>
         </ui-select-match>
@@ -93,8 +93,8 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate> 
+      FORM.BUTTONS.SUBMIT
+    </button>
   </div>
 </form>

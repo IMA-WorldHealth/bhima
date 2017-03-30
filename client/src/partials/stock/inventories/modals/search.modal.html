@@ -18,7 +18,7 @@
     <div class="form-group">
       <label class="control-label" translate>STOCK.DEPOT</label>
 
-      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid" theme="bootstrap">
+      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
         <ui-select-match>
           <span>{{$select.selected.text}}</span>
         </ui-select-match>
@@ -32,7 +32,7 @@
     <div class="form-group">
       <label class="control-label" translate>STOCK.INVENTORY</label>
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid" theme="bootstrap">
+      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
         <ui-select-match>
           <span>{{$select.selected.label}}</span>
         </ui-select-match>

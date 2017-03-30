@@ -11,8 +11,8 @@
       <span translate>STOCK.ENTRY_PURCHASE</span>
     </div>
 
-    <div class="toolbar clearfix">
-      <div class="pull-right toolbar-item">
+    <div class="toolbar text-right">
+      <div class="toolbar-item">
         <button type="button"
           ng-click="$ctrl.toggleFilter()"
           class="btn btn-sm btn-default"
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="modal-body clearfix">
+  <div class="modal-body">
     <div class="row">
       <div class="col-xs-12">
         <div
@@ -32,12 +32,12 @@
           ui-grid-auto-resize
           ui-grid-resize-columns
           ui-grid-selection>
+          <bh-grid-loading-indicator
+            loading-state="$ctrl.loading"
+            empty-state="$ctrl.gridOptions.data.length === 0"
+            error-state="$ctrl.hasError">
+          </bh-grid-loading-indicator>
         </div>
-        <bh-grid-loading-indicator
-          loading-state="$ctrl.loading"
-          empty-state="$ctrl.gridOptions.data.length === 0"
-          error-state="$ctrl.hasError">
-        </bh-grid-loading-indicator>
       </div>
     </div>
   </div>

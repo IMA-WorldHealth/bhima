@@ -27,7 +27,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
     bundle.depots.splice(idx, 1);
     vm.depots = bundle.depots;
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.handleError);
 
   // submit
   function submit() {

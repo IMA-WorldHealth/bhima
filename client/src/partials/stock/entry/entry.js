@@ -6,7 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
   'SessionService', 'util', 'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
   'StockFormService', 'StockService', 'StockModalService', 'uiGridGroupingConstants',
-  'uiGridConstants',
+  'uiGridConstants', 'Store',
 ];
 
 /**
@@ -15,8 +15,10 @@ StockEntryController.$inject = [
  */
 function StockEntryController(Depots, Inventory, Notify,
   Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridGroupingConstants, uiGridConstants) {
+  StockForm, Stock, StockModal, uiGridGroupingConstants, uiGridConstants, Store) {
   var vm = this;
+  var inventoryStore;
+
   var mapEntry = {
     purchase    : { find: findPurchase, submit: submitPurchase },
     donation    : { find: angular.noop, submit: angular.noop },
@@ -132,8 +134,9 @@ function StockEntryController(Depots, Inventory, Notify,
     Inventory.read()
       .then((inventories) => {
         vm.inventories = inventories;
+        inventoryStore = new Store({ identifier: 'uuid', data: inventories });
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // ============================ Modals ================================
@@ -149,7 +152,7 @@ function StockEntryController(Depots, Inventory, Notify,
       };
       populate(purchase);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // populate the grid
@@ -158,27 +161,13 @@ function StockEntryController(Depots, Inventory, Notify,
 
     vm.Stock.addItems(items.length);
 
-    try {
-      vm.Stock.store.data.forEach(function (item, index) {
-        item.inventory = findInventory(items[index].inventory_uuid);
-        item.unit_cost = items[index].unit_price;
-        item.quantity = items[index].balance;
-        item.cost = item.quantity * item.unit_cost;
-        configureItem(item);
-      });
-    } catch (err) {
-      Notify.errorHandler(err);
-    }
-  }
-
-  function findInventory(uuid) {
-    if (!vm.inventories.length) { return; }
-
-    for (var i = 0; i <= vm.inventories.length; i++) {
-      if (vm.inventories[i].uuid === uuid) {
-        return vm.inventories[i];
-      }
-    }
+    vm.Stock.store.data.forEach(function (item, index) {
+      item.inventory = inventoryStore.get(items[index].inventory_uuid);
+      item.unit_cost = items[index].unit_price;
+      item.quantity = items[index].balance;
+      item.cost = item.quantity * item.unit_cost;
+      configureItem(item);
+    });
   }
 
   // ============================ lots management ===========================
@@ -193,7 +182,7 @@ function StockEntryController(Depots, Inventory, Notify,
       inventory.givenQuantity = rows.quantity;
       vm.hasValidInput = hasValidInput();
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // validation
@@ -238,15 +227,16 @@ function StockEntryController(Depots, Inventory, Notify,
 
     Stock.stocks.create(movement)
     .then(function (document) {
-      Purchase.stockStatus(vm.movement.entity.uuid);
-      return document;
+      vm.document = document;
+
+      return Purchase.stockStatus(vm.movement.entity.uuid);
     })
-    .then(function (document) {
+    .then(function () {
       vm.Stock.store.clear();
       vm.movement = {};
-      ReceiptModal.stockEntryPurchaseReceipt(document.uuid, bhConstants.flux.FROM_PURCHASE);
+      ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // submit integration
@@ -284,7 +274,7 @@ function StockEntryController(Depots, Inventory, Notify,
       vm.movement = {};
       ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   moduleInit();

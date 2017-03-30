@@ -89,7 +89,7 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
   function submit() {
     if (!vm.selectedRow) { return; }
 
-    Purchase.stockBalance(vm.selectedRow.uuid)
+    return Purchase.stockBalance(vm.selectedRow.uuid)
     .then(function (purchase) {
       Instance.close(purchase);
     })

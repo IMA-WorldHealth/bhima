@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockMovementsController', StockMovementsController);
 
 StockMovementsController.$inject = [
-  '$state', 'StockService', 'NotifyService',
+  'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
   'FluxService', 'ReceiptModal', 'GridGroupingService',
@@ -12,7 +12,7 @@ StockMovementsController.$inject = [
  * Stock movements Controller
  * This module is a registry page for stock movements
  */
-function StockMovementsController($state, Stock, Notify,
+function StockMovementsController(Stock, Notify,
   uiGridConstants, $translate, Modal, SearchFilterFormat,
   Languages, Session, Flux, ReceiptModal, Grouping) {
   var vm = this;
@@ -118,6 +118,8 @@ function StockMovementsController($state, Stock, Notify,
     enableSorting     : true,
     showColumnFooter  : true,
     onRegisterApi     : onRegisterApi,
+    fastWatch         : true,
+    flatEntityAccess  : true,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
@@ -193,8 +195,13 @@ function StockMovementsController($state, Stock, Notify,
       vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
     }
 
+    vm.loading = true;
+
     Stock.movements.read(null, params).then((rows) => {
+      vm.loading = false;
+
       vm.gridOptions.data = rows;
+      
       // force expand grid
       vm.grouping.unfoldAllGroups();
     })

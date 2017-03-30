@@ -158,7 +158,7 @@ function StockExitController(Depots, Inventory, Notify,
       .then(function (lots) {
         item.lots = lots;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // init actions
@@ -176,7 +176,7 @@ function StockExitController(Depots, Inventory, Notify,
       .then(function (inventories) {
         vm.selectableInventories = angular.copy(inventories);
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // check validity
@@ -199,7 +199,7 @@ function StockExitController(Depots, Inventory, Notify,
         instance : patient,
       };
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // find service
@@ -213,7 +213,7 @@ function StockExitController(Depots, Inventory, Notify,
         instance : service,
       };
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // find depot
@@ -227,7 +227,7 @@ function StockExitController(Depots, Inventory, Notify,
         instance : depot,
       };
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // configure loss
@@ -246,7 +246,7 @@ function StockExitController(Depots, Inventory, Notify,
       .then(function () {
         vm.validForSubmit = false;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // submit patient
@@ -276,7 +276,7 @@ function StockExitController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // submit service
@@ -306,7 +306,7 @@ function StockExitController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // submit depot
@@ -334,7 +334,7 @@ function StockExitController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // submit loss
@@ -364,7 +364,7 @@ function StockExitController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   moduleInit();

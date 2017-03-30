@@ -19,7 +19,7 @@ function StockFindServiceModalController(Instance, Service, Notify) {
   .then(function (services) {
     vm.services = services;
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.handleError);
 
   // submit
   function submit() {

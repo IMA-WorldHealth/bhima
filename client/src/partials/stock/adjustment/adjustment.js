@@ -122,7 +122,7 @@ function StockAdjustmentController(Depots, Inventory, Notify,
       .then(function (lots) {
         item.lots = lots;
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // init actions
@@ -140,7 +140,7 @@ function StockAdjustmentController(Depots, Inventory, Notify,
       .then(function (inventories) {
         vm.selectableInventories = angular.copy(inventories);
       })
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // remove item from selectable inventories
@@ -205,7 +205,7 @@ function StockAdjustmentController(Depots, Inventory, Notify,
       vm.Stock.store.clear();
       ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
     })
-    .catch(Notify.errorHandler);
+    .catch(Notify.handleError);
   }
 
   // ================================= Startup ===============================

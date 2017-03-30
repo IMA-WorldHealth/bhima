@@ -68,6 +68,8 @@ function StockLotsController($state, Stock, Notify,
     columnDefs        : columns,
     enableSorting     : true,
     showColumnFooter  : true,
+    fastWatch         : true,
+    flatEntityAccess  : true,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
@@ -109,7 +111,10 @@ function StockLotsController($state, Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
+    vm.loading = true;
     Stock.lots.read(null, filters).then(function (lots) {
+      vm.loading = false;
+
       vm.gridOptions.data = lots;
 
       vm.grouping.unfoldAllGroups();

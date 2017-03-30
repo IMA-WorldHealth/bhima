@@ -62,6 +62,11 @@
       ui-grid-resize-columns
       ui-grid-auto-resize
       ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="StockCtrl.loading"
+        empty-state="StockCtrl.gridOptions.data.length === 0"
+        error-state="StockCtrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
 
   </div>

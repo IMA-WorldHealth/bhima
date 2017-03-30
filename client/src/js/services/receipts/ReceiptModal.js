@@ -287,23 +287,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitPatientReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.EXIT_PATIENT',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockExitPatientReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -312,23 +298,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitLossReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.EXIT_LOSS',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockExitLossReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.EXIT_LOSS', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitLossReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -337,23 +309,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitServiceReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.EXIT_PATIENT',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockExitServiceReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.EXIT_SERVICE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitServiceReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -362,23 +320,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitDepotReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.EXIT_DEPOT',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockExitDepotReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.EXIT_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitDepotReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -387,23 +331,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryDepotReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.ENTRY_DEPOT',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -412,23 +342,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryPurchaseReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.ENTRY_PURCHASE',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_PURCHASE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -437,23 +353,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryIntegrationReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_INTEGRATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -462,23 +364,9 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryDonationReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
-    };
-
-    var request = Receipts.stockEntryDonationReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_DONATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryDonationReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
   }
 
   /**
@@ -487,21 +375,30 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockAdjustmentReceipt(documentUuid, notifyCreated) {
-    var options = {
-      title         : 'STOCK.RECEIPT.ADJUSTMENT',
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated : notifyCreated,
+    var opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockAdjustmentReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method ReceiptFactory
+   * @description A factory for receipts
+   */
+  function ReceiptFactory(promise, options) {
+    var defaults = {
+      renderer: Receipts.renderers.PDF,
+      notifyCreated: false
     };
 
-    var request = Receipts.stockAdjustmentReceipt(documentUuid, { renderer: options.renderer });
-    var reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise: request }; },
-        options : function optionsProvider() { return options; },
+    var parameters = angular.extend(defaults, options);
+    var provider = {
+      resolve :  {
+        receipt : function receiptProvider() { return { promise: promise }; },
+        options : function optionsProvider() { return parameters; },
       },
     };
 
-    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var configuration = angular.extend(modalConfiguration, provider);
     var instance = Modal.open(configuration);
     return instance.result;
   }

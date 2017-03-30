@@ -66,5 +66,4 @@ function SearchMovementsModalController(Depots, Inventory, Notify, Instance, Sea
     noMissingDatePart = (vm.bundle.entry_date_from && vm.bundle.entry_date_to) || (!vm.bundle.entry_date_from && !vm.bundle.entry_date_to);
     vm.validDateRange = noMissingDatePart ? true : false;
   }
-
 }

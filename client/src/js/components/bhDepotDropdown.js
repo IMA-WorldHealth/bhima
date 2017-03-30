@@ -16,12 +16,14 @@ function bhDepotController(Depot, AppCache, Notify) {
   var cache = new AppCache('bhDepotComponent');
 
   $ctrl.$onInit = function $onInit() {
+    $ctrl.loading = true;
+
     Depot.read()
     .then(function (rows) {
       if (!rows.length) { return; }
       $ctrl.depots = rows;
       $ctrl.selection = cache.selection || $ctrl.depots[0];
-      $ctrl.$loading = false;
+      $ctrl.loading = false;
       $ctrl.onSelect($ctrl.selection);
     })
     .catch(Notify.handleError);
