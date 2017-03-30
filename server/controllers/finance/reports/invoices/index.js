@@ -107,6 +107,8 @@ function receipt(req, res, next) {
   let enterpriseId = req.session.enterprise.id;
   let currencyId = options.currency || req.session.enterprise.currency_id;
   let invoiceResponse = {};
+  invoiceResponse.lang = options.lang;
+
 
   let template = RECEIPT_TEMPLATE;
 
@@ -177,6 +179,7 @@ function creditNote(req, res, next) {
   let enterpriseId = req.session.enterprise.id;
   let currencyId = options.currency || req.session.enterprise.currency_id;
   let invoiceResponse = {};
+  invoiceResponse.lang = options.lang;
 
   let template = CREDIT_NOTE_TEMPLATE;
 
@@ -207,6 +210,7 @@ function creditNote(req, res, next) {
     .then(exchangeResult => {
 
       invoiceResponse.receiptCurrency = currencyId;
+      invoiceResponse.lang = options.lang;
       invoiceResponse.exchange = exchangeResult.rate;
       invoiceResponse.dateFormat = (new moment()).format('L');
       if (invoiceResponse.exchange) {
