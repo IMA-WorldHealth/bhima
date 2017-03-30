@@ -17,17 +17,17 @@ function StockMovementsRegistryTests() {
 
   it('find entry/exit movements', () => {
 
-    // entry movements 
+    // entry movements
     FU.buttons.search();
     FU.radio('$ctrl.bundle.is_exit', 0);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 14 + (2 * depotGroupingRow));
 
-    // exit movements 
+    // exit movements
     FU.buttons.search();
     FU.radio('$ctrl.bundle.is_exit', 1);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 6 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -38,12 +38,12 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 6 + depotGroupingRow);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 9 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -54,7 +54,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    GU.expectRowCount(gridId, 12 + (2 * depotGroupingRow));
 
     // clear filters
     FU.buttons.clear();
@@ -66,7 +66,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.input('$ctrl.bundle.label', 'VITAMINE-A');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -80,25 +80,25 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 8 + depotGroupingRow);
 
     // to patient 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     // to depot 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // from depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'En provenance d\'un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -119,7 +119,6 @@ function StockMovementsRegistryTests() {
     // clear filters
     FU.buttons.clear();
   });
-
 }
 
 describe('Stock Movement Registry', StockMovementsRegistryTests);

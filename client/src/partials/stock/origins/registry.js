@@ -143,6 +143,8 @@ function StockOriginsController($state, Stock, Notify,
   function load(filters) {
     Stock.stocks.read('/origins', filters).then(function (lots) {
       vm.gridOptions.data = lots;
+
+      vm.grouping.unfoldAllGroups();
     })
     .catch(Notify.handleError);
   }

@@ -133,6 +133,8 @@ function StockInventoriesController($state, Stock, Notify,
   function load(filters) {
     Stock.inventories.read(null, filters).then(function (rows) {
       vm.gridOptions.data = rows;
+
+      vm.grouping.unfoldAllGroups();
     })
     .catch(Notify.handleError);
   }

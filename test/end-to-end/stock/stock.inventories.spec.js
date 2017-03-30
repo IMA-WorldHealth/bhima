@@ -11,8 +11,6 @@ function StockInventoriesRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/inventories'));
 
-  const INVENTORIES_INSIDE_REGISTRY = 5;
-
   const gridId = 'stock-inventory-grid';
 
   const depotGroupingRow = 1;
@@ -22,12 +20,12 @@ function StockInventoriesRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -38,7 +36,7 @@ function StockInventoriesRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + (2 * depotGroupingRow));
 
     // clear filters
     FU.buttons.clear();
@@ -73,7 +71,7 @@ function StockInventoriesRegistryTests() {
     FU.buttons.search();
     FU.radio('$ctrl.bundle.status', 4);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+    GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
 
 
     // clear filters

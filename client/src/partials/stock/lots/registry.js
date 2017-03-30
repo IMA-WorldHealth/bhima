@@ -111,6 +111,8 @@ function StockLotsController($state, Stock, Notify,
   function load(filters) {
     Stock.lots.read(null, filters).then(function (lots) {
       vm.gridOptions.data = lots;
+
+      vm.grouping.unfoldAllGroups();
     })
     .catch(Notify.handleError);
   }

@@ -11,8 +11,6 @@ function StockLotsRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/lots'));
 
-  const LOTS_INSIDE_REGISTRY = 5;
-
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
@@ -22,12 +20,12 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 6 + depotGroupingRow);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 8 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -38,7 +36,7 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    GU.expectRowCount(gridId, 9 + (2 * depotGroupingRow));
 
     // clear filters
     FU.buttons.clear();
@@ -61,7 +59,7 @@ function StockLotsRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('02/02/2017', '02/02/2017', 'entry-date');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 6 + (2 * depotGroupingRow));
 
     FU.buttons.search();
     components.dateInterval.range('01/01/2015', '30/01/2015', 'entry-date');
@@ -82,7 +80,6 @@ function StockLotsRegistryTests() {
     // clear filters
     FU.buttons.clear();
   });
-
 }
 
 describe('Stock Lots Registry', StockLotsRegistryTests);
