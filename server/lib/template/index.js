@@ -25,22 +25,23 @@ const logic = require('./helpers/logic');
 
 const hbs = exphbs.create({
   helpers : {
-    date : dates.date,
-    timestamp : dates.timestamp,
-    age : dates.age,
-    multiply : math.multiply,
-    sum : math.sum,
-    add : math.add,
-    substract : math.substract,
-    currency : finance.currency,
+    date          : dates.date,
+    timestamp     : dates.timestamp,
+    age           : dates.age,
+    multiply      : math.multiply,
+    sum           : math.sum,
+    add           : math.add,
+    substract     : math.substract,
+    currency      : finance.currency,
+    numberToText  : finance.numberToText,
     indentAccount : finance.indentAccount,
-    look : objects.look,
-    equal : logic.equal,
-    gt : logic.gt
+    look          : objects.look,
+    equal         : logic.equal,
+    gt            : logic.gt,
   },
 
   // load partials from the partials sub-directory
   partialsDir : path.join(__dirname, 'partials/'),
 });
 
-module.exports  = hbs;
+module.exports = hbs;

@@ -135,7 +135,12 @@
             <h1>{{translate 'FORM.LABELS.TOTAL'}} : </h1>
           </td>
           <td class="text-right">
-            <h1><b>{{currency cost metadata.enterprise.currency_id}}</b></h1>
+            <h3><b>{{currency cost metadata.enterprise.currency_id}}</b></h3>
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2' class="text-right">
+            <h4><b> {{numberToText cost lang metadata.enterprise.currencyName}}</b></h4>
           </td>
         </tr>
 
