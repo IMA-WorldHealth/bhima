@@ -1,5 +1,6 @@
 
 const accountingjs = require('accounting-js');
+const NumberToText = require('../../../lib/NumberToText');
 
 const USD_FMT = { precision: 2 };
 
@@ -19,6 +20,14 @@ function currency(value, currencyId) {
   return accountingjs.formatMoney(value || 0, fmt);
 }
 
+
+function numberToText(value, lang, currencyName) {
+  const numberText = NumberToText.convert(value, lang, currencyName);
+      
+  const fmt = numberText;
+  return fmt;
+} 
+
 const INDENTATION_STEP = 40;
 
 /**
@@ -35,3 +44,4 @@ function indentAccount(depth) {
 
 exports.currency = currency;
 exports.indentAccount = indentAccount;
+exports.numberToText = numberToText;

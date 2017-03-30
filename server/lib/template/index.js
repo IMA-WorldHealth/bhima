@@ -23,17 +23,18 @@ const finance = require('./helpers/finance');
 const objects = require('./helpers/objects');
 
 const hbs = exphbs.create({
-  helpers : {
-    date : dates.date,
+  helpers     : {
+    date      : dates.date,
     timestamp : dates.timestamp,
-    age : dates.age,
-    multiply : math.multiply,
-    sum : math.sum,
-    add : math.add,
+    age       : dates.age,
+    multiply  : math.multiply,
+    sum       : math.sum,
+    add       : math.add,
     substract : math.substract,
-    currency : finance.currency,
+    currency      : finance.currency,
+    numberToText  : finance.numberToText,
     indentAccount : finance.indentAccount,
-    look : objects.look
+    look          : objects.look
   },
 
   // load partials from the partials sub-directory
