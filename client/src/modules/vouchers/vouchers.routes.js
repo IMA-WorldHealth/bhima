@@ -2,29 +2,28 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
     $stateProvider
-
       .state('simpleVouchers', {
-        url : '/vouchers/simple',
-        controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
-        templateUrl: 'modules/vouchers/simple.html'
+        url         : '/vouchers/simple',
+        controller  : 'SimpleJournalVoucherController as SimpleVoucherCtrl',
+        templateUrl : 'modules/vouchers/simple-voucher.html',
       })
       .state('vouchersComplex', {
-        url : '/vouchers/complex',
-        controller: 'ComplexJournalVoucherController as ComplexVoucherCtrl',
-        templateUrl: 'modules/vouchers/complex.html'
+        url         : '/vouchers/complex',
+        controller  : 'ComplexJournalVoucherController as ComplexVoucherCtrl',
+        templateUrl : 'modules/vouchers/complex-voucher.html',
       })
 
       // this is the voucher registry
       .state('vouchers', {
-        url : '/vouchers',
-        controller: 'VoucherController as VoucherCtrl',
-        templateUrl: 'modules/vouchers/index.html'
+        url         : '/vouchers',
+        controller  : 'VoucherController as VoucherCtrl',
+        templateUrl : 'modules/vouchers/voucher-registry.html',
       })
 
       .state('simpleVouchers.barcode', {
-        url : '/barcode',
-        onEnter :['$state', '$uibModal', scanBarcodeModal],
-        onExit : ['$uibModalStack', closeModal]
+        url     : '/barcode',
+        onEnter : ['$state', '$uibModal', scanBarcodeModal],
+        onExit  : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -36,11 +35,11 @@ angular.module('bhima.routes')
  */
 function scanBarcodeModal($state, Modal) {
   Modal.open({
-    controller: 'VoucherScanBarcodeController as BarcodeModalCtrl',
-    templateUrl: 'modules/cash/modals/scanBarcode.modal.html',
-    size : 'lg',
-    backdrop: 'static',
-    keyboard: true
+    controller  : 'VoucherScanBarcodeController as BarcodeModalCtrl',
+    templateUrl : 'modules/cash/modals/barcode-scanner-modal.html',
+    size        : 'lg',
+    backdrop    : 'static',
+    keyboard    : true,
   }).result.finally(function () {
     $state.go('simpleVouchers');
   });
