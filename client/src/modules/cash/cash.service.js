@@ -158,7 +158,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
   //open a dialog box to Cancel Cash Payment
   function openCancelCashModal(invoice) {
     return Modal.open({
-      templateUrl : 'modules/cash/modals/modalCancelCash.html',
+      templateUrl : 'modules/cash/modals/modal-cancel-cash.html',
       resolve     : { data: { invoice: invoice } },
       size        : 'md',
       animation   : false,

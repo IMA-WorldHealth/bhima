@@ -4,6 +4,6 @@ angular.module('bhima.routes')
       .state('generalLedger', {
         url         : '/general_ledger',
         controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
-        templateUrl : 'modules/general_ledger/general_ledger_accounts.html',
+        templateUrl : 'modules/general-ledger/general-ledger-accounts.html',
       });
   }]);

@@ -4,6 +4,6 @@ angular.module('bhima.routes')
       .state('agedDebtors', {
         url : '/finance/reports/debtors/aged',
         controller : 'AgedDebtorsController as AgedDebtorsCtrl',
-        templateUrl : 'modules/finance/reports/agedDebtors/agedDebtors.html'
+        templateUrl : 'modules/finance/reports/aged-debtors/aged-debtors.html'
       });
   }]);
