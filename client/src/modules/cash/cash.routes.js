@@ -62,7 +62,7 @@ angular.module('bhima.routes')
 
 function cashboxSelectionModal(Modal) {
   Modal.open({
-    templateUrl : 'modules/cash/modals/selectCashbox.modal.html',
+    templateUrl : 'modules/cash/modals/select-cashbox-modal.html',
     controller  : 'SelectCashboxModalController as $ctrl',
     backdrop    : 'static',
     keyboard    : false,
@@ -72,7 +72,7 @@ function cashboxSelectionModal(Modal) {
 function transferModal($state, Modal) {
   Modal.open({
     controller  : 'CashTransferModalController as TransferCtrl',
-    templateUrl : 'modules/cash/modals/transfer.modal.html',
+    templateUrl : 'modules/cash/modals/transfer-modal.html',
     backdrop    : 'static',
     keyboard    : false,
   });
@@ -81,7 +81,7 @@ function transferModal($state, Modal) {
 function scanCashBarcodeModal($state, Modal) {
   Modal.open({
     controller  : 'CashBarcodeScannerModalController as BarcodeModalCtrl',
-    templateUrl : 'modules/cash/modals/scanBarcode.modal.html',
+    templateUrl : 'modules/cash/modals/barcode-scanner-modal.html',
     size        : 'lg',
     backdrop    : 'static',
     keyboard    : true,
@@ -92,7 +92,7 @@ function scanCashBarcodeModal($state, Modal) {
 
 function debtorInvoicesModal($state, Modal) {
   Modal.open({
-    templateUrl : 'modules/cash/modals/invoices.modal.html',
+    templateUrl : 'modules/cash/modals/invoice-modal.html',
     controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
     backdrop    : 'static',
     animation   : false,

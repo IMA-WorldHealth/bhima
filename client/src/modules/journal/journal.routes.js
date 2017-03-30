@@ -10,7 +10,7 @@ angular.module('bhima.routes')
       .state('postedJournal', {
         url         : '/journal/posted',
         controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
-        templateUrl : 'modules/general_ledger/general_ledger.html',
+        templateUrl : 'modules/general-ledger/general-ledger.html',
       })
       .state('journalPrint', {
         controller  : 'journal.print',
