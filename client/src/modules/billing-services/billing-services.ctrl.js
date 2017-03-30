@@ -15,7 +15,7 @@ function BillingServicesController($state, BillingServices, Accounts, Notify, bh
   var vm = this;
 
   var actionTemplate =
-    'modules/billing_services/templates/action.cell.html';
+    'modules/billing-services/templates/action.cell.html';
 
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.grid.ROW_HIGHLIGHT_FLAG;
 

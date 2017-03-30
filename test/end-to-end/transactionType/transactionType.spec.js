@@ -10,7 +10,7 @@ helpers.configure(chai);
 
 describe('Transaction Types', () => {
   // navigate to the page
-  before(() => helpers.navigate('#!/admin/transaction_type'));
+  before(() => helpers.navigate('#!/transaction_type'));
 
   const newType = {
     text        : 'E2E Transaction Type',

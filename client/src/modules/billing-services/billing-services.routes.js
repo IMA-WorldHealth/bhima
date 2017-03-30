@@ -11,43 +11,43 @@ angular.module('bhima.routes')
      */
     $stateProvider
       .state('billingServices', {
-        url : '/billing_services',
-        abstract : true,
-        templateUrl : 'modules/billing_services/index.html',
-        controller : 'BillingServicesController as BillingServicesCtrl',
+        url         : '/billing_services',
+        abstract    : true,
+        templateUrl : 'modules/billing-services/billing-services.html',
+        controller  : 'BillingServicesController as BillingServicesCtrl',
       })
       .state('billingServices.create', {
-        url: '/create',
+        url     : '/create',
         onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('create')],
-        onExit : ['$uibModalStack', closeModal]
+        onExit  : ['$uibModalStack', closeModal],
       })
       .state('billingServices.list', {
-        url : '/{id:int}',
+        url    : '/{id:int}',
         params : {
-          id : { squash : true, value : null },
+          id      : { squash : true, value : null },
           created : false,  // default for transitioning from child states
           updated : false,  // default for transitioning from child states
-        }
+        },
       })
       .state('billingServices.update', {
-        url: '/{id:int}/update',
+        url     : '/{id:int}/update',
         onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('update')],
-        onExit : ['$uibModalStack', closeModal]
+        onExit  : ['$uibModalStack', closeModal]
       })
       .state('billingServices.delete', {
-        url: '/{id:int}/delete',
+        url     : '/{id:int}/delete',
         onEnter : ['$state', '$uibModal', 'NotifyService', function ($state, Modal, Notify) {
           Modal.open({
-            keyboard : true,
-            size : 'md',
-            controller : 'BillingServicesDeleteController as ConfirmModalCtrl',
-            templateUrl : '/modules/templates/modals/confirm.modal.html'
+            keyboard    : true,
+            size        : 'md',
+            controller  : 'BillingServicesDeleteController as ConfirmModalCtrl',
+            templateUrl : '/modules/templates/modals/confirm.modal.html',
           }).result
             .then(function () {
               Notify.success('FORM.INFO.DELETE_SUCCES');
 
               // go to the parent state (with refresh)
-              $state.go('^.list', { id: null }, { reload : true });
+              $state.go('^.list', { id: null }, { reload: true });
             })
             .catch(function (error) {
               if (error) {
@@ -57,7 +57,7 @@ angular.module('bhima.routes')
               $state.go('^.list', { id : $state.params.id }, { notify: false });
             });
         }],
-        onExit : ['$uibModalStack', closeModal]
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -68,7 +68,6 @@ angular.module('bhima.routes')
  * This configures the update versus create states.
  */
 function onBillingEnterFactory(stateType) {
-
   var isCreateState = (stateType === 'create');
 
   var ctrl = isCreateState ?
@@ -82,18 +81,18 @@ function onBillingEnterFactory(stateType) {
 
   return function onEnter($state, Modal, Notify) {
       Modal.open({
-        templateUrl : 'modules/billing_services/modal.html',
-        controller : ctrl,
+        templateUrl : 'modules/billing-services/billing-services-modal.html',
+        controller  : ctrl,
       }).result
         .then(function (id) {
           Notify.success(message);
 
           var params = isCreateState ?
-            { id : id, created : true } :
-            { id : id, updated : true };
+            { id: id, created: true } :
+            { id: id, updated: true };
 
           // go to the parent state (with refresh)
-          $state.go('^.list', params, { reload : true });
+          $state.go('^.list', params, { reload: true });
         })
         .catch(function (error) {
 
@@ -101,7 +100,7 @@ function onBillingEnterFactory(stateType) {
             Notify.handleError(error);
           }
 
-          $state.go('^.list', { id : $state.params.id }, { notify: false });
+          $state.go('^.list', { id: $state.params.id }, { notify: false });
         });
   };
 }
