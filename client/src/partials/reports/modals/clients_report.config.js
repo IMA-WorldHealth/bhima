@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
   .controller('clients_reportController', ClientsReportController);
 
-ClientsReportController.$inject = [ '$state', '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails' ];
+ClientsReportController.$inject = [ '$state', '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails', 'SessionService'];
 
 /**
  * Clients report controller
@@ -11,7 +11,7 @@ ClientsReportController.$inject = [ '$state', '$uibModalInstance', 'DebtorGroupS
  * settings are sent to the server to generate a report document.
  */
 
-function ClientsReportController($state, ModalInstance, Clients, Notify, Languages, SavedReports, reportDetails) {
+function ClientsReportController($state, ModalInstance, Clients, Notify, Languages, SavedReports, reportDetails, Session) {
   var vm = this;
   var report = reportDetails;
 
@@ -21,6 +21,7 @@ function ClientsReportController($state, ModalInstance, Clients, Notify, Languag
   vm.report = report;
   vm.clients = [];
   vm.$loading = false;
+  vm.currency_id = Session.enterprise.currency_id;
 
   Clients.read()
     .then(function (list) {
@@ -40,7 +41,8 @@ function ClientsReportController($state, ModalInstance, Clients, Notify, Languag
       dateTo : new Date(vm.dateTo),
       lang : Languages.key,
       ignoredClients : vm.ignoredClients,
-      detailPrevious : vm.detailPrevious
+      detailPrevious : vm.detailPrevious,
+      currency_id    : vm.currency_id
     };
 
     SavedReports.requestPDF(url, report, options)

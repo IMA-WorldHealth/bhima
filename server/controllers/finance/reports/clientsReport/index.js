@@ -15,7 +15,8 @@
 const _             = require('lodash');
 const db            = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const TEMPLATE = './server/controllers/finance/reports/clientsReport/report.handlebars';
+const TEMPLATE      = './server/controllers/finance/reports/clientsReport/report.handlebars';
+const Exchange      = require('../../exchange');
 
 /**
  * @function document
@@ -25,9 +26,17 @@ function document(req, res, next) {
   let params = req.query;
   let session = {};
   let report;
+  let exchangeRate;
+  let clientsData = {};
 
-
-  _.defaults(session, { dateFrom : new Date(params.dateFrom), dateTo : new Date(params.dateTo), detailPrevious : params.detailPrevious, ignoredClients : params.ignoredClients, enterprise : req.session.enterprise });
+  _.defaults(session, { 
+      dateFrom        : new Date(params.dateFrom), 
+      dateTo          : new Date(params.dateTo),
+      currency_id     : params.currency_id, 
+      detailPrevious  : params.detailPrevious, 
+      ignoredClients  : params.ignoredClients, 
+      enterprise      : req.session.enterprise 
+    });
   _.defaults(params, {user : req.session.user });
 
   try {
@@ -36,8 +45,14 @@ function document(req, res, next) {
     return next(e);
   }
 
-  //Getting data to be rendered
-  fetchClientsData(session)
+  Exchange.getExchangeRate(req.session.user.enterprise_id, params.currency_id, new Date())
+    .then(function (exchange) {
+      exchangeRate = exchange.rate ? exchange.rate : 1;
+
+      //Getting data to be rendered
+      return fetchClientsData(session, exchangeRate, clientsData);
+    })
+    //fetchClientsData(session, exchangeRate)
     .then(function (data) {
       return report.render(data);
     })
@@ -54,9 +69,9 @@ function document(req, res, next) {
  * @description
  * Fetch client data for current and previous fiscal year
  **/
-function fetchClientsData(session) {
+function fetchClientsData(session, exchangeRate, clientsData) {
 
-  let clientsData = {}, ignoredClients, notInStatement = '';
+  let ignoredClients, notInStatement = '';
   _.defaults(clientsData, session);
 
   if(session.ignoredClients){
@@ -68,7 +83,8 @@ function fetchClientsData(session) {
   const previousDetailSql =
     `    
     SELECT 
-     t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
+      t.number AS accountNumber, t.name, IFNULL(t.debit, 0) * ${exchangeRate}  AS initDebit, IFNULL(t.credit, 0) * ${exchangeRate} AS initCredit, 
+      IFNULL(t.balance, 0) * ${exchangeRate} AS initBalance
     FROM
     (
       SELECT
@@ -83,6 +99,7 @@ function fetchClientsData(session) {
   //getting a fiscal year and the previous fiscal year ID from the date start defined by the user
   return getFiscalYear(session.dateFrom)
     .then(function (rows) {
+
       clientsData.fy = rows[0];
       clientsData.fy.openningBalanceDate = new Date(clientsData.fy.start_date);
       //just correcting the date value
@@ -97,6 +114,7 @@ function fetchClientsData(session) {
       clientsData.lines = data.reduce(function (obj, clientInfo) {
         const number = clientInfo.accountNumber;
         _.merge(obj[number] = {}, clientInfo);
+
         return obj;
       }, {});
 
@@ -104,7 +122,8 @@ function fetchClientsData(session) {
       const previousTotalSql =
         `
         SELECT 
-          IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, IFNULL(balance, 0) AS totalInitBalance 
+          IFNULL(debit, 0) * ${exchangeRate} AS totalInitDebit, IFNULL(credit, 0) * ${exchangeRate} AS totalInitCredit, 
+          IFNULL(balance, 0) * ${exchangeRate} AS totalInitBalance 
         FROM 
         (
           SELECT 
@@ -117,13 +136,15 @@ function fetchClientsData(session) {
       return db.one(previousTotalSql, [clientsData.fy.previous_fiscal_year_id]);
     })
     .then(function (previousTotal) {
-      _.merge(clientsData, previousTotal);
 
+
+      _.merge(clientsData, previousTotal);
       //request to fetch the current fiscal year data of a client
       const currentDetailSql =
         `
         SELECT 
-          t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, IFNULL(t.balance, 0) AS balance
+          t.number AS accountNumber, t.name, IFNULL(t.debit, 0) * ${exchangeRate} AS debit, IFNULL(t.credit, 0) * ${exchangeRate} AS credit, 
+          IFNULL(t.balance, 0) * ${exchangeRate} AS balance
         FROM 
         (
           SELECT 
@@ -156,8 +177,8 @@ function fetchClientsData(session) {
       const currentTotalSql =
         `
         SELECT 
-          IFNULL(t.debit, 0) AS totalDebit, IFNULL(t.credit, 0) AS totalCredit, 
-          IFNULL(${clientsData.totalInitBalance} + t.balance, 0) AS totalFinalBalance
+          IFNULL(t.debit, 0) * ${exchangeRate} AS totalDebit, IFNULL(t.credit, 0) * ${exchangeRate} AS totalCredit, 
+          IFNULL(${clientsData.totalInitBalance} + t.balance, 0) * ${exchangeRate} AS totalFinalBalance
         FROM 
         (
           SELECT 

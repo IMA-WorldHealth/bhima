@@ -10,6 +10,7 @@ const params = {
   dateFrom: '2016-01-01',
   dateTo: '2016-12-31',
   lang : 'fr',
+  currency_id : 2,
   detailPrevious : true
 };
 
