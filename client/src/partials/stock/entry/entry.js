@@ -253,7 +253,7 @@ function StockEntryController(Depots, Inventory, Notify,
   function submitIntegration() {
     var movement = {
       depot_uuid  : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
+      entity_uuid : null,
       date        : vm.movement.date,
       description : vm.movement.description,
       flux_id     : bhConstants.flux.FROM_INTEGRATION,

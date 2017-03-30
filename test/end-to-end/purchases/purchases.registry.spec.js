@@ -10,7 +10,7 @@ function PurchasesRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/purchases/list'));
 
-  const PURCHASES_INSIDE_REGISTRY = 1;
+  const PURCHASES_INSIDE_REGISTRY = 2;
 
   const page = new PurchasesRegistryPage();
 
@@ -19,25 +19,25 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('01/01/2016', '31/12/2016');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
-
-    /** Get all purchase of january 2016 */
-    FU.buttons.search();
-    components.dateInterval.range('01/01/2016', '31/01/2016');
-    FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 0);
+    GU.expectRowCount('PurchaseListGrid', 1);
 
     /** Get all purchase of february 2016 */
     FU.buttons.search();
     components.dateInterval.range('01/02/2016', '28/02/2016');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
+    GU.expectRowCount('PurchaseListGrid', 1);
 
     /** Get all purchase of the year 2017 */
     FU.buttons.search();
     components.dateInterval.range('01/01/2017', '31/12/2017');
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 0);
+    GU.expectRowCount('PurchaseListGrid', 1);
+
+    /** Get all purchase of 2016 and 2017 */
+    FU.buttons.search();
+    components.dateInterval.range('01/01/2016', '31/12/2017');
+    FU.modal.submit();
+    GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
     // clear filters
     FU.buttons.clear();
@@ -94,7 +94,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     element(by.model('$ctrl.bundle.is_confirmed')).click();
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 0);
+    GU.expectRowCount('PurchaseListGrid', 1);
 
     // clear filters
     FU.buttons.clear();
@@ -102,7 +102,7 @@ function PurchasesRegistryTests() {
 
   it('set status to confirmed', () => {
     /** Set to confirmed for first */
-    page.editStatus(0);
+    page.editStatus(1);
 
     FU.radio('$ctrl.status', 0);
     FU.modal.submit();
@@ -113,7 +113,7 @@ function PurchasesRegistryTests() {
     FU.buttons.search();
     element(by.model('$ctrl.bundle.is_confirmed')).click();
     FU.modal.submit();
-    GU.expectRowCount('PurchaseListGrid', 1);
+    GU.expectRowCount('PurchaseListGrid', 2);
 
     // clear filters
     FU.buttons.clear();

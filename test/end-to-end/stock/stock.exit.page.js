@@ -2,7 +2,6 @@
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
-const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 function StockExitPage() {

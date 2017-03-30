@@ -399,6 +399,14 @@ INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
 
+-- confirmed purchase order
+SET @purchase = HUID('8027d1c8-dd68-4686-9f4c-8860f856f8ba');
+INSERT INTO `purchase` VALUES
+  (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2017-03-29'), CURRENT_TIMESTAMP, 1, NULL, 'Purchase Order Confirmed', 1, 0, 0, 0);
+
+INSERT INTO `purchase_item` VALUES
+  (HUID(UUID()), @purchase, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 1000, 0.05, (1000 * 0.05));
+
 -- default depots
 SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
 SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");

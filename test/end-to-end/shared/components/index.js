@@ -21,4 +21,5 @@ module.exports = {
   dateInterval   : require('./bhDateInterval'),
   accountSelect  : require('./bhAccountSelect'),
   depotDropdown  : require('./bhDepotDropdown'),
+  datePicker     : require('./bhDatePicker'),
 };

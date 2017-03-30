@@ -147,7 +147,6 @@ function StockExitController(Depots, Inventory, Notify,
   // remove item
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
-    // pushInventory(item.inventory);
     checkValidity();
   }
 
@@ -158,7 +157,6 @@ function StockExitController(Depots, Inventory, Notify,
     Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
       .then(function (lots) {
         item.lots = lots;
-        // popInventory(item);
       })
       .catch(Notify.errorHandler);
   }
@@ -179,20 +177,6 @@ function StockExitController(Depots, Inventory, Notify,
         vm.selectableInventories = angular.copy(inventories);
       })
       .catch(Notify.errorHandler);
-  }
-
-  // remove item from selectable inventories
-  function popInventory(item) {
-    var idx;
-    if (!item) { return; }
-    vm.selectableInventories.indexOf(item.inventory);
-    vm.selectableInventories.splice(idx, 1);
-  }
-
-  // insert item into selectable inventories
-  function pushInventory(inventory) {
-    if (!inventory) { return; }
-    vm.selectableInventories.push(inventory);
   }
 
   // check validity

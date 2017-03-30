@@ -32,7 +32,7 @@
         <button class="btn-block panel panel-default segment" type="button" 
           ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'patient'}" 
           ng-click="StockCtrl.selectExitType('patient')" name="btn-patient">
-          <div class="panel-body text-center">
+          <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
               <div class="value">
                 PATIENT
@@ -53,7 +53,7 @@
         <button class="btn-block panel panel-default segment" type="button" 
           ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'service'}" 
           ng-click="StockCtrl.selectExitType('service')" name="btn-service">
-          <div class="panel-body text-center">
+          <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
               <div class="value">
                 SERVICE
@@ -74,7 +74,7 @@
         <button class="btn-block panel panel-default segment" type="button" 
           ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'depot'}" 
           ng-click="StockCtrl.selectExitType('depot')" name="btn-depot">
-          <div class="panel-body text-center">
+          <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
               <div class="value">
                 DEPOT
@@ -95,7 +95,7 @@
         <button class="btn-block panel panel-default segment" type="button" 
           ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'loss'}" 
           ng-click="StockCtrl.selectExitType('loss')" name="btn-loss">
-          <div class="panel-body text-center">
+          <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
               <div class="value" translate>
                 STOCK.EXIT_LOSS
