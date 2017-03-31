@@ -1,7 +1,7 @@
 angular.module('bhima.components')
   .component('bhDepotDropdown', {
     bindings : {
-      onSelect : '<',
+      onSelect : '&',
     },
     templateUrl  : 'partials/templates/bhDepotDropdown.tmpl.html',
     controller   : bhDepotController,
@@ -24,14 +24,17 @@ function bhDepotController(Depot, AppCache, Notify) {
       $ctrl.depots = rows;
       $ctrl.selection = cache.selection || $ctrl.depots[0];
       $ctrl.loading = false;
-      $ctrl.onSelect($ctrl.selection);
+      $ctrl.onSelect({ depot: $ctrl.selection });
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(function () {
+      $ctrl.loading = false;
+    });
   };
 
   $ctrl.select = function select(option) {
     $ctrl.selection = option;
     cache.selection = $ctrl.selection;
-    $ctrl.onSelect($ctrl.selection);
+    $ctrl.onSelect({ depot: $ctrl.selection });
   };
 }

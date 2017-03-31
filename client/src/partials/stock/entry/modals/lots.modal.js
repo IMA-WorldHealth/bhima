@@ -69,6 +69,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.addLot = addLot;
   vm.removeLot = removeLot;
   vm.handleChange = handleChange;
+  vm.onDateChangeCallback = onDateChangeCallback;
 
   // init
   function init() {
@@ -99,6 +100,13 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   // remove lot
   function removeLot(index) {
     vm.gridOptions.data.splice(index, 1);
+  }
+
+  // handle date change
+  function onDateChangeCallback(date, inventory) {
+    inventory.expiration_date = date;
+    // notify date change
+    handleChange(inventory);
   }
 
   // handleChange

@@ -21,7 +21,7 @@ function StockEntryController(Depots, Inventory, Notify,
 
   var mapEntry = {
     purchase    : { find: findPurchase, submit: submitPurchase },
-    donation    : { find: angular.noop, submit: angular.noop },
+    donation    : { find: angular.noop, submit: angular.noop }, // donation is not yet implemented
     integration : { find: angular.noop, submit: submitIntegration },
   };
 

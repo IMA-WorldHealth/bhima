@@ -7,7 +7,7 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <bh-depot-dropdown on-select="StockCtrl.setupDepot"></bh-depot-dropdown>
+        <bh-depot-dropdown on-select="StockCtrl.setupDepot(depot)"></bh-depot-dropdown>
       </div>
     </div>
   </div>
@@ -19,7 +19,6 @@
 
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" bh-form-defaults novalidate>
 
-    <!-- date and note -->
     <div class="row">
       <div class="col-xs-6">
         <!-- adjustment type -->
@@ -64,12 +63,12 @@
       </div>
 
       <div class="col-xs-6">
-        <div class=""  ng-if="StockCtrl.adjustmentOption === 'increase'" style="margin-top: 0px;">
+        <div ng-if="StockCtrl.adjustmentOption === 'increase'" style="margin-top: 0px;">
           <h4><i class="fa fa-arrow-circle-up"></i> <span translate>STOCK.INCREASE</span> </h4>
           <p translate>STOCK.INCREASE_HELP</p>
         </div>
 
-        <div class=""  ng-if="StockCtrl.adjustmentOption === 'decrease'" style="margin-top: 0px;">
+        <div ng-if="StockCtrl.adjustmentOption === 'decrease'" style="margin-top: 0px;">
           <h4><i class="fa fa-arrow-circle-down"></i> <span translate>STOCK.DECREASE</span> </h4>
           <p translate>STOCK.DECREASE_HELP</p>
         </div>

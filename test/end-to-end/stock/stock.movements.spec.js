@@ -43,7 +43,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 9 + depotGroupingRow);
+    GU.expectRowCount(gridId, 14 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();

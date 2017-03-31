@@ -200,8 +200,13 @@ function StockMovementsController(Stock, Notify,
     Stock.movements.read(null, params).then((rows) => {
       vm.loading = false;
 
+      // set flux name
+      rows.forEach(function (row) {
+        row.fluxName = getFluxName(row.flux_id);
+      });
+
       vm.gridOptions.data = rows;
-      
+
       // force expand grid
       vm.grouping.unfoldAllGroups();
     })
@@ -211,7 +216,7 @@ function StockMovementsController(Stock, Notify,
   // search modal
   function search() {
     Modal.openSearchMovements()
-    .then((filters) => {
+    .then(function (filters) {
       if (!filters) { return; }
 
       vm.isToday = false;

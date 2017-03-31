@@ -7,7 +7,7 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="static" translate>STOCK.MOVEMENTS</li>
       <li class="title" translate>FORM.LABELS.SEARCH</li>
     </ol>
   </div>
@@ -39,7 +39,7 @@
         <ui-select-match>
           <span>{{$select.selected.text}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:$select.search">
+        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
           <span ng-bind-html="depot.text | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
@@ -53,7 +53,7 @@
         <ui-select-match>
           <span>{{$select.selected.label}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:$select.search">
+        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
           <span ng-bind-html="inventory.label | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
@@ -73,7 +73,7 @@
         <ui-select-match>
           <span translate>{{$select.selected.label}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:$select.search">
+        <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
           <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>

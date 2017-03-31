@@ -1,9 +1,9 @@
 <span class="text-action" ng-dblclick="$ctrl.open()">
   <input 
-    uib-datepicker-popup="{{ $ctrl.format || 'dd/MM/yyyy' }}"
+    uib-datepicker-popup="{{ $ctrl.dateFormat }}"
     class="form-control text-right" 
     type="text" 
-    ng-change="$ctrl.onChange"
+    ng-change="$ctrl.notifyDateChange()"
     ng-model="$ctrl.date"
     ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
     ng-required="$ctrl.required">

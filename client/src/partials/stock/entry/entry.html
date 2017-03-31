@@ -1,9 +1,3 @@
-<!-- fix style -->
-<style>
-  .bg-primary { background: #085484; }
-  .bg-primary .value, .bg-primary .uilabel { color: white !important; }
-</style>
-
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
@@ -13,7 +7,7 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <bh-depot-dropdown on-select="StockCtrl.setupDepot"></bh-depot-dropdown>
+        <bh-depot-dropdown on-select="StockCtrl.setupDepot(depot)"></bh-depot-dropdown>
       </div>
     </div>
   </div>
@@ -31,7 +25,7 @@
       <!-- stock from purchase -->
       <div class="col-md-4 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.entry_type === 'purchase'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'purchase'}" 
           ng-click="StockCtrl.selectEntryType('purchase')" name="btn-purchase">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui ima-blue statistic">
@@ -52,7 +46,7 @@
       <!-- stock from donation -->
       <div class="col-md-4 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.entry_type === 'donation'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'donation'}" 
           ng-click="StockCtrl.selectEntryType('donation')" name="btn-donation" ng-disabled="true">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui ima-blue statistic">
@@ -73,7 +67,7 @@
       <!-- stock from integration -->
       <div class="col-md-4 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.entry_type === 'integration'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'integration'}" 
           ng-click="StockCtrl.selectEntryType('integration')" name="btn-integration">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui ima-blue statistic">

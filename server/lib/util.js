@@ -225,5 +225,5 @@ function resolveObject(object) {
  * @return {string} - A date string 
  */
 function dateString(date, format) {
-  return moment(new Date(date)).format(format || 'YYYY-MM-DD').toString();
+  return moment(new Date(date)).format(format || 'YYYY-MM-DD');
 }

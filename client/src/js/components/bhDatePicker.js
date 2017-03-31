@@ -3,15 +3,15 @@ angular.module('bhima.components')
   templateUrl : '/partials/templates/bhDatePickerAction.tmpl.html',
   controller  : DatePickerController,
   bindings    : {
-    date     : '=',
+    date     : '<', // set the date once as the initial date and use callbacks to change it later
     format   : '<',
-    mode     : '<',
+    mode     : '@', // will this ever change?  If so, we can use '<'
     required : '<',
-    onChange : '<',
+    onChange : '&', // use a callback to notify for changes
   },
 });
 
-DatePickerController.$inject = ['$uibModal'];
+DatePickerController.$inject = ['$uibModal', 'bhConstants'];
 
 /**
  * bhDatePicker Component
@@ -20,7 +20,7 @@ DatePickerController.$inject = ['$uibModal'];
  *
  * @module components/bhDatePicker
  */
-function DatePickerController(Modal) {
+function DatePickerController(Modal, bhConstants) {
   var vm = this;
 
   var modalParameters = {
@@ -33,12 +33,20 @@ function DatePickerController(Modal) {
   };
 
   // bind methods
+  vm.dateFormat = vm.format || bhConstants.dayOptions.format;
+  vm.notifyDateChange = notifyDateChange;
   vm.open = open;
+
+  // on date change
+  function notifyDateChange() {
+    vm.onChange({ date: vm.date });
+  }
 
   function open() {
     openDatePicker({ mode: vm.mode })
     .then(function (res) {
-      vm.date = res;
+      // notify the parent controller of a date change via a callback
+      vm.onChange({ date: res });
     });
   }
 
@@ -56,13 +64,12 @@ function DatePickerController(Modal) {
 /**
  * bhDatePicker Modal
  */
-DatePickerModalController.$inject = ['$uibModalInstance', 'bhConstants', 'data'];
+DatePickerModalController.$inject = ['$uibModalInstance', 'data'];
 
-function DatePickerModalController(Instance, bhConstants, Data) {
+function DatePickerModalController(Instance, Data) {
   var vm = this;
 
   vm.selected = new Date();
-  vm.dateFormat = bhConstants.dayOptions.format;
 
   vm.options = {
     datepickerMode : Data.mode || 'day',

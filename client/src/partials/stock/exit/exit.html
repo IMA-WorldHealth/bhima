@@ -1,9 +1,3 @@
-<!-- fix style -->
-<style>
-  .bg-primary { background: #085484; }
-  .bg-primary .value, .bg-primary .uilabel { color: white !important; }
-</style>
-
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
@@ -13,7 +7,7 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <bh-depot-dropdown on-select="StockCtrl.setupDepot"></bh-depot-dropdown>
+        <bh-depot-dropdown on-select="StockCtrl.setupDepot(depot)"></bh-depot-dropdown>
       </div>
     </div>
   </div>
@@ -28,9 +22,9 @@
     <!-- destination -->
     <div class="row">
       <!--patient -->
-      <div class="col-xs-3">
+      <div class="col-md-3 col-sm-6 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'patient'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'patient'}" 
           ng-click="StockCtrl.selectExitType('patient')" name="btn-patient">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
@@ -49,9 +43,9 @@
       </div>
 
       <!--service -->
-      <div class="col-xs-3">
+      <div class="col-md-3 col-sm-6 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'service'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'service'}" 
           ng-click="StockCtrl.selectExitType('service')" name="btn-service">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
@@ -70,9 +64,9 @@
       </div>
 
       <!--depot -->
-      <div class="col-xs-3">
+      <div class="col-md-3 col-sm-6 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'depot'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'depot'}" 
           ng-click="StockCtrl.selectExitType('depot')" name="btn-depot">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
@@ -91,9 +85,9 @@
       </div>
 
       <!--depot -->
-      <div class="col-xs-3">
+      <div class="col-md-3 col-sm-6 col-xs-12">
         <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-primary': StockCtrl.movement.exit_type === 'loss'}" 
+          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'loss'}" 
           ng-click="StockCtrl.selectExitType('loss')" name="btn-loss">
           <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">

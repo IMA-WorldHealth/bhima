@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockOriginsController', StockOriginsController);
 
 StockOriginsController.$inject = [
-  '$state', 'StockService', 'NotifyService',
+  'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService',
   'GridGroupingService', 'ReceiptModal',
@@ -12,7 +12,7 @@ StockOriginsController.$inject = [
  * Stock Origin Controller
  * This module is a registry page for stock lots
  */
-function StockOriginsController($state, Stock, Notify,
+function StockOriginsController(Stock, Notify,
   uiGridConstants, $translate, Modal,
   SearchFilterFormat, Languages, Grouping, Receipts) {
   var vm = this;
@@ -86,6 +86,8 @@ function StockOriginsController($state, Stock, Notify,
     columnDefs        : columns,
     enableSorting     : true,
     showColumnFooter  : true,
+    fastWatch         : true,
+    flatEntityAccess  : true,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'reference', vm.grouped, true);
