@@ -11,13 +11,15 @@
 'use strict';
 
 module.exports = {
-  currencySelect:  require('./bhCurrencySelect'),
-  locationSelect:  require('./bhLocationSelect'),
-  currencyInput:   require('./bhCurrencyInput'),
-  findPatient:     require('./bhFindPatient'),
-  dateEditor:      require('./bhDateEditor'),
-  modalAction:     require('./bhModalAction'),
-  notification:    require('./notify'),
-  dateInterval:    require('./bhDateInterval'),
-  accountSelect : require('./bhAccountSelect')
+  currencySelect : require('./bhCurrencySelect'),
+  locationSelect : require('./bhLocationSelect'),
+  currencyInput  : require('./bhCurrencyInput'),
+  findPatient    : require('./bhFindPatient'),
+  dateEditor     : require('./bhDateEditor'),
+  modalAction    : require('./bhModalAction'),
+  notification   : require('./notify'),
+  dateInterval   : require('./bhDateInterval'),
+  accountSelect  : require('./bhAccountSelect'),
+  depotDropdown  : require('./bhDepotDropdown'),
+  datePicker     : require('./bhDatePicker'),
 };

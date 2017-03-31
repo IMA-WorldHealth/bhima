@@ -38,6 +38,7 @@ function JournalConfigurationModal() {
     page.expectColumnCount(modifiedVisibleColumnCount);
   });
 
+  // the function .skip break the test 
   // it.skip('resets the columns to the defaults', () => {
   //   page.openGridConfigurationModal();
 

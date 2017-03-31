@@ -21,14 +21,14 @@ function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
     templateUrl : 'partials/home/home.html',
   })
   .state('landing', {
-    abstract : true,
-    url : '/landing',
-    controller : ['SessionService', function (Session) { this.enterprise = Session.enterprise; }],
+    abstract     : true,
+    url          : '/landing',
+    controller   : ['SessionService', function (Session) { this.enterprise = Session.enterprise; }],
     controllerAs : 'LandingCtrl',
-    templateUrl : 'partials/home/details.html',
+    templateUrl  : 'partials/home/details.html',
   })
   .state('landing.stats', {
-    url : '/stats',
+    url   : '/stats',
     views : {
       'debtors' : {
         templateUrl : 'partials/home/units/debtors.html',
@@ -305,14 +305,14 @@ function constantConfig() {
     },
     purchase : {
       GRID_HEIGHT : 200,
-      TITLE : 4,
+      TITLE       : 4,
     },
     settings : {
       CONTACT_EMAIL : 'developers@imaworldhealth.org',
     },
     dates : {
       minDOB : new Date('1900-01-01'),
-      format         : 'dd/MM/yyyy',
+      format : 'dd/MM/yyyy',
     },
     yearOptions : {
       format         : 'yyyy',
@@ -355,6 +355,28 @@ function constantConfig() {
       INCOME             : 'income',
       EXPENSE            : 'expense',
     },
+    flux : {
+      FROM_PURCHASE    : 1,
+      FROM_OTHER_DEPOT : 2,
+      FROM_ADJUSTMENT  : 3,
+      FROM_PATIENT     : 4,
+      FROM_SERVICE     : 5,
+      FROM_DONATION    : 6,
+      FROM_LOSS        : 7,
+      TO_OTHER_DEPOT   : 8,
+      TO_PATIENT       : 9,
+      TO_SERVICE       : 10,
+      TO_LOSS          : 11,
+      TO_ADJUSTMENT    : 12,
+      FROM_INTEGRATION : 13,
+    },
+    stockStatus : {
+      IS_SOLD_OUT          : 'sold_out',
+      IS_IN_STOCK          : 'in_stock',
+      HAS_SECURITY_WARNING : 'security_reached',
+      HAS_MINIMUM_WARNING  : 'minimum_reached',
+      HAS_OVERAGE_WARNING  : 'over_maximum',
+    },
     reports : {
       AGED_DEBTOR    : 'AGED_DEBTOR',
       CASHFLOW       : 'CASHFLOW',
@@ -364,13 +386,13 @@ function constantConfig() {
       MAX_DECIMAL_PRECISION : 4,
     },
     utilBar : {
-      height : UTIL_BAR_HEIGHT,
-      expandedHeightStyle : { 'height' : 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
+      height               : UTIL_BAR_HEIGHT,
+      expandedHeightStyle  : { 'height': 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
       collapsedHeightStyle : {}
     },
     identifiers : {
       PATIENT : {
-        key : 'PA',
+        key   : 'PA',
         table : 'patient'
       }
     }

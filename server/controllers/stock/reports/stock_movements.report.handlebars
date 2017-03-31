@@ -1,0 +1,93 @@
+{{> head title="TREE.STOCK_MOVEMENTS" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'TREE.STOCK_MOVEMENTS'}}
+      </h2>
+
+      <!-- filters  -->
+      {{#if hasFilter}}
+      <br />
+        <div>
+          <i class="fa fa-filter"></i>
+          {{#if display.is_exit}}
+            {{translate 'STOCK.OUTPUT'}}/
+          {{else}}
+            {{translate 'STOCK.INPUT'}}/
+          {{/if}}
+          {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
+          {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
+          {{#if display.label}}{{translate 'STOCK.LOT'}}: {{look display 'label'}} /{{/if}}
+          {{#if display.dateFrom}} {{translate 'FORM.LABELS.DATE'}}> {{date (look display 'dateFrom')}} /{{/if}}
+          {{#if display.dateTo}} {{translate 'FORM.LABELS.DATE'}}< {{date (look display 'dateTo')}} /{{/if}}
+        </div>
+        <br />
+      {{/if}}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'STOCK.DEPOT'}}</th>
+            <th>{{translate 'STOCK.IO'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'STOCK.UNIT_COST'}}</th>
+            <th>{{translate 'STOCK.COST'}}</th>
+            <th>{{translate 'FORM.LABELS.DATE'}}</th>
+            <th>{{translate 'STOCK.FLUX'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            {{#if is_exit}}
+              <tr class="text-danger">
+                <td>{{depot_text}}</td>
+                <td>
+                  <span>{{translate 'STOCK.OUTPUT'}}</span>
+                </td>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{unit_cost}}</td>
+                <td class="text-right">{{multiply quantity unit_cost}}</td>
+                <td>{{date date}}</td>
+                <td>{{translate flux_label}}</td>
+              </tr>
+            {{else}}
+              <tr>
+                <td>{{depot_text}}</td>
+                <td>
+                  <span>{{translate 'STOCK.INPUT'}}</span>
+                </td>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{unit_cost}}</td>
+                <td class="text-right">{{multiply quantity unit_cost}}</td>
+                <td>{{date date}}</td>
+                <td>{{translate flux_label}}</td>
+              </tr>
+            {{/if}}
+          {{else}}
+            {{> emptyTable columns=9}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold;">
+            <td colspan="10">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</body>

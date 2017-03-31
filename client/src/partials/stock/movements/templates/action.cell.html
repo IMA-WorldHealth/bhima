@@ -1,0 +1,14 @@
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.document_uuid, row.entity.flux_id)" data-link-receipt="{{ ::row.entity.document_uuid }}" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>STOCK.DOCUMENT</span>
+      </a>
+    </li>
+  </ul>
+</div>

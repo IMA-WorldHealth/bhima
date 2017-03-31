@@ -19,6 +19,7 @@ angular.module('bhima.components')
       validationTrigger : '<', // validation trigger action
       dateFrom : '=',          // date from
       dateTo : '=',            // date to
+      dateId : '@',            // date identifier
       required : '<',          // true or false
       onChange : '<',          // on change action
       mode : '@'               // the date mode (day|month|year)

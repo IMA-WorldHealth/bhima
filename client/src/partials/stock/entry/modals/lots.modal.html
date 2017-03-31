@@ -1,0 +1,83 @@
+<form 
+  name="FindForm"
+  bh-submit="$ctrl.submit(FindForm)"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <div class="headercrumb">
+      <i class="fa fa-tags"></i> 
+      <h3 style="margin: 0px;">{{ $ctrl.inventory.inventory.label }}</h3>
+    </div>
+  </div>
+
+  <div class="modal-body clearfix">
+    <div class="form-group">
+      <label translate>FORM.LABELS.GLOBAL_QUANTITY</label>
+      <input 
+        ng-disabled="$ctrl.entryType === 'purchase'" 
+        class="form-control" 
+        type="number" 
+        ng-model="$ctrl.inventory.quantity" 
+        ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+        ng-change="$ctrl.handleChange($ctrl.inventory)"
+        min="0">
+    </div>
+
+    <div class="form-group">
+      <label translate>STOCK.UNIT_COST</label>
+      <div class="input-group">
+        <input 
+          ng-disabled="$ctrl.entryType === 'purchase'" 
+          class="form-control" 
+          type="number" 
+          ng-model="$ctrl.inventory.unit_cost"
+          ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+          ng-change="$ctrl.handleChange($ctrl.inventory)">
+        <span class="input-group-addon">{{ $ctrl.enterprise.currencySymbol }}</span>
+      </div>
+    </div>
+
+    <div class="text-right" style="margin-bottom: 5px;"> 
+      <button type="button"
+        data-add-lot
+        ng-click="$ctrl.addLot()"
+        class="btn btn-default">
+        <span class="fa fa-plus-circle"></span> 
+        <span translate>FORM.LABELS.ADD</span>
+      </button>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <div
+          id="LotsGrid"
+          ui-grid="$ctrl.gridOptions"
+          ui-grid-auto-resize
+          ui-grid-resize-columns>
+        </div>
+        <bh-grid-loading-indicator
+          loading-state="$ctrl.loading"
+          empty-state="$ctrl.gridOptions.data.length === 0"
+          error-state="$ctrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+
+    <p ng-if="$ctrl.maxLotReached" class="alert alert-warning" style="margin: 5px 0px;">
+      <i class="fa fa-warning"></i> 
+      <span translate>FORM.INFO.MAX_LOT_REACHED</span>
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="FindForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+
+</form>
