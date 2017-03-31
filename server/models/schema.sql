@@ -1115,7 +1115,7 @@ CREATE TABLE `patient` (
   /* @TODO analyse performance implications of indexing frequently searched columns */
   INDEX `registration_date` (`registration_date`),
   INDEX `dob` (`dob`),
-  INDEX `sex` (`sex`), 
+  INDEX `sex` (`sex`),
 
   /* @TODO fulltext index may degrade INSERT performance over time */
   FULLTEXT `display_name` (`display_name`),
@@ -1791,6 +1791,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
+  INDEX (`reference_uuid`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
@@ -1805,11 +1806,13 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `voucher_uuid`    BINARY(16) NOT NULL,
-  `document_uuid`   BINARY(16) DEFAULT NULL,
-  `entity_uuid`     BINARY(16) DEFAULT NULL,
+  `document_uuid`   binary(16) default null,
+  `entity_uuid`     binary(16) default null,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
+  INDEX (`document_uuid`),
+  INDEX (`entity_uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
