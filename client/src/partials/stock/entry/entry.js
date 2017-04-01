@@ -79,8 +79,10 @@ function StockEntryController(Depots, Inventory, Notify,
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/entry/templates/actions.tmpl.html' },
     ],
-    onRegisterApi : onRegisterApi,
-    data          : vm.Stock.store.data,
+    onRegisterApi    : onRegisterApi,
+    data             : vm.Stock.store.data,
+    fastWatch        : true,
+    flatEntityAccess : true,
   };
 
   vm.gridOptions = gridOptions;
@@ -250,7 +252,7 @@ function StockEntryController(Depots, Inventory, Notify,
       user_id     : Session.user.id,
     };
 
-    Stock.integration.create({ description : vm.movement.description })
+    Stock.integration.create({ description: vm.movement.description })
     .then(function (uuid) {
       var lots = vm.Stock.store.data.reduce(function (current, previous) {
         return previous.lots.map(function (lot) {

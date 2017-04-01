@@ -106,6 +106,7 @@ function update(req, res, next) {
   let sql = 'UPDATE service SET ? WHERE id = ?;';
 
   delete queryData.id;
+  delete queryData.uuid;
 
   db.exec(sql, [queryData, req.params.id])
     .then(function (result) {

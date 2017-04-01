@@ -90,8 +90,8 @@ function ServicesController(Services, $translate, SessionService, ModalService, 
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    if (form.$invalid) { return; }
 
     var promise;
     var creation = (vm.view === 'create');

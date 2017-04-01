@@ -83,11 +83,11 @@ function StockExitController(Depots, Inventory, Notify,
         cellTemplate        : 'partials/stock/exit/templates/quantity.tmpl.html',
         treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
 
-      { field               : 'unit_type',
-        width               : 75,
-        displayName         : 'TABLE.COLUMNS.UNIT',
-        headerCellFilter    : 'translate',
-        cellTemplate        : 'partials/stock/exit/templates/unit.tmpl.html' },
+      { field            : 'unit_type',
+        width            : 75,
+        displayName      : 'TABLE.COLUMNS.UNIT',
+        headerCellFilter : 'translate',
+        cellTemplate     : 'partials/stock/exit/templates/unit.tmpl.html' },
 
       { field            : 'available_lot',
         width            : 150,
@@ -109,8 +109,10 @@ function StockExitController(Depots, Inventory, Notify,
 
       { field: 'actions', width: 25, cellTemplate: 'partials/stock/exit/templates/actions.tmpl.html' },
     ],
-    onRegisterApi : onRegisterApi,
-    data : vm.Stock.store.data,
+    onRegisterApi    : onRegisterApi,
+    data             : vm.Stock.store.data,
+    fastWatch        : true,
+    flatEntityAccess : true,
   };
 
   vm.gridOptions = gridOptions;

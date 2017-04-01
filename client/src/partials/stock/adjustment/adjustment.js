@@ -86,6 +86,8 @@ function StockAdjustmentController(Depots, Inventory, Notify,
     columnDefs        : columns,
     onRegisterApi     : onRegisterApi,
     data              : vm.Stock.store.data,
+    fastWatch         : true,
+    flatEntityAccess  : true,
   };
 
   // expose the API so that scrolling methods can be used
