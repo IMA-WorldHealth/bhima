@@ -4,20 +4,8 @@
  * posting journal to the general ledger.
  * It also submit errors back to the client.
  */
-const q = require('q');
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
-
-// creates an error report for a given code
-function createErrorReport(code, isFatal, rows) {
-  return {
-    code,
-    fatal        : isFatal,
-    transactions : rows.map(row => row.trans_id),
-    affectedRows : _.sumBy(rows, 'count'),
-  };
-}
 
 exports.getDataPerAccount = function (req, res, next) {
   const transactions = req.body.transactions;
@@ -121,7 +109,6 @@ exports.checkTransactions = function runTrialBalance(req, res, next) {
  * It posts data to the general ledger.
  **/
 exports.postToGeneralLedger = function (req, res, next) {
-  const transaction = db.transaction();
   const transactions = req.body.transactions;
 
   if (!transactions || !Array.isArray(transactions)) {
@@ -129,14 +116,9 @@ exports.postToGeneralLedger = function (req, res, next) {
   }
 
   // Just a workaround because mysql does not have a type for array
-  const transactionString =
-    transactions.map(transId => `"${transId}"`).join(',');
+  const transactionString = transactions.map(transId => `"${transId}"`).join(',');
 
-  transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
-  transaction.addQuery('CALL writePeriodTotals(?)', [transactionString]);
-  transaction.addQuery('CALL removePostedTransactions(?)', [transactionString]);
-
-  transaction.execute()
+  return db.exec('CALL PostToGeneralLedger(?)', [transactionString])
     .then(() => res.status(201).json({}))
     .catch(next);
 };

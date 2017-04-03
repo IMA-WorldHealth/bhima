@@ -486,50 +486,47 @@ BEGIN
 END
 $$
 
-CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat(
-     "INSERT INTO general_ledger
-     (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-      description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-       entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
-     SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-         description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-          entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-     FROM posting_journal
-     WHERE trans_id
-     IN (", transactions, ")");
+CREATE PROCEDURE PostToGeneralLedger(
+  IN transactions TEXT
+) BEGIN
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_journal_transaction (record_uuid BINARY(16));
 
-CREATE PROCEDURE writePeriodTotals ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat(
-     "INSERT INTO period_total
-     (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
-     SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
-     period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
-     WHERE trans_id
-     IN (", transactions, ")
-     GROUP BY period_id, account_id
-     ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit)");
+  SET @sql = CONCAT(
+   "INSERT INTO stage_journal_transaction SELECT DISTINCT record_uuid FROM posting_journal WHERE trans_id IN (", transactions, ");"
+  );
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  PREPARE stmt FROM @sql;
+  EXECUTE stmt;
 
-CREATE PROCEDURE removePostedTransactions ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat( "DELETE FROM posting_journal WHERE trans_id IN (", transactions, ")");
+  DEALLOCATE PREPARE stmt;
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  -- write into the posting journal
+  INSERT INTO general_ledger (
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+  FROM posting_journal
+  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+
+  -- write into period_total
+  INSERT INTO period_total (
+    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
+  )
+  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
+    fiscal_year_id, project.enterprise_id, period_id
+  FROM posting_journal JOIN project
+    ON posting_journal.project_id = project.id
+  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction)
+  GROUP BY period_id, account_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- remove from posting journal
+  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+END $$
 
 -- Handles the Cash Table's Rounding
 -- CREATE PROCEDURE HandleCashRounding(
@@ -1224,8 +1221,7 @@ END $$
 CREATE PROCEDURE MergeLocations(
   IN beforeUuid BINARY(16),
   IN afterUuid BINARY(16)
-)
-BEGIN
+) BEGIN
 
   -- Go through every location in the database, replacing the location uuid with the new location uuid
   UPDATE patient SET origin_location_id = afterUuid WHERE origin_location_id = beforeUuid;
