@@ -75,11 +75,11 @@ function getlistAccounts() {
       IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
       IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance
     FROM (
-      SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance, 
-        a.id, a.number, a.label 
-      FROM general_ledger AS gl 
+      SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
+        a.id, a.number, a.label
+      FROM general_ledger AS gl
         JOIN account a ON a.id = gl.account_id
-      GROUP BY a.id 
+      GROUP BY a.id
       ORDER BY a.number
     ) AS aggregator;`;
 
