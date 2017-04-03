@@ -19,149 +19,6 @@ function createErrorReport(code, isFatal, rows) {
   };
 }
 
-// make sure that a entity_uuid exists for each deb_cred_type
-function checkDescriptionExists(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.description FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) GROUP BY trans_id HAVING pj.description IS NULL;`;
-
-  return db.exec(sql, [transactions])
-  .then(function (rows) {
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
-
-    // returns a error report
-    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION', true, rows);
-  });
-}
-
-// make sure that the record Id exist in each line of the transaction
-function checkRecordUuidExists(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.record_uuid, pj.trans_id FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) GROUP BY pj.trans_id HAVING pj.record_uuid IS NULL;`;
-
-  return db.exec(sql, [transactions])
-  .then(function (rows) {
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
-
-    // returns a error report
-    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_DOCUMENT_ID', true, rows);
-  });
-}
-
-// make sure dates are in their correct period
-function checkDateInPeriod(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.start_date, p.end_date
-    FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
-    WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND
-      pj.trans_id IN (?)
-    GROUP BY pj.trans_id;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD', true, rows);
-    });
-}
-
-// make sure fiscal years and periods exist for all transactions
-function checkPeriodAndFiscalYearExists(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
-    FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL)
-    GROUP BY pj.trans_id;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_FISCAL_OR_PERIOD', true, rows);
-    });
-}
-
-// make sure there are no missing accounts in the transactions
-function checkMissingAccounts(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
-    FROM posting_journal AS pj LEFT JOIN account ON
-      pj.account_id = account.id
-    WHERE pj.trans_id IN (?) AND account.id IS NULL
-    GROUP BY pj.trans_id`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ACCOUNTS', true, rows);
-    });
-}
-
-// Ensure no accounts are locked in the transactions
-function checkAccountsLocked(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
-    FROM posting_journal AS pj LEFT JOIN account
-      ON pj.account_id = account.id
-    WHERE account.locked = 1 AND pj.trans_id IN (?)
-    GROUP BY pj.trans_id;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (!rows.length) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT', true, rows);
-    });
-}
-
-// make sure the debit_equiv, credit_equiv are balanced
-function checkTransactionsBalanced(transactions) {
-  const sql = `
-    SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
-    FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?)
-    GROUP BY trans_id HAVING balance <> 0;
-  `;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (rows.length === 0) { return; }
-
-      // returns a error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS', true, rows);
-    });
-}
-
-// Check if there is no transaction with one line to avoid single line with ero in debit and credit which is valuable
-function checkSingleLineTransaction(transactions) {
-  const sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?)
-    GROUP BY trans_id HAVING count = 1;`;
-
-  return db.exec(sql, [transactions])
-    .then(function (rows) {
-      // if nothing is returned, skip error report
-      if (rows.length === 0) { return; }
-
-      // returns an error report
-      return createErrorReport('POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION', true, rows);
-    });
-}
-
 exports.getDataPerAccount = function (req, res, next) {
   const transactions = req.body.transactions;
 
@@ -188,7 +45,8 @@ exports.getDataPerAccount = function (req, res, next) {
         SELECT u.account_id, IFNULL(SUM(debit - credit), 0) AS balance_before
         FROM (
           SELECT DISTINCT account_id FROM posting_journal WHERE posting_journal.trans_id IN (?)
-        ) AS u LEFT JOIN period_total ON u.account_id = period_total.account_id
+        ) AS u
+        LEFT JOIN period_total ON u.account_id = period_total.account_id
         GROUP BY u.account_id
       ) totals ON posting_journal.account_id = totals.account_id
       WHERE posting_journal.trans_id IN (?)
@@ -229,8 +87,8 @@ exports.getDataPerAccount = function (req, res, next) {
  *     affectedRows : 12          // number of affectedRows in the transaction
  *   }]
  **/
-exports.checkTransactions = function (req, res, next) {
-  const transactions =  req.body.transactions;
+exports.checkTransactions = function runTrialBalance(req, res, next) {
+  const transactions = req.body.transactions;
 
   if (!transactions) {
     return next(new BadRequest('The transaction list is null or undefined'));
@@ -240,18 +98,20 @@ exports.checkTransactions = function (req, res, next) {
     return next(new BadRequest('The query is bad formatted'));
   }
 
-  return q.all([
-    checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
-    checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkRecordUuidExists(transactions), checkDescriptionExists(transactions),
-  ])
-  .then(function (errorReports) {
-    const errors = errorReports.filter(function (errorReport) {
-      return errorReport;
-    });
-    res.status(201).json(errors);
-  })
-  .catch(next);
+  const txn = db.transaction();
+
+  transactions.forEach((transaction) => {
+    txn.addQuery('CALL StageTrialBalanceTransaction(?);', transaction);
+  });
+
+  txn.addQuery('CALL TrialBalance()');
+
+  return txn.execute()
+    .then((errors) => {
+      const lastIndex = errors.length - 1;
+      res.status(201).json(errors[lastIndex][0]);
+    })
+    .catch(next);
 };
 
 /**
@@ -270,15 +130,13 @@ exports.postToGeneralLedger = function (req, res, next) {
 
   // Just a workaround because mysql does not have a type for array
   const transactionString =
-    transactions.map((trans_id) => `"${trans_id}"`).join(',');
+    transactions.map(transId => `"${transId}"`).join(',');
 
   transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
   transaction.addQuery('CALL writePeriodTotals(?)', [transactionString]);
   transaction.addQuery('CALL removePostedTransactions(?)', [transactionString]);
 
   transaction.execute()
-    .then(function () {
-      res.status(201).json({});
-    })
+    .then(() => res.status(201).json({}))
     .catch(next);
 };
