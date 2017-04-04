@@ -92,6 +92,6 @@ function VoucherRegistrySearch() {
     FU.buttons.clear();
 
     expectNumberOfGridRows(NUM_VOUCHERS);
-    expectNumberOfFilters(0);
+    expectNumberOfFilters(1);
   });
 }
