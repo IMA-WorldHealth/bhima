@@ -354,6 +354,7 @@ function constantConfig() {
       CREDIT_NOTE        : 10,
       INCOME             : 'income',
       EXPENSE            : 'expense',
+      OTHER              : 'other',
     },
     flux : {
       FROM_PURCHASE    : 1,

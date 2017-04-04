@@ -54,6 +54,7 @@
 
   <a
     href
+    ng-if="VoucherCtrl.filter.customFiltersApplied(VoucherCtrl.filters)"
     ng-click="VoucherCtrl.clearFilters()"
     class="text-danger"
     data-method="clear">
