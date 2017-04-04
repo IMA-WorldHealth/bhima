@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'GridFilteringService', 'uiGridGroupingConstants', 'uiGridConstants',
-  'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache'
+  'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache',
+  'FilterService',
 ];
 
 /**
@@ -13,16 +14,21 @@ VoucherController.$inject = [
  * @description
  * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, bhConstants, Receipts, Sorting, $state, AppCache) {
+function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
+  uiGridConstants, bhConstants, Receipts, Sorting, $state, AppCache,
+  Filters) {
   var vm = this;
+  var filter = new Filters();
   var filtering;
   var FILTER_BAR_HEIGHT;
   var cache = new AppCache('VoucherRegistry');
 
   var INCOME = bhConstants.transactionType.INCOME;
   var EXPENSE = bhConstants.transactionType.EXPENSE;
+  var OTHER = bhConstants.transactionType.OTHER;
 
   /* global variables */
+  vm.filter = filter;
   vm.filterEnabled = false;
   vm.transactionTypes = {};
   vm.gridApi = {};
@@ -45,8 +51,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     flatEntityAccess : true,
     fastWatch        : true,
     enableFiltering  : vm.filterEnabled,
-    fastWatch        : true,
-    flatEntityAccess : true,
     rowTemplate      : '/partials/templates/grid/voucher.row.html',
   };
 
@@ -139,6 +143,11 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     Vouchers.openSearchModal(vm.filters)
       .then(function (parameters) {
         if (!parameters) { return; }
+
+        if (parameters.defaultPeriod) {
+          delete parameters.defaultPeriod;
+        }
+
         cacheFilters(parameters);
         return load(vm.filters);
       });
@@ -149,20 +158,25 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     Receipts.voucher(uuid);
   }
 
+  function isEmpty(object) {
+    return Object.keys(object).length === 0;
+  }
+
   function load(parameters) {
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    Vouchers.read(null, parameters)
-      .then(function (vouchers) {
+    Vouchers.read(null, parameters).then(function (vouchers) {
         vm.gridOptions.data = vouchers;
 
         // loop through the vouchers and precompute the voucher type tags
         vouchers.forEach(function (voucher) {
-          voucher._isIncome = (voucher.type_id === INCOME);
-          voucher._isExpense = (voucher.type_id === EXPENSE);
-          voucher._type = get(voucher.type_id).text;
+          var transaction = get(voucher.type_id);
+          voucher._isIncome = (transaction.type === INCOME);
+          voucher._isExpense = (transaction.type === EXPENSE);
+          voucher._isOther = (transaction.type === OTHER);
+          voucher._type = transaction.text;
         });
 
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
@@ -180,6 +194,7 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
+    filters = filter.applyDefaults(filters);
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Vouchers.formatFilterParameters(filters);
 
@@ -197,7 +212,7 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   // clears the filters by forcing a cache of an empty array
   function clearFilters() {
     cacheFilters({});
-    load();
+    load(vm.filters);
   }
 
   /**

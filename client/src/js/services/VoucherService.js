@@ -2,7 +2,8 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal'
+  'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
+  'FilterService',
 ];
 
 /**
@@ -13,11 +14,13 @@ VoucherService.$inject = [
  * This service manages posting data to the database via the /vouchers/ URL.  It also
  * includes some utilities that are useful for voucher pages.
  */
-function VoucherService(Api, $http, util, TransactionTypeStore, Modal) {
+function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
+  Filters) {
   var service = new Api('/vouchers/');
 
   // @todo - remove this reference to baseUrl
   var baseUrl = '/journal/';
+  var filter = new Filters();
 
   service.create = create;
   service.reverse = reverse;
@@ -106,6 +109,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal) {
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
       { field: 'reversed', displayName: 'FORM.INFO.ANNULLED' },
       { field: 'description', displayname: 'FORM.LABELS.DESCRIPTION' },
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
     ];
 
     // returns columns from filters
@@ -113,6 +117,11 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal) {
       var value = params[column.field];
       if (angular.isDefined(value)) {
         column.value = value;
+
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
+        }
+
         return true;
       } else {
         return false;
