@@ -143,7 +143,20 @@ function StockOriginsController(Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    Stock.stocks.read('/origins', filters).then(function (lots) {
+    var today = { defaultPeriod: 'today' };
+    var params = filters;
+
+    var noFilter = (!filters);
+    var noAttributes = (noFilter || (Object.keys(filters).length === 0));
+
+    if (noAttributes) {
+      params = today;
+      vm.isToday = true;
+      vm.filters = { display: today, identifiers: today };
+      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
+    }
+
+    Stock.stocks.read('/origins', params).then(function (lots) {
       vm.gridOptions.data = lots;
 
       vm.grouping.unfoldAllGroups();
@@ -156,6 +169,8 @@ function StockOriginsController(Stock, Notify,
     Modal.openSearchLots()
     .then(function (filters) {
       if (!filters) { return; }
+
+      vm.isToday = false;
       reload(filters);
     })
     .catch(Notify.handleError);

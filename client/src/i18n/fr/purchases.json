@@ -9,6 +9,7 @@
 "CONFIRMED_DESC":"La commande a été confirmée par le fournisseur qu'elle pourra être livrée",
 "WAITING_CONFIRMATION":"En Attente de confirmation",
 "WAITING_CONFIRMATION_DESC":"Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande",
+"PARTIALLY_RECEIVED":"Reçu partiellement",
 "RECEIVED":"Reçu en Stock",
 "RECEIVED_DESC":"La commande a été reçu et se trouve dans le stock",
 "NOT_RECEIVED":"Non Reçu",

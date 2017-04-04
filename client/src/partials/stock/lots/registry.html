@@ -70,8 +70,8 @@
 
   <a
     href
+    ng-if="!StockLotsCtrl.isToday"
     ng-click="StockLotsCtrl.clearFilters()"
-    ng-show="StockLotsCtrl.formatedFilters.length > 0"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-ban text-danger"></i>
