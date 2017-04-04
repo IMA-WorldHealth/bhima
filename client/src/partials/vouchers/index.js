@@ -18,10 +18,11 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   uiGridConstants, bhConstants, Receipts, Sorting, $state, AppCache,
   Filters) {
   var vm = this;
+  var cache = new AppCache('VoucherRegistry');
+
   var filter = new Filters();
   var filtering;
   var FILTER_BAR_HEIGHT;
-  var cache = new AppCache('VoucherRegistry');
 
   var INCOME = bhConstants.transactionType.INCOME;
   var EXPENSE = bhConstants.transactionType.EXPENSE;
@@ -249,6 +250,7 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     if ($state.params.filters) {
       cacheFilters($state.params.filters);
     }
+    cacheFilters({});
 
     vm.filters = cache.filters;
     vm.filtersFmt = Vouchers.formatFilterParameters(vm.filters || {});
