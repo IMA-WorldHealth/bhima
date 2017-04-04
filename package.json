@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -15,7 +15,8 @@
     "build": "./node_modules/.bin/gulp build",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
-    "watch": "./node_modules/.bin/gulp watch-client"
+    "watch": "./node_modules/.bin/gulp watch-client",
+    "release": "./node_modules/.bin/standard-version"
   },
   "repository": {
     "type": "git",
