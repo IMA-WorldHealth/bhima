@@ -50,6 +50,7 @@ class FilterParser {
     this._parseUuids = options.parseUuids || true;
   }
 
+
   /**
    * @method text
    *
@@ -74,6 +75,29 @@ class FilterParser {
       delete this._filters[filterKey];
     }
   }
+
+
+  /**
+  *@description
+  * Allows to filter the elements relative to the results of a subRequest
+  * @param {String} principale    The element to be compared with the results of the sub-request
+  * @param {String} table         table to be used in subRequests
+  * @param {String} column        Is the equivalence between the table `tableString` and `table` that of the subRequests
+  * @param {String} filterKey     key attribute on filter object to be used in filter
+  */
+  subRequest(principale, table, column, filterKey) {
+    let tableString = this._tableAlias;
+
+    if (this._filters[filterKey]) {
+      let searchString = `${this._filters[filterKey]}`;
+      let preparedStatement = `${tableString}.${principale} IN (SELECT ${table}.${column} FROM ${table} WHERE ${table}.${filterKey} = HUID(?))`;
+
+      this._addFilter(preparedStatement, searchString);
+      delete this._filters[filterKey];
+    }
+
+  }
+
 
   period(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
     let tableString = this._formatTableAlias(tableAlias);

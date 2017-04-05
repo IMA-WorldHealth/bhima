@@ -225,6 +225,8 @@ function find(options) {
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
 
+  filters.subRequest('uuid', 'cash_item', 'invoice_uuid', 'cash_uuid');
+
   filters.period('defaultPeriod', 'date');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;

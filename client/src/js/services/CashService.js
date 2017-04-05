@@ -140,7 +140,9 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
       { field: 'reversed', displayName: 'CASH.REGISTRY.REVERSED_RECORDS' },
       { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT' },
       { field : 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-      { field : 'invoiceReference', displayName: 'FORM.LABELS.INVOICE'}
+      { field : 'invoiceReference', displayName: 'FORM.LABELS.INVOICE'},
+      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
+      { field : 'invoice_uuid', displayName: 'FORM.LABELS.INVOICE'}
     ];
 
     // returns columns from filters

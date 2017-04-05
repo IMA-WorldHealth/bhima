@@ -149,7 +149,6 @@ function list(req, res, next) {
  * @description list all payment made
  */
 function listPayment(options) {
-<<<<<<< 8b1a1b801d18c7bd96f44672b5361be3dcb77f4b
   const filters = new FilterParser(options, { tableAlias: 'cash' });
 
   const sql = `
@@ -164,65 +163,26 @@ function listPayment(options) {
       JOIN patient p on p.debtor_uuid = d.uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
-=======
-  let filters = new FilterParser(options, { tableAlias : 'cash_payment' });
-
-  let sql = `
-    SELECT cash_payment.uuid, cash_payment.project_id,
-      cash_payment.reference, cash_payment.date, cash_payment.debtor_uuid, cash_payment.currency_id, 
-      cash_payment.amount, cash_payment.description, cash_payment.cashbox_id, cash_payment.is_caution, 
-      cash_payment.user_id, cash_payment.debtor_name, cash_payment.cashbox_label, cash_payment.display_name,
-      cash_payment.type_id, cash_payment.patientName, cash_payment.patientReference, cash_payment.invoiceReference
-    FROM(
-      SELECT BUID(cash.uuid) as uuid, cash.project_id,
-        CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
-        cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-        cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-        d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
-        voucher.type_id, p.display_name AS patientName, 
-        CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) AS patientReference, 
-        do.text AS invoiceReference
-      FROM cash
-        LEFT JOIN voucher ON voucher.reference_uuid = cash.uuid
-        JOIN project ON cash.project_id = project.id
-        JOIN debtor d ON d.uuid = cash.debtor_uuid
-        JOIN patient p on p.debtor_uuid = d.uuid
-        JOIN cash_box cb ON cb.id = cash.cashbox_id
-        JOIN user u ON u.id = cash.user_id
-        LEFT JOIN cash_item ci ON ci.cash_uuid = cash.uuid
-        LEFT JOIN document_map do ON do.uuid = ci.invoice_uuid        
-    ) AS cash_payment
->>>>>>> Resolve conflict with branch Master
   `;
 
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
   filters.period('defaultPeriod', 'date');
 
-<<<<<<< 8b1a1b801d18c7bd96f44672b5361be3dcb77f4b
   const referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
   const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
   filters.custom('patientReference', patientReferenceStatement);
-=======
-  // filter reversed cash records
-  filters.reversed('reversed');
->>>>>>> Resolve conflict with branch Master
 
   // @TODO Support ordering query (reference support for limit)?
-  filters.setOrder('ORDER BY cash_payment.date DESC');
+  filters.setOrder('ORDER BY cash.date DESC');
 
-  filters.fullText('document_map', 'text', 'invoiceReference');
+  // filter with the subRequest
+  filters.subRequest('uuid', 'cash_item', 'cash_uuid', 'invoice_uuid');  
 
-<<<<<<< 8b1a1b801d18c7bd96f44672b5361be3dcb77f4b
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-=======
-  let query = filters.applyQuery(sql);
-  let parameters = filters.parameters();
-
->>>>>>> Resolve conflict with branch Master
   return db.exec(query, parameters);
 }
 
