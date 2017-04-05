@@ -25,12 +25,12 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a ui-sref="patientRegistry({ filters : { display_name : row.entity.patientName }})" data-method="invoiceReceipt" href>
+      <a ui-sref="patientRegistry({ filters : { display_name : row.entity.patientName }})" data-method="viewPatient" href>
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
       </a>
     </li>
     <li>
-      <a data-method="card" ui-sref="cashRegistry({ filters : { identifiers : { invoice_uuid : row.entity.uuid }, display : { invoice_uuid : row.entity.uuid } }})" href>
+      <a data-method="viewPayment" ui-sref="cashRegistry({ filters : { identifiers : { invoice_uuid : row.entity.uuid }, display : { invoice_uuid : row.entity.uuid } }})" href>
         <span class="fa fa-money"></span> <span translate>REPORT.VIEW_PAYMENTS</span>
       </a>
     </li>
