@@ -1,6 +1,6 @@
 {"REPORT":{"ACCOUNT":"Rapport du Compte",
 "BALANCE":"Rapport de la Balance",
-"AGED_DEBTORS":{"TITLE":"Dettes des clients",
+"AGED_DEBTORS":{"TITLE":"Balance agée des clients",
 "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours",
 "THIRTY_TO_SIXTY_DAYS":"30 a 60 jours",
 "SIXTY_TO_NINETY_DAYS":"60 a 90 jours",
