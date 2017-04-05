@@ -23,5 +23,17 @@
         <span class="text-danger"><i class="fa fa-clone"></i> <span translate>FORM.LABELS.CREATE_CREDIT_NOTE</span></span>
       </a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a ui-sref="patientRegistry({ filters : { display_name : row.entity.patientName }})" data-method="invoiceReceipt" href>
+        <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="card" ui-sref="cashRegistry({ filters : { identifiers : { invoiceReference : row.entity.reference }, display : { invoiceReference : row.entity.reference } }})" href>
+        <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
+      </a>
+    </li>
+
    </ul>
 </div>

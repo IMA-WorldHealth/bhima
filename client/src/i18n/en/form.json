@@ -114,6 +114,7 @@
 "PATIENT_FOUND":"Patient Found",
 "PATIENT_NOT_FOUND":"Patient Not Found",
 "PATIENT_SUCC_TRANSFERRED":"The patient's image was successfully uploaded.",
+"PAYMENT": "Cash Payment",
 "PREVIOUS":"Previous",
 "SALE_DETAILS":"Sale Details",
 "SAVE_SUCCESS":"Save success",
