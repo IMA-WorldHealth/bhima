@@ -177,9 +177,8 @@ function listPayment(options) {
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
-
-  // filter with the subRequest
-  filters.subRequest('uuid', 'cash_item', 'cash_uuid', 'invoice_uuid');  
+ 
+  filters.custom('invoice_uuid', 'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = HUID(?))');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
