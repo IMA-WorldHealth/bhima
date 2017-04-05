@@ -297,22 +297,31 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
 
 
   /**
-   * @method validateTransaction
+   * @method transaction
    *
    * @description
    * This method is used to check if a transaction is balanced by their record
    */
-  function validateTransaction(entity) {
+  function transaction(entity) {
     var dataEntity = entity.data.data;
     var debit = 0,
       credit = 0;
     
-    dataEntity.forEach(function (journal) {
-      debit += Number(journal.debit_equiv);
-      credit += Number(journal.credit_equiv);
+    dataEntity.forEach(function (row) {
+      debit += Number(row.debit_equiv);
+      credit += Number(row.credit_equiv);
     });
 
-    return debit !== credit ? true : false;
+    var ERR_UNBALANCED_TXN = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS';
+
+    // later in validateTransaction()
+    var error;
+
+    if (debit !== credit) {
+      error = ERR_UNBALANCED_TXN;
+    }
+
+    return error;
   }
 
   // helper functions to get parent row (group header) from a child row
@@ -552,8 +561,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * This function saves all transactions by
    */
   Transactions.prototype.save = function save() {
-    var clientErrors = validateTransaction(this._entity);
-    
+    var clientErrors = transaction(this._entity);
+
     if(clientErrors){
       return $q.reject(clientErrors);
     }
