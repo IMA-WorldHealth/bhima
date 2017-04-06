@@ -115,14 +115,14 @@
                    ng-model="SimpleVoucherCtrl.Voucher.store.data[0].account_id"
                    required>
                    <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                     <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
                    </ui-select-match>
                    <ui-select-choices
                      ui-select-focus-patch
                      ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
                      repeat="account.id as account in SimpleVoucherCtrl.Voucher.accounts | filter: { 'hrlabel' : $select.search }">
-                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                     <span ng-bind-html="account.label | highlight:$select.search"></span>
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
                    </ui-select-choices>
                  </ui-select>
 
@@ -142,14 +142,14 @@
                    ng-model="SimpleVoucherCtrl.Voucher.store.data[1].account_id"
                   required>
                   <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                    <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
                   </ui-select-match>
                      <ui-select-choices
                        ui-select-focus-patch
                        ui-disable-choice="account.type_id === SimpleVoucherCtrl.bhConstants.accounts.TITLE"
                        repeat="account.id as account in SimpleVoucherCtrl.Voucher.accounts  | filter: { 'hrlabel' : $select.search }">
-                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                      <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                      <span ng-bind-html="account.label | highlight:$select.search"></span>
                   </ui-select-choices>
                 </ui-select>
 
