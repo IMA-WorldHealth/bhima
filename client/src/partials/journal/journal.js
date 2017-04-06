@@ -313,7 +313,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         // ensure that all of the data now respects the current filter
         load(vm.filters);
       })
-      .catch(Notify.handleError);
+      .catch(function (error) {
+        if(error === 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS'){
+          Notify.warn(error);  
+        } else {
+          Notify.handleError(error); 
+        }                
+      });      
   }
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {

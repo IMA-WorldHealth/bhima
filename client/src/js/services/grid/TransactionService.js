@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
 TransactionService.$inject = [
-  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store',
+  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q'
 ];
 
 /**
@@ -21,7 +21,7 @@ TransactionService.$inject = [
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store) {
+function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store, $q) {
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
@@ -295,6 +295,35 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     return true;
   };
 
+
+  /**
+   * @method transaction
+   *
+   * @description
+   * This method is used to check if a transaction is balanced by their record
+   */
+  function validateTransaction(entity) {
+    var transaction = entity.data.data;
+    var debit = 0,
+      credit = 0;
+    
+    transaction.forEach(function (row) {
+      debit += Number(row.debit_equiv);
+      credit += Number(row.credit_equiv);
+    });
+
+    var ERR_UNBALANCED_TXN = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS';
+
+    // later in validateTransaction()
+    var error;
+
+    if (debit !== credit) {
+      error = ERR_UNBALANCED_TXN;
+    }
+
+    return error;
+  }
+
   // helper functions to get parent row (group header) from a child row
   function getParentNode(row) {
     return row.treeNode.parentRow;
@@ -532,6 +561,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * This function saves all transactions by
    */
   Transactions.prototype.save = function save() {
+    var clientErrors = validateTransaction(this._entity);
+
+    if(clientErrors){
+      return $q.reject(clientErrors);
+    }
+
     return Journal.saveChanges(this._entity, this._changes)
       .then(function (results) {
         this.disableCellNavigation();
