@@ -388,15 +388,15 @@ function constantConfig() {
     },
     utilBar : {
       height               : UTIL_BAR_HEIGHT,
-      expandedHeightStyle  : { 'height': 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
-      collapsedHeightStyle : {}
+      expandedHeightStyle  : { height: 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
+      collapsedHeightStyle : {},
     },
     identifiers : {
       PATIENT : {
         key   : 'PA',
-        table : 'patient'
-      }
-    }
+        table : 'patient',
+      },
+    },
   };
 }
 

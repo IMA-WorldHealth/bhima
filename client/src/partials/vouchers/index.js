@@ -76,7 +76,7 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     displayName                 : 'TABLE.COLUMNS.DATE',
     headerCellFilter            : 'translate',
     cellFilter                  : 'date',
-    filter                      : { condition: filtering.byDate },
+    filter                      : { condition: filtering.filterByDate },
     type                        : 'date',
     groupingShowAggregationMenu : false,
   }, {

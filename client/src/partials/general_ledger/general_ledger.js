@@ -103,7 +103,7 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Co
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter: 'translate',
       cellFilter : 'date:"mediumDate"',
-      filter : { condition : filtering.byDate },
+      filter : { condition : filtering.filterByDate },
       footerCellTemplate:'<i></i>'
     },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },

@@ -121,7 +121,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
    *      other columns. This can be avoided by setting default sort and group.
    */
   var columns = [
-    { field: 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
+    { field: 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
     { field: 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
     { field: 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible : false, enableCellEdit : false},
     { field: 'trans_id',
@@ -132,13 +132,12 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       enableCellEdit: false,
       width : 110,
       cellTemplate : 'partials/journal/templates/hide-groups-label.cell.html',
-    },
-    {
+    }, {
       field : 'trans_date',
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter: 'translate',
       cellFilter : 'date:"' + bhConstants.dates.format + '"',
-      filter : { condition : filtering.byDate },
+      filter : { condition : filtering.filterByDate },
       editableCellTemplate: 'partials/journal/templates/date.edit.html',
       enableCellEdit: true,
       footerCellTemplate:'<i></i>',
@@ -154,8 +153,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         aggregation.rendered = aggregation.value;
       },
       enableFiltering: false
-    },
-    { field : 'credit_equiv',
+    }, {
+      field : 'credit_equiv',
       displayName : 'TABLE.COLUMNS.CREDIT',
       headerCellFilter: 'translate',
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -315,11 +314,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       })
       .catch(function (error) {
         if(error === 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS'){
-          Notify.warn(error);  
+          Notify.warn(error);
         } else {
-          Notify.handleError(error); 
-        }                
-      });      
+          Notify.handleError(error);
+        }
+      });
   }
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {

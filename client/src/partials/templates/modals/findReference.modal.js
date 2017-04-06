@@ -88,7 +88,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
           {
             field : 'date',
             cellFilter:'date',
-            filter : { condition : filtering.byDate },
+            filter : { condition : filtering.filterByDate },
             displayName : 'TABLE.COLUMNS.BILLING_DATE',
             headerCellFilter : 'translate',
             sort : { priority : 0, direction : 'desc'}
@@ -120,7 +120,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
           {
             field : 'date',
             cellFilter:'date',
-            filter : { condition : filtering.byDate },
+            filter : { condition : filtering.filterByDate },
             displayName : 'TABLE.COLUMNS.BILLING_DATE',
             headerCellFilter : 'translate',
             sort : { priority : 0, direction : 'desc'}
@@ -151,7 +151,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
             field : 'date',
             displayName : 'Date',
             cellFilter : 'date:"mediumDate"',
-            filter : { condition : filtering.byDate },
+            filter : { condition : filtering.filterByDate },
             sort : { priority : 0, direction : 'desc'}
           },
           { field : 'description', displayName : 'Description'},
