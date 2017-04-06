@@ -8,7 +8,7 @@
       typeahead-editable="false"
       typeahead-append-to-body="true"
       uib-typeahead="item as item for item in grid.appScope.selectableInventories | filter:$viewValue | limitTo:8"
-      typeahead-template-url="/partials/templates/inventoryItem.tmpl.html"
+      typeahead-template-url="/modules/templates/inventoryItem.tmpl.html"
       typeahead-on-select="grid.appScope.configureItem(row.entity)" required>
   </div>
   <div ng-if="row.entity._initialised">

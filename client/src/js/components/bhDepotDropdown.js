@@ -3,7 +3,7 @@ angular.module('bhima.components')
     bindings : {
       onSelect : '&',
     },
-    templateUrl  : 'partials/templates/bhDepotDropdown.tmpl.html',
+    templateUrl  : 'modules/templates/bhDepotDropdown.tmpl.html',
     controller   : bhDepotController,
     controllerAs : '$ctrl',
   });
