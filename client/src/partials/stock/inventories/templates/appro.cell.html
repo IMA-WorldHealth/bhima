@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+    <span ng-show="row.entity.S_Q < 0" class="label label-success" translate>
+        STOCK.NO_ORDER
+    </span>
+
+    <span ng-hide="row.entity.S_Q < 0" class="text-success">
+        {{ row.entity.S_Q }}
+    </span>
+</div>

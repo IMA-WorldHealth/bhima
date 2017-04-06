@@ -1,0 +1,17 @@
+<div style="padding : 5px;">
+  <div ng-if="!row.entity._initialised">
+    <input
+      id="inv-code-{{ row.entity.code }}"
+      name="code"
+      class="form-control"
+      ng-model="row.entity.inventory"
+      typeahead-editable="false"
+      typeahead-append-to-body="true"
+      uib-typeahead="item as item for item in grid.appScope.selectableInventories | filter:$viewValue | limitTo:8"
+      typeahead-template-url="/partials/templates/inventoryItem.tmpl.html"
+      typeahead-on-select="grid.appScope.configureItem(row.entity)" required>
+  </div>
+  <div ng-if="row.entity._initialised">
+    {{ row.entity.inventory.code }}
+  </div>
+</div>

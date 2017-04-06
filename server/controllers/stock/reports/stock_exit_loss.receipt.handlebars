@@ -1,0 +1,102 @@
+{{> head title="STOCK.RECEIPT.EXIT_LOSS" }}
+
+<!-- body  -->
+<div class="container" style="font-size: 0.9em;">
+
+  <header>
+    <!-- headings  -->
+    <div class="row">
+      <div class="col-xs-6">
+        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
+        <p>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
+        </p>
+      </div>
+      <div class="col-xs-6 text-right">
+        <h3 style="margin: 0px;">
+          <span class="text-uppercase">
+            {{translate 'STOCK.RECEIPT.EXIT_LOSS'}}
+          </span> <br>
+          <small>{{date details.date}}</small> <br>
+          <br>
+        </h3>
+      </div>
+    </div>
+
+    <!-- client and user details  -->
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.MOTIF'}}</h4>
+        <span class="text-capitalize">{{translate 'STOCK.LOSS'}}</span><br>
+      </div>
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{details.document_reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{details.user_display_name}}
+      </div>
+    </div>
+  </header>
+
+  {{#if details.description}}
+  <blockquote>
+    <strong>{{translate 'FORM.LABELS.DESCRIPTION'}}</strong><br>
+    {{details.description}}
+  </blockquote>
+  {{/if}}
+
+  <!-- list of data  -->
+  <table class="table table-condensed table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>{{translate 'STOCK.CODE'}}</th>
+        <th>{{translate 'STOCK.INVENTORY'}}</th>
+        <th>{{translate 'STOCK.LOT'}}</th>
+        <th>{{translate 'STOCK.EXPIRATION'}}</th>
+        <th>{{translate 'STOCK.QUANTITY'}}</th>
+        <th>{{translate 'STOCK.UNIT_COST'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          <td>{{code}}</td>
+          <td>{{text}}</td>
+          <td>{{label}}</td>
+          <td>{{date expiration_date}}</td>
+          <td class="text-right">{{quantity}}</td>
+          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=9}}
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr style="font-weight: bold;">
+        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <br>
+
+  <footer>
+    <div class="row">
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.RESPONSIBLE'}}</h4>
+        <hr>
+      </div>
+
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.DEPOT_RESPONSIBLE'}}</h4>
+        <hr>
+      </div>
+    </div>
+  </footer>
+
+</div>

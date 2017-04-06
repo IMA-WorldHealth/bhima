@@ -269,5 +269,142 @@ function ReceiptModal(Modal, Receipts) {
     /* noop */
   }
 
+  // ================================ stock =====================================
+  // bind methods
+  service.stockExitPatientReceipt = stockExitPatientReceipt;
+  service.stockExitDepotReceipt = stockExitDepotReceipt;
+  service.stockEntryDepotReceipt = stockEntryDepotReceipt;
+  service.stockExitServiceReceipt = stockExitServiceReceipt;
+  service.stockExitLossReceipt = stockExitLossReceipt;
+  service.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
+  service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
+  service.stockEntryDonationReceipt = stockEntryDonationReceipt;
+  service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+
+  /**
+   * @method stockExitPatientReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitPatientReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockExitLossReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitLossReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.EXIT_LOSS', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitLossReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockExitServiceReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitServiceReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.EXIT_SERVICE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitServiceReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockExitDepotReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockExitDepotReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.EXIT_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockExitDepotReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockEntryDepotReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryDepotReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockEntryPurchaseReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryPurchaseReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_PURCHASE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockEntryIntegrationReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryIntegrationReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_INTEGRATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockEntryDonationReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockEntryDonationReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.ENTRY_DONATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockEntryDonationReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockAdjustmentReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockAdjustmentReceipt(documentUuid, notifyCreated) {
+    var opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var promise = Receipts.stockAdjustmentReceipt(documentUuid, { renderer: opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method ReceiptFactory
+   * @description A factory for receipts
+   */
+  function ReceiptFactory(promise, options) {
+    var defaults = {
+      renderer: Receipts.renderers.PDF,
+      notifyCreated: false
+    };
+
+    var parameters = angular.extend(defaults, options);
+    var provider = {
+      resolve :  {
+        receipt : function receiptProvider() { return { promise: promise }; },
+        options : function optionsProvider() { return parameters; },
+      },
+    };
+
+    var configuration = angular.extend(modalConfiguration, provider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+
+  // ================================ end stock =================================
+
   return service;
 }

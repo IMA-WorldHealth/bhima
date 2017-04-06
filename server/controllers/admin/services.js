@@ -7,7 +7,8 @@
  * @description
  * This controller is responsible for implementing all crud and others custom request
  * on the services table through the `/services` endpoint.
- *
+ * 
+ * @requires node-uuid
  * @requires db
  * @requires NotFound
  * @requires BadRequest
@@ -15,6 +16,7 @@
  */
 
 
+const uuid = require('node-uuid');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -28,11 +30,11 @@ const Topic = require('../../lib/topic');
  */
 function list(req, res, next) {
   let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id FROM service AS s';
+    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id,
+      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid, 
         s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
         cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
       FROM service AS s
@@ -65,6 +67,9 @@ function create(req, res, next) {
   record.enterprise_id = req.session.enterprise.id;
 
   delete record.id;
+
+  // service unique uuid as entity uuid 
+  record.uuid = db.bid(uuid.v4());
 
   db.exec(sql, [record])
     .then(function (result) {
@@ -101,6 +106,7 @@ function update(req, res, next) {
   let sql = 'UPDATE service SET ? WHERE id = ?;';
 
   delete queryData.id;
+  delete queryData.uuid;
 
   db.exec(sql, [queryData, req.params.id])
     .then(function (result) {

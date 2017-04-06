@@ -1,0 +1,102 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_MOVEMENTS</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="StockCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/reports/stock/movements"
+          options="StockCtrl.filters"
+          disable-cache="true">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <div class="btn-group" uib-dropdown>
+          <a class="btn btn-default" 
+            ng-class="{ 'btn-info' : StockCtrl.grouped }" 
+            ng-click="StockCtrl.toggleGroup(StockCtrl.selectedGroup.value)">
+            <span>
+              <i class="fa fa-object-group"></i>
+              <span ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span 
+                ng-show="StockCtrl.selectedGroup.label" 
+                translate>
+                {{ StockCtrl.selectedGroup.label }}
+              </span>
+            </span>
+          </a>
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li ng-repeat="option in StockCtrl.groupingBox">
+              <a href ng-click="StockCtrl.selectGroup(option)">
+                <span translate>{{ option.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="/reports/stock/movements"
+          report-options="StockCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- util bar  -->
+<div class="flex-util">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="StockCtrl.formatedFilters"
+    on-remove-filter="StockCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-if="!StockCtrl.isToday"
+    ng-click="StockCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
+  </a>
+</div>
+
+<!--the grid -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <div
+      id="stock-movements-grid"
+      ui-grid="StockCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-resize-columns
+      ui-grid-auto-resize
+      ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="StockCtrl.loading"
+        empty-state="StockCtrl.gridOptions.data.length === 0"
+        error-state="StockCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+
+  </div>
+</div>

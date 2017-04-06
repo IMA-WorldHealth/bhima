@@ -144,6 +144,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 	// }
 
   function unfoldAllGroups(api) {
+    api = api || this.gridApi;
     $timeout(api.treeBase.expandAllRows, 0, false);
   }
 
@@ -211,6 +212,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     this.getSelectedGroups = getSelectedGroups.bind(this);
     this.changeGrouping = changeGrouping.bind(this);
     this.removeGrouping = removeGrouping.bind(this);
+    this.unfoldAllGroups = unfoldAllGroups.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
     this.expandByDefault = angular.isDefined(expandByDefault) ? expandByDefault : true;
