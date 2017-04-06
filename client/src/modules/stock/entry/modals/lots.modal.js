@@ -8,7 +8,7 @@ StockDefineLotsModalController.$inject = [
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
   var vm = this;
-  
+
   // globals
   vm.inventory = { lots: [] };
   vm.gridApi = {};
@@ -27,13 +27,13 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       { field        : 'status',
         width        : 25,
         displayName  : '',
-        cellTemplate : 'partials/stock/entry/modals/templates/lot.status.tmpl.html' },
+        cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html' },
 
       { field            : 'lot',
         displayName      : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.count,
-        cellTemplate     : 'partials/stock/entry/modals/templates/lot.input.tmpl.html' },
+        cellTemplate     : 'modules/stock/entry/modals/templates/lot.input.tmpl.html' },
 
       { field            : 'quantity',
         width            : 150,
@@ -41,17 +41,17 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.sum,
         footerCellClass  : 'text-right',
-        cellTemplate     : 'partials/stock/entry/modals/templates/lot.quantity.tmpl.html' },
+        cellTemplate     : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html' },
 
       { field            : 'expiration_date',
         width            : 150,
         displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
         headerCellFilter : 'translate',
-        cellTemplate     : 'partials/stock/entry/modals/templates/lot.expiration.tmpl.html' },
+        cellTemplate     : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html' },
 
       { field        : 'actions',
-        width        : 25, 
-        cellTemplate : 'partials/stock/entry/modals/templates/lot.actions.tmpl.html' },
+        width        : 25,
+        cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html' },
     ],
     onRegisterApi : onRegisterApi,
   };
@@ -80,7 +80,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       vm.gridOptions.data = vm.inventory.lots;
     } else {
       addLot();
-    }   
+    }
   }
 
   // add lot

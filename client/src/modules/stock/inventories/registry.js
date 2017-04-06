@@ -49,14 +49,14 @@ function StockInventoriesController(Stock, Notify,
       width            : 75,
       displayName      : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/inventories/templates/unit.tmpl.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html' },
 
     { field            : 'status',
       displayName      : 'STOCK.STATUS.LABEL',
       headerCellFilter : 'translate',
       enableFiltering  : false,
       enableSorting    : false,
-      cellTemplate     : 'partials/stock/inventories/templates/status.cell.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/status.cell.html' },
 
     { field           : 'avg_consumption',
       displayName     : 'CM',
@@ -100,7 +100,7 @@ function StockInventoriesController(Stock, Notify,
       enableFiltering  : false,
       enableSorting    : false,
       cellClass        : 'text-right',
-      cellTemplate     : 'partials/stock/inventories/templates/appro.cell.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html' },
   ];
 
   // options for the UI grid

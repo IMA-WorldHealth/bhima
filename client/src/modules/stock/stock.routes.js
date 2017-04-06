@@ -5,43 +5,43 @@ angular.module('bhima.routes')
       .state('stockLots', {
         url         : '/stock/lots',
         controller  : 'StockLotsController as StockLotsCtrl',
-        templateUrl : 'partials/stock/lots/registry.html',
+        templateUrl : 'modules/stock/lots/registry.html',
       })
 
       .state('stockMovements', {
         url         : '/stock/movements',
         controller  : 'StockMovementsController as StockCtrl',
-        templateUrl : 'partials/stock/movements/registry.html',
+        templateUrl : 'modules/stock/movements/registry.html',
       })
 
       .state('stockInventories', {
         url         : '/stock/inventories',
         controller  : 'StockInventoriesController as StockCtrl',
-        templateUrl : 'partials/stock/inventories/registry.html',
+        templateUrl : 'modules/stock/inventories/registry.html',
       })
 
       .state('stockExit', {
         url         : '/stock/exit',
         controller  : 'StockExitController as StockCtrl',
-        templateUrl : 'partials/stock/exit/exit.html',
+        templateUrl : 'modules/stock/exit/exit.html',
       })
 
       .state('stockEntry', {
         url         : '/stock/entry',
         controller  : 'StockEntryController as StockCtrl',
-        templateUrl : 'partials/stock/entry/entry.html',
+        templateUrl : 'modules/stock/entry/entry.html',
       })
 
       .state('stockOrigins', {
         url         : '/stock/origins',
         controller  : 'StockOriginsController as StockOriginCtrl',
-        templateUrl : 'partials/stock/origins/registry.html',
+        templateUrl : 'modules/stock/origins/registry.html',
       })
 
       .state('stockAdjustment', {
         url         : '/stock/adjustment',
         controller  : 'StockAdjustmentController as StockCtrl',
-        templateUrl : 'partials/stock/adjustment/adjustment.html',
+        templateUrl : 'modules/stock/adjustment/adjustment.html',
       })
       ;
   },

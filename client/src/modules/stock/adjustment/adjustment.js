@@ -37,45 +37,45 @@ function StockAdjustmentController(Depots, Inventory, Notify,
     { field        : 'status',
       width        : 25,
       displayName  : '',
-      cellTemplate : 'partials/stock/exit/templates/status.tmpl.html' },
+      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html' },
 
     { field            : 'code',
       width            : 120,
       displayName      : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/exit/templates/code.tmpl.html' },
+      cellTemplate     : 'modules/stock/exit/templates/code.tmpl.html' },
 
     { field            : 'description',
       displayName      : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/exit/templates/description.tmpl.html' },
+      cellTemplate     : 'modules/stock/exit/templates/description.tmpl.html' },
 
     { field            : 'lot',
       width            : 150,
       displayName      : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/exit/templates/lot.tmpl.html' },
+      cellTemplate     : 'modules/stock/exit/templates/lot.tmpl.html' },
 
     { field               : 'quantity',
       width               : 150,
       displayName         : 'TABLE.COLUMNS.QUANTITY',
       headerCellFilter    : 'translate',
-      cellTemplate        : 'partials/stock/adjustment/templates/quantity.tmpl.html',
+      cellTemplate        : 'modules/stock/adjustment/templates/quantity.tmpl.html',
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
 
     { field            : 'available_lot',
       width            : 150,
       displayName      : 'TABLE.COLUMNS.AVAILABLE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/exit/templates/available.tmpl.html' },
+      cellTemplate     : 'modules/stock/exit/templates/available.tmpl.html' },
 
     { field            : 'expiration_date',
       width            : 150,
       displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/exit/templates/expiration.tmpl.html' },
+      cellTemplate     : 'modules/stock/exit/templates/expiration.tmpl.html' },
 
-      { field: 'actions', width: 25, cellTemplate: 'partials/stock/exit/templates/actions.tmpl.html' },
+      { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
   ];
 
   // grid options

@@ -26,7 +26,7 @@ function StockModalService(Modal) {
     /** search stock lots */
   function openSearchLots(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/lots/modals/search.modal.html',
+      templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -44,7 +44,7 @@ function StockModalService(Modal) {
     /** search stock movement */
   function openSearchMovements(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/movements/modals/search.modal.html',
+      templateUrl  : 'modules/stock/movements/modals/search.modal.html',
       controller   : 'SearchMovementsModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -62,7 +62,7 @@ function StockModalService(Modal) {
     /** search stock inventory */
   function openSearchInventories(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/inventories/modals/search.modal.html',
+      templateUrl  : 'modules/stock/inventories/modals/search.modal.html',
       controller   : 'SearchInventoriesModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -80,7 +80,7 @@ function StockModalService(Modal) {
     /** search patient  */
   function openFindPatient(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/exit/modals/findPatient.modal.html',
+      templateUrl  : 'modules/stock/exit/modals/findPatient.modal.html',
       controller   : 'StockFindPatientModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -98,7 +98,7 @@ function StockModalService(Modal) {
   /** search service  */
   function openFindService(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/exit/modals/findService.modal.html',
+      templateUrl  : 'modules/stock/exit/modals/findService.modal.html',
       controller   : 'StockFindServiceModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -116,7 +116,7 @@ function StockModalService(Modal) {
   /** search depot  */
   function openFindDepot(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/exit/modals/findDepot.modal.html',
+      templateUrl  : 'modules/stock/exit/modals/findDepot.modal.html',
       controller   : 'StockFindDepotModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -134,7 +134,7 @@ function StockModalService(Modal) {
   /** search purchase  */
   function openFindPurchase(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/entry/modals/findPurchase.modal.html',
+      templateUrl  : 'modules/stock/entry/modals/findPurchase.modal.html',
       controller   : 'StockFindPurchaseModalController',
       controllerAs : '$ctrl',
       size         : 'md',
@@ -152,7 +152,7 @@ function StockModalService(Modal) {
   /** lots definition */
   function openDefineLots(request) {
     var params = angular.extend(modalParameters, {
-      templateUrl  : 'partials/stock/entry/modals/lots.modal.html',
+      templateUrl  : 'modules/stock/entry/modals/lots.modal.html',
       controller   : 'StockDefineLotsModalController',
       controllerAs : '$ctrl',
       size         : 'md',

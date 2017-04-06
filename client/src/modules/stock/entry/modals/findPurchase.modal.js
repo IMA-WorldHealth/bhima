@@ -23,7 +23,7 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
     { field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/entry/modals/templates/purchase.reference.tmpl.html' },
+      cellTemplate     : 'modules/stock/entry/modals/templates/purchase.reference.tmpl.html' },
     {
       field            : 'date',
       cellFilter       : 'date',

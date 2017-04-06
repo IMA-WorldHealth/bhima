@@ -1,6 +1,6 @@
 angular.module('bhima.components')
 .component('bhDatePicker', {
-  templateUrl : '/partials/templates/bhDatePickerAction.tmpl.html',
+  templateUrl : '/modules/templates/bhDatePickerAction.tmpl.html',
   controller  : DatePickerController,
   bindings    : {
     date     : '<', // set the date once as the initial date and use callbacks to change it later
@@ -27,7 +27,7 @@ function DatePickerController(Modal, bhConstants) {
     size         : 'sm',
     backdrop     : 'static',
     animation    : true,
-    templateUrl  : '/partials/templates/bhDatePicker.tmpl.html',
+    templateUrl  : '/modules/templates/bhDatePicker.tmpl.html',
     controller   : DatePickerModalController,
     controllerAs : '$ctrl',
   };

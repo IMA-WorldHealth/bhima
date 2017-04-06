@@ -54,7 +54,7 @@ function StockLotsController(Stock, Notify,
       width            : 75,
       displayName      : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
-      cellTemplate     : 'partials/stock/inventories/templates/unit.tmpl.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html' },
     
     { field: 'entry_date', displayName: 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
     { field: 'expiration_date', displayName: 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },

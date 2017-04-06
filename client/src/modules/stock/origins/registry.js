@@ -74,7 +74,7 @@ function StockOriginsController(Stock, Notify,
     {
       field           : 'action',
       displayName     : '',
-      cellTemplate    : '/partials/stock/origins/templates/action.tmpl.html',
+      cellTemplate    : '/modules/stock/origins/templates/action.tmpl.html',
       enableFiltering : false,
       enableSorting   : false },
   ];

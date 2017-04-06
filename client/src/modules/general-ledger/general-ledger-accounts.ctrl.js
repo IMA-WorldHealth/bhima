@@ -23,13 +23,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
     { field            : 'number',
       displayName      : 'TABLE.COLUMNS.ACCOUNT',
       enableFiltering  : true,
-      cellTemplate     : '/modules/general_ledger/templates/account_number.cell.html',
+      cellTemplate     : '/modules/general-ledger/templates/account_number.cell.html',
       headerCellFilter : 'translate',
       width            : '10%' },
 
     { field            : 'label',
       displayName      : 'TABLE.COLUMNS.LABEL',
-      cellTemplate     : '/modules/general_ledger/templates/account_label.cell.html',
+      cellTemplate     : '/modules/general-ledger/templates/account_label.cell.html',
       enableFiltering  : true,
       headerCellFilter : 'translate' },
 
@@ -38,7 +38,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : '/modules/general_ledger/templates/debtor.cell.html',
+      cellTemplate     : '/modules/general-ledger/templates/debtor.cell.html',
       width            : '15%' },
 
     { field            : 'creditor_sold',
@@ -46,13 +46,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : '/modules/general_ledger/templates/creditor.cell.html',
+      cellTemplate     : '/modules/general-ledger/templates/creditor.cell.html',
       width            : '15%' },
 
     {
       field            : 'action',
       displayName      : '',
-      cellTemplate     : '/modules/general_ledger/templates/action.cell.html',
+      cellTemplate     : '/modules/general-ledger/templates/action.cell.html',
       enableFiltering  : false,
       enableSorting    : false,
       enableColumnMenu : false,
