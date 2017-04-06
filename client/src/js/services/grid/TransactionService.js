@@ -302,12 +302,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * @description
    * This method is used to check if a transaction is balanced by their record
    */
-  function transaction(entity) {
-    var dataEntity = entity.data.data;
+  function validateTransaction(entity) {
+    var transaction = entity.data.data;
     var debit = 0,
       credit = 0;
     
-    dataEntity.forEach(function (row) {
+    transaction.forEach(function (row) {
       debit += Number(row.debit_equiv);
       credit += Number(row.credit_equiv);
     });
@@ -561,7 +561,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * This function saves all transactions by
    */
   Transactions.prototype.save = function save() {
-    var clientErrors = transaction(this._entity);
+    var clientErrors = validateTransaction(this._entity);
 
     if(clientErrors){
       return $q.reject(clientErrors);
