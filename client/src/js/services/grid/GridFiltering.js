@@ -12,6 +12,8 @@ GridFilteringService.$inject = ['appcache', 'uiGridConstants', 'util', 'moment',
 function GridFilteringService(AppCache, uiGridConstants, util, moment, bhConstants) {
   var serviceKey = '-Filtering';
 
+  var DATE_FORMAT = bhConstants.dates.format.toUpperCase();
+
   function GridFiltering(gridOptions, cacheKey) {
     this.gridOptions = gridOptions;
 
@@ -36,7 +38,7 @@ function GridFilteringService(AppCache, uiGridConstants, util, moment, bhConstan
    * configured for the application.
    */
   GridFiltering.prototype.filterByDate = function filterByDate(searchValue, cellValue) {
-    var cellDateString = moment(cellValue).format(bhConstants.dates.format);
+    var cellDateString = moment(cellValue).format(DATE_FORMAT);
     return cellDateString.indexOf(searchValue.replace(/\\/g, '')) !== -1;
   };
 

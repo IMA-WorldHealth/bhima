@@ -27,7 +27,7 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
     {
       field            : 'date',
       cellFilter       : 'date',
-      filter           : { condition: filtering.byDate },
+      filter           : { condition: filtering.filterByDate },
       displayName      : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
       sort             : { priority: 0, direction: 'desc' },
