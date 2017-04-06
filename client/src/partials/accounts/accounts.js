@@ -16,9 +16,9 @@ AccountsController.$inject = [
  * and connecting it with the Accounts data model.
  */
 function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants, Language, uiGridConstants) {
-
   var vm = this;
   vm.Constants = Constants;
+  vm.loading = true;
 
   // account title indent value in pixels
   vm.indentTitleSpace = 20;
@@ -28,7 +28,6 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
 
   // lang parameter for document
   vm.parameter = { lang: Language.key };
-  vm.loading = true;
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
@@ -102,6 +101,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   function registerAccountEvents(api) {
     vm.api = api;
     api.grid.registerDataChangeCallback(expandOnSetData);
+    api.grid.handleWindowResize();
   }
 
   function expandOnSetData(grid) {
@@ -123,6 +123,4 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
-
-  $timeout(function () { vm.pageLoaded = true; });
 }

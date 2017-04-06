@@ -40,12 +40,9 @@
     <div class="row">
       <div class="col-xs-12">
         <!-- @todo Consider how the application is loaded and cached and make this functionality apply to the whole application -->
-        <!-- Hide broken UI-Grid on page load -->
-        <div ng-if="!AccountsCtrl.pageLoaded"><i class="fa fa-spin fa-circle-o-notch"></i></div>
         <div
           id="account-grid"
-          style="height : calc(100vh - 65px)"
-          ng-show="AccountsCtrl.pageLoaded"
+          class="grid-full-height"
           ui-grid="AccountsCtrl.gridOptions"
           ui-grid-tree-view
           ui-grid-auto-resize
