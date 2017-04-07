@@ -225,7 +225,7 @@ function find(options) {
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
 
-  filters.subRequest('uuid', 'cash_item', 'invoice_uuid', 'cash_uuid');
+  filters.custom('cash_uuid', 'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = HUID(?))');
 
   filters.period('defaultPeriod', 'date');
 
