@@ -134,7 +134,7 @@ function StockEntryController(Depots, Inventory, Notify,
   // ============================ Inventories ==========================
   function loadInventories() {
     Inventory.read()
-      .then((inventories) => {
+      .then(function (inventories) {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier: 'uuid', data: inventories });
       })
