@@ -197,7 +197,7 @@ function StockMovementsController(Stock, Notify,
 
     vm.loading = true;
 
-    Stock.movements.read(null, params).then((rows) => {
+    Stock.movements.read(null, params).then(function (rows) {
       vm.loading = false;
 
       // set flux name
