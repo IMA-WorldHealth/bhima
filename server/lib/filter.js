@@ -50,6 +50,7 @@ class FilterParser {
     this._parseUuids = options.parseUuids || true;
   }
 
+
   /**
    * @method text
    *

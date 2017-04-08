@@ -23,5 +23,17 @@
         <span class="text-danger"><i class="fa fa-ban"></i> <span translate>FORM.LABELS.CANCELED</span></span>
       </a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a ui-sref="patientRegistry({ filters : { display_name : row.entity.patientName }})" data-method="viewPatient" href>
+        <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
+      </a>
+    </li>
+    <li ng-show="!row.entity.is_caution">
+      <a data-method="viewInvoice" ui-sref="invoiceRegistry({ filters : { cash_uuid : row.entity.uuid } })" href>
+        <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>
+      </a>
+    </li>
+
   </ul>
 </div>

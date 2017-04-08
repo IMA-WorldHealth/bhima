@@ -131,6 +131,8 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
       { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
       { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' },
       { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
+      { field: 'cash_uuid', displayName : 'FORM.INFO.PAYMENT' },
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' }
     ];
 
     // returns columns from filters
