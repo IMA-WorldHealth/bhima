@@ -61,21 +61,22 @@
 </div>
 
 <!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-if="JournalCtrl.filtersFmt.length > 0">
-  <bh-filters-applied
+<!-- <div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-if="JournalCtrl.filtersFmt.length > 0"> -->
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
     style="max-width:90%"
-    filters="JournalCtrl.filtersFmt"
+    filters="JournalCtrl.latestViewFilters"
     on-remove-filter="JournalCtrl.onRemoveFilter(filter)">
-  </bh-filters-applied>
+  </bh-filters>
 
-  <a
-    href
-    ng-click="JournalCtrl.clearFilters()"
-    class="text-danger"
-    data-method="clear">
-    <i class="fa fa-close text-danger"></i>
-    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
-  </a>
+  <!-- <a -->
+    <!-- href -->
+    <!-- ng-click="JournalCtrl.clearFilters()" -->
+    <!-- class="text-danger" -->
+    <!-- data-method="clear"> -->
+    <!-- <i class="fa fa-close text-danger"></i> -->
+    <!-- {{ "FORM.INFO.CLEAR_FILTERS" | translate }} -->
+  <!-- </a> -->
 </div>
 
 <!-- @todo remove hardcoded styles -->

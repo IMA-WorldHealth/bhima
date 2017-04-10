@@ -56,13 +56,15 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
   var filterCache = new AppCache('journal-filters');
   var journalFilters = new Filters();
 
+  service.filters = journalFilters;
+
   $log.debug('[JournalService] Created filter list:', journalFilters);
 
   // default filtes will always be applied
   journalFilters.registerDefaultFilters([
-      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', defaultValue : Periods.index.today.key }]);
+      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' }]);
       // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
-      // { key : 'limit', label : 'FORM.LABELS.LIMIT', defaultValue : 100 }]);
+      // { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
@@ -80,9 +82,15 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
     journalFilters.loadCache(filterCache.filters);
   } else {
     $log.debug('[JournalService] No filters cache found, default values used');
+    // set default values
+    var defaultPeriod = Periods.index.today;
+    journalFilters.assignFilters([
+        { key : 'period', value : defaultPeriod.key, displayValue : defaultPeriod.translateKey }]);
   }
 
+
   // Example
+  // @TODO move send client timestamp to initialising the filter configuration
   var HTTPFilters = journalFilters.formatHTTP(true);
   var HTTPLabels = journalFilters.formatHTTPLabels();
   var viewFilters = journalFilters.formatView();

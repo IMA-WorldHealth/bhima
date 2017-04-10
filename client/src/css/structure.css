@@ -899,3 +899,7 @@ a[disabled] {
   min-height : 360px;
   overflow : auto;
 }
+
+.filter-list {
+  display : inline-block;
+}

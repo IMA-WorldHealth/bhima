@@ -338,9 +338,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // runs on startup
   function startup() {
-    vm.filters = cache.filters;
-    vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
-    load(vm.filters);
+    // vm.filters = cache.filters;
+    // vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
+
+    load(Journal.filters.formatHTTP());
+    vm.latestViewFilters = Journal.filters.formatView();
   }
 
   startup();

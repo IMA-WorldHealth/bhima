@@ -1,3 +1,5 @@
+/* DEPRICATED - bhFilters component should be used in favour of this component
+ *              bhFilters is compatible with the lastest FilterService */
 angular.module('bhima.components')
 .component('bhFiltersApplied', {
   templateUrl : 'partials/templates/bhFiltersApplied.tmpl.html',
