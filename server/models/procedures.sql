@@ -839,9 +839,6 @@ BEGIN
   DECLARE enterpriseCurrencyId INT;
   DECLARE currentExchangeRate DECIMAL(19,4);
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION ROLLBACK;
-  DECLARE EXIT HANDLER FOR SQLWARNING ROLLBACK;
-
   -- copy cash payment values into working variables
   SELECT cash.date, cash.currency_id, enterprise.id, enterprise.currency_id, cash.debtor_uuid
     INTO cashDate, cashCurrencyId, cashEnterpriseId, enterpriseCurrencyId, cashDebtorUuid
