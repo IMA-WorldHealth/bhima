@@ -142,15 +142,21 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
       { field : 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
       { field : 'invoiceReference', displayName: 'FORM.LABELS.INVOICE'},
       { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
-      { field : 'invoice_uuid', displayName: 'FORM.LABELS.INVOICE'}
+      { field : 'invoice_uuid', displayName: 'FORM.LABELS.INVOICE' },
     ];
 
     // returns columns from filters
     return columns.filter(function (column) {
+      var LIMIT_UUID_LENGTH = 6;
       var value = params[column.field];
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        if (column.field === 'invoice_uuid') {
+          column.value = column.value.slice(0, LIMIT_UUID_LENGTH).concat('...');
+        }
+
         return true;
       } else {
         return false;

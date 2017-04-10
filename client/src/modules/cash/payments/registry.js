@@ -58,10 +58,11 @@ function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, uiGri
     field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter: 'translate', aggregationType: uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true, sortingAlgorithm : Sorting.algorithms.sortByReference,
+    cellTemplate : '/partials/cash/payments/templates/reference.html',
   }, {
     field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate', cellFilter : 'date:"mediumDate"',
   }, {
-    name : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate', cellTemplate : '/modules/patients/templates/linkPatient.cell.html'
+    name : 'patientName', displayName : 'TABLE.COLUMNS.CLIENT', headerCellFilter: 'translate',
   }, {
     field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate'
   }, {
