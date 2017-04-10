@@ -1,4 +1,4 @@
-<div ng-form="{{ $ctrl.name }}" bh-account-select>
+<div ng-form="{{ $ctrl.name }}" bh-account-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
     ng-class="{ 'has-error' : AccountForm.$$parent.$submitted && AccountForm.account_id.$invalid }">

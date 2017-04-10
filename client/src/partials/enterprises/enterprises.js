@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
+  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService'
 ];
 
 /**
@@ -61,7 +61,6 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
   // form submission
   function submit(form) {
-
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return;
@@ -84,16 +83,16 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
   function cleanEnterpriseForm(enterprise) {
     return {
-      id : enterprise.id,
-      name : enterprise.name,
-      abbr : enterprise.abbr,
-      phone : enterprise.phone,
-      email : enterprise.email,
-      location_id : enterprise.location_id,
-      currency_id : enterprise.currency_id,
-      po_box : enterprise.po_box,
+      id              : enterprise.id,
+      name            : enterprise.name,
+      abbr            : enterprise.abbr,
+      phone           : enterprise.phone,
+      email           : enterprise.email,
+      location_id     : enterprise.location_id,
+      currency_id     : enterprise.currency_id,
+      po_box          : enterprise.po_box,
       gain_account_id : enterprise.gain_account_id,
-      loss_account_id : enterprise.loss_account_id
+      loss_account_id : enterprise.loss_account_id,
     };
   }
 
@@ -105,7 +104,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
   // refresh the displayed projects
   function refreshProjects() {
-    return Projects.read(null, { complete : 1 })
+    return Projects.read(null, { complete: 1 })
       .then(function (projects) {
         vm.projects = projects;
       });
@@ -117,9 +116,9 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
    */
   function editProject(id) {
     var params = {
-      action : 'edit',
+      action     : 'edit',
       identifier : id,
-      enterprise : vm.enterprise
+      enterprise : vm.enterprise,
     };
 
     Modal.openProjectActions(params)
@@ -137,11 +136,10 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
    * @desc launch project modal for adding new
    */
   function addProject() {
-    var params = {
-      action : 'create',
-      enterprise : vm.enterprise
-    };
-    Modal.openProjectActions(params)
+    Modal.openProjectActions({
+      action     : 'create',
+      enterprise : vm.enterprise,
+    })
     .then(function (value) {
       if (!value) { return; }
 
@@ -158,21 +156,21 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
    */
   function deleteProject(id, pattern) {
     var params = {
-      pattern: pattern,
-      patternName: 'FORM.PATTERNS.PROJECT_NAME'
+      pattern     : pattern,
+      patternName : 'FORM.PATTERNS.PROJECT_NAME',
     };
 
     Modal.openConfirmDialog(params)
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then(function (bool) {
+        if (!bool) { return; }
 
-      Projects.delete(id)
-        .then(function () {
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-          return refreshProjects();
-        })
-        .catch(Notify.handleError);
-    });
+        Projects.delete(id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            return refreshProjects();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   startup();

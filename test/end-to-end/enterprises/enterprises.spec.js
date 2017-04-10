@@ -1,52 +1,50 @@
 /* global element, by, inject, browser */
 const chai = require('chai');
-const expect = chai.expect;
-
 const helpers = require('../shared/helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 describe('Enterprises', function () {
-
   const path = '#!/enterprises';
-  const enterpriseId = 1;
 
   // enterprise
   const enterprise = {
-    name : 'Interchurch Medical Assistance',
-    abbr : 'IMA',
-    email : 'ima@imaworldhealth.com',
-    po_box : 'POBOX USA 1',
-    phone : '01500',
+    name            : 'Interchurch Medical Assistance',
+    abbr            : 'IMA',
+    email           : 'ima@imaworldhealth.com',
+    po_box          : 'POBOX USA 1',
+    phone           : '01500',
     gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Loss Account'
+    loss_account_id : 'Test Loss Account',
   };
 
   // default enterprise
-  const default_enterprise = {
-    name : 'Test Enterprise',
-    abbr : 'TE',
-    email : 'enterprise@test.org',
-    po_box : 'POBOX USA 1',
-    phone : '243 81 504 0540',
+  const defaultEnterprise = {
+    name            : 'Test Enterprise',
+    abbr            : 'TE',
+    email           : 'enterprise@test.org',
+    po_box          : 'POBOX USA 1',
+    phone           : '243 81 504 0540',
     gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Loss Account'
+    loss_account_id : 'Test Loss Account',
   };
 
   // project
   const abbr = suffix();
   const project = {
-    name : 'Test Project ' + abbr,
-    abbr : abbr
+    name : `Test Project ${abbr}`,
+    abbr,
   };
 
   // project update
-  const abbr_update = suffix();
-  const project_update = {
-    name : 'Test Project Update ' + abbr_update,
-    abbr : abbr_update
+  const abbrUpdate = suffix();
+  const projectUpdate = {
+    name : `Test Project Update ${abbrUpdate}`,
+    abbr : abbrUpdate,
   };
 
   // navigate to the enterprise module before running tests
@@ -57,7 +55,6 @@ describe('Enterprises', function () {
    * so we need only to update enterprise informations
    */
   it('set enterprise data', function () {
-
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
@@ -78,7 +75,6 @@ describe('Enterprises', function () {
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
-
     FU.input('EnterpriseCtrl.enterprise.name', '');
     FU.input('EnterpriseCtrl.enterprise.abbr', '');
 
@@ -100,26 +96,25 @@ describe('Enterprises', function () {
   /**
    * Set default enterprise data for others tests
    */
-   it('reset enterprise data to default', function () {
+  it('reset enterprise data to default', function () {
+    FU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
+    FU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
 
-     FU.input('EnterpriseCtrl.enterprise.name', default_enterprise.name);
-     FU.input('EnterpriseCtrl.enterprise.abbr', default_enterprise.abbr);
+    components.accountSelect.set(defaultEnterprise.gain_account_id, 'gain-account-id');
+    components.accountSelect.set(defaultEnterprise.loss_account_id, 'loss-account-id');
 
-     components.accountSelect.set(default_enterprise.gain_account_id, 'gain-account-id');
-     components.accountSelect.set(default_enterprise.loss_account_id, 'loss-account-id');
+    FU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
+    FU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
+    FU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
 
-     FU.input('EnterpriseCtrl.enterprise.po_box', default_enterprise.po_box);
-     FU.input('EnterpriseCtrl.enterprise.email', default_enterprise.email);
-     FU.input('EnterpriseCtrl.enterprise.phone', default_enterprise.phone);
+    // select the locations specified
+    components.locationSelect.set(helpers.data.locations);
 
-     // select the locations specified
-     components.locationSelect.set(helpers.data.locations);
+    // submit the page to the server
+    FU.buttons.submit();
 
-     // submit the page to the server
-     FU.buttons.submit();
-
-     components.notification.hasSuccess();
-   });
+    components.notification.hasSuccess();
+  });
 
   it('add a new project for the enterprise', function () {
     FU.buttons.create();
@@ -135,8 +130,8 @@ describe('Enterprises', function () {
   it('edit an existing project', function () {
     element(by.css(`[data-update="${abbr}"]`)).click();
 
-    FU.input('$ctrl.project.name', project_update.name);
-    FU.input('$ctrl.project.abbr', project_update.abbr);
+    FU.input('$ctrl.project.name', projectUpdate.name);
+    FU.input('$ctrl.project.abbr', projectUpdate.abbr);
 
     FU.modal.submit();
 
@@ -144,9 +139,9 @@ describe('Enterprises', function () {
   });
 
   it('delete an existing project', function () {
-    element(by.css(`[data-delete="${abbr_update}"]`)).click();
+    element(by.css(`[data-delete="${abbrUpdate}"]`)).click();
 
-    FU.input('$ctrl.text', project_update.name);
+    FU.input('$ctrl.text', projectUpdate.name);
 
     FU.modal.submit();
 
@@ -158,15 +153,13 @@ describe('Enterprises', function () {
    * @desc This function returns a random 3 characters string as an abbreviation
    */
   function suffix() {
-    'use strict';
-    let a = String.fromCharCode(random(65, 90));
-    let b = String.fromCharCode(random(65, 90));
-    let c = String.fromCharCode(random(65, 90));
-
-    return a.concat(b, c);
+    const a = String.fromCharCode(random(65, 90));
+    const b = String.fromCharCode(random(65, 90));
+    const c = String.fromCharCode(random(65, 90));
+    return `${a}${b}${c}`;
   }
 
-  function random(min,max) {
-    return Math.floor(Math.random()*(max-min+1)+min);
+  function random(min, max) {
+    return Math.floor((Math.random() * ((max - min) + 1)) + min);
   }
 });
