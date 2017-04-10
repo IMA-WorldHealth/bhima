@@ -2,15 +2,16 @@ angular.module('bhima.services')
   .service('JournalService', JournalService);
 
 // Dependencies injection
-JournalService.$inject = ['PrototypeApiService'];
+JournalService.$inject = ['$log', 'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService'];
 
 /**
  * Journal Service
  * This service is responsible of all process with the posting journal
  */
-function JournalService(Api) {
+function JournalService($log, Api, AppCache, Filters, Periods) {
   var URL = '/journal/';
   var service = new Api(URL);
+
 
   service.formatFilterParameters = formatFilterParameters;
   service.grid = grid;
@@ -50,6 +51,56 @@ function JournalService(Api) {
 
     return rows.data;
   }
+
+  // set up base filters
+  var filterCache = new AppCache('journal-filters');
+  var journalFilters = new Filters();
+
+  $log.debug('[JournalService] Created filter list:', journalFilters);
+
+  // default filtes will always be applied
+  journalFilters.registerDefaultFilters([
+      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', defaultValue : Periods.index.today.key }]);
+      // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
+      // { key : 'limit', label : 'FORM.LABELS.LIMIT', defaultValue : 100 }]);
+
+  // custom filters can be optionally applied
+  journalFilters.registerCustomFilters([
+      { key: 'trans_id', label: 'FORM.LABELS.TRANS_ID' },
+      { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
+      { key: 'user_id', label: 'FORM.LABELS.USER' },
+      { key: 'account_id', label: 'FORM.LABELS.ACCOUNT' },
+      { key: 'description', label: 'FORM.LABELS.DESCRIPTION' }]);
+
+  // configure module defaults
+  if (filterCache.filters) {
+
+    $log.debug('[JournalService] Found filter cache, using:', filterCache.filters);
+    // load cached filter definition if it exists
+    journalFilters.loadCache(filterCache.filters);
+  } else {
+    $log.debug('[JournalService] No filters cache found, default values used');
+  }
+
+  // Example
+  var HTTPFilters = journalFilters.formatHTTP(true);
+  var HTTPLabels = journalFilters.formatHTTPLabels();
+  var viewFilters = journalFilters.formatView();
+
+  $log.debug('[JournalService] Got filters for HTTP', HTTPFilters);
+  $log.debug('[JournalService] Got filters for HTTP Labels', HTTPLabels);
+  $log.debug('[JournalService] Got filters for view', viewFilters);
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = journalFilters.formatCache();
+  }
+
+  // expose methods for search configuration
+
+  // expose methods for applying filters to search query
+
+  // expose methods for force clearing filters cache
 
   /**
    * This function prepares the filters for the journal for display to the

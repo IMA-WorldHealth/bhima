@@ -1,3 +1,14 @@
+<div class="form-group">
+<label class="form-label">Period Limit</label>
+<p class="form-static">
+  <span translate>{{$ctrl.period.translateKey}}</span>
+
+  <!-- Exception for ALL time - this is the only period that does not need to be defined -->
+  <span ng-if="$ctrl.period.key !== $ctrl.NO_PERIOD_LIMIT_KEY">
+  ({{$ctrl.period.start}}) - ({{$ctrl.period.end}})
+  </span>
+</p>
+
 <a href ng-click="$ctrl.toggleSelectionOptions()">
   <i class="fa" ng-class="{ 'fa-calendar-plus-o' : !$ctrl.expanded, 'fa-calendar-minus-o' : $ctrl.expanded }"></i>
   Select period
@@ -24,4 +35,5 @@
     </div>
   </div>
   <hr>
+</div>
 </div>

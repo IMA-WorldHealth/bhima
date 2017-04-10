@@ -64,21 +64,37 @@ function PeriodService(Moment) {
     OTHER : [periods.allTime]
   };
 
+  service.index = periods;
   service.categories = categories;
+  service.definition = definition;
 
+  service.dateFormat = 'DD/MM/YYYY';
 
   function calculatePeriod(key) {
 
   }
 
-  function calculatePeriodLimit(periodKey, modifier) {
-  var dateModifier = modifier || 0;
-  var currentPeriod = Moment().get(periodKey);
+  function definition(key) {
+    var instance = angular.copy(periods[key]);
+    var calculate = instance.limit;
 
-  return {
-    start : function () { return Moment().set(periodKey, currentPeriod + modifier).startOf(periodKey).toDate() },
-    end : function () { return Moment().set(periodKey, currentPeriod + modifier).endOf(periodKey).toDate() }
+    // make an exception for all time which does not have a defined limit
+    if (calculate) {
+      instance.start = calculate.start();
+      instance.end = calculate.end();
+    }
+    return instance;
   }
-}
 
+  function calculatePeriodLimit(periodKey, modifier) {
+    var dateModifier = modifier || 0;
+    var currentPeriod = Moment().get(periodKey);
+
+    console.log(periodKey, currentPeriod, dateModifier);
+
+    return {
+      start : function () { return Moment().set(periodKey, currentPeriod + dateModifier).startOf(periodKey).format(service.dateFormat); },
+      end : function () { return Moment().set(periodKey, currentPeriod + dateModifier).endOf(periodKey).format(service.dateFormat); }
+    }
+  }
 }

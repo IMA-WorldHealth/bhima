@@ -112,16 +112,11 @@
         <div class="tab-body">
 
           <!-- period selection -->
-          <div class="form-group">
-            <label class="form-label">Period Limit</label>
-            <p class="form-static">Today (28/03/2017)</p>
-
-            <!-- start period selection component -->
-            <bh-period-select
-              on-select-callback="ModalCtrl.onSelectPeriod()">
-            </bh-period-select>
-            <!-- end period selection component -->
-          </div>
+          <!-- start period selection component -->
+          <bh-period-select
+            on-select-callback="ModalCtrl.onSelectPeriod(key)">
+          </bh-period-select>
+          <!-- end period selection component -->
 
           <!-- posted/ non-posted records -->
           <div class="form-group">

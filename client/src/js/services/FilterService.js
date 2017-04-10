@@ -1,53 +1,164 @@
 angular.module('bhima.services')
   .service('FilterService', FilterService);
 
-FilterService.$inject = ['Store'];
+FilterService.$inject = ['$log', 'Store'];
 
-function FilterService(Store) {
-  // @FIXME this should be defined as a constant accross the server and the client
-  /* @const */
-  var PERIODS = new Store({ identifier: 'key' });
-  PERIODS.setData([
-    {
-      key   : 'today',
-      label : 'FORM.LABELS.TODAY',
-    },{
-      key   : 'week',
-      label : 'FORM.LABELS.THIS_WEEK',
-    },{
-      key   : 'month',
-      label : 'FORM.LABELS.THIS_MONTH',
-    },
-  ]);
-  var DEFAULT_PERIOD = 'today';
+function FilterService($log, Store) {
 
-  function Filter() {
-    this.defaultPeriod = PERIODS.get(DEFAULT_PERIOD);
+  function FilterList() {
+    $log.debug('[FilterService] new FilterService: constructor called');
+
+    // initialise internal state
+    this._defaultFilters = [];
+    this._customFilters = [];
+
+    this._filterIndex = {};
   }
 
-  Filter.prototype.applyDefaults = function applyDefaults(filters) {
-    if (!filters) { return filters; }
+  // @TODO registerDefaultFilter and registerCustomFilter could use the same underlying function
+  //       with a toggle between the array to populate and the default value
+  FilterList.prototype.registerDefaultFilters = function registerDefaultFilters(filterDefinitions) {
+    var formattedFilters = filterDefinitions.map(function (filterDefinition) {
+      var filter = new Filter(filterDefinition.key, filterDefinition.label);
+      filter.setDefault(true);
 
-    var emptyFilters = Object.keys(filters).length === 0;
+      if (filterDefinition.defaultValue) {
+        filter.assign(filterDefinition.defaultValue);
+      }
+      return filter;
+    });
 
-    if (emptyFilters) {
-      filters.defaultPeriod = this.defaultPeriod.key;
-    }
-    return filters;
+    // udpate index
+    this._indexList(this._filterIndex, formattedFilters);
+    this._defaultFilters = this._defaultFilters.concat(formattedFilters);
   }
 
-  // @FIXME patch hack - this logic should not be required
-  Filter.prototype.customFiltersApplied = function (filters) {
-    var filterKeys = Object.keys(filters);
-    if (filterKeys.length > 1) { return true; }
+  FilterList.prototype.registerCustomFilters = function registerCustomFilters(filterDefinitions) {
+    var formattedFilters = filterDefinitions.map(function (filterDefinition) {
+      var filter = new Filter(filterDefinition.key, filterDefinition.label);
+      filter.setDefault(false);
+      return filter;
+    });
 
-    // the filter length at this point can only be 1 or less - check to see if it's default
-    if (filterKeys.indexOf('defaultPeriod') > -1) { return false; }
-    return true;
+    // udpate index
+    this._indexList(this._filterIndex, formattedFilters);
+    this._customFilters = this._customFilters.concat(formattedFilters);
   }
 
-  Filter.prototype.lookupPeriod = function lookupPeriod(key) {
-    return PERIODS.get(key);
+
+  // assigns the value of a filter, a filter with a value will be actively used
+  // during the HTTP/ UI export process
+  FilterList.prototype.assignFilter = function assignFilter(key, value) {
+    this._filterIndex[key].assign(value);
   }
-  return Filter;
+
+  // accepts an array of key : filterValue objects that are assigned
+  // [
+  // { key : value }
+  // { key : value }
+  // ]
+  FilterList.prototype.assignFilters = function assignFilters(valueList) {
+
+    valueList.forEach(function (valueMap) {
+      this.assignFilter(valueMap.key, valueMap.value);
+    });
+  }
+
+  // return filters for the view - this method will always be compatible with the bhFilter component
+  FilterList.prototype.formatView = function formatView() {
+    var activeFilters = this._filterActiveFilters();
+    var activeKeys = activeFilters.map(function (filter) { return filter._key });
+
+    $log.debug('[FilterService] Active keys:', activeKeys);
+
+    function keysInActive(filter) { return activeKeys.includes(filter._key); }
+
+    // parse into two lists
+    return {
+      defaultFilters : this._defaultFilters.filter(keysInActive),
+      customFilters : this._customFilters.filter(keysInActive)
+    };
+  }
+
+  // format filters for the server
+  // sendClientTimestamp - this will send an attribute hidden to the user
+  // returns a JSON object with active filters
+  FilterList.prototype.formatHTTP = function formatHTTP(sendClientTimestamp) {
+    var clientTimestamp = angular.isDefined(sendClientTimestamp) ? sendClientTimestamp : false;
+    var activeFilters = this._filterActiveFilters();
+
+    $log.debug('[FilterService] Active filters:', activeFilters);
+    return activeFilters.reduce(function (aggregate, filter) {
+      aggregate[filter._key] = filter._value;
+      return aggregate;
+    }, {});
+  }
+
+  // returns an array of labels and overriden labels that is built for the FilterParser API
+  FilterList.prototype.formatHTTPLabels = function formatHTTPLabels() {
+    var activeFilters = this._filterActiveFilters();
+
+    return activeFilters.map(function (filter) {
+      return filter._key.concat(':', filter._label);
+    });
+  }
+
+  FilterList.prototype.formatCache = function formatCache() {
+    return angular.copy(this._filterIndex);
+  }
+
+  // replaces current filters with filters from cache
+  FilterList.prototype.loadCache = function loadCache(storedCache) {
+    Object.keys(storedCache).forEach(function (key) {
+      var currentFilter = this._filterIndex[key];
+      if(currentFilter) {
+        storedCache[key].assign(cached._value);
+      }
+    }.bind(this));
+  }
+
+  FilterList.prototype._indexList = function indexList(index, list) {
+    index = list.reduce(function (aggregateIndex, filterDefinition) {
+      aggregateIndex[filterDefinition._key] = filterDefinition;
+      return aggregateIndex;
+    }, index);
+  }
+
+  // returns a flat array of filters that must be applied
+  FilterList.prototype._filterActiveFilters = function filterActiveFilters() {
+    var filtered = [];
+
+    Object.keys(this._filterIndex).forEach(function (key) {
+      var filter = this._filterIndex[key];
+
+      if (filter._value) {
+        filtered.push(angular.copy(filter));
+      }
+    }.bind(this));
+    return filtered;
+  }
+
+  // expose Filter data element
+  FilterList.prototype.Filter = Filter;
+
+  return FilterList;
+}
+
+// Filter class for storing filter information in a uniform way
+// @TODO add debug asserts to ensure that key and value are specified when required
+function Filter(key, label) {
+  // initialise internal state
+  this._key = key;
+  this._label = label;
+  this._value = null;
+  this._isDefault = null;
+
+  this.setDefault = function setDefault(value) {
+    this._isDefault = value;
+  }
+  this.assign = function assign(value) {
+    this._value = value;
+  }
+
+  // @TODO add method to set view label - search controller can set view labels manually
 }

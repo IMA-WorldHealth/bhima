@@ -6,6 +6,9 @@ const DEFAULT_LIMIT_KEY = 'limit';
 const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 
 // @FIXME patch code - this could be implemented in another library
+//
+// IF no client_timestamp is passed with the request, the server's timestamp is used
+// IF a client_timestamp is passed the client timestamp is used
 const PERIODS = {
   today : () => { return { start : moment().toDate(), end : moment().toDate() } },
   week : () => { return { start : moement().startOf('week').toDate(), end : moment().endOf('week').toDate() } },

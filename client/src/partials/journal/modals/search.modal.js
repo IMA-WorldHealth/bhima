@@ -10,6 +10,12 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
 
   vm.options = options || {};
 
+  // set up this module's default qurries
+  vm.options.defaults = {};
+  vm.options.custom = {};
+  // object for tracking additional filter queries
+
+
   Users.read()
     .then(function (users) {
       vm.users = users;
@@ -26,6 +32,11 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
     vm.options.account_id = account.id;
   };
 
+
+  // ONLY the period key will be cached and sent to the server (unless there are custom dates)
+  // this module should also send a `client_timestamp` so that the server's calculations
+  // can be based on the client - this was the client does not need to calculate the periods
+  // unless they are being updated
   vm.onSelectPeriod = function onSelectPeriod(key) {
     console.log('controller on select called with', key);
   };
@@ -43,7 +54,11 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
   vm.submit = function submit(form) {
     if (form.$invalid) { return; }
 
+    // @TODO decide if modal should be responsible for defining actual filters or
+    // should just return options object for controller to sort into Filters
+    console.log('submitting with options', vm.options);
+
     // return values to the JournalController
-    return Instance.close(vm.options);
+    // return Instance.close(vm.options);
   };
 }
