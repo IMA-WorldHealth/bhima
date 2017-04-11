@@ -1,14 +1,14 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "SERVICE.TITLE" | translate }}</li>
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> SERVICE.TITLE </li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default" id="create" ng-click="ServicesCtrl.create()" data-method="create">
-          <span class="glyphicon glyphicon-plus-sign"></span> {{ 'SERVICE.ADD_SERVICE' | translate }}
+        <button class="btn btn-default text-capitalize" id="create" ng-click="ServicesCtrl.create()" data-method="create">
+          <span class="fa fa-plus"></span> <span translate> SERVICE.ADD_SERVICE </span>
         </button>
       </div>
     </div>
@@ -21,14 +21,14 @@
 
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading">
-            {{ 'SERVICE.ALL_SERVICES' | translate }}
+          <div class="panel-heading" translate>
+            SERVICE.ALL_SERVICES
           </div>
           <table class="table table-condensed table-hover">
             <thead>
               <tr>
-                <th>{{ "TABLE.COLUMNS.SERVICE" | translate }}</th>
-                <th colspan="3">{{ 'TABLE.COLUMNS.ACTION' | translate }}</th>
+                <th translate> TABLE.COLUMNS.SERVICE </th>
+                <th colspan="3" translate> TABLE.COLUMNS.ACTION </th>
               </tr>
             </thead>
             <tbody>
@@ -54,46 +54,46 @@
       <div class="col-xs-6" ng-switch="ServicesCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
-            <h4>{{ 'SERVICE.TITLE' | translate}}</h4>
-            <p>{{ 'SERVICE.DESCRIPTION' | translate }}</p>
+            <h4 translate> SERVICE.TITLE </h4>
+            <p translate> SERVICE.DESCRIPTION </p>
           </div>
         </div>
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.SAVE_SUCCESS </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.UPDATE_SUCCESS </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.DELETE_SUCCESS </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
-            <h4>{{ ServicesCtrl.HTTPError.data.code | translate }} </h4>
+            <h4 translate> ServicesCtrl.HTTPError.data.code </h4>
             </p>
           </div>
         </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ 'SERVICE.ADDING_SERVICE' | translate }}</div>
+          <div class="panel-heading" translate> SERVICE.ADDING_SERVICE </div>
           <div class="panel-body">
             <form class="panel-body" name="CreateForm" ng-submit="ServicesCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
+                <label class="control-label" for="bhima-service-name" translate> FORM.LABELS.NAME </label>
                 <input type="text" class="form-control" name="name" autocomplete="off" ng-maxlength="ServicesCtrl.maxLength" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -104,11 +104,11 @@
               <!-- Profit Center Assignment - not yet implemented in 2.x -->
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-service" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                <button class="btn btn-default" id="submit-service" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SUBMIT
                 </button>
-                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.CANCEL
                 </button>
               </div>
             </form>
@@ -116,12 +116,12 @@
         </div>
 
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'SERVICE.EDITING_SERVICE' | translate }}</div>
+          <div class="panel-heading" translate> SERVICE.EDITING_SERVICE </div>
           <div class="panel-body">
             <form class="panel-body" name="UpdateForm" ng-submit="ServicesCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
+                <label class="control-label" for="bhima-service-name" translate> FORM.LABELS.NAME </label>
                 <input type="text" class="form-control" name="name" autocomplete="off" id="bhima-service-name" ng-maxlength="ServicesCtrl.maxLength" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -132,11 +132,11 @@
               <!-- Profit Center Assignment - not yet implemented in 2.x -->
 
               <div class="form-group">
-                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit" translate>
+                    FORM.BUTTONS.SUBMIT
                   </button>
-                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.BUTTONS.CANCEL" | translate }}
+                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
+                    FORM.BUTTONS.CANCEL
                   </button>
               </div>
             </form>
