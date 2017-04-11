@@ -52,9 +52,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     flatEntityAccess : true,
     fastWatch        : true,
     enableFiltering  : vm.filterEnabled,
-    fastWatch        : true,
-    flatEntityAccess : true,
-    rowTemplate      : '/modules/templates/grid/voucher.row.html',
   };
 
   // grid default options
