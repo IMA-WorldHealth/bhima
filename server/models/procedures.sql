@@ -463,7 +463,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    su.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 1,
+    i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 1,
     i.user_id
   FROM invoice AS i JOIN invoice_subsidy AS isu JOIN subsidy AS su ON
     i.uuid = isu.invoice_uuid AND
@@ -477,7 +477,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    b.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 1,
+    i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 1,
     i.user_id
   FROM invoice AS i JOIN invoice_billing_service AS ib JOIN billing_service AS b ON
     i.uuid = ib.invoice_uuid AND
