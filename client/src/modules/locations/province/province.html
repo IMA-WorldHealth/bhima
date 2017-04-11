@@ -7,8 +7,8 @@
     </ol>
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default" ng-click="ProvinceCtrl.create()" data-method="create">
-          <i class="fa fa-plus-square"></i> <span translate>PROVINCE.ADD</span>
+        <button class="btn btn-default text-capitalize" ng-click="ProvinceCtrl.create()" data-method="create">
+          <i class="fa fa-plus"></i> <span translate>PROVINCE.ADD</span>
         </button>
       </div>
     </div>
@@ -18,7 +18,7 @@
 <!-- Links to the main menu of management maps as well as the button for adding provinces -->
 <div class="flex-util">
   <button ui-sref="locations" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
+    <span class="glyphicon glyphicon-globe"></span><span translate> LOCATION.LOCATION_MANAGER </span>
   </button>
 </div>
 
@@ -29,8 +29,8 @@
     <!-- Complete list of registered Provinces -->
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading">
-            {{ 'PROVINCE.REGISTERED' | translate }}
+          <div class="panel-heading" translate>
+            PROVINCE.REGISTERED
           </div>
 
           <table class="table table-condensed">
@@ -60,33 +60,33 @@
       <div class="col-xs-6" ng-switch="ProvinceCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
-             <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
-             <p>{{'PROVINCE.DESCRIPTION' | translate}}
+             <b translate> PROVINCE.CONFIGURATION </b>
+             <p translate> PROVINCE.DESCRIPTION </p>
           </div>
         </div>
 
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.SAVE_SUCCESS </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.UPDATE_SUCCESS  </h4>
           </div>
         </div>
 
         <!-- Form for adding Province -->
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
+          <div class="panel-heading" translate> PROVINCE.REGISTER </div>
           <div class="panel-body">
             <form name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
                   class="form-control"
                   name="country"
@@ -95,7 +95,7 @@
                   ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
                   ng-change="ProvinceCtrl.loadProvinces()"
                   required>
-                  <option value="" disabled>{{ ProvinceCtrl.messages.country | translate }}</option>
+                  <option value="" disabled translate> {{ ProvinceCtrl.messages.country }} </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -103,7 +103,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.PROVINCE' | translate }}" autocomplete="off" ng-maxlength="ProvinceCtrl.maxLength" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -111,11 +111,11 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-province" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                <button class="btn btn-default" id="submit-province" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SAVE
                 </button>
-                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.BUTTONS.RESET" | translate }}
+                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.RESET
                 </button>
               </div>
             </form>
@@ -124,11 +124,11 @@
 
         <!-- Form for updating Province -->
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'PROVINCE.EDIT' | translate }}</div>
+          <div class="panel-heading" translate> PROVINCE.EDIT </div>
           <div class="panel-body">
             <form name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
                   class="form-control"
                   name="country"
@@ -137,7 +137,7 @@
                   ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
                   ng-change="ProvinceCtrl.loadProvinces()"
                   required>
-                  <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
+                  <option value="" disabled translate> {{ ProvinceCtrl.messages.country }} </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -145,7 +145,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.PROVINCE' | translate }}" class="form-control" autocomplete="off" ng-maxlength="ProvinceCtrl.maxLength" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -153,11 +153,11 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="change_province" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                <button class="btn btn-default" id="change_province" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SAVE
                 </button>
-                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.BUTTONS.RESET" | translate }}
+                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.RESET
                 </button>
               </div>
             </form>

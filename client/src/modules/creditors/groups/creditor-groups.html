@@ -2,10 +2,11 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "TREE.CREDITOR_GROUP" | translate }}
-        <span class="badge badge-info" ng-if="CreditorGroupCtrl.isUpdateState">{{ 'FORM.BUTTONS.EDIT' | translate }}</span>
-        <span class="badge badge-success" ng-if="CreditorGroupCtrl.isCreateState">{{ 'FORM.BUTTONS.NEW' | translate }}</span>
+      <li class="static" translate> TREE.FINANCE </li>
+      <li class="title">
+        <span translate> TREE.CREDITOR_GROUP </span>
+        <span class="badge badge-info" ng-if="CreditorGroupCtrl.isUpdateState" translate> FORM.BUTTONS.EDIT </span>
+        <span class="badge badge-success" ng-if="CreditorGroupCtrl.isCreateState" translate> FORM.BUTTONS.NEW </span>
       </li>
     </ol>
 
@@ -15,9 +16,9 @@
         <a
           data-method="create"
           ui-sref="creditorGroups.create"
-           ui-sref-opts="CreditorGroupCtrl.reload"
-          class="btn btn-default">
-          <i class="fa fa-plus"></i> {{ 'FORM.BUTTONS.NEW' | translate }}
+          ui-sref-opts="CreditorGroupCtrl.reload"
+          class="btn btn-default text-capitalize">
+          <i class="fa fa-plus"></i> <span translate> FORM.BUTTONS.NEW </span>
         </a>
       </div>
     </div>
