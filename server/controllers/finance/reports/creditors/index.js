@@ -2,17 +2,11 @@
  * @overview finance/reports/creditors/index.js
  *
  * @description
- * This report displays the amounts owed by creditor groups broken down by age of
- * their debt.  The report highlights clients who have long overdue debts, so
- * that the administration can send out a recovery service to try and recover
- * the owed debt.
+ * This report displays the debts of the company
  *
  * The typical age categories are 0-30 days, 30-60 days, 60-90 days, and > 90
  * days.
  *
- * As usual, the reports are created with a handlebars template and shipped to
- * the client as either JSON, HTML, or PDF, depending on the renderer specified
- * in the HTTP query string.
  */
 
 
