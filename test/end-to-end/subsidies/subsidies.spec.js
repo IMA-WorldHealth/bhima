@@ -63,7 +63,10 @@ describe('Subsidies', () => {
   });
 
   it('deletes a subsidy', () => {
-    element(by.id(`subsidy-del-${subsidyRank}`)).click();
+    element(by.id(`subsidy-upd-${subsidyRank}`)).click();
+
+    // click the "delete" button
+    FU.buttons.delete();
 
     // click the alert asking for permission
     components.modalAction.confirm();
