@@ -7,7 +7,7 @@ helpers.configure(chai);
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 
-describe('Debtor Groups Management', function () {
+describe.only('Debtor Groups Management', function () {
   'use strict';
 
   let initialGroups = 3;
@@ -48,7 +48,10 @@ describe('Debtor Groups Management', function () {
     const group = getGroupRow(DELETEABLE_DEBTOR_GROUP);
 
     // delete the group
-    group.$('[data-method="delete"]').click();
+    group.$('[data-method="update"]').click();
+
+    // click the "delete" button
+    FU.buttons.delete();
 
     // submit the confirmation modal
     FU.modal.submit();

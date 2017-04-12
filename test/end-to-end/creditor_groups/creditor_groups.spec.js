@@ -53,6 +53,7 @@ describe('Creditor Groups Management', () => {
   it('Delete a creditor group', () => {
     element(by.css(`[data-update="${group.updated_name}"]`)).click();
     
+    // click the "delete" button
     FU.buttons.delete();
 
     FU.buttons.submit();
@@ -62,6 +63,7 @@ describe('Creditor Groups Management', () => {
   it('Cannot delete a used creditor group', () => {
     element(by.css(`[data-update="${group.delete_name}"]`)).click();
 
+    // click the "delete" button
     FU.buttons.delete();
 
     FU.buttons.submit();
