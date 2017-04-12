@@ -52,20 +52,32 @@ describe('Services', () => {
   });
 
   it('successfully delete an service', () => {
-    element(by.id(`service-del-${DELETE_SUCCESS}`)).click();
+    element(by.id(`service-upd-${DELETE_SUCCESS}`)).click();
+
+    // click the "delete" button 
+    FU.buttons.delete();
+
     components.modalAction.confirm();
 
     FU.exists(by.id('delete_success'), true);
   });
 
   it('no way to delete a service', () => {
-    element(by.id(`service-del-${DELETE_ERROR}`)).click();
+    element(by.id(`service-upd-${DELETE_ERROR}`)).click();
+
+    // click the "delete" button 
+    FU.buttons.delete();
+
     components.modalAction.confirm();
     FU.exists(by.id('delete_error'), true);
   });
 
   it('cancellation of removal process of a service', () => {
-    element(by.id(`service-del-${DELETE_ERROR}`)).click();
+    element(by.id(`service-upd-${DELETE_ERROR}`)).click();
+
+    // click the "delete" button 
+    FU.buttons.delete();
+
     components.modalAction.dismiss();
     FU.exists(by.id('default'), true);
   });

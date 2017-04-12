@@ -11,7 +11,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe.only('Price Lists', () => {
+describe('Price Lists', () => {
   const path = '#!/prices';
   before(() => helpers.navigate(path));
 
