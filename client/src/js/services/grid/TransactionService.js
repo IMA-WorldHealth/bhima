@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
 TransactionService.$inject = [
-  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q'
+  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q', 'DateService'
 ];
 
 /**
@@ -21,7 +21,7 @@ TransactionService.$inject = [
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store, $q) {
+function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store, $q, Dates) {
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
@@ -303,23 +303,80 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * This method is used to check if a transaction is balanced by their record
    */
   function validateTransaction(entity) {
-    var transaction = entity.data.data;
-    var debit = 0,
-      credit = 0;
-    
-    transaction.forEach(function (row) {
-      debit += Number(row.debit_equiv);
-      credit += Number(row.credit_equiv);
+    var transaction = [];
+
+    // include transaction data
+    entity.data.data.forEach(function (row) {
+      transaction.push(row);
     });
 
-    var ERR_UNBALANCED_TXN = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS';
+    // include new rows
+    entity.newRows.data.forEach(function (row) {
+      transaction.push(row);
+    });
 
-    // later in validateTransaction()
+    var numberOfLine = transaction.length;
     var error;
 
-    if (debit !== credit) {
-      error = ERR_UNBALANCED_TXN;
+    // If the transaction are single line transaction 
+    if(numberOfLine === 1){
+      error = 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION';
+    } else {
+      var debit = 0,
+        credit = 0,
+        initialDate,
+        accountNull = false,
+        dateNull =  false,
+        dateDifferent = false,
+        dateWrongPeriod = false;
+
+      if(transaction[0].trans_date){
+        initialDate = transaction[0].trans_date; 
+      }
+        
+
+      transaction.forEach(function (row) {
+        debit += Number(row.debit_equiv);
+        credit += Number(row.credit_equiv);
+
+
+        // Check if they are account number Null
+        if(!row.account_number){
+          accountNull = true;
+        }
+
+        // Check if they are trans_date Null
+        if(!row.trans_date){
+          dateNull = true;
+        }
+
+        // Check if they are different Date 
+        if(Dates.util.str(row.trans_date) !== Dates.util.str(initialDate)){
+          dateDifferent = true;
+        }
+
+        // check if trans_date is in bed period
+        if(new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)){
+          dateWrongPeriod = true;
+        }
+      });
+
+      if(accountNull) {
+        error = 'POSTING_JOURNAL.ERRORS.MISSING_ACCOUNTS';
+      } else if (dateNull){
+        error = 'POSTING_JOURNAL.ERRORS.MISSING_DATES';
+      } else if (dateWrongPeriod){
+        error = 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD';
+      } else if (dateDifferent){
+        error = 'POSTING_JOURNAL.ERRORS.TRANSACTION_DIFF_DATES';
+      } else {
+        // later in validateTransaction()
+        if (debit !== credit) {
+          error = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS';
+        }        
+      }
     }
+
 
     return error;
   }
