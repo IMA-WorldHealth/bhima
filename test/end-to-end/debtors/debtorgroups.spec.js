@@ -47,7 +47,7 @@ describe.only('Debtor Groups Management', function () {
     // find the group by uuid
     const group = getGroupRow(DELETEABLE_DEBTOR_GROUP);
 
-    // delete the group
+    // delete the creditor group
     group.$('[data-method="update"]').click();
 
     // click the "delete" button
