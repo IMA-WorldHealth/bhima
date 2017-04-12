@@ -16,45 +16,30 @@ function TrialBalanceService(util, $http, $translate) {
   service.getRelatedTransaction = getRelatedTransaction;
   service.parseErrorRecord = parseErrorRecord;
 
-  function parseErrorRecord (records){
-    var list = [];
-
+  function parseErrorRecord(records) {
     /**
      * records is an array of items representing checks,
      * if there is an error or warning the item will be defined
      * with some descriptions about the errors or warnings
      */
-    records.forEach(function (record) {
-      var line = [];
-      var codeTranslated = null;
-
-      codeTranslated = $translate.instant(record.code);
-      line = record.transactions.map(function (item) {
-        return {code : codeTranslated, transaction : item};
-      });
-
-      list = list.concat(line);
+    return records.map(function (record) {
+      record.code = $translate.instant(record.code);
+      return record;
     });
-
-    return list;
   }
 
-  function  getCSSClass (feedBack) {
-    return feedBack.hasError ? 'grid-error' : feedBack.hasWarning ? 'grid-warning' : 'grid-success';
+  function getCSSClass(feedBack) {
+    return feedBack.hasError ? 'grid-error' : 'grid-success';
   }
 
   function getFeedBack(errors) {
     var feedBack = {};
 
     feedBack.hasError = errors.some(function (error) {
-        return error && error.fatal;
+      return error;
     });
 
-    feedBack.hasWarning = errors.some(function (error) {
-      return error && !error.fatal;
-    });
-
-    feedBack.hasSuccess = (!feedBack.hasWarning && !feedBack.hasError) ? true : false;
+    feedBack.hasSuccess = !feedBack.hasError;
 
     return feedBack;
   }
@@ -75,7 +60,7 @@ function TrialBalanceService(util, $http, $translate) {
 
     /** extract only an unique trans_id property and put it in an array*/
     lines.forEach(function (line) {
-      if(transactions.indexOf(line.trans_id) === -1){
+      if (transactions.indexOf(line.trans_id) === -1) {
         transactions.push(line.trans_id);
       }
     });
