@@ -58,7 +58,7 @@ describe('(/trial) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it.skip('POST /trial_balance/post_transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
+  it('POST /trial_balance/post_transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
     return agent.post('/trial_balance/post_transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
