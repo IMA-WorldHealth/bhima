@@ -38,8 +38,7 @@
             <tbody>
               <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
                 <td> {{ list.label }} </td>
-                <td><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="fa fa-pencil"></i></a></td>
-                <td><a class="btn btn-xs btn-default" id="price_delete_{{ $index+1 }}" ng-click="PriceListCtrl.del(list)" ><i class="fa fa-trash"></i></a></td>
+                <td colspan="2"><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="fa fa-pencil"></i></a></td>
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
                 <td colspan="3"><i translate> PRICE_LIST.NO_RECORDS </i></tr>
@@ -124,7 +123,6 @@
           </div>
         </div>
 
-
         <div class="panel panel-primary" ng-switch-when="update" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading" translate> PRICE_LIST.UPDATE </div>
           <div class="panel-body">
@@ -181,6 +179,17 @@
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+
+        <div class="panel panel-warning" ng-switch-when="update">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-danger" type="button" ng-click="PriceListCtrl.del(PriceListCtrl.priceList)" data-method="delete">
+              <span class="glyphicon glyphicon-trash"></span> <span translate> FORM.BUTTONS.DELETE </span>
+            </button>
           </div>
         </div>
 

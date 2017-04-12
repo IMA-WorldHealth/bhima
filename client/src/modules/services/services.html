@@ -41,9 +41,6 @@
                   <!-- <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index+1 }}"> -->
                   <!--   <span class="glyphicon glyphicon-eye-open"></span> -->
                   <!-- </a> -->
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index+1 }}">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </a>
                 </td>
               </tr>
             </tbody>
@@ -82,7 +79,7 @@
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
-            <h4 translate> ServicesCtrl.HTTPError.data.code </h4>
+            <h4 translate> {{ ServicesCtrl.HTTPError.data.code }} </h4>
             </p>
           </div>
         </div>
@@ -142,6 +139,18 @@
             </form>
           </div>
         </div>
+
+        <div class="panel panel-warning" ng-switch-when="update">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-danger" type="button" ng-click="ServicesCtrl.del(ServicesCtrl.service)" data-method="delete">
+              <span class="glyphicon glyphicon-trash"></span> <span translate> FORM.BUTTONS.DELETE </span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

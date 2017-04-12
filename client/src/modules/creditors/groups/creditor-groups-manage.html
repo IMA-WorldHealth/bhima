@@ -54,7 +54,19 @@
             </bh-loading-button>
           </div>
         </div>
-      </form>
+
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-danger" type="button" ng-click="CreditorGroupCtrl.deleteGroup(CreditorGroupCtrl.bundle.uuid)" data-method="delete">
+              <span class="glyphicon glyphicon-trash"></span> <span translate> FORM.BUTTONS.DELETE </span>
+            </button>
+          </div>
+        </div>
+
+      </form>      
     </div>
   </div>
 </div>

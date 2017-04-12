@@ -3,7 +3,7 @@
 "CREATE_ANOTHER":"Créer un autre Groupe débiteur",
 "CREATED":"Groupes débiteurs enregistrés avec succès",
 "DEBTOR":{"SUBSCRIBED":"Debiteurs souscris"},
-"DELETE":"Supprimer un groupe débiteur",
+"DELETE":"Supprimer le groupe débiteur",
 "EDIT":"Editer le groupe debiteur",
 "FAILURE_DELETE":"Echec de suppression du groupe débiteurs",
 "GROUPS":"Groupes Débiteurs",
