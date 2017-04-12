@@ -7,7 +7,7 @@ helpers.configure(chai);
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 
-describe.only('Debtor Groups Management', function () {
+describe('Debtor Groups Management', function () {
   'use strict';
 
   let initialGroups = 3;

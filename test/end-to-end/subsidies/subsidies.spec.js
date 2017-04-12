@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Subsidies', () => {
+describe.only('Subsidies', () => {
   const path = '#!/subsidies';
   before(() => helpers.navigate(path));
 
@@ -63,7 +63,10 @@ describe('Subsidies', () => {
   });
 
   it('deletes a subsidy', () => {
-    element(by.id(`subsidy-del-${subsidyRank}`)).click();
+    element(by.id(`subsidy-upd-${subsidyRank}`)).click();
+
+    // click the "delete" button
+    FU.buttons.delete();
 
     // click the alert asking for permission
     components.modalAction.confirm();
