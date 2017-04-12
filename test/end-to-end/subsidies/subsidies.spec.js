@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe.only('Subsidies', () => {
+describe('Subsidies', () => {
   const path = '#!/subsidies';
   before(() => helpers.navigate(path));
 
