@@ -20,6 +20,7 @@ describe('Creditor Groups Management', () => {
 
   const group = {
     name         : `E2E Creditor Group ${uniqueIdentifier}`,
+    delete_name  : `Fournisseur [Creditor Group Test]`,
     updated_name : `E2E Creditor Group Updated ${uniqueIdentifier}`,
     account      : '41001',
   };
@@ -49,17 +50,23 @@ describe('Creditor Groups Management', () => {
     components.notification.hasSuccess();
   });
 
-  it('Cannot delete a used creditor group', () => {
-    element(by.css(`[data-delete="${USED_CREDITOR_GROUP}"]`)).click();
-
-    FU.buttons.submit();
-    components.notification.hasError();
-  });
-
   it('Delete a creditor group', () => {
-    element(by.css(`[data-delete="${group.updated_name}"]`)).click();
+    element(by.css(`[data-update="${group.updated_name}"]`)).click();
+    
+    // click the "delete" button
+    FU.buttons.delete();
 
     FU.buttons.submit();
     components.notification.hasSuccess();
+  });
+
+  it('Cannot delete a used creditor group', () => {
+    element(by.css(`[data-update="${group.delete_name}"]`)).click();
+
+    // click the "delete" button
+    FU.buttons.delete();
+
+    FU.buttons.submit();
+    components.notification.hasError();
   });
 });

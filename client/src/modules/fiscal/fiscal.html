@@ -2,16 +2,16 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="static" translate> TREE.FINANCE </li>
       <li class="title">
-        {{ "TREE.FISCAL_YEAR" | translate }}
+        <span translate> TREE.FISCAL_YEAR </span>
 
-        <span class="label label-success" ng-show="FiscalCtrl.state.current.name==='fiscal.create'">
-          {{ "FORM.LABELS.CREATE" | translate }}
+        <span class="label label-success" ng-show="FiscalCtrl.state.current.name==='fiscal.create'" translate>
+          FORM.LABELS.CREATE
         </span>
 
-        <span class="label label-info" ng-show="FiscalCtrl.state.current.name==='fiscal.update'">
-          {{ "FORM.LABELS.UPDATE" | translate }}
+        <span class="label label-info" ng-show="FiscalCtrl.state.current.name==='fiscal.update'" translate>
+          FORM.LABELS.UPDATE
         </span>
       </li>
     </ol>
@@ -20,11 +20,11 @@
       <div class="toolbar-item">
         <a
           ng-if="FiscalCtrl.state.current.name==='fiscal.list'"
-          class="btn btn-default"
+          class="btn btn-default text-capitalize"
           data-method="create"
           ui-sref="fiscal.create">
           <i class="fa fa-plus"></i>
-          {{ 'FISCAL.CREATE_FISCAL_YEAR' | translate }}
+          <span translate> FISCAL.CREATE_FISCAL_YEAR </span>
         </a>
       </div>
       <div
@@ -33,7 +33,7 @@
         <button
           class="btn btn-default"
           ng-click="FiscalCtrl.back()">
-          <i class="fa fa-arrow-circle-left"></i> {{ "FISCAL.BACK" | translate }}
+          <i class="fa fa-arrow-circle-left"></i><span translate> FISCAL.BACK </span>
         </button>
       </div>
     </div>

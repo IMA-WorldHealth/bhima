@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'ModalService', 'NotifyService'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'NotifyService'];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic
@@ -13,7 +13,7 @@ DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval, Modal, Notify) {
+function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval, Notify) {
   var vm = this;
 
   // pagination configuration
@@ -26,8 +26,6 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
   vm.setOrder = setOrder;
 
   vm.state = $state;
-
-  vm.deleteGroup = deleteGroup;
 
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
@@ -61,26 +59,6 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
     }
   }
 
-  /**
-   * @function deleteGroup
-   * @description delete a creditor group
-   */
-  function deleteGroup(groupUuid) {
-    Modal.confirm()
-      .then(function (confirmResponse) {
-        if (!confirmResponse) {
-          return false;
-        }
-
-        // user has confirmed removal of debtor group
-        return DebtorGroups.remove(groupUuid)
-          .then(function () {
-            Notify.success('FORM.INFO.DELETE_SUCCESS');
-            $state.go('debtorGroups.list', null, {reload : true});
-          })
-          .catch(Notify.handleError);
-      })
-  }
 
   function setOrder(attribute) {
     vm.sort = attribute;

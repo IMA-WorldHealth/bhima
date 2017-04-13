@@ -198,6 +198,20 @@ function JournalController(Journal, Sorting, Grouping,
       visible          : false,
       enableCellEdit   : false },
 
+    { field            : 'debit',
+      displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
+      headerCellFilter : 'translate',
+      visible          : false,
+      cellTemplate     : '/modules/journal/templates/debit.grid.html',
+      enableCellEdit   : false },
+
+    { field            : 'credit',
+      displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
+      headerCellFilter : 'translate',
+      visible          : false,
+      cellTemplate     : '/modules/journal/templates/credit.grid.html',
+      enableCellEdit   : false },
+
     { field            : 'hrEntity',
       displayName      : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter : 'translate',
@@ -380,11 +394,12 @@ function JournalController(Journal, Sorting, Grouping,
         load(vm.filters);
       })
       .catch(function (error) {
-        if(error === 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS'){
+        if (!error.status){
           Notify.warn(error);
         } else {
           Notify.handleError(error);
         }
+
       });
   }
 

@@ -3,7 +3,7 @@
 "CREATE_ANOTHER":"Create another Debtor Group",
 "CREATED":"Debtor group recorded successfully",
 "DEBTOR":{"SUBSCRIBED":"Subcribed debtor(s)"},
-"DELETE":"Delete a Debtor Group",
+"DELETE":"Delete Debtor Group",
 "EDIT":"Edit Debtor Group",
 "FAILURE_DELETE":"Failure of the deletion of the debtor group",
 "GROUPS":"Debtor Groups",

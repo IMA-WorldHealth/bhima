@@ -1,17 +1,17 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="title">{{ "TREE.TRANSACTION_TYPE" | translate }}</li>
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.TRANSACTION_TYPE </li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
         <button type="button"
-          class="btn btn-default"
+          class="btn btn-default text-capitalize"
           data-method="create"
           ng-click="TypeCtrl.addType()">
-          <i class="fa fa-plus-circle"></i> {{ 'FORM.LABELS.ADD' | translate }}
+          <i class="fa fa-plus"></i> <span translate> FORM.LABELS.ADD </span>
         </button>
       </div>
     </div>

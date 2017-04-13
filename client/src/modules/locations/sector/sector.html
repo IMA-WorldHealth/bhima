@@ -7,8 +7,8 @@
     </ol>
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default" ng-click="SectorCtrl.create()" data-method="create">
-          <i class="fa fa-plus-square"></i> <span translate>SECTOR.NEW_SECTOR</span>
+        <button class="btn btn-default text-capitalize" ng-click="SectorCtrl.create()" data-method="create">
+          <i class="fa fa-plus"></i> <span translate>SECTOR.NEW_SECTOR</span>
         </button>
       </div>
     </div>
@@ -18,7 +18,7 @@
 <!-- Links to the main menu of management maps as well as the button for adding Sectors -->
 <div class="flex-util">
   <button ui-sref="locations" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
+    <span class="glyphicon glyphicon-globe"></span><span translate> LOCATION.LOCATION_MANAGER </span>
   </button>
 </div>
 
@@ -29,16 +29,16 @@
     <!-- Complete list of registered sectors -->
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading">
-            {{ 'SECTOR.REGISTERED' | translate }}
+          <div class="panel-heading" translate>
+            SECTOR.REGISTERED
           </div>
 
           <table class="table table-condensed">
             <thead>
                <tr>
-                <th>{{ 'TABLE.COLUMNS.NAME' | translate}}</th>
-                <th>{{ 'TABLE.COLUMNS.PROVINCE' | translate}}</th>
-                <th>{{ 'TABLE.COLUMNS.ACTION' | translate}}</th>
+                <th translate> TABLE.COLUMNS.NAME</th>
+                <th translate> TABLE.COLUMNS.PROVINCE </th>
+                <th translate> TABLE.COLUMNS.ACTION </th>
               </tr>
             </thead>
             <tbody>
@@ -60,33 +60,33 @@
       <div class="col-xs-6" ng-switch="SectorCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
-            <h4>{{ 'SECTOR.CONFIG' | translate }}</h4>
-            <p>{{ 'SECTOR.INFO' | translate }}</p>
+            <h4 translate> SECTOR.CONFIG </h4>
+            <p translate> SECTOR.INFO </p>
           </div>
         </div>
 
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.SAVE_SUCCESS </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
+            <h4 translate> FORM.INFO.UPDATE_SUCCESS </h4>
           </div>
         </div>
 
         <!-- Form for adding Sector -->
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ 'SECTOR.REGISTER' | translate }}</div>
+          <div class="panel-heading" translate> SECTOR.REGISTER </div>
           <div class="panel-body">
             <form name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
                   class="form-control"
                   name="country"
@@ -95,7 +95,7 @@
                   ng-options="c.uuid as c.name for c in SectorCtrl.countries | orderBy:'name'"
                   ng-change="SectorCtrl.loadProvinces()"
                   required>
-                  <option value="" disabled> -- {{ SectorCtrl.messages.country | translate }} -- </option>
+                  <option value="" disabled translate> {{ SectorCtrl.messages.country }} </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -103,7 +103,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
                 <select
                   class="form-control"
                   name="province"
@@ -111,7 +111,7 @@
                   id="province"
                   ng-options="p.uuid as p.name for p in SectorCtrl.provinces | orderBy:'name'"
                   required>
-                  <option value="" disabled> -- {{ SectorCtrl.messages.province | translate }} -- </option>
+                  <option value="" disabled translate> {{ SectorCtrl.messages.province  }} </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -119,7 +119,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sector.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.SECTOR </label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" autocomplete="off" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="CreateForm.sector.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -127,11 +127,11 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-sector" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                <button class="btn btn-default" id="submit-sector" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SAVE
                 </button>
-                <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.BUTTONS.RESET" | translate }}
+                <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.RESET
                 </button>
               </div>
 
@@ -141,11 +141,11 @@
 
         <!-- Form for updating Sector -->
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'SECTOR.EDIT' | translate }}</div>
+          <div class="panel-heading" translate> SECTOR.EDIT </div>
           <div class="panel-body">
             <form name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
                   class="form-control"
                   name="country"
@@ -154,7 +154,7 @@
                   ng-options="c.uuid as c.name for c in SectorCtrl.countries | orderBy:'name'"
                   ng-change="SectorCtrl.loadProvinces()"
                   required>
-                  <option value="" disabled> -- {{ SectorCtrl.messages.country | translate }} -- </option>
+                  <option value="" disabled translate> {{ SectorCtrl.messages.country }} </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -162,7 +162,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
                 <select
                   class="form-control"
                   name="province"
@@ -170,7 +170,7 @@
                   id="province"
                   ng-options="p.uuid as p.name for p in SectorCtrl.provinces | orderBy:'name'"
                   required>
-                  <option value="" disabled> -- {{ SectorCtrl.messages.province | translate }} -- </option>
+                  <option value="" disabled> {{ SectorCtrl.messages.province }} </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -178,7 +178,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sector.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.SECTOR </label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" autocomplete="off" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="UpdateForm.sector.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -186,11 +186,11 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="change_sector" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SAVE" | translate }}
+                <button class="btn btn-default" id="change_sector" type="submit" data-method="submit" translate>
+                  FORM.BUTTONS.SAVE
                 </button>
-                <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.BUTTONS.RESET" | translate }}
+                <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel" translate>
+                  FORM.BUTTONS.RESET
                 </button>
               </div>
             </form>
