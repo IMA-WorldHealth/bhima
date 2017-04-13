@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', '$http', 'util',
+  'PrototypeApiService', '$http', 'util', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, $http, util) {
+function AccountService(Api, $http, util, bhConstants) {
   var baseUrl = '/accounts/';
   var service = new Api(baseUrl);
 
@@ -19,6 +19,7 @@ function AccountService(Api, $http, util) {
 
   service.getBalance = getBalance;
   service.getChildren = getChildren;
+  service.filterTitleAccounts = filterTitleAccounts;
 
   service.flatten = flatten;
   service.order = order;
@@ -59,6 +60,12 @@ function AccountService(Api, $http, util) {
 
   function label(account) {
     return account.number + ' - ' + account.label;
+  }
+
+  function filterTitleAccounts(accounts) {
+    return accounts.filter(function (account) {
+      return account.type_id !== bhConstants.accounts.TITLE;
+    });
   }
 
   /**

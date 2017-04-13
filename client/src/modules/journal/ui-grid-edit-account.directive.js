@@ -30,7 +30,7 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
 
           Accounts.read()
             .then(function (accounts) {
-              $scope.accounts = accounts;
+              $scope.accounts = Accounts.filterTitleAccounts(accounts);
               setInitialAccountValue();
             });
 
@@ -62,7 +62,6 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
           });
 
           $scope.setAccountOnRow = function (row, account) {
-            console.log('account:', account);
             row.account_id = account.id;
             row.account_name = account.label;
             row.account_number = account.number;
