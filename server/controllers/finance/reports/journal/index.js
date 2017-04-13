@@ -53,7 +53,7 @@ function postingJournalExport(req, res, next) {
  */
 function postedJournalExport(req, res, next) {
   const options = _.extend(req.query, {
-    filename                 : 'POSTING_JOURNAL.TITLE',
+    filename                 : 'TREE.POSTED_JOURNAL',
     orientation              : 'landscape',
     csvKey                   : 'rows',
     suppressDefaultFiltering : true,
