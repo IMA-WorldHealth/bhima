@@ -313,11 +313,12 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         load(vm.filters);
       })
       .catch(function (error) {
-        if(error === 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS'){
+        if (!error.status){
           Notify.warn(error);
         } else {
           Notify.handleError(error);
         }
+
       });
   }
 
