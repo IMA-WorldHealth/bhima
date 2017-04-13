@@ -256,20 +256,29 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-    var parameters = angular.copy(vm.filters);
-    Config.openSearchModal(parameters)
-      .then(function (options) {
+
+    var filtersSnapshot = Journal.filters.formatHTTP();
+
+    Config.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
         // if the options are not returned or have not changed, do not refresh
         // the data source
-        if (angular.equals(options, vm.filters)) { return; }
+
+        // if (angular.equals(options, vm.filters)) { return; }
 
         // bind filters to the view and format appropriate
-        cacheFilters(options);
+        // cacheFilters(options);
 
         // turn loading on
+
+        // search controller should return a well formatted list of key:value objects
+        Journal.filters.assignFilters(changes);
+        Journal.cacheFilters();
+
         toggleLoadingIndicator();
 
-        return load(options);
+        vm.latestViewFilters = Journal.filters.formatView();
+        return load(Journal.filters.formatHTTP());
       })
       .catch(angular.noop);
   };

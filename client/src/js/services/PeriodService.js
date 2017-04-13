@@ -56,6 +56,11 @@ function PeriodService(Moment) {
     allTime : {
       key : 'allTime',
       translateKey : 'PERIODS.ALL_TIME'
+    },
+
+    custom : {
+      key : 'custom',
+      translateKey : 'PERIODS.CUSTOM'
     }
   };
   var categories = {
@@ -97,4 +102,41 @@ function PeriodService(Moment) {
       end : function () { return Moment().set(periodKey, currentPeriod + dateModifier).endOf(periodKey).format(service.dateFormat); }
     }
   }
+
+  // using these two methods gaurantees that period and custom period filters are never interchanged
+
+  // returns an array of filters that should be applied given the new period selected
+  // responsible for ensuring that custom period start and end are never included with the period filter
+  service.processFilterChanges = function processFilterChanges(period, periodKey, customStartKey, customEndKey) {
+    var periodChanges = [];
+
+    if (period === periods.custom) {
+      // ensure period key is empty
+      periodChanges.push({ key : 'period', value : null });
+
+      // populate custom values
+      periodChanges.push({ key : 'custom_period_start', value : period.startTime });
+      periodChanges.push({ key : 'custom_period_end', value : period.endTime });
+    } else {
+
+      // ensure custom period options are removed
+      periodChanges.push({ key : 'custom_period_start', value : null });
+      periodChanges.push({ key : 'custom_period_end', value : null });
+
+      periodChanges.push({ key : 'period', value : period.key, displayValue : period.translateKey });
+    }
+
+    return periodChanges;
+  }
+
+  service.defaultFilters = function defaultFilters(periodKey, customStartKey, customEndKey) {
+    var defaultPeriod = periods.today;
+    return [
+      { key : 'period', value : defaultPeriod.key, displayValue : defaultPeriod.translateKey },
+      { key : 'custom_period_start', value : null },
+      { key : 'custom_period_end', value : null }
+    ];
+  }
+
+// accepts a target array and an array of values, if any of the values are in the array
 }

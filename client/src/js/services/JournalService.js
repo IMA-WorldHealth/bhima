@@ -60,9 +60,17 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
 
   $log.debug('[JournalService] Created filter list:', journalFilters);
 
+
+  // @TODO Areas to clean up/ abstract with custom filters:
+  //       1. ensuring that both period and custom_period is not assigned is the responsibility of the entity service
+  //       2. custom periods are not handled by the filter parser `period` method
+  var periodFilters = ['period', 'custom_period_start', 'custom_period_end'];
+
   // default filtes will always be applied
   journalFilters.registerDefaultFilters([
-      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' }]);
+      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+      { key : 'custom_period_start', label : 'TABLE.COLUMNS.PERIOD_START', valueFilter : 'date' },
+      { key : 'custom_period_end', label : 'TABLE.COLUMNS.PERIOD_END', valueFilter : 'date' }]);
       // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
       // { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
@@ -76,16 +84,22 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
 
   // configure module defaults
   if (filterCache.filters) {
-
-    $log.debug('[JournalService] Found filter cache, using:', filterCache.filters);
     // load cached filter definition if it exists
     journalFilters.loadCache(filterCache.filters);
-  } else {
-    $log.debug('[JournalService] No filters cache found, default values used');
-    // set default values
-    var defaultPeriod = Periods.index.today;
-    journalFilters.assignFilters([
-        { key : 'period', value : defaultPeriod.key, displayValue : defaultPeriod.translateKey }]);
+  }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(journalFilters.formatHTTP());
+
+    var periodDefined = service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    if (!periodDefined) {
+      journalFilters.assignFilters(Periods.defaultFilters());
+    }
+    // if (assignedKeys.indexOf('limit') === -1) {
   }
 
 
@@ -102,6 +116,10 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
   // load filters from cache
   service.cacheFilters = function cacheFilters() {
     filterCache.filters = journalFilters.formatCache();
+  }
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    journalFilters.loadCache(filterCache.filters || {});
   }
 
   // expose methods for search configuration

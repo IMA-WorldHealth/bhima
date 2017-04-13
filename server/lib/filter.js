@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const moment = require('moment');
 
+const Periods = require('./period');
+
 const RESERVED_KEYWORDS = ['limit', 'detailed'];
 const DEFAULT_LIMIT_KEY = 'limit';
 const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
@@ -9,11 +11,12 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 //
 // IF no client_timestamp is passed with the request, the server's timestamp is used
 // IF a client_timestamp is passed the client timestamp is used
-const PERIODS = {
-  today : () => { return { start : moment().toDate(), end : moment().toDate() } },
-  week : () => { return { start : moement().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
-  month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
-};
+// const PERIODS = {
+  // today : () => { return { start : moment().toDate(), end : moment().toDate() } },
+  // week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
+  // month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
+// };
+
 /**
  * @class FilterParser
  *
@@ -50,7 +53,8 @@ class FilterParser {
     this._tableAlias = options.tableAlias || null;
     this._limitKey = options.limitKey || DEFAULT_LIMIT_KEY;
     this._order = '';
-    this._parseUuids = options.parseUuids || true;
+    this._parseUuids = _.isUndefined(options.parseUuids) ? true : options.parseUuids;
+    this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? true : options.autoParseStatements;
   }
 
   /**
@@ -82,13 +86,20 @@ class FilterParser {
     let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      const targetPeriod = PERIODS[this._filters[filterKey]]();
+      const period = new Periods();
+      const targetPeriod = period.lookupPeriod(this._filters[filterKey]);
+
+      // specific base case - if all time requested to not apply a date filter
+      if (targetPeriod === period.periods.allTime) {
+        delete this._filters[filterKey];
+        return;
+      }
 
       let periodFromStatement = `DATE(${tableString}${columnAlias}) >= DATE(?)`;
       let periodToStatement = `DATE(${tableString}${columnAlias}) <= DATE(?)`;
 
-      this._addFilter(periodFromStatement, targetPeriod.start);
-      this._addFilter(periodToStatement, targetPeriod.end);
+      this._addFilter(periodFromStatement, targetPeriod.limit.start());
+      this._addFilter(periodToStatement, targetPeriod.limit.end());
       delete this._filters[filterKey];
     }
   }
@@ -179,7 +190,10 @@ class FilterParser {
     // optionally call utility method to parse all remaining options as simple
     // equality filters into `_statements`
     let limitCondition = this._parseLimit();
-    this._parseDefaultFilters();
+
+    if (this._autoParseStatements) {
+      this._parseDefaultFilters();
+    }
     let conditionStatements = this._parseStatements();
     let order = this._order;
 

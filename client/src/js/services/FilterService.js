@@ -110,9 +110,10 @@ function FilterService($log, Store) {
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {
     Object.keys(storedCache).forEach(function (key) {
+      var cached = storedCache[key];
       var currentFilter = this._filterIndex[key];
       if(currentFilter) {
-        storedCache[key].assign(cached._value, cache._displayValue);
+        currentFilter.assign(cached._value, cached._displayValue);
       }
     }.bind(this));
   }

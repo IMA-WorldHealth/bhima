@@ -29,9 +29,10 @@ function PeriodSelect(Periods) {
     ctrl.expanded = !ctrl.expanded;
   }
   ctrl.selectPeriod = function selectPeriod(key) {
-    ctrl.onSelectCallback({ key : key});
+    var period = Periods.definition(key);
+    ctrl.onSelectCallback({ key : period });
     ctrl.toggleSelectionOptions();
 
-    ctrl.period = Periods.definition(key);
+    ctrl.period = period;
   }
 }

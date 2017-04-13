@@ -89,7 +89,7 @@ function lookupTransaction(record_uuid) {
  * return all items in the posting journal
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'p' });
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
@@ -111,6 +111,8 @@ function find(options) {
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
   `;
+
+  filters.period('period', 'trans_date');
 
   filters.dateFrom('dateFrom', 'trans_date');
   filters.dateTo('dateTo', 'trans_date');

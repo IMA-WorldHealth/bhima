@@ -2,19 +2,21 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'UserService', 'ProjectService', 'NotifyService', 'options'
+  '$uibModalInstance', 'UserService', 'ProjectService', 'NotifyService', 'Store', 'options', 'PeriodService'
 ];
 
-function JournalSearchModalController(Instance, Users, Projects, Notify, options) {
+function JournalSearchModalController(Instance, Users, Projects, Notify, Store, options, Periods) {
   var vm = this;
 
-  vm.options = options || {};
+  var changes = new Store({ identifier : 'key' });
 
-  // set up this module's default qurries
-  vm.options.defaults = {};
-  vm.options.custom = {};
-  // object for tracking additional filter queries
+  var filters = options;
 
+  // return an array of changes to be made, this will be applied by the controller
+  // this should be well unit tested
+  vm.filters = filters;
+
+  console.log('got filters', filters);
 
   Users.read()
     .then(function (users) {
@@ -37,8 +39,12 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
   // this module should also send a `client_timestamp` so that the server's calculations
   // can be based on the client - this was the client does not need to calculate the periods
   // unless they are being updated
-  vm.onSelectPeriod = function onSelectPeriod(key) {
-    console.log('controller on select called with', key);
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
   };
 
   // deletes a filter from the options/parameters
@@ -52,13 +58,17 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit(form) {
-    if (form.$invalid) { return; }
+    // if (form.$invalid) { return; }
+
 
     // @TODO decide if modal should be responsible for defining actual filters or
     // should just return options object for controller to sort into Filters
-    console.log('submitting with options', vm.options);
+    console.log('changes', changes.getAll());
 
+    // @TODO parse form for changes - push into changes with correct format
+    var loggedChanges = changes.getAll();
     // return values to the JournalController
     // return Instance.close(vm.options);
+    return Instance.close(loggedChanges);
   };
 }
