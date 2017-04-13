@@ -164,6 +164,10 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       enableFiltering: false
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
+    { field : 'debit', displayName : 'TABLE.COLUMNS.DEBIT_SOURCE', headerCellFilter: 'translate', 
+      visible: false, cellTemplate: '/modules/journal/templates/debit.grid.html', enableCellEdit: false },
+    { field : 'credit', displayName : 'TABLE.COLUMNS.CREDIT_SOURCE', headerCellFilter: 'translate', 
+      visible: false, cellTemplate: '/modules/journal/templates/credit.grid.html', enableCellEdit: false },
     { field : 'hrEntity', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: true },
     { field : 'hrReference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: true },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
