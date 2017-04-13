@@ -27,7 +27,10 @@ exports.accountSlip = renderAccountSlip;
  * @method report
  */
 function renderReport(req, res, next) {
-  const options = _.extend(req.query, { filename: 'TREE.GENERAL_LEDGER', csvKey: 'rows' });
+  const options = _.extend(req.query, {
+    filename : 'TREE.GENERAL_LEDGER',
+    csvKey   : 'rows',
+  });
   let report;
   let data;
 
@@ -56,7 +59,11 @@ function renderReport(req, res, next) {
  */
 function renderAccountSlip(req, res, next) {
   const params = req.params;
-  const options = _.extend(req.query, { filename: 'GENERAL_LEDGER.ACCOUNT_SLIP', csvKey: 'rows' });
+  const options = _.extend(req.query, {
+    filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
+    csvKey   : 'transactions',
+  });
+
   let report;
 
   try {

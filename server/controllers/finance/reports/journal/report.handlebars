@@ -10,7 +10,11 @@
 
       <!-- page title  -->
       <h2 class="text-center text-uppercase">
-        {{translate 'POSTING_JOURNAL.TITLE'}}
+        {{#if isPosted}}
+          {{translate 'TREE.POSTED_JOURNAL'}}
+        {{else}}
+          {{translate 'POSTING_JOURNAL.TITLE'}}
+        {{/if}}
       </h2>
 
       <br>

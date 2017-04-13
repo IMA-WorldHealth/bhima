@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 GeneralLedgerAccountsController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService',
-  'uiGridConstants', 'ReceiptModal',
+  'uiGridConstants', 'ReceiptModal', 'ExportService',
 ];
 
 /**
@@ -12,7 +12,8 @@ GeneralLedgerAccountsController.$inject = [
  * @description
  * This controller is responsible for displaying accounts and their balances
  */
-function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridConstants, Receipts) {
+function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
+  uiGridConstants, Receipts, Export) {
   var vm = this;
   var columns;
 
@@ -63,6 +64,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
   vm.gridApi = {};
   vm.loading = true;
   vm.slip = slip;
+  vm.slipCsv = slipCsv;
   vm.toggleFilter = toggleFilter;
 
   vm.gridOptions = {
@@ -100,6 +102,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify, uiGridC
   function slip(id) {
     Receipts.accountSlip(id);
   }
+
+  function slipCsv(id) {
+    var params = { renderer: 'csv' };
+    var url = '/reports/finance/general_ledger/'.concat(id);
+    Export.download(url, params, 'GENERAL_LEDGER.ACCOUNT_SLIP', 'export-'.concat(id));
+  }
+
 
   GeneralLedger.accounts.read()
     .then(loadData)

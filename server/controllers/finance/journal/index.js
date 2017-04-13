@@ -86,8 +86,9 @@ function lookupTransaction(recordUuid) {
  * the options object.  If no query parameters are provided, the method will
  * return all items in the posting journal
  */
-function find(options) {
+function find(options, source) {
   const filters = new FilterParser(options, { tableAlias: 'p' });
+  const origin = source || 'posting_journal';
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
@@ -99,7 +100,7 @@ function find(options) {
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, u.display_name
-    FROM posting_journal p
+    FROM ${origin} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
@@ -129,8 +130,9 @@ function find(options) {
  * @function journalEntryList
  * Allows you to select which transactions to print
  */
-function journalEntryList(options) {
+function journalEntryList(options, source) {
   const uuids = options.uuids.map(uid => db.bid(uid));
+  const origin = source || 'posting_journal';
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
@@ -142,7 +144,7 @@ function journalEntryList(options) {
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, u.display_name
-    FROM posting_journal p
+    FROM ${origin} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
