@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('AccountService', AccountService);
+  .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  '$http', 'util', 'SessionService'
+  'PrototypeApiService', '$http', 'util',
 ];
 
 /**
@@ -10,9 +10,9 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService($http, util, Session) {
-  var service = this;
+function AccountService(Api, $http, util) {
   var baseUrl = '/accounts/';
+  var service = new Api(baseUrl);
 
   service.read = read;
   service.label = label;
@@ -22,9 +22,6 @@ function AccountService($http, util, Session) {
 
   service.flatten = flatten;
   service.order = order;
-  service.create = create;
-  service.update = update;
-  service.delete = del;
 
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
@@ -135,44 +132,6 @@ function AccountService($http, util, Session) {
 
     // return a flattened tree (in order)
     return flatten(tree);
-  }
-
-  /**
-   * @helper
-   * This Method Creat an account
-   */
-  function create(account) {
-    return $http.post(baseUrl, account)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * @method update
-   *
-   * @description
-   * Updates the account in the database..
-   *
-   * @param {Number} id - account id to update
-   * @param {Object} account - account to update
-   *
-   * @example
-   * service.update(id, account)
-   * .then(function (res){
-   *   // your code here
-   *  });
-   */
-  function update(id, account) {
-    return $http.put(baseUrl.concat(id), account)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-  * @methode del an account
-  * Delete the account in the Data Base
-  */
-  function del(accountId){
-    return $http.delete(baseUrl.concat(accountId))
-    .then(util.unwrapHttpResponse);
   }
 
   return service;

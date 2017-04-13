@@ -6,7 +6,7 @@ JournalController.$inject = [
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', 'Store', 'uiGridGroupingConstants',
+  'AppCache', 'Store', 'uiGridGroupingConstants', 'AccountService',
 ];
 
 /**
@@ -28,11 +28,16 @@ JournalController.$inject = [
  *   - Tun trial balance validation on transactions
  *
  * @todo Propose utility bar view design
- *
- * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants, Accounts) {
   var vm = this;
+
+  // Journal utilities
+  var sorting;
+  var grouping;
+  var filtering;
+  var columnConfig;
+  var transactions;
 
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
@@ -41,14 +46,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // @todo - this doesn't work with the ui-grid-datepicker-edit library yet.
   vm.DATEPICKER_OPTIONS = { format: bhConstants.dates.format };
-
-  // Journal utilities
-  var sorting;
-  var grouping;
-  var filtering;
-  var columnConfig;
-  var transactions;
-  var editors; // editors is affected but not used
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -76,10 +73,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // configuration options
   sorting = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
-  grouping  = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
+  grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
-  editors = new Editors(vm.gridOptions);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -144,7 +140,10 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     },
     { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true, enableCellEdit : false },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
-    { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
+    { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate',
+      editableCellTemplate: '<div><form name="inputForm"><div ui-grid-edit-account ng-class="\'colt\' + col.uid"></div></form></div>',
+      enableCellEdit: true,
+    },
     { field : 'debit_equiv',
       displayName : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter: 'translate',
@@ -152,7 +151,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
       },
-      enableFiltering: false
+      enableFiltering: false,
     }, {
       field : 'credit_equiv',
       displayName : 'TABLE.COLUMNS.CREDIT',
@@ -161,7 +160,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
       },
-      enableFiltering: false
+      enableFiltering: false,
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
     { field : 'debit', displayName : 'TABLE.COLUMNS.DEBIT_SOURCE', headerCellFilter: 'translate', 
@@ -305,6 +304,18 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
     // disable inline filtering when editing
     filtering.disableInlineFiltering();
+
+    // only load the accounts once - on first edit
+    if (!vm.accounts) {
+      loadAccounts();
+    }
+  }
+
+  function loadAccounts() {
+    Accounts.read()
+      .then(function (accounts) {
+        vm.accounts = accounts;
+      });
   }
 
   vm.saveTransaction = saveTransaction;
@@ -317,12 +328,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         load(vm.filters);
       })
       .catch(function (error) {
-        if (!error.status){
+        if (!error.status) {
           Notify.warn(error);
         } else {
           Notify.handleError(error);
         }
-
       });
   }
 
@@ -335,6 +345,14 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       vm.grouping.changeGrouping('trans_id');
       vm.grouped = cache.grouped = true;
     }
+  };
+
+  vm.saveAccountEdit = function saveAcconutEdit(row, account) {
+    console.log('Account Editing:', row, account);
+
+    row.account_id = account.id;
+    row.account_name = account.hrlabel;
+    $rootScope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
   };
 
   function cancelEdit() {
