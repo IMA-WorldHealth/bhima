@@ -46,6 +46,8 @@
 "UNBALANCED_TRANSACTIONS":"Unbalanced Transaction(s)",
 "MISSING_ACCOUNTS":"Accounts omitted",
 "MISSING_DATES":"Missing Dates",
+"DEB_CRED_NOT_NULL" : "Debit and Credit should not be Zero",
+"CREDITED_DEBITED" : "On the same transaction line an account can not be debited and credited at the same time",
 "MISSING_DOCUMENT_ID":"Records without document ID",
 "MISSING_ENTITY":"Record without entity ID",
 "MISSING_FISCAL_OR_PERIOD":"Fiscal year or period omitted",

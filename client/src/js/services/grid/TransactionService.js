@@ -318,65 +318,79 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     var numberOfLine = transaction.length;
     var error;
 
+    var ERR_SINGLE_LINE_TRANSACTION = 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION',
+      ERR_MISSING_ACCOUNTS = 'POSTING_JOURNAL.ERRORS.MISSING_ACCOUNTS',
+      ERR_MISSING_DATES = 'POSTING_JOURNAL.ERRORS.MISSING_DATES',
+      ERR_DATE_IN_WRONG_PERIOD = 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD',
+      ERR_TRANSACTION_DIFF_DATES = 'POSTING_JOURNAL.ERRORS.TRANSACTION_DIFF_DATES',
+      ERR_UNBALANCED_TRANSACTIONS = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS',
+      ERR_DEB_CRED_NOT_NULL = 'POSTING_JOURNAL.ERRORS.DEB_CRED_NOT_NULL',
+      ERR_CREDITED_DEBITED = 'POSTING_JOURNAL.ERRORS.CREDITED_DEBITED';
+
     // If the transaction are single line transaction 
     if(numberOfLine === 1){
-      error = 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION';
-    } else {
-      var debit = 0,
-        credit = 0,
-        initialDate,
-        accountNull = false,
-        dateNull =  false,
-        dateDifferent = false,
-        dateWrongPeriod = false;
-
-      if(transaction[0].trans_date){
-        initialDate = transaction[0].trans_date; 
-      }
-        
-
-      transaction.forEach(function (row) {
-        debit += Number(row.debit_equiv);
-        credit += Number(row.credit_equiv);
-
-
-        // Check if they are account number Null
-        if(!row.account_number){
-          accountNull = true;
-        }
-
-        // Check if they are trans_date Null
-        if(!row.trans_date){
-          dateNull = true;
-        }
-
-        // Check if they are different Date 
-        if(Dates.util.str(row.trans_date) !== Dates.util.str(initialDate)){
-          dateDifferent = true;
-        }
-
-        // check if trans_date is in bed period
-        if(new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)){
-          dateWrongPeriod = true;
-        }
-      });
-
-      if(accountNull) {
-        error = 'POSTING_JOURNAL.ERRORS.MISSING_ACCOUNTS';
-      } else if (dateNull){
-        error = 'POSTING_JOURNAL.ERRORS.MISSING_DATES';
-      } else if (dateWrongPeriod){
-        error = 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD';
-      } else if (dateDifferent){
-        error = 'POSTING_JOURNAL.ERRORS.TRANSACTION_DIFF_DATES';
-      } else {
-        // later in validateTransaction()
-        if (debit !== credit) {
-          error = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS';
-        }        
-      }
+      return ERR_SINGLE_LINE_TRANSACTION;
     }
 
+
+    var debit = 0,
+      credit = 0,
+      initialDate,
+      accountNull = false,
+      dateNull =  false,
+      dateDifferent = false,
+      dateWrongPeriod = false,
+      debitCreditNull = false,
+      debitedCreditedNull = false;
+
+    if(transaction[0].trans_date){
+      initialDate = transaction[0].trans_date; 
+    }
+      
+
+    transaction.forEach(function (row) {
+      debit += Number(row.debit_equiv);
+      credit += Number(row.credit_equiv);
+
+      // Check if they are account number Null
+      accountNull = !row.account_number;
+
+      // Check if they are trans_date Null
+      dateNull = !row.trans_date;
+
+      // Check if they are different Date 
+      dateDifferent = Dates.util.str(row.trans_date) !== Dates.util.str(initialDate);
+
+      // Check if debit and credit are Null
+      debitCreditNull = (!Number(row.debit_equiv) && !Number(row.credit_equiv));
+
+      // Check if they are value on debit and Credit
+      debitedCreditedNull = (row.debit_equiv > 0 && row.credit_equiv > 0); 
+
+      // check if trans_date is in bed period
+      if(new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)){
+        dateWrongPeriod = true;
+      }
+    });
+
+    if(accountNull) {
+      error = ERR_MISSING_ACCOUNTS;
+    } else if (dateNull){
+      error = ERR_MISSING_DATES;
+    } else if (dateWrongPeriod){
+      error = ERR_DATE_IN_WRONG_PERIOD;
+    } else if (dateDifferent){
+      error = ERR_TRANSACTION_DIFF_DATES;
+    } else if (debitCreditNull){
+      error = ERR_DEB_CRED_NOT_NULL;
+    } else if (debitedCreditedNull){
+      error = ERR_CREDITED_DEBITED;
+    } else {
+      // later in validateTransaction()
+      if (debit !== credit) {
+        error = ERR_UNBALANCED_TRANSACTIONS;
+      }        
+    }
 
     return error;
   }

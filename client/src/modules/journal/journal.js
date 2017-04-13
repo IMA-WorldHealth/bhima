@@ -313,10 +313,10 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         load(vm.filters);
       })
       .catch(function (error) {
-        if(error.status){
-          Notify.handleError(error);
-        } else {
+        if (!error.status){
           Notify.warn(error);
+        } else {
+          Notify.handleError(error);
         }
 
       });
