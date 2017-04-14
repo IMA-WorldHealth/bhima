@@ -13,6 +13,14 @@
           <i class="fa fa-file-text"></i> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
         </a>
       </li>
+      <li>
+        <a href
+          id="export-{{row.entity.id}}"
+          data-method="export"
+          ng-click="grid.appScope.slipCsv(row.entity.id)">
+          <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.CSV_EXPORT</span>
+        </a>
+      </li>
     </ul>
   </span>
 </div>

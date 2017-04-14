@@ -19,16 +19,14 @@ const moment = require('moment');
 
 // @TODO Discuss if this should be moved into its own library
 const DATE_FORMAT = 'DD/MM/YYYY H:mm:s';
-const SUPPRESS_DEFAULT_FORMATTING = false;
-const SUPPRESS_DEFAULT_FILTERING = false;
 
 const headers = {
-  'Content-Type' : 'text/csv'
+  'Content-Type' : 'text/csv',
 };
 
 // CSV rendering defaults
 const defaults = {
-  trimHeaderFields : true
+  trimHeaderFields : true,
 };
 
 const ID_KEYWORDS = ['_id', 'uuid'];
@@ -48,7 +46,6 @@ exports.headers = headers;
  * @returns {Promise}       Promise resolving in a rendered dataset (CSV)
  */
 function renderCSV(data, template, options) {
-
   // this will be returned to the promise chain with the rendered csv results
   const dfd = q.defer();
 
@@ -57,11 +54,11 @@ function renderCSV(data, template, options) {
 
   let csvData = data[options.csvKey || DEFAULT_DATA_KEY];
 
-  if (!SUPPRESS_DEFAULT_FORMATTING) {
+  if (!options.suppressDefaultFormating) {
     csvData = csvData.map(dateFormatter);
   }
 
-  if (!SUPPRESS_DEFAULT_FILTERING) {
+  if (!options.suppressDefaultFiltering) {
     // row based filters
     csvData = csvData.map(idFilter);
 
