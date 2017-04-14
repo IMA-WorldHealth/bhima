@@ -32,3 +32,10 @@ git:
 
 before_cache:
   - rm -f npm-debug.log
+
+notifications:
+  webhooks: http://kwilu.bhi.ma:54856/travis
+
+  branches:
+    only:
+      - auto
