@@ -307,7 +307,7 @@ function editTransaction(req, res, next) {
   transformColumns(rowsAdded, true)
     .then((result) => {
       result.forEach((row) => {
-        db.convert(row, ['uuid', 'record_uuid']);
+        db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
         // row = transformColumns(row);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
@@ -315,7 +315,10 @@ function editTransaction(req, res, next) {
       return transformColumns(rowsChanged, false);
     })
     .then((result) => {
-      _.each(result, (row, uid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uid)]));
+      _.each(result, (row, uid) => {
+        db.convert(row, ['entity_uuid']);
+        transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uid)]);
+      });
       return transaction.execute();
     })
     .then((result) => {

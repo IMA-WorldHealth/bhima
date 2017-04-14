@@ -18,8 +18,8 @@ FOR EACH ROW BEGIN
 
   -- this writes a debtor entity into the entity_map table
   -- NOTE: the debtor actually points to the patient entity for convienence
-  /* INSERT INTO entity_map */
-    /* SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id; */
+  INSERT INTO entity_map
+    SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
 END$$
 
 -- Purchase Triggers

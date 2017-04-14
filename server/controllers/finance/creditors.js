@@ -25,9 +25,11 @@ function list(req, res, next) {
 
   const sql = `
     SELECT BUID(c.uuid) as uuid, c.text, cg.name, BUID(c.group_uuid) as group_uuid,
-      a.id AS account_id, a.number
-    FROM creditor AS c JOIN creditor_group AS cg JOIN account AS a
-      ON c.group_uuid = cg.uuid AND cg.account_id = a.id;
+      a.id AS account_id, a.number, map.text as hr_entity
+    FROM creditor AS c 
+    JOIN creditor_group AS cg 
+    JOIN account AS a ON c.group_uuid = cg.uuid AND cg.account_id = a.id 
+    JOIN entity_map map ON map.uuid = c.uuid;
   `;
 
   db.exec(sql)
