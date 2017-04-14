@@ -845,9 +845,9 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
-  `delay` INT(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delai de livraison', 
-  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Consommation moyenne' , 
-  `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Intervalle de commande' , 
+  `delay` INT(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delai de livraison',
+  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Consommation moyenne' ,
+  `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Intervalle de commande' ,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1607,7 +1607,7 @@ CREATE TABLE `sector` (
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
   `id` smallint(5) unsigned not null auto_increment,
-  `uuid` BINARY(16) NOT NULL,
+  `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `cost_center_id` SMALLINT(6) DEFAULT NULL,
@@ -1830,7 +1830,7 @@ CREATE VIEW combined_ledger AS
 SET foreign_key_checks = 1;
 
 
--- stock tables 
+-- stock tables
 
 DROP TABLE IF EXISTS `flux`;
 CREATE TABLE `flux` (
