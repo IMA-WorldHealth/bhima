@@ -327,8 +327,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       ERR_DEB_CRED_NOT_NULL = 'POSTING_JOURNAL.ERRORS.DEB_CRED_NOT_NULL',
       ERR_CREDITED_DEBITED = 'POSTING_JOURNAL.ERRORS.CREDITED_DEBITED';
 
-    // If the transaction are single line transaction 
-    if(numberOfLine === 1){
+    // If the transaction are single line transaction
+    if (numberOfLine === 1) {
       return ERR_SINGLE_LINE_TRANSACTION;
     }
 
@@ -343,10 +343,10 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       debitCreditNull = false,
       debitedCreditedNull = false;
 
-    if(transaction[0].trans_date){
-      initialDate = transaction[0].trans_date; 
+    if (transaction[0].trans_date) {
+      initialDate = transaction[0].trans_date;
     }
-      
+
 
     transaction.forEach(function (row) {
       debit += Number(row.debit_equiv);
@@ -358,38 +358,38 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       // Check if they are trans_date Null
       dateNull = !row.trans_date;
 
-      // Check if they are different Date 
+      // Check if they are different Date
       dateDifferent = Dates.util.str(row.trans_date) !== Dates.util.str(initialDate);
 
       // Check if debit and credit are Null
       debitCreditNull = (!Number(row.debit_equiv) && !Number(row.credit_equiv));
 
       // Check if they are value on debit and Credit
-      debitedCreditedNull = (row.debit_equiv > 0 && row.credit_equiv > 0); 
+      debitedCreditedNull = (row.debit_equiv > 0 && row.credit_equiv > 0);
 
       // check if trans_date is in bed period
-      if(new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)){
+      if (new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)) {
         dateWrongPeriod = true;
       }
     });
 
-    if(accountNull) {
+    if (accountNull) {
       error = ERR_MISSING_ACCOUNTS;
-    } else if (dateNull){
+    } else if (dateNull) {
       error = ERR_MISSING_DATES;
-    } else if (dateWrongPeriod){
+    } else if (dateWrongPeriod) {
       error = ERR_DATE_IN_WRONG_PERIOD;
-    } else if (dateDifferent){
+    } else if (dateDifferent) {
       error = ERR_TRANSACTION_DIFF_DATES;
-    } else if (debitCreditNull){
+    } else if (debitCreditNull) {
       error = ERR_DEB_CRED_NOT_NULL;
-    } else if (debitedCreditedNull){
+    } else if (debitedCreditedNull) {
       error = ERR_CREDITED_DEBITED;
     } else {
       // later in validateTransaction()
       if (debit !== credit) {
         error = ERR_UNBALANCED_TRANSACTIONS;
-      }        
+      }
     }
 
     return error;
@@ -595,12 +595,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       // ensure removal of old rows
       this._entity.removedRows.map(this.removeRowIfExists.bind(this));
     }
-  }
+  };
 
   Transactions.prototype.removeRowIfExists = function removeRowIfExists(row) {
-    var uuid = row.uuid;
+    var uid = row.uuid;
 
-    var removed = removeFromNonIndexedArray(this.gridApi.grid.options.data, 'uuid', uuid);
+    var removed = removeFromNonIndexedArray(this.gridApi.grid.options.data, 'uuid', uid);
     if (removed) {
       createTransactionIndexMap.bind(this)();
     }
@@ -634,7 +634,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   Transactions.prototype.save = function save() {
     var clientErrors = validateTransaction(this._entity);
 
-    if(clientErrors){
+    if (clientErrors) {
       return $q.reject(clientErrors);
     }
 
@@ -646,7 +646,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         this._entity = null;
         this._changes = {};
         return results;
-      }.bind(this))
+      }.bind(this));
   };
 
   Transactions.prototype.cancel = function cancel() {

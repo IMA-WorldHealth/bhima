@@ -28,20 +28,18 @@ JournalController.$inject = [
  *   - Tun trial balance validation on transactions
  *
  * @todo Propose utility bar view design
- *
- * @module bhima/controllers/JournalController
  */
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages,
   AppCache, Store, uiGridGroupingConstants, Export) {
+
   // Journal utilities
   var sorting;
   var grouping;
   var filtering;
   var columnConfig;
   var transactions;
-  var editors; // is assigned value but never used
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -80,7 +78,6 @@ function JournalController(Journal, Sorting, Grouping,
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
-  editors = new Editors(vm.gridOptions);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -145,7 +142,6 @@ function JournalController(Journal, Sorting, Grouping,
       displayName      : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter : 'translate',
       sortingAlgorithm : sorting.transactionIds,
-      // sort : { priority : 0, direction : 'asc' },
       enableCellEdit   : false,
       width            : 110,
       cellTemplate     : 'modules/journal/templates/hide-groups-label.cell.html' },
@@ -172,6 +168,8 @@ function JournalController(Journal, Sorting, Grouping,
 
     { field            : 'account_number',
       displayName      : 'TABLE.COLUMNS.ACCOUNT',
+      editableCellTemplate: '<div><form name="inputForm"><div ui-grid-edit-account ng-class="\'colt\' + col.uid"></div></form></div>',
+      enableCellEdit: true,
       headerCellFilter : 'translate' },
 
     { field                            : 'debit_equiv',
@@ -382,6 +380,18 @@ function JournalController(Journal, Sorting, Grouping,
 
     // disable inline filtering when editing
     filtering.disableInlineFiltering();
+
+    // only load the accounts once - on first edit
+    if (!vm.accounts) {
+      loadAccounts();
+    }
+  }
+
+  function loadAccounts() {
+    Accounts.read()
+      .then(function (accounts) {
+        vm.accounts = accounts;
+      });
   }
 
   vm.saveTransaction = saveTransaction;
@@ -394,12 +404,11 @@ function JournalController(Journal, Sorting, Grouping,
         load(vm.filters);
       })
       .catch(function (error) {
-        if (!error.status){
+        if (!error.status) {
           Notify.warn(error);
         } else {
           Notify.handleError(error);
         }
-
       });
   }
 
@@ -412,6 +421,12 @@ function JournalController(Journal, Sorting, Grouping,
       vm.grouping.changeGrouping('trans_id');
       vm.grouped = cache.grouped = true;
     }
+  };
+
+  vm.saveAccountEdit = function saveAcconutEdit(row, account) {
+    row.account_id = account.id;
+    row.account_name = account.hrlabel;
+    $rootScope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
   };
 
   function cancelEdit() {
