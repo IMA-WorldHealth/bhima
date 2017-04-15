@@ -45,6 +45,8 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // bread crumb paths
   vm.paths = [{
+    label : $translate.instant('TREE.FINANCE'),
+  }, {
     label   : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
     current : true,
   }];

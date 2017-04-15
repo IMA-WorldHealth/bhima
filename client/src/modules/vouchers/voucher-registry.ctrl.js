@@ -52,9 +52,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     flatEntityAccess : true,
     fastWatch        : true,
     enableFiltering  : vm.filterEnabled,
-    fastWatch        : true,
-    flatEntityAccess : true,
-    rowTemplate      : '/modules/templates/grid/voucher.row.html',
   };
 
   // grid default options
@@ -62,6 +59,7 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     field                : 'reference',
     displayName          : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter     : 'translate',
+    cellTemplate         : 'partials/vouchers/templates/uuid.tmpl.html',
     treeAggregationType  : uiGridGroupingConstants.aggregation.COUNT,
     sortingAlgorithm     : Sorting.algorithms.sortByReference,
     treeAggregationLabel : '',

@@ -7,6 +7,8 @@
       {{ ::$ctrl.label }}
     </label>
 
+    <ng-transclude></ng-transclude>
+
     <ui-select
       name="account_id"
       ng-model="$ctrl.accountId"

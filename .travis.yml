@@ -35,7 +35,9 @@ before_cache:
 
 notifications:
   webhooks: http://kwilu.bhi.ma:54856/travis
-
-  branches:
-    only:
-      - auto
+ 
+branches:
+  only:
+    - auto
+    - master
+    - try

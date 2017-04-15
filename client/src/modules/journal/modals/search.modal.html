@@ -62,11 +62,11 @@
       name="account_id"
       on-select-callback="ModalCtrl.onSelectAccount(account)"
       required="0">
+      <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
     </bh-account-select>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
       <label class="control-label" translate>FORM.LABELS.PROJECT</label>
-      <bh-clear on-clear="ModalCtrl.clear('project_id')"></bh-clear>
       <select
         class="form-control"
         name="project_id"

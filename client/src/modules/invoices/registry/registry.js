@@ -45,10 +45,11 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
       footerCellClass : 'text-center',
-      sortingAlgorithm : Sorting.algorithms.sortByReference
+      cellTemplate : '/partials/patient_invoice/registry/templates/reference.html',
+      sortingAlgorithm : Sorting.algorithms.sortByReference,
     },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', type: 'date' },
-    { name : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate', cellTemplate : '/modules/patients/templates/linkPatient.cell.html' },
+    { name : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
     { field : 'cost',
       displayName : 'TABLE.COLUMNS.COST',
       headerCellFilter : 'translate',
