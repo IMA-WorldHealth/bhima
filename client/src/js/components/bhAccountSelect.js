@@ -1,15 +1,16 @@
 angular.module('bhima.components')
   .component('bhAccountSelect', {
     templateUrl : 'modules/templates/bhAccountSelect.tmpl.html',
-    controller : AccountSelectController,
-    bindings: {
+    controller  : AccountSelectController,
+    transclude  : true,
+    bindings    : {
       accountId        : '<',
       disable          : '<',
       onSelectCallback : '&?',
       required         : '<?',
       label            : '@?',
       name             : '@?',
-    }
+    },
   });
 
 AccountSelectController.$inject = [
