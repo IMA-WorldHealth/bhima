@@ -3,44 +3,24 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.BILLING_SERVICES" | translate }}</li>
-      <li class="title">{{ BillingServicesFormCtrl.title | translate }}</li>
+      <li class="static" translate>TREE.BILLING_SERVICES</li>
+      <li class="title" translate>{{ BillingServicesFormCtrl.title }}</li>
     </div>
   </div>
 
   <div class="modal-body">
 
     <!-- account input -->
-    <div
-      class="form-group"
-      ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.account.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.ACCOUNT" | translate }}
-      </label>
-
-      <ui-select
-        name="account"
-        ng-model="BillingServicesFormCtrl.model.account"
-        theme="bootstrap"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="account in BillingServicesFormCtrl.accounts | filter:$select.search">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-
-      <div class="help-block" ng-messages="BillingServicesForm.account.$error" ng-show="BillingServicesForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+    <bh-account-select
+      account-id="BillingServicesFormCtrl.model.account_id"
+      on-select-callback="BillingServicesFormCtrl.onSelectAccount(account)"
+      required="true">
+    </bh-account-select>
 
     <!-- label input -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.label.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.LABEL" | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.LABEL
       </label>
       <input
         class="form-control"
@@ -56,8 +36,8 @@
 
     <!-- description textarea -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.description.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.DESCRIPTION" | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.DESCRIPTION
       </label>
       <!--
         @todo - propose to the team that all text-areas should have "resize:vertical" styles
@@ -79,7 +59,7 @@
     <!-- value input -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.value.$invalid }">
       <label class="control-label">
-        {{ "FORM.LABELS.VALUE" | translate }} (%)
+        <span translate>FORM.LABELS.VALUE</span> (%)
       </label>
       <input
         type="number"
@@ -106,17 +86,17 @@
 
         <!-- there are (client-side) errors on the form -->
         <p ng-show="BillingServicesForm.$submitted && BillingServicesForm.$invalid">
-          <span class="glyphicon glyphicon-alert"></span> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
+          <span class="glyphicon glyphicon-alert"></span> <span translate>FORM.ERRORS.HAS_ERRORS</span>
         </p>
 
         <!-- show http errors sent from the server -->
         <p ng-show="BillingServicesFormCtrl.error">
           <span class="glyphicon glyphicon-alert"></span>
-          <span ng-show="BillingServicesFormCtrl.error.status === 404">
-            {{ "BILLING_SERVICES.NOT_FOUND" | translate }}
+          <span ng-show="BillingServicesFormCtrl.error.status === 404" translate>
+            BILLING_SERVICES.NOT_FOUND
           </span>
-          <span ng-hide="BillingServicesFormCtrl.error.status === 404">
-            {{ BillingServicesFormCtrl.error.code | translate }}
+          <span ng-hide="BillingServicesFormCtrl.error.status === 404" translate>
+            {{ BillingServicesFormCtrl.error.code }}
           </span>
         </p>
       </div>
@@ -124,12 +104,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-method="back" ng-click="BillingServicesFormCtrl.dismiss()">
-      {{ "FORM.BUTTONS.BACK" | translate }}
+    <button type="button" class="btn btn-default" data-method="back" ng-click="BillingServicesFormCtrl.dismiss()" translate>
+      FORM.BUTTONS.BACK
     </button>
 
     <bh-loading-button loading-state="BillingServicesForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>
