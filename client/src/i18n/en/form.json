@@ -86,7 +86,7 @@
 "CREATED":"Created",
 "CREATE_SUCCESS":"Successfully created a new record",
 "CURRENT":"Current",
-"CLEAR_FILTERS":"Clear Filters",
+"CLEAR_FILTERS":"Remove Filters",
 "CREDIT_NOTE":"Credit Note",
 "CREDIT_NOTE_INVOICE":"Credit Note reversing invoice {{ invoiceReference }} of debtor {{ debtorName }} ({{ debtorIdentifier }}).  {{ description }}",
 "DANGER_ZONE":"Danger Zone",

@@ -1,6 +1,7 @@
 {"POSTING_JOURNAL":{"ABOLISH_GROUPS":"Abolishing Group",
 "ACCOUNT":"Account",
 "ADD_ROW":"Add Row",
+"REMOVE_ROW":"Remove Row(s)",
 "ADD_TRANSACTION":"Add Transaction",
 "CONFIGURE":"Configure",
 "CREDIT":"Credit",

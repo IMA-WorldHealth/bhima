@@ -79,7 +79,7 @@
     class="text-danger"
     data-method="clear">
     <i class="fa fa-close text-danger"></i>
-    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
 </div>
 
@@ -95,13 +95,13 @@
   <div class="toolbar">
     <div class="toolbar-item">
       <button ng-click="JournalCtrl.transactions.addRow()" class="btn btn-sm btn-default">
-        <i class="fa fa-plus-circle"></i> <span translate>POSTING_JOURNAL.ROW</span>
+        <i class="fa fa-plus-circle"></i> <span translate>POSTING_JOURNAL.ADD_ROW</span>
       </button>
       <button ng-click="JournalCtrl.transactions.removeRows()" class="btn btn-sm btn-default">
-        <i class="fa fa-trash"></i> <span translate>POSTING_JOURNAL.ROWS</span>
+        <i class="fa fa-trash"></i> <span translate>POSTING_JOURNAL.REMOVE_ROW</span>
       </button>
       <button ng-click="JournalCtrl.saveTransaction()" class="btn btn-sm btn-default">
-        <i class="fa fa-save"></i> <span translate>POSTING_JOURNAL.TRANSACTION</span>
+        <i class="fa fa-save"></i> <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
       </button>
       <button ng-click="JournalCtrl.cancelEdit()" class="btn btn-sm btn-default">
         <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL_EDIT</span>
