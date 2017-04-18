@@ -34,7 +34,7 @@ before_cache:
   - rm -f npm-debug.log
 
 notifications:
-  webhooks: http://kwilu.bhi.ma:54856/travis
+  webhooks: https://kwilu.bhi.ma/travis
  
 branches:
   only:
