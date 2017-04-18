@@ -5,7 +5,7 @@ uiGridEditAccount.$inject = ['uiGridEditConstants', 'AccountService', 'uiGridCon
 
 function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
   return {
-    restrict : 'EA',
+    restrict : 'A',
     template : function () {
       var templ =
         '<div style="display: table; margin-right: auto; margin-left: auto; width:95%">' +
