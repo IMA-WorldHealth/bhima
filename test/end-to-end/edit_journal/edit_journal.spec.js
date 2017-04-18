@@ -8,7 +8,7 @@ const components = require('../shared/components');
 helpers.configure(chai);
 const expect = chai.expect;
 
-describe.only('Edit Posting Journal', () => {
+describe('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
   before(() => helpers.navigate(path));
