@@ -166,13 +166,13 @@ function JournalController(Journal, Sorting, Grouping,
       headerCellFilter   : 'translate',
       footerCellTemplate : '<i></i>' },
 
-    { field            : 'account_number',
-      displayName      : 'TABLE.COLUMNS.ACCOUNT',
-      editableCellTemplate: '<div><form name="inputForm"><div ui-grid-edit-account ng-class="\'colt\' + col.uid"></div></form></div>',
-      enableCellEdit: true,
-      headerCellFilter : 'translate' },
-
-    { field                            : 'debit_equiv',
+    { field                : 'account_number',
+      displayName          : 'TABLE.COLUMNS.ACCOUNT',
+      editableCellTemplate : '<div><form name="inputForm"><div ui-grid-edit-account></div></form></div>',
+      enableCellEdit       : true,
+      headerCellFilter     : 'translate',
+    }, {
+      field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter                 : 'translate',
       treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
@@ -380,18 +380,6 @@ function JournalController(Journal, Sorting, Grouping,
 
     // disable inline filtering when editing
     filtering.disableInlineFiltering();
-
-    // only load the accounts once - on first edit
-    if (!vm.accounts) {
-      loadAccounts();
-    }
-  }
-
-  function loadAccounts() {
-    Accounts.read()
-      .then(function (accounts) {
-        vm.accounts = accounts;
-      });
   }
 
   vm.saveTransaction = saveTransaction;
