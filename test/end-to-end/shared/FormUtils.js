@@ -18,7 +18,9 @@ const buttons =  {
   clear  : function clear() { return $('[data-method="clear"]').click(); },
   back   : function back() { return $('[data-method="back"]').click(); },
   reset  : function reset() { return $('[data-method="reset"]').click(); },
-  delete : function delet() { return $('[data-method="delete"]').click(); }
+  delete : function delet() { return $('[data-method="delete"]').click(); },
+  configure : function configure() { return $('[data-method="configure"]').click(); },
+  grouping : function grouping() { return $('[data-method="grouping"]').click(); }
 };
 
 // This methods are for easily working with modals.  Works with the same custom
