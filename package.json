@@ -6,7 +6,7 @@
   "scripts": {
     "app": "NODE_ENV=production ./node_modules/.bin/gulp build && cd bin && NODE_ENV=production node server/app.js",
     "dev": "NODE_ENV=development ./node_modules/.bin/gulp build && cd bin && NODE_ENV=development node server/app.js",
-    "test": "npm run test:lint && npm run test:integration && npm run test:client-unit && npm run test:server-unit && npm run test:ends",
+    "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
     "test:ends": "./sh/test-ends.sh",
     "test:lint": "./sh/lint.sh",
