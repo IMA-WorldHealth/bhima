@@ -8,9 +8,13 @@ const components = require('../shared/components');
 helpers.configure(chai);
 const expect = chai.expect;
 
-describe('Edit Posting Journal', () => {
+describe.only('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
+  
+  // simulates a double click
+  const doubleClick = (element) => browser.actions().mouseMove(element).doubleClick().perform();
+
   before(() => helpers.navigate(path));
 
   var accountKey = 11;
@@ -20,17 +24,15 @@ describe('Edit Posting Journal', () => {
     FU.buttons.grouping();
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(0).click();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCellName(gridId, 1, 4);
-    // simulate dbl click
-    browser.actions().mouseMove(accountNumberCell).doubleClick().perform();
+    const accountNumberCell = GU.getCellName(gridId, 1, 4);    
+    doubleClick(accountNumberCell);
     
-    accountNumberCell.element(by.css("input")).sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"));
-    accountNumberCell.element(by.css("input")).sendKeys(protractor.Key.BACK_SPACE);
+    accountNumberCell.element(by.css("input")).clear();
 
     accountNumberCell.element(by.css("input")).sendKeys(accountKey);
     element.all(by.css('[title="1100 - Test Capital One"]')).click();
 
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasSuccess();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
@@ -45,14 +47,14 @@ describe('Edit Posting Journal', () => {
     
     const debitCell = GU.getCellName(gridId, 2, 5);
     const creditCell = GU.getCellName(gridId, 3, 6);
-    // simulate dbl click
-    browser.actions().mouseMove(debitCell).doubleClick().perform();
+    
+    doubleClick(debitCell);
     debitCell.element(by.css("input")).sendKeys(50);
 
-    browser.actions().mouseMove(creditCell).doubleClick().perform();
+    doubleClick(creditCell);
     creditCell.element(by.css("input")).sendKeys(50);
 
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasSuccess();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
@@ -67,11 +69,11 @@ describe('Edit Posting Journal', () => {
 
     element.all(by.css('[class="ui-grid-selection-row-header-buttons ui-grid-icon-ok ng-scope"]')).get(3).click();
 
-    element.all(by.css('[class="fa fa-trash"]')).click();
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="delete"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasWarn();
-    element.all(by.css('[class="fa fa-ban"]')).click();
+    element.all(by.css('[data-method="cancel"]')).click();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
@@ -83,17 +85,17 @@ describe('Edit Posting Journal', () => {
     
     const debitCell = GU.getCellName(gridId, 2, 5);
     const creditCell = GU.getCellName(gridId, 3, 6);
-    // simulate dbl click
-    browser.actions().mouseMove(debitCell).doubleClick().perform();
+   
+    doubleClick(debitCell);
     debitCell.element(by.css("input")).sendKeys(100);
 
     browser.actions().mouseMove(creditCell).doubleClick().perform();
     creditCell.element(by.css("input")).sendKeys(50);
 
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasWarn();
-    element.all(by.css('[class="fa fa-ban"]')).click();
+    element.all(by.css('[data-method="cancel"]')).click();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
@@ -105,17 +107,17 @@ describe('Edit Posting Journal', () => {
     
     const debitCell = GU.getCellName(gridId, 2, 5);
     const creditCell = GU.getCellName(gridId, 2, 6);
-    // simulate dbl click
-    browser.actions().mouseMove(debitCell).doubleClick().perform();
+
+    doubleClick(debitCell);
     debitCell.element(by.css("input")).sendKeys(0);
 
-    browser.actions().mouseMove(creditCell).doubleClick().perform();
+    doubleClick(creditCell);
     creditCell.element(by.css("input")).sendKeys(0);
 
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasWarn();
-    element.all(by.css('[class="fa fa-ban"]')).click();
+    element.all(by.css('[data-method="cancel"]')).click();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
@@ -127,20 +129,19 @@ describe('Edit Posting Journal', () => {
     
     const debitCell = GU.getCellName(gridId, 2, 5);
     const creditCell = GU.getCellName(gridId, 2, 6);
-    // simulate dbl click
-    browser.actions().mouseMove(debitCell).doubleClick().perform();
+
+    doubleClick(debitCell);
     debitCell.element(by.css("input")).sendKeys(50);
 
-    browser.actions().mouseMove(creditCell).doubleClick().perform();
+    doubleClick(creditCell);
     creditCell.element(by.css("input")).sendKeys(50);
 
-    element.all(by.css('[class="fa fa-save"]')).click();
+    element.all(by.css('[data-method="save"]')).click();
 
     components.notification.hasWarn();
-    element.all(by.css('[class="fa fa-ban"]')).click();
+    element.all(by.css('[data-method="cancel"]')).click();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
-
 
 });

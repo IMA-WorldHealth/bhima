@@ -20,6 +20,8 @@ const buttons =  {
   reset  : function reset() { return $('[data-method="reset"]').click(); },
   delete : function delet() { return $('[data-method="delete"]').click(); },
   configure : function configure() { return $('[data-method="configure"]').click(); },
+  add : function configure() { return $('[data-method="add"]').click(); },
+  save : function configure() { return $('[data-method="save"]').click(); },
   grouping : function grouping() { return $('[data-method="grouping"]').click(); }
 };
 
