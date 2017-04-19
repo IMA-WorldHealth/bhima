@@ -13,9 +13,7 @@ describe('Edit Posting Journal', () => {
   const gridId = 'journal-grid';
   before(() => helpers.navigate(path));
 
-  var validAccount = 1100;
-  var inValidAccount = 111100000;
-
+  var accountKey = 11;
 
   it('edits a transaction change an account', function () {
     // click the "grouping" button
@@ -26,7 +24,12 @@ describe('Edit Posting Journal', () => {
     // simulate dbl click
     browser.actions().mouseMove(accountNumberCell).doubleClick().perform();
     
-    accountNumberCell.element(by.css("input")).sendKeys(validAccount);
+    accountNumberCell.element(by.css("input")).sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"));
+    accountNumberCell.element(by.css("input")).sendKeys(protractor.Key.BACK_SPACE);
+
+    accountNumberCell.element(by.css("input")).sendKeys(accountKey);
+    element.all(by.css('[title="1100 - Test Capital One"]')).click();
+
     element.all(by.css('[class="fa fa-save"]')).click();
 
     components.notification.hasSuccess();
@@ -34,22 +37,6 @@ describe('Edit Posting Journal', () => {
     FU.buttons.grouping();
   });
 
-  it('edits a transaction change an invalid account', function () {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(0).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCellName(gridId, 1, 4);
-    // simulate dbl click
-    browser.actions().mouseMove(accountNumberCell).doubleClick().perform();
-    
-    accountNumberCell.element(by.css("input")).sendKeys(inValidAccount);
-    element.all(by.css('[class="fa fa-save"]')).click();
-
-    components.notification.hasError();
-    element.all(by.css('[class="fa fa-ban"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
-  });
 
   it('edits a transaction change value of Debit and Credit', function () {
     FU.buttons.grouping();
@@ -84,26 +71,6 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="fa fa-save"]')).click();
 
     components.notification.hasWarn();
-    element.all(by.css('[class="fa fa-ban"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
-  });
-
-
-  it('Preventing a Missing Account transaction', function () {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
-    
-    const accountCell = GU.getCellName(gridId, 2, 4);
-
-    // simulate dbl click
-    browser.actions().mouseMove(accountCell).doubleClick().perform();
-    accountCell.element(by.css("input")).sendKeys(' ');
-
-    element.all(by.css('[class="fa fa-save"]')).click();
-
-    components.notification.hasError();
     element.all(by.css('[class="fa fa-ban"]')).click();
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
