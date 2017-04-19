@@ -21,6 +21,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   $timeout, util, uiGridConstants) {
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
+  var SELECTED_GROUP_HEADERS;
 
   /**
    * @method configureDefaultAggregators
@@ -98,9 +99,32 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     }
   }
 
-  function handleBatchSelection (){
+  function handleBatchSelection() {
     var gridApi = this.gridApi;
+    var gridRows = gridApi.selection.getSelectedGridRows();
+    var parents = {};
+
+    var hasSelections = gridApi.selection.getSelectedRows().length > 0;
+
+    gridRows.forEach(function (row) {
+      var parentRow = row.treeNode.parentRow;
+      if (parentRow.treeLevel === 0 && !parents[parentRow.uid]) {
+        parentRow.isSelected = true;
+        parents[parentRow.uid] = parentRow;
+        SELECTED_GROUP_HEADERS = parents;
+      }
+    });
+
+    // handle deselect
+    if (hasSelections === false) {
+      angular.forEach(SELECTED_GROUP_HEADERS, function (node) {
+        node.isSelected = false;
+      });
+    }
+
     this.selectedRowCount = gridApi.selection.getSelectedCount();
+
+    gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // handle the select batch event
@@ -121,7 +145,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   function configureDefaultGroupingOptions(gridApi) {
 
     //this instruction block can be executed if the grid involves selection functionality
-    if(gridApi.selection){
+    if (gridApi.selection){
 
       // bind the group selection method
       gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
@@ -191,7 +215,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
 
     records.forEach(function (record){
 
-      if(processedTransactions.indexOf(record.entity.trans_id) === -1){
+      if (processedTransactions.indexOf(record.entity.trans_id) === -1){
 
         //take other children of the parent so that every line of the transaction will be present
         parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
