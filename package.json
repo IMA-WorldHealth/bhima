@@ -67,7 +67,7 @@
     "chai": "^3.4.0",
     "chai-as-promised": "^6.0.0",
     "chai-datetime": "^1.4.0",
-    "chai-http": "^1.0.0",
+    "chai-http": "^3.0.0",
     "chai-spies": "^0.7.1",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
