@@ -94,16 +94,16 @@
   <div class="text-menu-item"><span translate>POSTING_JOURNAL.TOTAL_ROWS</span>: {{ JournalCtrl.transactions._entity.aggregates.totalRows }}</div>
   <div class="toolbar">
     <div class="toolbar-item">
-      <button ng-click="JournalCtrl.transactions.addRow()" class="btn btn-sm btn-default">
+      <button ng-click="JournalCtrl.transactions.addRow()" data-method="add" class="btn btn-sm btn-default">
         <i class="fa fa-plus-circle"></i> <span translate>POSTING_JOURNAL.ADD_ROW</span>
       </button>
-      <button ng-click="JournalCtrl.transactions.removeRows()" class="btn btn-sm btn-default">
+      <button ng-click="JournalCtrl.transactions.removeRows()" data-method="delete" class="btn btn-sm btn-default">
         <i class="fa fa-trash"></i> <span translate>POSTING_JOURNAL.REMOVE_ROW</span>
       </button>
-      <button ng-click="JournalCtrl.saveTransaction()" class="btn btn-sm btn-default">
+      <button ng-click="JournalCtrl.saveTransaction()" data-method="save" class="btn btn-sm btn-default">
         <i class="fa fa-save"></i> <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
       </button>
-      <button ng-click="JournalCtrl.cancelEdit()" class="btn btn-sm btn-default">
+      <button ng-click="JournalCtrl.cancelEdit()" data-method="cancel" class="btn btn-sm btn-default">
         <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL_EDIT</span>
       </button>
     </div>
