@@ -80,7 +80,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
 
   // sets the allowCellFocus parameter on grid's column definitions
   function setColumnCellNav(column) {
-    column.allowCellFocus = this._cellNavEnabled;
+    column.allowCellFocus = !!this._cellNavEnabled;
   }
 
   // called after the cellNavigationEnabled trigger is fired
@@ -139,6 +139,9 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
         });
 
         this.disableCellNavigation();
+
+        api.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+        api.grid.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
       }.bind(this), MAGIC_NUMBER);
     }.bind(this));
   }
