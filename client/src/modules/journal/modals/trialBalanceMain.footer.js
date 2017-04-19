@@ -32,7 +32,7 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
     vm.loading = true;
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
-        $state.go('postedJournal');
+        $state.go('journal', null, { reload : true});
       })
       .catch(Notify.handleError)
       .finally(function () {
