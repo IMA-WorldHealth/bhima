@@ -6,7 +6,7 @@ JournalController.$inject = [
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService',
+  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
 ];
 
 /**
@@ -32,8 +32,7 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages,
-  AppCache, Store, uiGridGroupingConstants, Export) {
-
+  AppCache, Store, uiGridGroupingConstants, Export, FindEntity) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -210,10 +209,11 @@ function JournalController(Journal, Sorting, Grouping,
       cellTemplate     : '/modules/journal/templates/credit.grid.html',
       enableCellEdit   : false },
 
-    { field            : 'hrEntity',
-      displayName      : 'TABLE.COLUMNS.RECIPIENT',
-      headerCellFilter : 'translate',
-      visible          : true },
+    { field                : 'hrEntity',
+      displayName          : 'TABLE.COLUMNS.RECIPIENT',
+      headerCellFilter     : 'translate',
+      editableCellTemplate : '/modules/journal/templates/entity.edit.html',
+      visible              : true },
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
@@ -244,7 +244,7 @@ function JournalController(Journal, Sorting, Grouping,
     columnConfig.openConfigurationModal();
   };
 
-  //This function opens a modal, to let the user posting transaction to the general ledger
+  // This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal() {
     // make sure a row is selected before running the trial balance
     if (grouping.selectedRowCount < 1) {
@@ -418,6 +418,8 @@ function JournalController(Journal, Sorting, Grouping,
   };
 
   function cancelEdit() {
+    vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
+
     // @TODO this should return a promise in a uniform standard with `saveTransaction`
     transactions.cancel();
 
@@ -432,6 +434,34 @@ function JournalController(Journal, Sorting, Grouping,
     vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
     load(vm.filters);
   }
+
+  // ===================== edit entity ===============================
+
+  // expose to the view
+  vm.openEntityModal = openEntityModal;
+  vm.removeEntity = removeEntity;
+
+  // open find entity modal
+  function openEntityModal(row) {
+    FindEntity.openModal()
+      .then(function (entity) {
+        if (!entity) { return; }
+
+        row.hrEntity = entity.hrEntity;
+        transactions.editCell(row, 'entity_uuid', entity.uuid);
+      });
+  }
+
+  // remove the entity
+  function removeEntity(row) {
+    if (!row.entity_uuid) { return; }
+
+    transactions.editCell(row, 'entity_uuid', null);
+    delete row.entity_uuid;
+    delete row.hrEntity;
+  }
+  
+  // ===================== end edit entity ===========================
 
   startup();
 }

@@ -34,7 +34,7 @@ function JournalService(Api) {
       added   : sanitiseNewRows(added),
       removed : entity.removedRows,
     };
-
+    
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpRequest);
   }

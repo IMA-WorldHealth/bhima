@@ -115,6 +115,7 @@
 "PATIENTS":"Patients",
 "PATIENT_FOUND":"Patient Found",
 "PATIENT_NOT_FOUND":"Patient Not Found",
+"ENTITY_NOT_FOUND":"Entity (Debtor/Creditor) Not Found",
 "PATIENT_SUCC_TRANSFERRED":"The patient's image was successfully uploaded.",
 "PAYMENT": "Cash Payment",
 "PREVIOUS":"Previous",

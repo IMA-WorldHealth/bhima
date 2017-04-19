@@ -115,6 +115,7 @@
 "PATIENTS":"Patients",
 "PATIENT_FOUND":"Patient Trouvé",
 "PATIENT_NOT_FOUND":"Patient Non Trouvé",
+"ENTITY_NOT_FOUND":"Entité (Debiteur/Crediteur) Non Trouvé",
 "PATIENT_SUCC_TRANSFERRED":"L'image du patient a été transféré avec succès",
 "PAYMENT":"Référence du Paiement",
 "PREVIOUS":"Précédent",

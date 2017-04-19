@@ -197,14 +197,29 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       if (originalRecord) {
         // only keep track of changes if this is a new row
         this._changes[rowEntity.uuid] = this._changes[rowEntity.uuid] || {};
-        this._changes[rowEntity.uuid][colDef.field] = newValue;
 
-        // if this doesn't exist - this could be a new row
-        this._entity.data.get(rowEntity.uuid)[colDef.field] = newValue;
+        if (typeof (colDef) === 'object' && colDef.field) {
+          this._changes[rowEntity.uuid][colDef.field] = newValue;
+          this._entity.data.get(rowEntity.uuid)[colDef.field] = newValue;
+        } else {
+          this._changes[rowEntity.uuid][colDef] = newValue;
+          this._entity.data.get(rowEntity.uuid)[colDef] = newValue;
+        }
       }
     }
     this.digestAggregates();
   }
+
+  /**
+   * @function editCell
+   *
+   * @description
+   * Edit the value of a cell for a custom template grid edit.
+   *
+   * @public
+   *
+   */
+  Transactions.prototype.editCell = editCell;
 
   /**
    * @function enableCellNavigation
