@@ -12,7 +12,7 @@
     </ol>
   </div>
 
-  <div class="modal-body modal-tall">
+  <div class="modal-body modal-tall" style="max-height : 700px; overflow: auto;">
 
     <!-- date parameters -->
     <bh-date-interval
@@ -95,6 +95,20 @@
       <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
       <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.options.trans_id">
       <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
+      <select
+        class="form-control"
+        name="transaction_type"
+        ng-model="ModalCtrl.options.origin_id"
+        ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
+        <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
+      </select>
+      <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>

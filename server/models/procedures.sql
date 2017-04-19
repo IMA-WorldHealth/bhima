@@ -615,11 +615,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id
+      credit_equiv, currency_id, entity_uuid, user_id, origin_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
-      c.debtor_uuid, c.user_id
+      c.debtor_uuid, c.user_id, cashPaymentOriginId
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -636,11 +636,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
-      c.debtor_uuid, c.user_id, ci.invoice_uuid
+      c.debtor_uuid, c.user_id, ci.invoice_uuid, cashPaymentOriginId
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -696,10 +696,10 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id
+          credit_equiv, currency_id, user_id, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id
+          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -723,11 +723,11 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
-          c.debtor_uuid, c.user_id, lastInvoiceUuid
+          c.debtor_uuid, c.user_id, lastInvoiceUuid, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -737,10 +737,10 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id
+          credit_equiv, currency_id, user_id, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id
+          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
