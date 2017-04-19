@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'util', 'SessionService', 'PrototypeApiService', 'FilterService'
+  '$uibModal', 'util', 'SessionService', 'PrototypeApiService', 'FilterService',
 ];
 
 /**

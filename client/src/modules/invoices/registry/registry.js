@@ -118,7 +118,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
 
   // search and filter data in Invoice Registry
   function search() {
-
     Invoices.openSearchModal(vm.filters)
       .then(function (parameters) {
         // no parameters means the modal was dismissed.

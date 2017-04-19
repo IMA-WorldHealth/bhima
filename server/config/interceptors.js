@@ -15,7 +15,7 @@
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
 
-const LOG_ALL_MYSQL_ERRORS = process.env.LOG_ALL_MYSQL_ERRORS;
+const LOG_ALL_MYSQL_ERRORS = Number(process.env.LOG_ALL_MYSQL_ERRORS);
 
 // map MySQL error codes to HTTP status codes
 const map = {

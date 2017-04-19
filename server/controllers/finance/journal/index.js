@@ -111,6 +111,8 @@ function find(options, source) {
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
   `;
 
+  filters.period('defaultPeriod', 'trans_date');
+
   filters.dateFrom('dateFrom', 'trans_date');
   filters.dateTo('dateTo', 'trans_date');
 

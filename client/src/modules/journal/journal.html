@@ -76,6 +76,7 @@
   <a
     href
     ng-click="JournalCtrl.clearFilters()"
+    ng-if="JournalCtrl.filter.customFiltersApplied(JournalCtrl.filters)"
     class="text-danger"
     data-method="clear">
     <i class="fa fa-close text-danger"></i>
