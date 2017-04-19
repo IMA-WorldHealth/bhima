@@ -26,6 +26,13 @@ function getCell(gridId, row, col) {
   return getGrid(gridId)
     .element(by.css('.ui-grid-render-container-body'))
     .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(row))
+    .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(col));
+}
+
+function getCellName(gridId, row, col) {
+  return getGrid(gridId)
+    .element(by.css('.ui-grid-render-container-body'))
+    .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(row))
     .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name').row(col));
 }
 
@@ -109,6 +116,7 @@ exports.getRows = getRows;
 exports.getRow = getRow;
 exports.getColumns = getColumns;
 exports.getCell = getCell;
+exports.getCellName = getCellName;
 exports.expectRowCount = expectRowCount;
 exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;

@@ -15,7 +15,6 @@ describe('Edit Posting Journal', () => {
 
   var validAccount = 1100;
   var inValidAccount = 111100000;
-  var dateBadPeriod = new Date('2015-01-01');
 
 
   it('edits a transaction change an account', function () {
@@ -23,7 +22,7 @@ describe('Edit Posting Journal', () => {
     FU.buttons.grouping();
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(0).click();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCell(gridId, 1, 4);
+    const accountNumberCell = GU.getCellName(gridId, 1, 4);
     // simulate dbl click
     browser.actions().mouseMove(accountNumberCell).doubleClick().perform();
     
@@ -39,7 +38,7 @@ describe('Edit Posting Journal', () => {
     FU.buttons.grouping();
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(0).click();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCell(gridId, 1, 4);
+    const accountNumberCell = GU.getCellName(gridId, 1, 4);
     // simulate dbl click
     browser.actions().mouseMove(accountNumberCell).doubleClick().perform();
     
@@ -57,8 +56,8 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
     
-    const debitCell = GU.getCell(gridId, 2, 5);
-    const creditCell = GU.getCell(gridId, 3, 6);
+    const debitCell = GU.getCellName(gridId, 2, 5);
+    const creditCell = GU.getCellName(gridId, 3, 6);
     // simulate dbl click
     browser.actions().mouseMove(debitCell).doubleClick().perform();
     debitCell.element(by.css("input")).sendKeys(50);
@@ -96,7 +95,7 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
     
-    const accountCell = GU.getCell(gridId, 2, 4);
+    const accountCell = GU.getCellName(gridId, 2, 4);
 
     // simulate dbl click
     browser.actions().mouseMove(accountCell).doubleClick().perform();
@@ -115,8 +114,8 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
     
-    const debitCell = GU.getCell(gridId, 2, 5);
-    const creditCell = GU.getCell(gridId, 3, 6);
+    const debitCell = GU.getCellName(gridId, 2, 5);
+    const creditCell = GU.getCellName(gridId, 3, 6);
     // simulate dbl click
     browser.actions().mouseMove(debitCell).doubleClick().perform();
     debitCell.element(by.css("input")).sendKeys(100);
@@ -137,8 +136,8 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
     
-    const debitCell = GU.getCell(gridId, 2, 5);
-    const creditCell = GU.getCell(gridId, 2, 6);
+    const debitCell = GU.getCellName(gridId, 2, 5);
+    const creditCell = GU.getCellName(gridId, 2, 6);
     // simulate dbl click
     browser.actions().mouseMove(debitCell).doubleClick().perform();
     debitCell.element(by.css("input")).sendKeys(0);
@@ -159,8 +158,8 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
     
-    const debitCell = GU.getCell(gridId, 2, 5);
-    const creditCell = GU.getCell(gridId, 2, 6);
+    const debitCell = GU.getCellName(gridId, 2, 5);
+    const creditCell = GU.getCellName(gridId, 2, 6);
     // simulate dbl click
     browser.actions().mouseMove(debitCell).doubleClick().perform();
     debitCell.element(by.css("input")).sendKeys(50);
@@ -175,5 +174,6 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
+
 
 });
