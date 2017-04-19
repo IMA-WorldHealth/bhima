@@ -2,7 +2,8 @@ angular.module('bhima.services')
   .service('GridGroupingService', GridGroupingService);
 
 GridGroupingService.$inject = [
-  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService',  '$timeout', 'util'
+  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService', 
+  '$timeout', 'util', 'uiGridConstants',
 ];
 
 /**
@@ -16,7 +17,8 @@ GridGroupingService.$inject = [
  * in the `gridOptions`. There are too many places for this to be defined with this
  * set up.
  */
-function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, $timeout, util) {
+function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
+  $timeout, util, uiGridConstants) {
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
 
@@ -148,6 +150,12 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     $timeout(api.treeBase.expandAllRows, 0, false);
   }
 
+  function unfoldGroup(row) {
+    var api = this.gridApi;
+    api.treeBase.expandRow(row);
+    api.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   function changeGrouping (column) {
     this.gridApi.grouping.groupColumn(column);
 
@@ -213,6 +221,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     this.changeGrouping = changeGrouping.bind(this);
     this.removeGrouping = removeGrouping.bind(this);
     this.unfoldAllGroups = unfoldAllGroups.bind(this);
+    this.unfoldGroup = unfoldGroup.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
     this.expandByDefault = angular.isDefined(expandByDefault) ? expandByDefault : true;

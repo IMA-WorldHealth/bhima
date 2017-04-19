@@ -61,11 +61,13 @@ function JournalController(Journal, Sorting, Grouping,
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
-    enableColumnMenus : false,
-    showColumnFooter  : true,
-    appScopeProvider  : vm,
-    flatEntityAccess  : true,
-    rowTemplate       : '/modules/templates/grid/transaction.row.html',
+    enableColumnMenus          : false,
+    showColumnFooter           : true,
+    appScopeProvider           : vm,
+    flatEntityAccess           : true,
+    enableGroupHeaderSelection : true,
+    enableRowHeaderSelection   : true,
+    rowTemplate                : '/modules/templates/grid/transaction.row.html',
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
@@ -376,6 +378,10 @@ function JournalController(Journal, Sorting, Grouping,
   vm.editTransaction = editTransaction;
   function editTransaction(row) {
     vm.filterBarHeight = bhConstants.utilBar.expandedHeightStyle;
+
+    // expand the row
+    vm.grouping.unfoldGroup(row);
+
     transactions.edit(row);
 
     // disable inline filtering when editing
