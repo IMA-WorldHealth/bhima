@@ -122,6 +122,7 @@ function find(options, source) {
   filters.setOrder('ORDER BY p.trans_date DESC');
 
   const query = filters.applyQuery(sql);
+
   const parameters = filters.parameters();
   return db.exec(query, parameters);
 }

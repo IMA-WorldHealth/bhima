@@ -71,6 +71,7 @@ function JournalService(Api) {
       { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
       { field: 'amount', displayName: 'FORM.LABELS.AMOUNT' },
       { field: 'project_id', displayName: 'FORM.LABELS.PROJECT' },
+      { field: 'origin_id', displayName: 'FORM.LABELS.TRANSACTION_TYPE' },
     ];
 
     // returns columns from filters
