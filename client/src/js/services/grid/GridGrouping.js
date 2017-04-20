@@ -21,7 +21,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   $timeout, util, uiGridConstants) {
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
-  var SELECTED_GROUP_HEADERS;
+  var selectedGroupHeaders;
 
   /**
    * @method configureDefaultAggregators
@@ -45,16 +45,16 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
       }
 
       // show debit or credit total for transaction on transaction header
-			if (column.grouping && column.grouping.groupPriority > -1) {
+      if (column.grouping && column.grouping.groupPriority > -1) {
 
-        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+  column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
           // @todo this will be called for every row in a group but only needs to be called once
           if (row.entity.transaction) {
             aggregation.value = row.entity.transaction.debit_equiv;
           }
         };
 
-        column.customTreeAggregationFinalizerFn = function (aggregation) {
+  column.customTreeAggregationFinalizerFn = function (aggregation) {
           if (typeof(aggregation.groupVal) !== 'undefined') {
             aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
           } else {
@@ -62,10 +62,10 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
           }
         };
         // return true;
-      }
+}
 
     });
-		return columns;
+    return columns;
   }
 
 
@@ -108,23 +108,29 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
 
     gridRows.forEach(function (row) {
       var parentRow = row.treeNode.parentRow;
-      if (parentRow.treeLevel === 0 && !parents[parentRow.uid]) {
+
+      if (isUnusedParentRow(parentRow)) {
         parentRow.isSelected = true;
         parents[parentRow.uid] = parentRow;
-        SELECTED_GROUP_HEADERS = parents;
+        selectedGroupHeaders = parents;
       }
     });
 
     // handle deselect
     if (hasSelections === false) {
-      angular.forEach(SELECTED_GROUP_HEADERS, function (node) {
+      angular.forEach(selectedGroupHeaders, function (node) {
         node.isSelected = false;
       });
     }
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-
+    
     gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+
+    // this function identifies parent rows that we haven't seen yet
+    function isUnusedParentRow(row) {
+      return row.treeLevel === 0 && !parents[row.uid];
+    }
   }
 
   // handle the select batch event
