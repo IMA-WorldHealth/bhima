@@ -2,15 +2,17 @@ angular.module('bhima.services')
   .service('JournalService', JournalService);
 
 // Dependencies injection
-JournalService.$inject = ['PrototypeApiService'];
+JournalService.$inject = ['PrototypeApiService', 'FilterService'];
 
 /**
  * Journal Service
  * This service is responsible of all process with the posting journal
  */
-function JournalService(Api) {
+function JournalService(Api, Filters) {
   var URL = '/journal/';
   var service = new Api(URL);
+
+  var filter = new Filters();
 
   service.formatFilterParameters = formatFilterParameters;
   service.grid = grid;
@@ -34,7 +36,7 @@ function JournalService(Api) {
       added   : sanitiseNewRows(added),
       removed : entity.removedRows,
     };
-    
+
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpRequest);
   }
@@ -72,6 +74,7 @@ function JournalService(Api) {
       { field: 'amount', displayName: 'FORM.LABELS.AMOUNT' },
       { field: 'project_id', displayName: 'FORM.LABELS.PROJECT' },
       { field: 'origin_id', displayName: 'FORM.LABELS.TRANSACTION_TYPE' },
+      { field: 'defaultPeriod', displayName: 'TABLE.COLUMNS.PERIOD', ngFilter: 'translate' },
     ];
 
     // returns columns from filters
@@ -86,6 +89,11 @@ function JournalService(Api) {
           column.value = String(value).substring(0, column.truncate) + '... ';
         } else {
           column.value = value;
+        }
+
+        // @FIXME temporary hack for default period
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
         }
 
         return true;

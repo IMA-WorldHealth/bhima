@@ -10,6 +10,9 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
 
   vm.options = options || {};
 
+  // @FIXME patch hack - this should be handled by FilterService
+  delete vm.options.defaultPeriod;
+
   Users.read()
     .then(function (users) {
       vm.users = users;

@@ -7,6 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
+  'FilterService', '$rootScope',
 ];
 
 /**
@@ -32,13 +33,15 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages,
-  AppCache, Store, uiGridGroupingConstants, Export, FindEntity) {
+  AppCache, Store, uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope) {
   // Journal utilities
   var sorting;
   var grouping;
   var filtering;
   var columnConfig;
   var transactions;
+
+  var filter = new Filters();
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -47,6 +50,7 @@ function JournalController(Journal, Sorting, Grouping,
   var cache = AppCache(cacheKey + '-filters');
 
   var vm = this;
+  vm.filter = filter;
 
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
@@ -356,6 +360,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
+    filters = filter.applyDefaults(filters);
     vm.filters = cache.filters = filters;
     vm.filtersFmt = Journal.formatFilterParameters(filters);
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
@@ -372,7 +377,7 @@ function JournalController(Journal, Sorting, Grouping,
   // clears the filters by forcing a cache of an empty array
   function clearFilters() {
     cacheFilters({});
-    load({});
+    load(vm.filters);
   }
 
   vm.editTransaction = editTransaction;
@@ -436,9 +441,25 @@ function JournalController(Journal, Sorting, Grouping,
 
   // runs on startup
   function startup() {
-    vm.filters = cache.filters;
+    var filters;
+
+    // @TODO standardise loading/ caching/ assigning filters with a client service
+    // if filters are directly passed in through params, override cached filters
+    if ($state.params.filters) {
+      cacheFilters($state.params.filters);
+    }
+
+    if (!cache.filters) { cache.filters = {}; }
+    filters = filter.applyDefaults(cache.filters);
+
+    vm.filters = filters;
     vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
     load(vm.filters);
+
+    // show filter bar as needed
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+      bhConstants.utilBar.expandedHeightStyle :
+      bhConstants.utilBar.collapsedHeightStyle;
   }
 
   // ===================== edit entity ===============================
@@ -466,7 +487,7 @@ function JournalController(Journal, Sorting, Grouping,
     delete row.entity_uuid;
     delete row.hrEntity;
   }
-  
+
   // ===================== end edit entity ===========================
 
   startup();

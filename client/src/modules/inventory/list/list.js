@@ -83,14 +83,14 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function runResearch(params){ 
+  function runResearch(params){
 
     vm.filtersFmt = Inventory.formatFilterParameters(params);
     Inventory.search(params)
       .then(function (rows) {
         vm.gridOptions.data = rows;
       })
-      .catch(Notify.handleError);     
+      .catch(Notify.handleError);
   }
 
   // research and filter data in Inventory List
@@ -110,7 +110,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     runResearch(vm.filters);
   }
 
-  // clears the filters 
+  // clears the filters
   function clearFilters() {
     startup();
     $state.params.filters = null;
@@ -121,7 +121,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   function startup() {
     vm.filters = {};
 
-    // if filters are directly passed in 
+    // if filters are directly passed in
     if ($state.params.filters) {
       runResearch($state.params.filters);
 
@@ -130,7 +130,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
         .then(function (inventory) {
           vm.gridOptions.data = inventory;
         })
-        .catch(Notify.handleError);      
+        .catch(Notify.handleError);
     }
 
 
