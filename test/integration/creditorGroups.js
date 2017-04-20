@@ -15,8 +15,8 @@ describe('(/creditors/groups) Creditor Groups', function () {
     enterprise_id : 1,
     uuid          : uuid.v4(),
     name          : 'Creditor Test',
-    account_id    : 3629,
-    locked        : 0,
+    account_id    : 3645,
+    locked        : 0
   };
 
   var responseKeys = ['enterprise_id', 'uuid', 'name', 'account_id', 'locked'];

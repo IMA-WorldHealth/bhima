@@ -258,7 +258,7 @@
 "INCOME":"Recettes",
 "INCOME_EXPENSE":"Recettes et dépenses",
 "INCLUDE_DATE_INTERVAL":"Inclure l'intervalle de dates",
-"INCLUDE_ZEROES":"Include lines with zero values",
+"INCLUDE_ZEROES":"Inclure des lignes avec des valeurs zéro",
 "INTL":"Internationale",
 "INVENTORY":"Inventaire",
 "INVENTORY_ITEM":"Item",

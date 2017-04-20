@@ -15,7 +15,7 @@ describe('Account Management', function () {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
-  const INITIAL_ACCOUNTS = 14;
+  const INITIAL_ACCOUNTS = 17;
   let addedAccounts = 0;
 
   // this is an account at the top of the grid - until this test is improved it relies
@@ -35,7 +35,7 @@ describe('Account Management', function () {
     }
   };
 
-  const deletingAccount = '3647';
+  const deletingAccount = '3645';
 
   const page = new AccountsPage();
 
