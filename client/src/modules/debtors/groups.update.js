@@ -79,7 +79,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   }
 
   function cancel(){
-    $state.go('debtorGroups.list', null, {reload : true});
+    $state.go('debtorGroups.list');
   }
 
   function billingServiceSubscriptions() {
