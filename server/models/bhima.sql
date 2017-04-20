@@ -49,23 +49,24 @@ INSERT INTO unit VALUES
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
   (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
-  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/modules/finance/reports/aged-debtors', '/reports/agedDebtors'),
-  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/modules/finance/report_accounts', '/reports/report_accounts'),
-  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/modules/finance/cashflow/services', '/reports/cashflowByService'),
-  (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/modules/purchase_order', '/purchases/'),
-  (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/modules/purchase_order/purchase', '/purchases/create'),
-  (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/modules/purchase_order/registry', '/purchases/list'),
-  (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/modules/finance/debtors/open', '/reports/openDebtors'),
-  (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/modules/finance/general_ledger/', '/journal/posted'),
-  (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/modules/finance/clients_report', '/reports/clients_report'),
-  (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/modules/stock', '/stock'),
-  (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/modules/stock/lots', '/stock/lots'),
-  (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/modules/stock/movements', '/stock/movements'),
-  (163, 'Stock Inventory', 'TREE.STOCK_INVENTORY', 'The stock inventory registry', 160, '/modules/stock/inventories', '/stock/inventories'),
-  (164, 'Stock Exit', 'STOCK.EXIT', 'The stock exit module', 160, '/modules/stock/exit', '/stock/exit'),
-  (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/modules/stock/entry', '/stock/entry'),
-  (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/modules/stock/origins', '/stock/origins'),
-  (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/modules/stock/adjustment', '/stock/adjustment');
+  (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
+  (152, 'Report accounts', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/partials/finance/report_accounts', '/reports/report_accounts'),
+  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
+  (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
+  (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
+  (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
+  (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors'),
+  (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted'),
+  (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/partials/finance/clients_report', '/reports/clients_report'),
+  (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/partials/stock', '/stock'),
+  (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/partials/stock/lots', '/stock/lots'),
+  (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/partials/stock/movements', '/stock/movements'),
+  (163, 'Stock Inventory', 'TREE.STOCK_INVENTORY', 'The stock inventory registry', 160, '/partials/stock/inventories', '/stock/inventories'),
+  (164, 'Stock Exit', 'STOCK.EXIT', 'The stock exit module', 160, '/partials/stock/exit', '/stock/exit'),
+  (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/partials/stock/entry', '/stock/entry'),
+  (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
+  (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
+  (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -84,7 +85,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
   (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (9, 'clients_report','REPORT.CLIENTS_REPORT');
+  (9, 'clients_report','REPORT.CLIENTS_REPORT'),
+  (10, 'agedCreditors','REPORT.AGED_CREDITORS');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

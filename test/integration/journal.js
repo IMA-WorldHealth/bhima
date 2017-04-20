@@ -8,8 +8,8 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
-  const NUM_ROW_ALL_RECORDS = 13;
-  const DISTINCT_TRANSACTIONS = 6;
+  const NUM_ROW_ALL_RECORDS = 15;
+  const DISTINCT_TRANSACTIONS = 7;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal : it returns a set of records ', () =>
