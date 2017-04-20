@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesCreateController', BillingServicesCreateController);
 
 BillingServicesCreateController.$inject = [
-  'BillingServicesService', 'AccountService', '$uibModalInstance', 'util'
+  'BillingServicesService', '$uibModalInstance', 'util',
 ];
 
 /**
@@ -11,7 +11,7 @@ BillingServicesCreateController.$inject = [
  * This controller allows the user to create a new billing service using a form.
  * Note that this uses the same HTML form as the update controller
  */
-function BillingServicesCreateController(BillingServices, Accounts, ModalInstance, util) {
+function BillingServicesCreateController(BillingServices, ModalInstance, util) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
@@ -26,13 +26,11 @@ function BillingServicesCreateController(BillingServices, Accounts, ModalInstanc
 
   vm.length200 = util.length200;
   vm.maxLength = util.maxTextLength;
+  vm.onSelectAccount = onSelectAccount;
 
-  // fired on application startup
-  function startup() {
-    Accounts.read()
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    });
+  // bhAccountSelect callback
+  function onSelectAccount(account) {
+    vm.model.account_id = account.id;
   }
 
   /**
@@ -55,14 +53,11 @@ function BillingServicesCreateController(BillingServices, Accounts, ModalInstanc
 
     // submit data to the server
     return BillingServices.create(vm.model)
-    .then(function (data) {
-      ModalInstance.close(data.id);
-    })
-    .catch(function (response) {
-      vm.error = response.data;
-    });
+      .then(function (data) {
+        ModalInstance.close(data.id);
+      })
+      .catch(function (response) {
+        vm.error = response.data;
+      });
   }
-
-  // load initial data from the server
-  startup();
 }
