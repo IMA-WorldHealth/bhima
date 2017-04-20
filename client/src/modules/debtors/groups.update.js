@@ -20,6 +20,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.$loading = true;
   vm.$loaded = false;
+  vm.cancel = cancel;
 
   vm.deleteGroup = deleteGroup;
 
@@ -75,6 +76,10 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
         $state.go('debtorGroups.list', null, {reload : true});
       })
       .catch(Notify.handleError);
+  }
+
+  function cancel(){
+    $state.go('debtorGroups.list');
   }
 
   function billingServiceSubscriptions() {
