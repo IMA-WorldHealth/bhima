@@ -1,42 +1,37 @@
 angular.module('bhima.controllers')
-.controller('ConventionPaymentKitController', ConventionPaymentKitController);
+.controller('SupportPatientKitController', SupportPatientKitController);
 
 // DI definition
-ConventionPaymentKitController.$inject = [
-  '$uibModalInstance', 'DebtorGroupService', 'NotifyService',
-  'CashboxService', 'SessionService', 'data', 'bhConstants',
-  'AccountStoreService', 'DebtorService', 'PatientInvoiceService'
+SupportPatientKitController.$inject = [
+  '$uibModalInstance', 'NotifyService', 'CashboxService', 'SessionService', 'data', 'bhConstants',
+  'DebtorService', 'PatientInvoiceService'
 ];
 
-// Import transaction rows for a convention payment
-function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, Session, Data, bhConstants, AccountStore, Debtors, Invoices) {
+// Import transaction rows for a Support Patient
+function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, bhConstants, Debtors, Invoices) {
   var vm = this;
 
   // global variables
   vm.enterprise = Session.enterprise;
   vm.gridOptions = {};
   vm.tool = Data;
+  vm.patientInvoice = false;
 
   var MAX_DECIMAL_PRECISION = bhConstants = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // expose to the view
-  vm.selectGroupInvoices = selectGroupInvoices;
+  vm.selectPatientInvoices = selectPatientInvoices;
   vm.close = Instance.close;
   vm.import = submit;
-
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
+  vm.loadInvoice = loadInvoice;
+  vm.onSelectAccount = onSelectAccount;
 
   // debtors from store
   Debtors.store()
-    .then(function (data) {
-      vm.debtors = data;
-    })
-    .catch(Notify.handleError);
+  .then(function (data) {
+    vm.debtors = data;
+  })
+  .catch(Notify.handleError);
 
   //  optimization with `Store` will be well
   Invoices.read()
@@ -45,34 +40,14 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   })
   .catch(Notify.handleError);
 
-  // load debtors
-  Debtors.read()
-    .then(function (list) {
-      vm.debtorList = list;
-    })
-    .catch(Notify.handleError);
-
-  // load conventions
-  DebtorGroup.read()
-    .then(function (list) {
-      vm.conventionGroupList = list;
-    })
-    .catch(Notify.handleError);
-
-  // load cashboxes
-  Cashbox.read(null, { detailed: 1 })
-    .then(function (cashboxes) {
-      vm.cashboxList = cashboxes;
-    })
-    .catch(Notify.handleError);
-
   // get debtor group invoices
-  function selectGroupInvoices(convention) {
-    DebtorGroup.invoices(convention.uuid, { is_convention: 1})
-      .then(function (list) {
+  function selectPatientInvoices(debtorId) {
+    // load debtor invoices
+    vm.debtorUuid =  debtorId;
 
-        // invoices
-        vm.gridOptions.data = list || [];
+    Debtors.invoices(debtorId, { balanced : 0 })
+      .then(function (invoices) {
+        vm.gridOptions.data = invoices || [];
 
         // total amount
         vm.totalInvoices = vm.gridOptions.data.reduce(function (current, previous) {
@@ -81,16 +56,26 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
 
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
+        
       })
       .catch(Notify.handleError);
+  }
+
+  function loadInvoice(debtor){
+    vm.debtor = debtor;
+    selectPatientInvoices(debtor.debtor_uuid);
+  }
+
+  function onSelectAccount(account) {
+    vm.account_id = account.id;
   }
 
   // generate transaction rows
   function generateTransactionRows(result) {
     var rows = [];
 
-    var cashboxAccountId = result.cashbox.account_id;
-    var conventionAccountId = result.convention.account_id;
+    var cashboxAccountId = result.account_id;
+    var supportedAccountId = result.debtor.account_id;
     var invoices = result.invoices;
 
     // first, generate a cashbox row
@@ -100,11 +85,11 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     cashboxRow.credit = 0;
     rows.push(cashboxRow);
 
-    // then loop through each selected item and credit it with the convention account
+    // then loop through each selected item and credit it with the Supported account
     invoices.forEach(function (invoice) {
       var row = generateRow();
 
-      row.account_id = conventionAccountId;
+      row.account_id = supportedAccountId;
       row.reference_uuid = invoice.uuid;
       row.entity_uuid = invoice.entity_uuid;
       row.credit = invoice.balance;
@@ -122,7 +107,7 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     return rows;
   }
 
-  // format entity
+  // format entityco
   function formatEntity(uuid) {
     var entity = vm.debtors.get(uuid);
     return {
@@ -194,11 +179,11 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     if (form.$invalid) { return; }
 
     var bundle = generateTransactionRows({
-      cashbox: vm.cashbox,
-      convention: vm.convention,
+      account_id: vm.account_id,
+      debtor: vm.debtor,
       invoices: vm.selectedRows
     });
 
-    Instance.close({ rows: bundle, convention: vm.convention });
+    Instance.close({ rows: bundle, debtor: vm.debtor });
   }
 }

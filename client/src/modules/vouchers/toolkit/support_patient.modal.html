@@ -1,0 +1,60 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" bh-form-defaults novalidate>
+  <div class="modal-body">
+    <bh-account-select
+      name="account_id"
+      account-id="ToolCtrl.account_id"
+      on-select-callback="ToolCtrl.onSelectAccount(account)">
+    </bh-account-select>
+
+    <bh-find-patient
+      suppress-reset="false"
+      on-search-complete="ToolCtrl.loadInvoice(patient)"
+      on-register-api="ToolCtrl.onRegisterApiCallback(api)"
+      validation-trigger="ToolForm.$submitted"
+      required="true">
+    </bh-find-patient>
+
+    <!-- select invoices  -->
+    <div ng-show="ToolCtrl.debtorUuid">
+      <div
+        id="invoiceGrid"
+        style="height: 40vh; margin-bottom: 20px;"
+        ui-grid="ToolCtrl.gridOptions"
+        ui-grid-filtering
+        ui-grid-auto-resize
+        ui-grid-resize-columns
+        ui-grid-selection>
+      </div>
+    </div>
+
+    <p ng-show="!ToolCtrl.debtorUuid" class="text-info">
+      <i class="fa fa-info-circle"></i> <span translate> VOUCHERS.GLOBAL.SUPPORT_TEXT </span>
+    </p>
+
+    <div ng-show="ToolCtrl.debtorUuid" class="text-right">
+      <span translate>FORM.LABELS.TOTAL_BILLED</span>: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong><br>
+      <span translate>FORM.LABELS.TOTAL_SELECTED_INVOICES</span>: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

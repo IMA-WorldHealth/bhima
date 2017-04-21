@@ -78,13 +78,40 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // toolkit action definition
   var conventionPaymentTool = Toolkit.tools.convention_payment;
+  var supportPatientTool = Toolkit.tools.support_patient;  
 
   // action on convention payment tool
   conventionPaymentTool.action = openConventionPaymentTool;
 
+  // action on suppot patient tool
+  supportPatientTool.action = openSupportPatientTool;
+
   // open convention payment function
   function openConventionPaymentTool() {
     Toolkit.open(conventionPaymentTool)
+      .then(function (result) {
+        if (!result) { return; }
+
+        var rows = result.rows;
+        var n = result.rows.length;
+
+        while (n--) {
+          vm.Voucher.addItems(1);
+
+          var lastRowIdx = vm.Voucher.store.data.length - 1;
+          var lastRow = vm.Voucher.store.data[lastRowIdx];
+
+          lastRow.configure(rows[n]);
+        }
+
+        vm.Voucher.validate();
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
+      });
+  }
+
+  // open support patient function
+  function openSupportPatientTool() {
+    Toolkit.open(supportPatientTool)
       .then(function (result) {
         if (!result) { return; }
 
