@@ -178,7 +178,7 @@ describe('Complex Vouchers', function () {
       transactionType: 'Convention'
     };
 
-    // click on the convention tool
+    // click on the Support Patient Tool
     FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // select account
