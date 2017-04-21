@@ -56,9 +56,10 @@
         </div>
 
         <bh-account-select
-          account-id="ModalCtrl.searchQueries.account_id"
+          account-id="ModalCtrl.options.account_id"
           name="account_id"
           on-select-callback="ModalCtrl.onSelectAccount(account)"
+          exclude-title-accounts="true"
           required="0">
           <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
         </bh-account-select>
@@ -158,7 +159,6 @@
       </uib-tab>
 
     </uib-tabset>
-
   </div>
 
   <div class="modal-footer">
