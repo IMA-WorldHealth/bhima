@@ -7,7 +7,6 @@ function TrialBalanceDetailPage() {
   const gridRows = grid.element(by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
   const resetButton = $('[data-method="reset"]');
 
-
   function reset (){
     return resetButton.click();
   }
@@ -21,4 +20,3 @@ function TrialBalanceDetailPage() {
 }
 
 module.exports = TrialBalanceDetailPage;
-
