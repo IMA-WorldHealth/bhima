@@ -16,15 +16,6 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   vm.state = $state;
 
   /**
-   * @function cancel
-   * @description
-   * closes the modal and stop the posting process
-   **/
-  function cancel() {
-    $state.go('journal');
-  }
-
-  /**
    * @function submit
    * @description for submitting a dialog content
    */
@@ -32,7 +23,7 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
     vm.loading = true;
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
-        $state.go('journal', null, { reload : true});
+        $state.go('journal', null, { reload: true });
       })
       .catch(Notify.handleError)
       .finally(function () {
@@ -40,6 +31,5 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
       });
   }
 
-  vm.cancel = cancel;
   vm.submit = submit;
 }

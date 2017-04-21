@@ -1,15 +1,11 @@
-<button
-  id="cancelID"
-  type="button"
-  class="btn btn-default"
-  ng-click="TrialBalanceMainFooterCtrl.cancel()">
+<button type="button" class="btn btn-default" data-method="cancel" ui-sref="journal">
   <span translate>FORM.BUTTONS.CANCEL</span>
 </button>
 
 <button
   ng-if="TrialBalanceMainFooterCtrl.state.current.data.checked"
   type="button"
-  class="btn"
+  class="btn btn-default"
   ng-class="{
     'btn-danger' : TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasError,
     'btn-warning': TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasWarning,
@@ -20,5 +16,7 @@
   <span ng-show="TrialBalanceMainFooterCtrl.loading">
     <span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span>
   </span>
-  <span ng-hide="TrialBalanceMainFooterCtrl.loading" translate>FORM.BUTTONS.SUBMIT</span>
+  <span ng-hide="TrialBalanceMainFooterCtrl.loading" translate>
+    FORM.BUTTONS.SUBMIT
+  </span>
 </button>

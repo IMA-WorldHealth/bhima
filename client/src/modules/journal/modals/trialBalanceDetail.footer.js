@@ -23,15 +23,5 @@ function TrialBalanceDetailFooterController($state, $stateParams) {
     $state.go('trialBalanceMain', { records: $stateParams.records }, { reload: false });
   }
 
-  /**
-   * @function cancel
-   * @description
-   * closes the modal and stop the posting process
-   **/
-  function cancel() {
-    $state.go('journal');
-  }
-
   vm.reset = reset;
-  vm.cancel = cancel;
 }

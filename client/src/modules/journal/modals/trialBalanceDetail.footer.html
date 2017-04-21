@@ -1,14 +1,9 @@
-<button
-  id="cancelID"
-  type="button"
-  class="btn btn-default"
-  ng-click="TrialBalanceFooterDetailCtrl.cancel()">
+<button type="button" class="btn btn-default" data-method="cancel" ui-sref="journal">
   <span translate>FORM.BUTTONS.CANCEL</span>
 </button>
 
 <button
   ng-if="TrialBalanceFooterDetailCtrl.stateParams.feedBack"
-  id="detailID"
   type="button"
   data-method="reset"
   class="btn btn-default"
