@@ -10,6 +10,7 @@ angular.module('bhima.components')
       required         : '<?',
       label            : '@?',
       name             : '@?',
+      excludeTitleAccounts : '@?',
     },
   });
 
@@ -32,9 +33,6 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function () {
-    // load accounts
-    loadAccounts();
-
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
@@ -54,6 +52,10 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
       $ctrl.required = true;
     }
 
+    $ctrl.excludeTitleAccounts = $ctrl.excludeTitleAccounts || false;
+
+    // load accounts
+    loadAccounts();
 
     // alias the name as AccountForm
     $timeout(aliasComponentForm);
@@ -90,7 +92,13 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
       .then(function (elements) {
 
         // bind the accounts to the controller
-        $ctrl.accounts = Accounts.order(elements);
+        var accounts = Accounts.order(elements);
+
+        if ($ctrl.excludeTitleAccounts) {
+          accounts = Accounts.filterTitleAccounts(accounts);
+        }
+
+        $ctrl.accounts = accounts;
 
         // writes the accounts into localstorage
         //cacheAccounts($ctrl.accounts);
