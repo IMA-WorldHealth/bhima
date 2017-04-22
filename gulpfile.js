@@ -254,7 +254,7 @@ gulp.task('watch-client', () => {
 });
 
 // gather a list of files to rewrite revisions for
-const toHash = ['**/*.min.js', '**/*.css'].map(file => `${CLIENT_FOLDER}${file}`);
+const toHash = ['**/*.min.js', '**/*.css', '**/*.html'].map(file => `${CLIENT_FOLDER}${file}`);
 
 gulp.task('client-compute-hashes', ['client-compile-js', 'client-compile-vendor', 'client-compile-css'], () =>
   gulp.src(toHash)

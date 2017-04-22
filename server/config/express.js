@@ -24,9 +24,7 @@ const uploads = require('../lib/uploader');
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
-  // TODO - things don't work well yet.
-  // const isProduction = (process.env.NODE_ENV === 'production');
-  const isProduction = false;
+  const isProduction = (process.env.NODE_ENV === 'production');
 
   winston.debug('Configuring middleware.');
 
@@ -57,10 +55,12 @@ exports.configure = function configure(app) {
   };
 
   // indicate that we are running behind a trust proxy and should use a secure cookie
+  /*
   if (isProduction) {
     app.set('trust proxy', true);
     sess.cookie.secure = true;
   }
+  */
 
   // bind the session to the middleware
   app.use(session(sess));
@@ -76,9 +76,8 @@ exports.configure = function configure(app) {
 
   // public static directories include the entire client and the uploads
   // directory.
-  const days = 1000 * 60 * 60 * 24;
   const params = {};
-  params.maxAge = isProduction ? 7 * days : 0;
+  params.maxAge = isProduction ? '1y' : 0;
   app.use(express.static('client/', params));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
