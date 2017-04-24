@@ -90,7 +90,7 @@ class FilterParser {
       const targetPeriod = period.lookupPeriod(this._filters[filterKey]);
 
       // specific base case - if all time requested to not apply a date filter
-      if (targetPeriod === period.periods.allTime) {
+      if (targetPeriod === period.periods.allTime || targetPeriod === period.periods.custom) {
         delete this._filters[filterKey];
         return;
       }

@@ -42,6 +42,7 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
   vm.onSelectPeriod = function onSelectPeriod(period) {
     var periodFilters = Periods.processFilterChanges(period);
 
+    console.log('got period changes', periodFilters);
     periodFilters.forEach(function (filterChange) {
       changes.post(filterChange);
     });

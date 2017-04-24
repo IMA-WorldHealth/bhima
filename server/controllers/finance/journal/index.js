@@ -113,9 +113,8 @@ function find(options) {
   `;
 
   filters.period('period', 'trans_date');
-
-  filters.dateFrom('dateFrom', 'trans_date');
-  filters.dateTo('dateTo', 'trans_date');
+  filters.dateFrom('custom_period_start', 'trans_date');
+  filters.dateTo('custom_period_end', 'trans_date');
 
   filters.fullText('description');
   filters.fullText('comment');

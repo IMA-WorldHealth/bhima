@@ -112,11 +112,11 @@ function PeriodService(Moment) {
 
     if (period === periods.custom) {
       // ensure period key is empty
-      periodChanges.push({ key : 'period', value : null });
+      periodChanges.push({ key : 'period', value : period.key, displayValue : period.translateKey });
 
       // populate custom values
-      periodChanges.push({ key : 'custom_period_start', value : period.startTime });
-      periodChanges.push({ key : 'custom_period_end', value : period.endTime });
+      periodChanges.push({ key : 'custom_period_start', value : period.customPeriodStart });
+      periodChanges.push({ key : 'custom_period_end', value : period.customPeriodEnd });
     } else {
 
       // ensure custom period options are removed

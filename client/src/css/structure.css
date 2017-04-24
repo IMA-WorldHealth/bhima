@@ -903,3 +903,11 @@ a[disabled] {
 .filter-list {
   display : inline-block;
 }
+
+.filter-list > li {
+  padding : 0px;
+}
+
+.filter-list li:first-child {
+  padding-left : 5px !important;
+}

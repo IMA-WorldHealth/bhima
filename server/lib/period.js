@@ -56,6 +56,11 @@ class PeriodService {
       allTime : {
         key : 'allTime',
         translateKey : 'PERIODS.ALL_TIME'
+      },
+
+      custom : {
+        key : 'custom',
+        translateKey : 'PERIODS.CUSTOM'
       }
     };
 
