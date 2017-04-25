@@ -13,6 +13,24 @@ function FilterService($log, Store) {
     this._customFilters = [];
 
     this._filterIndex = {};
+
+    window.activeFilter = this;
+  }
+
+  FilterList.prototype.resetFilterState = function resetFilterState(key) {
+    this._filterIndex[key].assign(null, null);
+  }
+
+  FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
+    this._filterActiveFilters().forEach(function (filter) {
+
+      console.log('clearing values for entry', filter);
+      // only by default remove custom values
+      if (!filter._isDefault) {
+        this.resetFilterState(filter._key);
+      }
+      // filter.assign(null);
+    }.bind(this));
   }
 
   // @TODO registerDefaultFilter and registerCustomFilter could use the same underlying function
@@ -31,7 +49,7 @@ function FilterService($log, Store) {
     // udpate index
     this._indexList(this._filterIndex, formattedFilters);
     this._defaultFilters = this._defaultFilters.concat(formattedFilters);
-  }
+  };
 
   FilterList.prototype.registerCustomFilters = function registerCustomFilters(filterDefinitions) {
     var formattedFilters = filterDefinitions.map(function (filterDefinition) {
@@ -43,14 +61,14 @@ function FilterService($log, Store) {
     // udpate index
     this._indexList(this._filterIndex, formattedFilters);
     this._customFilters = this._customFilters.concat(formattedFilters);
-  }
+  };
 
 
   // assigns the value of a filter, a filter with a value will be actively used
   // during the HTTP/ UI export process
   FilterList.prototype.assignFilter = function assignFilter(key, value, displayValue) {
     this._filterIndex[key].assign(value, displayValue);
-  }
+  };
 
   // accepts an array of key : filterValue objects that are assigned
   // [
@@ -59,15 +77,28 @@ function FilterService($log, Store) {
   // ]
   FilterList.prototype.assignFilters = function assignFilters(valueList) {
 
+    console.log('assign filters called with', valueList, 'using', this);
     valueList.forEach(function (valueMap) {
       this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue);
     }.bind(this));
-  }
+  };
+
+  // alias for `assignFilters`, clears the currently active filters before
+  // calling the erferenced method
+  FilterList.prototype.replaceFilters = function replaceFilters(valueList) {
+    this._resetCustomFilters();
+    console.log('state reset', this);
+    this.assignFilters(valueList);
+
+    console.log('assigned  filters', this);
+  };
 
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) { return filter._key });
+
+
+    var activeKeys = activeFilters.map(function (filter) { console.log('ACTIVE FILTERS AS OF FORMAT VIEW', filter); return filter._key });
 
     $log.debug('[FilterService] Active keys:', activeKeys);
 
@@ -78,7 +109,7 @@ function FilterService($log, Store) {
       defaultFilters : this._defaultFilters.filter(keysInActive),
       customFilters : this._customFilters.filter(keysInActive)
     };
-  }
+  };
 
   // format filters for the server
   // sendClientTimestamp - this will send an attribute hidden to the user
@@ -92,7 +123,7 @@ function FilterService($log, Store) {
       aggregate[filter._key] = filter._value;
       return aggregate;
     }, {});
-  }
+  };
 
   // returns an array of labels and overriden labels that is built for the FilterParser API
   FilterList.prototype.formatHTTPLabels = function formatHTTPLabels() {

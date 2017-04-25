@@ -80,6 +80,8 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
       { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
       { key: 'user_id', label: 'FORM.LABELS.USER' },
       { key: 'account_id', label: 'FORM.LABELS.ACCOUNT' },
+      { key: 'amount', label: 'FORM.LABELS.AMOUNT' },
+      { key: 'project_id', label: 'FORM.LABELS.PROJECT' },
       { key: 'description', label: 'FORM.LABELS.DESCRIPTION' }]);
 
   // configure module defaults
@@ -102,16 +104,9 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
     // if (assignedKeys.indexOf('limit') === -1) {
   }
 
-
-  // Example
-  // @TODO move send client timestamp to initialising the filter configuration
-  var HTTPFilters = journalFilters.formatHTTP(true);
-  var HTTPLabels = journalFilters.formatHTTPLabels();
-  var viewFilters = journalFilters.formatView();
-
-  $log.debug('[JournalService] Got filters for HTTP', HTTPFilters);
-  $log.debug('[JournalService] Got filters for HTTP Labels', HTTPLabels);
-  $log.debug('[JournalService] Got filters for view', viewFilters);
+  service.removeFilter = function removeFilter(key) {
+    journalFilters.resetFilterState(key);
+  }
 
   // load filters from cache
   service.cacheFilters = function cacheFilters() {

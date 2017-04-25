@@ -272,7 +272,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         // turn loading on
 
         // search controller should return a well formatted list of key:value objects
-        Journal.filters.assignFilters(changes);
+
+        // Journal.filters.replaceFilters(changes);
+        //
+
+        console.log('assigning/ [replacing with]', changes);
+        Journal.filters.replaceFilters(changes);
+
         Journal.cacheFilters();
 
         toggleLoadingIndicator();
@@ -293,9 +299,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    delete vm.filters[key];
-    cacheFilters(vm.filters);
-    load(vm.filters);
+    console.log('on remove filter called with', key);
+
+    Journal.removeFilter(key);
+    Journal.cacheFilters();
+
+    vm.latestViewFilters = Journal.filters.formatView();
+    return load(Journal.filters.formatHTTP());
   }
 
   // clears the filters by forcing a cache of an empty array
@@ -335,6 +345,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       vm.grouped = cache.grouped = true;
     }
   };
+
+
 
   function cancelEdit() {
     // @TODO this should return a promise in a uniform standard with `saveTransaction`

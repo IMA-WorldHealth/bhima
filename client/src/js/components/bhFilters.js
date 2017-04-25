@@ -18,13 +18,18 @@ function bhFiltersController($filter) {
 
     var filters = changes.filters.currentValue;
 
-    filters.defaultFilters.forEach(function (filter) {
-
-      filter.displayValue = filter._displayValue || filter._value;
-
-      if (filter._valueFilter) {
-        filter.displayValue = $filter(filter._valueFilter)(filter.displayValue);
-      }
-    });
+    filters.defaultFilters.forEach(mapDisplayValues);
+    filters.customFilters.forEach(mapDisplayValues);
   };
+
+  function mapDisplayValues(filter) {
+    filter.displayValue = filter._displayValue || filter._value;
+
+    if (filter._valueFilter) {
+      filter.displayValue = $filter(filter._valueFilter)(filter.displayValue);
+    }
+    return filter;
+  }
 }
+
+

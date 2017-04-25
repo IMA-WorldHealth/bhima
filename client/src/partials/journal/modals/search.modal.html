@@ -19,13 +19,6 @@
       <uib-tab index="0" heading="Search Queries">
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
-        <!-- date parameters -->
-        <bh-date-interval
-          date-from="ModalCtrl.options.dateFrom"
-          date-to="ModalCtrl.options.dateTo"
-          mode="clean"
-          validation-trigger="ModalForm.$submitted">
-        </bh-date-interval>
 
         <!-- description fuzzy search -->
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
@@ -36,7 +29,7 @@
           <textarea
             class="form-control"
             name="description"
-            ng-model="ModalCtrl.options.description"
+            ng-model="ModalCtrl.searchQueries.description"
             rows="4">
           </textarea>
           <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
@@ -50,7 +43,7 @@
             FORM.LABELS.USER
           </label>
           <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-          <ui-select name="user" ng-model="ModalCtrl.options.user_id">
+          <ui-select name="user" ng-change="ModalCtrl.onSelectUser(ModalCtrl.searchQueries.user_id)" ng-model="ModalCtrl.searchQueries.user_id">
             <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
             <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter: { 'display_name': $select.search }">
               <span ng-bind-html="user.display_name | highlight:$select.search"></span>
@@ -63,7 +56,7 @@
         </div>
 
         <bh-account-select
-          account-id="ModalCtrl.options.account_id"
+          account-id="ModalCtrl.searchQueries.account_id"
           name="account_id"
           on-select-callback="ModalCtrl.onSelectAccount(account)"
           required="0">
@@ -75,7 +68,7 @@
           <select
             class="form-control"
             name="project_id"
-            ng-model="ModalCtrl.options.project_id"
+            ng-model="ModalCtrl.searchQueries.project_id"
             ng-options="project.id as project.name for project in ModalCtrl.projects">
             <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
           </select>
@@ -87,7 +80,7 @@
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
           <label class="control-label" translate>FORM.LABELS.AMOUNT</label>
           <bh-clear on-clear="ModalCtrl.clear('amount')"></bh-clear>
-          <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.options.amount">
+          <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.searchQueries.amount">
           <div class="help-block" ng-messages="ModalForm.amount.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
@@ -98,7 +91,7 @@
             FORM.LABELS.TRANSACTION
           </label>
           <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
-          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.options.trans_id">
+          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.searchQueries.trans_id">
           <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
