@@ -374,6 +374,10 @@ function transformColumns(rows, newRecord) {
       delete row.account_number;
     }
 
+    if (row.account_name) {
+      delete row.account_name;
+    }
+
     if (row.hrEntity) {
       // reverse barcode lookup entity
       databaseRequests.push(ENTITY_QUERY);
