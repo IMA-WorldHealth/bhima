@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', '$translate'
+  'FilterService', '$rootScope', 'GridExportService', '$filter', '$translate',
 ];
 
 /**
@@ -32,15 +32,15 @@ JournalController.$inject = [
  */
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
-  bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate) {
-
+  bhConstants, $state, uiGridConstants, Modal, Languages,
+  AppCache, Store, uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, GridExport, $filter, $translate) {
   // Journal utilities
   var sorting;
   var grouping;
   var filtering;
   var columnConfig;
   var transactions;
+  var exportation;
 
   var filter = new Filters();
 
@@ -50,6 +50,9 @@ function JournalController(Journal, Sorting, Grouping,
   // top level cache
   var cache = AppCache(cacheKey + '-module');
   var vm = this;
+
+  var gridApi;
+
   vm.filter = filter;
 
   // number of all of the transactions in the system
@@ -92,6 +95,7 @@ function JournalController(Journal, Sorting, Grouping,
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
+  exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -305,12 +309,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // export data into csv file
   vm.exportFile = function exportFile() {
-    var url = '/reports/finance/journal';
-    var params = formatExportParameters('csv');
-
-    if (!params) { return; }
-
-    Export.download(url, params, 'POSTING_JOURNAL.TITLE');
+    exportation.run();
   };
 
   function errorHandler(error) {
