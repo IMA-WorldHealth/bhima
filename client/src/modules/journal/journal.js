@@ -259,8 +259,10 @@ function JournalController(Journal, Sorting, Grouping,
 
   // This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal() {
+    var numberSelectedGroup = vm.grouping.getSelectedGroups().length;
+
     // make sure a row is selected before running the trial balance
-    if (grouping.selectedRowCount < 1) {
+    if (numberSelectedGroup === 0) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
       return;
     }
