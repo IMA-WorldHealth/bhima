@@ -60,6 +60,7 @@ function PrototypeApiService($http, util) {
   Api.prototype.$http = $http;
   Api.prototype.util = util;
   Api.prototype.report = report;
+  Api.prototype.count = count;
 
   // bind functions directly for ease of calling in services which need to
   // modify the functions before executing them.
@@ -69,6 +70,7 @@ function PrototypeApiService($http, util) {
   Api.delete = remove;
   Api.search = search;
   Api.report = report;
+  Api.count = count;
 
   /**
    * @method read
@@ -271,6 +273,35 @@ function PrototypeApiService($http, util) {
     })
     .then(util.unwrapHttpResponse);
   }
+
+
+  /**
+   * @method count
+   *
+   * @description
+   * Sends an HTTP GET request to the url "/route/count" with properly formatted
+   * query strings to query the database. The expected response is a `200 OK`
+   * HTTP status code.
+   *
+   * @param {Object} parameters - the query conditions to filter data in the database
+   * @returns {Promise} - the promise with the identifier from the database
+   *
+   * @example
+   * // GET "/route/count" with formatted query strings
+   * service.count({ text : "Hello World!" }).then(function (data) {
+   *   // data an object containing the identifier.  Usually "id" or "uuid"
+   * });
+   */
+  function count() {
+
+    // append 'count' to the base url
+    var target = this.url.concat('count');
+
+    // return the query to the controller
+    return $http.get(target)
+      .then(util.unwrapHttpResponse);
+  }
+
 
   return Api;
 }

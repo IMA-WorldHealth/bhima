@@ -61,6 +61,15 @@ function JournalController(Journal, Sorting, Grouping,
   var vm = this;
   vm.filter = filter;
 
+  // To Get the Number of transaction From Posting Journal
+  Journal.count()
+    .then(function (data) {
+      vm.numberTransaction = data[0].number_transactions;
+    })
+    .catch(function (error) {
+      Notify.handleError(error);
+    });
+
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
@@ -335,7 +344,8 @@ function JournalController(Journal, Sorting, Grouping,
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
         vm.gridOptions.showGridFooter = true;
-        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + ' : ' + transactionNumber + '</strong></div>'; 
+        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + 
+          ' : ' + transactionNumber + ' / ' + vm.numberTransaction + '</strong></div>'; 
         transactions.applyEdits();
 
         // try to unfold groups
