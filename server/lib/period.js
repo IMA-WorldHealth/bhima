@@ -7,7 +7,11 @@ const moment = require('moment');
 class PeriodService {
 
   constructor(clientTimestamp) {
-    this.timestamp = clientTimestamp || new moment();
+    var self = this;
+    console.log('GOT CLIENT TIMESTAMP', clientTimestamp);
+    this.timestamp = new moment(clientTimestamp);
+    console.log('CREATED DATE', this.timestamp);
+
 
     this.periods = {
       today : {
@@ -71,8 +75,8 @@ class PeriodService {
       console.log(periodKey, currentPeriod, dateModifier);
 
       return {
-        start : function () { return moment(this.timestamp).set(periodKey, currentPeriod + dateModifier).startOf(periodKey).toDate(); },
-        end : function () { return moment(this.timestamp).set(periodKey, currentPeriod + dateModifier).endOf(periodKey).toDate(); }
+        start : function () { return (new moment(self.timestamp)).set(periodKey, currentPeriod + dateModifier).startOf(periodKey).toDate(); },
+        end : function () { return (new moment(self.timestamp)).set(periodKey, currentPeriod + dateModifier).endOf(periodKey).toDate(); }
       }
     }
   }

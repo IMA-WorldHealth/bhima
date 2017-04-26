@@ -118,11 +118,17 @@ function FilterService($log, Store) {
     var clientTimestamp = angular.isDefined(sendClientTimestamp) ? sendClientTimestamp : false;
     var activeFilters = this._filterActiveFilters();
 
-    $log.debug('[FilterService] Active filters:', activeFilters);
-    return activeFilters.reduce(function (aggregate, filter) {
+    // format current filters correctly
+    var httpFilters = activeFilters.reduce(function (aggregate, filter) {
       aggregate[filter._key] = filter._value;
       return aggregate;
     }, {});
+
+    // add client timestamp if requested
+    if (clientTimestamp) {
+      httpFilters.client_timestamp = (new Date()).toJSON();
+    }
+    return httpFilters;
   };
 
   // returns an array of labels and overriden labels that is built for the FilterParser API

@@ -86,7 +86,8 @@ class FilterParser {
     let tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      const period = new Periods();
+      // if a client timestamp has been passed - this will be passed in here
+      const period = new Periods(this._filters.client_timestamp);
       const targetPeriod = period.lookupPeriod(this._filters[filterKey]);
 
       // specific base case - if all time requested to not apply a date filter

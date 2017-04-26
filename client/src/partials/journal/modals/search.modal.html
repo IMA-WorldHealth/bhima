@@ -113,7 +113,7 @@
           <!-- end period selection component -->
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
-            <label class="control-label">FORM.LABELS.LIMIT</label>
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
             <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">

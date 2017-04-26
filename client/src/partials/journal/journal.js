@@ -284,7 +284,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
         toggleLoadingIndicator();
 
         vm.latestViewFilters = Journal.filters.formatView();
-        return load(Journal.filters.formatHTTP());
+        return load(Journal.filters.formatHTTP(true));
       })
       .catch(angular.noop);
   };
@@ -305,7 +305,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     Journal.cacheFilters();
 
     vm.latestViewFilters = Journal.filters.formatView();
-    return load(Journal.filters.formatHTTP());
+    return load(Journal.filters.formatHTTP(true));
   }
 
   // clears the filters by forcing a cache of an empty array
@@ -362,7 +362,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     // vm.filters = cache.filters;
     // vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
 
-    load(Journal.filters.formatHTTP());
+    load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }
 

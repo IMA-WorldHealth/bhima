@@ -1688,6 +1688,9 @@
     "LAST_WEEK" : "Last Week",
     "LAST_MONTH" : "Last Month",
     "LAST_YEAR" : "Last Year",
-    "ALL_TIME" : "All Time"
+    "ALL_TIME" : "All Time",
+    "CUSTOM"  : "Custom",
+    "START" : "P. Start",
+    "END" : "P. End"
   }
 }

@@ -69,8 +69,8 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
   // default filtes will always be applied
   journalFilters.registerDefaultFilters([
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'custom_period_start', label : 'TABLE.COLUMNS.PERIOD_START', valueFilter : 'date' },
-      { key : 'custom_period_end', label : 'TABLE.COLUMNS.PERIOD_END', valueFilter : 'date' },
+      { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+      { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
       { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
       // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
 
@@ -97,12 +97,14 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
     // get the keys of filters already assigned - on initial load this will be empty
     var assignedKeys = Object.keys(journalFilters.formatHTTP());
 
+    console.log('assign default filters limit');
     var periodDefined = service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
     if (!periodDefined) {
       journalFilters.assignFilters(Periods.defaultFilters());
     }
 
     if (assignedKeys.indexOf('limit') === -1) {
+
       journalFilters.assignFilter('limit', 100);
     }
   }

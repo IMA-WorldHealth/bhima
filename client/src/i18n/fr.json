@@ -611,6 +611,7 @@
       "LOCKED"                 : "Bloqué(e)",
       "LOGIN"                  : "Login",
       "LOSS_ACCOUNT"           : "Compte perte",
+      "LIMIT"                  : "Limite",
       "MALE"                   : "Homme",
       "MARITAL_STATUS"         : "Etat Civil",
       "MAX_CREDIT"             : "Crédit Max",
@@ -1710,7 +1711,10 @@
     "LAST_WEEK" : "Semaine derniére",
     "LAST_MONTH" : "Mois dernier",
     "LAST_YEAR" : "Année derniére",
-    "ALL_TIME" : "Tout le temps"
+    "ALL_TIME" : "Tout le temps",
+    "CUSTOM" : "Customizé",
+    "START" : "Début",
+    "END" : "Fin"
   }
 
 }
