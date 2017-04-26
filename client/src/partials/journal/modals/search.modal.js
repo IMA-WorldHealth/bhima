@@ -15,6 +15,7 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
   console.log('filters', filters, Object.keys(filters));
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
+  vm.defaultQueries = {};
 
   // hack
   var queryOptions = [ 'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id' ];
@@ -28,6 +29,11 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
     }
     return aggregate;
   }, {});
+
+  // assign default filters
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
+  }
 
   // return an array of changes to be made, this will be applied by the controller
   // this should be well unit tested
@@ -64,6 +70,16 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
     periodFilters.forEach(function (filterChange) {
       changes.post(filterChange);
     });
+  };
+
+  vm.onSelectLimit = function onSelectLimit(value) {
+    console.log('limit changed', value);
+
+    // input is type value, this will only be defined for a valid number
+    // @TODO further validation
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
   };
 
   // deletes a filter from the options/parameters

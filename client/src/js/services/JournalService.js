@@ -70,9 +70,9 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
   journalFilters.registerDefaultFilters([
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
       { key : 'custom_period_start', label : 'TABLE.COLUMNS.PERIOD_START', valueFilter : 'date' },
-      { key : 'custom_period_end', label : 'TABLE.COLUMNS.PERIOD_END', valueFilter : 'date' }]);
+      { key : 'custom_period_end', label : 'TABLE.COLUMNS.PERIOD_END', valueFilter : 'date' },
+      { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
       // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
-      // { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
@@ -101,7 +101,10 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
     if (!periodDefined) {
       journalFilters.assignFilters(Periods.defaultFilters());
     }
-    // if (assignedKeys.indexOf('limit') === -1) {
+
+    if (assignedKeys.indexOf('limit') === -1) {
+      journalFilters.assignFilter('limit', 100);
+    }
   }
 
   service.removeFilter = function removeFilter(key) {
