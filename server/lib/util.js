@@ -7,94 +7,14 @@
  * @required lodash
  */
 
-
 const _ = require('lodash');
 const q = require('q');
-const moment = require('moment');
 
 /** The query string conditions builder */
-module.exports.queryCondition = queryCondition;
-module.exports.parseQueryStringToSQL = parseQueryStringToSQL;
 module.exports.take = take;
-module.exports.isTrueString = isTrueString;
-module.exports.isFalsy = isFalsy;
-module.exports.uniquelize = uniquelize;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 
 exports.resolveObject = resolveObject;
-exports.dateString    = dateString;
-
-/**
- * @function queryCondition
- *
- * @description
- * Build query string conditions
- *
- * @param {String} sql - the SQL string
- * @param {Object} params - The req.query object
- * @param {Boolean} excludeWhere - should we append a WHERE condition?
- * @return {Object} The object which contains the query and conditions
- *
- * @todo - should this be in db?  Something like db.conditions()?
- * @todo - allow prexisting conditions to be passed in
- */
-
-function queryCondition(sql, params, excludeWhere, dateConditon) {
-  let conditions = [];
-
-  let dateParams = {
-    dateFrom: new Date(params.dateFrom),
-    dateTo: new Date(params.dateTo)
-  };
-
-  if (Object.keys(params).length === 0) {
-    excludeWhere = true;
-  }
-
-  // remove date in params
-  delete params.dateFrom;
-  delete params.dateTo;
-
-  let criteria = Object.keys(params).map(function (item) {
-    conditions = conditions.concat(item, params[item]);
-    return item === 'date' ? 'DATE(??) = DATE(?)' :
-      item.indexOf('uuid') > -1 ? '?? = HUID(?)'  : '?? = ?';
-  }).join(' AND ');
-
-  if (dateParams.dateFrom && dateParams.dateTo && dateConditon) {
-    criteria += conditions.length ? ' AND ' + dateConditon : dateConditon;
-    conditions.push(dateParams.dateFrom);
-    conditions.push(dateParams.dateTo);
-  }
-
-  sql += (excludeWhere ? '' : 'WHERE ') + criteria;
-  return { query: sql, conditions : conditions };
-}
-
-// prefix is a string
-function parseQueryStringToSQL(options, tablePrefix) {
-  let conditions = {
-    statements: [],
-    parameters: []
-  };
-
-  // exit early if an empty object is passed in.
-  if (_.isEmpty(options)) {
-    return conditions;
-  }
-
-  tablePrefix = tablePrefix || '';
-
-  let escapedKeys = _.mapKeys(options, (value, key) => tablePrefix.concat('.', key));
-
-  _.forEach(escapedKeys, (value, key) => {
-    conditions.statements.push(`${key} = ?`);
-    conditions.parameters.push(value);
-  });
-
-  return conditions;
-}
-
 
 /**
  * @function take
@@ -132,51 +52,12 @@ function parseQueryStringToSQL(options, tablePrefix) {
  *
  * @public
  */
-function take() {
-
+function take(...keys) {
   // get the arguments as an array
-  let keys = Array.prototype.slice.call(arguments);
-
   // return the filter function
-  return function filter(object) {
-    return keys.map(function (key) {
-      return object[key];
-    });
-  };
-}
-
-/**
- * String to boolean
- * @function stringToBool
- * @param {string} value The string to evaluate
- * @return {boolean}
- */
-function isTrueString(value) {
-  return (value + '').toLowerCase() === 'true';
-}
-
-/**
- * isFalsy
- * @function isFalsy
- * @param {string} value The string to evaluate
- * @return {boolean}
- */
-function isFalsy(value) {
-  value += '';
-  return value.toLowerCase() === 'null' ||
-    value.toLowerCase() === 'undefined' ||
-    value.toLowerCase() === 'false' ||
-    value.toLowerCase() === '0' ||
-    value.toLowerCase() === '';
-}
-
-/**
- * @function uniquelize
- * @param {array} array An array in which we want to get only unique values
- * @description return an array which contain only unique values
- */
-function uniquelize (array) {
-  return _.uniq(array);
+  return object => (
+    keys.map(key => object[key])
+  );
 }
 
 /**
@@ -185,9 +66,9 @@ function uniquelize (array) {
 */
 function requireModuleIfExists(moduleName) {
   try {
-      require(moduleName);
+    require(moduleName);
   } catch (err) {
-      return false;
+    return false;
   }
   return true;
 }
@@ -208,23 +89,8 @@ function resolveObject(object) {
   const settled = {};
 
   return q.all(_.values(object))
-    .then(results => {
-      _.keys(object).forEach((key, index) => settled[key] = results[index]);
+    .then((results) => {
+      _.keys(object).forEach((key, index) => { settled[key] = results[index]; });
       return settled;
     });
-}
-
-/**
- * @function dateString
- * 
- * @description returns a formated date string 
- * 
- * @param {date} date - A date 
- * 
- * @param {string} format - A date format 
- * 
- * @return {string} - A date string 
- */
-function dateString(date, format) {
-  return moment(new Date(date)).format(format || 'YYYY-MM-DD');
 }

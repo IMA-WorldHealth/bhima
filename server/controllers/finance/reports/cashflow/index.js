@@ -10,7 +10,6 @@
  * @requires node-uuid
  * @requires moment
  * @requires lib/db
- * @requires lib/util
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
  */
@@ -21,7 +20,6 @@ const uuid       = require('node-uuid');
 const moment     = require('moment');
 
 const db         = require('../../../../lib/db');
-const util       = require('../../../../lib/util');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
@@ -113,7 +111,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
             pj.account_id, pj.entity_uuid, pj.currency_id, pj.trans_id,
             pj.description, pj.comment, pj.origin_id, pj.user_id
           FROM posting_journal pj
-          WHERE pj.account_id IN (?) AND DATE(pj.trans_date) >= DATE(?) AND DATE(pj.trans_date) <= DATE(?) AND pj.origin_id <> 10 
+          WHERE pj.account_id IN (?) AND DATE(pj.trans_date) >= DATE(?) AND DATE(pj.trans_date) <= DATE(?) AND pj.origin_id <> 10
             AND pj.record_uuid NOT IN (SELECT reference_uuid FROM voucher WHERE type_id = 10)
         ) UNION (
           SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
@@ -121,7 +119,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
             gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
             gl.description, gl.comment, gl.origin_id, gl.user_id
           FROM general_ledger gl
-          WHERE gl.account_id IN (?) AND DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?) AND gl.origin_id <> 10 
+          WHERE gl.account_id IN (?) AND DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?) AND gl.origin_id <> 10
             AND gl.record_uuid NOT IN (SELECT reference_uuid FROM voucher WHERE type_id = 10)
         )
       ) AS t, account AS a, user as u, transaction_type as x
@@ -465,8 +463,8 @@ function document(req, res, next) {
    */
   function labelization () {
     var uniqueIncomes = [], uniqueExpenses = [];
-    session.incomesLabels = util.uniquelize(session.incomesLabels);
-    session.expensesLabels = util.uniquelize(session.expensesLabels);
+    session.incomesLabels = _.uniq(session.incomesLabels);
+    session.expensesLabels = _.uniq(session.expensesLabels);
 
     /** incomes rows */
     session.periodStartArray.forEach(function (period) {
