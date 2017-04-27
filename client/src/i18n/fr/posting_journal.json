@@ -60,7 +60,7 @@
 "MISSING_DATES":"Date(s) manquante(s)",
 "MISSING_DOCUMENT_ID":"Ligne(s) sans ID Document",
 "MISSING_ENTITY":"Ligne(s) sans ID entite",
-"MISSING_FISCAL_OR_PERIOD":"Annee fiscale ou periode omise",
+"MISSING_FISCAL_OR_PERIOD":"Année fiscale ou periode omise",
 "MULTIPLE_CANCELLING":"Annulation multiple. Cette transaction a deja été annulée",
 "SINGLE_LINE_TRANSACTION":"Transaction(s) avec une ligne",
 "EDIT_INVALID_ACCOUNT":"Transaction avec des comptes non valides",
