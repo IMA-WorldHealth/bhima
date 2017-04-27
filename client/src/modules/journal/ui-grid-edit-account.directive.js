@@ -1,18 +1,19 @@
 angular.module('bhima.directives')
   .directive('uiGridEditAccount', uiGridEditAccount);
 
-uiGridEditAccount.$inject = ['uiGridEditConstants', 'AccountService', 'uiGridConstants'];
+uiGridEditAccount.$inject = ['uiGridEditConstants', 'AccountService', 'uiGridConstants', '$timeout'];
 
-function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
+function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $timeout) {
   return {
     restrict : 'A',
     template : function () {
       var templ =
         '<div style="display: table; margin-right: auto; margin-left: auto; width:95%">' +
-        '  <input type="text"' +
+        '  <input type="text" autofocus ' +
         '    style="width:100%" ' +
         '    ng-model="accountInputValue" ' +
         '    uib-typeahead="account.id as account.hrlabel for account in accounts | filter:{\'hrlabel\':$viewValue} | limitTo:8" ' +
+        '    typeahead-min-length="0" ' +
         '    ng-required="true"' +
         '    typeahead-editable ="false" ' +
         '    typeahead-on-select="setAccountOnRow(row.entity, $item)" />' +
@@ -31,7 +32,6 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
           Accounts.read()
             .then(function (accounts) {
               $scope.accounts = Accounts.filterTitleAccounts(accounts);
-              setInitialAccountValue();
             });
 
           // checks to see if a click landed in a dropdown menu - if so, it's probably the typeahead's.
@@ -68,6 +68,8 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
           };
 
           $scope.$on(uiGridEditConstants.events.BEGIN_CELL_EDIT, function () {
+            $scope.accountInputValue = '';
+
             if (uiGridCtrl.grid.api.cellNav) {
               uiGridCtrl.grid.api.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
                 $scope.stopEdit();
@@ -76,24 +78,13 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants) {
               angular.element(document.querySelectorAll('.ui-grid-cell-contents')).on('click', onCellClick);
             }
 
+            $timeout(focusTypeaheadInput, 50);
             angular.element(window).on('click', onWindowClick);
           });
 
-          function setInitialAccountValue() {
-            var currentAccountId = $scope.row.entity.account_id;
-            var accounts;
-            var i;
-
-            if ($scope.accounts) {
-              i = $scope.accounts.length;
-              accounts = $scope.accounts;
-              while (i--) {
-                if (accounts[i].id === currentAccountId) {
-                  $scope.accountInputValue = accounts[i];
-                  break;
-                }
-              }
-            }
+          function focusTypeaheadInput() {
+            var $input = $elm.querySelectorAll('input')[0];
+            $input.focus();
           }
 
           $elm.on('keydown', function(evt) {
