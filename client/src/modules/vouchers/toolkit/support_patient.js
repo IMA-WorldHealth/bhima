@@ -17,7 +17,7 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
   vm.tool = Data;
   vm.patientInvoice = false;
 
-  var MAX_DECIMAL_PRECISION = bhConstants = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // expose to the view
   vm.selectPatientInvoices = selectPatientInvoices;
@@ -29,24 +29,18 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
   // debtors from store
   Debtors.store()
   .then(function (data) {
-    vm.debtors = data;
-  })
-  .catch(Notify.handleError);
-
-  //  optimization with `Store` will be well
-  Invoices.read()
-  .then(function (data) {
-    vm.invoices = data;
+    vm.patients = data;
   })
   .catch(Notify.handleError);
 
   // get debtor group invoices
   function selectPatientInvoices(debtorId) {
-    // load debtor invoices
+    // load patient invoices
     vm.debtorUuid =  debtorId;
 
     Debtors.invoices(debtorId, { balanced : 0 })
       .then(function (invoices) {
+
         vm.gridOptions.data = invoices || [];
 
         // total amount
@@ -57,13 +51,17 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
         
+        return Invoices.search({debtor_uuid : debtorId});
       })
+      .then(function (data) {
+        vm.invoices = data;
+      })      
       .catch(Notify.handleError);
   }
 
-  function loadInvoice(debtor){
-    vm.debtor = debtor;
-    selectPatientInvoices(debtor.debtor_uuid);
+  function loadInvoice(patient){
+    vm.patient = patient;
+    selectPatientInvoices(patient.debtor_uuid);
   }
 
   function onSelectAccount(account) {
@@ -75,7 +73,7 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
     var rows = [];
 
     var cashboxAccountId = result.account_id;
-    var supportedAccountId = result.debtor.account_id;
+    var supportedAccountId = result.patient.account_id;
     var invoices = result.invoices;
 
     // first, generate a cashbox row
@@ -109,7 +107,7 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
 
   // format entityco
   function formatEntity(uuid) {
-    var entity = vm.debtors.get(uuid);
+    var entity = vm.patients.get(uuid);
     return {
       label: entity.text,
       type: 'D',
@@ -151,7 +149,7 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
   vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', enableFiltering: false },
-    { field : 'balance', displayName : 'TABLE.COLUMNS.COST',
+    { field : 'balance', displayName : 'TABLE.COLUMNS.BALANCE',
       headerCellFilter : 'translate', enableFiltering: false,
       cellTemplate: '/modules/templates/grid/balance.cell.html'
     }
@@ -180,10 +178,10 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
 
     var bundle = generateTransactionRows({
       account_id: vm.account_id,
-      debtor: vm.debtor,
+      patient: vm.patient,
       invoices: vm.selectedRows
     });
 
-    Instance.close({ rows: bundle, debtor: vm.debtor });
+    Instance.close({ rows: bundle, patient: vm.patient });
   }
 }

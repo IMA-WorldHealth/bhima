@@ -4,7 +4,7 @@
   </ol>
 </div>
 
-<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" bh-form-defaults novalidate>
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" novalidate>
   <div class="modal-body">
     <bh-account-select
       name="account_id"
@@ -28,7 +28,6 @@
         ui-grid="ToolCtrl.gridOptions"
         ui-grid-filtering
         ui-grid-auto-resize
-        ui-grid-resize-columns
         ui-grid-selection>
       </div>
     </div>
