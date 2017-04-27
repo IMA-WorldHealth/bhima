@@ -110,6 +110,7 @@
 "NO_RECIPIENT":"Une facture doit appartenir à une personne avant d'assigner les éléments.",
 "NO_RECORDS_DATABASE":"Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
 "NO_SUPPLIER":"Un ordre d'achat doit avoir un fournisseur avant de préciser les éléments.",
+"NUM_TRANSACTION":"Nombres des transactions",
 "OPERATION_SUCCESS":"Opération effectuée avec succès",
 "OTHER_ACTIONS":"Autres actions",
 "PATIENTS":"Patients",

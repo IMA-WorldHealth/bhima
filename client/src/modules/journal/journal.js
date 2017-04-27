@@ -7,7 +7,11 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
+<<<<<<< 033d9cd628a4576dac6b6ea28b8b947b370ddbdc
   'FilterService', '$rootScope', '$filter'
+=======
+  'FilterService', '$rootScope', '$translate'
+>>>>>>> Display the number transaction in Posting Journal
 ];
 
 /**
@@ -32,8 +36,13 @@ JournalController.$inject = [
  */
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
+<<<<<<< 033d9cd628a4576dac6b6ea28b8b947b370ddbdc
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter) {
+=======
+  bhConstants, $state, uiGridConstants, Modal, Languages,
+  AppCache, Store, uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $translate) {
+>>>>>>> Display the number transaction in Posting Journal
   // Journal utilities
   var sorting;
   var grouping;
@@ -71,7 +80,7 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    rowTemplate                : '/modules/templates/grid/transaction.row.html',
+    rowTemplate                : '/modules/templates/grid/transaction.row.html'
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
@@ -314,14 +323,19 @@ function JournalController(Journal, Sorting, Grouping,
   function load(options) {
     vm.loading = true;
     vm.hasError = false;
-
+    var transactionNumber = 0;
+    vm.gridOptions.gridFooterTemplate = null;
+    vm.gridOptions.showGridFooter = false;
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
+        // To Get the number of transaction 
+        transactionNumber =  records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
-
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + ' : ' + transactionNumber + '</strong></div>'; 
         transactions.applyEdits();
 
         // try to unfold groups
