@@ -12,9 +12,7 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 describe('Billing Services', function () {
-  'use strict';
-
-  const path = '#/billing_services';
+  const path = '#!/billing_services';
   const gridId = 'BillingServicesGrid';
 
   before(() => helpers.navigate(path));
@@ -26,8 +24,8 @@ describe('Billing Services', function () {
 
     // anticipate that the form should come up
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
+    components.accountSelect.set('57003');
 
-    FU.uiSelect('BillingServicesFormCtrl.model.account', '57000');
     FU.input('BillingServicesFormCtrl.model.label', 'Value Added Tax');
     FU.input('BillingServicesFormCtrl.model.description', 'A tax added for people who want value!');
     FU.input('BillingServicesFormCtrl.model.value', 25);
@@ -62,7 +60,7 @@ describe('Billing Services', function () {
     // expect the modal to appear
     FU.exists(by.css('[data-confirm-modal]'), true);
 
-    //Confirm the action by a click on the buttom confirm
+    // Confirm the action by a click on the buttom confirm
     components.modalAction.confirm();
 
     components.notification.hasSuccess();

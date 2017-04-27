@@ -1,0 +1,11 @@
+<div class="ui-grid-cell-contents">
+  <input
+    min="0"
+    type="number"
+    class="form-control"
+    style="padding-left : 5px !important;text-align: right;"
+    ng-model="row.entity.quantity"
+    ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+    ng-change="grid.appScope.handleChange(row.entity)"
+    required>
+</div>

@@ -14,7 +14,7 @@ function FilterService(Store) {
   }
 
   FilterList.prototype.resetFilterState = function resetFilterState(key) {
-    this._filterIndex[key].assign(null, null);
+    this._filterIndex[key].setValue(null, null);
   }
 
   FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
@@ -34,7 +34,7 @@ function FilterService(Store) {
       filter.setDefault(true);
 
       if (filterDefinition.defaultValue) {
-        filter.assign(filterDefinition.defaultValue);
+        filter.setValue(filterDefinition.defaultValue);
       }
       return filter;
     });
@@ -60,7 +60,7 @@ function FilterService(Store) {
   // assigns the value of a filter, a filter with a value will be actively used
   // during the HTTP/ UI export process
   FilterList.prototype.assignFilter = function assignFilter(key, value, displayValue) {
-    this._filterIndex[key].assign(value, displayValue);
+    this._filterIndex[key].setValue(value, displayValue);
   };
 
   // accepts an array of key : filterValue objects that are assigned
@@ -86,7 +86,7 @@ function FilterService(Store) {
     var activeFilters = this._filterActiveFilters();
     var activeKeys = activeFilters.map(function (filter) {  return filter._key });
 
-    function keysInActive(filter) { return activeKeys.includes(filter._key); }
+    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1 }
 
     // parse into two lists
     return {
@@ -98,8 +98,8 @@ function FilterService(Store) {
   // format filters for the server
   // sendClientTimestamp - this will send an attribute hidden to the user
   // returns a JSON object with active filters
-  FilterList.prototype.formatHTTP = function formatHTTP(sendClientTimestamp) {
-    var clientTimestamp = angular.isDefined(sendClientTimestamp) ? sendClientTimestamp : false;
+  FilterList.prototype.formatHTTP = function formatHTTP(hasClientTimestamp) {
+    var clientTimestamp = angular.isDefined(hasClientTimestamp) ? hasClientTimestamp : false;
     var activeFilters = this._filterActiveFilters();
 
     // format current filters correctly
@@ -134,7 +134,7 @@ function FilterService(Store) {
       var cached = storedCache[key];
       var currentFilter = this._filterIndex[key];
       if(currentFilter) {
-        currentFilter.assign(cached._value, cached._displayValue);
+        currentFilter.setValue(cached._value, cached._displayValue);
       }
     }.bind(this));
   }
@@ -179,7 +179,7 @@ function Filter(key, label, valueFilter) {
   this.setDefault = function setDefault(value) {
     this._isDefault = value;
   }
-  this.assign = function assign(value, displayValue) {
+  this.setValue = function setValue(value, displayValue) {
     this._value = value;
     this._displayValue = displayValue;
   }

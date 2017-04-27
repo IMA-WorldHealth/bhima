@@ -12,7 +12,7 @@ function PurchaseOrderRegistryPage() {
     const grid = GU.getGrid(gridId);
 
     page.editStatus = function editStatus(n) {
-        const editStatusColumn = 8; 
+        const editStatusColumn = 7; 
 
         const row = grid
         .$('.ui-grid-render-container-body')

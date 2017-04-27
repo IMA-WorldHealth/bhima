@@ -807,6 +807,12 @@ growl-notification.fading.ng-leave.ng-leave-active {
   margin-left: 18px;
 }
 
+.text-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .text-clear {
   font-weight : normal !important;
 }
@@ -909,5 +915,5 @@ a[disabled] {
 }
 
 .filter-list li:first-child {
-  padding-left : 5px !important;
+  padding-left : 5px;
 }

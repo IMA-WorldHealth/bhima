@@ -13,12 +13,13 @@
  */
 angular.module('bhima.components')
   .component('bhDateInterval', {
-    templateUrl : '/partials/templates/bhDateInterval.tmpl.html',
+    templateUrl : '/modules/templates/bhDateInterval.tmpl.html',
     controller : bhDateInterval,
     bindings : {
       validationTrigger : '<', // validation trigger action
       dateFrom : '=',          // date from
       dateTo : '=',            // date to
+      dateId : '@',            // date identifier
       required : '<',          // true or false
       onChange : '<',          // on change action
       mode : '@'               // the date mode (day|month|year)

@@ -195,7 +195,7 @@ describe('Cash Payments', function () {
       element(by.css('[data-open-invoices-btn]')).click();
 
       // be sure that the modal opened
-      FU.exists(by.css('[data-debtor-invoices-modal]'), true);
+      FU.exists(by.css('[data-debtor-invoice-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
       const row = GU.selectRow(gridId, 0);

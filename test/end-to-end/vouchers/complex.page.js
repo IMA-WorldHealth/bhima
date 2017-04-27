@@ -54,7 +54,7 @@ const GU = require('../shared/GridUtils');
      FU.dropdown('[data-dropdown-target="entity"]', type, modal);
 
      // select the typeahead
-     FU.uiSelect('$ctrl.entity', name);
+     FU.typeahead('$ctrl.entity', name);
 
      // click the 'submit' button
      FU.modal.submit();

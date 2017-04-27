@@ -1,0 +1,88 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-lots-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- depot -->
+    <div class="form-group">
+      <label class="control-label" translate>STOCK.DEPOT</label>
+
+      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
+        <ui-select-match>
+          <span>{{$select.selected.text}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
+          <span ng-bind-html="depot.text | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- inventory -->
+    <div class="form-group">
+      <label class="control-label" translate>STOCK.INVENTORY</label>
+
+      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
+        <ui-select-match>
+          <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
+          <span ng-bind-html="inventory.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- status -->
+    <div class="form-group">
+      <fieldset>
+        <legend translate>STOCK.STATUS.LABEL</legend>
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'sold_out'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.SOLD_OUT</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'in_stock'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.IN_STOCK</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'security_reached'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.SECURITY</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'minimum_reached'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.MINIMUM</span>
+        </label> &nbsp; 
+
+        <label class="control-label">
+          <input type="radio" name="status" ng-value="'over_maximum'" ng-model="$ctrl.bundle.status"> 
+          <span translate>STOCK.STATUS.OVER_MAX</span>
+        </label> &nbsp; 
+
+      </fieldset>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

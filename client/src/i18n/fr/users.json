@@ -1,0 +1,12 @@
+{"USERS":{"ADDING_USER":"Ajout utilisateur",
+"ADD_USER":"Ajouter utilisateur",
+"DESCRIPTION":"Module de gestion des utilisateur et leurs droits",
+"PERMISSIONS":"Permissions",
+"SET_PASSWORD":"Definir mot de passe",
+"SUPER":"super utilisateur",
+"TITLE":"Utilisateur et droits",
+"UPDATING_USER":"Mise a jour utilisateur",
+"UPDATED":"Modifie avec succes",
+"CREATE":"Creer",
+"UPDATE":"Editer",
+"CREATED":"Creee avec succes"}}

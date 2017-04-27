@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhCurrencyInput', {
-    templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
+    templateUrl : 'modules/templates/bhCurrencyInput.tmpl.html',
     controller: CurrencyInputController,
     bindings : {
       currencyId : '<',       // one-way binding

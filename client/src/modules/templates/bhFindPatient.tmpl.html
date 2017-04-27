@@ -1,0 +1,112 @@
+<div data-find-patient ng-form="FindPatientForm" bh-form-defaults novalidate>
+
+  <div class="form-group has-feedback"
+    ng-class="{
+      'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
+      'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || ($ctrl.validationTrigger && $ctrl.loadStatus != 'loaded')
+    }">
+    <label class="control-label text-capitalize" translate>FORM.LABELS.PATIENT</label>
+
+    <!-- input zone -->
+    <div class="input-group" ng-if="$ctrl.showSearchView">
+
+      <div class="input-group-btn" uib-dropdown>
+        <a class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle>
+          <span translate>{{ $ctrl.selected.label }}</span> <span class="caret"></span>
+        </a>
+        <ul uib-dropdown-menu>
+          <li ng-repeat="(key, option) in $ctrl.options">
+            <a href ng-click="$ctrl.findBy(key)" data-find-patient-option="{{ ::option.label }}" translate>
+              {{ ::option.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- search by ID  -->
+      <input
+        type="text"
+        class="form-control"
+        name="idInput"
+        ng-model="$ctrl.idInput"
+        ng-if="$ctrl.selected == $ctrl.options.findById"
+        ng-keypress="$ctrl.onKeyPress($event)"
+        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        ng-required="$ctrl.required">
+
+      <!-- search by Name  -->
+      <input
+        type="text"
+        class="form-control"
+        name="nameInput"
+        ng-model="$ctrl.nameInput"
+        ng-if="$ctrl.selected == $ctrl.options.findByName"
+        ng-keypress="$ctrl.onKeyPress($event)"
+        uib-typeahead="patient as patient.display_name for patient in $ctrl.searchByName($viewValue)"
+        typeahead-no-results="$ctrl.noPatients"
+        typeahead-loading="$ctrl.loadingPatients"
+        typeahead-template-url="/modules/templates/patientList.tmpl.html"
+        typeahead-on-select="$ctrl.submit($item)"
+        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        ng-required="$ctrl.required">
+
+      <!-- submit button for search by ID -->
+      <span class="input-group-btn" ng-if="$ctrl.selected == $ctrl.options.findById">
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-disabled="FindPatientForm.idInput.$invalid"
+          ng-click="$ctrl.submit()"
+          data-find-patient-submit>
+          <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </span>
+    </div>
+    <!-- /inline input zone -->
+
+    <!-- inline notification -->
+    <p class="help-block text-right" ng-show="$ctrl.showSearchView">
+      <span class="text-warning" ng-show="($ctrl.noPatients && $ctrl.nameInput)">
+        <i class="fa fa-info-circle"></i> {{ "FORM.INFO.PATIENT_NOT_FOUND" | translate }}
+      </span>
+      <span class="text-info" ng-show="($ctrl.loadingPatients && $ctrl.nameInput)">
+        <i class="fa fa-hourglass-start fa-spin"></i> {{ "FORM.INFO.LOADING" | translate }}
+      </span>
+    </p>
+    <!-- /inline notification -->
+
+
+    <!-- notification zone  -->
+    <div class="input-group" ng-if="!$ctrl.showSearchView">
+
+      <span class="input-group-addon">
+         <i class="fa fa-user"></i>
+      </span>
+
+      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
+      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFO.PATIENT_NOT_FOUND' | translate }}">
+
+      <div class="input-group-btn">
+        <a
+          ng-if="$ctrl.loadStatus=='loaded'"
+          class="btn btn-default"
+          uib-popover-template="'modules/templates/popover/patientinfo.tmpl.html'"
+          popover-title="Patient Record"
+          popover-placement="bottom"
+          popover-trigger="mouseenter"
+          popover-append-to-body="true">
+         <span class="fa fa-info-circle"></span>
+        </a>
+
+        <!-- Only shown if the controller has not specified suppressReset -->
+        <a
+          ng-if="!$ctrl.suppressReset"
+          class="btn btn-default"
+          ng-click="$ctrl.reset()">
+         <i class="fa fa-refresh"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- /notification zone  -->
+</div>

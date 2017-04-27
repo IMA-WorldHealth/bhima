@@ -1,0 +1,68 @@
+<form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" bh-form-defaults novalidate>
+  <div class="modal-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static">{{ "TREE.INVOICE_REGISTRY" | translate }}</li>
+        <li class="title">{{ "FORM.INFO.CANCEL_CASH" | translate }}</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <legend>
+      {{ "TABLE.COLUMNS.INVOICE_ID" | translate}} : {{ ModalCtrl.patientInvoice.reference }}
+    </legend>
+    <fieldset>
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th colspan="4">
+              {{ ModalCtrl.patientInvoice.debtor_name }}
+            </th>
+          </tr>
+          <tr>
+            <th>{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
+            <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+            <th>{{ "TABLE.COLUMNS.DATE" | translate }}</th>
+            <th>{{ "TABLE.COLUMNS.AMOUNT" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ModalCtrl.cashData.reference}}</td>
+            <td>{{ModalCtrl.cashData.description}}</td>
+            <td>{{ModalCtrl.cashData.date | date }}</td>
+            <td>{{ModalCtrl.cashData.amount | currency:ModalCtrl.cashData.currency_id}}</td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+                <label class="control-label">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</label>
+                <textarea
+                  ng-model="ModalCtrl.creditNote.description"
+                  name="description"
+                  class="form-control"
+                  ng-maxlength="ModalCtrl.maxLength"
+                  rows="4"
+                  required>
+                </textarea>
+                <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">
+      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      {{ "FORM.BUTTONS.CONFIRM_CANCEL" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

@@ -1,0 +1,115 @@
+<!-- billing service form -->
+<form name="BillingServicesForm" bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)" bh-form-defaults novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.BILLING_SERVICES</li>
+      <li class="title" translate>{{ BillingServicesFormCtrl.title }}</li>
+    </div>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- account input -->
+    <bh-account-select
+      account-id="BillingServicesFormCtrl.model.account_id"
+      on-select-callback="BillingServicesFormCtrl.onSelectAccount(account)"
+      required="true">
+    </bh-account-select>
+
+    <!-- label input -->
+    <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.label.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.LABEL
+      </label>
+      <input
+        class="form-control"
+        name="label"
+        autocomplete="off"
+        ng-model="BillingServicesFormCtrl.model.label"
+        ng-maxlength="BillingServicesFormCtrl.length200"
+        required>
+      <div class="help-block" ng-messages="BillingServicesForm.label.$error" ng-show="BillingServicesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- description textarea -->
+    <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.description.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.DESCRIPTION
+      </label>
+      <!--
+        @todo - propose to the team that all text-areas should have "resize:vertical" styles
+      -->
+      <textarea
+        style="resize:vertical;"
+        class="form-control"
+        name="description"
+        ng-model="BillingServicesFormCtrl.model.description"
+        placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+        ng-maxlength="BillingServicesFormCtrl.maxLength"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="BillingServicesForm.description.$error" ng-show="BillingServicesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- value input -->
+    <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.value.$invalid }">
+      <label class="control-label">
+        <span translate>FORM.LABELS.VALUE</span> (%)
+      </label>
+      <input
+        type="number"
+        class="form-control"
+        name="value"
+        autocomplete="off"
+        ng-model="BillingServicesFormCtrl.model.value"
+        ng-min="0"
+        required>
+      <div class="help-block" ng-messages="BillingServicesForm.value.$error" ng-show="BillingServicesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- a validation section for the form -->
+    <div
+      class="form-group"
+      ng-class="{
+        'has-error' : (BillingServicesForm.$submitted && BillingServicesForm.$invalid) || BillingServicesFormCtrl.error,
+        'has-success' : BillingServicesFormCtrl.created || BillingServicesFormCtrl.updated
+      }">
+
+      <div class="help-block">
+
+        <!-- there are (client-side) errors on the form -->
+        <p ng-show="BillingServicesForm.$submitted && BillingServicesForm.$invalid">
+          <span class="glyphicon glyphicon-alert"></span> <span translate>FORM.ERRORS.HAS_ERRORS</span>
+        </p>
+
+        <!-- show http errors sent from the server -->
+        <p ng-show="BillingServicesFormCtrl.error">
+          <span class="glyphicon glyphicon-alert"></span>
+          <span ng-show="BillingServicesFormCtrl.error.status === 404" translate>
+            BILLING_SERVICES.NOT_FOUND
+          </span>
+          <span ng-hide="BillingServicesFormCtrl.error.status === 404" translate>
+            {{ BillingServicesFormCtrl.error.code }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="back" ng-click="BillingServicesFormCtrl.dismiss()" translate>
+      FORM.BUTTONS.BACK
+    </button>
+
+    <bh-loading-button loading-state="BillingServicesForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

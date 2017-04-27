@@ -1,18 +1,20 @@
 angular.module('bhima.services')
 .service('SearchFilterFormatService', SearchFilterFormatService);
 
-// dependencies injection 
-SearchFilterFormatService.$inject = [];
+// dependencies injection
+SearchFilterFormatService.$inject = ['DepricatedFilterService'];
 
 /**
  * SearchFilterFormatService
- * @description This service help to format filters which are displayed for a search 
+ * @description This service help to format filters which are displayed for a search
  */
-function SearchFilterFormatService() {
+function SearchFilterFormatService(Filters) {
 
     var service = this;
 
-    // expose the service 
+    var filter = new Filters();
+
+    // expose the service
     service.formatFilter = formatFilter;
     service.formatDisplayNames = formatDisplayNames;
     service.onRemoveFilter = onRemoveFilter;
@@ -22,8 +24,8 @@ function SearchFilterFormatService() {
      * @function formatFilter
      * @description filter and format properties of an object for being processed by formatFilterValues
      * @param {object} element the object which contains all filters and their values. Ex. { reference: 'TPA1', is_cancelled: 1 }
-     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values 
-     * @return {object} {identifiers: ..., display: ...} returns identifiers for search query and display: values to display in filter 
+     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values
+     * @return {object} {identifiers: ..., display: ...} returns identifiers for search query and display: values to display in filter
      */
     function formatFilter(element, WITH_NULL_VALUES) {
       var queryParam = formatFilterParameters(element, true);
@@ -35,7 +37,7 @@ function SearchFilterFormatService() {
      * @function formatFilterParameters
      * @description filter and format properties of an object for being processed by formatFilterValues
      * @param {object} element the object which contains all filters and their values. Ex. { reference: 'TPA1', is_cancelled: 1 }
-     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values 
+     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values
      */
     function formatFilterParameters(element, WITH_NULL_VALUES) {
         var out = {};
@@ -76,7 +78,7 @@ function SearchFilterFormatService() {
    * @param {boolean} is_display the type of output
    */
   function getFormattedFilterIdentifier(formattedFilters, key, is_display) {
-    var filter = formattedFilters[key]; 
+    var filter = formattedFilters[key];
 
     if (is_display) {
       return angular.isObject(filter) ? filter.text || filter.label || filter.display_name || filter : filter;
@@ -98,8 +100,19 @@ function SearchFilterFormatService() {
       { field: 'supplier_uuid', displayName: 'FORM.LABELS.SUPPLIER' },
       { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter:'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter:'date' },
+      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter: 'date' },
+      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter: 'date' },
+      { field: 'depot_uuid', displayName: 'STOCK.DEPOT' },
+      { field: 'inventory_uuid', displayName: 'STOCK.INVENTORY' },
+      { field: 'label', displayName: 'FORM.LABELS.LABEL' },
+      { field: 'entry_date_from', displayName: 'STOCK.ENTRY_DATE', comparitor: '>', ngFilter: 'date' },
+      { field: 'entry_date_to', displayName: 'STOCK.ENTRY_DATE', comparitor: '<', ngFilter: 'date' },
+      { field: 'expiration_date_from', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '>', ngFilter: 'date' },
+      { field: 'expiration_date_to', displayName: 'STOCK.EXPIRATION_DATE', comparitor: '<', ngFilter: 'date' },
+      { field: 'flux_id', displayName: 'STOCK.FLUX' },
+      { field: 'is_exit', displayName: 'STOCK.OUTPUT' },
+      { field: 'status', displayName: 'STOCK.STATUS.LABEL' },
+      { field: 'defaultPeriod', displayName: 'TABLE.COLUMNS.PERIOD', ngFilter: 'translate' },
     ];
 
     // returns columns from filters
@@ -108,6 +121,11 @@ function SearchFilterFormatService() {
 
       if (angular.isDefined(value)) {
         column.value = value;
+
+        // @FIXME tempoarary hack for default period
+        if (column.field === 'defaultPeriod') {
+          column.value = filter.lookupPeriod(value).label;
+        }
         return true;
       } else {
         return false;
@@ -119,7 +137,7 @@ function SearchFilterFormatService() {
    * @function onRemoveFilter
    * @description when remove a filter reload data
    * @param {object} filters {identifiers: ..., display: ...}
-   * @param {function} reload A reload function 
+   * @param {function} reload A reload function
    */
   function onRemoveFilter(key, filters, reload) {
     var noIdentifiers = (filters && !filters.display && !filters.identifiers);
@@ -127,7 +145,7 @@ function SearchFilterFormatService() {
     var noReload  = !reload;
 
     if (noIdentifiers || noFilters || noReload) { return; }
-    
+
     if (key === 'dateFrom' ||  key === 'dateTo') {
       // remove all dates filters if one selected
       delete filters.identifiers.dateFrom;
@@ -149,7 +167,7 @@ function SearchFilterFormatService() {
    */
   function clearFilters(reload) {
     if (!reload) { return; }
-    
+
     reload({ identifiers: {}, display: {} });
   }
 

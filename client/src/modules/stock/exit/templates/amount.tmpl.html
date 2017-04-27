@@ -1,0 +1,3 @@
+<div ng-if="row.entity.lot.uuid" class="ui-grid-cell-contents text-right">
+  {{ row.entity.quantity * row.entity.lot.unit_cost | currency: grid.appScope.enterprise.currency_id }}
+</div>

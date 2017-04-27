@@ -1,0 +1,14 @@
+<div class="ui-grid-cell-contents">
+  <span class="label" ng-class="{
+    'label-success': row.entity._isIncome,
+    'label-warning': row.entity._isExpense,
+    'label-danger': row.entity._isOther
+    }">
+    <span translate>{{ row.entity._type }}</span>
+    <span ng-if="row.groupHeader">{{ COL_FIELD }}</span>
+  </span>
+
+  <span ng-if="grid.appScope.isDefined(row.entity)" class="label label-default" translate>
+    FORM.LABELS.UNDEFINED
+  </span>
+</div>

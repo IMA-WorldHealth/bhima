@@ -1,0 +1,9 @@
+{"BILLING_SERVICES":{"BTN":{"CREATE":"Create a Billing Service",
+"DELETE":"Delete this Billing Service"},
+"CREATED":"Created a new billing service.",
+"FORM":{"CREATE":"New Billing Service",
+"UPDATE":"Updating Billing Service"},
+"NOT_FOUND":"There is no billing service with that ID.  Please go back and try again.",
+"TITLE":"Billing Services",
+"UPDATED":"Updated the billing service.",
+"VIEW":"View all billing services."}}

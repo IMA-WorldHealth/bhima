@@ -1,0 +1,26 @@
+<div class="ui-grid-cell-contents">
+  <div ng-show="grid.appScope.transactions.isEditing()">
+    <!--set the entity-->
+    <a
+      class="text-action"
+      ng-click="grid.appScope.openEntityModal(row.entity)"
+      data-entity-button>
+
+      <span ng-show="row.entity.hrEntity">
+        <i class="fa fa-edit"></i> {{ row.entity.hrEntity }}
+      </span>
+
+      <span ng-hide="row.entity.hrEntity">
+        <i class="fa fa-plus"></i> <span translate>FORM.LABELS.ENTITY</span>
+      </span>
+    </a>
+
+    <!--remove the entity-->
+    <a ng-click="grid.appScope.removeEntity(row.entity)" ng-show="row.entity.hrEntity" class="text-danger pull-right" href="">
+      <i class="fa fa-trash"></i>
+    </a>
+  </div>
+  <div ng-hide="grid.appScope.transactions.isEditing()">
+    {{ COL_FIELD }}
+  </div>
+</div>

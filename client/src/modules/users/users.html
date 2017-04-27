@@ -1,0 +1,36 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>USERS.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          type="button"
+          class="btn btn-default text-capitalize"
+          ui-sref="users.create"
+          data-method="create">
+          <i class="fa fa-plus"></i> <span translate>USERS.ADD_USER</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="users-grid"
+      ui-grid="UsersCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="UsersCtrl.loading"
+        empty-state="UsersCtrl.gridOptions.data.length === 0"
+        error-state="UsersCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

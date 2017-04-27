@@ -2,7 +2,8 @@ angular.module('bhima.services')
   .service('GridGroupingService', GridGroupingService);
 
 GridGroupingService.$inject = [
-  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService',  '$timeout', 'util'
+  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService', 
+  '$timeout', 'util', 'uiGridConstants',
 ];
 
 /**
@@ -16,9 +17,11 @@ GridGroupingService.$inject = [
  * in the `gridOptions`. There are too many places for this to be defined with this
  * set up.
  */
-function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, $timeout, util) {
+function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
+  $timeout, util, uiGridConstants) {
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
+  var selectedGroupHeaders;
 
   /**
    * @method configureDefaultAggregators
@@ -42,16 +45,16 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
       }
 
       // show debit or credit total for transaction on transaction header
-			if (column.grouping && column.grouping.groupPriority > -1) {
+      if (column.grouping && column.grouping.groupPriority > -1) {
 
-        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+  column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
           // @todo this will be called for every row in a group but only needs to be called once
           if (row.entity.transaction) {
             aggregation.value = row.entity.transaction.debit_equiv;
           }
         };
 
-        column.customTreeAggregationFinalizerFn = function (aggregation) {
+  column.customTreeAggregationFinalizerFn = function (aggregation) {
           if (typeof(aggregation.groupVal) !== 'undefined') {
             aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
           } else {
@@ -59,10 +62,10 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
           }
         };
         // return true;
-      }
+}
 
     });
-		return columns;
+    return columns;
   }
 
 
@@ -96,9 +99,38 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     }
   }
 
-  function handleBatchSelection (){
+  function handleBatchSelection() {
     var gridApi = this.gridApi;
+    var gridRows = gridApi.selection.getSelectedGridRows();
+    var parents = {};
+
+    var hasSelections = gridApi.selection.getSelectedRows().length > 0;
+
+    gridRows.forEach(function (row) {
+      var parentRow = row.treeNode.parentRow;
+
+      if (isUnusedParentRow(parentRow)) {
+        parentRow.isSelected = true;
+        parents[parentRow.uid] = parentRow;
+        selectedGroupHeaders = parents;
+      }
+    });
+
+    // handle deselect
+    if (hasSelections === false) {
+      angular.forEach(selectedGroupHeaders, function (node) {
+        node.isSelected = false;
+      });
+    }
+
     this.selectedRowCount = gridApi.selection.getSelectedCount();
+    
+    gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+
+    // this function identifies parent rows that we haven't seen yet
+    function isUnusedParentRow(row) {
+      return row.treeLevel === 0 && !parents[row.uid];
+    }
   }
 
   // handle the select batch event
@@ -119,7 +151,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
   function configureDefaultGroupingOptions(gridApi) {
 
     //this instruction block can be executed if the grid involves selection functionality
-    if(gridApi.selection){
+    if (gridApi.selection){
 
       // bind the group selection method
       gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
@@ -144,7 +176,14 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 	// }
 
   function unfoldAllGroups(api) {
+    api = api || this.gridApi;
     $timeout(api.treeBase.expandAllRows, 0, false);
+  }
+
+  function unfoldGroup(row) {
+    var api = this.gridApi;
+    api.treeBase.expandRow(row);
+    api.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   function changeGrouping (column) {
@@ -182,7 +221,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
 
     records.forEach(function (record){
 
-      if(processedTransactions.indexOf(record.entity.trans_id) === -1){
+      if (processedTransactions.indexOf(record.entity.trans_id) === -1){
 
         //take other children of the parent so that every line of the transaction will be present
         parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
@@ -211,6 +250,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session, 
     this.getSelectedGroups = getSelectedGroups.bind(this);
     this.changeGrouping = changeGrouping.bind(this);
     this.removeGrouping = removeGrouping.bind(this);
+    this.unfoldAllGroups = unfoldAllGroups.bind(this);
+    this.unfoldGroup = unfoldGroup.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
     this.expandByDefault = angular.isDefined(expandByDefault) ? expandByDefault : true;

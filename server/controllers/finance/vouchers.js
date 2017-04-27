@@ -125,6 +125,7 @@ function find(options) {
 
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
+  filters.period('defaultPeriod', 'date');
 
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   filters.custom('reference', referenceStatement);

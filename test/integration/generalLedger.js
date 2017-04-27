@@ -1,4 +1,3 @@
-
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
@@ -13,7 +12,7 @@ describe('(/general_ledger) API endpoint', function () {
    *server in order to get transactions or records
    **/
   var parameters = {
-    transactionToPost : {params : {transactions : ['TRANS2']}},
+    transactionToPost : {params : {transactions : ['TRANS2'], transactions : ['TRANS6']}},
     allRecords : {number : 2},
   };
 
@@ -32,4 +31,3 @@ describe('(/general_ledger) API endpoint', function () {
       .catch(helpers.handler);
   });
 });
-

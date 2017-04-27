@@ -1,0 +1,16 @@
+<button type="button" class="btn btn-default" data-method="cancel" ui-sref="journal">
+  <span translate>FORM.BUTTONS.CANCEL</span>
+</button>
+
+<button
+  ng-if="TrialBalanceFooterDetailCtrl.stateParams.feedBack"
+  type="button"
+  data-method="reset"
+  class="btn btn-default"
+  ng-class="{
+  'btn-danger' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasError,
+  'btn-warning': TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasWarning,
+  'btn-primary' : TrialBalanceFooterDetailCtrl.stateParams.feedBack.hasSuccess}"
+  ng-click="TrialBalanceFooterDetailCtrl.reset()">
+  <span translate>FORM.BUTTONS.RETURN</span>
+</button>

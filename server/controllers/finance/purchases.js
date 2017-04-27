@@ -37,6 +37,12 @@ exports.lookup = lookupPurchaseOrder;
 // search purchases
 exports.search = search;
 
+// purchase status in stock
+exports.stockStatus = purchaseStatus;
+
+// purchase balance
+exports.stockBalance = purchaseBalance;
+
 
 /**
  * @function linkPurchaseItems
@@ -50,7 +56,6 @@ exports.search = search;
  * @returns {Array} - an array of all purchases items properly formatted
  */
 function linkPurchaseItems(items, purchaseUuid) {
-
   // this columns array exists so that we are sure to order to columns in the
   // correct order
   const columns = [
@@ -59,7 +64,6 @@ function linkPurchaseItems(items, purchaseUuid) {
 
   // loop through each item, making sure we have escapes and orderings correct
   return items.map((item) => {
-
     // make sure that each item has a uuid by generate
     item.uuid = db.bid(item.uuid || uuid.v4());
     item.purchase_uuid = purchaseUuid;
@@ -89,7 +93,7 @@ function lookupPurchaseOrder(uid) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
-      p.is_confirmed, p.is_received, p.is_cancelled
+      p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
     FROM purchase AS p
     JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -103,7 +107,8 @@ function lookupPurchaseOrder(uid) {
       record = row;
 
       sql = `
-        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, i.text
+        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, 
+          BUID(pi.inventory_uuid) AS inventory_uuid, i.text
         FROM purchase_item AS pi
         JOIN inventory AS i ON i.uuid = pi.inventory_uuid
         WHERE pi.purchase_uuid = ?;
@@ -112,7 +117,6 @@ function lookupPurchaseOrder(uid) {
       return db.exec(sql, [db.bid(uid)]);
     })
     .then((rows) => {
-
       // bind the purchase items to the "items" property and return
       record.items = rows;
       return record;
@@ -206,7 +210,7 @@ function list(req, res, next) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled
+        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
@@ -291,7 +295,7 @@ function find(options) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled
+        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
@@ -309,4 +313,91 @@ function find(options) {
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
   return db.exec(query, parameters);
+}
+
+/**
+ * GET /purchases/:uuid/stock_status
+ *
+ * @description
+ * This method return the updated status of purchase order
+ * if it is completed or partially entered
+ */
+function purchaseStatus(req, res, next) {
+  const status = {};
+  const FROM_PURCHASE_ID = 1;
+  const purchaseUuid = db.bid(req.params.uuid);
+  const sql = `
+    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost
+    FROM stock_movement m
+    JOIN lot l ON l.uuid = m.lot_uuid 
+    JOIN purchase p ON p.uuid = l.origin_uuid
+    WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0;
+  `;
+
+  db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
+  .then((row) => {
+    let query = '';
+    status.cost = row.cost;
+    status.movement_cost = row.movement_cost;
+
+    if (row.movement_cost === row.cost) {
+      // the purchase is totally delivered
+      status.status = 'full_entry';
+      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 1 WHERE uuid = ?';
+
+    } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
+      // the purchase is partially delivered
+      status.status = 'partial_entry';
+      query = 'UPDATE purchase SET is_partially_received = 1, is_received = 0 WHERE uuid = ?';
+
+    } else if (row.movement_cost === 0) {
+      // the purchase is not yet delivered
+      status.status = 'no_entry';
+      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 0 WHERE uuid = ?';
+    }
+    return db.exec(query, [purchaseUuid]);
+  })
+  .then(() => res.status(200).send(status))
+  .catch(next)
+  .done();
+}
+
+/**
+ * GET /purchases/:uuid/stock_balance
+ *
+ * @description
+ * This method return the balance of a purchase to know
+ * the amount and inventories which are already entered.
+ */
+function purchaseBalance(req, res, next) {
+  const FROM_PURCHASE_ID = 1;
+  const purchaseUuid = db.bid(req.params.uuid);
+  const sql = `
+    SELECT 
+      s.display_name, u.display_name, BUID(p.uuid) AS uuid,
+      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date, 
+      BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price, 
+      IFNULL(distributed.quantity, 0) AS distributed_quantity, 
+      (pi.quantity - IFNULL(distributed.quantity, 0)) AS balance
+    FROM purchase p
+    JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
+    JOIN project proj ON proj.id = p.project_id
+    JOIN supplier s ON s.uuid = p.supplier_uuid
+    JOIN user u ON u.id = p.user_id
+    LEFT JOIN 
+    (
+      SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.origin_uuid
+      FROM stock_movement m 
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+      WHERE m.flux_id = ? AND m.is_exit = 0 AND l.origin_uuid = ?
+      GROUP BY l.origin_uuid, l.inventory_uuid
+    ) AS distributed ON distributed.inventory_uuid = pi.inventory_uuid AND distributed.origin_uuid = p.uuid
+    WHERE p.uuid = ? HAVING balance > 0 AND balance <= pi.quantity
+  `;
+
+  db.exec(sql, [FROM_PURCHASE_ID, purchaseUuid, purchaseUuid])
+  .then(rows => res.status(200).json(rows))
+  .catch(next)
+  .done();
 }

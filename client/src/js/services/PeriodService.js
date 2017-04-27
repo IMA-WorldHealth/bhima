@@ -75,10 +75,6 @@ function PeriodService(Moment) {
 
   service.dateFormat = 'DD/MM/YYYY';
 
-  function calculatePeriod(key) {
-
-  }
-
   function definition(key) {
     var instance = angular.copy(periods[key]);
     var calculate = instance.limit;

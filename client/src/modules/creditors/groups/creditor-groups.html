@@ -1,0 +1,30 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.FINANCE </li>
+      <li class="title">
+        <span translate> TREE.CREDITOR_GROUP </span>
+        <span class="badge badge-info" ng-if="CreditorGroupCtrl.isUpdateState" translate> FORM.BUTTONS.EDIT </span>
+        <span class="badge badge-success" ng-if="CreditorGroupCtrl.isCreateState" translate> FORM.BUTTONS.NEW </span>
+      </li>
+    </ol>
+
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <a
+          data-method="create"
+          ui-sref="creditorGroups.create"
+          ui-sref-opts="CreditorGroupCtrl.reload"
+          class="btn btn-default text-capitalize">
+          <i class="fa fa-plus"></i> <span translate> FORM.BUTTONS.NEW </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div id="anchor" style="padding-top : 5px;" ui-view autoscroll></div>
+</div>

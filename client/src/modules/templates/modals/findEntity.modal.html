@@ -1,0 +1,99 @@
+<ng-form
+  name="EntityForm"
+  data-modal="entity"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header">
+    <h4 class="space-between">
+      <!-- title -->
+      <div>
+        <span class="fa fa-search"></span>
+        {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+      </div>
+
+      <!-- refresh -->
+      <div
+        ng-show="$ctrl.result.uuid"
+        ng-click="$ctrl.refresh()"
+        class="btn btn-default btn-sm">
+        <span class="fa fa-refresh"></span>
+      </div>
+    </h4>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group">
+      <div ng-if="!$ctrl.result.uuid" class="input-group">
+
+        <!-- dropdown button -->
+        <div class="input-group-btn" uib-dropdown tabindex=-1 data-dropdown-target="entity">
+          <button class="btn btn-default" type="button" uib-dropdown-toggle>
+            {{ $ctrl.selectedTypeLabel | translate }} <span class="caret"></span>
+          </button>
+          <ul uib-dropdown-menu>
+            <li ng-repeat="type in $ctrl.types">
+              <a href ng-click="$ctrl.setType(type)">
+                {{ type.label | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- /dropdown button -->
+
+        <!-- input typeahead -->
+        <input
+          type="text"
+          class="form-control"
+          name="entity"
+          ng-model="$ctrl.entity"
+          ng-disabled="$ctrl.selectedTypeLabel === 'VOUCHERS.COMPLEX.DEB_CRED'"
+          uib-typeahead="entity as entity.text for entity in $ctrl.entities | filter:$viewValue | limitTo:8"
+          typeahead-no-results="$ctrl.noEntity"
+          typeahead-loading="$ctrl.loadingEntity"
+          typeahead-template-url="/modules/templates/entityList.tmpl.html"
+          typeahead-on-select="$ctrl.selectEntity($item)"
+          placeholder="{{ $ctrl.placeholder | translate }}..."
+          required>
+        <!-- /input typeahead -->
+      </div>
+
+      <!-- inline notification -->
+      <p class="help-block text-right">
+        <span class="text-warning" ng-show="($ctrl.noEntity && $ctrl.entity)">
+          <i class="fa fa-info-circle"></i> {{ "FORM.INFO.ENTITY_NOT_FOUND" | translate }}
+        </span>
+        <span class="text-info" ng-show="($ctrl.loadingEntity && $ctrl.entity)">
+          <i class="fa fa-hourglass-start fa-spin"></i> {{ "FORM.INFO.LOADING" | translate }}
+        </span>
+      </p>
+      <!-- /inline notification -->
+
+      <div ng-show="$ctrl.result.uuid" class="bg-success">
+        <h4 class="text-center text-success" style="padding:10px; margin:0px;">
+          <span class="fa fa-user"></span>
+          {{ $ctrl.result.label }}
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer text-right">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="$ctrl.cancel()"
+      data-method="cancel">
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-click="$ctrl.submit()"
+      data-method="submit">
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+</ng-form>

@@ -1,6 +1,6 @@
 angular.module('bhima.components')
 .component('bhFilters', {
-  templateUrl : 'partials/templates/bhFilters.tmpl.html',
+  templateUrl : 'modules/templates/bhFilters.tmpl.html',
   controller  : bhFiltersController,
   bindings    : {
     filters        : '<',
@@ -28,7 +28,6 @@ function bhFiltersController($filter) {
     if (filter._valueFilter) {
       filter.displayValue = $filter(filter._valueFilter)(filter.displayValue);
     }
-    return filter;
   }
 }
 

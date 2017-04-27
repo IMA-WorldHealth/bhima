@@ -1,0 +1,13 @@
+{
+  "CASHBOX" : {
+    "ACTIONS":"Cashbox Actions",
+    "ADD_CASHBOX":"Add cashbox",
+    "BACK":"Back to Cashboxes",
+    "CASHBOX":"Cashbox",
+    "CONFIG_ACCOUNTS":"Configuration of Account",
+    "DANGER_ZONE":"Danger Zone",
+    "DESCRIPTION":"This module is responsible for cashbox management",
+    "TITLE":"Cashbox Management",
+    "NO_SUPPORTED_CURRENCIES":"This cashbox does not have any supported currencies.",
+    "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox."}
+}

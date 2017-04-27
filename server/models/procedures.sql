@@ -463,7 +463,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    su.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 1,
+    i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 1,
     i.user_id
   FROM invoice AS i JOIN invoice_subsidy AS isu JOIN subsidy AS su ON
     i.uuid = isu.invoice_uuid AND
@@ -477,7 +477,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    b.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 1,
+    i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 1,
     i.user_id
   FROM invoice AS i JOIN invoice_billing_service AS ib JOIN billing_service AS b ON
     i.uuid = ib.invoice_uuid AND
@@ -486,50 +486,47 @@ BEGIN
 END
 $$
 
-CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat(
-     "INSERT INTO general_ledger
-     (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-      description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-       entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
-     SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-         description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-          entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-     FROM posting_journal
-     WHERE trans_id
-     IN (", transactions, ")");
+CREATE PROCEDURE PostToGeneralLedger(
+  IN transactions TEXT
+) BEGIN
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_journal_transaction (record_uuid BINARY(16));
 
-CREATE PROCEDURE writePeriodTotals ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat(
-     "INSERT INTO period_total
-     (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
-     SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
-     period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
-     WHERE trans_id
-     IN (", transactions, ")
-     GROUP BY period_id, account_id
-     ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit)");
+  SET @sql = CONCAT(
+   "INSERT INTO stage_journal_transaction SELECT DISTINCT record_uuid FROM posting_journal WHERE trans_id IN (", transactions, ");"
+  );
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  PREPARE stmt FROM @sql;
+  EXECUTE stmt;
 
-CREATE PROCEDURE removePostedTransactions ( IN transactions TEXT )
-    BEGIN
-     SET @sql = concat( "DELETE FROM posting_journal WHERE trans_id IN (", transactions, ")");
+  DEALLOCATE PREPARE stmt;
 
-     PREPARE stmt FROM @sql;
-     EXECUTE stmt;
-    END
-$$
+  -- write into the posting journal
+  INSERT INTO general_ledger (
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+  FROM posting_journal
+  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+
+  -- write into period_total
+  INSERT INTO period_total (
+    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
+  )
+  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
+    fiscal_year_id, project.enterprise_id, period_id
+  FROM posting_journal JOIN project
+    ON posting_journal.project_id = project.id
+  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction)
+  GROUP BY period_id, account_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- remove from posting journal
+  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+END $$
 
 -- Handles the Cash Table's Rounding
 -- CREATE PROCEDURE HandleCashRounding(
@@ -618,11 +615,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id
+      credit_equiv, currency_id, entity_uuid, user_id, origin_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
-      c.debtor_uuid, c.user_id
+      c.debtor_uuid, c.user_id, cashPaymentOriginId
     FROM cash AS c
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -639,11 +636,11 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
-      c.debtor_uuid, c.user_id, ci.invoice_uuid
+      c.debtor_uuid, c.user_id, ci.invoice_uuid, cashPaymentOriginId
     FROM cash AS c
       JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
       JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -699,10 +696,10 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id
+          credit_equiv, currency_id, user_id, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id
+          gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -726,11 +723,11 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
-          c.debtor_uuid, c.user_id, lastInvoiceUuid
+          c.debtor_uuid, c.user_id, lastInvoiceUuid, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -740,10 +737,10 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id
+          credit_equiv, currency_id, user_id, origin_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id
+          loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -838,9 +835,6 @@ BEGIN
   DECLARE cashDebtorUuid BINARY(16);
   DECLARE enterpriseCurrencyId INT;
   DECLARE currentExchangeRate DECIMAL(19,4);
-
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION ROLLBACK;
-  DECLARE EXIT HANDLER FOR SQLWARNING ROLLBACK;
 
   -- copy cash payment values into working variables
   SELECT cash.date, cash.currency_id, enterprise.id, enterprise.currency_id, cash.debtor_uuid
@@ -1227,8 +1221,7 @@ END $$
 CREATE PROCEDURE MergeLocations(
   IN beforeUuid BINARY(16),
   IN afterUuid BINARY(16)
-)
-BEGIN
+) BEGIN
 
   -- Go through every location in the database, replacing the location uuid with the new location uuid
   UPDATE patient SET origin_location_id = afterUuid WHERE origin_location_id = beforeUuid;
@@ -1242,6 +1235,86 @@ BEGIN
 
   -- delete the beforeUuid village and leave the afterUuid village.
   DELETE FROM village WHERE village.uuid = beforeUuid;
+END $$
+
+
+-- this writes transactions to a temporary table
+CREATE PROCEDURE StageTrialBalanceTransaction(
+  IN trans_id TEXT
+)
+BEGIN
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_transaction (record_uuid BINARY(16));
+
+  INSERT INTO stage_trial_balance_transaction
+    SELECT record_uuid FROM posting_journal WHERE posting_journal.trans_id = trans_id COLLATE utf8_general_ci;
+END $$
+
+-- run the Trial Balance
+CREATE PROCEDURE TrialBalance()
+BEGIN
+
+  -- this will hold our error cases
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_errors (record_uuid BINARY(16), trans_id TEXT, code TEXT);
+
+  -- check if dates are in the correct period
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD' AS code
+    FROM posting_journal AS pj
+      JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
+      JOIN period AS p ON pj.period_id = p.id
+    WHERE pj.trans_date NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
+    GROUP BY pj.record_uuid;
+
+  -- check to make sure that all lines of a transaction have a description
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    WHERE pj.description IS NULL
+    GROUP BY pj.record_uuid;
+
+  -- check that all dates are in the correct period_ids
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN period p ON pj.period_id = p.id
+    WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
+    GROUP BY pj.record_uuid;
+
+  -- check that all periods are unlocked
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.LOCKED_PERIOD' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN period p ON pj.period_id = p.id
+    WHERE p.locked = 1 GROUP BY pj.record_uuid;
+
+  -- check that all accounts are unlocked
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN account a ON pj.account_id = a.id
+    WHERE a.locked = 1 GROUP BY pj.record_uuid;
+
+  -- check that all transactions are balanced
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    GROUP BY pj.record_uuid
+    HAVING SUM(pj.debit_equiv) <> SUM(pj.credit_equiv);
+
+  -- check that all transactions have two or more lines
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSATION' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    GROUP BY pj.record_uuid
+    HAVING COUNT(pj.record_uuid) < 2;
+
+  SELECT DISTINCT BUID(record_uuid) AS record_uuid, trans_id, code FROM stage_trial_balance_errors ORDER BY code, trans_id;
 END $$
 
 DELIMITER ;

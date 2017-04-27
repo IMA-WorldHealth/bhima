@@ -1,0 +1,115 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static text-uppercase" translate>HOME.BHIMA</li>
+      <li class="title">{{ HomeCtrl.enterprise.name }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="ui ima-blue statistic">
+              <div class="value">
+                {{ HomeCtrl.enterprise.name }}
+              </div>
+              <div class="uilabel">
+                <i class="fa fa-user"></i> <span translate>HOME.CONNECTED_USER</span>: {{ HomeCtrl.user.display_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title" translate>FORM.LABELS.PROJECT</div>
+            <div class="ui huge ima-blue statistic">
+              <div class="value">
+                {{HomeCtrl.project.abbr}}
+              </div>
+              <div class="uilabel">
+                {{HomeCtrl.project.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title" translate>EXCHANGE.ENTERPRISE_CURRENCY</div>
+            <div class="ui huge ima-blue statistic">
+              <div class="value">{{ HomeCtrl.enterprise.currencySymbol }}</div>
+              <div class="uilabel">{{ HomeCtrl.enterprise.currencyLabel }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+
+        <div class="panel panel-default segment">
+          <div class="panel-body text-center">
+            <div class="segment-title" translate>TABLE.COLUMNS.EXCHANGE_RATE</div>
+            <div class="ui huge ima-blue statistic" title="{{ HomeCtrl.primaryExchange.rate}} ({{ HomeCtrl.primaryExchange.symbol }})">
+              <div class="value">{{ HomeCtrl.primaryExchange.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }}({{ HomeCtrl.primaryExchange.symbol }})</div>
+              <div class="uilabel"><span translate>HOME.EXCHANGE_SET</span> {{ HomeCtrl.primaryExchange.formattedDate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default segment">
+          <div class="panel-body">
+            <div class="segment-title" translate>FISCAL.FISCAL_YEAR</div>
+
+            <div style="margin-top : 12px">
+            <div class="progress" style="margin-bottom:0px;">
+              <div class="ima-blue progress-bar" role="progressbar" style="width:{{HomeCtrl.year.percentage}}%;">
+                {{ HomeCtrl.today | date }}
+              </div>
+            </div>
+
+            <!-- Ensure column padding is appropriate -->
+            <div class="row">
+              <div class="col-xs-6">
+                {{ HomeCtrl.year.start_date | date }}
+              </div>
+              <div class="col-xs-6 text-right">
+                {{ HomeCtrl.year.end_date | date }}
+              </div>
+            </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <span translate>HOME.MORE_DETAILS</span>
+        <a ui-sref="landing.stats">
+          <span translate>HOME.CLICK_HERE</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

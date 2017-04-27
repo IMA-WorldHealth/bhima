@@ -44,9 +44,11 @@ const medicalReports = require('../controllers/medical/reports');
 const diagnoses = require('../controllers/medical/diagnoses');
 
 // stock and inventory routes
-const inventory = require('../controllers/inventory');
-const depots = require('../controllers/inventory/depots');
-const inventoryReports = require('../controllers/inventory/reports');
+const inventory            = require('../controllers/inventory');
+const depots               = require('../controllers/inventory/depots');
+const inventoryReports     = require('../controllers/inventory/reports');
+const stock                = require('../controllers/stock');
+const stockReports         = require('../controllers/stock/reports');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -387,10 +389,12 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
-  app.get('/reports/finance/journal', financeReports.journal.report);
+  app.get('/reports/finance/journal', financeReports.journal.postingReport);
+  app.get('/reports/finance/posted_journal', financeReports.journal.postedReport);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
+  app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -564,6 +568,8 @@ exports.configure = function configure(app) {
   app.get('/purchases/search', purchases.search);
   app.get('/purchases/:uuid', purchases.detail);
   app.put('/purchases/:uuid', purchases.update);
+  app.get('/purchases/:uuid/stock_status', purchases.stockStatus);
+  app.get('/purchases/:uuid/stock_balance', purchases.stockBalance);
 
   // functions api
   app.get('/functions', functions.list);
@@ -580,11 +586,11 @@ exports.configure = function configure(app) {
   app.delete('/grades/:uuid', grades.delete);
 
   // creditor groups API
-  app.post('/creditor_groups', creditorGroups.create);
-  app.get('/creditor_groups', creditorGroups.list);
-  app.get('/creditor_groups/:uuid', creditorGroups.detail);
-  app.put('/creditor_groups/:uuid', creditorGroups.update);
-  app.delete('/creditor_groups/:uuid', creditorGroups.remove);
+  app.post('/creditors/groups', creditorGroups.create);
+  app.get('/creditors/groups', creditorGroups.list);
+  app.get('/creditors/groups/:uuid', creditorGroups.detail);
+  app.put('/creditors/groups/:uuid', creditorGroups.update);
+  app.delete('/creditors/groups/:uuid', creditorGroups.remove);
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);
@@ -599,6 +605,40 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+
+  // stock flux 
+  app.get('/stock/flux', stock.listStockFlux);
+
+  // stock management API 
+  app.post('/stock/lots/movements', stock.createMovement);
+  app.get('/stock/lots/movements', stock.listLotsMovements);
+
+  app.post('/stock/lots', stock.createStock);
+  app.get('/stock/lots', stock.listLots);
+  app.get('/stock/lots/origins', stock.listLotsOrigins);
+
+  app.get('/stock/lots/depots/', stock.listLotsDepot);
+  app.get('/stock/inventories/depots', stock.listInventoryDepot);
+
+  // stock integration
+  app.post('/stock/integration', stock.createIntegration);
+
+  // stock reports API 
+  app.get('/reports/stock/lots', stockReports.stockLotsReport);
+  app.get('/reports/stock/movements', stockReports.stockMovementsReport);
+  app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
+
+  // stock receipts API
+  app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
+  app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
+  app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
+  app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+
+  app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
+  app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
+  app.get('/receipts/stock/entry_integration/:document_uuid', stockReports.stockEntryIntegrationReceipt);
+
+  app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
 
   app.get('/diagnoses', diagnoses.list);
 };

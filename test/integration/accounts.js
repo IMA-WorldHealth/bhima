@@ -39,7 +39,7 @@ describe('(/accounts) Accounts', function () {
   it('GET /accounts?detailed=1 returns the full list of account', function () {
     return agent.get('/accounts?detailed=1')
       .then(function (res) {
-        helpers.api.listed(res, 14);
+        helpers.api.listed(res, 17);
       })
       .catch(helpers.handler);
   });
@@ -47,7 +47,7 @@ describe('(/accounts) Accounts', function () {
   it('GET /accounts returns a simple list of account', function () {
     return agent.get('/accounts')
       .then(function (res) {
-        helpers.api.listed(res, 14);
+        helpers.api.listed(res, 17);
       })
       .catch(helpers.handler);
    });

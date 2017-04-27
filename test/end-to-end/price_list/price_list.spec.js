@@ -132,7 +132,10 @@ describe('Price Lists', () => {
   });
 
   it('deletes a price list', () => {
-    element(by.id(`price_delete_${priceListID1}`)).click();
+    element(by.id(`price_list_${priceListID1}`)).click();
+
+    // click the "delete" button 
+    FU.buttons.delete();
 
     // accept the alert
     components.modalAction.confirm();

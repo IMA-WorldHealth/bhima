@@ -1,0 +1,13 @@
+{"EXCHANGE":{"ADDING_RATE":"Adding an exchange Rate",
+"ADD_EXCHANGE":"Ajouter taux",
+"DESCRIPTION":"This section help you to define an exchange rate",
+"ENTERPRISE_CURRENCY":"Enterprise Currency",
+"EXCHANGE_RATES":"Exchange Rate(s)",
+"NEW_RATE":"New Exchange Rate",
+"RATE_SET":"Rate last set",
+"REVIEW_RATE":"Review the exchange rate",
+"TITLE":"Exchange Rate Management",
+"REVIEW":"Review Rates ",
+"INVOICE_DISCLAIMER":"Exchange rate based on the latest enterprise exchange:",
+"SET_AS":"Set as",
+"ON":"on"}}

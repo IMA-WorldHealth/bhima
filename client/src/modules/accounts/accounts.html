@@ -1,0 +1,60 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "ACCOUNT.TITLE" | translate }}</li>
+    </ol>
+
+   <div class="toolbar">
+
+     <div class="toolbar-item">
+
+       <button
+         class="btn btn-default"
+         ng-class="{'btn-info' : AccountsCtrl.gridOptions.enableFiltering}"
+         data-method="filter" ng-click="AccountsCtrl.toggleInlineFilter()">
+        <i class="fa fa-filter"></i>
+       </button>
+
+       <a class="btn btn-default text-capitalize" data-method="create" ui-sref="accounts.create">
+         <i class="fa fa-plus"></i>
+         <span translate> ACCOUNT.ADD </span>
+       </a>
+       <bh-pdf-print
+        pdf-url="/reports/finance/accounts/chart"
+        options="AccountsCtrl.parameter">
+      </bh-pdf-print>
+
+      <bh-renderer-dropdown
+        report-url="/reports/finance/accounts/chart"
+        report-options="AccountsCtrl.parameter">
+      </bh-renderer-dropdown>
+
+     </div>
+   </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <!-- @todo Consider how the application is loaded and cached and make this functionality apply to the whole application -->
+        <div
+          id="account-grid"
+          class="grid-full-height"
+          ui-grid="AccountsCtrl.gridOptions"
+          ui-grid-tree-view
+          ui-grid-auto-resize
+          ui-grid-resize-columns>
+
+          <bh-grid-loading-indicator
+            loading-state="AccountsCtrl.loading"
+            empty-state="AccountsCtrl.gridOptions.data.length===0"
+            error-state="AccountsCtrl.hasError">
+          </bh-grid-loading-indicator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

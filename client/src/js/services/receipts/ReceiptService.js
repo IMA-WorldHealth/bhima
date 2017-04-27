@@ -145,6 +145,75 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     /* noop */
   }
 
+  // ========================== stock ==============================
+
+  // bind methods
+  service.stockExitPatientReceipt = stockExitPatientReceipt;
+  service.stockExitDepotReceipt = stockExitDepotReceipt;
+  service.stockEntryDepotReceipt = stockEntryDepotReceipt;
+  service.stockExitServiceReceipt = stockExitServiceReceipt;
+  service.stockExitLossReceipt = stockExitLossReceipt;
+  service.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
+  service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
+  service.stockEntryDonationReceipt = stockEntryDonationReceipt;
+  service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+
+  // stock exit patient receipt
+  function stockExitPatientReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_patient/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock exit service receipt
+  function stockExitServiceReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_service/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock exit depot receipt
+  function stockExitDepotReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_depot/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock exit loss receipt
+  function stockExitLossReceipt(uuid, options) {
+    var route = '/receipts/stock/exit_loss/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock entry depot receipt
+  function stockEntryDepotReceipt(uuid, options) {
+    var route = '/receipts/stock/entry_depot/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock entry purchase receipt
+  function stockEntryPurchaseReceipt(uuid, options) {
+    var route = '/receipts/stock/entry_purchase/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock entry integration receipt
+  function stockEntryIntegrationReceipt(uuid, options) {
+    var route = '/receipts/stock/entry_integration/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock entry donation receipt
+  function stockEntryDonationReceipt(uuid, options) {
+    var route = '/receipts/stock/entry_donation/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock adjustment receipt
+  function stockAdjustmentReceipt(uuid, options) {
+    var route = '/receipts/stock/adjustment/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // ========================== end stock ==========================
+
   function setPosReceipt(posReceiptEnabled) {
     service.posReceipt = cache.posReceipt = posReceiptEnabled;
   }

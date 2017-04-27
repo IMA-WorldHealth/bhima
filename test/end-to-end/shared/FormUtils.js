@@ -2,22 +2,27 @@
 'use strict';
 
 const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('./helpers');
+
+const expect = chai.expect;
 helpers.configure(chai);
 
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
 // However, this decision can be reviewed
 const buttons =  {
-  create: function create() { return $('[data-method="create"]').click(); },
-  search: function search() { return $('[data-method="search"]').click(); },
-  submit: function submit() { return $('[data-method="submit"]').click(); },
-  cancel: function cancel() { return $('[data-method="cancel"]').click(); },
-  clear: function clear() { return $('[data-method="clear"]').click(); },
-  back: function back() { return $('[data-method="back"]').click(); },
-  reset : function reset() { return $('[data-method="reset"]').click(); },
-  delete: function delet() { return $('[data-method="delete"]').click(); }
+  create : function create() { return $('[data-method="create"]').click(); },
+  search : function search() { return $('[data-method="search"]').click(); },
+  submit : function submit() { return $('[data-method="submit"]').click(); },
+  cancel : function cancel() { return $('[data-method="cancel"]').click(); },
+  clear  : function clear() { return $('[data-method="clear"]').click(); },
+  back   : function back() { return $('[data-method="back"]').click(); },
+  reset  : function reset() { return $('[data-method="reset"]').click(); },
+  delete : function delet() { return $('[data-method="delete"]').click(); },
+  configure : function configure() { return $('[data-method="configure"]').click(); },
+  add : function configure() { return $('[data-method="add"]').click(); },
+  save : function configure() { return $('[data-method="save"]').click(); },
+  grouping : function grouping() { return $('[data-method="grouping"]').click(); }
 };
 
 // This methods are for easily working with modals.  Works with the same custom
@@ -132,8 +137,8 @@ module.exports = {
     this.input(model, label, anchor);
 
     // select the item of the dropdown menu matching the label
-    let option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
-    return option.click();
+    const option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
+    option.click();
   },
 
   /**
@@ -151,7 +156,7 @@ module.exports = {
     anchor = anchor || $('body');
 
     // get the HTML <div> element that will trigger the select input
-    let select = anchor ?
+    const select = anchor ?
       anchor.element(by.model(model)) :
       element(by.model(model));
 
@@ -162,8 +167,8 @@ module.exports = {
     this.input('$select.search', label, select);
 
     // select the item of the dropdown menu matching the label
-    let option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
-    return option.click();
+    const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
+    option.click();
   },
 
   /**
@@ -189,8 +194,8 @@ module.exports = {
     this.input('$select.search', label, externalAnchor);
 
     // select the item of the dropdown menu matching the label
-    let option = externalAnchor.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
-    return option.click();
+    const option = externalAnchor.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
+    option.click();
   },
 
   /**

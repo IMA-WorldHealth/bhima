@@ -1,0 +1,77 @@
+{{> head title="REPORT.AGED_CREDITORS"}}
+
+<body>
+  <main class="container">
+    {{> header }}
+
+    <h3 class="text-center">
+      {{translate "REPORT.AGED_CREDITORS"}}
+    </h3>
+
+    <h4 class="text-center">
+      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date this.timestamp }}
+    </h4>
+
+    <!-- margin is the cell size -->
+    <section>
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr class="text-capitalize">
+            <th class="text-center">{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th class="text-center" style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
+            <th class="text-center">{{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.SIXTY_TO_NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.OVER_NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- print a row for each creditor -->
+          {{#each creditors}}
+            <tr>
+              <th>{{this.name}}</th>
+              <td class="text-left">{{this.number}}</td>
+              <td class="text-right">
+                {{#if this.thirty}}
+                  {{currency this.thirty ../metadata.enterprise.currency_id}}
+                {{/if}}  
+              </td>
+              <td class="text-right">
+                {{#if this.sixty}}
+                  {{currency this.sixty ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">
+                {{#if this.ninety}}
+                  {{currency this.ninety ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">
+                {{#if this.excess}}
+                  {{currency this.excess ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=7}}
+          {{/each}}
+        </tbody>
+        {{#if aggregates}}
+          <tfoot>
+            <tr>
+              <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+              <th class="text-right">{{currency aggregates.thirty metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.sixty metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.ninety metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.excess metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.total metadata.enterprise.currency_id}}</th>
+            </tr>
+          </tfoot>
+        {{/if}}
+      </table>
+    </section>
+  </main>
+</body>

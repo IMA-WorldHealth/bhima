@@ -1,0 +1,41 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>BILLING_SERVICES.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+        <a
+          class="btn btn-default text-capitalize"
+          data-method="create"
+          ui-sref="billingServices.create"
+          ui-sref-opts="{notify:false}">
+          <span class="fa fa-plus"></span> <span translate>BILLING_SERVICES.BTN.CREATE</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+
+  <!-- anchor to template in child views -->
+  <div class="container-fluid">
+    <div
+      class="grid-full-height"
+      id="BillingServicesGrid"
+      ui-grid="BillingServicesCtrl.options"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="BillingServicesCtrl.loading"
+        empty-state="BillingServicesCtrl.options.data.length === 0"
+        error-state="BillingServicesCtrl.hasError">
+      </bh-grid-loading-indicator>
+
+    </div>
+  </div>
+</div>

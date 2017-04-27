@@ -1,0 +1,153 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title"><span translate>STOCK.ADJUSTMENT</span> <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.ADJUSTMENT_type}}</span></li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-depot-dropdown on-select="StockCtrl.setupDepot(depot)"></bh-depot-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- content -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" bh-form-defaults novalidate>
+
+    <div class="row">
+      <div class="col-xs-6">
+        <!-- adjustment type -->
+        <div class="form-group">
+          <div class="well well-sm clearfix">
+            <label class="col-md-6 text-action">
+              <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'increase'"> 
+              <span translate>STOCK.INCREASE</span>
+            </label>
+
+            <label class="col-md-6 text-action">
+              <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'decrease'"> 
+              <span translate>STOCK.DECREASE</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- date -->
+        <bh-date-editor
+          date-value="StockCtrl.movement.date"
+          max-date="StockCtrl.timestamp" >
+        </bh-date-editor>
+
+        <!-- note -->
+        <div class="form-group"
+          ng-class="{ 'has-error' : StockForm.$submitted && StockForm.description.$invalid }">
+          <label class="control-label">
+            <span translate>FORM.LABELS.DESCRIPTION</span>
+          </label>
+          <textarea
+            class="form-control"
+            name="description"
+            ng-model="StockCtrl.movement.description"
+            placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+            ng-maxlength="StockCtrl.maxLength"
+            required>
+          </textarea>
+          <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-6">
+        <div ng-if="StockCtrl.adjustmentOption === 'increase'" style="margin-top: 0px;">
+          <h4><i class="fa fa-arrow-circle-up"></i> <span translate>STOCK.INCREASE</span> </h4>
+          <p translate>STOCK.INCREASE_HELP</p>
+        </div>
+
+        <div ng-if="StockCtrl.adjustmentOption === 'decrease'" style="margin-top: 0px;">
+          <h4><i class="fa fa-arrow-circle-down"></i> <span translate>STOCK.DECREASE</span> </h4>
+          <p translate>STOCK.DECREASE_HELP</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- add and recovery -->
+    <div class="row" style="padding-bottom : 5px;">
+      <div class="col-xs-12">
+
+        <!-- info -->
+        <p
+          style="padding-top : 10px;"
+          class="text-info"
+          ng-show="!StockCtrl.adjustmentOption">
+          <span class="fa fa-info-circle"></span> 
+          <span translate>FORM.INFO.NO_DESTINATION</span>
+        </p>
+
+        <!-- "Recover Items" button -->
+        <div class="btn-group pull-right" role="group">
+          <button
+            type="button"
+            class="btn btn-default"
+            ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
+            ng-click="StockCtrl.readCache()"
+            ng-disabled="!StockCtrl.hasCacheAvailable">
+            <span class="fa fa-recycle"></span> 
+            <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
+          </button>
+        </div>
+
+        <!-- "Add number of grid rows" input-group -->
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button
+              type="button"
+              id="btn-add-rows"
+              class="btn btn-default"
+              ng-disabled="!StockCtrl.adjustmentOption"
+              ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
+              <span class="fa fa-plus-circle"></span> 
+              <span translate>FORM.BUTTONS.ADD</span>
+            </button>
+          </span>
+          <input
+            type="number"
+            class="form-control"
+            ng-model="StockCtrl.itemIncrement"
+            style="max-width : 40px;"
+            ng-disabled="!StockCtrl.adjustmentOption">
+          </div>
+      </div>
+    </div>
+
+    <!-- grid -->
+    <div id="stock-adjustment-grid" 
+      ui-grid="StockCtrl.gridOptions" 
+      style="height: 300px; width: 100%;"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+    </div>
+
+    <!-- footer -->
+    <div class="row" style="margin-top: 5px;">
+      <div class="col-xs-6 col-xs-offset-6">
+        <div class="text-right">
+          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
+            FORM.BUTTONS.SUSPEND
+          </button>
+
+          <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </div>
+
+    </form>
+
+  </div>
+</div>

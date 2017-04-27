@@ -1,0 +1,20 @@
+<div class="btn-group" uib-dropdown>
+  <a class="btn btn-default">
+    <span ng-show="$ctrl.loading">
+      <i class="fa fa-circle-notch-o"></i> <span translate>FORM.INFO.LOAING</span>
+    </span>
+    <span ng-hide="$ctrl.loading">
+      <span translate>{{ $ctrl.selection.text }}</span>
+    </span>
+  </a>
+  <a class="btn btn-default" data-bh-depot-select uib-dropdown-toggle>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+    <li ng-repeat="depot in $ctrl.depots">
+      <a href ng-click="$ctrl.select(depot)">
+        <span>{{ ::depot.text }}</span>
+      </a>
+    </li>
+  </ul>
+</div>

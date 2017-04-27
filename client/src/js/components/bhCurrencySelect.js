@@ -1,7 +1,7 @@
 angular.module('bhima.components')
   .component('bhCurrencySelect', {
     controller  : bhCurrencySelect,
-    templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
+    templateUrl : 'modules/templates/bhCurrencySelect.tmpl.html',
     bindings    : {
       currencyId        : '=',
       validationTrigger : '<',

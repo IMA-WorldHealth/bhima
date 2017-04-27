@@ -1,0 +1,210 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.INVENTORY" | translate }}</li>
+      <li class="title">{{ "PURCHASES.PAGE_TITLE" | translate }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container">
+
+    <!--
+      top note panel for the purchase order.details
+      inspired by the patient invoice page's ergonomics
+    -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form name="PurchaseOrderForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+              <div class="col-md-6">
+
+                <div class="form-group"
+                  ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.supplier.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.SUPPLIER" | translate }}</label>
+
+                  <ui-select
+                    name="supplier"
+                    ng-model="PurchaseCtrl.supplier"
+                    theme="bootstrap"
+                    on-select="PurchaseCtrl.order.setSupplier(PurchaseCtrl.supplier)"
+                    required>
+                    <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.SUPPLIER' | translate }}"><span>{{$select.selected.display_name}}</span></ui-select-match>
+                    <ui-select-choices ui-select-focus-patch repeat="supplier in PurchaseCtrl.suppliers | filter:$select.search ">
+                      <span ng-bind-html="supplier.display_name| highlight:$select.search"></span>
+                    </ui-select-choices>
+                  </ui-select>
+
+                  <div class="help-block" ng-messages="PurchaseOrderForm.supplier.$error" ng-show="PurchaseOrderForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.PAYMENT_METHOD" | translate }}
+                    <span
+                      class="text-info fa fa-info-circle"
+                      uib-popover-template="'typePopover.tmpl.html'"
+                      popover-placement="right"
+                      popover-append-to-body="true"
+                      popover-trigger="mouseenter">
+                    </span>
+                  </label>
+
+                  <div class="radio" style="margin-top:0;">
+                    <label>
+                      <input type="radio" name="paymentMethod" id="on-purchase" value="FORM.LABELS.ON_PURCHASE" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      {{ "FORM.LABELS.ON_PURCHASE" | translate }}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="paymentMethod" id="on-delivery" value="FORM.LABELS.ON_DELIVERY" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      {{ "FORM.LABELS.ON_DELIVERY" | translate }}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="paymentMethod" id="other" value="FORM.LABELS.OTHER" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      {{ "FORM.LABELS.OTHER" | translate }}
+                    </label>
+                  </div>
+
+                  <div class="help-block" ng-messages="PurchaseOrderForm.paymentMethod.$error" ng-show="PurchaseOrderForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+
+                <bh-date-editor
+                  date-value="PurchaseCtrl.order.details.date"
+                  validation-trigger="PurchaseOrderForm.$submitted"
+                  max-date="PurchaseCtrl.maxDate">
+                </bh-date-editor>
+
+                <div
+                  class="form-group"
+                  ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <textarea
+                    ng-model="PurchaseCtrl.order.details.note"
+                    name="notes"
+                    class="form-control"
+                    rows="4"
+                    ng-maxlength="PurchaseCtrl.maxLength"
+                    required>
+                  </textarea>
+                  <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TODO Move padding to generic CSS class -->
+    <div class="row" style="padding-bottom : 5px;">
+      <div class="col-xs-12">
+
+        <!-- "Recover Items" button -->
+        <div class="btn-group pull-right" role="group">
+          <button
+            class="btn btn-default"
+            ng-class="{'btn-primary' : PurchaseCtrl.order.hasCacheAvailable() && PurchaseCtrl.order.details.supplier_uuid }"
+            ng-click="PurchaseCtrl.order.readCache()"
+            ng-disabled="!PurchaseCtrl.order.hasCacheAvailable() || !PurchaseCtrl.supplier">
+            <span class="fa fa-recycle"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
+          </button>
+        </div>
+
+        <!-- "Add number of grid rows" input-group -->
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button
+              id="btn-add-rows"
+              class="btn btn-default"
+              ng-disabled="!PurchaseCtrl.supplier"
+              ng-click="PurchaseCtrl.addItems(PurchaseCtrl.itemIncrement)">
+              <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
+            </button>
+          </span>
+          <input
+            type="number"
+            class="form-control"
+            ng-model="PurchaseCtrl.itemIncrement"
+            style="max-width : 40px;"
+            ng-disabled="!PurchaseCtrl.supplier">
+          </div>
+
+        <!-- @todo - hacky check for inventory to prevent local variables -->
+        <p
+          style="padding-top : 10px;"
+          class="text-warning"
+          ng-show="PurchaseCtrl.order.inventory.size() > 0 && PurchaseCtrl.order.inventory.available.data.length === 0">
+          <span class="fa fa-info-circle"></span>
+          {{ "FORM.INFO.ITEMS_FULL" | translate }}
+        </p>
+
+        <p
+          style="padding-top : 10px;"
+          class="text-info"
+          ng-show="!PurchaseCtrl.supplier">
+          <span class="fa fa-info-circle"></span>
+          {{ "FORM.INFO.NO_SUPPLIER" | translate }}
+        </p>
+      </div>
+    </div>
+
+    <div id="purchase-order-grid" ui-grid="PurchaseCtrl.gridOptions" style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;">
+    </div>
+
+    <div class="row" ng-if="PurchaseCtrl.supplier">
+      <h4 class="text-right" style="margin-right: 25px;">
+        {{ "FORM.LABELS.TOTAL" | translate }}
+        {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.enterprise.currency_id }}
+      </h4>
+    </div>
+
+    <!-- TODO Temporary styles -->
+    <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
+      <div class="col-md-12 text-right">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          ng-disabled="!PurchaseCtrl.supplier"
+          ng-click="PurchaseCtrl.submit(PurchaseOrderForm)"
+          data-method="submit">
+          {{ "FORM.BUTTONS.SUBMIT" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-click="PurchaseCtrl.clear(PurchaseOrderForm)"
+          data-method="clear">
+          {{ "FORM.BUTTONS.CLEAR" | translate }}
+        </button>
+        <p
+          class="text-danger"
+          ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
+          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFO.INVALID_ITEMS" | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="typePopover.tmpl.html">
+  <dl>
+    <dt>{{ "PURCHASES.PAYMENT_METHOD" | translate }}</dt>
+    <dd>{{ "PURCHASES.PAYMENT_METHOD_EXPLANATION" | translate }}</dd>
+  </dl>
+</script>

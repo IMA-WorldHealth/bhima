@@ -4,7 +4,7 @@ angular.module('bhima.components')
     defaultPeriod : '@',
     onSelectCallback : '&'
   },
-  templateUrl : 'partials/templates/bhPeriodSelect.tmpl.html',
+  templateUrl : 'modules/templates/bhPeriodSelect.tmpl.html',
   controller : PeriodSelect
 });
 
@@ -42,7 +42,7 @@ function PeriodSelect(Periods) {
 
   ctrl.selectPeriod = function selectPeriod(key) {
     var period = Periods.definition(key);
-    ctrl.onSelectCallback({ key : period });
+    ctrl.onSelectCallback({ period : period });
     ctrl.toggleSelectionOptions();
 
     ctrl.period = period;
@@ -55,7 +55,7 @@ function PeriodSelect(Periods) {
     period.customPeriodStart = selection.from;
     period.customPeriodEnd = selection.to;
 
-    ctrl.onSelectCallback({ key : period });
+    ctrl.onSelectCallback({ period : period });
     ctrl.toggleSelectionOptions();
 
     ctrl.period = period;

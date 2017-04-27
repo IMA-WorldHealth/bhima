@@ -27,7 +27,10 @@ exports.accountSlip = renderAccountSlip;
  * @method report
  */
 function renderReport(req, res, next) {
-  const options = _.extend(req.query, { filename: 'TREE.GENERAL_LEDGER', csvKey: 'rows' });
+  const options = _.extend(req.query, {
+    filename : 'TREE.GENERAL_LEDGER',
+    csvKey   : 'rows',
+  });
   let report;
   let data;
 
@@ -56,25 +59,30 @@ function renderReport(req, res, next) {
  */
 function renderAccountSlip(req, res, next) {
   const params = req.params;
-  const options = _.extend(req.query, { filename: 'GENERAL_LEDGER.ACCOUNT_SLIP', csvKey: 'rows' });
-  let report;
+  const options = _.extend(req.query, {
+    filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
+    csvKey   : 'transactions',
+  });
 
-  try {
-    report = new ReportManager(ACCOUNT_SLIP_TEMPLATE, req.session, options);
-  } catch (e) {
-    return next(e);
-  }
+  let report;
 
   const data = {};
 
-  return AccountReport.getAccountTransactions(params.account_id, GENERAL_LEDGER_SOURCE)
-    .then((result) => {
-      _.extend(data, { transactions: result.transactions, sum: result.sum });
-      data.hasDebtorSold = data.sum.balance >= 0;
-      return Accounts.lookupAccount(params.account_id);
-    })
+  return Accounts.lookupAccount(params.account_id)
     .then((account) => {
       _.extend(data, { account });
+
+      options.filename = 'Extrait'.concat('_', account.number, '_', account.label);
+
+      report = new ReportManager(ACCOUNT_SLIP_TEMPLATE, req.session, options);
+
+      return AccountReport.getAccountTransactions(params.account_id, GENERAL_LEDGER_SOURCE);
+    })
+    .then((result) => {
+      _.extend(data, { transactions: result.transactions, sum: result.sum });
+
+      data.hasDebtorSold = data.sum.balance >= 0;
+
       return report.render(data);
     })
     .then((result) => {
