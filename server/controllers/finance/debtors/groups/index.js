@@ -16,9 +16,9 @@
 
 const uuid = require('node-uuid');
 const db = require('../../../../lib/db');
-const util = require('../../../../lib/util');
 const NotFound = require('../../../../lib/errors/NotFound');
 const BadRequest = require('../../../../lib/errors/BadRequest');
+const FilterParser = require('../../../../lib/filter');
 
 const identifiers = require('../../../../config/identifiers');
 
@@ -155,20 +155,20 @@ function update(req, res, next) {
   delete data.uuid;
 
   db.exec(sql, [data, uid])
-  .then(function (rows) {
-    if (!rows.affectedRows) {
-      throw new NotFound(
-        `Could not find a debtor group with uuid ${req.params.uuid}`
-      );
-    }
+    .then((rows) => {
+      if (!rows.affectedRows) {
+        throw new NotFound(
+          `Could not find a debtor group with uuid ${req.params.uuid}`
+        );
+      }
 
-    return lookupDebtorGroup(req.params.uuid);
-  })
-  .then(function (group) {
-    res.status(200).json(group);
-  })
-  .catch(next)
-  .done();
+      return lookupDebtorGroup(req.params.uuid);
+    })
+    .then(function (group) {
+      res.status(200).json(group);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -211,19 +211,21 @@ function list(req, res, next) {
       FROM debtor_group
       LEFT JOIN debtor
       ON debtor.group_uuid = debtor_group.uuid
-      GROUP BY debtor_group.uuid
     `;
 
     delete req.query.detailed;
   }
 
-  const queryObject = util.queryCondition(sql, req.query);
-  sql = queryObject.query + ' ORDER BY name;';
+  const filters = new FilterParser(req.query);
 
-  db.exec(sql, queryObject.conditions)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
+  filters.setOrder('ORDER BY debtor_group.name');
+  filters.setGroup('GROUP BY debtor_group.uuid');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
+    .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
 }
