@@ -8,10 +8,7 @@ class PeriodService {
 
   constructor(clientTimestamp) {
     var self = this;
-    console.log('GOT CLIENT TIMESTAMP', clientTimestamp);
     this.timestamp = new moment(clientTimestamp);
-    console.log('CREATED DATE', this.timestamp);
-
 
     this.periods = {
       today : {
@@ -71,8 +68,6 @@ class PeriodService {
     function calculatePeriodLimit(periodKey, modifier) {
       var dateModifier = modifier || 0;
       var currentPeriod = moment().get(periodKey);
-
-      console.log(periodKey, currentPeriod, dateModifier);
 
       return {
         start : function () { return (new moment(self.timestamp)).set(periodKey, currentPeriod + dateModifier).startOf(periodKey).toDate(); },

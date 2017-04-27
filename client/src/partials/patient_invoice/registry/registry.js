@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'ReceiptModal', 'appcache', 'uiGridConstants',
-  'ModalService', 'CashService', 'GridSortingService', '$state', 'FilterService',
+  'ModalService', 'CashService', 'GridSortingService', '$state', 'DepricatedFilterService',
 ];
 
 /**

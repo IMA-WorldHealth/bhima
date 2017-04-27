@@ -53,9 +53,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
 
-  // filter cache
-  var cache = AppCache(cacheKey + '-filters');
-
+  // top level cache
+  var cache = AppCache(cacheKey + '-module');
   var vm = this;
 
   vm.enterprise = Session.enterprise;
@@ -91,7 +90,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
 
   vm.cancelEdit = cancelEdit;
 
@@ -256,62 +254,30 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-
     var filtersSnapshot = Journal.filters.formatHTTP();
 
     Config.openSearchModal(filtersSnapshot)
       .then(function (changes) {
-        // if the options are not returned or have not changed, do not refresh
-        // the data source
 
-        // if (angular.equals(options, vm.filters)) { return; }
-
-        // bind filters to the view and format appropriate
-        // cacheFilters(options);
-
-        // turn loading on
-
-        // search controller should return a well formatted list of key:value objects
-
-        // Journal.filters.replaceFilters(changes);
-        //
-
-        console.log('assigning/ [replacing with]', changes);
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();
+        vm.latestViewFilters = Journal.filters.formatView();
 
         toggleLoadingIndicator();
-
-        vm.latestViewFilters = Journal.filters.formatView();
         return load(Journal.filters.formatHTTP(true));
       })
       .catch(angular.noop);
   };
 
-  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
-  function cacheFilters(filters) {
-    vm.filters = cache.filters = filters;
-    vm.filtersFmt = Journal.formatFilterParameters(filters);
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      bhConstants.utilBar.expandedHeightStyle : bhConstants.utilBar.collapsedHeightStyle;
-  }
-
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    console.log('on remove filter called with', key);
-
     Journal.removeFilter(key);
+
     Journal.cacheFilters();
-
     vm.latestViewFilters = Journal.filters.formatView();
-    return load(Journal.filters.formatHTTP(true));
-  }
 
-  // clears the filters by forcing a cache of an empty array
-  function clearFilters() {
-    cacheFilters({});
-    load({});
+    return load(Journal.filters.formatHTTP(true));
   }
 
   vm.editTransaction = editTransaction;
@@ -346,22 +312,17 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     }
   };
 
-
-
   function cancelEdit() {
     // @TODO this should return a promise in a uniform standard with `saveTransaction`
     transactions.cancel();
 
     // ensure data that has been changed is up to date from the server
     // remove any additional or temporary rows
-    load(vm.filters);
+    load(Journal.filters.formatHTTP(true));
   }
 
   // runs on startup
   function startup() {
-    // vm.filters = cache.filters;
-    // vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
-
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }

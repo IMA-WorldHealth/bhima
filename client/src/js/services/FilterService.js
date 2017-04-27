@@ -1,20 +1,16 @@
 angular.module('bhima.services')
   .service('FilterService', FilterService);
 
-FilterService.$inject = ['$log', 'Store'];
+FilterService.$inject = ['Store'];
 
-function FilterService($log, Store) {
+function FilterService(Store) {
 
   function FilterList() {
-    $log.debug('[FilterService] new FilterService: constructor called');
-
     // initialise internal state
     this._defaultFilters = [];
     this._customFilters = [];
 
     this._filterIndex = {};
-
-    window.activeFilter = this;
   }
 
   FilterList.prototype.resetFilterState = function resetFilterState(key) {
@@ -23,13 +19,10 @@ function FilterService($log, Store) {
 
   FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
     this._filterActiveFilters().forEach(function (filter) {
-
-      console.log('clearing values for entry', filter);
       // only by default remove custom values
       if (!filter._isDefault) {
         this.resetFilterState(filter._key);
       }
-      // filter.assign(null);
     }.bind(this));
   }
 
@@ -72,12 +65,10 @@ function FilterService($log, Store) {
 
   // accepts an array of key : filterValue objects that are assigned
   // [
-  // { key : value }
+  // { key : value },
   // { key : value }
   // ]
   FilterList.prototype.assignFilters = function assignFilters(valueList) {
-
-    console.log('assign filters called with', valueList, 'using', this);
     valueList.forEach(function (valueMap) {
       this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue);
     }.bind(this));
@@ -87,20 +78,13 @@ function FilterService($log, Store) {
   // calling the erferenced method
   FilterList.prototype.replaceFilters = function replaceFilters(valueList) {
     this._resetCustomFilters();
-    console.log('state reset', this);
     this.assignFilters(valueList);
-
-    console.log('assigned  filters', this);
   };
 
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-
-
-    var activeKeys = activeFilters.map(function (filter) { console.log('ACTIVE FILTERS AS OF FORMAT VIEW', filter); return filter._key });
-
-    $log.debug('[FilterService] Active keys:', activeKeys);
+    var activeKeys = activeFilters.map(function (filter) {  return filter._key });
 
     function keysInActive(filter) { return activeKeys.includes(filter._key); }
 
@@ -162,7 +146,7 @@ function FilterService($log, Store) {
     }, index);
   }
 
-  // returns a flat array of filters that must be applied
+  // returns a flat array of filters that have values (and should be applied)
   FilterList.prototype._filterActiveFilters = function filterActiveFilters() {
     var filtered = [];
 
@@ -178,7 +162,6 @@ function FilterService($log, Store) {
 
   // expose Filter data element
   FilterList.prototype.Filter = Filter;
-
   return FilterList;
 }
 
@@ -200,6 +183,4 @@ function Filter(key, label, valueFilter) {
     this._value = value;
     this._displayValue = displayValue;
   }
-
-  // @TODO add method to set view label - search controller can set view labels manually
 }

@@ -203,10 +203,7 @@ function UtilService(moment) {
   };
 
   service.arrayIncludes = function arrayIncludes(array, values) {
-
-    console.log('checking that', values, 'is not in', array);
     return values.some(function (value) {
-      console.log('CHECKING', value, array.indexOf(value));
       return array.indexOf(value) !== -1;
     });
   };

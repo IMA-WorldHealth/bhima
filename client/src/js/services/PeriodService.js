@@ -95,8 +95,6 @@ function PeriodService(Moment) {
     var dateModifier = modifier || 0;
     var currentPeriod = Moment().get(periodKey);
 
-    console.log(periodKey, currentPeriod, dateModifier);
-
     return {
       start : function () { return Moment().set(periodKey, currentPeriod + dateModifier).startOf(periodKey).format(service.dateFormat); },
       end : function () { return Moment().set(periodKey, currentPeriod + dateModifier).endOf(periodKey).format(service.dateFormat); }

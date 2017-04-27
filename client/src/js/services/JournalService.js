@@ -2,18 +2,16 @@ angular.module('bhima.services')
   .service('JournalService', JournalService);
 
 // Dependencies injection
-JournalService.$inject = ['$log', 'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService'];
+JournalService.$inject = ['PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService'];
 
 /**
  * Journal Service
  * This service is responsible of all process with the posting journal
  */
-function JournalService($log, Api, AppCache, Filters, Periods) {
+function JournalService(Api, AppCache, Filters, Periods) {
   var URL = '/journal/';
   var service = new Api(URL);
 
-
-  service.formatFilterParameters = formatFilterParameters;
   service.grid = grid;
   service.saveChanges = saveChanges;
 
@@ -58,14 +56,6 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
 
   service.filters = journalFilters;
 
-  $log.debug('[JournalService] Created filter list:', journalFilters);
-
-
-  // @TODO Areas to clean up/ abstract with custom filters:
-  //       1. ensuring that both period and custom_period is not assigned is the responsibility of the entity service
-  //       2. custom periods are not handled by the filter parser `period` method
-  var periodFilters = ['period', 'custom_period_start', 'custom_period_end'];
-
   // default filtes will always be applied
   journalFilters.registerDefaultFilters([
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
@@ -84,7 +74,7 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
       { key: 'project_id', label: 'FORM.LABELS.PROJECT' },
       { key: 'description', label: 'FORM.LABELS.DESCRIPTION' }]);
 
-  // configure module defaults
+
   if (filterCache.filters) {
     // load cached filter definition if it exists
     journalFilters.loadCache(filterCache.filters);
@@ -97,14 +87,14 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
     // get the keys of filters already assigned - on initial load this will be empty
     var assignedKeys = Object.keys(journalFilters.formatHTTP());
 
-    console.log('assign default filters limit');
+    // assign default period filter
     var periodDefined = service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
     if (!periodDefined) {
       journalFilters.assignFilters(Periods.defaultFilters());
     }
 
+    // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
-
       journalFilters.assignFilter('limit', 100);
     }
   }
@@ -120,55 +110,6 @@ function JournalService($log, Api, AppCache, Filters, Periods) {
 
   service.loadCachedFilters = function loadCachedFilters() {
     journalFilters.loadCache(filterCache.filters || {});
-  }
-
-  // expose methods for search configuration
-
-  // expose methods for applying filters to search query
-
-  // expose methods for force clearing filters cache
-
-  /**
-   * This function prepares the filters for the journal for display to the
-   * client via the bhFiltersApplied directive.
-   * @todo - this might be better in it's own service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'debit', displayName: 'FORM.LABELS.DEBIT' },
-      { field: 'credit', displayName: 'FORM.LABELS.CREDIT' },
-      { field: 'credit_equiv', displayName: 'FORM.LABELS.CREDIT' },
-      { field: 'debit_equiv', displayName: 'FORM.LABELS.DEBIT' },
-      { field: 'trans_id', displayName: 'FORM.LABELS.TRANS_ID' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'account_id', displayName: 'FORM.LABELS.ACCOUNT' },
-      { field: 'description', displayName: 'FORM.LABELS.DESCRIPTION', truncate: 8 },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter: 'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
-      { field: 'amount', displayName: 'FORM.LABELS.AMOUNT' },
-      { field: 'project_id', displayName: 'FORM.LABELS.PROJECT' },
-    ];
-
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var value = params[column.field];
-
-      if (angular.isDefined(value)) {
-
-        // this is to temporarily reduce the size of the description field
-        // @TODO - find a better way of doing this
-        if (column.truncate) {
-          column.value = String(value).substring(0, column.truncate) + '... ';
-        } else {
-          column.value = value;
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    });
   }
 
   return service;
