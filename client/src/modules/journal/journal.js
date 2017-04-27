@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope',
+  'FilterService', '$rootScope', '$filter'
 ];
 
 /**
@@ -32,8 +32,8 @@ JournalController.$inject = [
  */
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
-  bhConstants, $state, uiGridConstants, Modal, Languages,
-  AppCache, Store, uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope) {
+  bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -151,20 +151,27 @@ function JournalController(Journal, Sorting, Grouping,
       width            : 110,
       cellTemplate     : 'modules/journal/templates/hide-groups-label.cell.html' },
 
-    { field                : 'trans_date',
-      displayName          : 'TABLE.COLUMNS.DATE',
-      headerCellFilter     : 'translate',
-      cellFilter           : 'date:"' + bhConstants.dates.format + '"',
-      filter               : { condition: filtering.filterByDate },
-      editableCellTemplate : 'modules/journal/templates/date.edit.html',
-      enableCellEdit       : true,
-      footerCellTemplate   : '<i></i>' },
+    { field                            : 'trans_date',
+      displayName                      : 'TABLE.COLUMNS.DATE',
+      headerCellFilter                 : 'translate',
+      cellFilter                       : 'date:"' + bhConstants.dates.format + '"',
+      filter                           : { condition: filtering.filterByDate },
+      editableCellTemplate             : 'modules/journal/templates/date.edit.html',
+      treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
+      customTreeAggregationFinalizerFn : function (aggregation) {
+        aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
+      },
+      enableCellEdit     : true,
+      footerCellTemplate : '<i></i>' },
 
-    { field            : 'hrRecord',
-      displayName      : 'TABLE.COLUMNS.RECORD',
-      headerCellFilter : 'translate',
-      visible          : true,
-      enableCellEdit   : false },
+    { field                : 'hrRecord',
+      displayName          : 'TABLE.COLUMNS.RECORD',
+      headerCellFilter     : 'translate',
+      visible              : true,
+      treeAggregationType  : uiGridGroupingConstants.aggregation.MIN,
+      treeAggregationLabel : '',
+      enableCellEdit       : false,
+      footerCellTemplate   : '<i></i>' },
 
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
@@ -481,7 +488,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // remove the entity
   function removeEntity(row) {
-    if (!row.entity_uuid) { return; }
+    if (!row.hrEntity) { return; }
 
     transactions.editCell(row, 'entity_uuid', null);
     delete row.entity_uuid;
