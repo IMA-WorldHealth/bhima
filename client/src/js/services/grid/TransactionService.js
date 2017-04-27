@@ -345,6 +345,11 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       ERR_DEB_CRED_NOT_NULL = 'POSTING_JOURNAL.ERRORS.DEB_CRED_NOT_NULL',
       ERR_CREDITED_DEBITED = 'POSTING_JOURNAL.ERRORS.CREDITED_DEBITED';
 
+    // If the transaction has 0 line
+    if (numberOfLine === 0) {
+      return;
+    }
+
     // If the transaction are single line transaction
     if (numberOfLine === 1) {
       return ERR_SINGLE_LINE_TRANSACTION;

@@ -481,7 +481,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // remove the entity
   function removeEntity(row) {
-    if (!row.entity_uuid) { return; }
+    if (!row.hrEntity) { return; }
 
     transactions.editCell(row, 'entity_uuid', null);
     delete row.entity_uuid;
