@@ -7,11 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-<<<<<<< 033d9cd628a4576dac6b6ea28b8b947b370ddbdc
-  'FilterService', '$rootScope', '$filter'
-=======
-  'FilterService', '$rootScope', '$translate'
->>>>>>> Display the number transaction in Posting Journal
+  'FilterService', '$rootScope', '$filter', '$translate'
 ];
 
 /**
@@ -36,13 +32,9 @@ JournalController.$inject = [
  */
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
-<<<<<<< 033d9cd628a4576dac6b6ea28b8b947b370ddbdc
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter) {
-=======
-  bhConstants, $state, uiGridConstants, Modal, Languages,
-  AppCache, Store, uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $translate) {
->>>>>>> Display the number transaction in Posting Journal
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate) {
+
   // Journal utilities
   var sorting;
   var grouping;
