@@ -83,6 +83,8 @@ function onBillingEnterFactory(stateType) {
       Modal.open({
         templateUrl : 'modules/billing-services/billing-services-modal.html',
         controller  : ctrl,
+        backdrop    : 'static',
+        keyboard    : false,
       }).result
         .then(function (id) {
           Notify.success(message);
