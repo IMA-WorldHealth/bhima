@@ -53,10 +53,10 @@ function JournalController(Journal, Sorting, Grouping,
   var vm = this;
   vm.filter = filter;
 
-  // To Get the Number of transaction From Posting Journal
+  // number of all of the transactions in the system
   Journal.count()
     .then(function (data) {
-      vm.numberTransaction = data[0].number_transactions;
+      vm.numberTotalSystemTransactions = data[0].number_transactions;
     })
     .catch(function (error) {
       Notify.handleError(error);
@@ -324,20 +324,23 @@ function JournalController(Journal, Sorting, Grouping,
   function load(options) {
     vm.loading = true;
     vm.hasError = false;
-    var transactionNumber = 0;
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
+
+    // number of transactions downloaded and shown in the current journal 
+    var numberCurrentGridTransactions = 0;
+
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
         // To Get the number of transaction 
-        transactionNumber =  records.aggregate.length;
+        numberCurrentGridTransactions =  records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + 
-          ' : ' + transactionNumber + ' / ' + vm.numberTransaction + '</strong></div>'; 
+          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>'; 
         transactions.applyEdits();
 
         // try to unfold groups
