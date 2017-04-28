@@ -3,9 +3,9 @@
 * These times are also known as 'lead times' for stock.
 */
 
-var db = require('../../../lib/db');
+const db = require('../../../lib/db');
 
-exports.getInventoryLeadTimes= getInventoryLeadTimes;
+exports.getInventoryLeadTimes = getInventoryLeadTimes;
 exports.getInventoryLeadTimesById = getInventoryLeadTimesById;
 
 /**
@@ -13,14 +13,10 @@ exports.getInventoryLeadTimesById = getInventoryLeadTimesById;
 *
 * @function getInventoryLeadTimes
 * @param {String} uuid Inventory item identifier
-* @param {Object} options An object derived from the URL query string
 * @returns {Promise} Returns a database query
 */
-function getInventoryLeadTimes(options) {
-
-  var sql;
-
-  sql =
+function getInventoryLeadTimes() {
+  const sql =
     `SELECT i.uuid, ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
     FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON
       p.uuid = s.purchase_order_uuid AND
@@ -36,14 +32,10 @@ function getInventoryLeadTimes(options) {
 *
 * @function getInventoryLeadTimesById
 * @param {String} uuid Inventory item identifier
-* @param {Object} options An object derived from the URL query string
 * @returns {Promise} Returns a database query
 */
-function getInventoryLeadTimesById(uuid, options) {
-  // TODO
-  var sql;
-
-  sql =
+function getInventoryLeadTimesById(uuid) {
+  const sql =
     `SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
     FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON
       p.uuid = s.purchase_order_uuid AND

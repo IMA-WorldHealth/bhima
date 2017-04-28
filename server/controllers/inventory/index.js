@@ -27,52 +27,48 @@
 * TODO: We should migrate the inventory to using the regular bhima 2.x guidelines.
 */
 
+const q = require('q');
 
-const q  = require('q');
-const ReportManager = require('../../lib/ReportManager');
-const db = require('../../lib/db');
-const _ = require('lodash');
-
-const core        = require('./inventory/core');
+const core = require('./inventory/core');
 const consumption = require('./inventory/consumption');
-const stock       = require('./inventory/stock');
+const stock = require('./inventory/stock');
 const expirations = require('./inventory/expiration');
-const leadtimes   = require('./inventory/leadtimes');
-const lots        = require('./inventory/lots');
-const donations   = require('./inventory/donations');
-const stats       = require('./inventory/status');
-const groups      = require('./inventory/groups');
-const types       = require('./inventory/types');
-const units       = require('./inventory/units');
+const leadtimes = require('./inventory/leadtimes');
+const lots = require('./inventory/lots');
+const donations = require('./inventory/donations');
+const stats = require('./inventory/status');
+const groups = require('./inventory/groups');
+const types = require('./inventory/types');
+const units = require('./inventory/units');
 
 // exposed routes
-exports.createInventoryItems    = createInventoryItems;
-exports.updateInventoryItems    = updateInventoryItems;
-exports.getInventoryItems       = getInventoryItems;
-exports.getInventoryItemsById   = getInventoryItemsById;
-exports.searchInventoryItems    = searchInventoryItems;
+exports.createInventoryItems = createInventoryItems;
+exports.updateInventoryItems = updateInventoryItems;
+exports.getInventoryItems = getInventoryItems;
+exports.getInventoryItemsById = getInventoryItemsById;
+exports.searchInventoryItems = searchInventoryItems;
 
 // expose inventory group methods
-exports.createInventoryGroups  = createInventoryGroups;
-exports.updateInventoryGroups  = updateInventoryGroups;
-exports.listInventoryGroups    = listInventoryGroups;
+exports.createInventoryGroups = createInventoryGroups;
+exports.updateInventoryGroups = updateInventoryGroups;
+exports.listInventoryGroups = listInventoryGroups;
 exports.detailsInventoryGroups = detailsInventoryGroups;
-exports.deleteInventoryGroups  = deleteInventoryGroups;
-exports.countInventoryGroups   = countInventoryGroups;
+exports.deleteInventoryGroups = deleteInventoryGroups;
+exports.countInventoryGroups = countInventoryGroups;
 
 // expose inventory types methods
-exports.createInventoryTypes  = createInventoryTypes;
-exports.updateInventoryTypes  = updateInventoryTypes;
-exports.listInventoryTypes    = listInventoryTypes;
+exports.createInventoryTypes = createInventoryTypes;
+exports.updateInventoryTypes = updateInventoryTypes;
+exports.listInventoryTypes = listInventoryTypes;
 exports.detailsInventoryTypes = detailsInventoryTypes;
-exports.deleteInventoryTypes  = deleteInventoryTypes;
+exports.deleteInventoryTypes = deleteInventoryTypes;
 
 // expose inventory units methods
-exports.createInventoryUnits  = createInventoryUnits;
-exports.updateInventoryUnits  = updateInventoryUnits;
-exports.listInventoryUnits    = listInventoryUnits;
+exports.createInventoryUnits = createInventoryUnits;
+exports.updateInventoryUnits = updateInventoryUnits;
+exports.listInventoryUnits = listInventoryUnits;
 exports.detailsInventoryUnits = detailsInventoryUnits;
-exports.deleteInventoryUnits  = deleteInventoryUnits;
+exports.deleteInventoryUnits = deleteInventoryUnits;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
@@ -102,7 +98,7 @@ function createInventoryItems(req, res, next) {
     .then((identifier) => {
       res.status(201).json({ uuid: identifier });
     })
-    .catch(function (error) {
+    .catch((error) => {
       core.errorHandler(error, req, res, next);
     })
     .done();
@@ -114,10 +110,10 @@ function createInventoryItems(req, res, next) {
  */
 function updateInventoryItems(req, res, next) {
   core.updateItemsMetadata(req.body, req.params.uuid)
-    .then(metadata => {
+    .then((metadata) => {
       res.status(200).json(metadata);
     })
-    .catch(function (error) {
+    .catch((error) => {
       core.errorHandler(error, req, res, next);
     })
     .done();
@@ -130,16 +126,15 @@ function updateInventoryItems(req, res, next) {
 * @function getInventoryItems
 */
 function getInventoryItems(req, res, next) {
-
   core.getItemsMetadata()
-  .then(function (rows) {
+  .then((rows) => {
     if (!rows.length) {
       throw core.errors.NO_INVENTORY_ITEMS;
     }
 
     res.status(200).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -153,17 +148,16 @@ function getInventoryItems(req, res, next) {
 * @function searchInventoryItems
 */
 function searchInventoryItems(req, res, next) {
-  var params = req.query;
-  
-  core.getItemsMetadataSearch(params)
-  .then(function (row) {
-    res.status(200).json(row);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+  const params = req.query;
 
+  core.getItemsMetadataSearch(params)
+    .then((row) => {
+      res.status(200).json(row);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 
@@ -174,14 +168,13 @@ function searchInventoryItems(req, res, next) {
 * @function getInventoryItemsById
 */
 function getInventoryItemsById(req, res, next) {
-
-  var uuid = req.params.uuid;
+  const uuid = req.params.uuid;
 
   core.getItemsMetadataById(uuid)
-    .then(function (row) {
+    .then((row) => {
       res.status(200).json(row);
     })
-    .catch(function (error) {
+    .catch((error) => {
       core.errorHandler(error, req, res, next);
     })
     .done();
@@ -194,12 +187,11 @@ function getInventoryItemsById(req, res, next) {
  * Create a new inventory group
  */
 function createInventoryGroups(req, res, next) {
-
   groups.create(req.body)
   .then((identifier) => {
     res.status(201).json({ uuid: identifier });
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -214,7 +206,7 @@ function updateInventoryGroups(req, res, next) {
   .then((rows) => {
     res.status(201).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -225,12 +217,11 @@ function updateInventoryGroups(req, res, next) {
  * get the list of inventory groups
  */
 function listInventoryGroups(req, res, next) {
-
   groups.list(req.query.include_members)
   .then((rows) => {
     res.status(200).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -241,12 +232,11 @@ function listInventoryGroups(req, res, next) {
  * get the list of inventory groups
  */
 function detailsInventoryGroups(req, res, next) {
-
   groups.details(req.params.uuid)
   .then((rows) => {
     res.status(200).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -257,15 +247,14 @@ function detailsInventoryGroups(req, res, next) {
  * delete an inventory group
  */
 function deleteInventoryGroups(req, res, next) {
-
   groups.remove(req.params.uuid)
-  .then(() => {
-    res.sendStatus(204);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -273,15 +262,14 @@ function deleteInventoryGroups(req, res, next) {
  * count inventory in the group
  */
 function countInventoryGroups(req, res, next) {
-
   groups.countInventory(req.params.uuid)
-  .then((rows) => {
-    res.status(200).json(rows[0].inventory_counted);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows[0].inventory_counted);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 // ======================= inventory type =============================
@@ -290,15 +278,14 @@ function countInventoryGroups(req, res, next) {
  * Create a new inventory types
  */
 function createInventoryTypes(req, res, next) {
-
   types.create(req.body)
-  .then((id) => {
-    res.status(201).json({ id: id });
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((id) => {
+      res.status(201).json({ id });
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -306,15 +293,14 @@ function createInventoryTypes(req, res, next) {
  * Create a new inventory types
  */
 function updateInventoryTypes(req, res, next) {
-
   types.update(req.body, req.params.id)
-  .then((rows) => {
-    res.status(201).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(201).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -322,15 +308,14 @@ function updateInventoryTypes(req, res, next) {
  * get the list of inventory types
  */
 function listInventoryTypes(req, res, next) {
-
   types.list()
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -338,15 +323,14 @@ function listInventoryTypes(req, res, next) {
  * get the list of inventory types
  */
 function detailsInventoryTypes(req, res, next) {
-
   types.details(req.params.id)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -354,15 +338,14 @@ function detailsInventoryTypes(req, res, next) {
  * delete an inventory types
  */
 function deleteInventoryTypes(req, res, next) {
-
   types.remove(req.params.id)
-  .then(() => {
-    res.sendStatus(204);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 // ======================= inventory unit =============================
@@ -371,15 +354,14 @@ function deleteInventoryTypes(req, res, next) {
  * Create a new inventory units
  */
 function createInventoryUnits(req, res, next) {
-
   units.create(req.body)
-  .then((id) => {
-    res.status(201).json({ id: id });
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((id) => {
+      res.status(201).json({ id });
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -387,15 +369,14 @@ function createInventoryUnits(req, res, next) {
  * Create a new inventory units
  */
 function updateInventoryUnits(req, res, next) {
-
   units.update(req.body, req.params.id)
-  .then((rows) => {
-    res.status(201).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(201).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -403,12 +384,11 @@ function updateInventoryUnits(req, res, next) {
  * get the list of inventory units
  */
 function listInventoryUnits(req, res, next) {
-
   units.list()
   .then((rows) => {
     res.status(200).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -419,12 +399,11 @@ function listInventoryUnits(req, res, next) {
  * get the list of inventory units
  */
 function detailsInventoryUnits(req, res, next) {
-
   units.details(req.params.id)
   .then((rows) => {
     res.status(200).json(rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -435,12 +414,11 @@ function detailsInventoryUnits(req, res, next) {
  * delete an inventory unit
  */
 function deleteInventoryUnits(req, res, next) {
-
   units.remove(req.params.id)
   .then(() => {
     res.sendStatus(204);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, req, res, next);
   })
   .done();
@@ -458,10 +436,9 @@ function deleteInventoryUnits(req, res, next) {
 * Returns the consumption of a stock by the inventory item.
 */
 function getInventoryConsumptionById(req, res, next) {
-
-  var data,
-      uuid = req.params.uuid,
-      options = req.query;
+  let data;
+  const uuid = req.params.uuid;
+  const options = req.query;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
@@ -469,34 +446,33 @@ function getInventoryConsumptionById(req, res, next) {
   }
 
   // get the consumption
-  core.getIds(uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEMS;
-    }
+  return core.getIds(uuid)
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_INVENTORY_ITEMS;
+      }
 
-    // cache results
-    data = rows[0];
+      // cache results
+      data = rows[0];
 
-    // query consumption data
-    return options.average ?
-      consumption.getAverageItemConsumption(uuid, options) :
-      consumption.getItemConsumption(uuid, options);
-  })
-  .then(function (rows) {
+      // query consumption data
+      return options.average ?
+        consumption.getAverageItemConsumption(uuid, options) :
+        consumption.getItemConsumption(uuid, options);
+    })
+    .then((rows) => {
+      if (!rows.length) {
+        data.consumption = options.average ? 0 : [];
+      } else {
+        data.consumption = options.average ? rows[0].average : rows;
+      }
 
-    if (!rows.length) {
-      data.consumption = options.average ? 0 : [];
-    } else {
-      data.consumption = options.average ? rows[0].average : rows;
-    }
-
-    res.status(200).json(data);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /*
@@ -512,10 +488,8 @@ function getInventoryConsumptionById(req, res, next) {
 * query is used, we return inventory metadata with the consumption.
 */
 function getInventoryConsumption(req, res, next) {
-
-  var data,
-      uuid = req.params.uuid,
-      options = req.query;
+  let data;
+  const options = req.query;
 
   // TODO - is without an average and with an average different enough to
   // require two different routes?
@@ -527,46 +501,49 @@ function getInventoryConsumption(req, res, next) {
   }
 
   // are we going to be getting all metadata or just ids?
-  var fn = options.detailed ? 'getItemsMetadata' : 'getIds';
+  const func = options.detailed ? core.getItemsMetadata : core.getIds;
 
-  core[fn]()
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEMS;
-    }
-
-    // cache rows
-    data = rows;
-
-    // loop through all inventory items, calculating the consumption for each
-    return q.all(data.map(function (item) {
-      return options.average ?
-        consumption.getAverageItemConsumption(item.uuid, options) :
-        consumption.getItemConsumption(item.uuid, options);
-    }));
-  })
-  .then(function (rows) {
-
-    // Loop through the original array and associate promises (consumptions)
-    // with the original inventory value
-    data.forEach(function (item, idx) {
-      if (options.average) {
-        var hasAvg = rows[idx].length > 0;
-
-        // default to 0 if no average in place
-        item.consumption = hasAvg ? rows[idx][0].average : 0;
-      } else {
-        item.consumption = rows[idx];
+  return func()
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_INVENTORY_ITEMS;
       }
-    });
 
-    // return to client
-    res.status(200).json(data);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      // cache rows
+      data = rows;
+
+      // loop through all inventory items, calculating the consumption for each
+      return q.all(data.map((item) => {
+        let promise;
+        if (options.average) {
+          promise = consumption.getAverageItemConsumption(item.uuid, options);
+        } else {
+          promise = consumption.getItemConsumption(item.uuid, options);
+        }
+        return promise;
+      }));
+    })
+    .then((rows) => {
+      // Loop through the original array and associate promises (consumptions)
+      // with the original inventory value
+      data.forEach((item, idx) => {
+        if (options.average) {
+          const hasAvg = rows[idx].length > 0;
+
+          // default to 0 if no average in place
+          item.consumption = hasAvg ? rows[idx][0].average : 0;
+        } else {
+          item.consumption = rows[idx];
+        }
+      });
+
+      // return to client
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -574,23 +551,22 @@ function getInventoryConsumption(req, res, next) {
 * Calculates the lead time (delivery delay) associated with purchases on a
 * single inventory item.
 */
-exports.getInventoryLeadTimesById = function (req, res, next) {
-
-  var uuid = req.params.uuid,
-      options = req.query;
+exports.getInventoryLeadTimesById = function getInventoryLeadTimesById(req, res, next) {
+  const uuid = req.params.uuid;
+  const options = req.query;
 
   leadtimes.getInventoryLeadTimesById(uuid, options)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_STOCK;
+      }
 
-    res.status(200).send(rows[0]);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).send(rows[0]);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 };
 
 
@@ -599,22 +575,21 @@ exports.getInventoryLeadTimesById = function (req, res, next) {
 * Calculates the lead time (delivery delay) associated with purchases on a
 * single inventory item.
 */
-exports.getInventoryLeadTimes = function (req, res, next) {
-
-  var options = req.query;
+exports.getInventoryLeadTimes = function getInventoryLeadTimes(req, res, next) {
+  const options = req.query;
 
   leadtimes.getInventoryLeadTimes(options)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_STOCK;
+      }
 
-    res.status(200).send(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).send(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 };
 
 
@@ -629,26 +604,25 @@ exports.getInventoryLeadTimes = function (req, res, next) {
 *   end={date}
 */
 function getInventoryStockLevels(req, res, next) {
-
-  var options = req.query;
+  const options = req.query;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
     return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  stock.getStockLevels(options)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
+  return stock.getStockLevels(options)
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_STOCK;
+      }
 
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -661,31 +635,27 @@ function getInventoryStockLevels(req, res, next) {
 *   end={date}
 */
 function getInventoryStockLevelsById(req, res, next) {
-
-   var options = req.query,
-      uuid = req.params.uuid;
+  const options = req.query;
+  const uuid = req.params.uuid;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
     return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  stock.getStockLevelsById(uuid, options)
-  .then(function (rows) {
+  return stock.getStockLevelsById(uuid, options)
+    .then((rows) => {
+      // in case there are no records, make one up.  This makes sense for items
+      // that have never been purchases.  If they have been purchased, rows would
+      // not be empty.
+      const value = (!rows.length) ? { uuid, quantity: 0 } : rows[0];
 
-    // in case there are no records, make one up.  This makes sense for items
-    // that have never been purchases.  If they have been purchased, rows would
-    // not be empty.
-    if (!rows.length) {
-      return res.status(200).json({ uuid : uuid, quantity : 0 });
-    }
-
-    res.status(200).json(rows[0]);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).json(value);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -698,22 +668,21 @@ function getInventoryStockLevelsById(req, res, next) {
 *   end={date}
 */
 function getInventoryExpirations(req, res, next) {
-
-  var options = req.query;
+  const options = req.query;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
     return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  expirations.getExpirations(options)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+  return expirations.getExpirations(options)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -726,23 +695,22 @@ function getInventoryExpirations(req, res, next) {
 *   end={date}
 */
 function getInventoryExpirationsById(req, res, next) {
-
-  var options = req.query,
-      uuid = req.params.uuid;
+  const options = req.query;
+  const uuid = req.params.uuid;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
     return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  expirations.getExpirationsById(uuid, options)
-  .then(function (rows) {
-    res.status(200).json(rows[0]);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+  return expirations.getExpirationsById(uuid, options)
+    .then((rows) => {
+      res.status(200).json(rows[0]);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -751,41 +719,38 @@ function getInventoryExpirationsById(req, res, next) {
 * query does not filter by expiration date or any other stock metadata.
 */
 function getInventoryLots(req, res, next) {
-
-  var data;
+  let data;
 
   core.getIds()
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEMS;
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_INVENTORY_ITEMS;
+      }
 
-    // TODO - error handling: what about no inventory items?
-    data = rows;
+      // TODO - error handling: what about no inventory items?
+      data = rows;
 
-    // loop through inventory items, fetching the lots for each
-    // from the database
-    return q.all(data.map(function (i) {
-      return lots.getInventoryLotsById(i.uuid);
-    }));
-  })
-  .then(function (lots) {
-    if (!lots.length) {
-      throw core.errors.NO_STOCK;
-    }
+      // loop through inventory items, fetching the lots for each
+      // from the database
+      return q.all(data.map(i => lots.getInventoryLotsById(i.uuid)));
+    })
+    .then((ilots) => {
+      if (!ilots.length) {
+        throw core.errors.NO_STOCK;
+      }
 
-    // loop through, joining lots to their inventory items
-    lots.forEach(function (lot, idx) {
-      data[idx].lot = lot;
-    });
+      // loop through, joining lots to their inventory items
+      ilots.forEach((lot, idx) => {
+        data[idx].lot = lot;
+      });
 
-    // send data to the client
-    res.status(200).json(data);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      // send data to the client
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -797,21 +762,20 @@ function getInventoryLots(req, res, next) {
 * @function getInventoryLotsById
 */
 function getInventoryLotsById(req, res, next) {
-
-  var uuid = req.params.uuid;
+  const uuid = req.params.uuid;
 
   lots.getInventoryLotsById(uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_STOCK;
+      }
 
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -823,25 +787,21 @@ function getInventoryLotsById(req, res, next) {
 *   3) shortage (below minimum required level)
 */
 function getInventoryStatus(req, res, next) {
-
   core.getIds()
-  .then(function (rows) {
+    .then((rows) => {
+      if (!rows.length) {
+        throw core.errors.NO_INVENTORY_ITEMS;
+      }
 
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEMS;
-    }
-
-    return q.all(rows.map(function (i) {
-      return stats.getInventoryStatusById(i.uuid);
-    }));
-  })
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+      return q.all(rows.map(i => stats.getInventoryStatusById(i.uuid)));
+    })
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -853,17 +813,16 @@ function getInventoryStatus(req, res, next) {
 *   3) shortage (below minimum required level)
 */
 function getInventoryStatusById(req, res, next) {
-
-  var uuid = req.params.uuid;
+  const uuid = req.params.uuid;
 
   stats.getInventoryStatusById(uuid)
-  .then(function (data) {
-    res.status(200).json(data);
-  })
-  .catch(function (error) {
-    core.errorHandler(error, next);
-  })
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, next);
+    })
+    .done();
 }
 
 /**
@@ -871,12 +830,11 @@ function getInventoryStatusById(req, res, next) {
 * Retrieve all donations from the inventory.
 */
 function getInventoryDonations(req, res, next) {
-
   donations.getInventoryDonations()
-  .then(function (data) {
+  .then((data) => {
     res.status(200).json(data);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, next);
   })
   .done();
@@ -888,14 +846,13 @@ function getInventoryDonations(req, res, next) {
 * type.
 */
 function getInventoryDonationsById(req, res, next) {
-
-  var uuid = req.params.uuid;
+  const uuid = req.params.uuid;
 
   donations.getInventoryDonationsById(uuid)
-  .then(function (data) {
+  .then((data) => {
     res.status(200).json(data);
   })
-  .catch(function (error) {
+  .catch((error) => {
     core.errorHandler(error, next);
   })
   .done();
