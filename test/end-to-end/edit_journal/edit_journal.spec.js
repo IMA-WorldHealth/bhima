@@ -35,10 +35,8 @@ describe('Edit Posting Journal', () => {
   it('edits a transaction change value of Debit and Credit', () => {
     FU.buttons.grouping();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-
     const debitCell = GU.getCellName(gridId, 1, 5);
     const creditCell = GU.getCellName(gridId, 2, 6);
-
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(150);
 
@@ -74,8 +72,8 @@ describe('Edit Posting Journal', () => {
     element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
     element.all(by.css('[class="fa fa-edit"]')).get(1).click();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 3, 6);
+    const debitCell = GU.getCellName(gridId, 2, 6);
+    const creditCell = GU.getCellName(gridId, 3, 5);
 
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(100);
