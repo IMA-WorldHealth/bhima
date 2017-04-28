@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter'
+  'FilterService', '$rootScope', '$filter', '$translate'
 ];
 
 /**
@@ -33,7 +33,8 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter) {
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate) {
+
   // Journal utilities
   var sorting;
   var grouping;
@@ -51,6 +52,15 @@ function JournalController(Journal, Sorting, Grouping,
 
   var vm = this;
   vm.filter = filter;
+
+  // number of all of the transactions in the system
+  Journal.count()
+    .then(function (data) {
+      vm.numberTotalSystemTransactions = data[0].number_transactions;
+    })
+    .catch(function (error) {
+      Notify.handleError(error);
+    });
 
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
@@ -71,7 +81,7 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    rowTemplate                : '/modules/templates/grid/transaction.row.html',
+    rowTemplate                : '/modules/templates/grid/transaction.row.html'
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
@@ -314,14 +324,23 @@ function JournalController(Journal, Sorting, Grouping,
   function load(options) {
     vm.loading = true;
     vm.hasError = false;
+    vm.gridOptions.gridFooterTemplate = null;
+    vm.gridOptions.showGridFooter = false;
+
+    // number of transactions downloaded and shown in the current journal 
+    var numberCurrentGridTransactions = 0;
 
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
+        // To Get the number of transaction 
+        numberCurrentGridTransactions =  records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
-
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + 
+          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>'; 
         transactions.applyEdits();
 
         // try to unfold groups

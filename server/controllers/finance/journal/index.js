@@ -35,6 +35,7 @@ exports.find = find;
 exports.journalEntryList = journalEntryList;
 
 exports.editTransaction = editTransaction;
+exports.count = count;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -481,4 +482,19 @@ function reverse(req, res, next) {
     .then(() => res.status(201).json({ uuid: voucherUuid }))
     .catch(next)
     .done();
+}
+
+/**
+ * GET /JOURNAL/COUNT
+ * Getting the number of transaction from the posting journal
+ *
+ */
+function count(req, res, next) {
+  const sql = `SELECT COUNT(DISTINCT posting_journal.trans_id) AS number_transactions FROM posting_journal;`;
+
+  db.exec(sql)
+    .then(function (rows) {
+      res.status(200).send(rows);
+    })
+    .catch(next);
 }
