@@ -83,8 +83,7 @@ function helperGetCashbox(id) {
   `;
 
   return db.one(sql, [id], id, 'Cashbox')
-    .then(box => {
-
+    .then((box) => {
       cashbox = box;
 
       // query the currencies supported by this cashbox
@@ -96,7 +95,7 @@ function helperGetCashbox(id) {
 
       return db.exec(sql, [cashbox.id]);
     })
-    .then(rows => {
+    .then((rows) => {
       // assign the currencies to the cashbox
       cashbox.currencies = rows;
       return cashbox;
@@ -129,21 +128,19 @@ function detail(req, res, next) {
  * POST /cashboxes
  */
 function create(req, res, next) {
-  let box = req.body.cashbox;
-  let sql =
-    'INSERT INTO cash_box SET ?;';
+  const box = req.body.cashbox;
+  const sql = 'INSERT INTO cash_box SET ?;';
 
-  db.exec(sql, [ box ])
-    .then(function (row) {
-
+  db.exec(sql, [box])
+    .then((row) => {
       Topic.publish(Topic.channels.FINANCE, {
-        event: Topic.events.CREATE,
-        entity: Topic.entities.CASHBOX,
-        user_id: req.session.user.id,
-        id: row.insertId
+        event   : Topic.events.CREATE,
+        entity  : Topic.entities.CASHBOX,
+        user_id : req.session.user.id,
+        id      : row.insertId,
       });
 
-      res.status(201).json({ id : row.insertId });
+      res.status(201).json({ id: row.insertId });
     })
     .catch(next)
     .done();
@@ -159,17 +156,16 @@ function create(req, res, next) {
  * PUT /cashboxes/:id
  */
 function update(req, res, next) {
-  let sql = 'UPDATE cash_box SET ? WHERE id = ?;';
+  const sql = 'UPDATE cash_box SET ? WHERE id = ?;';
 
   db.exec(sql, [req.body, req.params.id])
     .then(() => helperGetCashbox(req.params.id))
-    .then(cashbox => {
-
+    .then((cashbox) => {
       Topic.publish(Topic.channels.FINANCE, {
-        event: Topic.events.UPDATE,
-        entity: Topic.entities.CASHBOX,
-        user_id: req.session.user.id,
-        id: req.params.id
+        event   : Topic.events.UPDATE,
+        entity  : Topic.entities.CASHBOX,
+        user_id : req.session.user.id,
+        id      : req.params.id,
       });
 
       res.status(200).json(cashbox);
@@ -180,29 +176,29 @@ function update(req, res, next) {
 
 
 /**
- * @method delete
+ * @method remove
  *
  * @description
  * This method removes the cashbox from the system.
  */
 function remove(req, res, next) {
-  let sql = 'DELETE FROM cash_box WHERE id = ?';
+  const sql = 'DELETE FROM cash_box WHERE id = ?';
 
   db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    if (!rows.affectedRows) {
-      throw new NotFound(`Could not find a cash box with id ${req.params.id}.`);
-    }
+    .then((rows) => {
+      if (!rows.affectedRows) {
+        throw new NotFound(`Could not find a cash box with id ${req.params.id}.`);
+      }
 
-    Topic.publish(Topic.channels.FINANCE, {
-      event: Topic.events.DELETE,
-      entity: Topic.entities.CASHBOX,
-      user_id: req.session.user.id,
-      id: req.params.id
-    });
+      Topic.publish(Topic.channels.FINANCE, {
+        event   : Topic.events.DELETE,
+        entity  : Topic.entities.CASHBOX,
+        user_id : req.session.user.id,
+        id      : req.params.id,
+      });
 
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }
