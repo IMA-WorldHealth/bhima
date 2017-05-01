@@ -1,12 +1,12 @@
 angular.module('bhima.services')
 .service('SearchFilterFormatService', SearchFilterFormatService);
 
-// dependencies injection 
-SearchFilterFormatService.$inject = ['FilterService'];
+// dependencies injection
+SearchFilterFormatService.$inject = ['DepricatedFilterService'];
 
 /**
  * SearchFilterFormatService
- * @description This service help to format filters which are displayed for a search 
+ * @description This service help to format filters which are displayed for a search
  */
 function SearchFilterFormatService(Filters) {
 
@@ -14,7 +14,7 @@ function SearchFilterFormatService(Filters) {
 
     var filter = new Filters();
 
-    // expose the service 
+    // expose the service
     service.formatFilter = formatFilter;
     service.formatDisplayNames = formatDisplayNames;
     service.onRemoveFilter = onRemoveFilter;
@@ -24,8 +24,8 @@ function SearchFilterFormatService(Filters) {
      * @function formatFilter
      * @description filter and format properties of an object for being processed by formatFilterValues
      * @param {object} element the object which contains all filters and their values. Ex. { reference: 'TPA1', is_cancelled: 1 }
-     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values 
-     * @return {object} {identifiers: ..., display: ...} returns identifiers for search query and display: values to display in filter 
+     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values
+     * @return {object} {identifiers: ..., display: ...} returns identifiers for search query and display: values to display in filter
      */
     function formatFilter(element, WITH_NULL_VALUES) {
       var queryParam = formatFilterParameters(element, true);
@@ -37,7 +37,7 @@ function SearchFilterFormatService(Filters) {
      * @function formatFilterParameters
      * @description filter and format properties of an object for being processed by formatFilterValues
      * @param {object} element the object which contains all filters and their values. Ex. { reference: 'TPA1', is_cancelled: 1 }
-     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values 
+     * @param {boolean} WITH_NULL_VALUES a boolean flag for returning also properties which have null values
      */
     function formatFilterParameters(element, WITH_NULL_VALUES) {
         var out = {};
@@ -78,7 +78,7 @@ function SearchFilterFormatService(Filters) {
    * @param {boolean} is_display the type of output
    */
   function getFormattedFilterIdentifier(formattedFilters, key, is_display) {
-    var filter = formattedFilters[key]; 
+    var filter = formattedFilters[key];
 
     if (is_display) {
       return angular.isObject(filter) ? filter.text || filter.label || filter.display_name || filter : filter;
@@ -137,7 +137,7 @@ function SearchFilterFormatService(Filters) {
    * @function onRemoveFilter
    * @description when remove a filter reload data
    * @param {object} filters {identifiers: ..., display: ...}
-   * @param {function} reload A reload function 
+   * @param {function} reload A reload function
    */
   function onRemoveFilter(key, filters, reload) {
     var noIdentifiers = (filters && !filters.display && !filters.identifiers);
@@ -145,7 +145,7 @@ function SearchFilterFormatService(Filters) {
     var noReload  = !reload;
 
     if (noIdentifiers || noFilters || noReload) { return; }
-    
+
     if (key === 'dateFrom' ||  key === 'dateTo') {
       // remove all dates filters if one selected
       delete filters.identifiers.dateFrom;
@@ -167,7 +167,7 @@ function SearchFilterFormatService(Filters) {
    */
   function clearFilters(reload) {
     if (!reload) { return; }
-    
+
     reload({ identifiers: {}, display: {} });
   }
 

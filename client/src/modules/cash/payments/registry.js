@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
-  'GridSortingService', '$state', 'FilterService'
+  'GridSortingService', '$state', 'DepricatedFilterService'
 ];
 
 /**

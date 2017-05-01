@@ -2,17 +2,39 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'UserService', 'ProjectService', 'NotifyService', 'options', 'VoucherService', '$translate'
+  '$uibModalInstance', 'UserService', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate'
 ];
 
-function JournalSearchModalController(Instance, Users, Projects, Notify, options, Vouchers, $translate) {
+function JournalSearchModalController(Instance, Users, Projects, Notify, Store, filters, Periods, Vouchers, $translate) {
   var vm = this;
 
-  vm.options = options || {};
+  var changes = new Store({ identifier : 'key' });
+  vm.filters = filters;
 
-  // @FIXME patch hack - this should be handled by FilterService
-  delete vm.options.defaultPeriod;
+  // an object to keep track of all custom filters, assigned in the view
+  vm.searchQueries = {};
+  vm.defaultQueries = {};
 
+  // @TODO ideally these should be passed in when the modal is initialised
+  //       these are known when the filter service is defined
+  var searchQueryOptions = [ 'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id' ];
+
+  // assign already defined custom filters to searchQuery object
+  // @TODO write this as a commonly used utility
+  vm.searchQueries = Object.keys(filters).reduce(function (aggregate, filterKey) {
+    // this object is only for custom search querries
+    if (searchQueryOptions.indexOf(filterKey) >= 0) {
+      aggregate[filterKey] = filters[filterKey];
+    }
+    return aggregate;
+  }, {});
+
+  // assign default filters
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
+  }
+
+  // load data for form select options
   Users.read()
     .then(function (users) {
       vm.users = users;
@@ -25,36 +47,58 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, options
     })
     .catch(Notify.handleError);
 
-  vm.onSelectAccount = function onSelectAccount(account) {
-    vm.options.account_id = account.id;
-  };
-
   // format voucher types and bind to the view
   Vouchers.transactionType()
     .then(function (list) {
-      // make sure that the items are translated
-      list.data.forEach(function (item) {
+      vm.types = list.data.map(function (item) {
         item.hrText = $translate.instant(item.text);
+        return item;
       });
-
-      // bind to the view
-      vm.types = list.data;
     })
     .catch(Notify.handleError);
 
-  // deletes a filter from the options/parameters
-  vm.clear = function clear(key) {
-    delete vm.options[key];
+  // handle component selection states
+  // custom filter account_id - assign the value to the searchQueries object
+  vm.onSelectAccount = function onSelectAccount(account) {
+    vm.searchQueries.account_id = account.id;
   };
 
-  vm.cancel = function cancel() {
-    Instance.dismiss();
+  // deafult filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
   };
+
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
+  };
+
+  // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
+  vm.clear = function clear(key) {
+    delete vm.searchQueries[key];
+  };
+
+  vm.cancel = Instance.dismiss;
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit(form) {
-    if (form.$invalid) { return; }
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      if (angular.isDefined(value)) {
+        changes.post({ key : key, value : value });
+      }
+    });
+
+    var loggedChanges = changes.getAll();
+
     // return values to the JournalController
-    return Instance.close(vm.options);
+    return Instance.close(loggedChanges);
   };
 }

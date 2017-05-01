@@ -88,7 +88,10 @@ function lookupTransaction(recordUuid) {
  * return all items in the posting journal
  */
 function find(options, source) {
-  const filters = new FilterParser(options, { tableAlias: 'p' });
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+
+  // @FIXME selected the source between the posting journal and general ledger should be carefully designed
+  //        as it will be used in many places, allowing a calling method to arbitrarily define the table should be replaced
   const origin = source || 'posting_journal';
 
   const sql = `
@@ -112,13 +115,18 @@ function find(options, source) {
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
   `;
 
-  filters.period('defaultPeriod', 'trans_date');
-
-  filters.dateFrom('dateFrom', 'trans_date');
-  filters.dateTo('dateTo', 'trans_date');
+  filters.period('period', 'trans_date');
+  filters.dateFrom('custom_period_start', 'trans_date');
+  filters.dateTo('custom_period_end', 'trans_date');
 
   filters.fullText('description');
   filters.fullText('comment');
+
+  filters.equals('user_id');
+  filters.equals('account_id');
+  filters.equals('project_id');
+  filters.equals('trans_id');
+  filters.equals('origin_id');
 
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 

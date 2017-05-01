@@ -12,106 +12,153 @@
     </ol>
   </div>
 
-  <div class="modal-body modal-tall" style="max-height : 700px; overflow: auto;">
+  <div class="modal-body" style="padding : 0px;">
 
-    <!-- date parameters -->
-    <bh-date-interval
-      date-from="ModalCtrl.options.dateFrom"
-      date-to="ModalCtrl.options.dateTo"
-      mode="clean"
-      validation-trigger="ModalForm.$submitted">
-    </bh-date-interval>
+    <uib-tabset>
 
-    <!-- description fuzzy search -->
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
-      <label class="control-label" translate>
-        FORM.LABELS.DESCRIPTION
-      </label>
-      <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
-      <textarea
-        class="form-control"
-        name="description"
-        ng-model="ModalCtrl.options.description"
-        rows="4">
-      </textarea>
-      <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}">
+        <!-- acting body class="tab-body" -->
+        <div class="tab-body">
 
-    <!-- users ui-select -->
-    <div class="form-group" ng-class="{'has-error' : ModalCtrl.user.$invalid && ModalForm.$submitted}">
-      <label class="control-label" translate>
-        FORM.LABELS.USER
-      </label>
-      <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-      <ui-select name="user" ng-model="ModalCtrl.options.user_id">
-        <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter: { 'display_name': $select.search }">
-          <span ng-bind-html="user.display_name | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
+        <!-- description fuzzy search -->
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
+          <label class="control-label" translate>
+            FORM.LABELS.DESCRIPTION
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
+          <textarea
+            class="form-control"
+            name="description"
+            ng-model="ModalCtrl.searchQueries.description"
+            rows="4">
+          </textarea>
+          <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
 
-      <div class="help-block" ng-messages="ModalForm.user.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+        <!-- users ui-select -->
+        <div class="form-group" ng-class="{'has-error' : ModalCtrl.user.$invalid && ModalForm.$submitted}">
+          <label class="control-label" translate>
+            FORM.LABELS.USER
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+          <ui-select name="user" ng-change="ModalCtrl.onSelectUser(ModalCtrl.searchQueries.user_id)" ng-model="ModalCtrl.searchQueries.user_id">
+            <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
+            <ui-select-choices ui-select-focus-patch repeat="user.id as user in ModalCtrl.users | filter: { 'display_name': $select.search }">
+              <span ng-bind-html="user.display_name | highlight:$select.search"></span>
+            </ui-select-choices>
+          </ui-select>
 
-    <bh-account-select
-      account-id="ModalCtrl.options.account_id"
-      name="account_id"
-      on-select-callback="ModalCtrl.onSelectAccount(account)"
-      required="0">
-      <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
-    </bh-account-select>
+          <div class="help-block" ng-messages="ModalForm.user.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.PROJECT</label>
-      <select
-        class="form-control"
-        name="project_id"
-        ng-model="ModalCtrl.options.project_id"
-        ng-options="project.id as project.name for project in ModalCtrl.projects">
-        <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
-      </select>
-      <div class="help-block" ng-messages="ModalForm.project_id.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+        <bh-account-select
+          account-id="ModalCtrl.searchQueries.account_id"
+          name="account_id"
+          on-select-callback="ModalCtrl.onSelectAccount(account)"
+          required="0">
+          <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+        </bh-account-select>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.AMOUNT</label>
-      <bh-clear on-clear="ModalCtrl.clear('amount')"></bh-clear>
-      <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.options.amount">
-      <div class="help-block" ng-messages="ModalForm.amount.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.PROJECT</label>
+          <bh-clear on-clear="ModalCtrl.clear('project_id')"></bh-clear>
+          <select
+            class="form-control"
+            name="project_id"
+            ng-model="ModalCtrl.searchQueries.project_id"
+            ng-options="project.id as project.name for project in ModalCtrl.projects">
+            <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
+          </select>
+          <div class="help-block" ng-messages="ModalForm.project_id.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
-      <label class="control-label" translate>
-        FORM.LABELS.TRANSACTION
-      </label>
-      <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
-      <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.options.trans_id">
-      <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.AMOUNT</label>
+          <bh-clear on-clear="ModalCtrl.clear('amount')"></bh-clear>
+          <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.searchQueries.amount">
+          <div class="help-block" ng-messages="ModalForm.amount.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
-      <select
-        class="form-control"
-        name="transaction_type"
-        ng-model="ModalCtrl.options.origin_id"
-        ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
-        <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
-      </select>
-      <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
+          <label class="control-label" translate>
+            FORM.LABELS.TRANSACTION
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
+          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.searchQueries.trans_id">
+          <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
+          <select
+            class="form-control"
+            name="transaction_type"
+            ng-model="ModalCtrl.searchQueries.origin_id"
+            ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
+            <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
+          </select>
+          <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        </div>
+
+      </uib-tab>
+
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate}}">
+        <div class="tab-body">
+
+          <!-- period selection -->
+          <!-- start period selection component -->
+          <bh-period-select
+            default-period="{{ModalCtrl.filters.period}}"
+            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+          </bh-period-select>
+          <!-- end period selection component -->
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+
+          </div>
+          <!-- posted/ non-posted records -->
+          <!-- <div class="form-group"> -->
+          <!--   <label class="form-label">Transactions Limit</label> -->
+
+          <!--   <div class="checkbox"> -->
+          <!--     <label> -->
+          <!--       <input type="checkbox" value=""> -->
+          <!--       Posted transactions -->
+          <!--     </label> -->
+          <!--   </div> -->
+          <!--   <div class="checkbox"> -->
+          <!--     <label> -->
+          <!--       <input type="checkbox" value=""> -->
+          <!--       Non-posted transactions -->
+          <!--     </label> -->
+          <!--   </div> -->
+
+          </div>
+        </div>
+      </uib-tab>
+
+    </uib-tabset>
+
   </div>
 
   <div class="modal-footer">

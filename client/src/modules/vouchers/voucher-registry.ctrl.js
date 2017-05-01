@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'GridFilteringService', 'uiGridGroupingConstants', 'uiGridConstants',
   'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache',
-  'FilterService',
+  'DepricatedFilterService',
 ];
 
 /**

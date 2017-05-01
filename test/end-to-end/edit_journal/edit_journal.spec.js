@@ -65,7 +65,7 @@ describe('Edit Posting Journal', () => {
 
     components.notification.hasWarn();
     element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
+    // element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
 

@@ -20,6 +20,7 @@ module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
 module.exports.uniquelize = uniquelize;
 module.exports.loadModuleIfExists = requireModuleIfExists;
+
 exports.resolveObject = resolveObject;
 exports.dateString    = dateString;
 

@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherService.$inject = [
   'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
-  'FilterService',
+  'DepricatedFilterService',
 ];
 
 /**
