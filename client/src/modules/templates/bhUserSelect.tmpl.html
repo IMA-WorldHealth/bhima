@@ -6,7 +6,8 @@
     <label class="control-label" translate>
       FORM.LABELS.USER
     </label>
-
+    
+    <ng-transclude></ng-transclude>
     <ui-select name="user_id" 
       ng-model="$ctrl.userId"
       on-select="$ctrl.onSelect($item, $model)"$onInit >

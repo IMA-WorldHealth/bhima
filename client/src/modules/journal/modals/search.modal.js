@@ -63,6 +63,11 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
     vm.searchQueries.account_id = account.id;
   };
 
+  // custom filter user_id - assign the value to the searchQueries object
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.user_id = user.id;
+  };
+
   // deafult filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     var periodFilters = Periods.processFilterChanges(period);
