@@ -48,6 +48,16 @@
   height : calc(100vh - 65px);
 }
 
+.grid-journal {
+  width : 100%;
+  height : calc(100vh - 108px);
+}
+
+.grid-util-journal {
+  width : 100%;
+  height : calc(100vh - 95px - 35px);
+}
+
 /*
   This sets the grid to full height of the window minus the util bar.
 */

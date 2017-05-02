@@ -325,20 +325,20 @@ function JournalController(Journal, Sorting, Grouping,
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
 
-    // number of transactions downloaded and shown in the current journal 
+    // number of transactions downloaded and shown in the current journal
     var numberCurrentGridTransactions = 0;
 
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
-        // To Get the number of transaction 
+        // To Get the number of transaction
         numberCurrentGridTransactions =  records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
         vm.gridOptions.showGridFooter = true;
-        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + 
-          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>'; 
+        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') +
+          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>';
         transactions.applyEdits();
 
         // try to unfold groups
@@ -394,7 +394,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   vm.editTransaction = editTransaction;
   function editTransaction(row) {
-    vm.filterBarHeight = bhConstants.utilBar.expandedHeightStyle;
+    vm.filterBarHeight = bhConstants.utilBar.journalHeightStyle;
 
     // expand the row
     vm.grouping.unfoldGroup(row);
