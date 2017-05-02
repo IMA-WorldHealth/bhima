@@ -62,11 +62,10 @@
                     append-to-body="true">
 
                     <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
-                      <span translate>{{$select.selected.text}}</span>
+                      <span translate>{{ $select.selected.text }}</span>
                     </ui-select-match>
 
                     <ui-select-choices
-                      ui-select-focus-patch
                       repeat="item.id as item in ComplexVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
                       group-by="'type'">
                       <div ng-bind-html="item.hrText | highlight: $select.search"></div>

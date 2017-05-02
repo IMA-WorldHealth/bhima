@@ -18,7 +18,7 @@
             <i class="fa" ng-class="'{{d.icon}}'"></i> {{ d.selected | translate }} <span class="caret"></span>
           </a>
           <ul class="pull-right" uib-dropdown-menu>
-            <li ng-repeat="opt in d.option"  class="pull-left">
+            <li ng-repeat="opt in d.option"  class="text-left">
               <a href ng-click="vm.helperDropdown(opt, d)" id="{{ vm.prefix + opt.id }}" data-method="{{ opt.dataMethod }}">
                  <i class="fa" ng-class="'{{opt.icon}}'"></i> <span translate>{{ opt.label }}</span>
               </a>

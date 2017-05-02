@@ -91,11 +91,11 @@ describe('Complex Vouchers', function () {
      * specify the transfer type
      */
     const voucher = {
-      date : new Date(),
+      date        : new Date(),
       description : 'Complex voucher test e2e',
-      rows : [
-        { account : 'Test Debtor Accounts1', debit: 17, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
-        { account : 'Test Capital One', debit: 0, credit: 17, reference : { type : 'voucher', index : 0 }}
+      rows        : [
+        { account: 'Test Debtor Accounts1', debit: 17, credit: 0, entity: { type: 'D', name: 'Patient/2/Patient' }},
+        { account: 'Test Capital One', debit: 0, credit: 17, reference: { type: 'voucher', index: 0 }}
       ]
     };
 
@@ -132,11 +132,12 @@ describe('Complex Vouchers', function () {
   it('Convention import invoices and payment via the tool', () => {
 
     let detail = {
-      tool: 'Convention - Paiement factures',
-      cashbox: '$',
-      convention: 'Second Test',
-      invoices: [0, 1],
-      transactionType: 'Convention'
+      tool            : 'Convention - Paiement factures',
+      cashbox         : '$',
+      convention      : 'Second Test',
+      invoices        : [0, 1],
+      description     : 'Convention payment with journal voucher',
+      transactionType : 'Convention',
     };
 
     // click on the convention tool
@@ -154,8 +155,8 @@ describe('Complex Vouchers', function () {
     // validate selection
     FU.modal.submit();
 
-    // set the transaction type
-    FU.uiSelect('ComplexVoucherCtrl.Voucher.details.type_id', detail.transactionType);
+    // description
+    FU.input('ComplexVoucherCtrl.Voucher.details.description', detail.description);
 
     // submit voucher
     FU.buttons.submit();
@@ -167,37 +168,71 @@ describe('Complex Vouchers', function () {
     $('[data-method="close"]').click();
   });
 
-  it('Support Patient Invoices by an Account via the tool', () => {
-    const page = new ComplexVoucherPage();
+  it('Generic Income via the tool', () => {
 
     let detail = {
-      tool: 'Prise en Charge des patients',
-      accountNumber : 42002,
-      patientName: 'Test 2',
-      invoices: [0, 1],
-      transactionType: 'Convention'
+      tool        : 'Recette Generique',
+      cashbox     : 'Test Primary Cashbox A',
+      account     : '41001',
+      description : 'E2E RECETTE GENERIQUE',
+      amount      : 3000,
     };
 
-    // click on the Support Patient Tool
+    // click on the convention tool
     FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    // select account
-    components.accountSelect.set(detail.accountNumber);
+    // select the cashbox (the first ie Fc)
+    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
-    // Find Patient
-    components.findPatient.findByName(detail.patientName);    
+    // select the account
+    FU.typeahead('ToolCtrl.account', detail.account);
 
+    // description
+    FU.input('ToolCtrl.description', detail.description);
 
-    // select invoices
-    GU.selectRow('invoiceGrid', detail.invoices[0]);
+    // amount
+    FU.input('ToolCtrl.amount', detail.amount);
 
     // validate selection
     FU.modal.submit();
 
-    page.description(detail.tool);
+    // submit voucher
+    FU.buttons.submit();
 
-    element.all(by.css('[class="text-action text-danger"]')).get(0).click();
-    element.all(by.css('[class="text-action text-danger"]')).get(0).click();
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
+  });
+
+  it('Generic Expense via the tool', () => {
+
+    let detail = {
+      tool        : 'Depense Generique',
+      cashbox     : 'Test Primary Cashbox A',
+      account     : '41001',
+      description : 'E2E DEPENSE GENERIQUE',
+      amount      : 1000,
+    };
+
+    // click on the convention tool
+    FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    // select the cashbox (the first ie Fc)
+    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+
+    // select the account
+    FU.typeahead('ToolCtrl.account', detail.account);
+
+    // description
+    FU.input('ToolCtrl.description', detail.description);
+
+    // amount
+    FU.input('ToolCtrl.amount', detail.amount);
+
+    // validate selection
+    FU.modal.submit();
 
     // submit voucher
     FU.buttons.submit();
@@ -209,4 +244,37 @@ describe('Complex Vouchers', function () {
     $('[data-method="close"]').click();
   });
 
+  it('Cash Transfer via the tool', () => {
+
+    let detail = {
+      tool    : 'Transfert d\'argent',
+      cashbox : 'Test Primary Cashbox A',
+      account : '41001',
+      amount  : 20,
+    };
+
+    // click on the convention tool
+    FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    // select the cashbox (the first ie $)
+    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+
+    // select the account
+    FU.typeahead('ToolCtrl.account', detail.account);
+
+    // amount
+    FU.input('ToolCtrl.amount', detail.amount);
+
+    // validate selection
+    FU.modal.submit();
+
+    // submit voucher
+    FU.buttons.submit();
+
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
+  });
 });

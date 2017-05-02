@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // DI definition
 SupportPatientKitController.$inject = [
   '$uibModalInstance', 'NotifyService', 'SessionService', 'data', 'bhConstants',
-  'DebtorService', 'PatientInvoiceService'
+  'DebtorService', 'PatientInvoiceService',
 ];
 
 // Import transaction rows for a Support Patient
@@ -38,7 +38,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     // load patient invoices
     vm.debtorUuid =  debtorId;
 
-    Debtors.invoices(debtorId, { balanced : 0 })
+    Debtors.invoices(debtorId, { balanced: 0 })
       .then(function (invoices) {
 
         vm.gridOptions.data = invoices || [];
@@ -51,7 +51,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
         
-        return Invoices.search({debtor_uuid : debtorId});
+        return Invoices.search({debtor_uuid: debtorId});
       })
       .then(function (data) {
         vm.invoices = data;
@@ -109,9 +109,9 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   function formatEntity(uuid) {
     var entity = vm.patients.get(uuid);
     return {
-      label: entity.text,
-      type: 'D',
-      uuid: entity.uuid
+      label : entity.text,
+      type  : 'D',
+      uuid  : entity.uuid
     };
   }
 
@@ -131,11 +131,11 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   // generate row element
   function generateRow() {
     return {
-      account_id    : undefined,
-      debit         : 0,
-      credit        : 0,
+      account_id     : undefined,
+      debit          : 0,
+      credit         : 0,
       reference_uuid : undefined,
-      entity_uuid   : undefined
+      entity_uuid    : undefined
     };
   }
 
@@ -147,11 +147,11 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   vm.gridOptions.flatEntityAccess = true;
 
   vm.gridOptions.columnDefs = [
-    { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-    { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', enableFiltering: false },
-    { field : 'balance', displayName : 'TABLE.COLUMNS.BALANCE',
-      headerCellFilter : 'translate', enableFiltering: false,
-      cellTemplate: '/modules/templates/grid/balance.cell.html'
+    { field: 'reference', displayName: 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+    { field: 'date', cellFilter: 'date', displayName: 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter: 'translate', enableFiltering: false },
+    { field            : 'balance', displayName      : 'TABLE.COLUMNS.BALANCE',
+      headerCellFilter : 'translate', enableFiltering  : false,
+      cellTemplate     : '/modules/templates/grid/balance.cell.html'
     }
   ];
 
@@ -177,11 +177,15 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     if (form.$invalid) { return; }
 
     var bundle = generateTransactionRows({
-      account_id: vm.account_id,
-      patient: vm.patient,
-      invoices: vm.selectedRows
+      account_id : vm.account_id,
+      patient    : vm.patient,
+      invoices   : vm.selectedRows,
     });
 
-    Instance.close({ rows: bundle, patient: vm.patient });
+    Instance.close({
+      rows    : bundle,
+      patient : vm.patient,
+      type_id : bhConstants.transactionType.SUPPORT_INCOME, // Patient Support ID
+    });
   }
 }

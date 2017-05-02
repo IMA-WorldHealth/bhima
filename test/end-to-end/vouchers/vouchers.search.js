@@ -17,8 +17,8 @@ module.exports = VoucherRegistrySearch;
 
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
-  const NUM_VOUCHERS = 10;
-  const NUM_USER_RECORDS = 9;
+  const NUM_VOUCHERS = 12;
+  const NUM_USER_RECORDS = 12;
   const NUM_DESCRIPTION_RECORDS = 2;
 
   function expectNumberOfGridRows(number) {

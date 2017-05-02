@@ -5,7 +5,7 @@ ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'CurrencyService', 'SessionService',
   'FindEntityService', 'FindReferenceService', 'NotifyService',
   'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'GridAggregatorService',
-  'uiGridConstants', 'VoucherForm',
+  'uiGridConstants', 'VoucherForm', '$timeout',
 ];
 
 /**
@@ -19,7 +19,9 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  * @todo/@fixme - this error notification system needs serious refactor.
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Session, FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants, GridAggregators, uiGridConstants, VoucherForm) {
+function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Session,
+  FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
+  GridAggregators, uiGridConstants, VoucherForm, $timeout) {
   var vm = this;
 
   // bind constants
@@ -78,69 +80,87 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // toolkit action definition
   var conventionPaymentTool = Toolkit.tools.convention_payment;
-  var supportPatientTool = Toolkit.tools.support_patient;  
+  var supportPatientTool = Toolkit.tools.support_patient;
+  var genericIncomeTool = Toolkit.tools.generic_income;
+  var genericExpenseTool = Toolkit.tools.generic_expense;
+  var cashTransferTool = Toolkit.tools.cash_transfer;
 
   // action on convention payment tool
-  conventionPaymentTool.action = openConventionPaymentTool;
+  conventionPaymentTool.action = openVoucherTool(conventionPaymentTool);
+  genericIncomeTool.action = openVoucherTool(genericIncomeTool);
+  genericExpenseTool.action = openVoucherTool(genericExpenseTool);
+  cashTransferTool.action = openVoucherTool(cashTransferTool);
+  supportPatientTool.action = openVoucherTool(supportPatientTool);
 
-  // action on suppot patient tool
-  supportPatientTool.action = openSupportPatientTool;
-
-  // open convention payment function
-  function openConventionPaymentTool() {
-    Toolkit.open(conventionPaymentTool)
-      .then(function (result) {
-        if (!result) { return; }
-
-        var rows = result.rows;
-        var n = result.rows.length;
-
-        while (n--) {
-          vm.Voucher.addItems(1);
-
-          var lastRowIdx = vm.Voucher.store.data.length - 1;
-          var lastRow = vm.Voucher.store.data[lastRowIdx];
-
-          lastRow.configure(rows[n]);
-        }
-
-        vm.Voucher.validate();
-        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
-      });
+  /**
+   * @function openVoucherTool
+   *
+   * @description open the modal of the tool
+   */
+  function openVoucherTool(voucherTool) {
+    return function () {
+      return Toolkit.open(voucherTool).then(processVoucherToolRows);
+    };
   }
 
-  // open support patient function
-  function openSupportPatientTool() {
-    Toolkit.open(supportPatientTool)
-      .then(function (result) {
-        if (!result) { return; }
+  /**
+   * @function processVoucherToolRows
+   *
+   * @description this function handle the result of the tool modal
+   */
+  function processVoucherToolRows(result) {
+    if (!result) { return; }
 
-        var rows = result.rows;
-        // Selected the transaction type 
-        vm.Voucher.details.type_id = rows.typeId;
+    vm.Voucher.replaceFormRows(result.rows);
 
-        var n = result.rows.length;
+    // force updating details
+    updateView(result);
+  }
 
-        while (n--) {
-          vm.Voucher.addItems(1);
+  /**
+   * @method updateView
+   *
+   * @description
+   * this function force to update details of the voucher
+   * and remove unnecessary rows
+   *
+   * @param {object} result
+   */
+  function updateView(result) {
+    $timeout(function () {
+      // transaction type
+      vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
 
-          var lastRowIdx = vm.Voucher.store.data.length - 1;
-          var lastRow = vm.Voucher.store.data[lastRowIdx];
+      // description
+      vm.Voucher.description(result.description || vm.Voucher.details.description);
 
-          lastRow.configure(rows[n]);
-        }
+      // currency
+      vm.Voucher.details.currency_id = result.currency_id || vm.Voucher.details.currency_id;
 
-        vm.Voucher.validate();
-        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ROW);
-      });
+      removeNullRows();
+    }, 0);
+  }
+
+  /**
+   * @function removeNullRows
+   *
+   * @description remove null rows
+   */
+  function removeNullRows() {
+    var gridData = JSON.parse(JSON.stringify(vm.gridOptions.data));
+    gridData.forEach(function (item) {
+      if (!item.account_id) {
+        vm.Voucher.store.remove(item.uuid);
+      }
+    });
   }
 
   /** ======================== end voucher tools ======================= */
 
   // bind the startup method as a reset method
   vm.submit = submit;
-  vm.currencySymbol     = currencySymbol;
-  vm.openEntityModal    = openEntityModal;
+  vm.currencySymbol = currencySymbol;
+  vm.openEntityModal = openEntityModal;
   vm.openReferenceModal = openReferenceModal;
 
   // load the available currencies
