@@ -3,14 +3,14 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'UserService', 'CashboxService', 'NotifyService', '$uibModalInstance',
+  'CashboxService', 'NotifyService', '$uibModalInstance',
   'filters'
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, filters) {
+function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters) {
   var vm = this;
 
   // global variables
@@ -33,18 +33,17 @@ function SearchCashPaymentModalController(Users, Cashboxes, Notify, Instance, fi
     })
     .catch(Notify.handleError);
 
-  // users
-  Users.read()
-    .then(function (list) {
-      vm.users = list;
-    })
-    .catch(Notify.handleError);
-
   function submit() {
     var queryParam = formatFilterParameters(vm.bundle);
     var params = formatFilterValues(queryParam);
     Instance.close(params);
   }
+
+  // custom filter user_id - assign the value to the params object
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.bundle.user_id = user.id;
+  };
+
 
   function validate() {
     noMissingDatePart = (vm.bundle.dateFrom && vm.bundle.dateTo) || (!vm.bundle.dateFrom && !vm.bundle.dateTo);
