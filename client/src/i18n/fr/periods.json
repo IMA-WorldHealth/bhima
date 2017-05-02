@@ -1,0 +1,20 @@
+{
+  "PERIODS" : {
+    "TODAY" : "Aujourd'hui",
+    "THIS_WEEK" : "Cette semaine",
+    "THIS_MONTH" : "Ce mois",
+    "THIS_YEAR" : "Cette année",
+    "YESTERDAY" : "Hier",
+    "LAST_WEEK" : "Semaine derniere",
+    "LAST_MONTH" : "Mois dernier",
+    "LAST_YEAR" : "Année derniere",
+    "ALL_TIME" : "N'importe quel temps",
+    "CUSTOM"  : "Personnalisé",
+    "START" : "P. Debut",
+    "END" : "P. Fin",
+    "PERIOD_LIMIT" : "Limite de la periode",
+    "CUSTOM_FROM" : "De",
+    "CUSTOM_TO" : "A",
+    "SELECT_CUSTOM_PERIOD" : "Selectionner une periode personnalisée"
+  }
+}
