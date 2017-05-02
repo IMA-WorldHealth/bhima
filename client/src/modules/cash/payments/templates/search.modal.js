@@ -39,7 +39,7 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters) 
     Instance.close(params);
   }
 
-  // custom filter user_id - assign the value to the params object
+  // custom filter user_id - assign the value to the bundle object
   vm.onSelectUser = function onSelectUser(user) {
     vm.bundle.user_id = user.id;
   };
