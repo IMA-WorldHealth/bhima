@@ -139,6 +139,7 @@ function localStorageConfig($localStorageProvider) {
  */
 function constantConfig() {
   var UTIL_BAR_HEIGHT = '106px';
+  var JOURNAL_UTIL_HEIGHT = '150px';
 
   return {
     accounts : {
@@ -231,6 +232,7 @@ function constantConfig() {
     utilBar : {
       height               : UTIL_BAR_HEIGHT,
       expandedHeightStyle  : { height: 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
+      journalHeightStyle  : { height: 'calc(100vh - '.concat(JOURNAL_UTIL_HEIGHT, ')') },
       collapsedHeightStyle : {},
     },
     identifiers : {
