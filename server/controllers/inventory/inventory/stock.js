@@ -1,10 +1,8 @@
-
-var db = require('../../../lib/db');
+const db = require('../../../lib/db');
 
 exports.getStockLevels = getStockLevels;
 exports.getStockLevelsById = getStockLevelsById;
 exports.getAverageStockLevels = getAverageStockLevels;
-exports.getAverageStockLevelsById = getAverageStockLevelsById;
 
 /* -------------------------------------------------------------------------- */
 
@@ -13,20 +11,16 @@ exports.getAverageStockLevelsById = getAverageStockLevelsById;
 * the enterprise.
 *
 * @function getStockLevels
-* @param {Object} options Filtering options for the SQL query
 * @returns {Promise} The database request promise
 */
-function getStockLevels(options) {
-
-  var sql;
-
+function getStockLevels() {
   // We do a LEFT JOIN here because stock and consumption are related by a
   // tracking number.  For every consumption event, there was an initial stock
   // entry, so we should be able to capture all stock entry and consumption
   // events with this LEFT JOIN.
   //
   // TODO - is this optimal?
-  sql =
+  const sql =
     `SELECT i.uuid AS uuid, IFNULL(t.quantity, 0) AS quantity
     FROM inventory AS i LEFT JOIN (
       SELECT s.inventory_uuid AS uuid,
@@ -45,14 +39,10 @@ function getStockLevels(options) {
 * Compute the current stock (entries - consumption) for a single inventory item.
 *
 * @function getStockLevelsById
-* @param {Object} options Filtering options for the SQL query
 * @returns {Promise} The database request promise
 */
-function getStockLevelsById(uuid, options) {
-
-  var sql;
-
-  sql =
+function getStockLevelsById(uuid) {
+  const sql =
     `SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity
     FROM stock AS s LEFT JOIN consumption AS c ON
       s.tracking_number = c.tracking_number
@@ -68,16 +58,10 @@ function getStockLevelsById(uuid, options) {
 * items over time.
 *
 * @function getAverageStockLevelsById
-* @param {Object} options Filtering options for the SQL query
 * @returns {Promise} The database request promise
 */
-function getAverageStockLevels(options) {
-
-  var sql;
-
-  // TODO - figure out dates
-
-  sql =
+function getAverageStockLevels() {
+  const sql =
     `SELECT s.inventory_uuid AS uuid,
       SUM(s.quantity - c.quantity) AS quantity
     FROM stock AS s LEFT JOIN consumption AS c ON
@@ -86,18 +70,4 @@ function getAverageStockLevels(options) {
     GROUP BY s.inventory_uuid;`;
 
   return db.exec(sql, []);
-}
-
-/**
-*
-* Compute the average stock quantity (entries - consumption) for a single
-* inventory item over time.
-*
-* @function getStockLevelsById
-* @param {Object} options Filtering options for the SQL query
-* @returns {Promise} The database request promise
-*/
-function getAverageStockLevelsById(uuid, options) {
-
-  // TODO
 }

@@ -19,7 +19,6 @@ describe('Edit Posting Journal', () => {
   it('edits a transaction change an account', () => {
     // click the "grouping" button
     FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(0).click();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
     const accountNumberCell = GU.getCellName(gridId, 1, 4);
     doubleClick(accountNumberCell);
@@ -35,17 +34,16 @@ describe('Edit Posting Journal', () => {
 
   it('edits a transaction change value of Debit and Credit', () => {
     FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 3, 6);
+    const debitCell = GU.getCellName(gridId, 1, 5);
+    const creditCell = GU.getCellName(gridId, 2, 6);
 
     doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(50);
+    debitCell.element(by.css('input')).sendKeys(150);
 
     doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(50);
+    creditCell.element(by.css('input')).sendKeys(150);
 
     element.all(by.css('[data-method="save"]')).click();
 
@@ -67,7 +65,7 @@ describe('Edit Posting Journal', () => {
 
     components.notification.hasWarn();
     element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
+    // element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
     FU.buttons.grouping();
   });
 

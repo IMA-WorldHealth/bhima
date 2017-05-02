@@ -59,6 +59,7 @@ function SearchTests() {
   const description = 'unique';
   const account_id = 3628;
   const amount = 100;
+  const distinct_trans = 7;
 
   it(`GET /journal?description=${description} should match one record`, () => {
     const NUM_MATCHES = 1;
@@ -113,4 +114,15 @@ function SearchTests() {
       })
       .catch(helpers.handler);
   });
+
+  it('GET /journal/ count  returns return the numbers of transaction from Journal', () => {
+    return agent.get('/journal/count')
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body[0].number_transactions).to.equal(distinct_trans);
+      })
+      .catch(helpers.handler);
+  });
+
 }

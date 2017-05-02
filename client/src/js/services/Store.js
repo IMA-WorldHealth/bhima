@@ -58,6 +58,15 @@ function StoreService() {
     return this.data[key];
   };
 
+  // return only the latest (indexed) copy of each data element
+  Store.prototype.getAll = function getAll() {
+    var keys = Object.keys(this.index);
+
+    return keys.map(function (key) {
+      return this.data[this.index[key]];
+    }.bind(this));
+  }
+
   /**
    * @method post
    *

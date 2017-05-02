@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', 'GridExportService',
+  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService',
 ];
 
 /**
@@ -33,7 +33,7 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, GridExport) {
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate, GridExport) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -47,14 +47,22 @@ function JournalController(Journal, Sorting, Grouping,
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
 
-  // filter cache
-  var cache = AppCache(cacheKey + '-filters');
-
+  // top level cache
+  var cache = AppCache(cacheKey + '-module');
   var vm = this;
 
   var gridApi;
 
   vm.filter = filter;
+
+  // number of all of the transactions in the system
+  Journal.count()
+    .then(function (data) {
+      vm.numberTotalSystemTransactions = data[0].number_transactions;
+    })
+    .catch(function (error) {
+      Notify.handleError(error);
+    });
 
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
@@ -75,7 +83,7 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    rowTemplate                : '/modules/templates/grid/transaction.row.html',
+    rowTemplate                : '/modules/templates/grid/transaction.row.html'
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
@@ -99,7 +107,6 @@ function JournalController(Journal, Sorting, Grouping,
   vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
 
   vm.cancelEdit = cancelEdit;
 
@@ -314,14 +321,23 @@ function JournalController(Journal, Sorting, Grouping,
   function load(options) {
     vm.loading = true;
     vm.hasError = false;
+    vm.gridOptions.gridFooterTemplate = null;
+    vm.gridOptions.showGridFooter = false;
+
+    // number of transactions downloaded and shown in the current journal 
+    var numberCurrentGridTransactions = 0;
 
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
+        // To Get the number of transaction 
+        numberCurrentGridTransactions =  records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
-
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') + 
+          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>'; 
         transactions.applyEdits();
 
         // try to unfold groups
@@ -349,44 +365,30 @@ function JournalController(Journal, Sorting, Grouping,
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-    var parameters = angular.copy(vm.filters);
-    Config.openSearchModal(parameters)
-      .then(function (options) {
-        // if the options are not returned or have not changed, do not refresh
-        // the data source
-        if (angular.equals(options, vm.filters)) { return; }
+    var filtersSnapshot = Journal.filters.formatHTTP();
 
-        // bind filters to the view and format appropriate
-        cacheFilters(options);
+    Config.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
 
-        // turn loading on
+        Journal.filters.replaceFilters(changes);
+
+        Journal.cacheFilters();
+        vm.latestViewFilters = Journal.filters.formatView();
+
         toggleLoadingIndicator();
-
-        return load(options);
+        return load(Journal.filters.formatHTTP(true));
       })
       .catch(angular.noop);
   };
 
-  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
-  function cacheFilters(filters) {
-    filters = filter.applyDefaults(filters);
-    vm.filters = cache.filters = filters;
-    vm.filtersFmt = Journal.formatFilterParameters(filters);
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      bhConstants.utilBar.expandedHeightStyle : bhConstants.utilBar.collapsedHeightStyle;
-  }
-
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    delete vm.filters[key];
-    cacheFilters(vm.filters);
-    load(vm.filters);
-  }
+    Journal.removeFilter(key);
 
-  // clears the filters by forcing a cache of an empty array
-  function clearFilters() {
-    cacheFilters({});
-    load(vm.filters);
+    Journal.cacheFilters();
+    vm.latestViewFilters = Journal.filters.formatView();
+
+    return load(Journal.filters.formatHTTP(true));
   }
 
   vm.editTransaction = editTransaction;
@@ -445,30 +447,13 @@ function JournalController(Journal, Sorting, Grouping,
 
     // ensure data that has been changed is up to date from the server
     // remove any additional or temporary rows
-    load(vm.filters);
+    load(Journal.filters.formatHTTP(true));
   }
 
   // runs on startup
   function startup() {
-    var filters;
-
-    // @TODO standardise loading/ caching/ assigning filters with a client service
-    // if filters are directly passed in through params, override cached filters
-    if ($state.params.filters) {
-      cacheFilters($state.params.filters);
-    }
-
-    if (!cache.filters) { cache.filters = {}; }
-    filters = filter.applyDefaults(cache.filters);
-
-    vm.filters = filters;
-    vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
-    load(vm.filters);
-
-    // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
-      bhConstants.utilBar.expandedHeightStyle :
-      bhConstants.utilBar.collapsedHeightStyle;
+    load(Journal.filters.formatHTTP(true));
+    vm.latestViewFilters = Journal.filters.formatView();
   }
 
   // ===================== edit entity ===============================
@@ -498,6 +483,5 @@ function JournalController(Journal, Sorting, Grouping,
   }
 
   // ===================== end edit entity ===========================
-
   startup();
 }

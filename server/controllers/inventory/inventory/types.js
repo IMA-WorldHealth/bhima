@@ -7,48 +7,43 @@
 const db = require('../../../lib/db');
 
 // expose module's methods
-exports.list    = list;
+exports.list = list;
 exports.details = details;
-exports.create  = create;
-exports.update  = update;
-exports.remove  = remove;
+exports.create = create;
+exports.update = update;
+exports.remove = remove;
 
 /** list inventory type */
-function list () {
-
+function list() {
   return getTypes();
 }
 
 /** details of inventory type */
-function details (identifier) {
-
+function details(identifier) {
   return getTypes(identifier);
 }
 
 
-
 /** create new inventory type */
-function create (record) {
-  
-  let sql = `INSERT INTO inventory_type (text) VALUES (?);`;
+function create(record) {
+  const sql = 'INSERT INTO inventory_type (text) VALUES (?);';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record.text])
-  .then(row => row.insertId);
+    .then(row => row.insertId);
 }
 
 /** update an existing inventory type */
-function update (record, id) {
-
-  let sql = `UPDATE inventory_type SET ? WHERE id = ?;`;
+function update(record, id) {
+  const sql = 'UPDATE inventory_type SET ? WHERE id = ?;';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record, id])
-  .then(() => getTypes(id));
+    .then(() => getTypes(id));
 }
 
 /**
@@ -56,15 +51,12 @@ function update (record, id) {
  * @param {string} uid the type id is optional
  */
 function getTypes(id) {
-
-  let sql = `SELECT id, text FROM inventory_type `;
-  sql += (id) ? ' WHERE id = ?;' : ';';
+  const sql = `SELECT id, text FROM inventory_type ${id ? ' WHERE id = ?' : ''};`;
   return db.exec(sql, [id]);
 }
 
 /** remove inventory type */
-function remove (id) {
-
-  let sql = 'DELETE FROM inventory_type WHERE id = ?;';
+function remove(id) {
+  const sql = 'DELETE FROM inventory_type WHERE id = ?;';
   return db.exec(sql, [id]);
 }

@@ -898,3 +898,22 @@ a[disabled] {
   pointer-events: none;
   cursor: default;
 }
+
+.tab-body {
+  padding : 10px;
+  max-height : 360px;
+  min-height : 360px;
+  overflow : auto;
+}
+
+.filter-list {
+  display : inline-block;
+}
+
+.filter-list > li {
+  padding : 0px;
+}
+
+.filter-list li:first-child {
+  padding-left : 5px;
+}

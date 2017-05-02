@@ -1,4 +1,3 @@
-
 /*
 * Inventory Core Functions
 *
@@ -14,28 +13,27 @@ const FilterParser = require('../../../lib/filter');
 const errors = {
   MISSING_PARAMETERS : {
     httpStatus : 400,
-    code   : 'ERR_MISSING_PARAMETERS',
-    reason : 'When using date ranges, you must provide both a start and end ' +
-             'date.'
+    code       : 'ERR_MISSING_PARAMETERS',
+    reason     : 'When using date ranges, you must provide both a start and end date.',
   },
 
-  NO_INVENTORY_ITEMS: {
+  NO_INVENTORY_ITEMS : {
     httpStatus : 404,
-    code   : 'ERR_NO_INVENTORY_ITEMS',
-    reason : 'No inventory items were found in the database query.'
+    code       : 'ERR_NO_INVENTORY_ITEMS',
+    reason     : 'No inventory items were found in the database query.',
   },
 
-  NO_INVENTORY_ITEM: {
+  NO_INVENTORY_ITEM : {
     httpStatus : 404,
-    code   : 'ERR_NO_INVENTORY_ITEM',
-    reason : 'The inventory uuid requested was not found in the database.'
+    code       : 'ERR_NO_INVENTORY_ITEM',
+    reason     : 'The inventory uuid requested was not found in the database.',
   },
 
   NO_STOCK : {
     httpStatus : 404,
-    code   : 'ERR_NO_STOCK',
-    reason : 'No stock was found for the provided inventory uuid.'
-  }
+    code       : 'ERR_NO_STOCK',
+    reason     : 'No stock was found for the provided inventory uuid.',
+  },
 };
 
 exports.getIds = getIds;
@@ -55,12 +53,11 @@ exports.errorHandler = errorHandler;
 * @return {Promise} Returns a database query promise
 */
 function createItemsMetadata(record, session) {
-
   record.enterprise_id = session.enterprise.id;
   record.uuid = db.bid(record.uuid || uuid.v4());
   record.group_uuid = db.bid(record.group_uuid);
 
-  let sql = `INSERT INTO inventory SET ?;`;
+  const sql = 'INSERT INTO inventory SET ?;';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
@@ -76,7 +73,6 @@ function createItemsMetadata(record, session) {
 * @return {Promise} Returns a database query promise
 */
 function updateItemsMetadata(record, identifier) {
-
   // remove the uuid if it exists
   delete record.uuid;
 
@@ -84,7 +80,7 @@ function updateItemsMetadata(record, identifier) {
     record.group_uuid = db.bid(record.group_uuid);
   }
 
-  let sql = `UPDATE inventory SET ? WHERE uuid = ?;`;
+  const sql = 'UPDATE inventory SET ? WHERE uuid = ?;';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
@@ -100,9 +96,8 @@ function updateItemsMetadata(record, identifier) {
 * @return {Promise} Returns a database query promise
 */
 function getIds() {
-
   // TODO - should we be filtering on enterprise id in these queries?
-  let sql =
+  const sql =
     'SELECT i.uuid FROM inventory AS i;';
 
   return db.exec(sql);
@@ -116,12 +111,11 @@ function getIds() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadata() {
-
-  let sql =
+  const sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval  
+      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
@@ -139,43 +133,40 @@ function getItemsMetadata() {
 * @param {String} uuid The inventory item identifier
 * @return {Promise} Returns a database query promise
 */
-function getItemsMetadataById(uuid) {
-
+function getItemsMetadataById(uid) {
   const sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval 
+      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
       i.unit_id = iu.id
     WHERE i.uuid = ?;`;
 
-  return db.one(sql, [db.bid(uuid), uuid, 'inventory']);
+  return db.one(sql, [db.bid(uid), uid, 'inventory']);
 }
 
 
-function getItemsMetadataSearch(params){
-  let filters = new FilterParser(params, { tableAlias : 'inventory' });
+function getItemsMetadataSearch(params) {
+  const filters = new FilterParser(params, { tableAlias: 'inventory' });
 
-  let sql =
+  const sql =
     `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
-      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id, inventory.unit_weight,
-      inventory.unit_volume, ig.sales_account, inventory.default_quantity
+      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
+      inventory.unit_weight, inventory.unit_volume, ig.sales_account, inventory.default_quantity
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
       inventory.unit_id = iu.id`;
 
   filters.fullText('text', 'text', 'inventory');
-  filters.setOrder('ORDER BY inventory.code ASC');  
-  let query = filters.applyQuery(sql);
-  let parameters = filters.parameters();
-  
+  filters.setOrder('ORDER BY inventory.code ASC');
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
   return db.exec(query, parameters);
-
 }
 
 /**
@@ -202,7 +193,7 @@ function hasBoth(m, n) {
 * @param next ExpressJS's next function
 */
 function errorHandler(error, req, res, next) {
-  if (error.hasOwnProperty('httpStatus')) {
+  if (error.httpStatus !== undefined) {
     res.status(error.httpStatus).json(error);
   } else {
     next(error);

@@ -5,7 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
   'GridColumnService', 'GridSortingService', 'bhConstants',
-  'FilterService',
+  'DepricatedFilterService',
 ];
 
 /**
@@ -54,7 +54,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
       headerCellFilter : 'translate',
       type             : 'number',
     },
-    { field            : 'sex', 
+    { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
       headerCellFilter : 'translate',
     },
@@ -214,7 +214,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
     if (!cache.filters) { cache.filters = {}; }
     var filters = filter.applyDefaults(cache.filters);
-    
+
     vm.filters = filters;
     vm.filtersFmt = Patients.formatFilterParameters(vm.filters || {});
     load(vm.filters);

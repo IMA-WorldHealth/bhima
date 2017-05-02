@@ -201,4 +201,10 @@ function UtilService(moment) {
   service.xor = function xor(a, b) {
      return !a !== !b;
   };
+
+  service.arrayIncludes = function arrayIncludes(array, values) {
+    return values.some(function (value) {
+      return array.indexOf(value) !== -1;
+    });
+  };
 }
