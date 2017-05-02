@@ -71,17 +71,14 @@
         </select>
       </div>
 
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.user.$invalid }">
-        <label class="control-label" translate>FORM.LABELS.USER</label>
+      <bh-user-select
+        user-id="ModalCtrl.params.user_id"
+        name="user_id"
+        on-select-callback="ModalCtrl.onSelectUser(user)"
+        required="0">
         <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-        <select
-          class="form-control"
-          name="user"
-          ng-model="ModalCtrl.params.user_id"
-          ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
-          <option value="" disabled translate>FORM.SELECT.USER</option>
-        </select>
-      </div>
+      </bh-user-select>        
+
 
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
