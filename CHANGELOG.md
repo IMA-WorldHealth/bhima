@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.1"></a>
+## [0.4.1](https://github.com/IMA-WorldHealth/bhima-2.X/compare/v0.4.0...v0.4.1) (2017-05-03)
+
+
+### Bug Fixes
+
+* **build:** use higher number port for kwilu ([f4654a0](https://github.com/IMA-WorldHealth/bhima-2.X/commit/f4654a0))
+* **ci:** ensure notifications get through https ([ab5cf64](https://github.com/IMA-WorldHealth/bhima-2.X/commit/ab5cf64))
+* **journal:** catch editing errors ([de7451a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/de7451a)), closes [#1536](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1536) [#1560](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1560) [#1558](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1558)
+* **journal:** edit transaction doesn't load accounts ([2b2435d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2b2435d))
+* **journal:** ensure that data callbacks disable cellNav ([#1517](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1517)) ([55f86b8](https://github.com/IMA-WorldHealth/bhima-2.X/commit/55f86b8)), closes [#1495](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1495)
+* **journal:** Select all rows (include group rows) in the journal grid ([#1526](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1526)) ([9263a28](https://github.com/IMA-WorldHealth/bhima-2.X/commit/9263a28))
+
+
+### Features
+
+* **account:** add excludeTitleAccounts option to bhAccountSelect ([da56265](https://github.com/IMA-WorldHealth/bhima-2.X/commit/da56265)), closes [#1544](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1544)
+* **debtor groups:** put a cancel button ([#1527](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1527)) ([0a708fb](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0a708fb))
+* **journal:** add editor for entities (D/C) ([#1511](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1511)) ([33b167c](https://github.com/IMA-WorldHealth/bhima-2.X/commit/33b167c))
+* **journal:** Add TXN count to footer ([ac06db3](https://github.com/IMA-WorldHealth/bhima-2.X/commit/ac06db3))
+* **journal:** default limit to today's records ([#1523](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1523)) ([57528e1](https://github.com/IMA-WorldHealth/bhima-2.X/commit/57528e1))
+* **journal:** Filter on Transaction Types ([f15c5cc](https://github.com/IMA-WorldHealth/bhima-2.X/commit/f15c5cc))
+* **journal:** show aggregate header for date + record ([#1542](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1542)) ([033d9cd](https://github.com/IMA-WorldHealth/bhima-2.X/commit/033d9cd))
+* **reports:** Report of Aged Creditor Debts ([#1475](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1475)) ([2f2cb6d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2f2cb6d))
+* **server:** verbose MySQL errors ([#1521](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1521)) ([d27d615](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d27d615))
+
+
+
 <a name="0.4.0"></a>
 # 0.4.0 (2017-04-17)
 

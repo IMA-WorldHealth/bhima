@@ -15,6 +15,7 @@
     "PERIOD_LIMIT" : "Period Limit",
     "CUSTOM_FROM" : "Custom From",
     "CUSTOM_TO" : "Custom To",
+    "SELECT_PERIOD" : "Select Period",
     "SELECT_CUSTOM_PERIOD" : "Select Custom Period"
   }
 }
