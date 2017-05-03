@@ -173,6 +173,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     var transactionRow = cloneAttributes(this._entity, TRANSACTION_SHARED_ATTRIBUTES);
     transactionRow.uuid = uuid();
 
+    //Set zero to a new line of a transaction in the debit, credit, debit_equiv, credit_equiv fields.
+    transactionRow.debit = 0;
+    transactionRow.credit = 0;
+    transactionRow.debit_equiv = 0;
+    transactionRow.credit_equiv = 0;
+
     // keep track of new rows in newRows array
     this._entity.newRows.post(transactionRow);
 
