@@ -75,13 +75,13 @@ function PurchasesRegistryTests() {
   it('find purchase by user', () => {
     /** Get all purchase of Regular User */
     FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.user_id', 'Regular User');
+    components.userSelect.set('Regular User');
     FU.modal.submit();
     GU.expectRowCount('PurchaseListGrid', 0);
 
     /** Get all purchase of super user */
     FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.user_id', 'Super User');
+    components.userSelect.set('Super User');
     FU.modal.submit();
     GU.expectRowCount('PurchaseListGrid', PURCHASES_INSIDE_REGISTRY);
 
