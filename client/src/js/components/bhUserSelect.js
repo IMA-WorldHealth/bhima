@@ -5,23 +5,25 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       userId           : '<',
-      disable          : '<',
-      onSelectCallback : '&?',
+      disable          : '<?',
+      onSelectCallback : '&',
+      name             : '@?',
       required         : '<?',      
     },
   });
 
 UserSelectController.$inject = [
-  'UserService', '$scope'
+  'UserService'
 ];
 
 /**
  * User selection component
  *
  */
-function UserSelectController(Users, $scope) {
+function UserSelectController(Users) {
   var $ctrl = this;
-
+  // default for form name
+  $ctrl.name = $ctrl.name || 'UserForm';
 
   $ctrl.$onInit = function onInit() {    
     // fired when an user has been selected
