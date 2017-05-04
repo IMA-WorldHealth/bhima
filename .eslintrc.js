@@ -35,7 +35,10 @@ module.exports = {
     "func-names" : ["warn", "as-needed"],
     "no-underscore-dangle": ["error", {
       "allowAfterThis": true
-    }]
+    }],
+    "quotes" : ["error", "single", { "allowTemplateLiterals": true }],
+    "arrow-parens" : "off",
+    "arrow-body-style" : "off",
   },
   "globals" : {
     "Chart" : true,

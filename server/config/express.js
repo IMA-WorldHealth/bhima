@@ -5,18 +5,16 @@
  * @todo - this could probably be separated by functionality.
  */
 
-const express    = require('express');
-const compress   = require('compression');
+const express = require('express');
+const compress = require('compression');
 const bodyParser = require('body-parser');
-const session    = require('express-session');
+const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-const Redis      = require('ioredis');
-const morgan     = require('morgan');
-const fs         = require('fs');
-const winston    = require('winston');
-const _          = require('lodash');
-const helmet     = require('helmet');
-const path       = require('path');
+const Redis = require('ioredis');
+const morgan = require('morgan');
+const winston = require('winston');
+const _ = require('lodash');
+const helmet = require('helmet');
 
 const interceptors = require('./interceptors');
 const Unauthorized = require('../lib/errors/Unauthorized');

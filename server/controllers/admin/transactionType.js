@@ -5,18 +5,17 @@
 
 
 const db = require('../../lib/db');
-const util = require('../../lib/util');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 // expose to the API
-exports.list   = list;
+exports.list = list;
 exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
 
 /** list transfer type */
-function list (req, res, next) {
+function list(req, res, next) {
   getTransactionType()
   .then(rows => res.status(200).json(rows))
   .catch(next)
@@ -24,7 +23,7 @@ function list (req, res, next) {
 }
 
 /** detail transfer type */
-function detail (req, res, next) {
+function detail(req, res, next) {
   getTransactionType(req.params.id)
   .then(rows => res.status(200).json(rows[0]))
   .catch(next)
@@ -32,8 +31,8 @@ function detail (req, res, next) {
 }
 
 /** create transfer type */
-function create (req, res, next) {
-  let sql = `INSERT INTO transaction_type SET ?`;
+function create(req, res, next) {
+  const sql = `INSERT INTO transaction_type SET ?`;
 
   db.exec(sql, [req.body])
   .then(rows => {
@@ -44,8 +43,8 @@ function create (req, res, next) {
 }
 
 /** update transfer type */
-function update (req, res, next) {
-  let sql = `UPDATE transaction_type SET ? WHERE id = ? AND fixed <> 1`;
+function update(req, res, next) {
+  const sql = `UPDATE transaction_type SET ? WHERE id = ? AND fixed <> 1`;
 
   db.exec(sql, [req.body, req.params.id])
   .then((rows) => {
@@ -60,18 +59,18 @@ function update (req, res, next) {
 }
 
 /** delete transfer type */
-function remove (req, res, next) {
-  let sql = `DELETE FROM transaction_type WHERE id = ? AND fixed <> 1`;
+function remove(req, res, next) {
+  const sql = `DELETE FROM transaction_type WHERE id = ? AND fixed <> 1`;
 
   db.exec(sql, [req.params.id])
-  .then(rows => res.status(204).json())
+  .then(() => res.status(204).json())
   .catch(next)
   .done();
 }
 
 /** get transaction type */
 function getTransactionType(id) {
-    let sql = `SELECT id, text, type, prefix, fixed FROM transaction_type`;
-    sql += id ? ' WHERE id = ?;' : ';';
-    return db.exec(sql, [id]);
+  let sql = `SELECT id, text, type, prefix, fixed FROM transaction_type`;
+  sql += id ? ' WHERE id = ?;' : ';';
+  return db.exec(sql, [id]);
 }

@@ -44,11 +44,11 @@ const medicalReports = require('../controllers/medical/reports');
 const diagnoses = require('../controllers/medical/diagnoses');
 
 // stock and inventory routes
-const inventory            = require('../controllers/inventory');
-const depots               = require('../controllers/inventory/depots');
-const inventoryReports     = require('../controllers/inventory/reports');
-const stock                = require('../controllers/stock');
-const stockReports         = require('../controllers/stock/reports');
+const inventory = require('../controllers/inventory');
+const depots = require('../controllers/inventory/depots');
+const inventoryReports = require('../controllers/inventory/reports');
+const stock = require('../controllers/stock');
+const stockReports = require('../controllers/stock/reports');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -613,7 +613,6 @@ exports.configure = function configure(app) {
   // stock management API
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
-
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
   app.get('/stock/lots/origins', stock.listLotsOrigins);
