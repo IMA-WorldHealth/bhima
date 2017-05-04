@@ -15,10 +15,18 @@ TrialBalanceErrorBodyController.$inject = [
 function TrialBalanceErrorBodyController(trialBalanceService, Grouping, $stateParams) {
   var vm = this;
   var cssClass = trialBalanceService.getCSSClass($stateParams.feedBack);
-  var columns = [
-    { field: 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', headerCellClass : cssClass},
-    { field: 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', headerCellClass : cssClass}
-  ];
+
+  var columns = [{
+    field            : 'code',
+    displayName      : 'TABLE.COLUMNS.ERROR_TYPE',
+    headerCellFilter : 'translate',
+    headerCellClass  : cssClass,
+  }, {
+    field            : 'trans_id',
+    displayName      : 'TABLE.COLUMNS.TRANSACTION',
+    headerCellFilter : 'translate',
+    headerCellClass  : cssClass,
+  }];
 
   vm.gridOptions = {
     enableColumnMenus          : false,
