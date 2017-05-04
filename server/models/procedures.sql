@@ -1262,7 +1262,7 @@ BEGIN
     FROM posting_journal AS pj
       JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
       JOIN period AS p ON pj.period_id = p.id
-    WHERE pj.trans_date NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
+    WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
     GROUP BY pj.record_uuid;
 
   -- check to make sure that all lines of a transaction have a description
