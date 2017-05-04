@@ -278,7 +278,7 @@ function queryTransactionAggregates(journalRows) {
       SUM(debit_equiv) as debit_equiv, COUNT(uuid) as totalRows
     FROM posting_journal
     WHERE record_uuid in (?)
-    GROUP BY record_uuid;
+    GROUP BY trans_id;
   `;
 
   // if there are no record uuids to search on we can optimise by not running the query
