@@ -452,7 +452,7 @@ function closing(req, res, next) {
   let fiscal;
   let period;
   let sql;
-
+  
   // query fiscal year
   sql = 'SELECT id, number_of_months, end_date FROM fiscal_year WHERE id = ?;';
 

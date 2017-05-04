@@ -9,7 +9,8 @@ describe('(/fiscal) Fiscal Year', function () {
     start_date : new Date('2018-01-01 01:00'),
     end_date : new Date('2018-12-31 01:00'),
     number_of_months : 12,
-    note : 'Fiscal Year for Integration Test'
+    note : 'Fiscal Year for Integration Test',
+    closing_account: 3627,
   };
 
   var responseKeys = ['id', 'enterprise_id', 'number_of_months', 'label', 'start_date', 'end_date', 'previous_fiscal_year_id', 'locked', 'note'];
@@ -59,6 +60,20 @@ describe('(/fiscal) Fiscal Year', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /fiscal/:id/closing closing a fiscal year', function () {
+    const closingAccount = { account_id: newFiscalYear.closing_account };
+
+    return agent.put('/fiscal/'.concat(newFiscalYear.id, '/closing'))
+      .send({ params: closingAccount })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        const value = parseInt(res.body.id);
+        expect(value).to.be.equal(newFiscalYear.id);
       })
       .catch(helpers.handler);
   });
