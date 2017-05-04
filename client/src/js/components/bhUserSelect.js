@@ -22,12 +22,13 @@ UserSelectController.$inject = [
  */
 function UserSelectController(Users) {
   var $ctrl = this;
-  // default for form name
-  $ctrl.name = $ctrl.name || 'UserForm';
 
   $ctrl.$onInit = function onInit() {    
     // fired when an user has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
+
+    // default for form name
+    $ctrl.name = $ctrl.name || 'UserForm';
 
     // load all User
     Users.read()
