@@ -20,7 +20,7 @@
     "angular-sanitize": "1.6.2",
     "angular-messages": "1.6.2",
     "angular-bootstrap": "2.5.0",
-    "angular-ui-router": "~1.0.0",
+    "angular-ui-router": "1.0.0-rc.1",
     "angular-ui-grid": "4.0.4",
     "angular-translate": "2.15.1",
     "angular-translate-loader-static-files": "2.15.1",
