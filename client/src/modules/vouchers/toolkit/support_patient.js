@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 // DI definition
 SupportPatientKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService', 'SessionService', 'data', 'bhConstants',
+  '$uibModalInstance', 'NotifyService', 'SessionService', 'data', 'bhConstants',
   'DebtorService', 'PatientInvoiceService'
 ];
 
 // Import transaction rows for a Support Patient
-function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, bhConstants, Debtors, Invoices) {
+function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors, Invoices) {
   var vm = this;
 
   // global variables
@@ -71,17 +71,16 @@ function SupportPatientKitController(Instance, Notify, Cashbox, Session, Data, b
   // generate transaction rows
   function generateTransactionRows(result) {
     var rows = [];
-
-    var cashboxAccountId = result.account_id;
+    var supportAccountId = result.account_id;
     var supportedAccountId = result.patient.account_id;
-    var invoices = result.invoices;
+    var invoices = result.invoices; 
 
-    // first, generate a cashbox row
-    var cashboxRow = generateRow();
-    cashboxRow.account_id = cashboxAccountId;
-    cashboxRow.debit = vm.totalSelected;
-    cashboxRow.credit = 0;
-    rows.push(cashboxRow);
+    // first, generate a support row
+    var supportRow = generateRow();
+    supportRow.account_id = supportAccountId;
+    supportRow.debit = vm.totalSelected;
+    supportRow.credit = 0;
+    rows.push(supportRow);
 
     // then loop through each selected item and credit it with the Supported account
     invoices.forEach(function (invoice) {
