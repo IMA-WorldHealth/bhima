@@ -191,7 +191,6 @@ function JournalController(Journal, Sorting, Grouping,
       editableCellTemplate : '<div><form name="inputForm"><div ui-grid-edit-account></div></form></div>',
       enableCellEdit       : true,
       headerCellFilter     : 'translate',
-      cellTemplate         : '/modules/journal/templates/account.cell.html',
     }, {
       field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',

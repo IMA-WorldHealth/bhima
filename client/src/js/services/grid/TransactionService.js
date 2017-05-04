@@ -402,6 +402,17 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       }
     });
 
+    /**
+    *
+    * The using of toFixed() and parseFloat to ensure that the debit and credit 
+    * have 4 rank in the decimal part and are of type float
+    */
+    debit = debit.toFixed(4);
+    debit = parseFloat(debit);
+    credit = credit.toFixed(4);
+    credit = parseFloat(credit);
+
+
     if (accountNull) {
       error = ERR_MISSING_ACCOUNTS;
     } else if (dateNull) {
