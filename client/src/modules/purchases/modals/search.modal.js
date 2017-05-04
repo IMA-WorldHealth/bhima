@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchPurchaseOrderModalController.$inject = [
-  'UserService', 'SupplierService', 'NotifyService', '$uibModalInstance', 'SearchFilterFormatService',
+  'SupplierService', 'NotifyService', '$uibModalInstance', 'SearchFilterFormatService',
 ];
 
-function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance, SearchFilterFormat) {
+function SearchPurchaseOrderModalController(Suppliers, Notify, Instance, SearchFilterFormat) {
   var vm = this;
 
   // global variables
@@ -19,13 +19,6 @@ function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance, 
 
   // init
   init();
-
-  // load users
-  Users.read()
-    .then(function (users) {
-      vm.users = users;
-    })
-    .catch(Notify.handleError);
 
   // load suppliers
   Suppliers.read()
@@ -42,6 +35,11 @@ function SearchPurchaseOrderModalController(Users, Suppliers, Notify, Instance, 
 
     validate();
   }
+
+  // custom filter user_id - assign the value to the bundle object
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.bundle.user_id = user.id;
+  };
 
   function submit() {
     var params = SearchFilterFormat.formatFilter(vm.bundle, true);

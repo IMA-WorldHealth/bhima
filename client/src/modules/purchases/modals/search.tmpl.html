@@ -46,17 +46,12 @@
       </div>
 
       <!-- user -->
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.USER</label>
-        <ui-select name="user" ng-model="$ctrl.bundle.user_id">
-          <ui-select-match>
-            <span>{{$select.selected.display_name}}</span>
-          </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="user as user in $ctrl.users | filter:$select.search">
-            <span ng-bind-html="user.display_name | highlight:$select.search"></span>
-          </ui-select-choices>
-        </ui-select>
-      </div>
+      <bh-user-select
+        user-id="$ctrl.bundle.user_id"
+        name="user_id"
+        on-select-callback="$ctrl.onSelectUser(user)">
+        <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+      </bh-user-select>  
 
       <!-- status -->
       <div class="form-group">

@@ -1,0 +1,24 @@
+<div ng-form="{{ $ctrl.name }}" bh-user-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : UserForm.$$parent.$submitted && UserForm.user_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.USER
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="user_id" 
+      ng-model="$ctrl.userId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.USER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="user.id as user in $ctrl.users | filter: { 'display_name': $select.search }">
+        <span ng-bind-html="user.display_name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="UserForm.user_id.$error" ng-show="UserForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

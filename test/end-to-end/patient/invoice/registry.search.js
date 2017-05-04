@@ -105,7 +105,7 @@ function InvoiceRegistrySearch() {
   it('filters by <select> should return three results', () => {
     FU.buttons.search();
     FU.select('ModalCtrl.params.service_id', 'Administration');
-    FU.select('ModalCtrl.params.user_id', 'Super User');
+    components.userSelect.set('Super User');
     FU.modal.submit();
 
     expectNumberOfGridRows(3);

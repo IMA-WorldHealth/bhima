@@ -59,7 +59,7 @@ function VoucherRegistrySearch() {
 
   it(`filters by <select> should return ${NUM_USER_RECORDS} results`, () => {
     FU.buttons.search();
-    FU.select('ModalCtrl.params.user_id', 'Super User');
+    components.userSelect.set('Super User');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_VOUCHERS);

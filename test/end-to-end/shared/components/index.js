@@ -22,4 +22,5 @@ module.exports = {
   accountSelect  : require('./bhAccountSelect'),
   depotDropdown  : require('./bhDepotDropdown'),
   datePicker     : require('./bhDatePicker'),
+  userSelect     : require('./bhUserSelect'),
 };

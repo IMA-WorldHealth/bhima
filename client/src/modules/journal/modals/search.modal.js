@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'UserService', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate'
+  '$uibModalInstance', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate'
 ];
 
-function JournalSearchModalController(Instance, Users, Projects, Notify, Store, filters, Periods, Vouchers, $translate) {
+function JournalSearchModalController(Instance, Projects, Notify, Store, filters, Periods, Vouchers, $translate) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -34,13 +34,6 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
     vm.defaultQueries.limit = filters.limit;
   }
 
-  // load data for form select options
-  Users.read()
-    .then(function (users) {
-      vm.users = users;
-    })
-    .catch(Notify.handleError);
-
   Projects.read()
     .then(function (projects) {
       vm.projects = projects;
@@ -61,6 +54,11 @@ function JournalSearchModalController(Instance, Users, Projects, Notify, Store, 
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
     vm.searchQueries.account_id = account.id;
+  };
+
+  // custom filter user_id - assign the value to the searchQueries object
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.user_id = user.id;
   };
 
   // deafult filter period - directly write to changes list
