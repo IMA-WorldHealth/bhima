@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', '$translate'
+  'FilterService', '$rootScope', '$filter'
 ];
 
 /**
@@ -33,7 +33,7 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate) {
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter) {
 
   // Journal utilities
   var sorting;
@@ -336,20 +336,17 @@ function JournalController(Journal, Sorting, Grouping,
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
 
-    // number of transactions downloaded and shown in the current journal
-    var numberCurrentGridTransactions = 0;
-
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
-        // To Get the number of transaction
-        numberCurrentGridTransactions =  records.aggregate.length;
+        // number of transactions downloaded and shown in the current journal
+        vm.numberCurrentGridTransactions = records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
         vm.gridOptions.showGridFooter = true;
-        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') +
-          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>';
+        vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
+
         transactions.applyEdits();
         
         //@TODO investigate why footer totals aren't updated automatically on data change
