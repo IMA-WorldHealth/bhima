@@ -36,7 +36,7 @@ function create(req, res, next) {
 
   db.exec(sql, [req.body])
   .then(rows => {
-    return res.status(201).json({ id: rows.insertId });
+    return res.status(201).json({ id : rows.insertId });
   })
   .catch(next)
   .done();

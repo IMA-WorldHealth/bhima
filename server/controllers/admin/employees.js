@@ -38,9 +38,12 @@ exports.search = search;
  * Returns an array of each employee in the database
  */
 function list(req, res, next) {
-  const sql = `
-    SELECT employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
-      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
+  const sql =
+    `
+    SELECT 
+      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
+      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
       employee.daily_salary, BUID(employee.location_id) AS location_id, grade.code AS code_grade,
@@ -68,8 +71,8 @@ function list(req, res, next) {
  * Get list of availaible holidays for an employee
  */
 exports.listHolidays = function (req, res, next) {
-  let pp = JSON.parse(req.params.pp);
-  let sql =
+  const pp = JSON.parse(req.params.pp);
+  const sql =
     `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
      FROM holiday WHERE
        ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
@@ -77,11 +80,11 @@ exports.listHolidays = function (req, res, next) {
        (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
        holiday.employee_id = ?;`;
 
-  let data = [
+  const data = [
     pp.dateFrom, pp.dateTo,
     pp.dateFrom, pp.dateTo,
     pp.dateFrom, pp.dateFrom,
-    req.params.employee_id
+    req.params.employee_id,
   ];
 
   db.exec(sql, data)
@@ -101,10 +104,10 @@ exports.checkHoliday = function (req, res, next) {
      AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
      AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))`;
 
-  let data = [
+  const data = [
     req.query.employee_id,
     req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo,
-    req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo
+    req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo,
   ];
 
   if (req.query.line !== '') {
@@ -124,7 +127,7 @@ exports.checkHoliday = function (req, res, next) {
  * Check an existing offday
  */
 exports.checkOffday = function checkHoliday(req, res, next) {
-  let sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
+  const sql = `SELECT * FROM offday WHERE date = ? AND id <> ?`;
   db.exec(sql, [req.query.date, req.query.id])
   .then(function (rows) {
     res.status(200).json(rows);
@@ -143,14 +146,17 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  * @returns {Promise} - the result of the database query.
  */
 function lookupEmployee(id) {
-  const sql = `
-    SELECT employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
+  const sql =
+    `
+    SELECT 
+      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
+      employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
-      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, 
+      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
@@ -189,7 +195,7 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
   ]);
 
   if (employee.dob) {
@@ -200,21 +206,19 @@ function update(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  let transaction;
-
-  let creditor = {
+  const creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
-    text : 'Crediteur [' + employee.display_name + ']'
+    text : `Crediteur [${employee.display_name}]`,
   };
 
-  let debtor = {
+  const debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
-    text : 'Debiteur [' + employee.display_name + ']'
+    text : `Debiteur [${employee.display_name}]`,
   };
 
-  let clean = {
+  const clean = {
     display_name : employee.display_name,
     sexe : employee.sexe,
     dob : employee.dob,
@@ -232,14 +236,14 @@ function update(req, res, next) {
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
     location_id : employee.location_id,
-    code : employee.code
+    code : employee.code,
   };
 
-  let updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
-  let updateDebtor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
-  let sql = 'UPDATE employee SET ? WHERE employee.id = ?';
+  const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
+  const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const sql = `UPDATE employee SET ? WHERE employee.id = ?`;
 
-  transaction = db.transaction();
+  const transaction = db.transaction();
 
   transaction
     .addQuery(updateCreditor, [creditor, creditor.uuid])
@@ -253,10 +257,10 @@ function update(req, res, next) {
       }
 
       Topic.publish(Topic.channels.ADMIN, {
-        event: Topic.events.UPDATE,
-        entity: Topic.entities.EMPLOYEE,
-        user_id: req.session.user.id,
-        id : req.params.id
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.EMPLOYEE,
+        user_id : req.session.user.id,
+        id : req.params.id,
       });
 
       return lookupEmployee(req.params.id);
@@ -275,16 +279,14 @@ function update(req, res, next) {
  * This function is responsible for creating a new employee in the database
  */
 function create(req, res, next) {
-  let transaction;
-
   // cast as data object and add unique ids
-  let data = req.body;
+  const data = req.body;
   data.creditor_uuid = uuid.v4();
   data.debtor_uuid = uuid.v4();
 
   // convert uuids to binary uuids as necessary
-  let employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
+  const employee = db.convert(req.body, [
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
   ]);
 
   if (employee.dob) {
@@ -295,26 +297,26 @@ function create(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  let creditor = {
+  const creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
-    text : 'Crediteur [' + employee.display_name + ']'
+    text : `Crediteur [${employee.display_name}]`,
   };
 
-  let debtor = {
+  const debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
-    text : 'Debiteur [' + employee.display_name + ']'
+    text : `Debiteur [${employee.display_name}]`,
   };
 
   delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
 
-  let writeCreditor = 'INSERT INTO creditor SET ?';
-  let writeDebtor = 'INSERT INTO debtor SET ?';
-  let sql = 'INSERT INTO employee SET ?';
+  const writeCreditor = 'INSERT INTO creditor SET ?';
+  const writeDebtor = 'INSERT INTO debtor SET ?';
+  const sql = 'INSERT INTO employee SET ?';
 
-  transaction = db.transaction();
+  const transaction = db.transaction();
 
   transaction
     .addQuery(writeCreditor, [creditor])
@@ -323,18 +325,17 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(function (results) {
-
       // @todo - why is this not a UUID, but grade_id is a uuid?
-      let employeeId = results[2].insertId;
+      const employeeId = results[2].insertId;
 
       Topic.publish(Topic.channels.ADMIN, {
-        event: Topic.events.CREATE,
-        entity: Topic.entities.EMPLOYEE,
-        user_id: req.session.user.id,
-        id : employeeId
+        event : Topic.events.CREATE,
+        entity : Topic.entities.EMPLOYEE,
+        user_id : req.session.user.id,
+        id : employeeId,
       });
 
-      res.status(201).json({ id: employeeId });
+      res.status(201).json({ id : employeeId });
     })
     .catch(next)
     .done();
@@ -346,26 +347,27 @@ function create(req, res, next) {
  * @description
  * This function is responsible for looking for employee by display_name or code
  *
+ * NOTE : eslint gives 34 warnings which are not judged as logic so it is ignored
  */
 function search(req, res, next) {
-  let searchOption = '', sql = '';
-  let keyValue = '%' + req.params.value + '%';
+  let searchOption = '';
+  let sql = '';
+  const keyValue = `%${req.params.value}%`;
 
   if (req.params.key === 'code') {
     searchOption = 'LOWER(employee.code)';
   } else if (req.params.key === 'display_name') {
     searchOption = 'LOWER(employee.display_name)';
   } else {
-    return next(
-      new BadRequest('You sent a bad value for some parameters in research employee.')
-    );
+    next(new BadRequest('You sent a bad value for some parameters in research employee.'));
+    return;
   }
 
   sql = `
     SELECT
-      employee.id, employee.code AS code_employee, employee.display_name, employee.locked, employee.bank, employee.bank_account,
-      BUID(creditor.uuid) as creditor_uuid, BUID(creditor.group_uuid) as creditor_group_uuid,
-      creditor_group.account_id
+      employee.id, employee.code AS code_employee, employee.display_name, employee.locked, 
+      employee.bank, employee.bank_account, BUID(creditor.uuid) as creditor_uuid, 
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
     JOIN creditor ON employee.creditor_uuid = creditor.uuid
     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
@@ -374,11 +376,10 @@ function search(req, res, next) {
 
   db.exec(sql, [keyValue])
   .then(function (rows) {
-
     Topic.publish(Topic.channels.ADMIN, {
-      event: Topic.events.SEARCH,
-      entity: Topic.entities.EMPLOYEE,
-      user_id: req.session.user.id
+      event : Topic.events.SEARCH,
+      entity : Topic.entities.EMPLOYEE,
+      user_id : req.session.user.id,
     });
 
     res.status(200).json(rows);

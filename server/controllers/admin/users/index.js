@@ -89,7 +89,7 @@ function lookupUser(id) {
  * GET /users
  */
 function list(req, res, next) {
-  let sql =
+  const sql =
     `SELECT user.id, display_name,
       user.username, user.deactivated FROM user;`;
 
@@ -140,7 +140,7 @@ function detail(req, res, next) {
  *
  */
 function create(req, res, next) {
-  let data = req.body;
+  const data = req.body;
   let userId;
 
   let sql = `
@@ -155,17 +155,16 @@ function create(req, res, next) {
 
     sql = 'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
 
-    let projects = data.projects.map(projectId => [userId, projectId]);
+    const projects = data.projects.map(projectId => [userId, projectId]);
 
     return db.exec(sql, [projects]);
   })
   .then(function () {
-
     Topic.publish(Topic.channels.ADMIN, {
-      event: Topic.events.CREATE,
-      entity: Topic.entities.USER,
-      user_id: req.session.user.id,
-      id : userId
+      event : Topic.events.CREATE,
+      entity : Topic.entities.USER,
+      user_id : req.session.user.id,
+      id : userId,
     });
 
     // send the ID back to the client
@@ -190,30 +189,26 @@ function create(req, res, next) {
  * with two password fields, password and passwordVerify.
  */
 function update(req, res, next) {
-  let data = req.body;
-  let projects = req.body.projects || [];
+  const data = req.body;
+  const projects = req.body.projects || [];
 
   // if the password is sent, return an error
   if (data.password) {
-    return next(
-      new BadRequest(
-        `You cannot change the password field with this API.`,
-        `ERRORS.PROTECTED_FIELD`
-      )
-    );
+    next(new BadRequest(`You cannot change the password field with this API.`,
+        `ERRORS.PROTECTED_FIELD`));
+    return;
   }
 
   // clean default properties before the record is updated
   delete data.projects;
   delete data.id;
 
-  let transaction = db.transaction();
+  const transaction = db.transaction();
 
   // if there are projects, add those queries to the transaction first
   if (projects.length) {
-
     // turn the project id list into user id and project id pairs
-    let projectIds = projects.map(projectId => [req.params.id, projectId]);
+    const projectIds = projects.map(projectId => [req.params.id, projectId]);
 
     transaction
       .addQuery(
@@ -232,22 +227,21 @@ function update(req, res, next) {
   if (!_.isEmpty(data)) {
     transaction
       .addQuery(
-        'UPDATE user SET ? WHERE id = ?;', [ data, req.params.id]
+        'UPDATE user SET ? WHERE id = ?;', [data, req.params.id]
       );
   }
 
   transaction.execute()
   .then(() => lookupUser(req.params.id))
-  .then(function (data) {
-
+  .then(function (result) {
     Topic.publish(Topic.channels.ADMIN, {
-      event: Topic.events.UPDATE,
-      entity: Topic.entities.USER,
-      user_id: req.session.user.id,
-      id : req.params.id
+      event : Topic.events.UPDATE,
+      entity : Topic.entities.USER,
+      user_id : req.session.user.id,
+      id : req.params.id,
     });
 
-    res.status(200).json(data);
+    res.status(200).json(result);
   })
   .catch(next)
   .done();
@@ -265,8 +259,7 @@ function update(req, res, next) {
 function password(req, res, next) {
   // TODO -- strict check to see if the user is either signed in or has
   // sudo permissions.
-  let sql =
-    'UPDATE user SET password = PASSWORD(?) WHERE id = ?;';
+  const sql = `UPDATE user SET password = PASSWORD(?) WHERE id = ?;`;
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(() => lookupUser(req.params.id))
@@ -287,8 +280,7 @@ function password(req, res, next) {
  * If the user exists delete it.
  */
 function remove(req, res, next) {
-  let sql =
-    'DELETE FROM user WHERE id = ?;';
+  const sql = `DELETE FROM user WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
   .then(function (row) {
@@ -297,10 +289,10 @@ function remove(req, res, next) {
     }
 
     Topic.publish(Topic.channels.ADMIN, {
-      event: Topic.events.DELETE,
-      entity: Topic.entities.USER,
-      user_id: req.session.user.id,
-      id : req.params.id
+      event : Topic.events.DELETE,
+      entity : Topic.entities.USER,
+      user_id : req.session.user.id,
+      id : req.params.id,
     });
 
     res.sendStatus(204);
