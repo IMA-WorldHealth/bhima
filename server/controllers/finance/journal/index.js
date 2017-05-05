@@ -389,8 +389,8 @@ function transformColumns(rows, newRecord) {
 
     if (row.account_label) {
       delete row.account_label;
-    }	
-	
+    }
+
     if (row.hrEntity) {
       // reverse barcode lookup entity
       databaseRequests.push(ENTITY_QUERY);
@@ -502,10 +502,12 @@ function reverse(req, res, next) {
  *
  */
 function count(req, res, next) {
-  const sql = `SELECT COUNT(DISTINCT posting_journal.trans_id) AS number_transactions FROM posting_journal;`;
+  const sql = `
+    SELECT COUNT(DISTINCT posting_journal.trans_id) AS number_transactions FROM posting_journal;
+  `;
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).send(rows);
     })
     .catch(next);
