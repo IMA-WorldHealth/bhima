@@ -1,16 +1,17 @@
-const moment = require('moment');
+const Moment = require('moment');
 
 const report = require('../finance/reports/debtors');
 
 // time until the cached value expires - currently set at 5 minutes
 const CACHE_TTL = 300000;
 
-let cachedReport, timestamp;
+let cachedReport;
+let timestamp;
 
 exports.getReport = getReport;
 
 function getReport(req, res, next) {
-  let requestTime = new moment();
+  const requestTime = new Moment();
 
   // if the current request is made within the cache life - send the cached report
   if (timestamp) {
@@ -21,20 +22,21 @@ function getReport(req, res, next) {
   }
 
   // the cache has expired or has never been created - calculate the report
-  // ensure the lastest data from both the posting journal and the general ledger
+  // ensure the latest data from both the posting journal and the general ledger
   // is used
-  report.context({combinedLedger : 1})
+  report.context({ combinedLedger : 1 })
     .then(function (result) {
-      timestamp = new moment();
+      timestamp = new Moment();
       cachedReport = result;
       res.status(200).send(formatResponse(result));
-    });
+    })
+    .catch(next);
 }
 
-function formatResponse(report) {
+function formatResponse(reportData) {
   return {
-    data : report,
+    data : reportData,
     timeCached : timestamp,
-    cacheLength : CACHE_TTL
+    cacheLength : CACHE_TTL,
   };
 }
