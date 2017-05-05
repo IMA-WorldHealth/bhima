@@ -73,7 +73,8 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     var rows = [];
     var supportAccountId = result.account_id;
     var supportedAccountId = result.patient.account_id;
-    var invoices = result.invoices; 
+    var invoices = result.invoices;
+    rows.typeId = bhConstants.transactionType.SUPPORT_INCOME;
 
     // first, generate a support row
     var supportRow = generateRow();

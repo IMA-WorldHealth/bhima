@@ -116,6 +116,9 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
         if (!result) { return; }
 
         var rows = result.rows;
+        // Selected the transaction type 
+        vm.Voucher.details.type_id = rows.typeId;
+
         var n = result.rows.length;
 
         while (n--) {
