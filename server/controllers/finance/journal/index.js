@@ -53,7 +53,7 @@ function lookupTransaction(recordUuid) {
         BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
         p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
         pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, u.display_name
+        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
       FROM posting_journal p
         JOIN project pro ON pro.id = p.project_id
         JOIN period per ON per.id = p.period_id
@@ -103,7 +103,7 @@ function find(options, source) {
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
-      per.end_date AS period_end, a.number AS account_number, u.display_name
+      per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM ${origin} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
@@ -155,7 +155,7 @@ function journalEntryList(options, source) {
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
-      per.end_date AS period_end, a.number AS account_number, u.display_name
+      per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM ${origin} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
@@ -200,7 +200,7 @@ function list(req, res, next) {
         BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
         p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
         pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, u.display_name
+        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
       FROM posting_journal p
         JOIN project pro ON pro.id = p.project_id
         JOIN period per ON per.id = p.period_id
@@ -387,6 +387,10 @@ function transformColumns(rows, newRecord) {
       delete row.account_name;
     }
 
+    if (row.account_label) {
+      delete row.account_label;
+    }	
+	
     if (row.hrEntity) {
       // reverse barcode lookup entity
       databaseRequests.push(ENTITY_QUERY);

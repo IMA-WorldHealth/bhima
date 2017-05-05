@@ -194,6 +194,7 @@ function JournalController(Journal, Sorting, Grouping,
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
       editableCellTemplate : '<div><form name="inputForm"><div ui-grid-edit-account></div></form></div>',
       enableCellEdit       : true,
+      cellTemplate         : '/modules/journal/templates/account.cell.html',
       headerCellFilter     : 'translate',
     }, {
       field                            : 'debit_equiv',
@@ -411,7 +412,7 @@ function JournalController(Journal, Sorting, Grouping,
       .then(function (results) {
         Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
         // ensure that all of the data now respects the current filter
-        load(vm.filters);
+        load(Journal.filters.formatHTTP(true));
       })
       .catch(function (error) {
         if (!error.status) {
