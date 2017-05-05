@@ -413,7 +413,7 @@ function JournalController(Journal, Sorting, Grouping,
       .then(function (results) {
         Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
         // ensure that all of the data now respects the current filter
-        load(vm.filters);
+        load(Journal.filters.formatHTTP(true));
       })
       .catch(function (error) {
         if (!error.status) {
