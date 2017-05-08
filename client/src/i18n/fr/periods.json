@@ -9,13 +9,14 @@
     "LAST_MONTH" : "Mois dernier",
     "LAST_YEAR" : "Année derniére",
     "ALL_TIME" : "Tout le temps",
-    "CUSTOM" : "Customizé",
+    "CUSTOM" : "Personalisé",
     "START" : "Début",
     "END" : "Fin",
     "PERIOD_LIMIT" : "Limite de période",
     "CUSTOM_FROM" : "de",
     "CUSTOM_TO" : "à",
     "SELECT_PERIOD" : "Période choisie",
-    "SELECT_CUSTOM_PERIOD" : "Période personnalisée"
+    "SELECT_CUSTOM_PERIOD" : "Période personnalisée",
+	"SUBMIT_CUSTOM_PERIOD" : "Valider la période"
   }
 }
