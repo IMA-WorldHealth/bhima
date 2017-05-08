@@ -73,6 +73,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.DATEPICKER_OPTIONS = { format: bhConstants.dates.format };
 
   vm.enterprise = Session.enterprise;
+  vm.gridApi = {};
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -83,9 +84,10 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    rowTemplate                : '/modules/templates/grid/transaction.row.html'
+    rowTemplate                : '/modules/templates/grid/transaction.row.html',
+    onRegisterApi              : onRegisterApi,
   };
-
+  
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
 
   // Initialise each of the journal utilities, providing them access to the journal
@@ -204,7 +206,9 @@ function JournalController(Journal, Sorting, Grouping,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
       },
-      enableFiltering : false },
+      enableFiltering : true,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+    },
 
     { field                            : 'credit_equiv',
       displayName                      : 'TABLE.COLUMNS.CREDIT',
@@ -213,7 +217,9 @@ function JournalController(Journal, Sorting, Grouping,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = aggregation.value;
       },
-      enableFiltering : false },
+      enableFiltering : true,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' 
+    },
 
     { field            : 'currencyName',
       displayName      : 'TABLE.COLUMNS.CURRENCY',
@@ -262,8 +268,12 @@ function JournalController(Journal, Sorting, Grouping,
       enableFiltering  : false,
     },
   ];
-
   vm.gridOptions.columnDefs = columns;
+  
+  // API register function
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -325,21 +335,21 @@ function JournalController(Journal, Sorting, Grouping,
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
 
-    // number of transactions downloaded and shown in the current journal
-    var numberCurrentGridTransactions = 0;
-
     // @fixme
     Journal.grid(null, options)
       .then(function (records) {
-        // To Get the number of transaction
-        numberCurrentGridTransactions =  records.aggregate.length;
+        // number of transactions downloaded and shown in the current journal
+        vm.numberCurrentGridTransactions = records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
         vm.gridOptions.data = transactions.preprocessJournalData(records);
         vm.gridOptions.showGridFooter = true;
-        vm.gridOptions.gridFooterTemplate = '<div><strong>' + $translate.instant('FORM.INFO.NUM_TRANSACTION') +
-          ' : ' + numberCurrentGridTransactions + ' / ' + vm.numberTotalSystemTransactions + '</strong></div>';
+        vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
+
         transactions.applyEdits();
+        
+        //@TODO investigate why footer totals aren't updated automatically on data change
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
 
         // try to unfold groups
         // try { grouping.unfoldAllGroups(); } catch (e) {}
