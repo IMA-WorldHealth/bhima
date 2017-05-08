@@ -34,9 +34,6 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
     { field : 'text', displayName : 'FORM.LABELS.TEXT',
       headerCellFilter: 'translate', cellFilter: 'translate'},
 
-    { field : 'description', displayName : 'FORM.LABELS.DESCRIPTION',
-      headerCellFilter: 'translate'},
-
     { field : 'type', displayName : 'FORM.LABELS.TYPE',
       headerCellFilter: 'translate',
       cellTemplate: 'modules/templates/grid/transactionType.tmpl.html'},

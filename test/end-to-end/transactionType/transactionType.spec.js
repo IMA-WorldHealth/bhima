@@ -14,21 +14,18 @@ describe('Transaction Types', () => {
 
   const newType = {
     text        : 'E2E Transaction Type',
-    description : 'Test transaction type',
     type        : 'income',
     prefix      : 'E2ETT',
   };
 
   const updateType = {
     text        : 'E2E Transaction Type updated',
-    description : 'Test transaction type updated',
     type        : 'expense',
     prefix      : 'E2ETT_UPDATED',
   };
 
   const otherType = {
     text        : 'E2E Other Transaction Type',
-    description : 'Test Other transaction type',
     type        : 'other',
     prefix      : 'E2EOTT',
     other       : 'OTHER_TYPE',
@@ -37,7 +34,6 @@ describe('Transaction Types', () => {
   it('Successfully creates a transaction type', () => {
     FU.buttons.create();
     FU.input('$ctrl.transactionType.text', newType.text);
-    FU.input('$ctrl.transactionType.description', newType.description);
     FU.input('$ctrl.transactionType.prefix', newType.prefix);
     element(by.model('$ctrl.transactionType.type')).click();
     element(by.css(`[value=${newType.type}]`)).click();
@@ -48,7 +44,6 @@ describe('Transaction Types', () => {
   it('Successfully updates an existing transaction type', () => {
     element(by.css(`[data-edit-type="${newType.text}"]`)).click();
     FU.input('$ctrl.transactionType.text', updateType.text);
-    FU.input('$ctrl.transactionType.description', updateType.description);
     FU.input('$ctrl.transactionType.prefix', updateType.prefix);
     element(by.model('$ctrl.transactionType.type')).click();
     element(by.css(`[value=${updateType.type}]`)).click();
@@ -59,7 +54,6 @@ describe('Transaction Types', () => {
   it('Successfully creates a transaction type with a specific type', () => {
     FU.buttons.create();
     FU.input('$ctrl.transactionType.text', otherType.text);
-    FU.input('$ctrl.transactionType.description', otherType.description);
     FU.input('$ctrl.transactionType.prefix', otherType.prefix);
     element(by.model('$ctrl.transactionType.type')).click();
     element(by.css(`[value=${otherType.type}]`)).click();
@@ -76,7 +70,6 @@ describe('Transaction Types', () => {
 
     // check validations
     FU.validation.error('$ctrl.transactionType.text');
-    FU.validation.error('$ctrl.transactionType.description');
     FU.validation.error('$ctrl.transactionType.prefix');
     FU.validation.error('$ctrl.otherType');
 
@@ -96,7 +89,6 @@ describe('Transaction Types', () => {
 
     // check validations
     FU.validation.error('$ctrl.transactionType.text');
-    FU.validation.error('$ctrl.transactionType.description');
     FU.validation.error('$ctrl.transactionType.prefix');
     FU.validation.error('$ctrl.transactionType.type');
 

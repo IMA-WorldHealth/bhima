@@ -20,14 +20,6 @@
       </div>
     </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.description.$invalid }">
-      <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</i></label>
-      <input type="text" class="form-control" name="description" autocomplete="off" ng-model="$ctrl.transactionType.description" required>
-      <div class="help-block" ng-messages="TransactionTypeForm.description.$error" ng-show="TransactionTypeForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
     <div class="form-group" ng-class="{ 'has-error' : TransactionTypeForm.$submitted && TransactionTypeForm.prefix.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.PREFIX" | translate }}</i></label>
       <input type="text" class="form-control" name="prefix" autocomplete="off" ng-model="$ctrl.transactionType.prefix" required>
