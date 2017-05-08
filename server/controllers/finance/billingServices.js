@@ -13,9 +13,9 @@
  * @requires lib/errors/BadRequest
  *
  */
-const _          = require('lodash');
-const db         = require('../../lib/db');
-const NotFound   = require('../../lib/errors/NotFound');
+const _ = require('lodash');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
@@ -26,27 +26,18 @@ const BadRequest = require('../../lib/errors/BadRequest');
  * service entity.
  */
 function lookupBillingService(id) {
-
   var sql =
     `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
       bs.created_at, bs.updated_at, a.number
     FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
-  return db.exec(sql, [ id ])
+  return db.exec(sql, [id])
   .then(function (rows) {
-
     // if no records matching, throw a 404
     if (rows.length === 0) {
-      throw new NotFound(
-
-        /** @todo - replace with ES6 template strings */
-        _.template(
-          'Could not find a billing service with id: ${id}.'
-        )({ id : id })
-      );
+      throw new NotFound(`Could not find a billing service with id: ${id}.`);
     }
-
     // return a single JSON of the record
     return rows[0];
   });
@@ -59,7 +50,6 @@ function lookupBillingService(id) {
  * @description retrieve the details of a single billing service.
  */
 exports.detail = function detail(req, res, next) {
-
   // looks up the billing service by ID
   lookupBillingService(req.params.id)
   .then(function (billingService) {
@@ -77,8 +67,7 @@ exports.detail = function detail(req, res, next) {
  * levels of detail
  */
 exports.list = function list(req, res, next) {
-
-  var sql =
+  let sql =
     `SELECT bs.id, bs.label, bs.created_at
     FROM billing_service AS bs
     ORDER BY bs.label;`;
@@ -108,34 +97,28 @@ exports.list = function list(req, res, next) {
  * @desc creates a new billing service
  */
 exports.create = function create(req, res, next) {
-
   // cache posted data for easy lookup
-  var data = req.body.billingService;
+  const data = req.body.billingService;
 
   // delete the id if it exists -- the db will create one via auto-increment
   delete data.id;
 
   // ensure that values inserted are positive
   if (data.value <= 0) {
-    return next(
+    next(
       new BadRequest(
-
-        /** @todo - replace with ES6 template strings */
-        _.template(
-          'The value submitted to a billing service must be positive.  ' +
-          'You provided the negative value ${value}.'
-        )({ value : data.value })
+        `The value submitted to a billing service must be positive.
+         You provided the negative value ${data.value}.`
       )
     );
   }
 
-  var sql =
+  const sql =
     `INSERT INTO billing_service (account_id, label, description, value)
     VALUES (?, ?, ?, ?);`;
 
-  db.exec(sql, [ data.account_id, data.label, data.description, data.value ])
+  db.exec(sql, [data.account_id, data.label, data.description, data.value])
   .then(function (results) {
-
     // return the id to the client for future lookups.
     res.status(201).json({ id : results.insertId });
   })
@@ -150,24 +133,22 @@ exports.create = function create(req, res, next) {
  * @desc updates an existing billing service with new information
  */
 exports.update = function update(req, res, next) {
-
   // cache the id
-  var id = req.params.id;
-  var data = req.body.billingService;
+  const id = req.params.id;
+  const data = req.body.billingService;
 
   // remove the :id if it exists inside the billingService object
   delete data.id;
 
-  var sql =
+  const sql =
     'UPDATE billing_service SET ? WHERE id = ?;';
 
   // ensure that the billing service matching :id exists
   lookupBillingService(id)
   .then(function () {
-    return db.exec(sql, [ data, req.params.id ]);
+    return db.exec(sql, [data, req.params.id]);
   })
   .then(function () {
-
     // return the full changed object
     return lookupBillingService(id);
   })
@@ -185,14 +166,13 @@ exports.update = function update(req, res, next) {
  * @desc deletes a billing service in the database
  */
 exports.delete = function del(req, res, next) {
-
-  var sql =
+  const sql =
     'DELETE FROM billing_service WHERE id = ?;';
 
   // first make sure that the billing service exists
   lookupBillingService(req.params.id)
   .then(function () {
-    return db.exec(sql, [ req.params.id ]);
+    return db.exec(sql, [req.params.id]);
   })
   .then(function () {
     res.sendStatus(204);
