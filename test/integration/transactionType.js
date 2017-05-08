@@ -7,7 +7,7 @@ const helpers = require('./helpers');
 describe('(/transaction_type) Transaction Type API :: ', () => {
 
   // default number of transaction type (TT)
-  const TT_DEFAULT = 10;
+  const TT_DEFAULT = 11;
 
   let newTT = {
     text: 'My New Transaction Type',
