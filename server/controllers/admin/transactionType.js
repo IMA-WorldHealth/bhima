@@ -71,7 +71,7 @@ function remove (req, res, next) {
 
 /** get transaction type */
 function getTransactionType(id) {
-    let sql = `SELECT id, text, description, type, prefix, fixed FROM transaction_type`;
+    let sql = `SELECT id, text, type, prefix, fixed FROM transaction_type`;
     sql += id ? ' WHERE id = ?;' : ';';
     return db.exec(sql, [id]);
 }
