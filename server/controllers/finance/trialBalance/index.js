@@ -7,7 +7,7 @@
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
-exports.getDataPerAccount = function (req, res, next) {
+exports.getDataPerAccount = function getDataPerAccount(req, res, next) {
   const transactions = req.body.transactions;
 
   if (!transactions) {
@@ -40,7 +40,8 @@ exports.getDataPerAccount = function (req, res, next) {
       WHERE posting_journal.trans_id IN (?)
       GROUP BY posting_journal.account_id
     ) AS combined
-      JOIN account ON account.id = combined.account_id;
+      JOIN account ON account.id = combined.account_id
+      ORDER BY account.number;
   `;
 
   // execute the query
@@ -108,7 +109,7 @@ exports.checkTransactions = function runTrialBalance(req, res, next) {
  * This function can be called only when there is no fatal error
  * It posts data to the general ledger.
  **/
-exports.postToGeneralLedger = function (req, res, next) {
+exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
   const transactions = req.body.transactions;
 
   if (!transactions || !Array.isArray(transactions)) {
