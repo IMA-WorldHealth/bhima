@@ -382,9 +382,6 @@ function JournalController(Journal, Sorting, Grouping,
 
         // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-
-        // try to unfold groups
-        // try { grouping.unfoldAllGroups(); } catch (e) {}
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
