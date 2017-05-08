@@ -42,6 +42,7 @@
 "COLUMNS":"Columns"},
 "ERRORS":{"DATE_IN_WRONG_PERIOD":"Dates in wrong period",
 "MISSING_DESCRIPTION":"Descriptions omitted",
+"VARIOUS_TRANSACTION_TYPE":"Various transaction type for a transaction",
 "LOCKED_ACCOUNT":"Locked account(s)",
 "TRANSACTION_DIFF_DATES" : "Transactions with different dates",
 "UNBALANCED_TRANSACTIONS":"Unbalanced Transaction(s)",

@@ -349,7 +349,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       ERR_TRANSACTION_DIFF_DATES = 'POSTING_JOURNAL.ERRORS.TRANSACTION_DIFF_DATES',
       ERR_UNBALANCED_TRANSACTIONS = 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS',
       ERR_DEB_CRED_NOT_NULL = 'POSTING_JOURNAL.ERRORS.DEB_CRED_NOT_NULL',
-      ERR_CREDITED_DEBITED = 'POSTING_JOURNAL.ERRORS.CREDITED_DEBITED';
+      ERR_CREDITED_DEBITED = 'POSTING_JOURNAL.ERRORS.CREDITED_DEBITED',
+      ERR_VARIOUS_TRANSACTION_TYPE='POSTING_JOURNAL.ERRORS.VARIOUS_TRANSACTION_TYPE';
 
     // If the transaction has 0 line
     if (numberOfLine === 0) {
@@ -365,16 +366,21 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
     var debit = 0,
       credit = 0,
       initialDate,
+      baseTransactionType,
       accountNull = false,
       dateNull =  false,
       dateDifferent = false,
       dateWrongPeriod = false,
       debitCreditNull = false,
-      debitedCreditedNull = false;
+      debitedCreditedNull = false,
+      variousTransactionType = false;
 
     if (transaction[0].trans_date) {
       initialDate = transaction[0].trans_date;
     }
+
+    // base transaction type
+    baseTransactionType = transaction[0].origin_id;
 
 
     transaction.forEach(function (row) {
@@ -388,7 +394,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       dateNull = !row.trans_date;
 
       // Check if they are different Date
-      dateDifferent = Dates.util.str(row.trans_date) !== Dates.util.str(initialDate);
+      dateDifferent = (Dates.util.str(row.trans_date) !== Dates.util.str(initialDate)) || dateDifferent;
 
       // Check if debit and credit are Null
       debitCreditNull = (!Number(row.debit_equiv) && !Number(row.credit_equiv));
@@ -400,6 +406,9 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       if (new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)) {
         dateWrongPeriod = true;
       }
+
+      // check if transaction type (origin_id) are differenct
+      variousTransactionType = (row.origin_id !== baseTransactionType) || variousTransactionType;
     });
 
     /**
@@ -425,6 +434,8 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       error = ERR_DEB_CRED_NOT_NULL;
     } else if (debitedCreditedNull) {
       error = ERR_CREDITED_DEBITED;
+    } else if (variousTransactionType) {
+      error = ERR_VARIOUS_TRANSACTION_TYPE;
     } else {
       // later in validateTransaction()
       if (debit !== credit) {

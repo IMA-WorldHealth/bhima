@@ -1,0 +1,32 @@
+<div class="ui-grid-cell-contents">
+  <div ng-show="grid.appScope.transactions.isEditing()">
+    <!--remove the transaction type-->
+    <a ng-click="grid.appScope.removeTransactionType(row.entity)" class="text-danger pull-right" href="">
+      <i class="fa fa-trash"></i>
+    </a>
+
+    <!--select transaction type-->
+    <ui-select
+      style="width: 90%;"
+      name="type_id"
+      ng-model="row.entity.origin_id"
+      ng-change="grid.appScope.editTransactionType(row.entity)"
+      append-to-body="true">
+
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+        <span translate>{{$select.selected.text}}</span>
+      </ui-select-match>
+
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="item.id as item in grid.appScope.typeList | filter:{ 'hrText' : $select.search }"
+        group-by="'type'">
+        <div ng-bind-html="item.hrText | highlight: $select.search"></div>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+
+  <div ng-hide="grid.appScope.transactions.isEditing()" translate>
+    {{ grid.appScope.mapOrigins[row.entity.origin_id] }}
+  </div>
+</div>
