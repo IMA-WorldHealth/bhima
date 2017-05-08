@@ -47,14 +47,14 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
       // show debit or credit total for transaction on transaction header
       if (column.grouping && column.grouping.groupPriority > -1) {
 
-  column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
+        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
           // @todo this will be called for every row in a group but only needs to be called once
           if (row.entity.transaction) {
             aggregation.value = row.entity.transaction.debit_equiv;
           }
         };
 
-  column.customTreeAggregationFinalizerFn = function (aggregation) {
+        column.customTreeAggregationFinalizerFn = function (aggregation) {
           if (typeof(aggregation.groupVal) !== 'undefined') {
             aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
           } else {
@@ -62,7 +62,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
           }
         };
         // return true;
-}
+      }
 
     });
     return columns;
