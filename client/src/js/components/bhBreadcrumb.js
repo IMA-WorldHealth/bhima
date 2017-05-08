@@ -113,6 +113,7 @@ function BreadcrumbController() {
 
     /** call the appropriate function and update the dropdown label **/
     vm.helperDropdown = function helperDropdown(child, parent) {
+
       parent.selected = child.label;
       child.action(child);
     };

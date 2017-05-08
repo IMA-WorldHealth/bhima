@@ -35,10 +35,8 @@ describe('Edit Posting Journal', () => {
   it('edits a transaction change value of Debit and Credit', () => {
     FU.buttons.grouping();
     element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-
     const debitCell = GU.getCellName(gridId, 1, 5);
     const creditCell = GU.getCellName(gridId, 2, 6);
-
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(150);
 
