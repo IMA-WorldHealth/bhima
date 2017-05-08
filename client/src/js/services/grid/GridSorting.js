@@ -31,35 +31,11 @@ function GridSortingService(util) {
    */
   function transactionIds(a, b, rowA, rowB, direction) {
     var first, second;
-    var nullValuesResult = this.gridApi.core.sortHandleNulls(a, b);
+    // determine integer (reference) value by extracting it from the transaction ID
+    // match returns an array of mathces - take the first element
+    first = Number(/[a-z,A-Z]*([0-9]*)/g.exec(a)[1]);
+    second = Number(/[a-z,A-Z]*([0-9]*)/g.exec(b)[1]);
 
-    // if there is no row information we must assume this is a group and we only
-    // have the transaction ID to inform the sort
-    var isGroupRowHeader = angular.isUndefined(rowA);
-
-    // allow UI Grid to sort null values appropriately
-    if (nullValuesResult !== null) {
-      return nullValuesResult;
-    }
-
-    // determine values for comparison
-    if (isGroupRowHeader) {
-      var testInteger = /\d+$/;
-
-      // determine integer (reference) value by extracting it from the transaction ID
-      // match returns an array of mathces - take the first element
-      first = Number(a.match(testInteger).shift());
-      second = Number(b.match(testInteger).shift());
-    } else {
-
-      // reference value is passed in the row - simply use this
-      // FIXME(@jniles) we rarely pass the numeric reference value...
-      first = Number(rowA.entity.reference);
-      second = Number(rowB.entity.reference);
-    }
-
-    // This (standard method) causes transaction groups to be sorted incorrectly - why has not been demonstrated
-    // Standard integer compare sort: return first - second;
     if (first > second) {
       return 1;
     }
@@ -83,10 +59,11 @@ function GridSortingService(util) {
     // global sorting configuration
     gridOptions.enableSorting = true;
 
+      this.transactionIds = transactionIds;
+      this.sortByReference = sortByReference;
     // register for the grid API
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
-      this.transactionIds = transactionIds.bind(this);
     }.bind(this));
   }
 
