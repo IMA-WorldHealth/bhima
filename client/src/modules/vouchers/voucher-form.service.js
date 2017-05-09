@@ -288,7 +288,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       var lastRowIdx = form.store.data.length - 1;
       var lastRow = form.store.data[lastRowIdx];
 
-      lastRow.configure(rows[--n]);
+      lastRow.configure(row);
     });
 
     this.validate();

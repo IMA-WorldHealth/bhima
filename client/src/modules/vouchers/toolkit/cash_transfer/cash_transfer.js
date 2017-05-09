@@ -91,15 +91,12 @@ function CashTransferKitController(Instance, Notify, Cashbox,
       account : vm.account,
     });
 
-    var msgTransfer = $translate.instant('VOUCHERS.GLOBAL.CASH_TRANSFER');
-    var msgFrom = $translate.instant('FORM.LABELS.FROM');
-    var msgTo = $translate.instant('FORM.LABELS.TO');
-    var msgFor = $translate.instant('FORM.LABELS.FOR');
-
-    var msg = msgTransfer.concat(': ', msgFrom, ' ')
-      .concat(vm.account.label, ' ', msgTo, ' ')
-      .concat(vm.cashbox.label, ' ', msgFor, ' ')
-      .concat(vm.amount, vm.cashbox.symbol);
+    var msg = $translate.instant('VOUCHERS.GLOBAL.TRANSFER_DESCRIPTION', {
+      fromAccount : vm.account.label,
+      toAccount   : vm.cashbox.label,
+      amount      : vm.amount,
+      symbol      : vm.cashbox.symbol,
+    });
 
     Instance.close({
       rows        : bundle,
