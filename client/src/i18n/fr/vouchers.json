@@ -22,6 +22,8 @@
 "TYPES":{"SUPPORT_PAYMENT_DESCRIPTION":"Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."},
 "GLOBAL":{"CASHFLOW_OPTION":"Option pour cashflow",
 "CONVENTION_INVOICES":"Convention - Paiement factures",
+"SUPPORT_FORM":"Prise en Charge des patients",
+"SUPPORT_TEXT":"Lorsque les deux champs ci-dessus sont remplis, Les dettes du patient apparaissent en vue qu'une  \"Prise en Charge\" puissent être attribue à un Compte.",
 "ERROR_SAME_ACCOUNT":"Vous ne pouvez pas utiliser le même compte deux fois dans cette transaction. Veuillez sélectionner deux comptes différents.",
 "IMPORT_TRANSACTION":"Importer les transactions",
 "RECEIPT":{"SUCCESS":"Bon de paiement enregistré avec succès."},

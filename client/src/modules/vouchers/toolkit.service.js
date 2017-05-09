@@ -13,10 +13,19 @@ function VoucherToolkitService($http, Modal, util) {
   service.tools = {
     // this tool help to import transaction rows for a convention payment
     'convention_payment' : {
+      icon : 'fa-building',
       label : 'VOUCHERS.GLOBAL.CONVENTION_INVOICES',
       controller : 'ConventionPaymentKitController',
       templateUrl : 'modules/vouchers/toolkit/convention_payment.modal.html'
+    },
+    'support_patient' : {
+      icon : 'fa-wpforms',
+      label : 'VOUCHERS.GLOBAL.SUPPORT_FORM',
+      controller : 'SupportPatientKitController',
+      templateUrl : 'modules/vouchers/toolkit/support_patient.modal.html'
     }
+
+
   };
 
   // service options
