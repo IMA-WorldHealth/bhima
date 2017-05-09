@@ -527,11 +527,8 @@ function JournalController(Journal, Sorting, Grouping,
 
       vm.typeList = list.map(function (item) {
         item.hrText = $translate.instant(item.text);
+        vm.mapOrigins[item.id] = item.hrText;
         return item;
-      });
-
-      vm.typeList.forEach(function (type) {
-        vm.mapOrigins[type.id] = type.text;
       });
     })
     .catch(Notify.handleError);
