@@ -1016,27 +1016,16 @@ CREATE PROCEDURE CreateFiscalYear(
   OUT fiscalYearId MEDIUMINT(8)
 )
 BEGIN
+  INSERT INTO fiscal_year (
+    `enterprise_id`, `previous_fiscal_year_id`, `user_id`, `label`,
+    `number_of_months`, `start_date`, `end_date`, `note`
+  ) VALUES (
+    p_enterprise_id, p_previous_fiscal_year_id, p_user_id, p_label,
+    p_number_of_months, p_start_date, p_end_date, p_note
+  );
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-      ROLLBACK;
-    END;
-
-  START TRANSACTION;
-
-    INSERT INTO fiscal_year (
-      `enterprise_id`, `previous_fiscal_year_id`, `user_id`, `label`,
-      `number_of_months`, `start_date`, `end_date`, `note`
-    ) VALUES (
-      p_enterprise_id, p_previous_fiscal_year_id, p_user_id, p_label,
-      p_number_of_months, p_start_date, p_end_date, p_note
-    );
-
-    SET fiscalYearId = LAST_INSERT_ID();
-    CALL CreatePeriods(fiscalYearId);
-
-  COMMIT;
-
+  SET fiscalYearId = LAST_INSERT_ID();
+  CALL CreatePeriods(fiscalYearId);
 END $$
 
 CREATE PROCEDURE GetPeriodRange(
