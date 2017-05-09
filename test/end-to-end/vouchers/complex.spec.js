@@ -168,6 +168,46 @@ describe('Complex Vouchers', function () {
     $('[data-method="close"]').click();
   });
 
+  it('Support Patient Invoices by an Account via the tool', () => {
+    const page = new ComplexVoucherPage();
+
+    let detail = {
+      tool          : 'Prise en Charge des patients',
+      accountNumber : 42002,
+      patientName   : 'Test 2',
+      description   : 'Patient support invoices',
+      invoices      : [0, 1],
+    };
+
+    // click on the Support Patient Tool
+    FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    // select account
+    components.accountSelect.set(detail.accountNumber);
+
+    // Find Patient
+    components.findPatient.findByName(detail.patientName);    
+
+
+    // select invoices
+    GU.selectRow('invoiceGrid', detail.invoices[0]);
+
+    // validate selection
+    FU.modal.submit();
+
+    // description
+    FU.input('ComplexVoucherCtrl.Voucher.details.description', detail.description);
+
+    // submit voucher
+    FU.buttons.submit();
+
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
+  });
+
   it('Generic Income via the tool', () => {
 
     let detail = {
