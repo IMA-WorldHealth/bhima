@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" bh-form-defaults novalidate>
+  <div class="modal-body">
+
+    <!-- select the cashbox (to debit)  -->
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.cashbox.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.CASHBOX
+      </label> 
+      (<label class="control-label" translate>FORM.LABELS.DEBIT</label>)
+
+      <ui-select
+        name="cashbox"
+        ng-model="ToolCtrl.cashbox"
+        on-select="ToolCtrl.select()"
+        required>
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CASHBOX' | translate }}">
+          <span>{{$select.selected.label}} ({{$select.selected.symbol}})</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="cashbox in ToolCtrl.cashboxes | filter:$select.search">
+          <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+          (<span ng-bind-html="cashbox.symbol | highlight:$select.search"></span>)
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="ToolForm.cashbox.$error" ng-show="ToolForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- select the transfer account (to credit) -->
+    <div 
+      class="form-group"
+      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.account.$invalid }">
+      <label class="control-label"  translate>VOUCHERS.GLOBAL.TRANSFER_ACCOUNT</label> 
+      (<label class="control-label"  translate>FORM.LABELS.CREDIT</label>)
+
+      <!-- input typeahead -->
+      <input
+        type="text"
+        class="form-control"
+        name="account"
+        ng-disabled="!ToolCtrl.cashbox"
+        ng-model="ToolCtrl.account"
+        uib-typeahead="account as account.label for account in ToolCtrl.accounts.data | filter:$viewValue | limitTo:8"
+        typeahead-no-results="ToolCtrl.noEntity"
+        typeahead-loading="ToolCtrl.loadingEntity"
+        typeahead-template-url="/modules/templates/accountList.tmpl.html"
+        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"
+        required>
+      <!-- /input typeahead -->
+
+      <div class="help-block" ng-messages="ToolForm.account.$error" ng-show="ToolForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- amount -->
+    <div class="form-group">
+      <label translate>FORM.LABELS.AMOUNT</label>
+      <div class="input-group">
+        <span class="input-group-addon">{{ ToolCtrl.cashbox.symbol }}</span>
+        <input class="form-control" type="number" ng-model="ToolCtrl.amount" ng-disabled="!ToolCtrl.cashbox" required>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

@@ -274,6 +274,27 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   };
 
   /**
+   * @method replaceFormRows
+   */
+  VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) { 
+    this.clear();
+
+    var form = this;
+    var n = rows.length;
+    
+    rows.forEach(function (row) { 
+      form.addItems(1);
+
+      var lastRowIdx = form.store.data.length - 1;
+      var lastRow = form.store.data[lastRowIdx];
+
+      lastRow.configure(row);
+    });
+
+    this.validate();
+  };
+
+  /**
    * @method writeCache
    *
    * @description
