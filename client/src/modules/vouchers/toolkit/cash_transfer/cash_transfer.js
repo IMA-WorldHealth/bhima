@@ -20,8 +20,6 @@ function CashTransferKitController(Instance, Notify, Cashbox,
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
-  vm.onSelectCashbox = onSelectCashbox;
-  vm.onSelectAccount = onSelectAccount;
 
   // accounts from store
   AccountStore.accounts()
@@ -68,18 +66,8 @@ function CashTransferKitController(Instance, Notify, Cashbox,
       debit          : 0,
       credit         : 0,
       reference_uuid : undefined,
-      entity_uuid    : undefined
+      entity_uuid    : undefined,
     };
-  }
-
-  // on select cashbox
-  function onSelectCashbox() {
-    
-  }
-
-  // on select account
-  function onSelectAccount() {
-
   }
 
   // submission
