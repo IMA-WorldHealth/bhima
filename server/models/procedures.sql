@@ -393,7 +393,7 @@ BEGIN
           user_id, origin_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
-          iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 1
+          iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 11
         );
 
       -- exit the loop
@@ -418,7 +418,7 @@ BEGIN
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
-          currencyId, ientityId, cid, iuserId, 1
+          currencyId, ientityId, cid, iuserId, 11
         );
 
       END IF;
@@ -437,7 +437,7 @@ BEGIN
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
-      currencyId, ientityId, iuserId, 1
+      currencyId, ientityId, iuserId, 11
     );
   END IF;
 
@@ -449,7 +449,7 @@ BEGIN
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, ig.sales_account, ii.debit, ii.credit, ii.debit, ii.credit,
-    currencyId, 1, i.user_id
+    currencyId, 11, i.user_id
   FROM invoice AS i JOIN invoice_item AS ii JOIN inventory as inv JOIN inventory_group AS ig ON
     i.uuid = ii.invoice_uuid AND
     ii.inventory_uuid = inv.uuid AND
@@ -463,7 +463,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 1,
+    i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 11,
     i.user_id
   FROM invoice AS i JOIN invoice_subsidy AS isu JOIN subsidy AS su ON
     i.uuid = isu.invoice_uuid AND
@@ -477,7 +477,7 @@ BEGIN
     credit_equiv, currency_id, origin_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 1,
+    i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,
     i.user_id
   FROM invoice AS i JOIN invoice_billing_service AS ib JOIN billing_service AS b ON
     i.uuid = ib.invoice_uuid AND

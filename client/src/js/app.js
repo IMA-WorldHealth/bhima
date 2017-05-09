@@ -195,6 +195,7 @@ function constantConfig() {
       CASH_RETURN        : 8,
       PURCHASES          : 9,
       CREDIT_NOTE        : 10,
+      INVOICING          : 11,
       INCOME             : 'income',
       EXPENSE            : 'expense',
       OTHER              : 'other',
