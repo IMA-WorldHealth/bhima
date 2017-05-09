@@ -51,6 +51,7 @@
 "COLUMNS":"Colonnes"},
 "ERRORS":{"DATE_IN_WRONG_PERIOD":"Dates dans la mauvaise periode",
 "MISSING_DESCRIPTION":"Descriptions omises",
+"VARIOUS_TRANSACTION_TYPE":"Type de transaction different pour une meme transaction",
 "TRANSACTION_DIFF_DATES" : "Transactions avec des dates differentes",
 "LOCKED_ACCOUNT":"Compte(s) verrouille(s)",
 "UNBALANCED_TRANSACTIONS":"Transaction(s) non balancee(s)",

@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService',
+  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService',
 ];
 
 /**
@@ -33,7 +33,7 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate, GridExport) {
+  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter, $translate, GridExport, TransactionType) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -252,6 +252,13 @@ function JournalController(Journal, Sorting, Grouping,
       headerCellFilter : 'translate',
       visible          : true },
 
+    { field                : 'origin_id',
+      displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
+      headerCellFilter     : 'translate',
+      cellTemplate         : '/modules/journal/templates/transaction_type.html',
+      editableCellTemplate : '/modules/journal/templates/transaction_type.edit.html',
+      visible              : false },
+
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
@@ -465,6 +472,7 @@ function JournalController(Journal, Sorting, Grouping,
   function startup() {
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
+    loadTransactionType();
   }
 
   // ===================== edit entity ===============================
@@ -492,7 +500,38 @@ function JournalController(Journal, Sorting, Grouping,
     delete row.entity_uuid;
     delete row.hrEntity;
   }
-
   // ===================== end edit entity ===========================
+
+  // ===================== transaction type ==========================
+  vm.editTransactionType = editTransactionType;
+  vm.removeTransactionType = removeTransactionType;
+
+  // edit transaction type
+  function editTransactionType(row) {
+    var id = row.origin_id;
+    transactions.editCell(row, 'origin_id', id);
+  }
+
+  // remove transaction type
+  function removeTransactionType(row) {
+    transactions.editCell(row, 'origin_id', null);
+  }
+
+  // load transaction types
+  function loadTransactionType() {
+    TransactionType.read()
+    .then(function (list) {
+      vm.mapOrigins = {};
+
+      vm.typeList = list.map(function (item) {
+        item.hrText = $translate.instant(item.text);
+        vm.mapOrigins[item.id] = item.hrText;
+        return item;
+      });
+    })
+    .catch(Notify.handleError);
+  }
+  // ===================== end transaction type ======================
+
   startup();
 }
