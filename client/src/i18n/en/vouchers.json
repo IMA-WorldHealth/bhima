@@ -22,6 +22,8 @@
 "TYPES":{"SUPPORT_PAYMENT_DESCRIPTION":"Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."},
 "GLOBAL":{"CASHFLOW_OPTION":"Cashflow Option",
 "CONVENTION_INVOICES":"Convention - Invoices payment",
+"SUPPORT_FORM":"Patients Support - Form",
+"SUPPORT_TEXT":"When the above two fields are filled in, we will look for open debts for the patient to assign to the \"Support Patient\" Account.",
 "IMPORT_TRANSACTION":"Import transactions",
 "REPORT":"Voucher Report",
 "TITLE":"Voucher",

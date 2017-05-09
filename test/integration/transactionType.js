@@ -11,7 +11,6 @@ describe('(/transaction_type) Transaction Type API :: ', () => {
 
   let newTT = {
     text: 'My New Transaction Type',
-    description: 'Description for the new transaction type',
     type: 'income',
     prefix: 'NEW_TT',
     fixed: 0
@@ -19,7 +18,6 @@ describe('(/transaction_type) Transaction Type API :: ', () => {
 
   let updateTT = {
     text: 'My Updated Transaction Type',
-    description: 'Description for the updated transaction type',
     type: 'expense',
     prefix: 'UPDATED_TT'
   };

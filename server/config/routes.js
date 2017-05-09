@@ -607,10 +607,10 @@ exports.configure = function configure(app) {
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
-  // stock flux 
+  // stock flux
   app.get('/stock/flux', stock.listStockFlux);
 
-  // stock management API 
+  // stock management API
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
 
@@ -624,7 +624,7 @@ exports.configure = function configure(app) {
   // stock integration
   app.post('/stock/integration', stock.createIntegration);
 
-  // stock reports API 
+  // stock reports API
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
