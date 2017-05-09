@@ -38,6 +38,7 @@
 "CREDIT_NOTE":"Credit Note",
 "EXPENSE":"Expenses",
 "INCOME":"Incomes",
+"INVOICING":"Invoicing",
 "SALARY_PAYMENT":"Salary Payment",
 "GENERIC_EXPENSE":"Other Expenses",
 "GENERIC_INCOME":"Other Incomes",
