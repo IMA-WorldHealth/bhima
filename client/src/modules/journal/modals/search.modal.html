@@ -20,6 +20,41 @@
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
+          <label class="control-label" translate>
+            FORM.LABELS.TRANSACTION
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
+          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.searchQueries.trans_id">
+          <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <bh-account-select
+          account-id="ModalCtrl.options.account_id"
+          name="account_id"
+          on-select-callback="ModalCtrl.onSelectAccount(account)"
+          exclude-title-accounts="true"
+          required="0">
+          <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+        </bh-account-select>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
+          <bh-clear on-clear="ModalCtrl.clear('origin_id')"></bh-clear>
+          <select
+            class="form-control"
+            name="transaction_type"
+            ng-model="ModalCtrl.searchQueries.origin_id"
+            ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
+            <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
+          </select>
+          <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
         <!-- description fuzzy search -->
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
           <label class="control-label" translate>
@@ -42,16 +77,8 @@
           name="user_id"
           on-select-callback="ModalCtrl.onSelectUser(user)">
           <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-        </bh-user-select>        
+        </bh-user-select>
 
-        <bh-account-select
-          account-id="ModalCtrl.options.account_id"
-          name="account_id"
-          on-select-callback="ModalCtrl.onSelectAccount(account)"
-          exclude-title-accounts="true"
-          required="0">
-          <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
-        </bh-account-select>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
           <label class="control-label" translate>FORM.LABELS.PROJECT</label>
@@ -77,36 +104,10 @@
           </div>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
-          <label class="control-label" translate>
-            FORM.LABELS.TRANSACTION
-          </label>
-          <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
-          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.searchQueries.trans_id">
-          <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
         </div>
-
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
-          <select
-            class="form-control"
-            name="transaction_type"
-            ng-model="ModalCtrl.searchQueries.origin_id"
-            ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
-            <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
-          </select>
-          <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
-
-        </div>
-
       </uib-tab>
 
-      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate}}">
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
 
           <!-- period selection -->
