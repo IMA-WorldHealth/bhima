@@ -97,16 +97,17 @@ function financialActivities(debtorUuid) {
         db.exec(aggregateQuery, [buid, buid]),
       ]);
     })
-    .spread((transactions, aggregates) => {
+    .spread((transactions, aggs) => {
+      let aggregates = aggs;
       const patient = data.patient;
 
       if (!aggregates.length) {
-        aggregates = { balance: 0 };
+        aggregates = { balance : 0 };
       } else {
         aggregates = aggregates[0];
       }
 
-      _.extend(aggregates, { hasDebitBalance: aggregates.balance > 0 });
+      _.extend(aggregates, { hasDebitBalance : aggregates.balance > 0 });
       return { transactions, patient, aggregates };
     });
 }

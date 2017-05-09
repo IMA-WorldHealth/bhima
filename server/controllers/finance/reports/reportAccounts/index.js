@@ -8,7 +8,7 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 /**
  * global constants
  */
-const sourceMap = { 1: 'general_ledger', 2: 'posting_journal', 3: 'combined_ledger' };
+const sourceMap = { 1 : 'general_ledger', 2 : 'posting_journal', 3 : 'combined_ledger' };
 
 /**
  * Expose to controllers
@@ -49,7 +49,7 @@ function document(req, res, next) {
 
   return getAccountTransactions(params.account_id, params.sourceId, params.dateFrom, params.dateTo)
     .then((result) => {
-      _.extend(bundle, { transactions: result.transactions, sum: result.sum, title });
+      _.extend(bundle, { transactions : result.transactions, sum : result.sum, title });
 
       return report.render(bundle);
     })
