@@ -17,7 +17,7 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   vm.gridOptions = {};
   vm.tool = Data;
 
-  var MAX_DECIMAL_PRECISION = bhConstants = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // expose to the view
   vm.selectGroupInvoices = selectGroupInvoices;
@@ -126,9 +126,9 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   function formatEntity(uuid) {
     var entity = vm.debtors.get(uuid);
     return {
-      label: entity.text,
-      type: 'D',
-      uuid: entity.uuid
+      label : entity.text,
+      type  : 'D',
+      uuid  : entity.uuid
     };
   }
 
@@ -148,11 +148,11 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   // generate row element
   function generateRow() {
     return {
-      account_id    : undefined,
-      debit         : 0,
-      credit        : 0,
+      account_id     : undefined,
+      debit          : 0,
+      credit         : 0,
       reference_uuid : undefined,
-      entity_uuid   : undefined
+      entity_uuid    : undefined
     };
   }
 
@@ -164,11 +164,11 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   vm.gridOptions.flatEntityAccess = true;
 
   vm.gridOptions.columnDefs = [
-    { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-    { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', enableFiltering: false },
-    { field : 'balance', displayName : 'TABLE.COLUMNS.COST',
-      headerCellFilter : 'translate', enableFiltering: false,
-      cellTemplate: '/modules/templates/grid/balance.cell.html'
+    { field: 'reference', displayName: 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+    { field: 'date', cellFilter: 'date', displayName: 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter: 'translate', enableFiltering: false },
+    { field            : 'balance', displayName      : 'TABLE.COLUMNS.COST',
+      headerCellFilter : 'translate', enableFiltering  : false,
+      cellTemplate     : '/modules/templates/grid/balance.cell.html'
     }
   ];
 
@@ -194,11 +194,15 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     if (form.$invalid) { return; }
 
     var bundle = generateTransactionRows({
-      cashbox: vm.cashbox,
-      convention: vm.convention,
-      invoices: vm.selectedRows
+      cashbox    : vm.cashbox,
+      convention : vm.convention,
+      invoices   : vm.selectedRows,
     });
 
-    Instance.close({ rows: bundle, convention: vm.convention });
+    Instance.close({
+      rows       : bundle,
+      convention : vm.convention,
+      type_id    : bhConstants.transactionType.CONVENTION_PAYMENT, // Convention Payment ID
+    });
   }
 }

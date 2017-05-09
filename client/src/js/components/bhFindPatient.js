@@ -7,7 +7,7 @@ angular.module('bhima.components')
       onRegisterApi:     '&',  // expose force refresh API
       required:          '<',  // bind the required (for ng-required)
       validationTrigger: '<',  // bind validation trigger
-      suppressReset:     '@'   // bind a string
+      suppressReset:     '<'   // bind the reset
     }
   });
 
