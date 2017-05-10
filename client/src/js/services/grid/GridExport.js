@@ -8,11 +8,11 @@ function GridExportService(Modal, util) {
   /**
    * @constructor
    */
-  function GridExport(gridOptions, defaultRows, defaultCols) {
+  function GridExport(gridOptions, defaultRowKey, defaultColKey) {
 
     this.gridOptions = gridOptions;
-    this.ROWS = defaultRows;
-    this.COLS = defaultCols;
+    this.ROWS = defaultRowKey;
+    this.COLS = defaultColKey;
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.api = api;

@@ -51,8 +51,6 @@ function JournalController(Journal, Sorting, Grouping,
   var cache = AppCache(cacheKey + '-module');
   var vm = this;
 
-  var gridApi;
-
   vm.filter = filter;
 
   // number of all of the transactions in the system
