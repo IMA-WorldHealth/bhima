@@ -169,7 +169,7 @@ function receipt(req, res, next) {
 function creditNote(req, res, next) {
   const options = req.query;
 
-  let metadata = {
+  const metadata = {
     enterprise : req.session.enterprise,
     project : req.session.project,
     user : req.session.user,
@@ -181,7 +181,7 @@ function creditNote(req, res, next) {
   const invoiceResponse = {};
   invoiceResponse.lang = options.lang;
 
-  let template = CREDIT_NOTE_TEMPLATE;
+  const template = CREDIT_NOTE_TEMPLATE;
 
   let creditNoteReport;
 
@@ -194,12 +194,12 @@ function creditNote(req, res, next) {
 
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
-      let recipientUuid = reportResult.patient_uuid;
+      const recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
-      let queries = {
+      const queries = {
         recipient : Patients.lookupPatient(recipientUuid),
-        creditNote : Invoices.lookupInvoiceCreditNote(invoiceUuid)
+        creditNote : Invoices.lookupInvoiceCreditNote(invoiceUuid),
       };
 
       return util.resolveObject(queries);
@@ -209,11 +209,10 @@ function creditNote(req, res, next) {
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
-
       invoiceResponse.receiptCurrency = currencyId;
       invoiceResponse.lang = options.lang;
       invoiceResponse.exchange = exchangeResult.rate;
-      invoiceResponse.dateFormat = (new moment()).format('L');
+      invoiceResponse.dateFormat = (new Moment()).format('L');
       if (invoiceResponse.exchange) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
@@ -222,7 +221,7 @@ function creditNote(req, res, next) {
     })
     .then(creditNoteResult => {
       // invoiceResponse.creditNote = creditNoteResult[0];
-      return report.render(invoiceResponse);
+      return creditNoteReport.render(invoiceResponse);
     })
     .then(result => {
       res.set(result.headers).send(result.report);

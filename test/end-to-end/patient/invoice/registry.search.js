@@ -39,7 +39,6 @@ function InvoiceRegistrySearch() {
   }
 
   it('filters invoices by clicking on date buttons', () => {
-
     // set the filters to month
     FU.buttons.search();
     $('[data-date-range="month"]').click();

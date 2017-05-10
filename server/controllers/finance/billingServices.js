@@ -33,14 +33,14 @@ function lookupBillingService(id) {
     WHERE bs.id = ?;`;
 
   return db.exec(sql, [id])
-  .then(function (rows) {
-    // if no records matching, throw a 404
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a billing service with id: ${id}.`);
-    }
-    // return a single JSON of the record
-    return rows[0];
-  });
+    .then(function (rows) {
+      // if no records matching, throw a 404
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find a billing service with id: ${id}.`);
+      }
+      // return a single JSON of the record
+      return rows[0];
+    });
 }
 
 
@@ -52,11 +52,11 @@ function lookupBillingService(id) {
 exports.detail = function detail(req, res, next) {
   // looks up the billing service by ID
   lookupBillingService(req.params.id)
-  .then(function (billingService) {
-    res.status(200).json(billingService);
-  })
-  .catch(next)
-  .done();
+    .then(function (billingService) {
+      res.status(200).json(billingService);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -83,11 +83,11 @@ exports.list = function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -111,6 +111,8 @@ exports.create = function create(req, res, next) {
          You provided the negative value ${data.value}.`
       )
     );
+
+    return;
   }
 
   const sql =
@@ -118,12 +120,12 @@ exports.create = function create(req, res, next) {
     VALUES (?, ?, ?, ?);`;
 
   db.exec(sql, [data.account_id, data.label, data.description, data.value])
-  .then(function (results) {
-    // return the id to the client for future lookups.
-    res.status(201).json({ id : results.insertId });
-  })
-  .catch(next)
-  .done();
+    .then(function (results) {
+      // return the id to the client for future lookups.
+      res.status(201).json({ id : results.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -145,18 +147,18 @@ exports.update = function update(req, res, next) {
 
   // ensure that the billing service matching :id exists
   lookupBillingService(id)
-  .then(function () {
-    return db.exec(sql, [data, req.params.id]);
-  })
-  .then(function () {
-    // return the full changed object
-    return lookupBillingService(id);
-  })
-  .then(function (billingService) {
-    res.status(200).json(billingService);
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      return db.exec(sql, [data, req.params.id]);
+    })
+    .then(function () {
+      // return the full changed object
+      return lookupBillingService(id);
+    })
+    .then(function (billingService) {
+      res.status(200).json(billingService);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -171,12 +173,12 @@ exports.delete = function del(req, res, next) {
 
   // first make sure that the billing service exists
   lookupBillingService(req.params.id)
-  .then(function () {
-    return db.exec(sql, [req.params.id]);
-  })
-  .then(function () {
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      return db.exec(sql, [req.params.id]);
+    })
+    .then(function () {
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 };
