@@ -31,6 +31,8 @@ let frFileMissList = [];
 
 const jsonFiles = buildJsonFileArray();
 
+const notSwapFile = (fname) => !fname.includes('.swp');
+
 jsonFiles.forEach(function (jsonFile) {
 
   // Arrays to save differences in

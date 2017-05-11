@@ -14,7 +14,7 @@
   {{/if}}
 
   <section>
-    <table class="table table-condensed table-striped table-report table-bordered">
+    <table class="table table-condensed table-report table-bordered">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;">
           <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
@@ -27,6 +27,20 @@
         </tr>
       </thead>
       <tbody>
+
+        {{! Opening Balance Line }}
+        <tr>
+          <th>{{ date openingBalance.date }}</th>
+          <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
+          <th class="text-right">
+            {{#unless openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/unless}}
+          </th>
+          <th class="text-right">
+            {{#if openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/if}}
+          </th>
+          <th class="text-right">{{currency openingBalance.amount metadata.enterprise.currency_id}}</th>
+        </tr>
+
         {{#each transactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
