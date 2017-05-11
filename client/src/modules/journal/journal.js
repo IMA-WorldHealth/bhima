@@ -285,24 +285,23 @@ function JournalController(Journal, Sorting, Grouping,
     });
   }
 
+  function updateSharedPropertyOnRow(rows, column, value){
+    rows.forEach(function (row) {
+      transactions.editCell(row, column, value, row[column]);
+      row[column] = (column === 'trans_date') ? new Date(value) : value;
+    });
+
+  }
+
   function propagate(column, value){
-    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
-    
+    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];    
     //Check if the column updated must be propragated in all transaction
-    var checkPropagate = (propagateColumn.indexOf(column));
+    var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
 
-    if(checkPropagate !== -1){
-      // For the old row
-      vm.transactions._entity.data.data.forEach(function (row) {
-        transactions.editCell(row, column, value, row[column]);
-        row[column] = (column === 'trans_date') ? new Date(value) : value;
-      });
-
-      // For the new row
-      vm.transactions._entity.newRows.data.forEach(function (row) {
-        transactions.editCell(row, column, value, row[column]);
-        row[column] = (column === 'trans_date') ? new Date(value) : value;
-      });
+    if (hasSharedProperty) {
+      // pass updates on to both the original rows and the new (pending) rows
+      updateSharedPropertyOnRow(vm.transactions._entity.data.data, column, value);
+      updateSharedPropertyOnRow(vm.transactions._entity.newRows.data, column, value);
     }
   }
 
