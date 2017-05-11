@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', 'TransactionTypeService', '$translate',
+  'FilterService', '$rootScope', '$filter', 'TransactionTypeService', '$translate', '$scope',
 ];
 
 /**
@@ -34,7 +34,7 @@ function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter,
-  TransactionType, $translate) {
+  TransactionType, $translate, $scope) {
 
   // Journal utilities
   var sorting;
@@ -277,6 +277,32 @@ function JournalController(Journal, Sorting, Grouping,
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
+    
+    vm.gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue){
+      if(newValue != oldValue) {
+        propagate(colDef.field,newValue);
+      }
+    });
+  }
+
+  function updateSharedPropertyOnRow(rows, column, value){
+    rows.forEach(function (row) {
+      transactions.editCell(row, column, value, row[column]);
+      row[column] = (column === 'trans_date') ? new Date(value) : value;
+    });
+
+  }
+
+  function propagate(column, value){
+    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];    
+    //Check if the column updated must be propragated in all transaction
+    var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
+
+    if (hasSharedProperty) {
+      // pass updates on to both the original rows and the new (pending) rows
+      updateSharedPropertyOnRow(vm.transactions._entity.data.data, column, value);
+      updateSharedPropertyOnRow(vm.transactions._entity.newRows.data, column, value);
+    }
   }
 
   // This function opens a modal through column service to let the user show or Hide columns
@@ -512,6 +538,9 @@ function JournalController(Journal, Sorting, Grouping,
   function editTransactionType(row) {
     var id = row.origin_id;
     transactions.editCell(row, 'origin_id', id);
+
+    // Propagate the changement in all origin Id for transaction
+    propagate('origin_id', id);
   }
 
   // remove transaction type
