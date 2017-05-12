@@ -43,7 +43,7 @@ function keys(req, res, next) {
   const sql = `SELECT * FROM report WHERE report_key = ?;`;
 
   db.exec(sql, [key])
-    .then(function (keyDetail) {
+    .then(keyDetail => {
       res.status(200).json(keyDetail);
     })
     .catch(next)
@@ -83,7 +83,7 @@ function list(req, res, next) {
     WHERE report_id = ?`;
 
   db.exec(sql, [reportId])
-    .then(function (results) {
+    .then(results => {
       res.status(200).json(results);
     })
     .catch(next)

@@ -28,28 +28,27 @@ const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars'
 // filtered on.
 function formatFilters(qs) {
   const columns = [
-    { field: 'name', displayName: 'FORM.LABELS.NAME' },
-    { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
-    { field: 'hospital_no', displayName: 'FORM.LABELS.HOSPITAL_NO' },
-    { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-    { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', isDate: true },
-    { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate: true },
-    { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', isDate: true },
-    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true },
-    { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
-    { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
-    { field: 'user_id', displayName: 'FORM.LABELS.USER' }
+    { field : 'name', displayName : 'FORM.LABELS.NAME' },
+    { field : 'sex', displayName : 'FORM.LABELS.GENDER' },
+    { field : 'hospital_no', displayName : 'FORM.LABELS.HOSPITAL_NO' },
+    { field : 'reference', displayName : 'FORM.LABELS.REFERENCE' },
+    { field : 'dateBirthFrom', displayName : 'FORM.LABELS.DOB', comparitor : '>', isDate : true },
+    { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
+    { field : 'dateRegistrationFrom', displayName : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '>', isDate : true },
+    { field : 'dateRegistrationTo', displayName : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '<', isDate : true },
+    { field : 'debtor_group_uuid', displayName : 'FORM.LABELS.DEBTOR_GROUP' },
+    { field : 'patient_group_uuid', displayName : 'PATIENT_GROUP.PATIENT_GROUP' },
+    { field : 'user_id', displayName : 'FORM.LABELS.USER' },
   ];
 
   return columns.filter(column => {
-    let value = qs[column.field];
+    const value = qs[column.field];
 
     if (!_.isUndefined(value)) {
       column.value = value;
       return true;
-    } else {
-      return false;
     }
+    return false;
   });
 }
 
@@ -76,7 +75,8 @@ function build(req, res, next) {
     report = new ReportManager(TEMPLATE, req.session, options);
     delete options.orientation;
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   const filters = formatFilters(options);
@@ -99,9 +99,10 @@ function build(req, res, next) {
 
   Patients.find(options)
     .then(patients => {
-
       // calculate ages with moment
-      patients.forEach(patient => patient.age = moment().diff(patient.dob, 'years'));
+      patients.forEach(patient => {
+        patient.age = moment().diff(patient.dob, 'years');
+      });
 
       data.patients = patients;
 
@@ -110,7 +111,7 @@ function build(req, res, next) {
       if (!patients) { return false; }
 
       // gather the uuids for the aggregate queries
-      let uuids = patients.map(p => db.bid(p.uuid));
+      const uuids = patients.map(p => db.bid(p.uuid));
 
       return db.one(sql, [uuids]);
     })

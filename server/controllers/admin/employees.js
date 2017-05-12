@@ -60,7 +60,7 @@ function list(req, res, next) {
   `;
 
   db.exec(sql)
-  .then(function (rows) {
+  .then(rows => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -70,7 +70,7 @@ function list(req, res, next) {
 /**
  * Get list of availaible holidays for an employee
  */
-exports.listHolidays = function (req, res, next) {
+exports.listHolidays = function listHolidays(req, res, next) {
   const pp = JSON.parse(req.params.pp);
   const sql =
     `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
@@ -88,7 +88,7 @@ exports.listHolidays = function (req, res, next) {
   ];
 
   db.exec(sql, data)
-  .then(function (rows) {
+  .then(rows => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -98,7 +98,7 @@ exports.listHolidays = function (req, res, next) {
 /**
 * Check an existing holiday
 */
-exports.checkHoliday = function (req, res, next) {
+exports.checkHoliday = function checkHoliday(req, res, next) {
   let sql =
     `SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_id = ?
      AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
@@ -116,7 +116,7 @@ exports.checkHoliday = function (req, res, next) {
   }
 
   db.exec(sql, data)
-  .then(function (rows) {
+  .then(rows => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -129,7 +129,7 @@ exports.checkHoliday = function (req, res, next) {
 exports.checkOffday = function checkHoliday(req, res, next) {
   const sql = `SELECT * FROM offday WHERE date = ? AND id <> ?`;
   db.exec(sql, [req.query.date, req.query.id])
-  .then(function (rows) {
+  .then(rows => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -180,7 +180,7 @@ function lookupEmployee(id) {
  */
 function detail(req, res, next) {
   lookupEmployee(req.params.id)
-    .then(function (record) {
+    .then(record => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -251,7 +251,7 @@ function update(req, res, next) {
     .addQuery(sql, [clean, req.params.id]);
 
   transaction.execute()
-    .then(function (results) {
+    .then(results => {
       if (!results[2].affectedRows) {
         throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
@@ -265,7 +265,7 @@ function update(req, res, next) {
 
       return lookupEmployee(req.params.id);
     })
-    .then(function (rows) {
+    .then(rows => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -324,7 +324,7 @@ function create(req, res, next) {
     .addQuery(sql, [employee]);
 
   transaction.execute()
-    .then(function (results) {
+    .then(results => {
       // @todo - why is this not a UUID, but grade_id is a uuid?
       const employeeId = results[2].insertId;
 
@@ -375,7 +375,7 @@ function search(req, res, next) {
   `;
 
   db.exec(sql, [keyValue])
-  .then(function (rows) {
+  .then(rows => {
     Topic.publish(Topic.channels.ADMIN, {
       event : Topic.events.SEARCH,
       entity : Topic.entities.EMPLOYEE,

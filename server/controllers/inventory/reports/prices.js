@@ -21,7 +21,6 @@ module.exports = prices;
 const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 
 function prices(req, res, next) {
-
   const qs = _.extend(req.query, { csvKey : 'debtors' });
   const metadata = _.clone(req.session);
 
@@ -29,8 +28,9 @@ function prices(req, res, next) {
 
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
-  } catch(e) {
-    return next(e);
+  } catch (e) {
+    next(e);
+    return;
   }
 
   const sql = `
@@ -44,14 +44,13 @@ function prices(req, res, next) {
 
   db.exec(sql)
     .then(items => {
-
       // group by inventory group
       let groups = _.groupBy(items, i => i.groupName);
 
       // make sure that they keys are sorted in alphabetical order
-      groups = _.mapValues(groups, items => {
-        _.sortBy(items, 'text');
-        return items;
+      groups = _.mapValues(groups, lines => {
+        _.sortBy(lines, 'text');
+        return lines;
       });
 
       return report.render({ groups });
@@ -61,6 +60,5 @@ function prices(req, res, next) {
     })
     .catch(next)
     .done();
-
 }
 

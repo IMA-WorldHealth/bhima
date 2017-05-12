@@ -37,25 +37,25 @@ function list(req, res, next) {
   const id = db.bid(req.params.uuid);
 
   // just check if the patient exists
-  let patientExistenceQuery =
+  const patientExistenceQuery =
     'SELECT uuid FROM patient WHERE uuid = ?;';
 
   // read patient groups
-  let patientGroupsQuery = `
+  const patientGroupsQuery = `
     SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid
     FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
     WHERE patient_uuid = ?;
   `;
 
   db.exec(patientExistenceQuery, [id])
-    .then(function (rows) {
+    .then(rows => {
       if (_.isEmpty(rows)) {
         throw new NotFound(`Could not find an assignation patient with uuid ${req.params.uuid}.`);
       }
 
       return db.exec(patientGroupsQuery, [id]);
     })
-    .then(function(patientGroups) {
+    .then(patientGroups => {
       res.status(200).json(patientGroups);
     })
     .catch(next)
@@ -75,33 +75,35 @@ function update(req, res, next) {
 
   // TODO make sure assignments is an array etc. - test for these cases
   if (!req.body.assignments) {
-    return next(
+    next(
       new BadRequest(
         `Request must specify an "assignments" object containing an array of patient group ids.`,
         'ERROR.ERR_MISSING_INFO'
       )
     );
+
+    return;
   }
 
   // Clear assigned groups
-  let removeAssignmentsQuery =
+  const removeAssignmentsQuery =
     'DELETE FROM assignation_patient WHERE patient_uuid = ?';
 
   // Insert new relationships
-  let createAssignmentsQuery =
+  const createAssignmentsQuery =
     'INSERT INTO assignation_patient (uuid, patient_uuid, patient_group_uuid) VALUES ?';
 
   // map each requested patient group uuid to the current patient uuid to be
   // inserted into the database
-  let assignmentData = req.body.assignments.map(function (patientGroupId) {
+  const assignmentData = req.body.assignments.map(patientGroupId => {
     return [
       db.bid(uuid.v4()),
       patientId,
-      db.bid(patientGroupId)
+      db.bid(patientGroupId),
     ];
   });
 
-  let transaction = db.transaction();
+  const transaction = db.transaction();
 
   transaction.addQuery(removeAssignmentsQuery, [patientId]);
 
@@ -111,13 +113,12 @@ function update(req, res, next) {
   }
 
   transaction.execute()
-    .then(function (result) {
-
+    .then(result => {
       Topic.publish(Topic.channels.MEDICAL, {
-        event: Topic.events.UPDATE,
-        entity: Topic.entities.PATIENT,
-        user_id: req.session.user.id,
-        uuid: req.params.uuid
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.PATIENT,
+        user_id : req.session.user.id,
+        uuid : req.params.uuid,
       });
 
       // TODO send back correct ids

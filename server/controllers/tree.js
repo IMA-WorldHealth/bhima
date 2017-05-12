@@ -21,9 +21,9 @@ const ROOT_NODE = 0;
  * The HTTP handler that returns a user's tree based on their session
  * information.
  */
-exports.generate = function (req, res, next) {
+exports.generate = function generate(req, res, next) {
   buildTree(req.session.user.id)
-  .then(function (treeData) {
+  .then(treeData => {
     res.send(treeData);
   })
   .catch(next)
@@ -49,13 +49,13 @@ function getChildren(units, parentId) {
 
   // Returns all units where the parent is the
   // parentId
-  const children = units.filter(function (unit) {
+  const children = units.filter(unit => {
     return unit.parent === parentId;
   });
 
   // Recursively call getChildren on all child units
   // and attach them as childen of their parent unit
-  children.forEach(function (unit) {
+  children.forEach(unit => {
     unit.children = getChildren(units, unit.id);
   });
 
@@ -82,7 +82,7 @@ function buildTree(userId) {
   `;
 
   return db.exec(sql, [userId])
-  .then(function (units) {
+  .then(units => {
     // builds a tree of units on the ROOT_NODE
     return getChildren(units, ROOT_NODE);
   });

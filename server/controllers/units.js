@@ -17,7 +17,7 @@ exports.list = function list(req, res, next) {
     WHERE unit.id <> ?;`;
 
   db.exec(sql, [ROOT_NODE])
-  .then(function (rows) {
+  .then(rows => {
     res.status(200).json(rows);
   })
   .catch(next)

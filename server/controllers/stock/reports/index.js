@@ -48,7 +48,7 @@ function stockExitPatientReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.REPORTS.EXIT_PATIENT' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
 
   // set up the report with report manager
   try {
@@ -118,7 +118,7 @@ function stockAdjustmentReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.REPORTS.ADJUSTMENT' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.ADJUSTMENT' });
 
   // set up the report with report manager
   try {
@@ -183,7 +183,7 @@ function stockExitServiceReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.REPORTS.EXIT_SERVICE' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_SERVICE' });
 
   // set up the report with report manager
   try {
@@ -249,7 +249,7 @@ function stockExitLossReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.REPORTS.EXIT_LOSS' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_LOSS' });
 
   // set up the report with report manager
   try {
@@ -313,7 +313,7 @@ function stockExitLossReceipt(req, res, next) {
 function stockExitDepotReceipt(req, res, next) {
   let report;
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.RECEIPTS.EXIT_DEPOT' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.EXIT_DEPOT' });
 
   // set up the report with report manager
   try {
@@ -341,7 +341,7 @@ function stockExitDepotReceipt(req, res, next) {
 function stockEntryDepotReceipt(req, res, next) {
   let report;
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.RECEIPTS.ENTRY_DEPOT' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_DEPOT' });
 
   // set up the report with report manager
   try {
@@ -370,7 +370,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
 
   // set up the report with report manager
   try {
@@ -448,7 +448,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
   let report;
   const data = {};
   const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename: 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
+  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
 
   // set up the report with report manager
   try {
@@ -594,7 +594,7 @@ function stockLotsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename: 'TREE.STOCK_LOTS', orientation: 'landscape' });
+  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_LOTS', orientation : 'landscape' });
 
   // set up the report with report manager
   try {
@@ -641,7 +641,7 @@ function stockMovementsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename: 'TREE.STOCK_MOVEMENTS', orientation: 'landscape' });
+  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_MOVEMENTS', orientation : 'landscape' });
 
   // set up the report with report manager
   try {
@@ -688,7 +688,7 @@ function stockInventoriesReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename: 'TREE.STOCK_INVENTORY', orientation: 'landscape' });
+  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_INVENTORY', orientation : 'landscape' });
 
   // set up the report with report manager
   try {
