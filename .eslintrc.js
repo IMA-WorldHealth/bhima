@@ -41,7 +41,6 @@ module.exports = {
     "arrow-body-style" : "off",
     "prefer-arrow-callback" : "off",
     "no-underscore-dangle" : "off",
-    "no-unused-vars" : "off",
     "no-extra-boolean-cast" : "off",
   },
   "globals" : {
