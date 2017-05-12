@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('InvoiceRegistrySearchModalController', InvoiceRegistrySearchModalController);
 
 InvoiceRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'ServiceService', 'DateService', 'filters',
-  'NotifyService'
+  '$uibModalInstance', 'ServiceService', 'filters',
+  'NotifyService', 'moment', 'bhConstants'
 ];
 
 /**
@@ -14,12 +14,11 @@ InvoiceRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Services, Dates, filters, Notify) {
+function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, moment, bhConstants) {
   var vm = this;
 
   // set controller data
   vm.params = angular.copy(filters || {});
-  vm.periods = Dates.period();
   vm.today = new Date();
 
   // @FIXME patch hack - this should be handled by FilterService
@@ -53,14 +52,17 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, Dates, fi
 
     //to get it deleted at the for loop below
     var parameters = angular.copy(vm.params);
+    
+    // to get the format of data from Database
+    var formatDB = bhConstants.dates.formatDB;
 
     // convert dates to strings
     if (parameters.billingDateFrom) {
-      parameters.billingDateFrom = Dates.util.str(parameters.billingDateFrom);
+      parameters.billingDateFrom = moment(parameters.billingDateFrom).format(formatDB);
     }
 
     if (parameters.billingDateTo) {
-      parameters.billingDateTo = Dates.util.str(parameters.billingDateTo);
+      parameters.billingDateTo = moment(parameters.billingDateTo).format(formatDB);
     }
 
     // make sure we don't have any undefined or empty parameters

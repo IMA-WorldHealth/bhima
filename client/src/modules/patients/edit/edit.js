@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 PatientEdit.$inject = [
   '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService',
-  'ScrollService', 'PatientGroupModal', 'DateService', 'bhConstants'
+  'ScrollService', 'PatientGroupModal', 'bhConstants'
 ];
 
-function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Dates, Constants) {
+function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Constants) {
   var vm = this;
   var referenceId = $stateParams.uuid;
 

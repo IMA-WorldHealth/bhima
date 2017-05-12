@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'DateService', 'params', 'DebtorGroupService', 'PatientGroupService',
-  'bhConstants'
+  '$uibModalInstance', 'params', 'DebtorGroupService', 'PatientGroupService',
+  'bhConstants', 'moment'
 ];
 
 /**
@@ -14,11 +14,8 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGroups, PatientGroupsService, bhConstants) {
+function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment) {
   var vm = this;
-
-  // bind period labels from the service
-  vm.periods = Dates.period();
   vm.today = new Date();
 
   // bind filters if they have already been applied.  Otherwise, default to an
@@ -29,8 +26,6 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
-  vm.setDateRange = setDateRange;
-  vm.dateFormat =  bhConstants.dayOptions.format;
 
   DebtorGroups.read()
     .then(function (result) {
@@ -53,21 +48,24 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
 
     var parameters = angular.copy(vm.params);
 
+    // to get the format of data from Database
+    var formatDB = bhConstants.dates.formatDB;
+
     // convert dates to strings
     if (parameters.dateRegistrationFrom) {
-      parameters.dateRegistrationFrom = Dates.util.str(parameters.dateRegistrationFrom);
+      parameters.dateRegistrationFrom = moment(parameters.dateRegistrationFrom).format(formatDB);
     }
 
     if (parameters.dateRegistrationTo) {
-      parameters.dateRegistrationTo = Dates.util.str(parameters.dateRegistrationTo);
+      parameters.dateRegistrationTo = moment(parameters.dateRegistrationTo).format(formatDB);
     }
 
     if (parameters.dateBirthFrom) {
-      parameters.dateBirthFrom = Dates.util.str(parameters.dateBirthFrom);
+      parameters.dateBirthFrom = moment(parameters.dateBirthFrom).format(formatDB);
     }
 
     if (parameters.dateBirthTo) {
-      parameters.dateBirthTo = Dates.util.str(parameters.dateBirthTo);
+      parameters.dateBirthTo = moment(parameters.dateBirthTo).format(formatDB);
     }
 
     // make sure we don't have any undefined or empty parameters
@@ -91,37 +89,6 @@ function PatientRegistryModalController(ModalInstance, Dates, params, DebtorGrou
       delete vm.params.dateBirthTo;
     } else {
       delete vm.params[value];
-    }
-  }
-
-  // sets the date range for date inputs
-  function setDateRange(type, range) {
-
-    // the parameter key we will be setting
-    var key = (type === 'registration') ?
-      'dateRegistrationFrom' : 'dateBirthFrom';
-
-    // set the end date to today
-    if (type === 'registration') {
-      vm.params.dateRegistrationTo = new Date();
-    } else {
-      vm.params.dateBirthTo = new Date();
-    }
-
-    vm.range = range;
-
-    switch (range) {
-      case 'today':
-        vm.params[key] = new Date();
-        break;
-      case 'week':
-        vm.params[key] = Dates.current.week();
-        break;
-      case 'month':
-        vm.params[key] = Dates.current.month();
-        break;
-      default:
-        vm.params[key] = Dates.current.year();
     }
   }
 
