@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
 
-    <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" bh-form-defaults novalidate>
+    <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" novalidate>
 
       <div class="panel panel-primary">
 
@@ -25,13 +25,11 @@
 
         <!-- body  -->
         <section>
-
           <div
             id="account-balance-grid"
             style="height : 600px;"
             ui-grid="FiscalOBCtrl.gridOptions">
           </div>
-
         </section>
 
         <!-- footer  -->
@@ -50,10 +48,7 @@
             <span ng-show="FiscalOBCtrl.previousFiscalYearExist">{{ 'FORM.BUTTONS.IMPORT' | translate }}</span>
           </button>
         </div>
-
       </div>
-
     </form>
-
   </div>
 </div>
