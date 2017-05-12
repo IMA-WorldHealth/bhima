@@ -27,10 +27,10 @@ angular.module('bhima.components')
   });
 
 // dependencies injection
-bhDateInterval.$inject = ['DateService', 'moment', 'bhConstants'];
+bhDateInterval.$inject = ['moment', 'bhConstants'];
 
 // controller definition
-function bhDateInterval(Dates, moment, bhConstants) {
+function bhDateInterval(moment, bhConstants) {
   var vm = this;
 
   // expose to the viewe
@@ -59,22 +59,23 @@ function bhDateInterval(Dates, moment, bhConstants) {
   }
 
   function day() {
-    vm.dateFrom = Dates.current.day();
+    vm.dateFrom = new Date();
     vm.dateTo = new Date();
   }
 
   function week() {
-    vm.dateFrom = Dates.current.week();
+    // Fix me if is necessary the first day of week is Sunday or Monday
+    vm.dateFrom = moment().startOf('week').toDate();
     vm.dateTo = new Date();
   }
 
   function month() {
-    vm.dateFrom = Dates.current.month();
+    vm.dateFrom = moment().startOf('month').toDate();
     vm.dateTo = moment().endOf('month').toDate();
   }
 
   function year() {
-    vm.dateFrom = Dates.current.year();
+    vm.dateFrom = moment().startOf('year').toDate();
     vm.dateTo = moment().endOf('year').toDate();
   }
 

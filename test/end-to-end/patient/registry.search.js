@@ -5,6 +5,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
@@ -78,7 +79,7 @@ function PatientRegistrySearch() {
   it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
     FU.buttons.search();
     FU.input('ModalCtrl.params.display_name', parameters.name1);
-    $('[data-date-registration]').$('[data-date-range="week"]').click();
+    $('[data-date-range="week"]').click();
     FU.modal.submit();
 
     expectNumberOfGridRows(1);
@@ -89,7 +90,7 @@ function PatientRegistrySearch() {
   // demonstrates that sex + time-delimited filtering works
   it('should find no female patients registered in the last year.', function () {
     FU.buttons.search();
-    $('[data-date-registration]').$('[data-date-range="year"]').click();
+    $('[data-date-range="year"]').click();
     element(by.id('female')).click();
     FU.modal.submit();
 
@@ -101,11 +102,8 @@ function PatientRegistrySearch() {
   // changes every single date input manually.
   it('should not find any patients with complex limited dates.', function () {
     FU.buttons.search();
-
-    FU.input('ModalCtrl.params.dateRegistrationFrom', parameters.dateRegistrationFrom);
-    FU.input('ModalCtrl.params.dateRegistrationTo', parameters.dateRegistrationTo);
-    FU.input('ModalCtrl.params.dateBirthFrom', parameters.dateBirthFrom);
-    FU.input('ModalCtrl.params.dateBirthTo', parameters.dateBirthTo);
+    components.dateInterval.range(parameters.dateRegistrationFrom, parameters.dateRegistrationTo, 'registration-date');
+    components.dateInterval.range(parameters.dateBirthFrom, parameters.dateBirthTo, 'dob-date');
 
     FU.modal.submit();
 
@@ -117,9 +115,8 @@ function PatientRegistrySearch() {
   // combines dates with manual date manipulation
   it('setting dates manually should find two patients.', function () {
     FU.buttons.search();
+    components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
 
-    FU.input('ModalCtrl.params.dateBirthFrom', parameters.dateBirthFrom2);
-    FU.input('ModalCtrl.params.dateBirthTo', parameters.dateBirthTo2);
 
     element(by.id('male')).click();
 
@@ -134,7 +131,7 @@ function PatientRegistrySearch() {
   // cancel button is clicked
   it('clearing filters restores default number of rows to the grid', () => {
     FU.buttons.search();
-    $('[data-date-registration]').$('[data-date-range="year"]').click();
+    $('[data-date-range="year"]').click();
     element(by.id('male')).click();
     FU.modal.submit();
 
@@ -154,7 +151,8 @@ function PatientRegistrySearch() {
     FU.buttons.search();
 
     // Add all the filters (4 in total)
-    $('[data-date-dob]').$('[data-date-range="year"]').click();
+    element.all(by.css('[data-date-range="year"]')).get(1).click();
+
     element(by.id('male')).click();
     FU.input('ModalCtrl.params.display_name', 'Some Non-Existant Patient');
 
