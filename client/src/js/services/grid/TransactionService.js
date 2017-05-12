@@ -25,6 +25,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
+  var FORMAT_DB = bhConstants.dates.formatDB
 
   // allow or block editing multiple transactions simultaneously
   var MULTIPLE_EDITS = false;
@@ -394,7 +395,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       dateNull = !row.trans_date;
 
       // Check if they are different Date
-      dateDifferent = (moment(row.trans_date).format('YYYY-MM-DD') !== moment(initialDate).format('YYYY-MM-DD')) || dateDifferent;
+      dateDifferent = (moment(row.trans_date).format(FORMAT_DB) !== moment(initialDate).format(FORMAT_DB)) || dateDifferent;
 
       // Check if debit and credit are Null
       debitCreditNull = (!Number(row.debit_equiv) && !Number(row.credit_equiv));

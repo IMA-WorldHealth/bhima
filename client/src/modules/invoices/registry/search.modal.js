@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 InvoiceRegistrySearchModalController.$inject = [
   '$uibModalInstance', 'ServiceService', 'filters',
-  'NotifyService', 'moment'
+  'NotifyService', 'moment', 'bhConstants'
 ];
 
 /**
@@ -14,7 +14,7 @@ InvoiceRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, moment) {
+function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, moment, bhConstants) {
   var vm = this;
 
   // set controller data
@@ -52,14 +52,17 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
 
     //to get it deleted at the for loop below
     var parameters = angular.copy(vm.params);
+    
+    // to get the format of data from Database
+    var formatDB = bhConstants.dates.formatDB;
 
     // convert dates to strings
     if (parameters.billingDateFrom) {
-      parameters.billingDateFrom = moment(parameters.billingDateFrom).format('YYYY-MM-DD');
+      parameters.billingDateFrom = moment(parameters.billingDateFrom).format(formatDB);
     }
 
     if (parameters.billingDateTo) {
-      parameters.billingDateTo = moment(parameters.billingDateTo).format('YYYY-MM-DD');
+      parameters.billingDateTo = moment(parameters.billingDateTo).format(formatDB);
     }
 
     // make sure we don't have any undefined or empty parameters

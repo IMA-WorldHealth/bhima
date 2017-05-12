@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment'
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'bhConstants'
 ];
 
 /**
@@ -13,7 +13,7 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, bhConstants) {
   var vm = this;
 
   // set controller data
@@ -37,16 +37,17 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
     // to get it deleted at the for loop below
     parameters = angular.copy(vm.params);
+    var formatDB = bhConstants.dates.formatDB;
 
     // convert dates to strings
     if (parameters.dateFrom) {
-      parameters.dateFrom = moment(parameters.dateFrom).format('YYYY-MM-DD');
+      parameters.dateFrom = moment(parameters.dateFrom).format(formatDB);
     }
 
     if (parameters.dateTo) {
-      parameters.dateTo = moment(parameters.dateTo).format('YYYY-MM-DD');
+      parameters.dateTo = moment(parameters.dateTo).format(formatDB);
     }
-
+    
     // make sure we don't have any undefined or empty parameters
     angular.forEach(parameters, function (value, key) {
       if (value === null || value === '') {

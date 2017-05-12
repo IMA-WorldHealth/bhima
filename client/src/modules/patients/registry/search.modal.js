@@ -48,21 +48,24 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
 
     var parameters = angular.copy(vm.params);
 
+    // to get the format of data from Database
+    var formatDB = bhConstants.dates.formatDB;
+
     // convert dates to strings
     if (parameters.dateRegistrationFrom) {
-      parameters.dateRegistrationFrom = moment(parameters.dateRegistrationFrom).format('YYYY-MM-DD');
+      parameters.dateRegistrationFrom = moment(parameters.dateRegistrationFrom).format(formatDB);
     }
 
     if (parameters.dateRegistrationTo) {
-      parameters.dateRegistrationTo = moment(parameters.dateRegistrationTo).format('YYYY-MM-DD');
+      parameters.dateRegistrationTo = moment(parameters.dateRegistrationTo).format(formatDB);
     }
 
     if (parameters.dateBirthFrom) {
-      parameters.dateBirthFrom = moment(parameters.dateBirthFrom).format('YYYY-MM-DD');
+      parameters.dateBirthFrom = moment(parameters.dateBirthFrom).format(formatDB);
     }
 
     if (parameters.dateBirthTo) {
-      parameters.dateBirthTo = moment(parameters.dateBirthTo).format('YYYY-MM-DD');
+      parameters.dateBirthTo = moment(parameters.dateBirthTo).format(formatDB);
     }
 
     // make sure we don't have any undefined or empty parameters
