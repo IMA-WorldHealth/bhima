@@ -26,3 +26,7 @@ test/artifacts/
 
 # ignore configuration
 .env.production
+
+# ignore visual studio files
+.vscode/*
+
