@@ -373,7 +373,7 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,16,'TRANS5','2016-01-08 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
+  (HUID(UUID()),1,1,16,'TRANS5','2016-02-08 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS5','2016-02-08 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS6','2017-04-07 09:18:00',@fourth_voucher, 'description x',3641,1000.0000,0.0000,1000.0000,0.0000,2,NULL,NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS6','2017-04-07 09:18:00',@fourth_voucher,'description x',3643,0.0000,1000.0000,0.0000,1000.0000,2,NULL,NULL,NULL,1,2,1,NULL);
