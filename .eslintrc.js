@@ -39,7 +39,6 @@ module.exports = {
     "quotes" : ["error", "single", { "allowTemplateLiterals": true }],
     "arrow-parens" : "off",
     "arrow-body-style" : "off",
-    "func-names" : "off",
     "prefer-arrow-callback" : "off",
     "no-underscore-dangle" : "off",
     "no-unused-vars" : "off",
