@@ -1,7 +1,6 @@
 
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
-
     $stateProvider
       .state('debtorGroups', {
         url : '/debtors/groups/:uuid',

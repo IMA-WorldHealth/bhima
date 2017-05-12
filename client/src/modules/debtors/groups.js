@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'NotifyService'];
+DebtorGroupController.$inject = [
+  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService',
+  '$interval', 'NotifyService'
+];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic

@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('CashboxController', CashboxController);
 
 CashboxController.$inject = [
-   'SessionService', 'ProjectService', 'CashboxService', 'util', 'NotifyService'
+  'SessionService', 'ProjectService', 'CashboxService', 'util',
+  'NotifyService', '$state',
 ];
 
 /**
@@ -12,10 +13,12 @@ CashboxController.$inject = [
  * A valid cashbox must have accounts defined for each enterprise currency, for
  * ease of use thought the application.
  */
-function CashboxController(Session, Projects, Boxes ,util, Notify) {
+function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
   var vm = this;
 
   // bind variables
+  vm.state = $state;
+
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
   vm.maxLength = util.maxTextLength;
@@ -24,7 +27,6 @@ function CashboxController(Session, Projects, Boxes ,util, Notify) {
 
   // fired on startup
   function startup() {
-
     // load projects
     Projects.read().then(function (projects) {
       vm.projects = projects;
@@ -36,12 +38,5 @@ function CashboxController(Session, Projects, Boxes ,util, Notify) {
     }).catch(Notify.handleError);
   }
 
-  // refresh the displayed cashboxes
-  function refreshBoxes() {
-    return Boxes.read()
-      .then(function (cashboxes) {
-        vm.cashboxes = cashboxes;
-      });
-  }
   startup();
 }
