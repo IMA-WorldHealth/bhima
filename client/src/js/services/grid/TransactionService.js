@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
 TransactionService.$inject = [
-  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q', 'DateService'
+  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q', 'moment'
 ];
 
 /**
@@ -21,7 +21,7 @@ TransactionService.$inject = [
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store, $q, Dates) {
+function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify, uuid, Journal, Store, $q, moment) {
   var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
   var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
@@ -394,7 +394,7 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       dateNull = !row.trans_date;
 
       // Check if they are different Date
-      dateDifferent = (Dates.util.str(row.trans_date) !== Dates.util.str(initialDate)) || dateDifferent;
+      dateDifferent = (moment(row.trans_date).format('YYYY-MM-DD') !== moment(initialDate).format('YYYY-MM-DD')) || dateDifferent;
 
       // Check if debit and credit are Null
       debitCreditNull = (!Number(row.debit_equiv) && !Number(row.credit_equiv));

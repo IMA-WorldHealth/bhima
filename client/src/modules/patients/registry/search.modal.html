@@ -14,67 +14,14 @@
 
   <div class="modal-body" style="max-height : 400px; overflow: auto;">
     <fieldset>
-      <legend translate>
-        FORM.LABELS.DATE_REGISTRATION
-      </legend>
-
-      <ul class="list-inline" data-date-registration>
-        <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
-          <a ng-click="ModalCtrl.setDateRange('registration', view.cacheKey)" data-date-range="{{ key }}" href>
-            <span translate>{{ ::view.translateKey }}</span>
-          </a>
-        </li>
-        <li class="pull-right">
-          <a href ng-click="ModalCtrl.clear('registration')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </li>
-      </ul>
-
-      <!-- registration date input -->
-      <div class="row">
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              id="date-registration-from"
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.dateRegistrationFrom"
-              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
-              is-open="ModalCtrl.dateRegistrationFromIsOpen"
-              datepicker-options="ModalCtrl.dateOptions"
-              show-button-bar="false">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateRegistrationFromIsOpen =! ModalCtrl.dateRegistrationFromIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-
-        <div class="col-md-2 text-center">
-          <hr />
-        </div>
-
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              id="date-registration-to"
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.dateRegistrationTo"
-              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
-              is-open="ModalCtrl.dateRegistrationToIsOpen"
-              datepicker-options="ModalCtrl.dateOptions"
-              show-button-bar="false">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateRegistrationToIsOpen =! ModalCtrl.dateRegistrationToIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-      </div>
+      <legend translate>FORM.LABELS.DATE_REGISTRATION</legend>
+      <bh-date-interval
+        date-id="registration-date"
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.dateRegistrationFrom"
+        date-to="ModalCtrl.params.dateRegistrationTo"
+        mode="clean">
+      </bh-date-interval>
     </fieldset>
 
     <br />
@@ -209,73 +156,19 @@
         on-select-callback="ModalCtrl.onSelectUser(user)">
         <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
       </bh-user-select>
-
     </fieldset>
 
     <fieldset>
-      <legend translate>
-        FORM.LABELS.DOB
-      </legend>
-
-      <ul class="list-inline" data-date-dob>
-        <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
-          <a ng-click="ModalCtrl.setDateRange('dob', view.cacheKey)" data-date-range="{{ key }}"  href>
-            {{ ::view.translateKey | translate }}
-          </a>
-        </li>
-        <li class="pull-right">
-          <a href ng-click="ModalCtrl.clear('dob')" tabindex="-1" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </li>
-      </ul>
-
-      <!-- registration date input -->
-      <div class="row">
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              id="date-birth-from"
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.dateBirthFrom"
-              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
-              is-open="ModalCtrl.dateBirthFromIsOpen"
-              datepicker-options="ModalCtrl.dateOptions"
-              show-button-bar="false">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateBirthFromIsOpen =! ModalCtrl.dateBirthFromIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-
-        <div class="col-md-2 text-center">
-          <hr />
-        </div>
-
-        <div class="col-md-5">
-          <div class="input-group">
-            <input
-              id="date-birth-to"
-              ng-model="ModalCtrl.params.dateBirthTo"
-              type="text"
-              class="form-control"
-              ng-model="ModalCtrl.params.dateBirthTo"
-              uib-datepicker-popup="{{ModalCtrl.dateFormat}}"
-              is-open="ModalCtrl.dateBirthToIsOpen"
-              datepicker-options="ModalCtrl.dateOptions"
-              show-button-bar="false">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateBirthToIsOpen =! ModalCtrl.dateBirthToIsOpen">
-                  <i class="fa fa-calendar-plus-o"></i>
-                </button>
-              </span>
-          </div>
-        </div>
-      </div>
+      <legend translate>FORM.LABELS.DOB</legend>
+      <bh-date-interval
+        date-id="dob-date"
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.dateBirthFrom"
+        date-to="ModalCtrl.params.dateBirthTo"
+        mode="clean">
+      </bh-date-interval>
     </fieldset>
+
   </div>
 
   <div class="modal-footer">
