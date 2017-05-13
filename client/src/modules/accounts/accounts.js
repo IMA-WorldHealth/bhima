@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('AccountsController', AccountsController);
+  .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants'
+  'LanguageService', 'uiGridConstants',
 ];
 
 /**
@@ -36,9 +36,9 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     .finally(toggleLoadingIndicator);
 
   var columns = [
-    { field : 'number', displayName : '', cellClass : 'text-right', width : 80},
-    { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html', headerCellFilter : 'translate' },
-    { name : 'actions', enableFiltering : false, displayName : '', cellTemplate : '/modules/accounts/templates/grid.actionsCell.tmpl.html', headerCellFilter : 'translate', width : 140 }
+    { field: 'number', displayName : '', cellClass : 'text-right', width : 80},
+    { field: 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html', headerCellFilter : 'translate' },
+    { name: 'actions', enableFiltering : false, displayName : '', cellTemplate : '/modules/accounts/templates/grid.actionsCell.tmpl.html', headerCellFilter : 'translate', width : 140 }
   ];
 
   vm.gridOptions = {
@@ -50,7 +50,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     enableColumnMenus : false,
     rowTemplate : '/modules/accounts/templates/grid.leafRow.tmpl.html',
     onRegisterApi : registerAccountEvents,
-    columnDefs : columns
+    columnDefs : columns,
   };
 
   // because the modal is instantiated on onEnter in the ui-router configuration the
