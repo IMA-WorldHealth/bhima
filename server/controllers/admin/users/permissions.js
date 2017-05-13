@@ -20,7 +20,7 @@ exports.create = create;
  * Lists all the user permissions for user with :id
  */
 function list(req, res, next) {
-  let sql = `
+  const sql = `
     SELECT permission.id, permission.unit_id FROM permission
     WHERE permission.user_id = ?;
   `;
@@ -41,12 +41,11 @@ function list(req, res, next) {
  * the user's permissions and then replacing them with the new permissions set.
  */
 function create(req, res, next) {
-
-  let data = req.body.permissions.map(function (id) {
+  const data = req.body.permissions.map(function (id) {
     return [id, req.params.id];
   });
 
-  let transaction = db.transaction();
+  const transaction = db.transaction();
 
   transaction
     .addQuery('DELETE FROM permission WHERE user_id = ?;', [req.params.id]);

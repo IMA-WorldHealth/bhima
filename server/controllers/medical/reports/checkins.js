@@ -33,10 +33,9 @@ const TEMPLATE = './server/controllers/medical/reports/checkins.handlebars';
  * @param {String} uuid - the patient uuid to look up
  */
 function getReportData(uuid) {
-
   // data to be passed to the report
   const data = {
-    metadata : { timestamp : new Date() }
+    metadata : { timestamp : new Date() },
   };
 
   return Patients.lookupPatient(uuid)
@@ -52,7 +51,6 @@ function getReportData(uuid) {
       return Locations.lookupVillage(patient.origin_location_id);
     })
     .then(location => {
-
       // bind location
       data.location = location;
 
@@ -68,7 +66,6 @@ function getReportData(uuid) {
       return db.exec(sql, [db.bid(uuid)]);
     })
     .then(checkins => {
-
       // grouping by year allows pretty table groupings
       data.checkins = _.groupBy(checkins, 'year');
       data.total = checkins.length;
@@ -94,7 +91,8 @@ function build(req, res, next) {
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   // gather data and template into report

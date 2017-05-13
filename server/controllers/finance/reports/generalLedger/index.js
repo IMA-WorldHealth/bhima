@@ -79,7 +79,7 @@ function renderAccountSlip(req, res, next) {
       return AccountReport.getAccountTransactions(params.account_id, GENERAL_LEDGER_SOURCE);
     })
     .then((result) => {
-      _.extend(data, { transactions: result.transactions, sum: result.sum });
+      _.extend(data, { transactions : result.transactions, sum : result.sum });
 
       data.hasDebtorSold = data.sum.balance >= 0;
 

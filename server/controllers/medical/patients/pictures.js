@@ -2,8 +2,9 @@
  * @module patients/pictures
  *
  * @description
- * The input for uploading patient images  
- * It should accept any image type (.png, .gif, etc) but reject non-image types in Client Side. 
+ *
+ * The input for uploading patient images
+ * It should accept any image type (.png, .gif, etc) but reject non-image types in Client Side.
  *
  * This controller encapsulates the HTTP API backing the patient documents feature
  * in the application.
@@ -32,26 +33,27 @@ exports.set = set;
  *
  * POST /patients/:uuid/pictures
  */
-function set(req, res, next) {
 
+function set(req, res, next) {
   if (req.files.length === 0) {
-    return next(
+    next(
       BadRequest('Expected at least one file upload but did not receive any files.')
     );
+    return;
   }
 
-  var data = {};
+  const data = {};
 
   data.avatar = req.files[0].link;
 
-  var buid = db.bid(req.params.uuid);
+  const buid = db.bid(req.params.uuid);
 
   const sql =
     'UPDATE patient SET ? WHERE uuid = ?';
 
-  db.exec(sql,  [ data, buid ])
-  .then(function (updatedPatient) {
-    res.status(200).json({link : data.avatar});
+  db.exec(sql, [data, buid])
+  .then(updatedPatient => {
+    res.status(200).json({ link : data.avatar });
   })
   .catch(next)
   .done();

@@ -376,7 +376,7 @@ function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['patient_group_uuid', 'debtor_group_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias: 'p' });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
   const sql = patientEntityQuery(options.detailed);
 
   filters.fullText('display_name');
@@ -424,8 +424,9 @@ function patientEntityQuery(detailed) {
   //       _before_selecting.
   // build the main part of the SQL query
   const sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
-      p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
+    SELECT 
+      BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
+      proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       u.display_name as userName, originVillage.name as originVillageName,
       originSector.name as originSectorName ${detailedColumns}

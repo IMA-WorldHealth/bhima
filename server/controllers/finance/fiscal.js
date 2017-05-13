@@ -145,7 +145,7 @@ function create(req, res, next) {
     .execute()
     .then((results) => {
       // results[2] : is an array from the query SELECT @fiscalYearId AS fiscalYearId;
-      res.status(201).json({ id: results[2][0].fiscalYearId });
+      res.status(201).json({ id : results[2][0].fiscalYearId });
     })
     .catch(next)
     .done();
@@ -276,7 +276,7 @@ function lookupBalance(fiscalYearId, periodNumber) {
     const allAccounts = rows;
 
     glb.totalAccount = allAccounts.map((item) => {
-      inlineAccount = _.find(glb.existTotalAccount, { id: item.id });
+      inlineAccount = _.find(glb.existTotalAccount, { id : item.id });
 
       if (inlineAccount) {
         item.period_id = inlineAccount.period_id;
@@ -452,7 +452,7 @@ function closing(req, res, next) {
   let fiscal;
   let period;
   let sql;
-  
+
   // query fiscal year
   sql = 'SELECT id, number_of_months, end_date FROM fiscal_year WHERE id = ?;';
 

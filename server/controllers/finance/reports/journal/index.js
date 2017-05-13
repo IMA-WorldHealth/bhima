@@ -69,7 +69,7 @@ function postedJournalExport(req, res, next) {
   }
 
   return Journal.journalEntryList(options, 'general_ledger')
-    .then(rows => report.render({ rows, isPosted: true }))
+    .then(rows => report.render({ rows, isPosted : true }))
     .then((result) => {
       res.set(result.headers).send(result.report);
     })

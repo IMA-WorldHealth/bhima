@@ -15,7 +15,7 @@ exports.list = list;
 
 // GET /languages
 function list(req, res, next) {
-  let sql = `
+  const sql = `
     SELECT lang.id, lang.name, lang.key, lang.locale_key AS localeKey
     FROM language AS lang;
   `;

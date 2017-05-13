@@ -9,7 +9,7 @@
 // which encapsulate reporting the ledgers
 // for each group, respectively.
 
-var q =  require('q');
+var q = require('q');
 var db = require('./../../lib/db');
 
 exports.debtor = debtor;
@@ -78,14 +78,18 @@ exports.compileSaleLedger = function (req, res, next) {
 /*
  * Utility Methods
 */
-function debtor(id) {
-  var defer = q.defer();
+function debtor(debtorId) {
+  const defer = q.defer();
+  let id = debtorId;
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = db.escape(id); }
+  if (!id) {
+    defer.reject(new Error('No debtor id selected!'));
+  } else {
+    id = db.escape(id);
+  }
 
-  var query =
+  const query =
     `SELECT account_id
     FROM debtor JOIN debtor_group ON
       debtor.group_uuid = debtor_group.uuid
@@ -93,10 +97,8 @@ function debtor(id) {
 
   db.exec(query)
   .then(function (ans) {
-
-    var account = ans.pop().account_id;
-
-    var query =
+    const account = ans.pop().account_id;
+    const queryString =
       `SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (
         SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id
         FROM posting_journal AS p
@@ -107,18 +109,18 @@ function debtor(id) {
         WHERE g.deb_cred_uuid = '${id}' AND g.account_id = '${account}')
        AS c;`;
 
-    return db.exec(query);
+    return db.exec(queryString);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
 
-    var invoices = ans.map(function (line) {
+    const invoices = ans.map(function (line) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    const accountId = ans.pop().account_id;
 
-    var sql =
+    const sql =
       `SELECT s.reference, s.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,
         SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance,
         t.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id,
@@ -145,7 +147,7 @@ function debtor(id) {
       JOIN project AS p ON s.project_id = p.id
       LEFT JOIN consumption AS c ON t.inv_po_id = c.document_id
       WHERE t.inv_po_id IN ("${invoices.join('","')}")
-      AND t.account_id = '${account_id}'
+      AND t.account_id = '${accountId}'
       GROUP BY t.inv_po_id;`;
 
     return db.exec(sql);
@@ -166,14 +168,14 @@ function debtorGroup(id) {
   // debtor query
   if (!id) { defer.reject(new Error('No debtor_group id selected!')); }
 
-  var query =
+  const query =
     `SELECT debtor_group.account_id FROM debtor_group
      WHERE debtor_group.uuid=?`;
 
   db.exec(query, [id])
   .then(function (ans) {
-    var accountId = ans.pop().account_id;
-    var query =
+    const accountId = ans.pop().account_id;
+    const dgQuery =
       `SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (
         SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id
         FROM posting_journal AS p
@@ -184,18 +186,18 @@ function debtorGroup(id) {
         WHERE g.account_id=?
       ) AS c ;`;
 
-    return db.exec(query, [accountId, accountId]);
+    return db.exec(dgQuery, [accountId, accountId]);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
 
-    var invoices = ans.map(function (line) {
+    const invoices = ans.map(function (line) {
       return line.inv_po_id;
     });
 
-    var accountId = ans.pop().account_id;
+    const accountId = ans.pop().account_id;
 
-    var sql =
+    const sql =
       `SELECT s.reference, s.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,
         SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance,
         t.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id,
@@ -231,14 +233,18 @@ function debtorGroup(id) {
   return defer.promise;
 }
 
-function employeeInvoice(id) {
-  var defer = q.defer();
+function employeeInvoice(employeId) {
+  let id = employeId;
+  const defer = q.defer();
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debtor_group id selected!')); }
-  else { id = db.escape(id); }
+  if (!id) {
+    defer.reject(new Error('No employee id selected!'));
+  } else {
+    id = db.escape(id);
+  }
 
-  var query =
+  const query =
     `SELECT creditor_group.account_id
     FROM creditor_group
     JOIN creditor ON creditor.group_uuid = creditor_group.uuid
@@ -246,10 +252,8 @@ function employeeInvoice(id) {
 
   db.exec(query)
   .then(function (ans) {
-
-    var account = ans.pop().account_id;
-
-    var query =
+    const account = ans.pop().account_id;
+    const empQuery =
       `SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (
         SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id
         FROM posting_journal AS p
@@ -260,35 +264,38 @@ function employeeInvoice(id) {
         WHERE g.deb_cred_uuid = '${id}')
       AS c;`;
 
-    return db.exec(query);
+    return db.exec(empQuery);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
 
-    var invoices = ans.map(function (line) {
+    const invoices = ans.map(function (line) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    const accountId = ans.pop().account_id;
 
-    var sql =
+    const sql =
       `SELECT s.reference, s.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,
       SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance,
       t.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.deb_cred_type, t.description,
       t.comment
       FROM (
         (
-          SELECT posting_journal.inv_po_id, posting_journal.trans_date, posting_journal.debit,
+          SELECT 
+            posting_journal.inv_po_id, posting_journal.trans_date, posting_journal.debit,
             posting_journal.credit, posting_journal.debit_equiv, posting_journal.credit_equiv,
             posting_journal.account_id, posting_journal.deb_cred_uuid, posting_journal.currency_id,
-            posting_journal.doc_num, posting_journal.deb_cred_type, posting_journal.trans_id, posting_journal.description, posting_journal.comment
+            posting_journal.doc_num, posting_journal.deb_cred_type, posting_journal.trans_id,
+            posting_journal.description, posting_journal.comment
           FROM posting_journal
           WHERE posting_journal.deb_cred_uuid = ' + id + ' AND posting_journal.deb_cred_type = 'C'
         ) UNION (
           SELECT general_ledger.inv_po_id, general_ledger.trans_date, general_ledger.debit,
             general_ledger.credit, general_ledger.debit_equiv, general_ledger.credit_equiv,
             general_ledger.account_id, general_ledger.deb_cred_uuid, general_ledger.currency_id,
-            general_ledger.doc_num, general_ledger.deb_cred_type, general_ledger.trans_id, general_ledger.description, general_ledger.comment
+            general_ledger.doc_num, general_ledger.deb_cred_type, general_ledger.trans_id,
+            general_ledger.description, general_ledger.comment
           FROM general_ledger
           WHERE general_ledger.deb_cred_uuid = '${id}' AND general_ledger.deb_cred_type = 'C'
         )
@@ -307,24 +314,27 @@ function employeeInvoice(id) {
   return defer.promise;
 }
 
-function distributableSale(id) {
+function distributableSale(saleId) {
+  let id = saleId;
   var defer = q.defer();
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = db.escape(id); }
+  if (!id) {
+    defer.reject(new Error('No debtor id selected!'));
+  } else {
+    id = db.escape(id);
+  }
 
-  var query =
+  const dsQuery =
     `SELECT account_id
     FROM debtor JOIN debtor_group ON
       debtor.group_uuid = debtor_group.uuid
     WHERE debtor.uuid='id';`;
 
-  db.exec(query)
+  db.exec(dsQuery)
   .then(function (ans) {
-
-    var account = ans.pop().account_id;
-    var query =
+    const account = ans.pop().account_id;
+    const query =
       `SELECT c.inv_po_id, c.account_id, consumption.tracking_number FROM (
         SELECT p.inv_po_id, p.account_id
         FROM posting_journal AS p
@@ -341,17 +351,17 @@ function distributableSale(id) {
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
 
-    ans = ans.filter(function (an){
+    const trackingNumbers = ans.filter(function (an) {
       return !an.tracking_number;
     });
 
-    var invoices = ans.map(function (line) {
+    const invoices = trackingNumbers.map(function (line) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    const accountId = ans.pop().account_id;
 
-    var sql =
+    const sql =
       `SELECT s.reference, s.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,
       SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance,
       t.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id,
@@ -372,7 +382,7 @@ function distributableSale(id) {
         )
       ) AS t JOIN sale AS s on t.inv_po_id = s.uuid
       WHERE t.inv_po_id IN ("${invoices.join('","')}")
-      AND t.account_id = '${account_id}'
+      AND t.account_id = '${accountId}'
       GROUP BY t.inv_po_id;`;
 
     return db.exec(sql);
@@ -388,14 +398,18 @@ function distributableSale(id) {
 }
 
 // Sale Balance debtor
-function debtorSale(id, saleId) {
-  var defer = q.defer();
+function debtorSale(debtorId, saleId) {
+  let id = debtorId;
+  const defer = q.defer();
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = db.escape(id); }
+  if (!id) {
+    defer.reject(new Error('No debtor id selected!'));
+  } else {
+    id = db.escape(id);
+  }
 
-  var query =
+  const query =
     `SELECT account_id
     FROM debtor JOIN debtor_group ON
       debtor.group_uuid = debtor_group.uuid
@@ -403,10 +417,9 @@ function debtorSale(id, saleId) {
 
   db.exec(query)
   .then(function (ans) {
+    const account = ans.pop().account_id;
 
-    var account = ans.pop().account_id;
-
-    var query =
+    const debtorSaleQuery =
       `SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (
         SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id
         FROM posting_journal AS p
@@ -417,18 +430,18 @@ function debtorSale(id, saleId) {
         WHERE g.deb_cred_uuid = '${id}' AND g.account_id = '${account}')
       AS c;`;
 
-    return db.exec(query);
+    return db.exec(debtorSaleQuery);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
 
-    var invoices = ans.map(function (line) {
+    const invoices = ans.map(function (line) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    const accountId = ans.pop().account_id;
 
-    var sql =
+    const sql =
       `SELECT s.reference, s.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,
         SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance,
         t.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id,
@@ -455,7 +468,7 @@ function debtorSale(id, saleId) {
       JOIN project AS p ON s.project_id = p.id
       LEFT JOIN consumption AS c ON t.inv_po_id = c.document_id
       WHERE t.inv_po_id ='${db.escape(saleId)}'
-      AND t.account_id = '${account_id}'
+      AND t.account_id = '${accountId}'
       GROUP BY t.inv_po_id;`;
 
     return db.exec(sql);

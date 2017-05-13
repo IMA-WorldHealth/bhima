@@ -13,15 +13,14 @@
  * @requires lib/ReportManager
  */
 
-const Patients = require ('../patients');
+const Patients = require('../patients');
 const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 const Locations = require('../../admin/locations');
-
-const pdf = require ('../../../lib/renderers/pdf');
+const pdf = require('../../../lib/renderers/pdf');
 
 // detailed patient identification - flag to determine if small or larger form
-const CARD_TEMPLATE  = './server/controllers/medical/reports/patient.receipt.handlebars';
+const CARD_TEMPLATE = './server/controllers/medical/reports/patient.receipt.handlebars';
 
 // POS receipt, quick proof of registration
 const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebars';
@@ -29,7 +28,7 @@ const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebar
 // default options for the patient card
 const defaults = {
   pageSize : 'A6',
-  orientation: 'landscape',
+  orientation : 'landscape',
 };
 
 exports.build = build;
@@ -41,24 +40,23 @@ function build(req, res, next) {
   let report;
   let template = CARD_TEMPLATE;
 
-  let requestedPOSReceipt = Boolean(Number(options.posReceipt));
-  let requestedSimplifiedCard = Boolean(Number(options.simplified));
+  const requestedPOSReceipt = Boolean(Number(options.posReceipt));
+  const requestedSimplifiedCard = Boolean(Number(options.simplified));
 
   // if the POS option is selected, render a thermal receipt.
   if (requestedPOSReceipt) {
     _.assign(options, pdf.posReceiptOptions);
     template = POS_TEMPLATE;
-  } else {
+  } else if (requestedSimplifiedCard) {
     // not a point of sale receipt - check to see if the client has requested a simplified card
-    if (requestedSimplifiedCard) {
-      _.assign(options, pdf.reducedCardOptions);
-    }
+    _.assign(options, pdf.reducedCardOptions);
   }
 
   try {
     report = new ReportManager(template, req.params, options);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   const data = {};

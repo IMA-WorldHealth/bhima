@@ -27,6 +27,7 @@ require('use-strict');
 const http = require('http');
 const express = require('express');
 const winston = require('winston');
+const dotEnv = require('dotenv');
 
 const app = express();
 
@@ -50,7 +51,7 @@ function configureEnvironmentVariables() {
 
   // load the environmental variables into process using the dotenv module
   winston.info(`[app] Loading configuration from ${dotfile}.`);
-  require('dotenv').config({ path : dotfile });
+  dotEnv.config({ path: dotfile });
 }
 
 /**

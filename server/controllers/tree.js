@@ -21,10 +21,9 @@ const ROOT_NODE = 0;
  * The HTTP handler that returns a user's tree based on their session
  * information.
  */
-exports.generate = function (req, res, next) {
-
+exports.generate = function generate(req, res, next) {
   buildTree(req.session.user.id)
-  .then(function (treeData) {
+  .then(treeData => {
     res.send(treeData);
   })
   .catch(next)
@@ -44,21 +43,19 @@ exports.generate = function (req, res, next) {
  * @returns {Array} - the array of children for the parent node.
  */
 function getChildren(units, parentId) {
-  let children;
-
   // Base case: There are no child units
   // Return null
   if (units.length === 0) { return null; }
 
   // Returns all units where the parent is the
   // parentId
-  children = units.filter(function (unit) {
+  const children = units.filter(unit => {
     return unit.parent === parentId;
   });
 
   // Recursively call getChildren on all child units
   // and attach them as childen of their parent unit
-  children.forEach(function (unit) {
+  children.forEach(unit => {
     unit.children = getChildren(units, unit.id);
   });
 
@@ -75,19 +72,17 @@ function getChildren(units, parentId) {
  * @returns {Promise} - the built tree, if it exists.
  */
 function buildTree(userId) {
-
   // NOTE
   // For this query to render properly on the client, the user
   // must also have permission to access the parents of leaf nodes
-  let sql = `
+  const sql = `
     SELECT unit.id, unit.name, unit.parent, unit.url, unit.path, unit.key
     FROM permission JOIN unit ON permission.unit_id = unit.id
     WHERE permission.user_id = ?;
   `;
 
   return db.exec(sql, [userId])
-  .then(function (units) {
-
+  .then(units => {
     // builds a tree of units on the ROOT_NODE
     return getChildren(units, ROOT_NODE);
   });

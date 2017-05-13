@@ -4,9 +4,10 @@
  * This controller is responsible for implementing full CRUD on the
  * project table via the /projects endpoint.
  *
- * NOTE: this endpoint does not filter for enterprise ID.  We should probably
- * move to doing this in the future.
- */
+ * NOTE:
+ *  this endpoint does not filter for enterprise ID.  We should probably
+ *   move to doing this in the future.
+ **/
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -87,10 +88,9 @@ exports.detail = function detail(req, res, next) {
  * Creates a new project.
  */
 exports.create = function create(req, res, next) {
-  let sql, data = req.body;
-
-  sql =
-    'INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);';
+  const data = req.body;
+  const sql =
+    `INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);`;
 
   db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id, data.locked])
   .then(function (row) {
@@ -113,7 +113,6 @@ exports.update = function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function () {
-
     sql =
       `SELECT project.id, project.enterprise_id, project.abbr,
         project.zs_id, project.name, project.locked
@@ -136,12 +135,10 @@ exports.update = function update(req, res, next) {
  * Deletes a project.
  */
 exports.delete = function del(req, res, next) {
-  let sql =
-    'DELETE FROM project WHERE id = ?;';
+  const sql = `DELETE FROM project WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
   .then(function (row) {
-
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
       throw new NotFound(`No project found by id ${req.params.id}.`);

@@ -108,7 +108,7 @@ function lookupVoucher(vUuid) {
 }
 
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias: 'v' });
+  const filters = new FilterParser(options, { tableAlias : 'v' });
 
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
@@ -158,12 +158,14 @@ function create(req, res, next) {
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
   if (items.length < 2) {
-    return next(
+    next(
       new BadRequest(
         `Expected there to be at least two items, but only received
         ${items.length} items.`
       )
     );
+
+    return;
   }
 
   // remove the voucher items from the request before insertion into the
@@ -183,8 +185,8 @@ function create(req, res, next) {
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
-  items.forEach(function (item) {
-
+  items.forEach(function (value) {
+    let item = value;
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid.v4();
 
@@ -206,11 +208,13 @@ function create(req, res, next) {
   // build the SQL query
   transaction
     .addQuery('INSERT INTO voucher SET ?', [voucher])
-    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?', [ items ])
+    .addQuery(
+      'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
+      [items])
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
   transaction.execute()
-    .then(() => res.status(201).json({ uuid: vuid }))
+    .then(() => res.status(201).json({ uuid : vuid }))
     .catch(next)
     .done();
 }
