@@ -21,8 +21,8 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
 
   // pagination configuration
   /** @todo this should all be moved to a component */
-  vm.pageSize     = 10;
-  vm.currentPage  = 1;
+  vm.pageSize = 10;
+  vm.currentPage = 1;
   vm.debtorGroups = [];
 
   vm.toggleFilter = toggleFilter;

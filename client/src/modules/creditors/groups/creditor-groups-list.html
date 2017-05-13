@@ -7,18 +7,19 @@
         <div class="panel panel-default" style="margin-bottom: 5px;" data-group-entry>
           <div class="panel-body">
 
-            <h4>
-              <span ng-if="cg.locked" class="fa fa-lock text-danger"></span> <b>{{ cg.name }}</b>
-
-              <div class="pull-right">
-                <a class="text-action"
-                  data-update="{{cg.name}}"
-                  ui-sref="creditorGroups.update({uuid : cg.uuid})">
-                  <span class="fa fa-edit"></span> {{ "FORM.BUTTONS.EDIT" | translate }}
+            <div class="row">
+              <div class="col-md-6">
+                <h4 style="margin-top : 0px;"><span ng-if="cg.locked" class="fa fa-lock text-danger"></span> <b>{{ cg.name }}</b></h4>
+                <h5 style="margin-top : 0px;"></span><span translate> FORM.LABELS.ACCOUNT_NUMBER </span> : <b>{{ cg.number }}</b></h5>
+              </div>
+              <div class="col-md-6 text-float-util">
+                <a data-method="update" data-update="{{cg.name}}" ui-sref="creditorGroups.update({uuid : cg.uuid})">
+                  <span class="fa fa-pencil-square-o" aria-hidden="true"></span> <span translate>CREDITOR_GROUP.UPDATE</span>
                 </a>
               </div>
-            </h4>
-            <span class="fa fa-list"></span> <b>{{ cg.total_creditors }}</b> {{ 'FORM.LABELS.CREDITOR_SUBCRIBED' | translate }}
+            </div>
+
+            <span class="fa fa-bars"></span> <b>{{ cg.total_creditors }}</b> {{ 'FORM.LABELS.CREDITOR_SUBCRIBED' | translate }}
 
           </div>
         </div>

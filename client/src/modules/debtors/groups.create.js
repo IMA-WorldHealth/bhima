@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService'
+  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService',
 ];
 
 /**
@@ -18,9 +18,9 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
   // default new group policies
   var policies = {
-    subsidies : true,
-    discounts : true,
-    billingServices : false
+    subsidies       : true,
+    discounts       : true,
+    billingServices : false,
   };
 
   vm.$loading = true;
@@ -105,7 +105,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
         } else {
 
           // navigate back to list view
-          $state.go('debtorGroups.list', null, {reload : true});
+          $state.go('debtorGroups.list', null, {reload: true});
         }
       })
       .catch(Notify.handleError);

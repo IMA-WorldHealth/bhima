@@ -2,17 +2,27 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static" translate> TREE.FINANCE </li>
-      <li class="title">
-        <span translate> TREE.FISCAL_YEAR </span>
+      <li class="static" translate>TREE.FINANCE </li>
+      <li 
+        class="title" 
+        ng-if="FiscalCtrl.state.current.name === 'fiscal.list'" 
+        translate>TREE.FISCAL_YEAR
+      </li>
 
-        <span class="label label-success" ng-show="FiscalCtrl.state.current.name==='fiscal.create'" translate>
-          FORM.LABELS.CREATE
-        </span>
+      <!-- creditor group list with link -->
+      <li ng-if="FiscalCtrl.state.current.name !== 'fiscal.list'">
+        <a ui-sref="fiscal.list" translate>TREE.FISCAL_YEAR</a>
+      </li>
 
-        <span class="label label-info" ng-show="FiscalCtrl.state.current.name==='fiscal.update'" translate>
-          FORM.LABELS.UPDATE
-        </span>
+      <!-- edit creditor group -->
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.update'" class="title">
+        {{ FiscalCtrl.state.params.label }} 
+        <span class="label label-info" translate>FORM.LABELS.EDIT</span>
+      </li>
+
+      <!-- create creditor group -->
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.create'" class="title">
+        <span class="label label-success" translate>FORM.LABELS.CREATE</span>
       </li>
     </ol>
 
@@ -26,15 +36,6 @@
           <i class="fa fa-plus"></i>
           <span translate> FISCAL.CREATE_FISCAL_YEAR </span>
         </a>
-      </div>
-      <div
-        class="toolbar-item"
-        ng-if="FiscalCtrl.state.current.name !== 'fiscal.list'">
-        <button
-          class="btn btn-default"
-          ng-click="FiscalCtrl.back()">
-          <i class="fa fa-arrow-circle-left"></i><span translate> FISCAL.BACK </span>
-        </button>
       </div>
     </div>
   </div>

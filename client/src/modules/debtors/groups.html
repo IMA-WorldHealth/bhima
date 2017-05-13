@@ -2,27 +2,30 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static" translate>TREE.FINANCE</li>
+      <li class="static" translate>TREE.ADMIN</li>
 
-      <!-- @TODO come up with standard for switching these states -->
-      <!-- Debtor groups list -->
-      <li
-        ng-if="GroupCtrl.state.current.name!=='debtorGroups.update'"
-        class="title">
-        <span translate>DEBTOR_GROUP.TITLE</span>
+      <!-- debtor group list -->
+      <li 
+        class="title" 
+        ng-if="GroupCtrl.state.current.name !== 'debtorGroups.update' && GroupCtrl.state.current.name !== 'debtorGroups.create'" 
+        translate>DEBTOR_GROUP.TITLE
       </li>
 
-      <!-- Editing/ overview state -->
-      <li
-        ng-if="GroupCtrl.state.current.name==='debtorGroups.update'"
-        class="static">
-        <a ui-sref="debtorGroups.list" translate>DEBTOR_GROUP.TITLE</a>
+      <!-- debtor group list with link -->
+      <li ng-if="GroupCtrl.state.current.name === 'debtorGroups.update' || GroupCtrl.state.current.name === 'debtorGroups.create'">
+        <a ui-sref="debtorGroups.list" translate>TREE.CREDITOR_GROUP</a>
       </li>
 
-      <li class="title" ng-if="!GroupCtrl.state.current.data.label && GroupCtrl.state.current.name==='debtorGroups.update'">
-        <i class="fa fa-spin fa-circle-o-notch"></i>
+      <!-- edit debtor group -->
+      <li ng-if="GroupCtrl.state.current.name === 'debtorGroups.update'" class="title">
+        {{ GroupCtrl.state.params.label }} 
+        <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
-      <li class="title" ng-if="GroupCtrl.state.current.data.label" translate>{{GroupCtrl.state.current.data.label}}</li>
+
+      <!-- create debtor group -->
+      <li ng-if="GroupCtrl.state.current.name === 'debtorGroups.create'" class="title">
+        <span class="label label-success" translate>FORM.LABELS.CREATE</span>
+      </li>
     </ol>
 
 

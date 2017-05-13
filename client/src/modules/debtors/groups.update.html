@@ -5,16 +5,6 @@
     </div>
   </div>
   <div ng-if="GroupUpdateCtrl.$loaded">
-    <div class="row">
-      <div class="col-xs-12">
-        <p>
-          <a ui-sref="debtorGroups.list">
-            <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
-            <span translate>DEBTOR_GROUP.BACK</translate>
-          </a>
-        </p>
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-md-5">
@@ -246,7 +236,7 @@
           </div>
         </div>
 
-        <div class="panel panel-warning">
+        <div ng-if="GroupUpdateCtrl.state.current.name === 'debtorGroups.update'" class="panel panel-warning">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
           </div>

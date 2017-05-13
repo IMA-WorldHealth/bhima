@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
 DebtorGroupsUpdateController.$inject = [
-  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', 'ModalService'
+  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', 'ModalService',
 ];
 
 function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify, Modal) {
@@ -25,7 +25,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   vm.deleteGroup = deleteGroup;
 
   // reset name attribute to ensure no UI glitch
-  $state.current.data.label = null;
+  // $state.current.data.label = null;
 
   Prices.read()
     .then(function (priceLists) {
@@ -39,7 +39,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     .then(function (result) {
       vm.group = result;
       vm.$loaded = true;
-      $state.current.data.label = vm.group.name;
+      $state.params.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
       vm.group.apply_billing_services = Boolean(vm.group.apply_billing_services);
