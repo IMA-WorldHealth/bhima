@@ -7,6 +7,10 @@
   <span ng-if="$ctrl.period.key !== $ctrl.NO_PERIOD_LIMIT_KEY && $ctrl.period.key !== $ctrl.CUSTOM_PERIOD_KEY">
   ({{$ctrl.period.start}}) - ({{$ctrl.period.end}})
   </span>
+
+  <span ng-if="$ctrl.period.customPeriodStart && $ctrl.period.customPeriodEnd">
+    ({{ $ctrl.period.customPeriodStart | date: 'dd/mm/yyyy' }}) - ({{ $ctrl.period.customPeriodEnd | date: 'dd/mm/yyyy' }})
+  </span>
 </p>
 
 <a href ng-click="$ctrl.toggleSelectionOptions()">
