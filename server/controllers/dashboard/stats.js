@@ -57,9 +57,8 @@ function invoiceStat(req, res, next) {
       );`;
 
   // query invoices
-  const sqlBalance =
-    `SELECT 
-    (debit - credit) as balance, project_id, cost
+  let sqlBalance =
+    `SELECT (debit - credit) as balance, project_id, cost
      FROM (
       (
         SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
@@ -76,9 +75,9 @@ function invoiceStat(req, res, next) {
         AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
         GROUP BY invoice.uuid   
       )
-    ) AS i
-    JOIN project ON i.project_id = project.id
-    `;
+     ) AS i
+     JOIN project ON i.project_id = project.id
+     `;
      
   // promises requests
   const dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date])];
