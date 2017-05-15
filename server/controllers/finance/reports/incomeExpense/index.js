@@ -7,8 +7,6 @@
  * @module finance/incomeExpense
  *
  * @requires lodash
- * @requires node-uuid
- * @requires moment
  * @requires lib/db
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
@@ -16,14 +14,9 @@
 
 
 const _ = require('lodash');
-const uuid = require('node-uuid');
-const Moment = require('moment');
-const q = require('q');
-
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
-const InternalServerError = require('../../../../lib/errors/InternalServerError');
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
 
@@ -81,11 +74,11 @@ function processingIncomeExpenseReport(params) {
   }
 
   return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(function (incomes) {
+    .then((incomes) => {
       glb.incomes = incomes;
       return getExpenseReport(params.account_id, params.dateFrom, params.dateTo);
     })
-    .then(function (expenses) {
+    .then((expenses) => {
       glb.expenses = expenses;
       return glb;
     });
@@ -102,7 +95,7 @@ function processingIncomeReport(params) {
 
   // get income report
   return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(function (incomes) {
+    .then((incomes) => {
       glb.incomes = incomes;
       return glb;
     });
@@ -278,7 +271,7 @@ function document(req, res, next) {
       session.reportType = parseInt(session.reportType, 10);
 
       if (session.reportType === 1 || session.reportType === 2) {
-        incomeExpense.incomes.forEach(function (income) {
+        incomeExpense.incomes.forEach((income) => {
           sumIncome += income.debit;
         });
 
@@ -287,7 +280,7 @@ function document(req, res, next) {
       }
 
       if (session.reportType === 1 || session.reportType === 3) {
-        incomeExpense.expenses.forEach(function (expense) {
+        incomeExpense.expenses.forEach((expense) => {
           sumExpense += expense.credit;
         });
 

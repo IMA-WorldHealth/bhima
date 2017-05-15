@@ -24,7 +24,7 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handl
  * @todo - allow limiting by date
  */
 function build(req, res, next) {
-  const qs = _.extend(req.query, { csvKey: 'debtors' });
+  const qs = _.extend(req.query, { csvKey : 'debtors' });
   const metadata = _.clone(req.session);
 
   let report;

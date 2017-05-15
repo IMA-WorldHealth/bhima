@@ -15,12 +15,12 @@
 *
 */
 
-var db      = require('../../../lib/db');
-var uuid    = require('node-uuid'),
-  q       = require('q');
+const db = require('../../../lib/db');
+const uuid = require('node-uuid');
+const q = require('q');
 
 // @fixme remove this file
-var journal = {};
+const journal = {};
 
 exports.createDistributions = createDistributions;
 
@@ -28,55 +28,52 @@ exports.createDistributions = createDistributions;
 * Create a distribution
 */
 function createDistributions(depotId, body, session) {
-
-  var sql, fmap, queries,
-
-      // create a new document id
-      docId = uuid();
+  // create a new document id
+  const docId = uuid();
 
   // map to create specific distribution
-  fmap = {
-    'service' : createServiceDistribution,
-    'patient' : createPatientDistribution,
-    'loss'    : createLossDistribution,
-    'rummage' : createRummageDistribution
+  const fmap = {
+    service : createServiceDistribution,
+    patient : createPatientDistribution,
+    loss : createLossDistribution,
+    rummage : createRummageDistribution,
   };
 
   // if the type does not map to one of the function above, reject with an error
   // ERR_INVALID_DISTRIBUTION_TYPE
   if (!fmap[body.type]) {
-    return q.reject({
+    q.reject({
       code : 'ERR_INVALID_DISTRIBUTION_TYPE',
-      reason : 'The distribution \'type\' property was not correctly set.'
-   });
+      reason : 'The distribution \'type\' property was not correctly set.',
+    });
+
+    return;
   }
 
   // TODO -- it turns out that we create n rows for each consumption and n rows
   // in the associated service/patient/loss/etc consumption table.  This seems
   // like it could/should be redesigned
 
-  sql =
+  const sql =
     `INSERT INTO consumption (uuid, depot_uuid, date, document_id, tracking_number, quantity, unit_price)
     VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
-  queries = body.data.map(function (row) {
+  const queries = body.data.map((row) => {
     row.id = uuid();
 
     return db.exec(sql, [row.id, depotId, row.date, docId, row.tracking_number, row.quantity, row.unit_price])
-    .then(function () {
+    .then(() => {
       return fmap[body.type](depotId, row);
     });
   });
 
-  return q.all(queries)
-  .then(function () {
-
+  q.all(queries)
+  .then(() => {
     // FIXME -- this is currently only implemented for the service distribution type
     // write to the journal
     return writeToJournal(body.type, docId, session);
   })
-  .then(function () {
-
+  .then(() => {
     // send that data back up to the parent controller
     return docId;
   });
@@ -85,9 +82,9 @@ function createDistributions(depotId, body, session) {
 // FIXME
 // poorly designed code to write to the journal
 function writeToJournal(type, docId, session) {
-  var dfd = q.defer();
+  const dfd = q.defer();
 
-  journal.request('distribution_%type%'.replace('%type%', type), docId, session.user.id, function (error, result) {
+  journal.request('distribution_%type%'.replace('%type%', type), docId, session.user.id, (error, result) => {
     if (error) { return dfd.reject(error); }
     return dfd.resolve(result);
 
@@ -99,14 +96,13 @@ function writeToJournal(type, docId, session) {
 }
 
 // create a patient distribution
-function createPatientDistribution(depotId, item) {
+function createPatientDistribution() {
 
   // TODO
 }
 
 // create a service distribution
 function createServiceDistribution(depotId, item) {
-
   var sql =
     'INSERT INTO consumption_service VALUES (?, ?, ?);';
 
@@ -121,15 +117,14 @@ function createServiceDistribution(depotId, item) {
 * TODO - discuss this design
 */
 function createLossDistribution(depotId, item) {
-
-  var sql =
+  const sql =
     'INSERT INTO consumption_loss VALUES (?, ?);';
 
   return db.exec(sql, [uuid(), item.id]);
 }
 
 
-function createRummageDistribution(depotId, item) {
+function createRummageDistribution() {
 
   // TODO
 }

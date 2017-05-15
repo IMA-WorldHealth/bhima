@@ -1,7 +1,6 @@
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
-const NotFound = require('../../lib/errors/NotFound');
 
 function lookupSubsidy(id) {
   const sql = `
@@ -14,7 +13,7 @@ function lookupSubsidy(id) {
 
 function detail(req, res, next) {
   lookupSubsidy(req.params.id)
-    .then(function (row) {
+    .then((row) => {
       res.status(200).json(row);
     })
     .catch(next)
@@ -36,7 +35,7 @@ function list(req, res, next) {
   }
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -57,7 +56,7 @@ function create(req, res, next) {
   }
 
   db.exec(createSubsidyQuery, [record])
-  .then(function (result) {
+  .then((result) => {
     res.status(201).json({ id : result.insertId });
   })
   .catch(next)
@@ -79,13 +78,13 @@ function update(req, res, next) {
   }
 
   lookupSubsidy(subsidyId)
-  .then(function () {
+  .then(() => {
     return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
   })
-  .then(function () {
+  .then(() => {
     return lookupSubsidy(subsidyId);
   })
-  .then(function (subsidy) {
+  .then((subsidy) => {
     res.status(200).json(subsidy);
   })
   .catch(next)
