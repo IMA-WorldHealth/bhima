@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 TrialBalanceMainBodyController.$inject = [
   'SessionService', 'TrialBalanceService', 'NotifyService',
   '$state', 'uiGridConstants', 'uiGridGroupingConstants', '$filter',
-  'AccountService',
+  'AccountService', 'GridExportService',
 ];
 
 /**
@@ -14,7 +14,9 @@ TrialBalanceMainBodyController.$inject = [
  * This controller provides a tool to view the main state of trial balance
  * The main state let you post transaction into the general ledger
  */
-function TrialBalanceMainBodyController(Session, TrialBalance, Notify, $state, uiGridConstants, uiGridGroupingConstants, $filter, Accounts) {
+function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
+  $state, uiGridConstants, uiGridGroupingConstants, $filter,
+  Accounts, GridExport) {
   var vm = this;
   var currencyId = Session.enterprise.currecny_id;
   var $currency = $filter('currency');
@@ -94,6 +96,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify, $state, u
 
   vm.enterprise = Session.enterprise;
   vm.dataByTrans = records;
+  vm.exportGrid = exportGrid;
   vm.hasError = false;
 
   vm.gridOptions = {
@@ -106,6 +109,9 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify, $state, u
     columnDefs                 : columns,
     onRegisterApi              : function (api) { gridApi = api; },
   };
+
+
+  var exportation = new GridExport(vm.gridOptions, 'all', 'visible');
 
   /**
    * @function : fetchDataByAccount
@@ -255,6 +261,13 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify, $state, u
       });
 
     fetchDataByAccount();
+  }
+
+  /**
+   * Export to csv
+   */
+  function exportGrid() {
+    exportation.run();
   }
 
   startup();
