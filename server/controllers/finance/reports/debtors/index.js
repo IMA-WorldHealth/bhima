@@ -65,13 +65,12 @@ function queryContext(queryParams) {
   const params = queryParams || {};
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
-  const useCombinedLedger = Boolean(Number(params.combinedLedger));
 
   // format the dates for MySQL escape
   const dates = _.fill(Array(4), new Date(params.date));
 
   const data = {};
-  const source = useCombinedLedger ? 'combined_ledger' : 'general_ledger';
+  const source = 'general_ledger';
 
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `

@@ -30,7 +30,6 @@ exports.detail = detail;
 exports.update = update;
 exports.invoices = invoices;
 exports.invoiceBalances = invoiceBalances;
-exports.financialPatient = financialPatient;
 exports.getDebtorInvoices = getDebtorInvoices;
 exports.balance = balance;
 
@@ -288,30 +287,4 @@ function balance(debtorUid) {
 
     return db.one(sql, [debtorUid, debtorUid]);
   });
-}
-
-
-/**
- * @method financialPatient
- *
- * @description
- * This function allows to know the reports' Patient Financial Activity
- * matching parameters provided in the debtorUuid parameter.
- *
- * @todo - move the LEFT JOIN outside the UNION
- */
-function financialPatient(debtorUuid) {
-  const buid = db.bid(debtorUuid);
-
-  // build the main part of the SQL query
-  let sql = `
-    SELECT combined_ledger.trans_id, combined_ledger.entity_uuid, combined_ledger.description, combined_ledger.record_uuid,
-      combined_ledger.trans_date, SUM(combined_ledger.debit_equiv) AS debit, SUM(combined_ledger.credit_equiv) AS credit, document_map.text AS document
-    FROM combined_ledger
-      LEFT JOIN document_map ON document_map.uuid = combined_ledger.record_uuid
-    WHERE combined_ledger.entity_uuid = ?
-    GROUP BY combined_ledger.record_uuid
-    ORDER BY combined_ledger.trans_date ASC, combined_ledger.trans_id`;
-
-  return db.exec(sql, [buid]);
 }
