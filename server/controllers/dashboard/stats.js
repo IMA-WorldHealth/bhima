@@ -57,7 +57,7 @@ function invoiceStat(req, res, next) {
       );`;
 
   // query invoices
-  let sqlBalance =
+  const sqlBalance =
     `SELECT (debit - credit) as balance, project_id, cost
      FROM (
       (
