@@ -55,7 +55,7 @@ function updateSubscriptions(req, res, next) {
   }
 
   transaction.execute()
-    .then(function (result) {
+    .then((result) => {
       res.status(200).json(result);
     })
     .catch(next)
@@ -74,7 +74,7 @@ function prepareQueries() {
   // accept a subscription definition object and append two attributes
   // * removeAssignmentsQuery - remove all assignements with this entity
   // * createAssigmentsQuery - insert assignments into table name
-  subscriptions = _.mapValues(subscriptions, function (subscription, key) {
+  subscriptions = _.mapValues(subscriptions, (subscription, key) => {
     subscription.removeAssignmentsQuery =
       `DELETE FROM ${key} WHERE ${subscription.entity} = ?`;
     subscription.createAssignmentsQuery =

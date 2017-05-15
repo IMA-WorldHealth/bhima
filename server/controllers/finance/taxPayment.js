@@ -2,7 +2,7 @@
 const db = require('./../../lib/db');
 
 // HTTP Controller
-exports.availablePaymentPeriod = function (req, res, next) {
+exports.availablePaymentPeriod = function availablePaymentPeriod(req, res, next) {
   const sql = `
     SELECT
       p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id,
@@ -19,14 +19,14 @@ exports.availablePaymentPeriod = function (req, res, next) {
   `;
 
   db.exec(sql)
-  .then(function (result) {
+  .then((result) => {
     res.send(result);
   })
-  .catch(function (err) { next(err); })
+  .catch((err) => { next(err); })
   .done();
 };
 
-exports.setTaxPayment = function (req, res, next) {
+exports.setTaxPayment = function setTaxPayment(req, res, next) {
   var sql = `
     UPDATE tax_paiement SET posted = 1 ' +
     WHERE tax_paiement.paiement_uuid=${db.escape(req.body.paiement_uuid)}
@@ -34,9 +34,9 @@ exports.setTaxPayment = function (req, res, next) {
   `;
 
   db.exec(sql)
-  .then(function (result) {
+  .then((result) => {
     res.send(result);
   })
-  .catch(function (err) { next(err); })
+  .catch((err) => { next(err); })
   .done();
 };

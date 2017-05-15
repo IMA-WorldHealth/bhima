@@ -185,7 +185,7 @@ function create(req, res, next) {
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
-  items.forEach(function (value) {
+  items.forEach((value) => {
     let item = value;
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid.v4();
