@@ -21,12 +21,12 @@ module.exports = create;
  * @returns {Array} - an ordered array of arrays (cash_items)
  */
 function processCashItems(cashUuid, items) {
-
   // make sure uuids are defined and converted
-  items.forEach(item => {
+
+  items.map(function (item) {
     item.cash_uuid = cashUuid;
     item.uuid = item.uuid || uuid.v4();
-    item = db.convert(item, ['uuid', 'invoice_uuid']);
+    return db.convert(item, ['uuid', 'invoice_uuid']);
   });
 
   // make sure the items are in an ordered array
@@ -42,7 +42,8 @@ function processCashItems(cashUuid, items) {
  *
  *
  */
-function processCash(cashUuid, payment) {
+function processCash(cashUuid, cashPayment) {
+  let payment = cashPayment;
 
   payment.uuid = cashUuid;
   payment = db.convert(payment, ['debtor_uuid']);
@@ -82,20 +83,23 @@ function create(req, res, next) {
 
   // disallow invoice payments with empty items by returning a 400 to the client
   if (isInvoicePayment && !hasItems) {
-    return next(
+    next(
       new BadRequest('You must submit cash items with the payments against previous invoices.')
     );
 
+    return;
   // disallow caution payments with items for more predictable application
   // behavior.
   } else if (!isInvoicePayment && hasItems) {
-    return next(
+    next(
       new BadRequest(
         `You must be confused. You submitted payment against items marked as a
         caution payment.  Please submit either a caution with no items or a payment
         marked with is_caution = 0.`
       )
     );
+
+    return;
   }
 
   // generate a UUID if it not provided.
@@ -142,7 +146,7 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid: uuid.unparse(cashUuid) });
+      res.status(201).json({ uuid : uuid.unparse(cashUuid) });
 
       Topic.publish(Topic.channels.FINANCE, {
         event   : Topic.events.CREATE,

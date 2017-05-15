@@ -17,7 +17,6 @@
 
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
-const Forbidden = require('../lib/errors/Forbidden');
 const InternalServerError = require('../lib/errors/InternalServerError');
 const Topic = require('../lib/topic');
 
@@ -40,26 +39,33 @@ exports.reload = reload;
  * the database all enterprise, project, and user data for easy access.
  */
 function login(req, res, next) {
-  let username = req.body.username;
-  let password = req.body.password;
-  let projectId = req.body.project;
-  let param = {}; 
+  const username = req.body.username;
+  const password = req.body.password;
+  const projectId = req.body.project;
+  const param = {};
 
-  let sql = `
-    SELECT user.id, user.username, user.display_name, user.email, user.deactivated, project.enterprise_id , project.id AS project_id
-    FROM user JOIN project_permission JOIN project ON
-      user.id = project_permission.user_id AND project.id = project_permission.project_id
-    WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;
+  const sql =
+    `
+    SELECT 
+      user.id, user.username, user.display_name, user.email, user.deactivated, 
+      project.enterprise_id , project.id AS project_id
+    FROM user 
+    JOIN 
+    project_permission JOIN project ON user.id = project_permission.user_id 
+    AND project.id = project_permission.project_id
+    WHERE 
+      user.username = ? AND user.password = PASSWORD(?) 
+      AND project_permission.project_id = ?;
   `;
 
-  let sqlUser = `
+  const sqlUser = `
     SELECT user.id FROM user
     WHERE user.username = ? AND user.password = PASSWORD(?)`;
 
-  let sqlPermission = `
-    SELECT permission.id FROM permission
+  const sqlPermission =
+    `SELECT permission.id FROM permission
     JOIN user ON user.id = permission.user_id
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;  
+    WHERE user.username = ? AND user.password = PASSWORD(?)`;
 
 
   db.exec(sql, [username, password, projectId])
@@ -67,42 +73,36 @@ function login(req, res, next) {
       param.connect = rows;
 
       return db.exec(sqlUser, [username, password]);
-    })   
+    })
     .then(function (rows) {
-
       param.user = rows;
-
       return db.exec(sqlPermission, [username, password]);
-    })   
+    })
     .then(function (rows) {
       param.permission = rows;
-      let connect = param.connect.length;
-      let permission = param.permission.length;
-      let user = param.user.length;
+      const connect = param.connect.length;
+      const permission = param.permission.length;
+      const user = param.user.length;
 
-      if(connect === 1){
-
-        if(Boolean(param.connect[0].deactivated)){
+      if (connect === 1) {
+        if (Boolean(param.connect[0].deactivated)) {
           throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
         }
 
-        if(permission === 0){
+        if (permission === 0) {
           throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
         }
-
-      } else if(connect === 0){
-
-        if(user === 0){
+      } else if (connect === 0) {
+        if (user === 0) {
           throw new Unauthorized('Bad username and password combination.');
         } else {
-          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT'); 
+          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
         }
       }
 
       return loadSessionInformation(param.connect[0]);
     })
     .then(session => {
-
       // bind the session variables
       req.session.project = session.project;
       req.session.user = session.user;
@@ -111,10 +111,10 @@ function login(req, res, next) {
 
       // broadcast LOGIN event
       Topic.publish(Topic.channels.APP, {
-        event: Topic.events.LOGIN,
-        entity: Topic.entities.USER,
+        event : Topic.events.LOGIN,
+        entity : Topic.entities.USER,
         user_id : req.session.user.id,
-        id: session.user.id
+        id : session.user.id,
       });
 
       // send the session data back to the client
@@ -122,26 +122,24 @@ function login(req, res, next) {
     })
     .catch(next)
     .done();
-  }
+}
 
   /**
    * @method logout
    *
    * Destroys the server side session and sets the user as inactive.
    */
-  function logout(req, res, next) {
-    let sql =
-      'UPDATE user SET user.active = 0 WHERE user.id = ?;';
+function logout(req, res, next) {
+  const sql = 'UPDATE user SET user.active = 0 WHERE user.id = ?;';
 
-    db.exec(sql, [req.session.user.id])
+  db.exec(sql, [req.session.user.id])
     .then(() => {
-
       // broadcast LOGOUT event
       Topic.publish(Topic.channels.APP, {
-        event: Topic.events.LOGOUT,
-        entity: Topic.entities.USER,
+        event : Topic.events.LOGOUT,
+        entity : Topic.entities.USER,
         user_id : req.session.user.id,
-        id: req.session.user.id,
+        id : req.session.user.id,
       });
 
       // destroy the session
@@ -168,7 +166,6 @@ function login(req, res, next) {
  * @private
  */
 function loadSessionInformation(user) {
-
   // this will be the new session
   const session = {};
 
@@ -180,7 +177,6 @@ function loadSessionInformation(user) {
 
   return db.exec(sql, [user.id, user.project_id])
     .then(rows => {
-
       // if no data found, we return a login error
       if (rows.length === 0) {
         throw new InternalServerError(`Server could not locate user with id ${user.id}`);
@@ -198,8 +194,7 @@ function loadSessionInformation(user) {
       return db.exec(sql, [session.user.id]);
     })
     .then(modules => {
-
-      let unauthorized = modules.every(mod => !mod.authorized);
+      const unauthorized = modules.every(mod => !mod.authorized);
 
       // if no permissions, notify the user that way
       if (unauthorized) {
@@ -215,7 +210,6 @@ function loadSessionInformation(user) {
       return db.exec(sql, [new Date(), session.user.id]);
     })
     .then(() => {
-
       // we need to construct the session on the client side, including:
       //   the current enterprise
       //   the current project
@@ -234,7 +228,6 @@ function loadSessionInformation(user) {
       return db.exec(sql, [session.user.enterprise_id]);
     })
     .then(rows => {
-
       if (!rows.length) {
         throw new InternalServerError('There are no enterprises registered in the database!');
       }
@@ -267,15 +260,14 @@ function loadSessionInformation(user) {
  * Uses the same login code to re
  */
 function reload(req, res, next) {
-
   if (!(req.session && req.session.user)) {
-    return next(new Unauthorized('The user is not signed in.'));
+    next(new Unauthorized('The user is not signed in.'));
+    return;
   }
 
   // refresh the user's session by manually calling refresh session
   loadSessionInformation(req.session.user)
     .then(session => {
-
       // bind the session  variables
       req.session.project = session.project;
       req.session.user = session.user;
@@ -284,10 +276,10 @@ function reload(req, res, next) {
 
       // broadcast LOGIN event
       Topic.publish(Topic.channels.APP, {
-        event: Topic.events.RELOAD,
-        entity: Topic.entities.USER,
+        event : Topic.events.RELOAD,
+        entity : Topic.entities.USER,
         user_id : req.session.user.id,
-        id: session.user.id
+        id : session.user.id,
       });
 
       // send the session data back to the client

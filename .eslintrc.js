@@ -17,13 +17,13 @@ module.exports = {
     "comma-dangle" : ["error", "always-multiline"],
     "key-spacing": ["warn", {
       "singleLine": {
-        "beforeColon": false,
+        "beforeColon": true,
         "afterColon": true
       },
       "multiLine": {
         "beforeColon": true,
         "afterColon": true,
-        "align" : "colon"
+        "mode" : "minimum"
       }
     }],
     "no-use-before-define": ["error", {
@@ -35,7 +35,13 @@ module.exports = {
     "func-names" : ["warn", "as-needed"],
     "no-underscore-dangle": ["error", {
       "allowAfterThis": true
-    }]
+    }],
+    "quotes" : ["error", "single", { "allowTemplateLiterals": true }],
+    "arrow-parens" : "off",
+    "arrow-body-style" : "off",
+    "prefer-arrow-callback" : "off",
+    "no-underscore-dangle" : "off",
+    "no-extra-boolean-cast" : "off",
   },
   "globals" : {
     "Chart" : true,

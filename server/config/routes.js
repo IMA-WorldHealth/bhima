@@ -44,11 +44,11 @@ const medicalReports = require('../controllers/medical/reports');
 const diagnoses = require('../controllers/medical/diagnoses');
 
 // stock and inventory routes
-const inventory            = require('../controllers/inventory');
-const depots               = require('../controllers/inventory/depots');
-const inventoryReports     = require('../controllers/inventory/reports');
-const stock                = require('../controllers/stock');
-const stockReports         = require('../controllers/stock/reports');
+const inventory = require('../controllers/inventory');
+const depots = require('../controllers/inventory/depots');
+const inventoryReports = require('../controllers/inventory/reports');
+const stock = require('../controllers/stock');
+const stockReports = require('../controllers/stock/reports');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -56,7 +56,6 @@ const ledger = require('../controllers/finance/ledger');
 const fiscal = require('../controllers/finance/fiscal');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
-const taxPayment = require('../controllers/finance/taxPayment');
 const debtors = require('../controllers/finance/debtors');
 const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
@@ -64,21 +63,14 @@ const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceList');
 const billingServices = require('../controllers/finance/billingServices');
 const accounts = require('../controllers/finance/accounts');
-const costCenter = require('../controllers/finance/costCenter');
-const profitCenter = require('../controllers/finance/profitCenter');
-const reference = require('../controllers/finance/reference');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
 const financeReports = require('../controllers/finance/reports');
 const discounts = require('../controllers/finance/discounts');
-const payroll = require('../controllers/finance/payroll');
 const debtorGroups = require('../controllers/finance/debtors/groups');
 const currencies = require('../controllers/finance/currencies');
 const vouchers = require('../controllers/finance/vouchers');
 const creditorGroups = require('../controllers/finance/creditorGroups');
-const referenceGroup = require('../controllers/finance/referenceGroup');
-const sectionResultats = require('../controllers/finance/sectionResultat');
-const sectionBilans = require('../controllers/finance/sectionBilan');
 const creditors = require('../controllers/finance/creditors.js');
 const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
@@ -152,56 +144,12 @@ exports.configure = function configure(app) {
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
 
-  // API for cost_center routes CRUD
-  app.get('/cost_centers', costCenter.list);
-  app.get('/cost_centers/:id', costCenter.detail);
-  app.get('/cost_centers/:id/cost', costCenter.getCostValue);
-  app.post('/cost_centers', costCenter.create);
-  app.put('/cost_centers/:id', costCenter.update);
-  app.delete('/cost_centers/:id', costCenter.remove);
-
   // API for service routes
   app.post('/services', services.create);
   app.get('/services', services.list);
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
-
-  // API for profit_center routes crud
-  app.get('/profit_centers', profitCenter.list);
-  app.get('/profit_centers/:id', profitCenter.detail);
-  app.get('/profit_centers/:id/profit', profitCenter.getProfitValue);
-  app.post('/profit_centers', profitCenter.create);
-  app.put('/profit_centers/:id', profitCenter.update);
-  app.delete('/profit_centers/:id', profitCenter.remove);
-
-  // API for reference routes crud
-  app.get('/references', reference.list);
-  app.get('/references/:id', reference.detail);
-  app.post('/references', reference.create);
-  app.put('/references/:id', reference.update);
-  app.delete('/references/:id', reference.remove);
-
-  // API for section resultats crud
-  app.get('/section_resultats', sectionResultats.list);
-  app.get('/section_resultats/:id', sectionResultats.detail);
-  app.post('/section_resultats', sectionResultats.create);
-  app.put('/section_resultats/:id', sectionResultats.update);
-  app.delete('/section_resultats/:id', sectionResultats.remove);
-
-  // API for section bilans crud
-  app.get('/section_bilans', sectionBilans.list);
-  app.get('/section_bilans/:id', sectionBilans.detail);
-  app.post('/section_bilans', sectionBilans.create);
-  app.put('/section_bilans/:id', sectionBilans.update);
-  app.delete('/section_bilans/:id', sectionBilans.remove);
-
-  // API for reference group crud
-  app.get('/reference_group', referenceGroup.list);
-  app.get('/reference_group/:id', referenceGroup.detail);
-  app.post('/reference_group', referenceGroup.create);
-  app.put('/reference_group/:id', referenceGroup.update);
-  app.delete('/reference_group/:id', referenceGroup.remove);
 
   // API for subsidies routes crud
   app.get('/subsidies', subsidies.list);
@@ -254,17 +202,6 @@ exports.configure = function configure(app) {
   app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
-
-  app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
-  app.put('/setTaxPayment/', taxPayment.setTaxPayment);
-
-  // Payroll
-  app.get('/getDataPaiement/', payroll.listPaiementData);
-  app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
-  app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
-  app.put('/setCotisationPayment/', payroll.setCotisationPayment);
-  app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
-  app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
 
   /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
@@ -613,7 +550,6 @@ exports.configure = function configure(app) {
   // stock management API
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
-
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
   app.get('/stock/lots/origins', stock.listLotsOrigins);

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'SessionService',
-  'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants', 'ExchangeRateService',
+  'ReceiptModal', 'NotifyService', 'bhConstants', 'ExchangeRateService', 'moment',
 ];
 
 /**
@@ -16,7 +16,7 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Session, Dates, Receipts, Notify, Constants, Exchange) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Session, Receipts, Notify, Constants, Exchange, moment) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
@@ -148,7 +148,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   // reset everything in the controller - default values
   function clear(detailsForm) {
     // set timestamp to today
-    vm.timestamp = Dates.current.day();
+    vm.timestamp = moment();
 
     vm.Invoice.setup();
 

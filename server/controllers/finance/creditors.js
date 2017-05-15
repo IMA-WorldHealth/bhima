@@ -22,7 +22,6 @@ exports.detail = detail;
  * @todo integration tests for this function
  */
 function list(req, res, next) {
-
   const sql = `
     SELECT BUID(c.uuid) as uuid, c.text, cg.name, BUID(c.group_uuid) as group_uuid,
       a.id AS account_id, a.number, map.text as hr_entity
@@ -45,7 +44,6 @@ function list(req, res, next) {
  * @todo integration tests for this function
  */
 function detail(req, res, next) {
-
   const sql = `
     SELECT BUID(c.uuid) as uuid, c.text, cg.name, BUID(c.group_uuid) as group_uuid,
       a.id AS account_id, a.number

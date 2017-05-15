@@ -15,11 +15,9 @@
  * @requires  lib/errors/BadRequest
  */
 
-const uuid  = require('node-uuid');
-
-const db    = require('../../../lib/db');
+const uuid = require('node-uuid');
+const db = require('../../../lib/db');
 const topic = require('../../../lib/topic');
-
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -47,7 +45,6 @@ const COLUMNS = `
  * GET /patients/visits
  */
 function list(req, res, next) {
-
   const limit = Number(req.query.limit);
 
   // @todo - refactor this SQL
@@ -72,7 +69,7 @@ function list(req, res, next) {
   }
 
   // if there is no where query, default to WHERE 1
-  let whereQuery = where.length === 0 ? '1' : where.join(' AND ');
+  const whereQuery = where.length === 0 ? '1' : where.join(' AND ');
 
   const sql = `
     SELECT ${COLUMNS}
@@ -111,13 +108,11 @@ function detail(req, res, next) {
   `;
 
   // get the correct record
-  db.one(sql, [ db.bid(visitUuid) ], visitUuid)
+  db.one(sql, [db.bid(visitUuid)], visitUuid)
     .then(row => res.status(200).json(row))
     .catch(next)
     .done();
 }
-
-
 
 /**
  * @method listByPatient
@@ -164,12 +159,11 @@ function listByPatient(req, res, next) {
     ${limitQuery}
   `;
 
-  db.exec(listVisitsQuery, [db.bid(patientUuid), req.query.diagnosis_id, req.query.diagnosis_id ])
+  db.exec(listVisitsQuery, [db.bid(patientUuid), req.query.diagnosis_id, req.query.diagnosis_id])
     .then(visits => {
-
       // if the 'last' option is set, unwrap the returned value
       if (req.query.last) {
-        let lastVisit = visits[0];
+        const lastVisit = visits[0];
         res.status(200).json(lastVisit || {});
         return;
       }
@@ -203,12 +197,14 @@ function admission(req, res, next) {
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.start_diagnosis_id) {
-    return next(
+    next(
       new BadRequest(
         'An admission diagnosis is required to begin a patient visit.',
         'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
       )
     );
+
+    return;
   }
 
   // set and parse the start_date if it is not defined
@@ -224,7 +220,7 @@ function admission(req, res, next) {
   `;
 
   db.exec(sql, [data])
-    .then(data => {
+    .then(() => {
       res.status(201).json({ uuid : visitUuid });
     })
     .catch(next)
@@ -243,30 +239,32 @@ function admission(req, res, next) {
  * POST /patients/:uuid/visits/discharge
  */
 function discharge(req, res, next) {
-
   const data = req.body;
   const visitUuid = data.uuid;
   delete data.uuid;
 
   if (!visitUuid) {
-    return next(
+    next(
       new NotFound(
         'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
         'PATIENT.VISITS.ERR_MISSING_UUID'
       )
     );
 
+    return;
   }
 
   // if there is not end_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.end_diagnosis_id) {
-    return next(
+    next(
       new BadRequest(
         'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
         'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
       )
     );
+
+    return;
   }
 
   // set and parse the end_date if it is not defined
@@ -277,7 +275,7 @@ function discharge(req, res, next) {
   `;
 
   db.exec(sql, [data, db.bid(visitUuid)])
-    .then(data => {
+    .then(() => {
       res.status(201).json({ uuid : visitUuid });
     })
     .catch(next)

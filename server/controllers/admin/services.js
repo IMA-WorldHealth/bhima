@@ -6,8 +6,7 @@
  *
  * @description
  * This controller is responsible for implementing all crud and others custom request
- * on the services table through the `/services` endpoint.
- * 
+ * on the services table through the `/services` endpoint. *
  * @requires node-uuid
  * @requires db
  * @requires NotFound
@@ -19,7 +18,6 @@
 const uuid = require('node-uuid');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
 const Topic = require('../../lib/topic');
 
 /**
@@ -60,28 +58,27 @@ function list(req, res, next) {
  * Create a service in the database
  */
 function create(req, res, next) {
-  let record = req.body;
-  let sql = 'INSERT INTO service SET ?';
+  const record = req.body;
+  const sql = `INSERT INTO service SET ?`;
 
   // add contextual information
   record.enterprise_id = req.session.enterprise.id;
 
   delete record.id;
 
-  // service unique uuid as entity uuid 
+  // service unique uuid as entity uuid
   record.uuid = db.bid(uuid.v4());
 
   db.exec(sql, [record])
     .then(function (result) {
-
       Topic.publish(Topic.channels.ADMIN, {
-        event: Topic.events.CREATE,
-        entity: Topic.entities.SERVICE,
-        user_id: req.session.user.id,
-        id : result.insertId
+        event : Topic.events.CREATE,
+        entity : Topic.entities.SERVICE,
+        user_id : req.session.user.id,
+        id : result.insertId,
       });
 
-      res.status(201).json({ id: result.insertId });
+      res.status(201).json({ id : result.insertId });
     })
     .catch(next)
     .done();
@@ -102,8 +99,8 @@ function create(req, res, next) {
 
 
 function update(req, res, next) {
-  let queryData = req.body;
-  let sql = 'UPDATE service SET ? WHERE id = ?;';
+  const queryData = req.body;
+  const sql = `UPDATE service SET ? WHERE id = ?;`;
 
   delete queryData.id;
   delete queryData.uuid;
@@ -117,12 +114,11 @@ function update(req, res, next) {
       return lookupService(req.params.id);
     })
     .then(function (service) {
-
       Topic.publish(Topic.channels.ADMIN, {
-        event: Topic.events.UPDATE,
-        entity: Topic.entities.SERVICE,
-        user_id: req.session.user.id,
-        id : req.params.id
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.SERVICE,
+        user_id : req.session.user.id,
+        id : req.params.id,
       });
 
       res.status(200).json(service);
@@ -142,17 +138,15 @@ function remove(req, res, next) {
 
   db.exec(sql, [req.params.id])
     .then(function (result) {
-
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
 
-
       Topic.publish(Topic.channels.ADMIN, {
-        event: Topic.events.DELETE,
-        entity: Topic.entities.SERVICE,
-        user_id: req.session.user.id,
-        id: req.params.id
+        event : Topic.events.DELETE,
+        entity : Topic.entities.SERVICE,
+        user_id : req.session.user.id,
+        id : req.params.id,
       });
 
       res.sendStatus(204);
@@ -186,10 +180,14 @@ function detail(req, res, next) {
  * @returns {Promise} - returns the result of teh database query
  */
 function lookupService(id) {
-  const sql =`
-    SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
-    FROM service AS s WHERE s.id = ?;
-  `;
+  const sql =
+    `
+    SELECT 
+      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id 
+    FROM 
+      service AS s 
+    WHERE 
+      s.id = ?;`;
 
   return db.one(sql, id, id, 'service');
 }

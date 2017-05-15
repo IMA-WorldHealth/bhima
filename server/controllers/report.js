@@ -11,7 +11,7 @@
  * @requires db
  */
 
-const path = require('path');
+// const path = require('path');
 const fs = require('fs');
 const db = require('../lib/db');
 const barcode = require('../lib/barcode');
@@ -27,7 +27,7 @@ exports.barcodeRedirect = barcodeRedirect;
 
 // the global report path
 // @TODO This will have to factor in the type of report - report uuid can be looked up in `saved_report` table
-const REPORT_PATH = path.resolve(path.join(__dirname, '../reports/'));
+// const REPORT_PATH = path.resolve(path.join(__dirname, '../reports/'));
 
 /**
  * @function keys
@@ -39,26 +39,29 @@ const REPORT_PATH = path.resolve(path.join(__dirname, '../reports/'));
  * GET /reports/keys/:key
  */
 function keys(req, res, next) {
-  let key = req.params.key;
-  let sql = `SELECT * FROM report WHERE report_key = ?;`;
+  const key = req.params.key;
+  const sql = `SELECT * FROM report WHERE report_key = ?;`;
 
   db.exec(sql, [key])
-    .then(function (keyDetail) {
+    .then(keyDetail => {
       res.status(200).json(keyDetail);
     })
     .catch(next)
     .done();
 }
 
-function fetchReport(uuid) {
-  let sql = `
-    SELECT BUID(saved_report.uuid) AS uuid, label, report_id, parameters, saved_report.link, timestamp, user_id, user.display_name
-    FROM saved_report LEFT JOIN user ON saved_report.user_id = user.id
-    WHERE report_id = ?;
-  `;
-
-  return db.exec(sql, [uuid]);
-}
+// function fetchReport(uuid) {
+//   let sql = `
+//     SELECT
+//       BUID(saved_report.uuid) AS uuid, label, report_id, parameters,
+//       saved_report.link, timestamp, user_id, user.display_name
+//     FROM
+//       saved_report
+//     LEFT JOIN user ON saved_report.user_id = user.id
+//     WHERE report_id = ?;
+//   `;
+//   return db.exec(sql, [uuid]);
+// }
 
 /**
  * @function list
@@ -69,11 +72,18 @@ function fetchReport(uuid) {
  * GET /reports/saved/:reportId
  */
 function list(req, res, next) {
-  let reportId = req.params.reportId;
-  let sql = 'SELECT BUID(saved_report.uuid) as uuid, `label`, `report_id`, `parameters`, `link`, `timestamp`, `user_id`, user.display_name FROM saved_report left join user on saved_report.user_id = user.id WHERE report_id = ?';
+  const reportId = req.params.reportId;
+  const sql =
+    `
+    SELECT 
+      BUID(saved_report.uuid) as uuid, label, report_id, 
+      parameters, link, timestamp, user_id, 
+      user.display_name 
+    FROM saved_report left join user on saved_report.user_id = user.id 
+    WHERE report_id = ?`;
 
   db.exec(sql, [reportId])
-    .then(function (results) {
+    .then(results => {
       res.status(200).json(results);
     })
     .catch(next)
@@ -90,7 +100,7 @@ function list(req, res, next) {
  * @returns {Promise} - the report record
  */
 function lookupArchivedReport(uuid) {
-  let sql = `
+  const sql = `
     SELECT BUID(saved_report.uuid) as uuid, label, report_id, parameters, link,
       timestamp, user_id, user.display_name
     FROM saved_report left join user on saved_report.user_id = user.id
@@ -133,11 +143,14 @@ function deleteArchived(req, res, next) {
   lookupArchivedReport(req.params.uuid)
     .then(report => {
       filePath = report.link;
-      return db.exec('DELETE FROM saved_report WHERE uuid = ?;', [ db.bid(req.params.uuid) ]);
+      return db.exec('DELETE FROM saved_report WHERE uuid = ?;', [db.bid(req.params.uuid)]);
     })
     .then(() => {
       fs.unlink(filePath, err => {
-        if (err) { return next(err); }
+        if (err) {
+          next(err);
+          return;
+        }
         res.sendStatus(204);
       });
     })
@@ -148,7 +161,7 @@ function deleteArchived(req, res, next) {
 // Method to return the object
 // Method to redirect
 function barcodeLookup(req, res, next) {
-  let key = req.params.key;
+  const key = req.params.key;
 
   barcode.reverseLookup(key)
     .then(result => res.send(result))
@@ -157,7 +170,7 @@ function barcodeLookup(req, res, next) {
 }
 
 function barcodeRedirect(req, res, next) {
-  let key = req.params.key;
+  const key = req.params.key;
 
   barcode.reverseLookup(key)
     // populated by barcode controller

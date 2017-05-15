@@ -11,7 +11,8 @@ exports.getDataPerAccount = function getDataPerAccount(req, res, next) {
   const transactions = req.body.transactions;
 
   if (!transactions) {
-    return next(new BadRequest('The transaction list is null or undefined'));
+    next(new BadRequest('The transaction list is null or undefined'));
+    return;
   }
 
   // This is a complicated query, but it performs correctly.

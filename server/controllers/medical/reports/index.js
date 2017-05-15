@@ -6,11 +6,15 @@
  * in the medical module.
  */
 
+const patient = require('./patient.receipt').build;
+const patientRegistration = require('./registrations');
+const patientCheckin = require('./checkins');
+
 // expose to the express router
 module.exports = {
-  receipts: {
-    patients: require('./patient.receipt').build,
+  receipts : {
+    patients : patient,
   },
-  patientRegistrations : require('./registrations'),
-  patientCheckins : require('./checkins')
+  patientRegistrations : patientRegistration,
+  patientCheckins : patientCheckin,
 };

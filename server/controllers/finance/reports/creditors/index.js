@@ -10,9 +10,9 @@
  */
 
 
-const _           = require('lodash');
+const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
-const db          = require('../../../../lib/db');
+const db = require('../../../../lib/db');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars';
@@ -32,8 +32,9 @@ function agedCreditorReport(req, res, next) {
 
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
-  } catch(e) {
-    return next(e);
+  } catch (e) {
+    next(e);
+    return;
   }
 
   // fire the SQL for the report

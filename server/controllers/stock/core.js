@@ -9,10 +9,7 @@
  * @requires lib/db
  * @requires lib/filter
  * @requires config/identifiers
- * 
- */
-
-'use strict';
+ **/
 
 const _ = require('lodash');
 const moment = require('moment');
@@ -200,14 +197,23 @@ function getLotsOrigins(depotUuid, params) {
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN (
-          SELECT p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, 'STOCK.PURCHASE_ORDER' AS display_name 
-            FROM purchase p JOIN project proj ON proj.id = p.project_id
+          SELECT 
+            p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference,
+            'STOCK.PURCHASE_ORDER' AS display_name
+          FROM 
+            purchase p JOIN project proj ON proj.id = p.project_id
           UNION 
-          SELECT d.uuid, CONCAT_WS('.', '${identifiers.DONATION.key}', proj.abbr, d.reference) AS reference, 'STOCK.DONATION' AS display_name 
-            FROM donation d JOIN project proj ON proj.id = d.project_id
+          SELECT 
+            d.uuid, CONCAT_WS('.', '${identifiers.DONATION.key}', proj.abbr, d.reference) AS reference,
+            'STOCK.DONATION' AS display_name 
+            FROM 
+              donation d JOIN project proj ON proj.id = d.project_id
           UNION 
-          SELECT i.uuid, CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, i.reference) AS reference, 'STOCK.INTEGRATION' AS display_name 
-            FROM integration i JOIN project proj ON proj.id = i.project_id 
+          SELECT 
+            i.uuid, CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, i.reference) AS reference,
+            'STOCK.INTEGRATION' AS display_name 
+            FROM 
+              integration i JOIN project proj ON proj.id = i.project_id 
         ) AS origin ON origin.uuid = l.origin_uuid 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.is_exit = 0 
           AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
@@ -242,12 +248,12 @@ function stockManagementProcess(inventories) {
     } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {
       inventory.status = 'minimum_reached';
     } else if (Q > inventory.S_MIN && Q <= inventory.S_MAX) {
-        inventory.status = 'in_stock';
-      } else if (Q > inventory.S_MAX) {
-          inventory.status = 'over_maximum';
-        } else {
-          inventory.status = '';
-        }
+      inventory.status = 'in_stock';
+    } else if (Q > inventory.S_MAX) {
+      inventory.status = 'over_maximum';
+    } else {
+      inventory.status = '';
+    }
 
     delay = moment(new Date(inventory.expiration_date)).diff(current, 'months');
     inventory.S_RP = inventory.quantity - (delay * inventory.avg_consumption);

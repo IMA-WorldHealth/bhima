@@ -3,10 +3,10 @@
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
- */
-const  db = require('../../lib/db');
-const  uuid = require('node-uuid');
-const  NotFound = require('../../lib/errors/NotFound');
+ **/
+const db = require('../../lib/db');
+const uuid = require('node-uuid');
+const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
 function lookupGrade(uid) {
@@ -22,7 +22,6 @@ function lookupGrade(uid) {
 
 // Lists of grades of hospital employees.
 function list(req, res, next) {
-
   let sql =
     'SELECT BUID(uuid) as uuid, text FROM grade ;';
 
@@ -45,7 +44,6 @@ function list(req, res, next) {
 * Returns the detail of a single Grade
 */
 function detail(req, res, next) {
-
   lookupGrade(req.params.uuid)
     .then(function (record) {
       res.status(200).json(record);
@@ -57,9 +55,8 @@ function detail(req, res, next) {
 
 // POST /grade
 function create(req, res, next) {
-
-  var sql,
-      data = req.body;
+  var sql;
+  var data = req.body;
 
   // Provide UUID if the client has not specified
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -68,7 +65,7 @@ function create(req, res, next) {
     'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
-    .then(function (row) {
+    .then(function () {
       res.status(201).json({ uuid : uuid.unparse(data.uuid) });
     })
     .catch(next)
@@ -78,7 +75,6 @@ function create(req, res, next) {
 
 // PUT /grade /:uuid
 function update(req, res, next) {
-
   var sql =
     'UPDATE grade SET ? WHERE uuid = ?;';
 
@@ -98,13 +94,11 @@ function update(req, res, next) {
 
 // DELETE /grade/:uuid
 function del(req, res, next) {
-
   var sql =
     'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])
   .then(function (row) {
-
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
       throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
