@@ -177,7 +177,7 @@ function create(req, res, next) {
 
   return transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid: puid });
+      res.status(201).json({ uuid : puid });
     })
     .catch(next)
     .done();
@@ -288,7 +288,7 @@ function search(req, res, next) {
  * filter the purchase orders.
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias: 'p' });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid,
@@ -344,12 +344,10 @@ function purchaseStatus(req, res, next) {
       // the purchase is totally delivered
       status.status = 'full_entry';
       query = 'UPDATE purchase SET is_partially_received = 0, is_received = 1 WHERE uuid = ?';
-
     } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
       // the purchase is partially delivered
       status.status = 'partial_entry';
       query = 'UPDATE purchase SET is_partially_received = 1, is_received = 0 WHERE uuid = ?';
-
     } else if (row.movement_cost === 0) {
       // the purchase is not yet delivered
       status.status = 'no_entry';

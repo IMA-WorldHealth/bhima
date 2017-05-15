@@ -32,7 +32,8 @@ function build(req, res, next) {
   try {
     report = new ReportManager(template, req.session, options);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   // format the receipt and ship it off to the client

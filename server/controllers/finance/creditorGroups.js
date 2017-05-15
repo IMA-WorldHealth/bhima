@@ -11,15 +11,14 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const uuid = require('node-uuid');
 
 // GET /creditor_groups
-function lookupCreditorGroup(uuid) {
-
+function lookupCreditorGroup(Uuid) {
   const sql = `
     SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
     FROM creditor_group
     WHERE creditor_group.uuid = ?;
   `;
 
-  return db.one(sql, [db.bid(uuid)], uuid, 'Creditor Group');
+  return db.one(sql, [db.bid(Uuid)], Uuid, 'Creditor Group');
 }
 
 
@@ -92,7 +91,7 @@ function create(req, res, next) {
 * Update a creditor group based on its uuid
 */
 function update(req, res, next) {
-  let sql =
+  const sql =
     'UPDATE creditor_group SET ? WHERE uuid = ?;';
 
   const uid = db.bid(req.params.uuid);
@@ -119,7 +118,10 @@ function remove(req, res, next) {
   db.exec(sql, [uid])
     .then(rows => {
       if (!rows.affectedRows) {
-        throw new BadRequest(`Cannot delete the creditor group with id ${req.params.uuid}`, 'CREDITOR_GROUP.FAILURE_DELETE');
+        throw new BadRequest(
+          `Cannot delete the creditor group with id ${req.params.uuid}`,
+          'CREDITOR_GROUP.FAILURE_DELETE'
+        );
       }
       res.sendStatus(203);
     })

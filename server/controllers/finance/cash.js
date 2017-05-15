@@ -135,21 +135,21 @@ function list(req, res, next) {
  * @method search
  * @description search cash payment by some filters given
  */
- function search(req, res, next) {
-   listPayment(req.query)
-     .then((rows) => {
-       res.status(200).json(rows);
-     })
-     .catch(next)
-     .done();
- }
+function search(req, res, next) {
+  listPayment(req.query)
+   .then((rows) => {
+     res.status(200).json(rows);
+   })
+   .catch(next)
+   .done();
+}
 
 /**
  * @method listPayment
  * @description list all payment made
  */
 function listPayment(options) {
-  const filters = new FilterParser(options, { tableAlias: 'cash' });
+  const filters = new FilterParser(options, { tableAlias : 'cash' });
 
   const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
@@ -178,7 +178,10 @@ function listPayment(options) {
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
 
-  filters.custom('invoice_uuid', 'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = HUID(?))');
+  filters.custom(
+    'invoice_uuid',
+    'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = HUID(?))'
+  );
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -234,7 +237,7 @@ function update(req, res, next) {
 
   // properly parse date if it exists
   if (req.body.date) {
-    _.extend(req.body, { date: new Date(req.body.date) });
+    _.extend(req.body, { date : new Date(req.body.date) });
   }
 
   // if checks pass, we are free to continue with our updates to the db

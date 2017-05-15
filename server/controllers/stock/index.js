@@ -48,7 +48,11 @@ exports.createIntegration = createIntegration;
 function createStock(req, res, next) {
   const params = req.body;
 
-  let createLotQuery, createLotObject, createMovementQuery, createMovementObject, date;
+  let createLotQuery;
+  let createLotObject;
+  let createMovementQuery;
+  let createMovementObject;
+  let date;
 
   const transaction = db.transaction();
 
@@ -59,7 +63,6 @@ function createStock(req, res, next) {
   };
 
   params.lots.forEach((lot) => {
-
         // lot expiration date
     date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD').toString();
 
@@ -101,7 +104,7 @@ function createStock(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid: document.uuid });
+      res.status(201).json({ uuid : document.uuid });
     })
     .catch(next)
     .done();
@@ -124,7 +127,7 @@ function createMovement(req, res, next) {
 
   process(document, params)
     .then((rows) => {
-      res.status(201).json({ uuid: document.uuid });
+      res.status(201).json({ uuid : document.uuid });
     })
     .catch(next)
     .done();
@@ -301,7 +304,7 @@ function listLotsOrigins(req, res, next) {
  * POST /stock/integration
  * create a new integration entry
  */
-function createIntegration (req, res, next) {
+function createIntegration(req, res, next) {
   const params = req.body;
   const identifier = uuid.v4();
   const integration = {

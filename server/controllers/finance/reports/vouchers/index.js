@@ -39,7 +39,7 @@ function receipt(req, res, next) {
 
   const options = req.query;
 
-  let report;
+  let receiptReport;
   const data = {};
   const record = {};
 
@@ -51,14 +51,14 @@ function receipt(req, res, next) {
   }
 
   try {
-    report = new ReportManager(template, req.session, options);
+    receiptReport = new ReportManager(template, req.session, options);
   } catch (e) {
     return next(e);
   }
 
   return Vouchers.lookupVoucher(req.params.uuid)
     .then((voucher) => {
-      voucher.barcode = barcode.generate(entityIdentifier, voucher.uuid)
+      voucher.barcode = barcode.generate(entityIdentifier, voucher.uuid);
 
       // voucher details
       record.details = voucher;
@@ -69,7 +69,7 @@ function receipt(req, res, next) {
       // populate data for the view
       _.extend(data, record, metadata);
 
-      return report.render(data);
+      return receiptReport.render(data);
     })
     .then((result) => {
       res.set(result.headers).send(result.report);
@@ -86,12 +86,12 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
   const options = _.clone(req.query);
-  _.extend(options, { csvKey: 'rows', filename: 'VOUCHERS.GLOBAL.REPORT', orientation: 'landscape' });
+  _.extend(options, { csvKey : 'rows', filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape' });
 
-  let report;
+  let reportInstance;
 
   try {
-    report = new ReportManager(REPORT_TEMPLATE, req.session, options);
+    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, options);
     delete options.orientation;
   } catch (e) {
     return next(e);
@@ -105,7 +105,7 @@ function report(req, res, next) {
         dateTo   : req.query.dateTo,
       };
 
-      return report.render(data);
+      return reportInstance.render(data);
     })
     .then((result) => {
       res.set(result.headers).send(result.report);

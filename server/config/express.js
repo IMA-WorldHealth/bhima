@@ -5,18 +5,16 @@
  * @todo - this could probably be separated by functionality.
  */
 
-const express    = require('express');
-const compress   = require('compression');
+const express = require('express');
+const compress = require('compression');
 const bodyParser = require('body-parser');
-const session    = require('express-session');
+const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-const Redis      = require('ioredis');
-const morgan     = require('morgan');
-const fs         = require('fs');
-const winston    = require('winston');
-const _          = require('lodash');
-const helmet     = require('helmet');
-const path       = require('path');
+const Redis = require('ioredis');
+const morgan = require('morgan');
+const winston = require('winston');
+const _ = require('lodash');
+const helmet = require('helmet');
 
 const interceptors = require('./interceptors');
 const Unauthorized = require('../lib/errors/Unauthorized');
@@ -34,8 +32,8 @@ exports.configure = function configure(app) {
   app.use(helmet());
   app.use(compress());
 
-  app.use(bodyParser.json({ limit: '8mb' }));
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json({ limit : '8mb' }));
+  app.use(bodyParser.urlencoded({ extended : false }));
 
   // this will disable the session from expiring on the server (redis-session)
   // during development
@@ -52,7 +50,7 @@ exports.configure = function configure(app) {
     resave            : Boolean(process.env.SESS_RESAVE),
     saveUninitialized : false,
     unset             : process.env.SESS_UNSET,
-    cookie            : { httpOnly: true },
+    cookie            : { httpOnly : true },
     retries           : 20,
   };
 
@@ -72,7 +70,7 @@ exports.configure = function configure(app) {
 
   // http logger setup
   // options: combined | common | dev | short | tiny
-  app.use(morgan('combined', { stream: winston.stream }));
+  app.use(morgan('combined', { stream : winston.stream }));
 
   // public static directories include the entire client and the uploads
   // directory.
