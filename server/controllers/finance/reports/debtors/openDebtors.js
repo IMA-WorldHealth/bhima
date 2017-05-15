@@ -72,6 +72,7 @@ function build(req, res, next) {
    * Journal and General Ledger to find unbalanced accounts, then links them
    * with invoices and cash payments.
    */
+
   const debtorsSql = `
     SELECT patient.display_name, entity_map.text AS reference, MAX(invoice.date) AS lastInvoiceDate,
       MAX(cash.date) AS lastPaymentDate, ledger.balance AS debt
@@ -79,11 +80,17 @@ function build(req, res, next) {
       JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
       JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
       JOIN (
-        SELECT entity_uuid, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
-          SUM(debit_equiv - credit_equiv) AS balance
-        FROM combined_ledger
-        WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-        GROUP BY entity_uuid
+        SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
+          SUM(c.debit_equiv - c.credit_equiv) AS balance
+        FROM (
+          (
+            SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
+          UNION (
+            SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
+          )
+        ) AS c
+        WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
+        GROUP BY c.entity_uuid
         HAVING balance > 0
       ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
     GROUP BY patient.debtor_uuid
@@ -94,10 +101,13 @@ function build(req, res, next) {
    * Aggregate SQL for totalling all debts up to the present
    */
   const aggregateSql = `
-    SELECT COUNT(DISTINCT(entity_uuid)) AS numDebtors, SUM(debit_equiv) AS debit,
-      SUM(credit_equiv) AS credit, SUM(debit_equiv - credit_equiv) AS balance
-    FROM combined_ledger
-    WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);
+    SELECT COUNT(DISTINCT(c.entity_uuid)) AS numDebtors, SUM(c.debit_equiv) AS debit,
+     SUM(c.credit_equiv) AS credit, SUM(c.debit_equiv - c.credit_equiv) AS balance
+    FROM (
+      (SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
+      UNION (SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger)
+    ) AS c
+    WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);    
   `;
 
   const data = {};
