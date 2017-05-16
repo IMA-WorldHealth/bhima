@@ -24,7 +24,7 @@
       </li>
     </ol>
 
-    <div class="toolbar">
+    <div class="toolbar" ng-if="!CashCtrl.isUpdateState()">
       <div class="toolbar-item">
         <button class="btn btn-default text-capitalize" ui-sref="cashboxes.create" data-method="create">
           <i class="fa fa-plus"></i>
