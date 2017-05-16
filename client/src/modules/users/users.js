@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
-UsersController.$inject = ['$state', 'UserService', 'NotifyService'];
+UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService'];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, Users, Notify) {
+function UsersController($state, Users, Notify, Modal) {
   var vm = this;
 
   // options for the UI grid
@@ -30,6 +30,7 @@ function UsersController($state, Users, Notify) {
   // bind methods
   vm.edit = edit;
   vm.editPermissions = editPermissions;
+  vm.activatePermissions = activatePermissions;
 
   function edit(user) {
     $state.go('users.edit', { id: user.id, creating: false });
@@ -37,6 +38,25 @@ function UsersController($state, Users, Notify) {
 
   function editPermissions(user) {
     $state.go('users.editPermission', { id: user.id });
+  }
+
+  function activatePermissions(user, value, message){
+    vm.user.deactivated = value;
+    
+    Modal.confirm(message)
+      .then(function (confirmResponse) {
+        if (!confirmResponse) {
+          return false;
+        }
+
+        // user has confirmed activation or deactivation of debtor group
+        return Users.update(user.id, vm.user)
+          .then(function () {
+            Notify.success("USERS.UPDATED");
+            $state.go('users.list', null, {reload : true});
+          })
+          .catch(Notify.handleError);
+      });    
   }
 
   function handleError(error) {
