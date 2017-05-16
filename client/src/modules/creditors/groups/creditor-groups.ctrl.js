@@ -20,6 +20,8 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   vm.bundle = {};
   vm.reload = { reload: true };
   vm.state = $state;
+
+  // page state
   vm.isDefaultState = ($state.current.name === 'creditorGroups');
   vm.isUpdateState = ($state.current.name === 'creditorGroups.update' && uuid);
   vm.isCreateState = ($state.current.name === 'creditorGroups.create');
@@ -45,26 +47,6 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
     vm.creditorGroupList = list;
   })
   .catch(Notify.handleError);
-
-  // expose states
-  vm.isUpdateState = isUpdateState;
-  vm.isEditState = isEditState;
-  vm.isCreateState = isCreateState;
-
-  // is update state function
-  function isUpdateState() {
-    return ($state.current.name === 'creditorGroups.update' || $state.current.name === 'creditorGroups.create');
-  }
-
-  // is edit state function
-  function isEditState() {
-    return ($state.current.name === 'creditorGroups.update');
-  }
-
-  // is create state function
-  function isCreateState() {
-    return ($state.current.name === 'creditorGroups.create');
-  }
 
   /**
    * @function loadListState
