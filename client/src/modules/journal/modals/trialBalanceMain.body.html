@@ -1,3 +1,17 @@
+<!-- exportation -->
+<div class="row text-right" style="margin: 5px;">
+  <div class="col-xs-12">
+    <button
+      id="export"
+      type="button"
+      class="btn btn-success"
+      ng-click="TrialBalanceMainBodyCtrl.exportGrid()">
+      <i class="fa fa-file-excel-o"></i> 
+      <span translate>FORM.BUTTONS.EXPORT</span>
+    </button>
+  </div>
+</div>
+
 <div class="row" style="margin: 5px;" ng-if="TrialBalanceMainBodyCtrl.showErrorButton">
   <div class="col-xs-4">
     <button
@@ -20,10 +34,14 @@
   id="main-grid"
   ui-grid="TrialBalanceMainBodyCtrl.gridOptions"
   ui-grid-auto-resize
-  ui-grid-grouping>
+  ui-grid-grouping
+  ui-grid-exporter>
   <bh-grid-loading-indicator
     loading-state="TrialBalanceMainBodyCtrl.loading"
     empty-state="TrialBalanceMainBodyCtrl.gridOptions.data.length === 0"
     error-state="TrialBalanceMainBodyCtrl.hasError">
   </bh-grid-loading-indicator>
 </div>
+
+<span class="ui-grid-exporter-csv-link">&nbsp</span>
+

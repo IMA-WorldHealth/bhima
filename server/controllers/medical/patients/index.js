@@ -567,6 +567,12 @@ function subsidies(req, res, next) {
 function loadLatestInvoice(inv) {
   const debtorID = inv.debtor_uuid;
   const invoiceID = inv.uuid;
+  const combinedLedger = `
+    (
+      (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM posting_journal)
+      UNION 
+      (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM general_ledger)
+    ) AS comb`;
 
   const sql =
     `SELECT BUID(i.uuid) as uid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, reference) AS reference,
@@ -575,11 +581,11 @@ function loadLatestInvoice(inv) {
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
         FROM (
           SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM combined_ledger
+          FROM ${combinedLedger}
           WHERE record_uuid IN (?) AND entity_uuid = ?
         UNION ALL
           SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM  combined_ledger
+          FROM ${combinedLedger}
           WHERE reference_uuid IN (?) AND entity_uuid = ?
         ) AS ledger
         GROUP BY entity_uuid
@@ -592,11 +598,11 @@ function loadLatestInvoice(inv) {
         SELECT uuid,  debit, credit, entity_uuid
         FROM (
           SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM combined_ledger
+          FROM ${combinedLedger}
           WHERE record_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
         UNION ALL
           SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM  combined_ledger
+          FROM ${combinedLedger}
           WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
         ) AS ledger
       ) AS i JOIN invoice ON i.uuid = invoice.uuid

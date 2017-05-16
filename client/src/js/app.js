@@ -5,7 +5,8 @@ var bhima = angular.module('bhima', [
   'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
-  'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
+  'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
+  'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
   'ui.router.state.events',
 ]);

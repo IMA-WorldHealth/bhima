@@ -58,28 +58,25 @@ function invoiceStat(req, res, next) {
 
   // query invoices
   const sqlBalance =
-    `SELECT 
-    (debit - credit) as balance, project_id, cost
+    `SELECT (debit - credit) as balance, project_id, cost
      FROM (
-      SELECT 
-        SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
-      FROM 
-        combined_ledger
-      JOIN 
-        invoice ON combined_ledger.record_uuid = invoice.uuid OR 
-        combined_ledger.reference_uuid = invoice.uuid
-      WHERE 
-        invoice.uuid NOT IN (
-          SELECT 
-            voucher.reference_uuid 
-          FROM voucher 
-          WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
-        AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
-      GROUP BY uuid
+      (
+        SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
+        FROM posting_journal
+        JOIN invoice ON posting_journal.record_uuid = invoice.uuid OR posting_journal.reference_uuid = invoice.uuid
+        WHERE invoice.reversed = 0 AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
+        GROUP BY invoice.uuid
+      ) UNION (
+        SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
+        FROM general_ledger
+        JOIN invoice ON general_ledger.record_uuid = invoice.uuid OR general_ledger.reference_uuid = invoice.uuid
+        WHERE invoice.reversed = 0 AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
+        GROUP BY invoice.uuid   
+      )
      ) AS i
      JOIN project ON i.project_id = project.id
      `;
-
+     
   // promises requests
   const dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date])];
 

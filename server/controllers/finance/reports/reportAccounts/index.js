@@ -8,7 +8,7 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 /**
  * global constants
  */
-const sourceMap = { 1 : 'general_ledger', 2 : 'posting_journal', 3 : 'combined_ledger' };
+const sourceMap = { 1: 'general_ledger', 2: 'posting_journal'};
 
 /**
  * Expose to controllers
@@ -67,11 +67,23 @@ function document(req, res, next) {
 */
 function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   const sourceId = parseInt(source, 10);
+  let tableName;
 
-  // get the table name
-  const tableName = sourceMap[sourceId];
+  if(sourceId === 3){
+    tableName = `(
+      (SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
+        FROM posting_journal ) 
+      UNION (
+      SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
+      FROM general_ledger )
+    ) as comb `;
+
+  } else {
+    // get the table name
+    tableName = sourceMap[sourceId];
+  }
+
   const params = [accountId];
-
   let dateCondition = '';
 
   if (dateFrom && dateTo) {

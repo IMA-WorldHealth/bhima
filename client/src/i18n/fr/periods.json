@@ -2,10 +2,10 @@
   "PERIODS" : {
     "TODAY" : "Aujourd'hui",
     "THIS_WEEK" : "Cette semaine",
-    "THIS_MONTH" : "Ce Mois",
-    "THIS_YEAR" : "Cette Année",
+    "THIS_MONTH" : "Ce mois",
+    "THIS_YEAR" : "Cette année",
     "YESTERDAY" : "Hier",
-    "LAST_WEEK" : "Semaine derniére",
+    "LAST_WEEK" : "Semaine derniere",
     "LAST_MONTH" : "Mois dernier",
     "LAST_YEAR" : "Année derniére",
     "ALL_TIME" : "Tout le temps",
