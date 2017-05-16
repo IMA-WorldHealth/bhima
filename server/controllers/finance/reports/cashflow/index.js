@@ -7,7 +7,6 @@
  * @module finance/cashflow
  *
  * @requires lodash
- * @requires node-uuid
  * @requires moment
  * @requires lib/db
  * @requires lib/ReportManager
@@ -16,7 +15,6 @@
 
 
 const _ = require('lodash');
-const uuid = require('node-uuid');
 const Moment = require('moment');
 
 const db = require('../../../../lib/db');
@@ -62,7 +60,7 @@ function processingCashflowReport(params) {
 
   // get all periods for the the current fiscal year
   return getPeriods(params.dateFrom, params.dateTo)
-    .then(function (periods) {
+    .then((periods) => {
       // get the closing balance (previous fiscal year) for the selected cashbox
       if (!periods.length) {
         throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
@@ -70,16 +68,16 @@ function processingCashflowReport(params) {
       glb.periods = periods;
       return closingBalance(params.account_id, glb.periods[0].start_date);
     })
-    .then(function (balance) {
+    .then((balance) => {
       if (!balance.length) { balance[0] = { balance : 0, account_id : params.account_id }; }
       glb.openningBalance = balance[0];
       return queryIncomeExpense(params);
     })
-    .then(function (result) {
+    .then((result) => {
       return groupByPeriod(glb.periods, result);
     })
     .then(groupingIncomeExpenseByPeriod)
-    .then(function (flw) {
+    .then((flw) => {
       return {
         openningBalance : glb.openningBalance,
         flows : flw,
@@ -155,11 +153,11 @@ function queryIncomeExpense(params, dateFrom, dateTo) {
  */
 function groupingIncomeExpenseByPeriod(periodicFlows) {
   var grouping = [];
-  periodicFlows.forEach(function (pf) {
-    const incomes = pf.flows.filter(function (posting) {
+  periodicFlows.forEach((pf) => {
+    const incomes = pf.flows.filter((posting) => {
       return posting.debit_equiv > 0;
     });
-    const expenses = pf.flows.filter(function (posting) {
+    const expenses = pf.flows.filter((posting) => {
       return posting.credit_equiv > 0;
     });
     grouping.push({ period : pf.period, incomes, expenses });
@@ -175,9 +173,9 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
  */
 function groupByPeriod(periods, flows) {
   var grouping = [];
-  periods.forEach(function (p) {
+  periods.forEach((p) => {
     var data = [];
-    flows.forEach(function (f) {
+    flows.forEach((f) => {
       const transDate = new Date(f.trans_date);
       const startDate = new Date(p.start_date);
       const endDate = new Date(p.end_date);
@@ -227,11 +225,11 @@ function processingWeekCashflow(params) {
 
   // get all periods for the the current fiscal year
   return queryIncomeExpense(params)
-    .then(function (result) {
+    .then((result) => {
       return groupByPeriod(glb.periods, result);
     })
     .then(groupingIncomeExpenseByPeriod)
-    .then(function (flows) {
+    .then((flows) => {
       return { openningBalance : glb.balance, flows };
     });
 }
@@ -278,7 +276,7 @@ function closingBalance(accountId, periodStart) {
       ) as t;`;
 
   return getFiscalYear(periodStart)
-    .then(function (rows) {
+    .then((rows) => {
       var fy = rows[0];
       return db.exec(query, [accountId, fy.previous_fiscal_year_id, accountId, fy.previous_fiscal_year_id]);
     });
@@ -370,16 +368,16 @@ function document(req, res, next) {
     /** @todo: convert into enterprise currency */
     session.openningBalance = rows.openningBalance.balance;
 
-    session.periodicData.forEach(function (flow) {
+    session.periodicData.forEach((flow) => {
       groupingResult(flow.incomes, flow.expenses, Moment(flow.period.start_date).format('YYYY-MM-DD'));
     });
 
-    session.periodStartArray = session.periodicData.map(function (flow) {
+    session.periodStartArray = session.periodicData.map((flow) => {
       return Moment(flow.period.start_date).format('YYYY-MM-DD');
     });
 
     /** openning balance by period */
-    session.periodicData.forEach(function (flow) {
+    session.periodicData.forEach((flow) => {
       summarization(Moment(flow.period.start_date).format('YYYY-MM-DD'));
     });
 
@@ -421,7 +419,7 @@ function document(req, res, next) {
     session.sum_expense[period] = 0;
 
     if (session.summationIncome[period]) {
-      session.summationIncome[period].forEach(function (transaction) {
+      session.summationIncome[period].forEach((transaction) => {
         // if only cashes values must be in only enterprise currency
         /** @todo: convert into enterprise currency */
         session.sum_incomes[period] += transaction.value;
@@ -430,7 +428,7 @@ function document(req, res, next) {
     }
 
     if (session.summationExpense[period]) {
-      session.summationExpense[period].forEach(function (transaction) {
+      session.summationExpense[period].forEach((transaction) => {
         // if only cashes values must be in only enterprise currency
         /** @todo: convert into enterprise currency */
         session.sum_expense[period] += transaction.value;
@@ -480,16 +478,14 @@ function document(req, res, next) {
    * and all totals needed
    */
   function labelization() {
-    const uniqueIncomes = [];
-    const uniqueExpenses = [];
     session.incomesLabels = _.uniq(session.incomesLabels);
     session.expensesLabels = _.uniq(session.expensesLabels);
 
     /** incomes rows */
-    session.periodStartArray.forEach(function (period) {
+    session.periodStartArray.forEach((period) => {
       session.incomes[period] = {};
-      session.incomesLabels.forEach(function (label) {
-        session.summationIncome[period].forEach(function (transaction) {
+      session.incomesLabels.forEach((label) => {
+        session.summationIncome[period].forEach((transaction) => {
           if (transaction.transfer_type === label) {
             /** @todo: convert into enterprise currency */
             session.incomes[period][label] = transaction.value;
@@ -499,19 +495,19 @@ function document(req, res, next) {
     });
 
     /** totals incomes rows */
-    session.periodStartArray.forEach(function (period) {
+    session.periodStartArray.forEach((period) => {
       session.totalIncomes[period] = 0;
-      session.summationIncome[period].forEach(function (transaction) {
+      session.summationIncome[period].forEach((transaction) => {
         /** @todo: convert into enterprise currency */
         session.totalIncomes[period] += transaction.value;
       });
     });
 
     /** expense rows */
-    session.periodStartArray.forEach(function (period) {
+    session.periodStartArray.forEach((period) => {
       session.expenses[period] = {};
-      session.expensesLabels.forEach(function (label) {
-        session.summationExpense[period].forEach(function (transaction) {
+      session.expensesLabels.forEach((label) => {
+        session.summationExpense[period].forEach((transaction) => {
           if (transaction.transfer_type === label) {
             /** @todo: convert into enterprise currency */
             session.expenses[period][label] = transaction.value;
@@ -521,9 +517,9 @@ function document(req, res, next) {
     });
 
     /** totals expenses rows */
-    session.periodStartArray.forEach(function (period) {
+    session.periodStartArray.forEach((period) => {
       session.totalExpenses[period] = 0;
-      session.summationExpense[period].forEach(function (transaction) {
+      session.summationExpense[period].forEach((transaction) => {
         /** @todo: convert into enterprise currency */
         session.totalExpenses[period] += transaction.value;
       });
@@ -555,11 +551,11 @@ function document(req, res, next) {
 
     // income
     if (incomes) {
-      incomes.forEach(function (item, index) {
+      incomes.forEach((item) => {
         tempIncome[item.origin_id] = typeof tempIncome[item.origin_id] !== 'undefined';
 
         if (tempIncome[item.origin_id] === true) {
-          const value = incomes.reduce(function (a, b) {
+          const value = incomes.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
           }, 0);
           session.summationIncome[period].push({
@@ -573,11 +569,11 @@ function document(req, res, next) {
 
     // Expense
     if (expenses) {
-      expenses.forEach(function (item, index) {
+      expenses.forEach((item) => {
         tempExpense[item.origin_id] = typeof tempExpense[item.origin_id] !== 'undefined';
 
         if (tempExpense[item.origin_id] === true) {
-          const value = expenses.reduce(function (a, b) {
+          const value = expenses.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
 

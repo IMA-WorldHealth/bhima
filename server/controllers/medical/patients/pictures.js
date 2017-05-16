@@ -11,15 +11,12 @@
  *
  * @requires multer
  * @requires db
- * @requires node-uuid
  * @requires BadRequest
  */
 
 
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
-const Topic = require('../../../lib/topic');
 
 exports.set = set;
 
@@ -52,7 +49,7 @@ function set(req, res, next) {
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(sql, [data, buid])
-  .then(updatedPatient => {
+  .then(() => {
     res.status(200).json({ link : data.avatar });
   })
   .catch(next)

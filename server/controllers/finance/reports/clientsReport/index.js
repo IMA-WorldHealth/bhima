@@ -47,10 +47,10 @@ function document(req, res, next) {
 
   // Getting data to be rendered
   fetchClientsData(session)
-    .then(function (data) {
+    .then((data) => {
       return report.render(data);
     })
-    .then(function (result) {
+    .then((result) => {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
@@ -94,7 +94,7 @@ function fetchClientsData(session) {
 
   // Getting a fiscal year and the previous fiscal year ID from the date start defined by the user
   return getFiscalYear(session.dateFrom)
-    .then(function (rows) {
+    .then((rows) => {
       clientsData.fy = rows[0];
       clientsData.fy.openningBalanceDate = new Date(clientsData.fy.start_date);
 
@@ -104,9 +104,9 @@ function fetchClientsData(session) {
       // Getting the client data for the previous fiscal year
       return db.exec(previousDetailSql, [clientsData.fy.previous_fiscal_year_id]);
     })
-    .then(function (data) {
+    .then((data) => {
       // From previous fiscal year data, building the object containing all previous info to print
-      clientsData.lines = data.reduce(function (obj, clientInfo) {
+      clientsData.lines = data.reduce((obj, clientInfo) => {
         const number = clientInfo.accountNumber;
         _.merge(obj[number] = {}, clientInfo);
         return obj;
@@ -129,7 +129,7 @@ function fetchClientsData(session) {
 
       return db.one(previousTotalSql, [clientsData.fy.previous_fiscal_year_id]);
     })
-    .then(function (previousTotal) {
+    .then((previousTotal) => {
       _.merge(clientsData, previousTotal);
 
       // Request to fetch the current fiscal year data of a client
@@ -153,9 +153,9 @@ function fetchClientsData(session) {
       // Fetching data of the current fiscal year
       return db.exec(currentDetailSql, [session.dateFrom, session.dateTo]);
     })
-    .then(function (data) {
+    .then((data) => {
       // Completing the object {clientsData} by adding current info
-      data.forEach(function (dt) {
+      data.forEach((dt) => {
         // If there is no info about the client for the previous year
         if (!clientsData.lines[dt.accountNumber]) {
           _.merge(
@@ -198,12 +198,12 @@ function fetchClientsData(session) {
 
       return db.one(currentTotalSql, [session.dateFrom, session.dateTo]);
     })
-    .then(function (currentTotal) {
+    .then((currentTotal) => {
       _.merge(clientsData, currentTotal);
 
       return clientsData;
     })
-    .catch(function (e) { throw e; });
+    .catch((e) => { throw e; });
 }
 
 /**
@@ -229,7 +229,7 @@ function getFiscalYear(date) {
  * in : [1, 2] out : ["1", "2"]
  */
 function escapeItems(list) {
-  return list.reduce(function (t, item) {
+  return list.reduce((t, item) => {
     t.push(db.escape(db.bid(item)));
     return t;
   }, []);
