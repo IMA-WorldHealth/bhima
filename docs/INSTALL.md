@@ -41,7 +41,7 @@ npm run build
 The database structure is contained in the following files:
  1. `server/models/*.sql`
 
-For an initial setup, bhima also includes a file `server/models/test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.  Note that the database must be running SQL strict mode for all the logic to behave correctly.
+For an initial setup, bhima also includes a file `test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.  Note that the database must be running SQL strict mode for all the logic to behave correctly.
 
 Alternative, you might use the `build-database.sh` script, customized with your environmental variables as shown below:
 
