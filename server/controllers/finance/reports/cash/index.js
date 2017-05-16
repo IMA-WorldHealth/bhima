@@ -13,7 +13,7 @@
 
 const _ = require('lodash');
 const q = require('q');
-const moment = require('moment');
+const Moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
 
@@ -43,7 +43,7 @@ const REPORT_TEMPLATE = './server/controllers/finance/reports/cash/report.handle
 function receipt(req, res, next) {
   const options = req.query;
 
-  let report;
+  let receiptReport;
   let template = RECEIPT_TEMPLATE;
 
   if (Number(options.posReceipt)) {
@@ -53,9 +53,10 @@ function receipt(req, res, next) {
 
   // set up the report with report manager
   try {
-    report = new ReportManager(template, req.session, options);
+    receiptReport = new ReportManager(template, req.session, options);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   const data = {};
@@ -79,13 +80,13 @@ function receipt(req, res, next) {
       payment.renderedDescription = renderedDescription;
 
       // lookup balances on all invoices
-      const invoices = payment.items.map(invoices => invoices.invoice_uuid);
+      const invoicesItems = payment.items.map(invoices => invoices.invoice_uuid);
 
       return q.all([
         Users.lookup(payment.user_id),
         Patients.lookupByDebtorUuid(payment.debtor_uuid),
         Enterprises.lookupByProjectId(payment.project_id),
-        Debtors.invoiceBalances(payment.debtor_uuid, invoices),
+        Debtors.invoiceBalances(payment.debtor_uuid, invoicesItems),
         Debtors.balance(payment.debtor_uuid),
       ]);
     })
@@ -95,7 +96,7 @@ function receipt(req, res, next) {
     })
     .then((exchange) => {
       data.rate = exchange.rate;
-      data.currentDateFormatted = (new moment()).format('L');
+      data.currentDateFormatted = (new Moment()).format('L');
       data.hasRate = (data.rate && !data.payment.is_caution);
 
       data.balances = data.invoices.reduce((aggregate, invoice) => {
@@ -114,7 +115,7 @@ function receipt(req, res, next) {
         invoiceItem.payment_complete = invoiceItem.balance === 0;
       });
 
-      return report.render(data);
+      return receiptReport.render(data);
     })
     .then((result) => {
       res.set(result.headers).send(result.report);
@@ -137,8 +138,8 @@ function report(req, res, next) {
   let display = {};
   let hasFilter = false;
 
-  let report;
-  let optionReport =  _.extend(req.query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', orientation : 'landscape'});
+  let reportInstance;
+  const optionReport = _.extend(req.query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', orientation : 'landscape' });
 
   // set up the report with report manager
   try {
@@ -148,9 +149,10 @@ function report(req, res, next) {
       hasFilter = Object.keys(display).length > 0;
     }
 
-    report = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
+    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   // aggregates basic statistics about the selection
@@ -180,7 +182,6 @@ function report(req, res, next) {
 
   CashPayments.listPayment(options)
     .then(rows => {
-
       data.rows = rows;
       data.hasFilter = hasFilter;
       data.csv = rows;
@@ -202,7 +203,7 @@ function report(req, res, next) {
     })
     .then(amounts => {
       data.amounts = amounts;
-      return report.render(data);
+      return reportInstance.render(data);
     })
     .then(result => {
       res.set(result.headers).send(result.report);

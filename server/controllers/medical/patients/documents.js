@@ -25,8 +25,6 @@ const Topic = require('../../../lib/topic');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 
-const identifiers = require('../../../config/identifiers');
-
 exports.create = create;
 exports.list = list;
 exports.delete = remove;
@@ -70,7 +68,7 @@ function create(req, res, next) {
   });
 
   db.exec(sql, [records])
-  .then(rows => {
+  .then(() => {
     // publish a patient update event
     Topic.publish(Topic.channels.MEDICAL, {
       event : Topic.events.UPDATE,
@@ -99,8 +97,6 @@ function create(req, res, next) {
  */
 function list(req, res, next) {
   const patientUuid = req.params.uuid;
-  const dir = process.env.UPLOAD_DIR;
-
   const sql = `
     SELECT BUID(d.uuid) AS uuid, d.label, d.link, d.timestamp, d.mimetype, d.size,
     u.id AS user_id, u.display_name
@@ -142,7 +138,7 @@ function removeAll(req, res, next) {
     'DELETE FROM patient_document WHERE patient_uuid = ?;';
 
   db.exec(sql, [db.bid(patientUuid)])
-  .then(rows => {
+  .then(() => {
     res.sendStatus(204);
   })
   .catch(next)

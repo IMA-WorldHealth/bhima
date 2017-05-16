@@ -16,7 +16,6 @@ const db = require('../../../../lib/db');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars';
-const REPORT_KEY = 'AGED_CREDITOR';
 
 /**
  * @method agedCreditorReport

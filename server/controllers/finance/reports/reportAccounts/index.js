@@ -8,7 +8,7 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 /**
  * global constants
  */
-const sourceMap = { 1: 'general_ledger', 2: 'posting_journal'};
+const sourceMap = { 1 : 'general_ledger', 2 : 'posting_journal' };
 
 /**
  * Expose to controllers
@@ -69,7 +69,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
   const sourceId = parseInt(source, 10);
   let tableName;
 
-  if(sourceId === 3){
+  if (sourceId === 3) {
     tableName = `(
       (SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
         FROM posting_journal ) 
@@ -77,7 +77,6 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
       SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
       FROM general_ledger )
     ) as comb `;
-
   } else {
     // get the table name
     tableName = sourceMap[sourceId];

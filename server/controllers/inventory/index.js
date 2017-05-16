@@ -96,7 +96,7 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
 function createInventoryItems(req, res, next) {
   core.createItemsMetadata(req.body, req.session)
     .then((identifier) => {
-      res.status(201).json({ uuid: identifier });
+      res.status(201).json({ uuid : identifier });
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);
@@ -189,7 +189,7 @@ function getInventoryItemsById(req, res, next) {
 function createInventoryGroups(req, res, next) {
   groups.create(req.body)
   .then((identifier) => {
-    res.status(201).json({ uuid: identifier });
+    res.status(201).json({ uuid : identifier });
   })
   .catch((error) => {
     core.errorHandler(error, req, res, next);
@@ -648,7 +648,7 @@ function getInventoryStockLevelsById(req, res, next) {
       // in case there are no records, make one up.  This makes sense for items
       // that have never been purchases.  If they have been purchased, rows would
       // not be empty.
-      const value = (!rows.length) ? { uuid, quantity: 0 } : rows[0];
+      const value = (!rows.length) ? { uuid, quantity : 0 } : rows[0];
 
       res.status(200).json(value);
     })

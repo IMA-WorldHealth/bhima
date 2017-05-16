@@ -11,13 +11,11 @@
  *
  * @requires  node-uuid
  * @requires  lib/db
- * @requires  lib/topic
  * @requires  lib/errors/BadRequest
  */
 
 const uuid = require('node-uuid');
 const db = require('../../../lib/db');
-const topic = require('../../../lib/topic');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 

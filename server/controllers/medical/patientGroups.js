@@ -65,7 +65,7 @@ function create(req, res, next) {
   record.uuid = db.bid(uid);
 
   db.exec(sql, [record])
-  .then(result => {
+  .then(() => {
     Topic.publish(Topic.channels.MEDICAL, {
       event : Topic.events.CREATE,
       entity : Topic.entities.PATIENT_GROUP,

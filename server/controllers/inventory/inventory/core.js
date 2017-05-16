@@ -150,7 +150,7 @@ function getItemsMetadataById(uid) {
 
 
 function getItemsMetadataSearch(params) {
-  const filters = new FilterParser(params, { tableAlias: 'inventory' });
+  const filters = new FilterParser(params, { tableAlias : 'inventory' });
 
   const sql =
     `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
