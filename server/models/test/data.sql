@@ -193,7 +193,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (159, 1),
 
 -- Aged Debts
-(168, 1);
+(168, 1),
+
+-- Account statement
+(170, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

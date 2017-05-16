@@ -109,6 +109,10 @@
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
+          <!-- account selection -->
+          <bh-account-select 
+            account-id="ModalCtrl.defaultQueries.account_id">
+          </bh-account-select>
 
           <!-- period selection -->
           <!-- start period selection component -->
@@ -125,7 +129,6 @@
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-
           </div>
           <!-- posted/ non-posted records -->
           <!-- <div class="form-group"> -->

@@ -180,6 +180,7 @@
 "CLIENT_TO_IGNORE":"Client(s) à ignorer",
 "CODE":"Code",
 "COLUMNS":"Colonnes",
+"COMMENT":"Commentaire",
 "CONFIRMATION":"Confirmation",
 "CONTACT":"Contact",
 "CONTACT_ADMIN":"Veuillez contacter l'administrateur",

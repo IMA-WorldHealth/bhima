@@ -34,6 +34,11 @@ function JournalSearchModalController(Instance, Projects, Notify, Store, filters
     vm.defaultQueries.limit = filters.limit;
   }
 
+  // assing default account
+  if (filters.account_id) {
+    vm.defaultQueries.account_id = filters.account_id;
+  }
+
   Projects.read()
     .then(function (projects) {
       vm.projects = projects;

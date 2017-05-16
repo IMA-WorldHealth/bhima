@@ -86,7 +86,7 @@ function JournalController(Journal, Sorting, Grouping,
     rowTemplate                : '/modules/templates/grid/transaction.row.html',
     onRegisterApi              : onRegisterApi,
   };
-  
+
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
 
   // Initialise each of the journal utilities, providing them access to the journal
@@ -151,7 +151,7 @@ function JournalController(Journal, Sorting, Grouping,
 
     { field            : 'period_end',
       displayName      : 'TABLE.COLUMNS.PERIOD',
-      headerCellFilter : 'translate' ,
+      headerCellFilter : 'translate',
       cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
       visible          : false,
       enableCellEdit   : false },
@@ -217,7 +217,7 @@ function JournalController(Journal, Sorting, Grouping,
         aggregation.rendered = aggregation.value;
       },
       enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' 
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
     },
 
     { field            : 'currencyName',
@@ -275,29 +275,28 @@ function JournalController(Journal, Sorting, Grouping,
     },
   ];
   vm.gridOptions.columnDefs = columns;
-  
+
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    
-    vm.gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue){
-      if(newValue != oldValue) {
-        propagate(colDef.field,newValue);
+
+    vm.gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+      if (newValue != oldValue) {
+        propagate(colDef.field, newValue);
       }
     });
   }
 
-  function updateSharedPropertyOnRow(rows, column, value){
+  function updateSharedPropertyOnRow(rows, column, value) {
     rows.forEach(function (row) {
       transactions.editCell(row, column, value, row[column]);
       row[column] = (column === 'trans_date') ? new Date(value) : value;
     });
-
   }
 
   function propagate(column, value){
-    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];    
-    //Check if the column updated must be propragated in all transaction
+    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
+    // Check if the column updated must be propragated in all transaction
     var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
 
     if (hasSharedProperty) {
@@ -322,7 +321,7 @@ function JournalController(Journal, Sorting, Grouping,
       return;
     }
 
-    $state.go('trialBalanceMain', { records: vm.grouping.getSelectedGroups() });
+    $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
   };
 
   // format Export Parameters
@@ -379,7 +378,7 @@ function JournalController(Journal, Sorting, Grouping,
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
 
         transactions.applyEdits();
-        
+
         //@TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
 
