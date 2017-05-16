@@ -24,9 +24,6 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.deleteGroup = deleteGroup;
 
-  // reset name attribute to ensure no UI glitch
-  // $state.current.data.label = null;
-
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;

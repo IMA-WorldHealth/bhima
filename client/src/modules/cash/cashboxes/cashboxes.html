@@ -5,21 +5,21 @@
       <li class="static" translate>TREE.ADMIN</li>
 
       <!-- cashbox list -->
-      <li class="title" ng-if="CashCtrl.state.current.name !== 'cashboxes.edit' && CashCtrl.state.current.name !== 'cashboxes.create'" translate>CASHBOX.TITLE</li>
+      <li class="title" ng-if="!CashCtrl.isUpdateState()" translate>CASHBOX.TITLE</li>
 
       <!-- cashbox list -->
-      <li ng-if="CashCtrl.state.current.name === 'cashboxes.edit' || CashCtrl.state.current.name === 'cashboxes.create'">
+      <li ng-if="CashCtrl.isUpdateState()">
         <a ui-sref="cashboxes.list" translate>CASHBOX.TITLE</a>
       </li>
 
       <!-- edit cashbox -->
-      <li ng-if="CashCtrl.state.current.name === 'cashboxes.edit'" class="title">
+      <li ng-if="CashCtrl.isEditState()" class="title">
         {{ CashCtrl.state.params.label }} 
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 
       <!-- create cashbox -->
-      <li ng-if="CashCtrl.state.current.name === 'cashboxes.create'" class="title">
+      <li ng-if="CashCtrl.isCreateState()" class="title">
         <span class="label label-success" translate>FORM.LABELS.CREATE</span>
       </li>
     </ol>

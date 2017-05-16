@@ -19,11 +19,30 @@ function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
   // bind variables
   vm.state = $state;
 
+  vm.isUpdateState = isUpdateState;
+  vm.isEditState = isEditState;
+  vm.isCreateState = isCreateState;
+
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
   vm.maxLength = util.maxTextLength;
 
   /* ------------------------------------------------------------------------ */
+
+  // is update state function
+  function isUpdateState() {
+    return ($state.current.name === 'cashboxes.edit' || $state.current.name === 'cashboxes.create');
+  }
+
+  // is edit state function
+  function isEditState() {
+    return ($state.current.name === 'cashboxes.edit');
+  }
+
+  // is create state function
+  function isCreateState() {
+    return ($state.current.name === 'cashboxes.create');
+  }
 
   // fired on startup
   function startup() {

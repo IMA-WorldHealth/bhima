@@ -46,6 +46,26 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   })
   .catch(Notify.handleError);
 
+  // expose states
+  vm.isUpdateState = isUpdateState;
+  vm.isEditState = isEditState;
+  vm.isCreateState = isCreateState;
+
+  // is update state function
+  function isUpdateState() {
+    return ($state.current.name === 'creditorGroups.update' || $state.current.name === 'creditorGroups.create');
+  }
+
+  // is edit state function
+  function isEditState() {
+    return ($state.current.name === 'creditorGroups.update');
+  }
+
+  // is create state function
+  function isCreateState() {
+    return ($state.current.name === 'creditorGroups.create');
+  }
+
   /**
    * @function loadListState
    * set the app to creditorGroup.list
