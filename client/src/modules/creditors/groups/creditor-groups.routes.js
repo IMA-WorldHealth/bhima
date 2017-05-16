@@ -5,6 +5,9 @@ angular.module('bhima.routes')
         url         : '/creditors/groups',
         controller  : 'CreditorGroupController as CreditorGroupCtrl',
         templateUrl : 'modules/creditors/groups/creditor-groups.html',
+        params      : {
+          label : null,
+        },
       })
 
       .state('creditorGroups.create', {

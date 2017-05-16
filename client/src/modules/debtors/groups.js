@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval', 'NotifyService'];
+DebtorGroupController.$inject = [
+  '$state', 'DebtorGroupService',
+];
 
 /**
  * This controller is responsible for loading debtor groups and providing basic
@@ -13,13 +15,13 @@ DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval, Notify) {
+function DebtorGroupController($state, DebtorGroups) {
   var vm = this;
 
   // pagination configuration
   /** @todo this should all be moved to a component */
-  vm.pageSize     = 10;
-  vm.currentPage  = 1;
+  vm.pageSize = 10;
+  vm.currentPage = 1;
   vm.debtorGroups = [];
 
   vm.toggleFilter = toggleFilter;
@@ -32,7 +34,7 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true },
     { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true },
     { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false },
-    { attribute : 'total_debtors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true }
+    { attribute : 'total_debtors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true },
   ];
 
   DebtorGroups.read(null, { detailed : 1 })
@@ -62,5 +64,25 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
 
   function setOrder(attribute) {
     vm.sort = attribute;
+  }
+
+  // expose states
+  vm.isUpdateState = isUpdateState;
+  vm.isEditState = isEditState;
+  vm.isCreateState = isCreateState;
+
+  // is update state function
+  function isUpdateState() {
+    return ($state.current.name === 'debtorGroups.update' || $state.current.name === 'debtorGroups.create');
+  }
+
+  // is edit state function
+  function isEditState() {
+    return ($state.current.name === 'debtorGroups.update');
+  }
+
+  // is create state function
+  function isCreateState() {
+    return ($state.current.name === 'debtorGroups.create');
   }
 }

@@ -1,14 +1,13 @@
 angular.module('bhima.controllers')
 .controller('CashboxUpdateController', CashboxUpdateController);
 
-CashboxUpdateController.$inject = ['$state', '$uibModal', 'ModalService', 'NotifyService', 'CashboxService', 'CurrencyService'];
+CashboxUpdateController.$inject = [
+  '$state', '$uibModal', 'ModalService', 'NotifyService',
+  'CashboxService', 'CurrencyService',
+];
 
 function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies) {
   var vm = this;
-
-  vm.submit = submit;
-  vm.configureCurrency = configureCurrency;
-  vm.remove = remove;
 
   var CREATE_STATE = 'cashboxes.create';
 
@@ -17,22 +16,24 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
 
   var cashboxUuid = $state.params.uuid;
 
+  vm.state = $state;
+  vm.box = {};
+  vm.submit = submit;
+  vm.configureCurrency = configureCurrency;
+  vm.remove = remove;
+
   // TODO this information could be shared by the parent controller
   Currencies.read().then(function (currencies) {
-      vm.currencies = currencies;
+    vm.currencies = currencies;
 
       // if we have a cashbox (and are subsequently in the edit state), load its information
-      if (angular.isDefined(cashboxUuid)) {
-        loadCashbox(cashboxUuid);
-      } else {
+    if (angular.isDefined(cashboxUuid)) {
+      loadCashbox(cashboxUuid);
+    } else {
         // FIXME remove convuluted logic
-        vm.box.is_auxiliary = 1;
-      }
-
-    }).catch(Notify.handleError);
-
-
-  vm.box = {};
+      vm.box.is_auxiliary = 1;
+    }
+  }).catch(Notify.handleError);
 
   // form submission
   function submit(form) {
@@ -45,23 +46,14 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
     var promise;
     var box = angular.copy(vm.box);
 
-        // box.is_auxiliary = (box.type === 'auxiliary') ?  0 : 1;
-
     promise = (creating) ?
       Boxes.create(box) :
       Boxes.update(box.id, box);
 
     return promise
-      // .then(function (response) {
-        // cashboxId = response.id;
-
-        // return refreshBoxes();
-      // })
       .then(function () {
-
         Notify.success(creating ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
-        $state.go('cashboxes.list', null, { reload : true});
-        // update(cashboxId);
+        $state.go('cashboxes.list', null, { reload: true });
       })
       .catch(Notify.handleError);
   }
@@ -72,6 +64,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
       .then(function (data) {
         // bind the cashbox to the view
         vm.box = data;
+        $state.params.label = vm.box.label;
 
         // calculate the currency difference
         calculateCurrencyDiff();

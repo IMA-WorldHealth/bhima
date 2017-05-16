@@ -3,10 +3,28 @@
 
     <ol class="headercrumb">
       <li class="static" translate>TREE.ADMIN</li>
-      <li class="title" translate>CASHBOX.TITLE</li>
+
+      <!-- cashbox list -->
+      <li class="title" ng-if="!CashCtrl.isUpdateState()" translate>CASHBOX.TITLE</li>
+
+      <!-- cashbox list -->
+      <li ng-if="CashCtrl.isUpdateState()">
+        <a ui-sref="cashboxes.list" translate>CASHBOX.TITLE</a>
+      </li>
+
+      <!-- edit cashbox -->
+      <li ng-if="CashCtrl.isEditState()" class="title">
+        {{ CashCtrl.state.params.label }} 
+        <span class="label label-info" translate>FORM.LABELS.EDIT</span>
+      </li>
+
+      <!-- create cashbox -->
+      <li ng-if="CashCtrl.isCreateState()" class="title">
+        <span class="label label-success" translate>FORM.LABELS.CREATE</span>
+      </li>
     </ol>
 
-    <div class="toolbar">
+    <div class="toolbar" ng-if="!CashCtrl.isUpdateState()">
       <div class="toolbar-item">
         <button class="btn btn-default text-capitalize" ui-sref="cashboxes.create" data-method="create">
           <i class="fa fa-plus"></i>

@@ -23,6 +23,7 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
 
   // global variables
   vm.fiscal = {};
+  vm.state = $state;
   vm.submit = submit;
   vm.maxLength = util.maxTextLength;
   vm.numberOfMonths = numberOfMonths;
@@ -40,6 +41,7 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
       Fiscal.read(id)
       .then(function (fiscalYear) {
         vm.fiscal = fiscalYear;
+        $state.params.label = vm.fiscal.label;
         vm.fiscal.start_date = new Date(vm.fiscal.start_date);
         vm.fiscal.end_date = new Date(vm.fiscal.end_date);
       })

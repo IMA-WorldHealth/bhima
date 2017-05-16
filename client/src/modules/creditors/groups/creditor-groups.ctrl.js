@@ -19,6 +19,9 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   // global variables
   vm.bundle = {};
   vm.reload = { reload: true };
+  vm.state = $state;
+
+  // page state
   vm.isDefaultState = ($state.current.name === 'creditorGroups');
   vm.isUpdateState = ($state.current.name === 'creditorGroups.update' && uuid);
   vm.isCreateState = ($state.current.name === 'creditorGroups.create');
@@ -39,7 +42,7 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   }
 
   // load creditor groups
-  CreditorGroup.read(null, { detailed : 1 })
+  CreditorGroup.read(null, { detailed: 1 })
   .then(function (list) {
     vm.creditorGroupList = list;
   })
@@ -65,6 +68,7 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
     CreditorGroup.read($state.params.uuid)
       .then(function (detail) {
         vm.bundle = detail;
+        $state.params.label = detail.name;
       })
       .catch(Notify.handleError);
   }

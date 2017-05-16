@@ -1,14 +1,4 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12">
-      <p>
-        <a ui-sref="creditorGroups.list" ui-sref-opts="CreditorGroupCtrl.reload">
-          <span class="glyphicon glyphicon-circle-arrow-left"></span>
-          {{ 'CREDITOR_GROUP.BACK' | translate }}
-        </a>
-      </p>
-    </div>
-  </div>
 
   <!-- form  -->
   <div class="row">
@@ -55,7 +45,7 @@
           </div>
         </div>
 
-        <div class="panel panel-warning">
+        <div ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.update'" class="panel panel-warning">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
           </div>

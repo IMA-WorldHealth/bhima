@@ -6,6 +6,9 @@ angular.module('bhima.routes')
         url         : '/cashboxes',
         controller  : 'CashboxController as CashCtrl',
         templateUrl : 'modules/cash/cashboxes/cashboxes.html',
+        params      : {
+          label : null,
+        },
       })
 
       .state('cashboxes.list', {

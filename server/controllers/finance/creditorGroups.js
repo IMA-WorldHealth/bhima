@@ -29,10 +29,11 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT enterprise_id, BUID(creditor_group.uuid) AS uuid, creditor_group.name,
+      SELECT creditor_group.enterprise_id, BUID(creditor_group.uuid) AS uuid, creditor_group.name,
         creditor_group.account_id, creditor_group.locked,
-        COUNT(creditor.uuid) AS total_creditors
+        COUNT(creditor.uuid) AS total_creditors, account.number 
       FROM creditor_group
+      JOIN account ON account.id = creditor_group.account_id 
       LEFT JOIN creditor ON creditor.group_uuid = creditor_group.uuid
       GROUP BY creditor_group.uuid`;
   }
