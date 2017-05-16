@@ -18,7 +18,6 @@
 
 
 const uuid = require('node-uuid');
-
 const db = require('./../../lib/db');
 const Topic = require('../../lib/topic');
 
@@ -46,7 +45,7 @@ function list(req, res, next) {
       employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) AS location_id, grade.code AS code_grade,
+      employee.daily_salary, grade.code AS code_grade,
       BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
@@ -155,7 +154,7 @@ function lookupEmployee(id) {
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, 
+      employee.daily_salary, grade.code AS code_grade, 
       BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
@@ -195,7 +194,7 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
   ]);
 
   if (employee.dob) {
@@ -235,7 +234,6 @@ function update(req, res, next) {
     bank : employee.bank,
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
-    location_id : employee.location_id,
     code : employee.code,
   };
 
@@ -286,7 +284,7 @@ function create(req, res, next) {
 
   // convert uuids to binary uuids as necessary
   const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
   ]);
 
   if (employee.dob) {

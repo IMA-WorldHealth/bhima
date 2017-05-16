@@ -605,7 +605,7 @@ CREATE TABLE `employee` (
   `nb_spouse`     INT(11) DEFAULT 0,
   `nb_enfant`     INT(11) DEFAULT 0,  
   `daily_salary`  FLOAT DEFAULT 0,
-  `bank_name`     VARCHAR(30) DEFAULT NULL,
+  `bank`          VARCHAR(30) DEFAULT NULL,
   `bank_account`  VARCHAR(30) DEFAULT NULL,
   `adresse`       VARCHAR(50) DEFAULT NULL,
   `phone`         VARCHAR(20) DEFAULT NULL,
