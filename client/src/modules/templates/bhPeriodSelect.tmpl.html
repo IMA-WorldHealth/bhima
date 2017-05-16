@@ -9,7 +9,7 @@
   </span>
 
   <span ng-if="$ctrl.period.customPeriodStart && $ctrl.period.customPeriodEnd">
-    ({{ $ctrl.period.customPeriodStart | date: 'dd/mm/yyyy' }}) - ({{ $ctrl.period.customPeriodEnd | date: 'dd/mm/yyyy' }})
+    ({{ $ctrl.period.customPeriodStart | date: $ctrl.dateFormat }}) - ({{ $ctrl.period.customPeriodEnd | date: $ctrl.dateFormat }})
   </span>
 </p>
 

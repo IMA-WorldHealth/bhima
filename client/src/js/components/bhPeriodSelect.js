@@ -8,9 +8,9 @@ angular.module('bhima.components')
   controller : PeriodSelect
 });
 
-PeriodSelect.$inject = ['PeriodService'];
+PeriodSelect.$inject = ['PeriodService', 'bhConstants'];
 
-function PeriodSelect(Periods) {
+function PeriodSelect(Periods, bhConstants) {
   var ctrl = this;
   var DEFAULT_PERIOD = 'today';
 
@@ -26,6 +26,8 @@ function PeriodSelect(Periods) {
     from : new Date(),
     to : new Date()
   };
+
+  ctrl.dateFormat = bhConstants.dates.format;
 
   ctrl.$onInit = function onInit() {
     ctrl.periodKey = ctrl.defaultPeriod || DEFAULT_PERIOD;
