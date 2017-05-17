@@ -9,25 +9,15 @@
  * and define all stock API functions
  *
  *
- * @requires lodash
- * @requires util
  * @requires lib/db
  * @requires lib/node-uuid
- * @requires lib/errors/BadRequest
- * @requires lib/errors/NotFound
- *
  */
 
-const _ = require('lodash');
 const uuid = require('node-uuid');
 const moment = require('moment');
 
-const util = require('../../lib/util');
 const db = require('../../lib/db');
 const core = require('./core');
-
-const BadRequest = require('../../lib/errors/BadRequest');
-const NotFound = require('../../lib/errors/NotFound');
 
 // expose to the API
 exports.createStock = createStock;
@@ -126,7 +116,7 @@ function createMovement(req, res, next) {
   const process = (params.from_depot && params.to_depot) ? depotMovement : normalMovement;
 
   process(document, params)
-    .then((rows) => {
+    .then(() => {
       res.status(201).json({ uuid : document.uuid });
     })
     .catch(next)

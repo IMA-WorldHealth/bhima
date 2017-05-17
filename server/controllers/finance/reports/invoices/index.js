@@ -11,7 +11,6 @@
  * for inspiration.
  */
 
-const q = require('q');
 const _ = require('lodash');
 const util = require('../../../../lib/util');
 
@@ -29,8 +28,6 @@ const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/rece
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.handlebars';
 const REPORT_TEMPLATE = './server/controllers/finance/reports/invoices/report.handlebars';
 const CREDIT_NOTE_TEMPLATE = './server/controllers/finance/reports/invoices/creditNote.handlebars';
-
-const invoiceIdentifier = require('../../../../config/identifiers').INVOICE;
 
 exports.report = report;
 exports.receipt = receipt;
@@ -219,7 +216,7 @@ function creditNote(req, res, next) {
 
       // return Invoices.lookupInvoiceCreditNote(invoiceUuid);
     })
-    .then(creditNoteResult => {
+    .then(() => {
       // invoiceResponse.creditNote = creditNoteResult[0];
       return creditNoteReport.render(invoiceResponse);
     })

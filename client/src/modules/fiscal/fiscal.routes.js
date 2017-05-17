@@ -6,6 +6,9 @@ angular.module('bhima.routes')
         abstract    : true,
         controller  : 'FiscalController as FiscalCtrl',
         templateUrl : 'modules/fiscal/fiscal.html',
+        params      : {
+          label : null,
+        },
       })
       .state('fiscal.create', {
         url         : '/create',

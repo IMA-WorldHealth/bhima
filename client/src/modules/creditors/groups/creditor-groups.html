@@ -2,16 +2,34 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static" translate> TREE.FINANCE </li>
-      <li class="title">
-        <span translate> TREE.CREDITOR_GROUP </span>
-        <span class="badge badge-info" ng-if="CreditorGroupCtrl.isUpdateState" translate> FORM.BUTTONS.EDIT </span>
-        <span class="badge badge-success" ng-if="CreditorGroupCtrl.isCreateState" translate> FORM.BUTTONS.NEW </span>
+      <li class="static" translate> TREE.ADMIN </li>
+
+      <!-- creditor group list -->
+      <li 
+        class="title" 
+        ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.list'" 
+        translate>TREE.CREDITOR_GROUP
+      </li>
+
+      <!-- creditor group list with link -->
+      <li ng-if="CreditorGroupCtrl.state.current.name !== 'creditorGroups.list'">
+        <a ui-sref="creditorGroups.list" translate>TREE.CREDITOR_GROUP</a>
+      </li>
+
+      <!-- edit creditor group -->
+      <li ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.update'" class="title">
+        {{ CreditorGroupCtrl.state.params.label }} 
+        <span class="label label-info" translate>FORM.LABELS.EDIT</span>
+      </li>
+
+      <!-- create creditor group -->
+      <li ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.create'" class="title">
+        <span class="label label-success" translate>FORM.LABELS.CREATE</span>
       </li>
     </ol>
 
 
-    <div class="toolbar">
+    <div class="toolbar" ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.list'">
       <div class="toolbar-item">
         <a
           data-method="create"

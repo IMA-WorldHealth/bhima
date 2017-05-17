@@ -4,16 +4,12 @@
  * @description
  * This module is responsible for handling all function utility for stock
  *
- * @requires lodash
- * @requires util
  * @requires lib/db
  * @requires lib/filter
  * @requires config/identifiers
  **/
 
-const _ = require('lodash');
 const moment = require('moment');
-const util = require('../../lib/util');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');

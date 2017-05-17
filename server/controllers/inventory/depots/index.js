@@ -14,7 +14,7 @@ const distributions = require('./distributions');
 const NotFound = require('../../../lib/errors/NotFound');
 
 /** expose depots routes */
-exports.list   = list;
+exports.list = list;
 exports.detail = detail;
 exports.create = create;
 exports.update = update;
@@ -22,13 +22,13 @@ exports.remove = remove;
 
 /** expose depots distributions routes */
 exports.createDistributions = createDistributions;
-exports.listDistributions   = listDistributions;
+exports.listDistributions = listDistributions;
 exports.detailDistributions = detailDistributions;
 
 /** expose depots inventories and lots routes */
-exports.listAvailableLots    = listAvailableLots;
-exports.detailAvailableLots  = detailAvailableLots;
-exports.listExpiredLots      = listExpiredLots;
+exports.listAvailableLots = listAvailableLots;
+exports.detailAvailableLots = detailAvailableLots;
+exports.listExpiredLots = listExpiredLots;
 exports.listStockExpirations = listStockExpirations;
 
 
@@ -45,7 +45,7 @@ function create(req, res, next) {
   req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
   db.exec(query, [req.body])
-  .then(function () {
+  .then(() => {
     res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
   })
   .catch(next)
@@ -59,12 +59,11 @@ function create(req, res, next) {
 * @function remove
 */
 function remove(req, res, next) {
-
   var query = 'DELETE FROM depot WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
   db.exec(query, [uid])
-  .then(function () {
+  .then(() => {
     res.status(204).send({});
   })
   .catch(next)
@@ -85,8 +84,13 @@ function update(req, res, next) {
   if (req.body.uuid) { delete req.body.uuid; }
 
   db.exec(query, [req.body, uid])
-  .then(selectDepot)
-  .then(function (rows) {
+  .then(() => {
+    const sql =
+      `SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse
+      FROM depot WHERE uuid = ?`;
+    return db.exec(sql, [uid]);
+  })
+  .then((rows) => {
     if (!rows.length) {
       throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
     }
@@ -94,13 +98,6 @@ function update(req, res, next) {
   })
   .catch(next)
   .done();
-
-  function selectDepot(rows) {
-    var sql =
-      `SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse
-      FROM depot WHERE uuid = ?`;
-    return db.exec(sql, [uid]);
-  }
 }
 
 /**
@@ -116,7 +113,7 @@ function list(req, res, next) {
     WHERE enterprise_id = ?;`;
 
   db.exec(sql, [req.session.enterprise.id])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -130,7 +127,6 @@ function list(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
-
   var uid = db.bid(req.params.uuid);
 
   var sql =
@@ -139,14 +135,15 @@ function detail(req, res, next) {
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 
   db.exec(sql, [req.session.enterprise.id, uid])
-  .then(function (rows) {
-
+  .then((rows) => {
     // make sure we find at least one depot
     if (rows.length < 1) {
-      return res.status(404).json({
+      res.status(404).json({
         code : 'ERR_NO_DEPOT',
-        reason : 'No depot was found matching the uuid:' + uuid.unparse(uid)
+        reason : `No depot was found matching the uuid:${uuid.unparse(uid)}`,
       });
+
+      return;
     }
 
     // return the json
@@ -171,109 +168,107 @@ function detail(req, res, next) {
 * @function listDistributions
 */
 function listDistributions(req, res, next) {
-
-  var sql,
-      options = req.query;
+  let sql;
+  const options = req.query;
 
   // the sql executed depends on the type of consumption
   // defaults to all consumptions
   switch (options.type) {
-
     // filter on distributions to patients
     // TODO - this query is suboptimal.  Perhaps rewrite with multiple subqueries
-    case 'patients':
-    case 'patient':
-      sql =
-        `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
-          p.uuid AS patientId, p.display_name, d.text, d.uuid AS depotId,
-          CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label,
-          sale.invoice, cp.sale_uuid AS saleId, c.canceled
-        FROM consumption_patient AS cp
-        JOIN consumption AS c ON c.uuid = cp.consumption_uuid
-        JOIN patient AS p ON p.uuid = cp.patient_uuid
-        JOIN project AS pr ON p.project_id = pr.id
-        JOIN depot AS d ON d.uuid = c.depot_uuid
-        JOIN stock AS s ON s.tracking_number = c.tracking_number
-        JOIN inventory AS i ON i.uuid = s.inventory_uuid
-        JOIN (
-          SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS invoice
-          FROM sale JOIN project ON
-            sale.project_id = project.id
-        ) AS sale ON sale.uuid = c.document_id
-        WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-        GROUP BY c.document_id
-        ORDER BY c.date DESC, p.display_name ASC;`;
-      break;
+  case 'patients':
+  case 'patient':
+    sql =
+      `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
+        p.uuid AS patientId, p.display_name, d.text, d.uuid AS depotId,
+        CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label,
+        sale.invoice, cp.sale_uuid AS saleId, c.canceled
+      FROM consumption_patient AS cp
+      JOIN consumption AS c ON c.uuid = cp.consumption_uuid
+      JOIN patient AS p ON p.uuid = cp.patient_uuid
+      JOIN project AS pr ON p.project_id = pr.id
+      JOIN depot AS d ON d.uuid = c.depot_uuid
+      JOIN stock AS s ON s.tracking_number = c.tracking_number
+      JOIN inventory AS i ON i.uuid = s.inventory_uuid
+      JOIN (
+        SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS invoice
+        FROM sale JOIN project ON
+          sale.project_id = project.id
+      ) AS sale ON sale.uuid = c.document_id
+      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
+      GROUP BY c.document_id
+      ORDER BY c.date DESC, p.display_name ASC;`;
+    break;
 
     // get distributions to services
-    case 'services':
-    case 'service':
-      sql =
-        `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
-        cs.service_id, service.name, c.date, d.text, d.uuid AS depotId,
-        i.text AS label, c.canceled
-        FROM consumption_service AS cs
-        JOIN consumption AS c ON c.uuid = cs.consumption_uuid
-        JOIN service ON service.id = cs.service_id
-        JOIN depot AS d ON d.uuid = c.depot_uuid
-        JOIN stock ON stock.tracking_number = c.tracking_number
-        JOIN inventory AS i ON i.uuid = stock.inventory_uuid
-        WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-        GROUP BY c.document_id
-        ORDER BY c.date DESC, service.name ASC;`;
-      break;
+  case 'services':
+  case 'service':
+    sql =
+      `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
+      cs.service_id, service.name, c.date, d.text, d.uuid AS depotId,
+      i.text AS label, c.canceled
+      FROM consumption_service AS cs
+      JOIN consumption AS c ON c.uuid = cs.consumption_uuid
+      JOIN service ON service.id = cs.service_id
+      JOIN depot AS d ON d.uuid = c.depot_uuid
+      JOIN stock ON stock.tracking_number = c.tracking_number
+      JOIN inventory AS i ON i.uuid = stock.inventory_uuid
+      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
+      GROUP BY c.document_id
+      ORDER BY c.date DESC, service.name ASC;`;
+    break;
 
     // TODO - this should find all consumption rummages for this depot
-    case 'rummage':
-      sql =
-        `SELECT c.uuid, cr.document_uuid AS voucher,
-          COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
-          i.text AS label, c.canceled
-        FROM consumption_rummage AS cr
-        JOIN consumption AS c ON c.uuid = cr.consumption_uuid
-        JOIN depot AS d ON d.uuid = c.depot_uuid
-        JOIN stock ON stock.tracking_number = c.tracking_number
-        JOIN inventory AS i ON i.uuid = stock.inventory_uuid
-        WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-        GROUP BY c.document_id
-        ORDER BY c.date DESC;`;
-      break;
+  case 'rummage':
+    sql =
+      `SELECT c.uuid, cr.document_uuid AS voucher,
+        COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
+        i.text AS label, c.canceled
+      FROM consumption_rummage AS cr
+      JOIN consumption AS c ON c.uuid = cr.consumption_uuid
+      JOIN depot AS d ON d.uuid = c.depot_uuid
+      JOIN stock ON stock.tracking_number = c.tracking_number
+      JOIN inventory AS i ON i.uuid = stock.inventory_uuid
+      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
+      GROUP BY c.document_id
+      ORDER BY c.date DESC;`;
+    break;
 
     // TODO - this should find all consumption losses for this depot
-    case 'loss' :
-    case 'losses':
-      sql =
-        `SELECT c.uuid, c.document_id AS voucher,
-          COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
-          i.text AS label, c.canceled
-        FROM consumption_loss AS cl
-        JOIN consumption AS c ON c.uuid = cl.consumption_uuid
-        JOIN depot AS d ON d.uuid = c.depot_uuid
-        JOIN stock AS s ON s.tracking_number = c.tracking_number
-        JOIN inventory AS i ON i.uuid = s.inventory_uuid
-        WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-        GROUP BY c.document_id
-        ORDER BY c.date DESC;`;
-      break;
+  case 'loss' :
+  case 'losses':
+    sql =
+      `SELECT c.uuid, c.document_id AS voucher,
+        COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
+        i.text AS label, c.canceled
+      FROM consumption_loss AS cl
+      JOIN consumption AS c ON c.uuid = cl.consumption_uuid
+      JOIN depot AS d ON d.uuid = c.depot_uuid
+      JOIN stock AS s ON s.tracking_number = c.tracking_number
+      JOIN inventory AS i ON i.uuid = s.inventory_uuid
+      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
+      GROUP BY c.document_id
+      ORDER BY c.date DESC;`;
+    break;
 
     // TODO - this should find all consumptions for this depot
-    default:
-      sql =
-        `SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price,
-          COUNT(c.document_id) AS total, c.date, d.text,
-          d.uuid AS depotId, i.text AS label, c.canceled
-        FROM consumption AS c
-        JOIN depot AS d ON d.uuid = c.depot_uuid
-        JOIN stock AS s ON s.tracking_number = c.tracking_number
-        JOIN inventory AS i ON i.uuid = s.inventory_uuid
-        WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-        GROUP BY c.document_id
-        ORDER BY c.date DESC;`;
-      break;
+  default:
+    sql =
+      `SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price,
+        COUNT(c.document_id) AS total, c.date, d.text,
+        d.uuid AS depotId, i.text AS label, c.canceled
+      FROM consumption AS c
+      JOIN depot AS d ON d.uuid = c.depot_uuid
+      JOIN stock AS s ON s.tracking_number = c.tracking_number
+      JOIN inventory AS i ON i.uuid = s.inventory_uuid
+      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
+      GROUP BY c.document_id
+      ORDER BY c.date DESC;`;
+    break;
   }
 
   db.exec(sql, [req.params.depotId, options.start, options.end])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -281,11 +276,9 @@ function listDistributions(req, res, next) {
 }
 
 function detailDistributions(req, res, next) {
+  const uid = req.params.uuid;
 
-  var sql,
-      uuid = req.params.uuid;
-
-  sql =
+  const sql =
     `SELECT c.uuid, c.document_id, c.date, d.text AS depotName,
       d.uuid AS depotId, c.quantity, i.text AS label, c.canceled
     FROM consumption AS c
@@ -295,13 +288,15 @@ function detailDistributions(req, res, next) {
     WHERE d.uuid = ? AND c.uuid = ?
     ORDER BY c.date DESC;`;
 
-  db.exec(sql, [req.params.depotId, uuid])
-  .then(function (rows) {
+  db.exec(sql, [req.params.depotId, uid])
+  .then((rows) => {
     if (!rows) {
-      return res.status(404).json({
+      res.status(404).json({
         code : 'ERR_NO_CONSUMPTION',
-        reason : 'Could not find a consumption by uuid: ' + uuid
+        reason : `Could not find a consumption by uuid:${uid}`,
       });
+
+      return;
     }
 
     res.status(200).json(rows);
@@ -316,12 +311,11 @@ function detailDistributions(req, res, next) {
 * Creates a new distribution for services, patients, etc.
 */
 function createDistributions(req, res, next) {
-
   // FIXME
   // We need a better way of passing the project ID into the requests,
   // preferably giving access to the entire session variable.
   distributions.createDistributions(req.params.depotId, req.body, req.session)
-  .then(function (data) {
+  .then((data) => {
     res.status(200).json(data);
   })
 
@@ -338,27 +332,43 @@ function createDistributions(req, res, next) {
 * @function listAvailableLots
 */
 function listAvailableLots(req, res, next) {
-  var sql,
-      depot = req.params.depotId;
+  const depot = req.params.depotId;
 
-  sql =
-    `SELECT unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, label, expiration_date FROM
-    (SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, stock.expiration_date FROM
-    consumption JOIN stock ON consumption.tracking_number = stock.tracking_number JOIN inventory ON inventory.uuid = stock.inventory_uuid
-    JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid
-    WHERE consumption.canceled = 0 AND depot_uuid = ?
-    UNION ALL
-    SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-    inventory.code, inventory.text AS label, stock.expiration_date FROM movement JOIN stock ON movement.tracking_number = stock.tracking_number JOIN inventory
-    ON inventory.uuid = stock.inventory_uuid JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid
-    WHERE movement.depot_entry= ? OR movement.depot_exit= ?)
-    AS t GROUP BY tracking_number;`;
+  const sql =
+    `SELECT 
+      unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, 
+      label, expiration_date 
+     FROM
+     (
+       SELECT 
+        purchase_item.unit_price, stock.tracking_number, stock.lot_number, 
+        (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, 
+        stock.expiration_date 
+       FROM
+        consumption JOIN stock ON consumption.tracking_number = stock.tracking_number 
+        JOIN 
+          inventory ON inventory.uuid = stock.inventory_uuid 
+        JOIN 
+          purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
+          purchase_item.inventory_uuid = stock.inventory_uuid
+        WHERE consumption.canceled = 0 AND depot_uuid = ?
+        UNION ALL
+       SELECT 
+        purchase_item.unit_price, stock.tracking_number, stock.lot_number, 
+        (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
+        inventory.code, inventory.text AS label, stock.expiration_date 
+       FROM movement 
+       JOIN stock ON movement.tracking_number = stock.tracking_number 
+       JOIN inventory ON inventory.uuid = stock.inventory_uuid 
+       JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
+        purchase_item.inventory_uuid = stock.inventory_uuid
+       WHERE movement.depot_entry= ? OR movement.depot_exit= ?)
+      AS t GROUP BY tracking_number;`;
 
   return db.exec(sql, [depot, depot, depot, depot])
-  .then(function (rows) {
-
+  .then((rows) => {
     // @TODO -- this should be in the WHERE/HAVING condition
-    var ans = rows.filter(function (item){ return item.quantity > 0; });
+    var ans = rows.filter((item) => { return item.quantity > 0; });
     res.status(200).json(ans);
   })
   .catch(next)
@@ -375,25 +385,37 @@ function listAvailableLots(req, res, next) {
 * @function detailAvailableLots
 */
 function detailAvailableLots(req, res, next) {
-  var sql,
-      depot = req.params.depotId,
-      uuid = req.params.uuid;
-      sql =
-        `SELECT tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date FROM
-        (SELECT stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, stock.expiration_date FROM
-        consumption JOIN stock ON consumption.tracking_number = stock.tracking_number JOIN inventory ON inventory.uuid = stock.inventory_uuid
+  const depot = req.params.depotId;
+  const uid = req.params.uuid;
+  const sql =
+    `SELECT 
+      tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date 
+     FROM
+      (
+        SELECT 
+          stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, 
+          inventory.code, stock.expiration_date 
+        FROM 
+          consumption 
+        JOIN stock ON consumption.tracking_number = stock.tracking_number 
+        JOIN inventory ON inventory.uuid = stock.inventory_uuid
         WHERE consumption.canceled = 0 AND depot_uuid = ? AND inventory.uuid = ?
         UNION ALL
-        SELECT stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-        inventory.code, stock.expiration_date FROM movement JOIN stock ON movement.tracking_number = stock.tracking_number JOIN inventory
-        ON inventory.uuid = stock.inventory_uuid WHERE (movement.depot_entry= ? OR movement.depot_exit= ?) AND inventory.uuid= ?)
-        AS t GROUP BY tracking_number;`;
+      SELECT 
+        stock.tracking_number, stock.lot_number, 
+        (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
+        inventory.code, stock.expiration_date 
+      FROM 
+        movement 
+      JOIN stock ON movement.tracking_number = stock.tracking_number 
+      JOIN inventory ON inventory.uuid = stock.inventory_uuid 
+      WHERE (movement.depot_entry= ? OR movement.depot_exit= ?) AND inventory.uuid= ?)
+    AS t GROUP BY tracking_number;`;
 
-  return db.exec(sql, [depot, uuid, depot, depot, depot, uuid])
-  .then(function (rows) {
-
+  return db.exec(sql, [depot, uid, depot, depot, depot, uid])
+  .then((rows) => {
     // @TODO -- this should be in the WHERE/HAVING condition
-    var ans = rows.filter(function (item){ return item.quantity > 0; });
+    var ans = rows.filter((item) => { return item.quantity > 0; });
     res.status(200).json(ans);
   })
   .catch(next)
@@ -407,10 +429,8 @@ function detailAvailableLots(req, res, next) {
 * @function listExpiredLots
 */
 function listExpiredLots(req, res, next) {
-  var sql,
-      depot = req.params.depotId;
-
-  sql =
+  const depot = req.params.depotId;
+  const sql =
     `SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (
       SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
         SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
@@ -431,7 +451,7 @@ function listExpiredLots(req, res, next) {
     WHERE s.quantity > 0;`;
 
   db.exec(sql, [depot, depot, depot])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -446,11 +466,8 @@ function listExpiredLots(req, res, next) {
 * @function listStockExpirations
 */
 function listStockExpirations(req, res, next) {
-  var sql,
-      depot = req.params.depotId,
-      options = req.query;
-
-  sql =
+  const depot = req.params.depotId;
+  const sql =
     `SELECT s.tracking_number, s.lot_number, s.quantity, s.text, s.code, s.expiration_date FROM (
       SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
         SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
@@ -475,7 +492,7 @@ function listStockExpirations(req, res, next) {
   // more performant?
 
   db.exec(sql, [depot, depot, depot, req.query.start, req.query.end])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
