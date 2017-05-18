@@ -259,7 +259,7 @@
               <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
               <div class="panel-body">    
                 <div class="form-horizontal" ng-form="OptionalForm">
-                  <!-- Employee number of spouse  -->
+                  <!-- Employee number of spouse-->
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.nb_spouse.$invalid && EmployeeRegistrationForm.$submitted}">
 
@@ -277,7 +277,7 @@
                     </div>
                   </div>
 
-                  <!-- Employee number of child  -->
+                  <!-- Employee number of child-->
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.nb_enfant.$invalid && EmployeeRegistrationForm.$submitted}">
 
@@ -308,6 +308,140 @@
                         {{ "FORM.LABELS.LOCKED" | translate }}
                       
                     </label>
+                  </div>
+
+                  <!-- Employee service-->
+                  <div class="form-group"
+                    ng-class="{'has-error' : DetailForm.service_id.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.services.length === 0">
+                      <i class="fa fa-warning"></i>
+                      {{ "FORM.LABELS.SERVICE" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
+                    </uib-alert>
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
+                    <div class="col-md-9">
+                      <ui-select
+                        name="service_id"
+                        ng-model="EmployeeCtrl.employee.service_id">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="sv.id as sv.name for sv in EmployeeCtrl.services | filter:$select.search | orderBy:'name'">
+                          <span ng-bind-html="sv.name | highlight:$select.search"></span>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                  </div>
+
+                  <!-- Employee function-->
+                  <div class="form-group"
+                    ng-class="{'has-error' : DetailForm.fonction_id.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
+                      <i class="fa fa-warning"></i>
+                      {{ "FORM.LABELS.FUNCTION" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
+                    </uib-alert>
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.FUNCTION" | translate }}</label>
+                    <div class="col-md-9">
+                      <ui-select
+                        name="fonction_id"
+                        ng-model="EmployeeCtrl.employee.fonction_id">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="f.id as f.fonction_txt for f in EmployeeCtrl.functions | filter:$select.search | orderBy:'fonction_txt'">
+                          <span ng-bind-html="f.fonction_txt | highlight:$select.search"></span>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                  </div>
+
+                   <!-- Employee phone -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.phone.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                        class="form-control"
+                        name="phone"
+                        ng-model="EmployeeCtrl.employee.phone"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.phone.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee email -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.email.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                        class="form-control"
+                        name="email"
+                        ng-model="EmployeeCtrl.employee.email"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.email.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee address -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.adresse.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                        class="form-control"
+                        name="adresse"
+                        ng-model="EmployeeCtrl.employee.adresse"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.adresse.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee bank -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.bank.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.BANK" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                        class="form-control"
+                        name="bank"
+                        ng-model="EmployeeCtrl.employee.bank"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.bank.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee bank account -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.bank_account.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.BANK_ACCOUNT" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                        class="form-control"
+                        name="bank_account"
+                        ng-model="EmployeeCtrl.employee.bank_account"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.bank_account.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>            
               </div>
