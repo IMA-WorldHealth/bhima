@@ -149,7 +149,7 @@ function search(req, res, next) {
  * @description list all payment made
  */
 function listPayment(options) {
-  const filters = new FilterParser(options, { tableAlias : 'cash' });
+  const filters = new FilterParser(options, { tableAlias : 'cash', autoParseStatements : false });
 
   const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
@@ -165,9 +165,18 @@ function listPayment(options) {
       JOIN user u ON u.id = cash.user_id
   `;
 
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
-  filters.period('defaultPeriod', 'date');
+  filters.period('period', 'date');
+  filters.dateFrom('custion_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+
+  filters.fullText('description');
+
+  filters.equals('user_id');
+  filters.equals('is_caution');
+  filters.equals('cashbox_id');
+  filters.equals('debtor_uuid');
+  filters.equals('currency_id');
+  filters.equals('reversed');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);

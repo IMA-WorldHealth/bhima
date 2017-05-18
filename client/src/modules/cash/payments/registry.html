@@ -32,21 +32,12 @@
   </div>
 </div>
 
-<div class="flex-util bh-filter-bar" ng-show="CPRCtrl.filtersFmt.length > 0">
-  <bh-filters-applied
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
     style="max-width:90%"
-    filters="CPRCtrl.filtersFmt"
+    filters="CPRCtrl.latestViewFilters"
     on-remove-filter="CPRCtrl.onRemoveFilter(filter)">
-  </bh-filters-applied>
-
-  <a href
-    ng-if="CPRCtrl.filter.customFiltersApplied(CPRCtrl.filters.identifiers)"
-    ng-click="CPRCtrl.clearFilters()"
-    class="text-danger"
-    data-method="clear">
-    <i class="fa fa-close text-danger"></i>
-    <span translate>FORM.INFO.CLEAR_FILTERS</span>
-  </a>
+  </bh-filters>
 </div>
 
 <!-- content  -->

@@ -48,7 +48,7 @@ function JournalService(Api, AppCache, Filters, Periods) {
     });
 
     return rows.data;
-    }
+  }
 
   // set up base filters
   var filterCache = new AppCache('journal-filters');
@@ -66,14 +66,14 @@ function JournalService(Api, AppCache, Filters, Periods) {
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
-      { key: 'trans_id', label: 'FORM.LABELS.TRANS_ID' },
-      { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
-      { key: 'user_id', label: 'FORM.LABELS.USER' },
-      { key: 'account_id', label: 'FORM.LABELS.ACCOUNT' },
-      { key: 'amount', label: 'FORM.LABELS.AMOUNT' },
-      { key: 'project_id', label: 'FORM.LABELS.PROJECT' },
-      { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
-      { key: 'origin_id', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
+      { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
+      { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+      { key : 'user_id', label : 'FORM.LABELS.USER' },
+      { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
+      { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
+      { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+      { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+      { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 
   if (filterCache.filters) {
@@ -89,7 +89,9 @@ function JournalService(Api, AppCache, Filters, Periods) {
     var assignedKeys = Object.keys(journalFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined = service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
     if (!periodDefined) {
       journalFilters.assignFilters(Periods.defaultFilters());
     }
@@ -102,16 +104,16 @@ function JournalService(Api, AppCache, Filters, Periods) {
 
   service.removeFilter = function removeFilter(key) {
     journalFilters.resetFilterState(key);
-  }
+  };
 
   // load filters from cache
   service.cacheFilters = function cacheFilters() {
     filterCache.filters = journalFilters.formatCache();
-  }
+  };
 
   service.loadCachedFilters = function loadCachedFilters() {
     journalFilters.loadCache(filterCache.filters || {});
-  }
+  };
 
   return service;
 }

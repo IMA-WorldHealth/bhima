@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('GridGroupingService', GridGroupingService);
 
 GridGroupingService.$inject = [
-  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService', 
+  'GridAggregatorService', 'uiGridGroupingConstants', 'SessionService',
   '$timeout', 'util', 'uiGridConstants',
 ];
 
@@ -39,7 +39,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   function configureDefaultAggregators(columns) {
     columns.forEach(function (column) {
       var aggregator = DEFAULT_AGGREGATORS[column.field];
-      
+
       if (aggregator) {
         GridAggregators.extendColumnWithAggregator(column, aggregator);
       }
@@ -124,7 +124,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     }
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-    
+
     gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
 
     // this function identifies parent rows that we haven't seen yet
@@ -151,7 +151,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   function configureDefaultGroupingOptions(gridApi) {
 
     //this instruction block can be executed if the grid involves selection functionality
-    if (gridApi.selection){
+    if (gridApi.selection) {
 
       // bind the group selection method
       gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
