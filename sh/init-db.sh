@@ -25,9 +25,9 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql
 echo "Building test database"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/icd10.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
 
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();"
