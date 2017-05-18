@@ -30,12 +30,11 @@ const q = require('q');
 const uuid = require('node-uuid');
 
 const identifiers = require('../../../config/identifiers');
-const barcode = require('../../../lib/barcode');
 
+const barcode = require('../../../lib/barcode');
 const db = require('../../../lib/db');
 const topic = require('../../../lib/topic');
 const FilterParser = require('../../../lib/filter');
-
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -92,11 +91,12 @@ function create(req, res, next) {
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
   if (invalidParameters) {
-    return next(
+    next(
       new BadRequest(
         'Both financial and medical information must be provided to register a patient.'
       )
     );
+    return;
   }
 
   // optionally allow client to specify UUID

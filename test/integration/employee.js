@@ -10,8 +10,8 @@ const helpers = require('./helpers');
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
-  const numEmployees = 1;
-
+  const numEmployees = 1; 
+  
   // custom dates
   let embaucheDate  = new Date('2016-01-01');
   let dob1 = new Date('1987-04-17');
@@ -34,8 +34,11 @@ describe('(/employees) the employees API endpoint', function () {
     fonction_id : 1,
     locked : 0,
     service_id : 1,
+    hospital_no : 'TP30',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',    
+    current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
   };
 
   var updateEmployee = {
@@ -88,6 +91,11 @@ describe('(/employees) the employees API endpoint', function () {
   it('GET /employees/:id should return a specific employee', function () {
     return agent.get('/employees/' + employee.id)
       .then(function (res) {
+        let keyEmployeeTest = employee;
+        delete keyEmployeeTest.hospital_no;
+        delete keyEmployeeTest.current_location_id;
+        delete keyEmployeeTest.origin_location_id;
+
         var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;

@@ -14,15 +14,18 @@
  * @requires NotFound
  * @requires BadRequest
  * @requires Topic
+ * @requires patients
  */
 
 
 const uuid = require('node-uuid');
+
 const db = require('./../../lib/db');
 const Topic = require('../../lib/topic');
-
 const NotFound = require('./../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
+
+const patients = require('../medical/patients');
 
 exports.list = list;
 exports.create = create;
@@ -45,14 +48,15 @@ function list(req, res, next) {
       employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, grade.code AS code_grade,
-      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
      JOIN fonction ON employee.fonction_id = fonction.id
-     JOIN debtor ON employee.debtor_uuid = debtor.uuid
+     JOIN patient ON patient.uuid = employee.patient_uuid
+     JOIN debtor ON patient.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
      ORDER BY employee.display_name ASC;
@@ -95,8 +99,8 @@ exports.listHolidays = function listHolidays(req, res, next) {
 };
 
 /**
-* Check an existing holiday
-*/
+ * Check an existing holiday
+ */
 exports.checkHoliday = function checkHoliday(req, res, next) {
   let sql =
     `SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_id = ?
@@ -154,14 +158,15 @@ function lookupEmployee(id) {
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, grade.code AS code_grade, 
-      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
       JOIN grade ON employee.grade_id = grade.uuid
       JOIN fonction ON employee.fonction_id = fonction.id
-      JOIN debtor ON employee.debtor_uuid = debtor.uuid
+      JOIN patient ON patient.uuid = employee.patient_uuid
+      JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
       LEFT JOIN service ON service.id = employee.service_id
@@ -281,10 +286,12 @@ function create(req, res, next) {
   const data = req.body;
   data.creditor_uuid = uuid.v4();
   data.debtor_uuid = uuid.v4();
+  data.patient_uuid = uuid.v4();
 
   // convert uuids to binary uuids as necessary
-  const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
+  const employee = db.convert(data, [
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid'
   ]);
 
   if (employee.dob) {
@@ -305,13 +312,31 @@ function create(req, res, next) {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
     text : `Debiteur [${employee.display_name}]`,
+  };  
+
+  const patient = {
+    uuid : employee.patient_uuid,
+    project_id : req.session.project.id,
+    display_name : employee.display_name,
+    dob : employee.dob,
+    current_location_id : employee.current_location_id,
+    origin_location_id : employee.origin_location_id,
+    hospital_no : employee.hospital_no,
+    debtor_uuid : employee.debtor_uuid,
+    user_id : req.session.user.id,
+    sex : employee.sexe,
   };
 
   delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
+  delete employee.current_location_id;
+  delete employee.origin_location_id;
+  delete employee.debtor_uuid;
+  delete employee.hospital_no;
 
   const writeCreditor = 'INSERT INTO creditor SET ?';
   const writeDebtor = 'INSERT INTO debtor SET ?';
+  const writePatient = 'INSERT INTO patient SET ?';
   const sql = 'INSERT INTO employee SET ?';
 
   const transaction = db.transaction();
@@ -319,12 +344,13 @@ function create(req, res, next) {
   transaction
     .addQuery(writeCreditor, [creditor])
     .addQuery(writeDebtor, [debtor])
+    .addQuery(writePatient, [patient])
     .addQuery(sql, [employee]);
 
   transaction.execute()
     .then(results => {
       // @todo - why is this not a UUID, but grade_id is a uuid?
-      const employeeId = results[2].insertId;
+      const employeeId = results[3].insertId;
 
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.CREATE,
@@ -333,6 +359,7 @@ function create(req, res, next) {
         id : employeeId,
       });
 
+      // res.status(201).json({ id : employeeId });
       res.status(201).json({ id : employeeId });
     })
     .catch(next)

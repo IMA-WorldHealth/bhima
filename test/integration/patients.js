@@ -76,8 +76,8 @@ describe('(/patients) Patients', function () {
 
     it('GET /patients with missing necessary parameters should succeed', function () {
       return agent.get('/patients/?')
-        .then((res) => {
-          helpers.api.listed(res, 3);
+        .then(function (res) {
+          helpers.api.listed(res, 4);
         })
         .catch(helpers.handler);
     });
@@ -183,7 +183,7 @@ describe('(/patients) Patients', function () {
   });
 
   it('GET /patients returns a list of patients', function () {
-    const INITIAL_TEST_PATIENTS = 2;
+    var INITIAL_TEST_PATIENTS = 3;
     return agent.get('/patients')
       .then((res) => {
         helpers.api.listed(res, INITIAL_TEST_PATIENTS);
