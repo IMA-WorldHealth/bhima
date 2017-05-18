@@ -19,7 +19,7 @@ function UsersController($state, Users, Notify, Modal) {
     enableSorting     : true,
     columnDefs : [
       { field : 'display_name', name : 'Display Name' },
-      { field : 'username', name : 'User Name' },
+      { field : 'username', name : 'User Name', cellTemplate: '/modules/users/templates/user.name.cell.html' },
       { name : 'action', displayName : '', cellTemplate: '/modules/users/templates/grid/action.cell.html', enableSorting : false }
     ],
   };
