@@ -12,7 +12,7 @@ const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
-describe('Cash Payments', function () {
+describe('Cash Payments', () => {
   const path = '/cash';
 
   const cashboxB = {
@@ -27,7 +27,6 @@ describe('Cash Payments', function () {
 
   // this is a shortcut function for clicking an action in the cash page
   function selectDropdownAction(action) {
-
     // open the dropdown menu
     $('[data-action="open-tools"]').click();
 
@@ -35,10 +34,8 @@ describe('Cash Payments', function () {
     $(`[data-action="${action}"]`).click();
   }
 
-  describe('Cashbox Select Interface', function () {
-
-    it('navigating to /cash/:unknown should send a notification error ', function () {
-
+  describe('Cashbox Select Interface', () => {
+    it('navigating to /cash/:unknown should send a notification error ', () => {
       // navigate to an invalid cashbox
       helpers.navigate(`${path}/unknown`);
 
@@ -53,10 +50,9 @@ describe('Cash Payments', function () {
       FU.exists(by.css('[data-cashbox-modal]'), false);
     });
 
-    it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
-
+    it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', () => {
       // our target is cashbox B
-      var target = `#!${path}/${cashboxB.id}`;
+      const target = `#!${path}/${cashboxB.id}`;
 
       // implicitly choose cashbox B by navigating to it directly
       browser.get(target);
@@ -72,7 +68,7 @@ describe('Cash Payments', function () {
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
     });
 
-    it('should allow a user to select and deselect a cashbox', function () {
+    it('should allow a user to select and deselect a cashbox', () => {
       // the auxiliary cashbox is the target
       const targetAuxiliary1 = `#!${path}/${cashboxC.id}`;
 
@@ -99,8 +95,7 @@ describe('Cash Payments', function () {
   });
 
   /* tests for the cash payments form page */
-  describe('Cash Payments Form Page', function () {
-
+  describe('Cash Payments Form Page', () => {
     beforeEach(() => helpers.navigate(path));
 
     // this code assumes that the find-patient directive is well tested.
@@ -110,18 +105,17 @@ describe('Cash Payments', function () {
     // This caution payment should succeed
     const mockCautionPayment = {
       patientName : 'Test 2',
-      amount      : 150
+      amount      : 150,
     };
 
     // This payment against patient invoices should succeed
     const mockInvoicesPayment = {
-      patientId : '2', //we are using PA.TPA.X at patient invoice already
+      patientId : '2', // we are using PA.TPA.X at patient invoice already
       date      : new Date('2016-03-01'),
       amount    : 5.12,
     };
 
-    it('should make a caution payment', function () {
-
+    it('should make a caution payment', () => {
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
 
@@ -147,15 +141,14 @@ describe('Cash Payments', function () {
       $('[data-action="close"]').click();
     });
 
-    it('should block invoice payments without invoices', function () {
-
+    it('should block invoice payments without invoices', () => {
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
 
       // we will leave the date input as default
 
       // select the proper is caution type
-      var cautionOption = element(by.css('[data-caution-option="0"]'));
+      const cautionOption = element(by.css('[data-caution-option="0"]'));
       cautionOption.click();
 
       // select the FC currency from the currency select
@@ -173,12 +166,11 @@ describe('Cash Payments', function () {
       $('[data-method="clear"]').click();
     });
 
-    it('should make a payment against previous invoices', function () {
-
+    it('should make a payment against previous invoices', () => {
       // @fixme - why is this better?
       browser.refresh();
 
-      var gridId = 'debtorInvoicesGrid';
+      const gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
       components.findPatient.findById(mockInvoicesPayment.patientId);
@@ -187,10 +179,10 @@ describe('Cash Payments', function () {
       components.dateEditor.set(mockInvoicesPayment.date);
 
       // select the "invoices payment" option type
-      var cautionOption = element(by.css('[data-caution-option="0"]'));
+      const cautionOption = element(by.css('[data-caution-option="0"]'));
       cautionOption.click();
 
-      // open the invoices modal to select various invoices
+      // open the invoices modal to select constious invoices
       FU.exists(by.css('[data-open-invoices-btn]'), true);
       element(by.css('[data-open-invoices-btn]')).click();
 
@@ -198,7 +190,7 @@ describe('Cash Payments', function () {
       FU.exists(by.css('[data-debtor-invoice-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
-      const row = GU.selectRow(gridId, 0);
+      GU.selectRow(gridId, 0);
 
       // submit the modal
       FU.modal.submit();
@@ -221,14 +213,10 @@ describe('Cash Payments', function () {
   });
 
   describe('Cash Transfer ', CashTransfer);
-
-  describe('Payments Registry', require('./cash.registry'));
 });
 
 
 function CashTransfer() {
-  'use strict';
-
   const path = '#/cash';
 
   // navigate to the page before tests
@@ -238,7 +226,6 @@ function CashTransfer() {
   const mockTransfer = { amount : 100 };
 
   it('should make a transfer between accounts', () => {
-
     // open the dropdown menu
     $('[data-action="open-tools"]').click();
 
@@ -248,7 +235,7 @@ function CashTransfer() {
     // choose CDF as transfer currency
     components.currencySelect.set(2, 'transfer-currency-select');
 
-    //set a value in the currency component by model to avoid conflict
+    // set a value in the currency component by model to avoid conflict
     components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
 
     // submit the modal button

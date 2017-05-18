@@ -1,9 +1,8 @@
-<div ng-hide="$ctrl.filters" class="text-muted">
+<div ng-hide="$ctrl.filters" class="text-muted" data-bh-filter-bar-no-filters>
   <i class="fa fa-filter"></i> <span translate>FORM.INFO.NO_FILTERS_APPLIED</span>
 </div>
 
-<ul ng-if="$ctrl.filters.defaultFilters" class="list-inline filter-list" data-bh-filter-bar>
-
+<ul ng-if="$ctrl.filters.defaultFilters" class="list-inline filter-list" data-bh-filter-bar-default-filters>
   <li ng-repeat="filter in $ctrl.filters.defaultFilters">
     <!--
       TODO: these should be a custom CSS class.  Label is just too small!
@@ -16,10 +15,10 @@
   </li>
 </ul>
 
-<!-- Seperator between filter types -->
+<!-- Separator between filter types -->
 <div ng-if="$ctrl.filters.customFilters.length" style="display : inline-block; width : 1px; height: 25px; vertical-align : top; background-color : #ccc;"></div>
 
-<ul ng-if="$ctrl.filters.customFilters.length" class="list-inline filter-list" data-bh-filter-bar>
+<ul ng-if="$ctrl.filters.customFilters.length" class="list-inline filter-list" data-bh-filter-bar-custom-filters>
 
   <li ng-repeat="filter in $ctrl.filters.customFilters">
     <span class="label label-primary">
@@ -35,5 +34,4 @@
 
     </span>
   </li>
-
 </ul>

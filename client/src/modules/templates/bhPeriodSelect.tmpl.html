@@ -1,4 +1,4 @@
-<div class="form-group">
+<div class="form-group" data-bh-period-select>
 <label class="form-label" translate>PERIODS.PERIOD_LIMIT</label>
 <p class="form-static">
   <span translate>{{$ctrl.period.translateKey}}</span>
@@ -22,24 +22,40 @@
   <div class="row">
     <div class="col-md-6">
       <ul>
-        <li ng-repeat="period in $ctrl.Periods.categories.THIS"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+        <li ng-repeat="period in $ctrl.Periods.categories.THIS">
+          <a href ng-click="$ctrl.selectPeriod(period.key)" data-link="{{period.key}}">
+            <span translate>{{period.translateKey}}</span>
+          </a>
+        </li>
       </ul>
     </div>
     <div class="col-md-6">
       <ul>
-        <li ng-repeat="period in $ctrl.Periods.categories.LAST"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+        <li ng-repeat="period in $ctrl.Periods.categories.LAST">
+          <a href ng-click="$ctrl.selectPeriod(period.key)"  data-link="{{period.key}}">
+            <span translate>{{period.translateKey}}</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <ul>
-        <li ng-repeat="period in $ctrl.Periods.categories.OTHER"><a href ng-click="$ctrl.selectPeriod(period.key)"><span translate>{{period.translateKey}}</span></a></li>
+        <li ng-repeat="period in $ctrl.Periods.categories.OTHER">
+          <a href ng-click="$ctrl.selectPeriod(period.key)"  data-link="{{period.key}}">
+            <span translate>{{period.translateKey}}</span>
+          </a>
+        </li>
       </ul>
 
       <!-- @TODO move these templates/ logic into a component that can be unit tested -->
       <ul>
-        <li><a href ng-click="$ctrl.toggleCustomSelection()"><span translate>PERIODS.CUSTOM</span></a></li>
+        <li>
+          <a href ng-click="$ctrl.toggleCustomSelection()">
+            <span translate>PERIODS.CUSTOM</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

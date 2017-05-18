@@ -14,7 +14,7 @@
   <div class="modal-body" style="overflow : auto; max-height : 600px; padding: 0px;">
 
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}">
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
           <!-- cash human readable reference  -->
           <div class="form-group">
@@ -86,16 +86,13 @@
         </div>
       </uib-tab>
 
-      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
 
-          <!-- period selection -->
-          <!-- start period selection component -->
           <bh-period-select
             default-period="{{$ctrl.filters.period}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
-          <!-- end period selection component -->
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
