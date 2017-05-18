@@ -202,6 +202,34 @@ function UtilService(moment) {
      return !a !== !b;
   };
 
+  /**
+   * @function maskObjectFromKeys
+   *
+   * @description
+   * This function will filter or "mask" an object, returning a new object with only
+   * key/value pairs matching the array of keys passed in as the second parameter.  The
+   * keys do not all have to be contained in the object.
+   *
+   * @param {Object} object - an existing object
+   * @param {Array} mask - an array of (string) keys to mask
+   *
+   * @returns {Object} - a new object contain key/value pairs corresponding
+   * to only the keys specified.
+   */
+  service.maskObjectFromKeys = function maskObjectFromKeys(object, mask) {
+    return Object.keys(object)
+
+    //  for each key, if the key exists in the mask, add the k/v pair to the
+    //  screened object.
+      .reduce(function (screenedObject, key) {
+        if (mask.indexOf(key) >= 0) {
+          screenedObject[key] = object[key];
+        }
+
+        return screenedObject;
+      }, {});
+  };
+
   service.arrayIncludes = function arrayIncludes(array, values) {
     return values.some(function (value) {
       return array.indexOf(value) !== -1;

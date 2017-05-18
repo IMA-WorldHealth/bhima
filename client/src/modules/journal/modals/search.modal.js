@@ -2,13 +2,13 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate'
+  '$uibModalInstance', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate', 'util',
 ];
 
-function JournalSearchModalController(Instance, Projects, Notify, Store, filters, Periods, Vouchers, $translate) {
+function JournalSearchModalController(Instance, Projects, Notify, Store, filters, Periods, Vouchers, $translate, util) {
   var vm = this;
 
-  var changes = new Store({ identifier : 'key' });
+  var changes = new Store({ identifier: 'key' });
   vm.filters = filters;
 
   // an object to keep track of all custom filters, assigned in the view
@@ -17,17 +17,10 @@ function JournalSearchModalController(Instance, Projects, Notify, Store, filters
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
-  var searchQueryOptions = [ 'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id' ];
+  var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id'];
 
-  // assign already defined custom filters to searchQuery object
-  // @TODO write this as a commonly used utility
-  vm.searchQueries = Object.keys(filters).reduce(function (aggregate, filterKey) {
-    // this object is only for custom search querries
-    if (searchQueryOptions.indexOf(filterKey) >= 0) {
-      aggregate[filterKey] = filters[filterKey];
-    }
-    return aggregate;
-  }, {});
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
   // assign default filters
   if (filters.limit) {

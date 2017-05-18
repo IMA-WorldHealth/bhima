@@ -4,6 +4,8 @@
       <strong translate>FORM.LABELS.CURRENCY</strong>
     </p>
 
+    <ng-transclude></ng-transclude>
+
     <!-- repeat each currency in the application -->
     <label
       ng-repeat="currency in $ctrl.currencies track by currency.id"

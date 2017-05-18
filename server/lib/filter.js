@@ -149,7 +149,12 @@ class FilterParser {
     const tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      const preparedStatement = `${tableString}${columnAlias} = ?`;
+      let valueString = '?';
+      if (filterKey.includes(DEFAULT_UUID_PARTIAL_KEY)) {
+        valueString = 'HUID(?)';
+      }
+
+      const preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('JournalController', JournalController);
+  .controller('JournalController', JournalController);
 
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
@@ -86,7 +86,7 @@ function JournalController(Journal, Sorting, Grouping,
     rowTemplate                : '/modules/templates/grid/transaction.row.html',
     onRegisterApi              : onRegisterApi,
   };
-  
+
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
 
   // Initialise each of the journal utilities, providing them access to the journal
@@ -217,7 +217,7 @@ function JournalController(Journal, Sorting, Grouping,
         aggregation.rendered = aggregation.value;
       },
       enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' 
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
     },
 
     { field            : 'currencyName',
@@ -275,29 +275,29 @@ function JournalController(Journal, Sorting, Grouping,
     },
   ];
   vm.gridOptions.columnDefs = columns;
-  
+
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    
-    vm.gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue){
-      if(newValue != oldValue) {
+
+    vm.gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+      if (newValue != oldValue) {
         propagate(colDef.field,newValue);
       }
     });
   }
 
-  function updateSharedPropertyOnRow(rows, column, value){
+  function updateSharedPropertyOnRow(rows, column, value) {
     rows.forEach(function (row) {
       transactions.editCell(row, column, value, row[column]);
       row[column] = (column === 'trans_date') ? new Date(value) : value;
     });
-
   }
 
-  function propagate(column, value){
-    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];    
-    //Check if the column updated must be propragated in all transaction
+  function propagate(column, value) {
+    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
+
+    // Check if the column updated must be propragated in all transaction
     var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
 
     if (hasSharedProperty) {
@@ -379,8 +379,8 @@ function JournalController(Journal, Sorting, Grouping,
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
 
         transactions.applyEdits();
-        
-        //@TODO investigate why footer totals aren't updated automatically on data change
+
+        // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
 
         // try to unfold groups
@@ -412,7 +412,6 @@ function JournalController(Journal, Sorting, Grouping,
 
     Config.openSearchModal(filtersSnapshot)
       .then(function (changes) {
-
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();
@@ -476,7 +475,7 @@ function JournalController(Journal, Sorting, Grouping,
     }
   };
 
-  vm.saveAccountEdit = function saveAcconutEdit(row, account) {
+  vm.saveAccountEdit = function saveAccountEdit(row, account) {
     row.account_id = account.id;
     row.account_name = account.hrlabel;
     $rootScope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
@@ -536,7 +535,7 @@ function JournalController(Journal, Sorting, Grouping,
     var id = row.origin_id;
     transactions.editCell(row, 'origin_id', id);
 
-    // Propagate the changement in all origin Id for transaction
+    // Propagate the change in all origin Id for transaction
     propagate('origin_id', id);
   }
 
