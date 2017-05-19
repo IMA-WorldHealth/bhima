@@ -284,9 +284,10 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
+  const patientID = uuid.v4();
   data.creditor_uuid = uuid.v4();
   data.debtor_uuid = uuid.v4();
-  data.patient_uuid = uuid.v4();
+  data.patient_uuid = patientID;
 
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
@@ -359,8 +360,7 @@ function create(req, res, next) {
         id : employeeId,
       });
 
-      // res.status(201).json({ id : employeeId });
-      res.status(201).json({ id : employeeId });
+      res.status(201).json({ id : employeeId, patient_uuid : patientID });
     })
     .catch(next)
     .done();

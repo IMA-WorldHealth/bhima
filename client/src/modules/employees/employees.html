@@ -53,13 +53,13 @@
                         ng-model="EmployeeCtrl.employee.dob"
                         uib-datepicker-popup="{{EmployeeCtrl.datepickerOptions.format}}"
                         datepicker-options="EmployeeCtrl.datepickerOptions"
-                        is-open="EmployeeCtrl.datePopupIsOpen"
+                        is-open="EmployeeCtrl.dobPopupIsOpen"
                         show-button-bar="false"
                         bh-date-validator="EmployeeCtrl.datepickerOptions"
                         autocomplete="off"
                         required>
                         <span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="EmployeeCtrl.datePopupIsOpen = !PatientRegCtrl.datePopupIsOpen">
+                          <button type="button" class="btn btn-default" ng-click="EmployeeCtrl.dobPopupIsOpen = !EmployeeCtrl.dobPopupIsOpen">
                             <i class="fa fa-calendar-plus-o"></i>
                           </button>
                         </span>
@@ -125,16 +125,18 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.GRADE" | translate }}</label>
                     <div class="col-md-9">
                       <ui-select
-                        name="grade_id"
+                        name="grade"
                         ng-model="EmployeeCtrl.employee.grade_id"
                         required>
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}"><span>{{$select.selected.text}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="g.uuid as g.format for g in (EmployeeCtrl.grades | filter:$select.search | orderBy:'text')">
-                          <span ng-bind-html="g.text | highlight:$select.search"></span>
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
+                          <span>{{$select.selected.format}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="g.uuid as g in EmployeeCtrl.grades | filter:{format : $select.search} | orderBy:'text'">
+                          <span ng-bind-html="g.format | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
 
-                      <div class="help-block" ng-messages="DetailForm.grade_id.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.grade.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
@@ -155,9 +157,8 @@
                         ng-maxlength="EmployeeCtrl.length20"
                         autocomplete="off"
                         required>
-
                       <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
-                      <span ng-show="DetailForm.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+                      <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
 
                       <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
                         <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
@@ -167,7 +168,7 @@
 
                   <!-- Employee creditor group-->
                   <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.creditor_group_uuid.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.creditor_group.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.creditorGroups.length === 0">
@@ -178,16 +179,18 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.CREDITOR_GROUP" | translate }}</label>
                     <div class="col-md-9">
                       <ui-select
-                        name="creditor_group_uuid"
+                        name="creditor_group"
                         ng-model="EmployeeCtrl.employee.creditor_group_uuid"
                         required>
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.CREDITOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | filter:$select.search | orderBy:'name'">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.CREDITOR_GROUP' | translate }}">
+                          <span>{{$select.selected.name}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="cg.uuid as cg in EmployeeCtrl.creditorGroups | filter:{name :$select.search} | orderBy:'name'">
                           <span ng-bind-html="cg.name | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
 
-                      <div class="help-block" ng-messages="DetailForm.creditor_group_uuid.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.creditor_group.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
@@ -195,7 +198,7 @@
 
                   <!-- Employee debtor group-->
                   <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.debtor_group_uuid.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.debtor_group.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.debtorGroups.length === 0">
@@ -206,16 +209,18 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-md-9">
                       <ui-select
-                        name="debtor_group_uuid"
+                        name="debtor_group"
                         ng-model="EmployeeCtrl.employee.debtor_group_uuid"
                         required>
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="dg.uuid as dg.name for dg in EmployeeCtrl.debtorGroups | filter:$select.search | orderBy:'name'">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
+                          <span>{{$select.selected.name}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="dg.uuid as dg in EmployeeCtrl.debtorGroups | filter:{name : $select.search} | orderBy:'name'">
                           <span ng-bind-html="dg.name | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
 
-                      <div class="help-block" ng-messages="DetailForm.debtor_group_uuid.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.debtor_group.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
@@ -259,6 +264,35 @@
               <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
               <div class="panel-body">    
                 <div class="form-horizontal" ng-form="OptionalForm">
+                  <!-- Employee hiring date  -->
+                  <div class="form-group"
+                    ng-class="{'has-error' : DetailForm.dateEmbauche.$invalid && EmployeeRegistrationForm.$submitted}">
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.DATE_EMBAUCHE" | translate }}</label>
+                    <div class="col-md-9">
+                      <div class="input-group">
+                        <input
+                        name="dateEmbauche"
+                        type="text"
+                        class="form-control"
+                        ng-model="EmployeeCtrl.employee.date_embauche"
+                        uib-datepicker-popup="{{EmployeeCtrl.datepickerOptions.format}}"
+                        datepicker-options="EmployeeCtrl.datepickerOptions"
+                        is-open="EmployeeCtrl.dateEmbauchePopupIsOpen"
+                        show-button-bar="false"
+                        bh-date-validator="EmployeeCtrl.datepickerOptions"
+                        autocomplete="off">
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="EmployeeCtrl.dateEmbauchePopupIsOpen = !EmployeeCtrl.dateEmbauchePopupIsOpen">
+                            <i class="fa fa-calendar-plus-o"></i>
+                          </button>
+                        </span>
+                      </div>
+
+                      <div class="help-block" ng-messages="DetailForm.dateEmbauche.$error" data-date-error ng-if="EmployeeRegistrationForm.$submitted && DetailForm.dob.$invalid">
+                        <div ng-messages-include="modules/templates/dates.messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
                   <!-- Employee number of spouse-->
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.nb_spouse.$invalid && EmployeeRegistrationForm.$submitted}">
@@ -281,7 +315,7 @@
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.nb_enfant.$invalid && EmployeeRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.NB_ENFANT" | translate }}</label>
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.NB_CHILD" | translate }}</label>
                     <div class="col-md-9">
                       <input
                         type="number"
@@ -295,24 +329,9 @@
                     </div>
                   </div>
 
-                  <!-- Employee locked state-->
-                  <div class="form-group"
-                    ng-class="{'has-error' : OptionalForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
-                    <label class="control-label">
-                      <input
-                        type="checkbox"
-                        name="locked"
-                        ng-true-value="1"
-                        ng-false-value="0"
-                        ng-model="EmployeeCtrl.employee.locked">
-                        {{ "FORM.LABELS.LOCKED" | translate }}
-                      
-                    </label>
-                  </div>
-
                   <!-- Employee service-->
                   <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.service_id.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.service.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.services.length === 0">
                       <i class="fa fa-warning"></i>
@@ -322,10 +341,12 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
                     <div class="col-md-9">
                       <ui-select
-                        name="service_id"
+                        name="service"
                         ng-model="EmployeeCtrl.employee.service_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="sv.id as sv.name for sv in EmployeeCtrl.services | filter:$select.search | orderBy:'name'">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}">
+                          <span>{{$select.selected.name}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="sv.id as sv in EmployeeCtrl.services | filter:{name : $select.search} | orderBy:'name'">
                           <span ng-bind-html="sv.name | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
@@ -334,7 +355,7 @@
 
                   <!-- Employee function-->
                   <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.fonction_id.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.fonction.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
                       <i class="fa fa-warning"></i>
@@ -344,10 +365,12 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.FUNCTION" | translate }}</label>
                     <div class="col-md-9">
                       <ui-select
-                        name="fonction_id"
+                        name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="f.id as f.fonction_txt for f in EmployeeCtrl.functions | filter:$select.search | orderBy:'fonction_txt'">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
+                          <span>{{$select.selected.fonction_txt}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">
                           <span ng-bind-html="f.fonction_txt | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
@@ -380,6 +403,7 @@
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
                     <div class="col-md-9">
                       <input
+                        type="email"
                         class="form-control"
                         name="email"
                         ng-model="EmployeeCtrl.employee.email"
@@ -393,16 +417,16 @@
                   <!-- Employee address -->
                   <div
                     class="form-group"
-                    ng-class="{'has-error' : DetailForm.adresse.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.address.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS" | translate }}</label>
                     <div class="col-md-9">
                       <input
                         class="form-control"
-                        name="adresse"
+                        name="address"
                         ng-model="EmployeeCtrl.employee.adresse"
                         autocomplete="off">
-                      <div class="help-block" ng-messages="DetailForm.adresse.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.address.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
@@ -442,6 +466,20 @@
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
+                  </div>                  
+
+                  <!-- Employee locked state-->
+                  <div class="form-group"
+                    ng-class="{'has-error' : OptionalForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
+                    <label class="control-label">
+                      <input
+                        type="checkbox"
+                        name="locked"
+                        ng-true-value="1"
+                        ng-false-value="0"
+                        ng-model="EmployeeCtrl.employee.locked">
+                        {{ "FORM.LABELS.LOCKED" | translate }}                      
+                    </label>
                   </div>
                 </div>            
               </div>

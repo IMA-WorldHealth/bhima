@@ -104,7 +104,6 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
-
   /**
    * Invokes a purchase order receipt
    *

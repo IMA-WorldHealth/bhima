@@ -5,128 +5,72 @@ angular.module('bhima.controllers')
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
   'CreditorGroupService', 'DebtorGroupService', 'util', 'NotifyService',
-  'bhConstants'
+  'bhConstants', 'ReceiptModal'
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants, Receipts) {
   var vm = this;
 
-  vm.loading = false;
-  vm.view = 'default';
-
-  // bind methods
-  vm.create = create;
-  vm.update = update;
-  vm.cancel = cancel;
-  vm.submit = submit;
-
-  // Define limits for dates
-  vm.minDOB = bhConstants.dates.minDOB;
-  vm.maxDOB = bhConstants.dates.maxDOB;
-  vm.maxDateEmbauche = Employees.maxDateEmbauche;
-
-  // max length field for Employee Registration
-  vm.maxLength = bhConstants.maxTextLength;
-  vm.length70 = util.length70;
-  vm.length50 = util.length50;
-  vm.length30 = util.length30;
+  // Expose lenths from util
   vm.length20 = util.length20;
 
-  // fired on startup
-  function startup() {
-    // start up loading indicator
-    vm.loading = true;
+  // Expose validation rule for date
+  vm.datepickerOptions = {
+    maxDate : new Date(),
+    minDate : bhConstants.dates.minDOB
+  };
 
-    // load Employees
-    refreshEmployees();
+  // Expose employee to the scope
+  vm.employee = {};
 
-    // load Services
-    Services.read().then(function (services) {
-      vm.services = services;
-    }).catch(Notify.handleError);
+  // Expose methods to the scope
+  vm.submit = submit;
 
-    // load Grades
-    Grades.read(null, { detailed : 1 }).then(function (data) {
-      data.forEach(function (g) {
-        g.format = g.code + ' - ' + g.text;
-      });
-      vm.grades = data;
-    }).catch(Notify.handleError);
+  // Loading Grades
+  Grades.read(null, { detailed : 1 }).then((data) => {
+    data.forEach((g) => {
+      g.format = `${g.code} - ${g.text}`;
+    });      
+    vm.grades = data;
+  }).catch(Notify.handleError);
 
-    // load Functions
-    Functions.read().then(function (data) {
-      vm.functions = data;
-    }).catch(Notify.handleError);
+  // Loading Creditor Groups
+  CreditorGroups.read().then((data) => {
+    vm.creditorGroups = data;
+  }).catch(Notify.handleError);
 
-    // load Creditor Groups
-    CreditorGroups.read().then(function (data) {
-      vm.creditorGroups = data;
-    }).catch(Notify.handleError);
+  // Loading Debtor Groups
+  DebtorGroups.read().then((data) => {
+    vm.debtorGroups = data;
+  }).catch(Notify.handleError);
 
-    // load Debtor Groups
-    DebtorGroups.read().then(function (data) {
-      vm.debtorGroups = data;
-    }).catch(Notify.handleError);
+  // Loading Services
+  Services.read().then((services) => {
+    vm.services = services;
+  }).catch(Notify.handleError);    
 
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.employee = { locked : 0 };
-    vm.employee = {};
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a employee
-  function update(data) {
-    // Sanitise DOB for HTML Date Input
-    data.dob = new Date(data.dob);
-    // Sanitise DATE_EMBAUCHE for HTML Date Input
-    data.date_embauche = new Date(data.date_embauche);
-    data.code = data.code_employee;
-
-    vm.employee= data;
-    vm.view = 'update';
-  }
+  // Loading Functions
+  Functions.read().then((data) => {
+    vm.functions = data;
+  }).catch(Notify.handleError);
 
 
-  // refresh the displayed Employees
-  function refreshEmployees() {
-    return Employees.read()
-    .then(function (data) {
-      vm.employees = data;
-      vm.loading = false;
-    });
-  }
-
-  // form submission
-  function submit(invalid) {
-    if (invalid) {
-      Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
-    }
-
+  // submit the data to the server
+  function submit(employeeForm) {
     var promise;
-    var creation = (vm.view === 'create');
-    var employee = angular.copy(vm.employee);
 
-    promise = (creation) ?
-      Employees.create(employee) :
-      Employees.update(employee.id, employee);
+    if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID');}
+    if (!employeeForm.$dirty) { return Notify.danger('FORM.ERRORS.NO_DATA_PROVIDED'); }
 
-    promise
-      .then(function (response) {
-        return refreshEmployees();
-      })
-      .then(function () {
-        Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+    return Employees.create(vm.employee)
+      .then((feedBack) =>  {
+        Receipts.patient(feedBack.patient_uuid, true);
+
+        // reset form state
+        employeeForm.$setPristine();
+        employeeForm.$setUntouched();
+        vm.employee = {};
       })
       .catch(Notify.handleError);
   }
-
-  startup();
 }
