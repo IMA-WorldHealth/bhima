@@ -48,7 +48,7 @@
     "express-session": "^1.14.1",
     "gulp-merge-json": "^1.0.0",
     "helmet": "^3.1.0",
-    "ioredis": "^2.3.1",
+    "ioredis": "^3.0.0",
     "json-2-csv": "^2.1.0",
     "lodash": "^4.16.2",
     "mkdirp": "^0.5.1",
