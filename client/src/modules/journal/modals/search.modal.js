@@ -2,10 +2,12 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate'
+  '$uibModalInstance', 'ProjectService', 'NotifyService',
+  'Store', 'filters', 'PeriodService', 'VoucherService', '$translate',
 ];
 
-function JournalSearchModalController(Instance, Projects, Notify, Store, filters, Periods, Vouchers, $translate) {
+function JournalSearchModalController(Instance, Projects, Notify,
+  Store, filters, Periods, Vouchers, $translate) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -17,7 +19,9 @@ function JournalSearchModalController(Instance, Projects, Notify, Store, filters
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
-  var searchQueryOptions = [ 'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id' ];
+  var searchQueryOptions = [
+    'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id',
+  ];
 
   // assign already defined custom filters to searchQuery object
   // @TODO write this as a commonly used utility

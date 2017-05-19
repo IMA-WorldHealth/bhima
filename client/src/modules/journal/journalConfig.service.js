@@ -11,11 +11,11 @@ function JournalConfigService(Modal) {
 
   function openSearchModal(filters) {
     return Modal.open({
-      templateUrl: 'modules/journal/modals/search.modal.html',
-      controller:  'JournalSearchModalController as ModalCtrl',
+      templateUrl : 'modules/journal/modals/search.modal.html',
+      controller :  'JournalSearchModalController as ModalCtrl',
       resolve : {
-        filters : function () { return filters; }
-      }
+        filters : function () { return filters; },
+      },
     }).result;
   }
 

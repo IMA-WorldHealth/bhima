@@ -168,6 +168,7 @@ exports.configure = function configure(app) {
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
+  app.put('/general_ledger/comment', generalLedger.commentAccountStatement);
 
   // API for trial balance
   app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
@@ -329,6 +330,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
   app.get('/reports/finance/posted_journal', financeReports.journal.postedReport);
+  app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);

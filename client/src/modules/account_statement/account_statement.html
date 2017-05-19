@@ -21,18 +21,13 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a href data-method="print" id="print" ng-click="AccountStateCtrl.openJournalReport()">
-                <i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href data-method="export" id="export" ng-click="AccountStateCtrl.exportFile()">
-                <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT</span> CSV
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href data-method="export" id="export" ng-click="AccountStateCtrl.exportFile()">
+              <a href data-method="print" id="print" ng-click="AccountStateCtrl.exportPdf()">
                 <i class="fa fa-file-pdf-o"></i> <span translate>FORM.BUTTONS.EXPORT</span> PDF
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href data-method="export" id="export" ng-click="AccountStateCtrl.exportCsv()">
+                <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT</span> CSV
               </a>
             </li>
           </ul>
@@ -46,7 +41,7 @@
       </div>
 
       <div class="toolbar-item">
-        <button data-method="comment" class="btn btn-default" ng-click="AccountStateCtrl.openCommentModal()">
+        <button data-method="comment" class="btn btn-default" ng-disabled="!AccountStateCtrl.selectedRows.length" ng-click="AccountStateCtrl.commentRows()">
           <i class="fa fa-sticky-note-o"></i> <span class="hidden-xs" translate>FORM.LABELS.COMMENT</span>
         </button>
       </div>

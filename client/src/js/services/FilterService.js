@@ -122,11 +122,11 @@ function FilterService(Store) {
     return activeFilters.map(function (filter) {
       return filter._key.concat(':', filter._label);
     });
-  }
+  };
 
   FilterList.prototype.formatCache = function formatCache() {
     return angular.copy(this._filterIndex);
-  }
+  };
 
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {

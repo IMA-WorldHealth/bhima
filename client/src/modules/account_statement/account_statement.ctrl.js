@@ -3,26 +3,27 @@ angular.module('bhima.controllers')
 
 // DI
 AccountStatementController.$inject = [
-  'JournalService', 'GeneralLedgerService', 'NotifyService', 'JournalConfigService',
+  'GeneralLedgerService', 'NotifyService', 'JournalConfigService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
-  'SessionService', 'bhConstants', 'uiGridConstants',
-  'AppCache', 'Store', 'FilterService',
+  'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
+  'AppCache', 'Store', 'FilterService', 'ModalService', 'LanguageService',
   '$filter', '$translate', 'GridExportService',
 ];
 
 /**
  * @module AccountStatementController
  */
-function AccountStatementController(Journal, GeneralLedger, Notify, Config,
+function AccountStatementController(GeneralLedger, Notify, Config,
   Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
-  AppCache, Store, Filters, $filter, $translate, GridExport) {
+  AccountStatement, AppCache, Store, Filters, Modal, Languages,
+  $filter, $translate, GridExport) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
   var cache = AppCache(cacheKey.concat('-module'));
 
   // expose to the view
-  vm.filter = new Filters();
+  vm.selectedRows = [];
   vm.enterprise = Session.enterprise;
 
   // grid definition ================================================================
@@ -44,6 +45,9 @@ function AccountStatementController(Journal, GeneralLedger, Notify, Config,
   var columnConfig = new Columns(vm.gridOptions, cacheKey);
   var exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
 
+  // attaching the filtering object to the view
+  vm.filtering = filtering;
+
   // columns definition
   var columns = [
     { field            : 'trans_id',
@@ -61,10 +65,14 @@ function AccountStatementController(Journal, GeneralLedger, Notify, Config,
       editableCellTemplate : 'modules/journal/templates/date.edit.html',
       footerCellTemplate   : '<i></i>' },
 
-    { field                : 'account_number',
-      displayName          : 'TABLE.COLUMNS.ACCOUNT',
-      cellTemplate         : '/modules/journal/templates/account.cell.html',
-      headerCellFilter     : 'translate' },
+    { field            : 'account_number',
+      displayName      : 'TABLE.COLUMNS.ACCOUNT',
+      width            : 110,
+      headerCellFilter : 'translate' },
+
+    { field            : 'account_label',
+      displayName      : 'FORM.LABELS.ACCOUNT_TITLE',
+      headerCellFilter : 'translate' },
 
     {
       field            : 'debit_equiv',
@@ -167,8 +175,26 @@ function AccountStatementController(Journal, GeneralLedger, Notify, Config,
   // on register api
   function onRegisterApi(api) {
     vm.gridApi = api;
+    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionChanged);
+    vm.gridApi.selection.on.rowSelectionChangedBatch(null, rowSelectionChanged);
+  }
+
+  // row selection changed
+  function rowSelectionChanged() {
+    vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
   }
   // end grid defintion =============================================================
+
+  // comment selected rows
+  vm.commentRows = function commentRows() {
+    AccountStatement.openCommentModal({ rows : vm.selectedRows })
+    .then(function (res) {
+      if (!res) { return; }
+      Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
+      load(AccountStatement.filters.formatHTTP(true));
+    })
+    .catch(Notify.handleError);
+  };
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -177,33 +203,64 @@ function AccountStatementController(Journal, GeneralLedger, Notify, Config,
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-    var filtersSnapshot = Journal.filters.formatHTTP();
+    var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
     Config.openSearchModal(filtersSnapshot)
       .then(function (changes) {
-        Journal.filters.replaceFilters(changes);
+        AccountStatement.filters.replaceFilters(changes);
 
-        Journal.cacheFilters();
-        vm.latestViewFilters = Journal.filters.formatView();
+        AccountStatement.cacheFilters();
+        vm.latestViewFilters = AccountStatement.filters.formatView();
 
         vm.loading = false;
-        return load(Journal.filters.formatHTTP(true));
+        return load(AccountStatement.filters.formatHTTP(true));
       })
       .catch(angular.noop);
   };
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {
-    Journal.removeFilter(key);
-    Journal.cacheFilters();
-    vm.latestViewFilters = Journal.filters.formatView();
-    return load(Journal.filters.formatHTTP(true));
+    AccountStatement.removeFilter(key);
+    AccountStatement.cacheFilters();
+    vm.latestViewFilters = AccountStatement.filters.formatView();
+    return load(AccountStatement.filters.formatHTTP(true));
   };
+
+  // exports zone =====================================================================
+
+  // format parameters
+  function formatExportParameters(type) {
+    // make sure a row is selected before running the trial balance
+    if (vm.gridApi.selection.getSelectedGridRows().length < 1) {
+      Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
+      return;
+    }
+
+    var uuids = vm.gridApi.selection.getSelectedGridRows().map(function (row) {
+      return row.entity.uuid;
+    });
+    return { renderer : type || 'pdf', lang : Languages.key, uuids: uuids };
+  }
+
+  // export pdf
+  vm.exportPdf = function exportPdf() {
+    var url = '/reports/finance/account_statement';
+    var params = formatExportParameters('pdf');
+
+    if (!params) { return; }
+    Modal.openReports({ url : url, params : params });
+  };
+
+  // export csv
+  vm.exportCsv = function exportCsv() {
+    exportation.run();
+  };
+  // end exports zone =================================================================
 
   // runs on startup
   function startup() {
-    load(Journal.filters.formatHTTP(true));
-    vm.latestViewFilters = Journal.filters.formatView();
+    load(AccountStatement.filters.formatHTTP(true));
+    vm.latestViewFilters = AccountStatement.filters.formatView();
   }
 
   // startup

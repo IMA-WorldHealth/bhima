@@ -15,11 +15,13 @@
 // module dependencies
 const _ = require('lodash');
 const db = require('../../../lib/db');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
 
 // expose to the api
 exports.list = list;
 exports.listAccounts = listAccounts;
+exports.commentAccountStatement = commentAccountStatement;
 
 // expose to server controllers
 exports.getlistAccounts = getlistAccounts;
@@ -125,3 +127,24 @@ function getlistAccounts() {
   return db.exec(sql);
 }
 
+/**
+ * PUT /general_ledger/comment
+ * @param {object} params - { uuids: [...], comment: '' }
+ */
+function commentAccountStatement(req, res, next) {
+  const params = req.body.params;
+  const uuids = params.uuids.map((uuid) => {
+    return db.bid(uuid);
+  });
+
+  const sql = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
+  db.exec(sql, [params.comment, [uuids]])
+    .then((rows) => {
+      if (!rows.affectedRows || rows.affectedRows !== uuids.length) {
+        throw new BadRequest('Error on update general ledger comment');
+      }
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
+}
