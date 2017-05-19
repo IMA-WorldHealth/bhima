@@ -13,6 +13,10 @@
 // module dependencies
 const db = require('../../../lib/db');
 
+// GET/ CURRENT FISCAL YEAR PERIOD
+const Fiscal = require('../fiscal');
+const Accounts = require('../accounts');
+
 // expose to the api
 exports.list = list;
 exports.listAccounts = listAccounts;
@@ -57,7 +61,13 @@ function list(req, res, next) {
  * list accounts and their solds
  */
 function listAccounts(req, res, next) {
-  getlistAccounts()
+  let currentDate = new Date();
+  let results;
+
+  Fiscal.getPeriodCurrent(currentDate)
+  .then((rows) => {
+    return getlistAccounts(rows); 
+  })
   .then((rows) => {
     res.status(200).json(rows);
   })
@@ -69,11 +79,31 @@ function listAccounts(req, res, next) {
  * @function getlistAccounts
  * get list of accounts
  */
-function getlistAccounts() {
+function getlistAccounts(periodsId) {
+  let jointure = '';
+  let headSql = '';
+
+  if(periodsId){
+    periodsId.forEach(function (period) {
+      headSql += `
+        , periode${period.id}.balance AS balance${period.number}
+      `;
+
+      jointure += `
+        LEFT JOIN (
+        SELECT period_total.debit - period_total.credit AS balance, period_total.account_id
+        FROM period_total
+        WHERE period_total.period_id = ${period.id}
+        ) AS periode${period.id} ON periode${period.id}.account_id =  aggregator.id
+      `;
+    });    
+  }
+
   const sql =
     `SELECT aggregator.id, aggregator.number, aggregator.label,
       IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
       IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance
+      ${headSql}
     FROM (
       SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
         a.id, a.number, a.label
@@ -81,8 +111,9 @@ function getlistAccounts() {
         JOIN account a ON a.id = gl.account_id
       GROUP BY a.id
       ORDER BY a.number
-    ) AS aggregator;`;
+    ) AS aggregator ${jointure};`;
 
   return db.exec(sql);
 }
+
 
