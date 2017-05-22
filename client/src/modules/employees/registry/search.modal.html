@@ -1,0 +1,182 @@
+<form
+  name="ModalForm"
+  ng-submit="ModalCtrl.submit(ModalForm)"
+  data-modal="patient-search"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header" style="box-shadow : 0px 2px 4px -4px black; z-index:1000">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="max-height : 400px; overflow: auto;">
+    <fieldset>
+      <legend translate>FORM.LABELS.DATE_REGISTRATION</legend>
+      <bh-date-interval
+        date-id="registration-date"
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.dateRegistrationFrom"
+        date-to="ModalCtrl.params.dateRegistrationTo"
+        mode="clean">
+      </bh-date-interval>
+    </fieldset>
+
+    <br />
+
+    <fieldset>
+      <legend>
+        {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+      </legend>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
+        <label class="control-label">
+          {{ 'FORM.LABELS.NAME' | translate }}
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+        <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
+        <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+        <label class="control-label">
+          {{ 'FORM.LABELS.REFERENCE' | translate }}
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('reference')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+        <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
+        <label class="control-label" translate>
+            FORM.LABELS.HOSPITAL_FILE_NR
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('hospital_no')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+        <input type="text" class="form-control" name="hospital_no" ng-model="ModalCtrl.params.hospital_no">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="radio">
+        <p class="control-label">
+          <strong translate>FORM.LABELS.GENDER</strong>
+
+          <span style="display:inline-block;" class="pull-right">
+            <a href ng-click="ModalCtrl.clear('sex')" tabindex="-1">
+              <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+            </a>
+          </span>
+        </p>
+
+        <label>
+          <input type="radio" name="sex" id="male" value="M" ng-model="ModalCtrl.params.sex">
+          <span translate>FORM.LABELS.MALE</span>
+        </label>
+      </div>
+
+      <div class="radio">
+        <label>
+          <input type="radio" name="sex" id="female" value="F" ng-model="ModalCtrl.params.sex">
+          <span translate>FORM.LABELS.FEMALE</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.DEBTOR_GROUP
+        </label>
+
+        <!-- @todo make this a component - it is used everywhere. Calls back method
+             `clear` and resets the id passed to the component -->
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('debtor_group_uuid')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+
+        <!-- @todo make data driven selects components to handle loading and error states -->
+        <select
+          class="form-control"
+          name="debtorGroup"
+          ng-options="group.uuid as group.name for group in ModalCtrl.debtorGroups"
+          ng-model="ModalCtrl.params.debtor_group_uuid">
+          <option disabled value="" translate>
+            FORM.PLACEHOLDERS.DEBTOR_GROUP
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>
+          PATIENT_GROUP.PATIENT_GROUP
+        </label>
+
+        <!-- @todo make this a component - it is used everywhere. Calls back method
+             `clear` and resets the id passed to the component -->
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('patient_group_uuid')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+
+        <!-- @todo make data driven selects components to handle loading and error states -->
+        <select
+          class="form-control"
+          name="patientGroup"
+          ng-options="group.uuid as group.name for group in ModalCtrl.patientGroups"
+          ng-model="ModalCtrl.params.patient_group_uuid">
+          <option disabled value="" translate>
+            FORM.PLACEHOLDERS.PATIENT_GROUP
+          </option>
+        </select>
+      </div>
+
+      <bh-user-select
+        user-id="ModalCtrl.params.user_id"
+        name="user_id"
+        on-select-callback="ModalCtrl.onSelectUser(user)">
+        <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+      </bh-user-select>
+    </fieldset>
+
+    <fieldset>
+      <legend translate>FORM.LABELS.DOB</legend>
+      <bh-date-interval
+        date-id="dob-date"
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.dateBirthFrom"
+        date-to="ModalCtrl.params.dateBirthTo"
+        mode="clean">
+      </bh-date-interval>
+    </fieldset>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

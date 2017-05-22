@@ -16,11 +16,16 @@
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires lib/barcode
+ * @requires lib/filter
+ * 
+ * @requires config/identifiers
+ * 
  * @requires medical/patients/groups
  * @requires medical/patients/documents
  * @requires medical/patients/vists
  * @requires medical/patients/pictures
- *
+ * 
  * @todo Review naming conventions
  * @todo Remove or refactor methods to fit new API standards
  */

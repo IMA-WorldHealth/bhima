@@ -103,8 +103,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Payroll Management
 (57, 1),
 
--- Employee Management
+-- Employee registration
 (61, 1),
+
+-- Employee Registry
+(62, 1),
 
 -- subsidie Management
 (82, 1),

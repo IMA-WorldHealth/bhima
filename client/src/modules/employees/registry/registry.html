@@ -1,0 +1,80 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>EMPLOYEE_REGISTRY.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="EmployeeRegistryCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <span class="fa fa-search"></span> <span translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          ng-click="EmployeeRegistryCtrl.openColumnConfiguration()"
+          data-method="config"
+          class="btn btn-default">
+          <i class="fa fa-cogs"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="reports/employees"
+          options="EmployeeRegistryCtrl.filters">
+        </bh-pdf-print>
+      </div>
+
+      <div class="toolbar-item">
+        <bh-renderer-dropdown
+          report-url="reports/employees"
+          report-options="EmployeeRegistryCtrl.filters">
+        </bh-renderer-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar" ng-show="EmployeeRegistryCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="EmployeeRegistryCtrl.filtersFmt"
+    on-remove-filter="EmployeeRegistryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-if="EmployeeRegistryCtrl.filter.customFiltersApplied(EmployeeRegistryCtrl.filters)"
+    ng-click="EmployeeRegistryCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-close text-danger"></i>
+    <span translate>FORM.INFO.CLEAR_FILTERS</span>
+  </a>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="employee-registry"
+      class="grid-full-height"
+      ng-style="EmployeeRegistryCtrl.filterBarHeight"
+      ui-grid="EmployeeRegistryCtrl.uiGridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="EmployeeRegistryCtrl.loading"
+        empty-state="EmployeeRegistryCtrl.uiGridOptions.data.length === 0"
+        error-state="EmployeeRegistryCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

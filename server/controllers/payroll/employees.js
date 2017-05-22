@@ -14,7 +14,7 @@
  * @requires NotFound
  * @requires BadRequest
  * @requires Topic
- * @requires patients
+ * @requires filter
  */
 
 
@@ -24,8 +24,7 @@ const db = require('./../../lib/db');
 const Topic = require('../../lib/topic');
 const NotFound = require('./../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
-
-const patients = require('../medical/patients');
+const FilterParser = require('./../../lib/filter');
 
 exports.list = list;
 exports.create = create;
@@ -51,7 +50,8 @@ function list(req, res, next) {
       employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
+      service.name as service_name
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
      JOIN fonction ON employee.fonction_id = fonction.id
@@ -59,6 +59,7 @@ function list(req, res, next) {
      JOIN debtor ON patient.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+     JOIN service ON service.id = employee.service_id
      ORDER BY employee.display_name ASC;
   `;
 
@@ -374,36 +375,64 @@ function create(req, res, next) {
  *
  * NOTE : eslint gives 34 warnings which are not judged as logic so it is ignored
  */
+// function search(req, res, next) {
+//   let searchOption = '';
+//   let sql = '';
+//   const keyValue = `%${req.params.value}%`;
+
+//   if (req.params.key === 'code') {
+//     searchOption = 'LOWER(employee.code)';
+//   } else if (req.params.key === 'display_name') {
+//     searchOption = 'LOWER(employee.display_name)';
+//   } else {
+//     next(new BadRequest('You sent a bad value for some parameters in research employee.'));
+//     return;
+//   }
+
+//   sql = `
+//     SELECT
+//       employee.id, employee.code AS code_employee, employee.display_name, employee.locked, 
+//       employee.bank, employee.bank_account, BUID(creditor.uuid) as creditor_uuid, 
+//       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+//     FROM employee
+//     JOIN creditor ON employee.creditor_uuid = creditor.uuid
+//     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+//     WHERE ${searchOption} LIKE ? LIMIT 10;
+//   `;
+
+//   db.exec(sql, [keyValue])
+//   .then(rows => {
+//     Topic.publish(Topic.channels.ADMIN, {
+//       event : Topic.events.SEARCH,
+//       entity : Topic.entities.EMPLOYEE,
+//       user_id : req.session.user.id,
+//     });
+
+//     res.status(200).json(rows);
+//   })
+//   .catch(next)
+//   .done();
+// }
+
+/**
+ * @method search
+ *
+ * @description
+ * A multi-parameter function that uses find() to query the database for
+ * employee records.
+ *
+ * @example
+ * // GET /employees/search?name={string}&detail={boolean}&limit={number}
+ * // GET /employees/search?reference={string}&detail={boolean}&limit={number}
+ * // GET /employees/search?fields={object}
+ */
 function search(req, res, next) {
-  let searchOption = '';
-  let sql = '';
-  const keyValue = `%${req.params.value}%`;
-
-  if (req.params.key === 'code') {
-    searchOption = 'LOWER(employee.code)';
-  } else if (req.params.key === 'display_name') {
-    searchOption = 'LOWER(employee.display_name)';
-  } else {
-    next(new BadRequest('You sent a bad value for some parameters in research employee.'));
-    return;
-  }
-
-  sql = `
-    SELECT
-      employee.id, employee.code AS code_employee, employee.display_name, employee.locked, 
-      employee.bank, employee.bank_account, BUID(creditor.uuid) as creditor_uuid, 
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
-    FROM employee
-    JOIN creditor ON employee.creditor_uuid = creditor.uuid
-    JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-    WHERE ${searchOption} LIKE ? LIMIT 10;
-  `;
-
-  db.exec(sql, [keyValue])
-  .then(rows => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.SEARCH,
-      entity : Topic.entities.EMPLOYEE,
+  find(req.query)
+  .then((rows) => {
+    // publish a SEARCH event on the medical channel
+    topic.publish(topic.channels.MEDICAL, {
+      event   : topic.events.SEARCH,
+      entity  : topic.entities.PATIENT,
       user_id : req.session.user.id,
     });
 
@@ -411,4 +440,69 @@ function search(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+
+/**
+ * @method find
+ *
+ * @description
+ * This function scans the employee table in the database to find all values
+ * matching parameters provided in the options parameter.
+ *
+ * @param {Object} options - a JSON of query parameters
+ * @returns {Promise} - the result of the promise query on the database.
+ */
+function find(options) {
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
+
+  const filters = new FilterParser(options, { tableAlias : 'e' });
+  const sql = employeeEntityQuery(options.detailed);
+
+  filters.fullText('display_name');
+  filters.dateFrom('dateEmbaucheFrom', 'date_embauche');
+  filters.dateTo('dateEmbaucheTo', 'date_embauche');
+  filters.dateFrom('dateBirthFrom', 'dob');
+  filters.dateTo('dateBirthTo', 'dob');
+
+  // // default date embauche
+  // filters.period('defaultPeriod', 'date_embauche');
+
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY e.display_name DESC');
+
+  // applies filters and limits to defined sql, get parameters in correct order
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
+}
+
+function employeeEntityQuery(detailed) {
+  let detailedColumns = '';
+
+  // if the find should included detailed results
+  if (detailed) {
+    detailedColumns = `
+      , e.nb_spouse, e.nb_enfant, e.daily_salary, e.bank, e.bank_account, 
+      e.adresse, e.phone, e.email, e.fonction_id, 
+      fonction.fonction_txt, e.grade_id, grade.text, grade.basic_salary,
+      e.service_id, service.name, BUID(e.creditor_uuid) as creditor_uuid,
+      e.locked
+    `;
+  }
+
+  const sql = `
+    SELECT 
+      e.id, e.display_name, e.sexe, e.dob, e.date_embauche,
+      e.code ${detailedColumns}
+    FROM employee AS e
+      JOIN grade ON grade.uuid = e.grade_id
+      JOIN fonction ON fonction.id = e.fonction_id
+      JOIN service ON service.id = e.service_id
+      JOIN creditor ON e.creditor_uuid = creditor.uuid
+      JOIN patient ON e.patient_uuid = patient.uuid
+  `;
+
+  return sql;
 }

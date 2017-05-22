@@ -460,7 +460,8 @@ exports.configure = function configure(app) {
   app.get('/employees/:id', employees.detail);
 
   // @todo - use query strings
-  app.get('/employees/:key/:value', employees.search);
+  // app.get('/employees/:key/:value', employees.search);
+  app.get('/employees/search', employees.search);  
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 
