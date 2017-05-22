@@ -917,3 +917,7 @@ a[disabled] {
 .filter-list li:first-child {
   padding-left : 5px;
 }
+
+.strike {
+  text-decoration : line-through;
+}

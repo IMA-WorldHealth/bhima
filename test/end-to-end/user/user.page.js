@@ -47,10 +47,18 @@ function UserPage() {
     GA.clickOnMethod(n, actionLinkColumn, 'permission', 'users-grid');
   }
 
+  /**
+   * simulte a link clicking on the grid to show activation dialog
+   **/
+  function activateUser(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'activated', 'users-grid');
+  }
+
   page.getUserCount = getUserCount;
   page.createUser = createUser;
   page.editUser = editUser;
   page.editUserPermission = editUserPermission;
+  page.activateUser = activateUser;
 }
 
 module.exports = UserPage;

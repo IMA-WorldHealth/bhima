@@ -7,5 +7,11 @@
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
     <li><a data-method="edit" ng-click="grid.appScope.edit(row.entity)" href><i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span></a></li>
     <li><a data-method="permission" ng-click="grid.appScope.editPermissions(row.entity)" href><i class="fa fa-key"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span></a></li>
+    <li ng-if="!row.entity.deactivated"><a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
+      <i class="fa fa-lock"></i> <span translate>FORM.LABELS.DEACTIVATE</span></a>
+    </li>
+    <li ng-if="row.entity.deactivated"><a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
+      <i class="fa fa-unlock"></i><span translate>FORM.LABELS.ACTIVATE</span></a>
+    </li>
   </ul>
 </div>

@@ -3,6 +3,8 @@
 /** loading chai and helpers **/
 const chai = require('chai');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+const FU = require('../shared/FormUtils');
 
 /** loading pages **/
 const UserPage = require('./user.page.js');
@@ -88,6 +90,14 @@ describe('User Management Page', function () {
      **/
     expect(editPasswordPage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
     userCreateUpdatePage.close();
+  });
+
+  it('Deactivate user system access successfully', function () {
+    userPage.activateUser(4);    
+    // submit the confirmation modal
+    FU.modal.submit();
+
+    components.notification.hasSuccess();
   });
 
   it('refuses to update a user when no changes have been made', function () {
