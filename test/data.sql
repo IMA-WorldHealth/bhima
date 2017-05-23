@@ -442,3 +442,8 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('a4ff7358-f1f8-4301-86e4-e9e6fe99bd31'), HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 20, 0.5000, 0, 1),
   (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 1),
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1);
+
+-- general ledger data
+INSERT INTO `general_ledger` VALUES 
+  (HUID('6b2b8aa9-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB10', '2017-05-23 13:06:46', HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3631, 25.0000, 0.0000, 25.0000, 0.0000, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), '', NULL, 11, 1, NULL, NULL),
+  (HUID('6b2b9882-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB11', '2017-05-23 13:06:46', HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3642, 0.0000, 25.0000, 0.0000, 25.0000, 2, '', '', NULL, 11, 1, NULL, NULL);

@@ -106,10 +106,6 @@ function JournalSearchModalController(Instance, Projects, Notify,
 
   // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
-    if (vm.defaultQueries[key]) {
-      delete vm.defaultQueries[key];
-      delete filters[key];
-    }
     delete vm.searchQueries[key];
   };
 
