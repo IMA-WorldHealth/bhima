@@ -2,7 +2,6 @@
   name="ModalForm"
   ng-submit="$ctrl.submit(ModalForm)"
   data-modal="cash-payment-search"
-  bh-form-defaults
   novalidate>
 
   <div class="modal-header">
@@ -12,84 +11,101 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow : auto; max-height : 400px;">
+  <div class="modal-body" style="overflow : auto; max-height : 600px; padding: 0px;">
 
-    <bh-date-interval
-      validation-trigger="!$ctrl.validDateRange"
-      on-change="$ctrl.validate()"
-      required="true"
-      date-from="$ctrl.bundle.dateFrom"
-      date-to="$ctrl.bundle.dateTo"
-      mode="clean">
-    </bh-date-interval>
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- cash human readable reference  -->
+          <div class="form-group">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
+          </div>
 
-    <fieldset>
-      <legend>
-        <span translate>FORM.LABELS.PAYMENT_DETAILS</span>
-      </legend>
+          <!-- filter out cautions -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.searchQueries.is_caution">
+              <span translate>FORM.LABELS.CAUTION</span>
+            </label>
+          </div>
 
-      <!-- reference  -->
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-        <input type="text" class="form-control" name="reference" ng-model="$ctrl.bundle.reference">
-      </div>
+          <!-- cashbox -->
+          <div class="form-group">
+            <label class="control-label" translate>
+              FORM.LABELS.CASHBOX
+            </label>
+            <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
+            <ui-select name="cashbox" ng-model="$ctrl.searchQueries.cashbox_id">
+              <ui-select-match>
+                <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in $ctrl.cashboxes | filter:$select.search track by cashbox.id">
+                <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.bundle.is_caution">
-          <span translate>FORM.LABELS.CAUTION</span>
-        </label>
-      </div>
+          <bh-user-select
+            user-id="$ctrl.searchQueries.user_id"
+            name="user_id"
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
 
-      <!-- cashbox -->
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.CASHBOX</label>
+          <div class="form-group">
+            <label class="control-label" translate>
+              FORM.LABELS.REFERENCE_PATIENT
+            </label>
+            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
+            <input type="text" class="form-control" ng-model="$ctrl.searchQueries.patientReference"/>
+          </div>
 
-        <ui-select name="cashbox" ng-model="$ctrl.bundle.cashbox_id">
-          <ui-select-match>
-            <span>{{$select.selected.label}}</span>
-          </ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="cashbox in $ctrl.cashboxes | filter:$select.search track by cashbox.id">
-            <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
-          </ui-select-choices>
-        </ui-select>
-      </div>
+          <bh-currency-select
+            currency-id="$ctrl.searchQueries.currency_id"
+            validation-trigger="CashVoucherForm.$submitted">
+            <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
+          </bh-currency-select>
 
-      <bh-user-select
-        user-id="$ctrl.bundle.user_id"
-        name="user_id"
-        on-select-callback="$ctrl.onSelectUser(user)">
-        <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
-      </bh-user-select>    
+          <div class="radio">
+            <p class="control-label" style="margin-bottom:5px;">
+              <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
+            </p>
+            <label>
+              <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.searchQueries.reversed">
+              <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
+            </label>
+          </div>
 
-      <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
-        <input type="text" class="form-control" ng-model="$ctrl.bundle.patientReference"/>
-      </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.searchQueries.reversed">
+              <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
+            </label>
+          </div>
+        </div>
+      </uib-tab>
 
-      <bh-currency-select
-        currency-id="$ctrl.bundle.currency_id"
-        validation-trigger="CashVoucherForm.$submitted">
-      </bh-currency-select>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
 
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
 
-      <div class="radio">
-        <p class="control-label" style="margin-bottom:5px;">
-          <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
-        </p>
-        <label>
-          <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.bundle.reversed">
-          <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
-        </label>
-      </div>
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
-      <div class="radio">
-        <label>
-          <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.bundle.reversed">
-          <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
-        </label>
-      </div>
-    </fieldset>
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">
@@ -97,7 +113,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <button class="btn btn-primary" type="submit" data-method="submit" translate ng-disabled="!$ctrl.validDateRange">
+    <button class="btn btn-primary" type="submit" data-method="submit" translate>
       FORM.BUTTONS.SUBMIT
     </button>
   </div>

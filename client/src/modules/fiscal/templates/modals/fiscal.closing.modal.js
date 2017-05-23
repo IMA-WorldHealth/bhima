@@ -3,12 +3,11 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 ClosingFiscalYearModalController.$inject = [
-  'AccountService', 'NotifyService', 'FiscalService', 'ModalService',
-  'SessionService', '$uibModalInstance', 'data'
+  'NotifyService', 'FiscalService', 'ModalService', 'SessionService', '$uibModalInstance', 'data',
 ];
 
 // The closing fiscal year controller
-function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Session, Instance, Data) {
+function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instance, Data) {
   var vm = this;
 
   // global variables
@@ -17,13 +16,11 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Sessi
   // expose to the view
   vm.cancel = Instance.close;
   vm.stepForward = stepForward;
+  vm.onSelectAccount = onSelectAccount;
 
-  // load the list of accounts
-  Accounts.read()
-  .then(function (accounts) {
-    vm.accounts = accounts;
-  })
-  .catch(Notify.handleError);
+  function onSelectAccount(account) {
+    vm.resultAccount = account;
+  }
 
   Fiscal.read(Data.id)
   .then(function (fiscal) {
@@ -31,12 +28,11 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Sessi
 
     // get balance of period N of the year to close
     return Fiscal.periodicBalance({
-      id: vm.fiscal.id,
-      period_number: vm.fiscal.number_of_months // last month
+      id            : vm.fiscal.id,
+      period_number : vm.fiscal.number_of_months, // last month
     });
   })
   .then(function (balance) {
-
     var map = { income: 'profit', expense: 'charge' };
 
     vm.exploitation = balance.reduce(function (previous, current) {
@@ -57,7 +53,6 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Sessi
 
   // step handler
   function stepForward(form) {
-
     if (form.$invalid) { return; }
 
     if (vm.steps !== 'summary') {
@@ -65,22 +60,22 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Sessi
     } else {
       confirmClosing();
     }
-
   }
 
   // confirm closing
   function confirmClosing() {
     var request = {
-      pattern: vm.fiscal.label,
-      patternName: 'FORM.PATTERNS.FISCAL_YEAR_NAME'
+      pattern     : vm.fiscal.label,
+      patternName : 'FORM.PATTERNS.FISCAL_YEAR_NAME',
     };
+
     return Modal.openConfirmDialog(request)
     .then(function (ans) {
       if (!ans) { return; }
 
       return Fiscal.closing({
-        id: vm.fiscal.id,
-        account_id: vm.resultAccount.id
+        id         : vm.fiscal.id,
+        account_id : vm.resultAccount.id,
       });
     })
     .then(function (res) {
@@ -93,20 +88,18 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Sessi
       Instance.close(false);
       Notify.handleError(err);
     });
-
   }
 
   // utilities
   function debitorSold(array) {
     return array.reduce(function (a, b) {
-      return a + b.debit - b.credit;
+      return (a + b.debit) - b.credit;
     }, 0);
   }
 
   function creditorSold(array) {
     return array.reduce(function (a, b) {
-      return a + b.credit - b.debit;
+      return (a + b.credit) - b.debit;
     }, 0);
   }
-
 }

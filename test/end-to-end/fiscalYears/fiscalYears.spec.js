@@ -171,7 +171,7 @@ describe('Fiscal Year', () => {
     const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account
-    FU.uiSelect('$ctrl.resultAccount', resultAccount);
+    components.accountSelect.set(resultAccount);
 
     // submit to next step
     submitButton.click();

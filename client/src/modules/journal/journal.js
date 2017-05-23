@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('JournalController', JournalController);
+  .controller('JournalController', JournalController);
 
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
@@ -296,6 +296,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   function propagate(column, value){
     var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
+
     // Check if the column updated must be propragated in all transaction
     var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
 
@@ -379,11 +380,8 @@ function JournalController(Journal, Sorting, Grouping,
 
         transactions.applyEdits();
 
-        //@TODO investigate why footer totals aren't updated automatically on data change
+        // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-
-        // try to unfold groups
-        // try { grouping.unfoldAllGroups(); } catch (e) {}
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -411,7 +409,6 @@ function JournalController(Journal, Sorting, Grouping,
 
     Config.openSearchModal(filtersSnapshot)
       .then(function (changes) {
-
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();
@@ -475,7 +472,7 @@ function JournalController(Journal, Sorting, Grouping,
     }
   };
 
-  vm.saveAccountEdit = function saveAcconutEdit(row, account) {
+  vm.saveAccountEdit = function saveAccountEdit(row, account) {
     row.account_id = account.id;
     row.account_name = account.hrlabel;
     $rootScope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
@@ -535,7 +532,7 @@ function JournalController(Journal, Sorting, Grouping,
     var id = row.origin_id;
     transactions.editCell(row, 'origin_id', id);
 
-    // Propagate the changement in all origin Id for transaction
+    // Propagate the change in all origin Id for transaction
     propagate('origin_id', id);
   }
 

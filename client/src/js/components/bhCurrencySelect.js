@@ -2,6 +2,7 @@ angular.module('bhima.components')
   .component('bhCurrencySelect', {
     controller  : bhCurrencySelect,
     templateUrl : 'modules/templates/bhCurrencySelect.tmpl.html',
+    transclude  : true,
     bindings    : {
       currencyId        : '=',
       validationTrigger : '<',
@@ -94,7 +95,6 @@ function bhCurrencySelect(Currencies) {
   };
 
   function digestDisableIds(disabledIds) {
-
     // make sure there is something to digest
     if (!isArray(disabledIds)) { return; }
     if (!isArray($ctrl.currencies)) { return; }
@@ -104,7 +104,7 @@ function bhCurrencySelect(Currencies) {
     $ctrl.currencies.forEach(function (currency) {
       var disabled = disabledIds.indexOf(currency.id) > -1;
       currency.disabled = disabled;
-      currency.title = disabled ?  'FORM.INFO.DISABLED_CURRENCY' : '';
+      currency.title = disabled ? 'FORM.INFO.DISABLED_CURRENCY' : '';
     });
 
     // make sure we haven't defaulted to a currency that is not allowed by this casbhox

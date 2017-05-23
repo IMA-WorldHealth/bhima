@@ -1,8 +1,9 @@
 angular.module('bhima.services')
-.service('CashService', CashService);
+  .service('CashService', CashService);
 
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
+  'FilterService', 'appcache', 'PeriodService',
 ];
 
 /**
@@ -12,17 +13,20 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment, $translate) {
+function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods) {
   var service = new Api('/cash/');
   var urlCheckin = '/cash/checkin/';
+
+  var cashFilters = new Filters();
+  var filterCache = new AppCache('cash-filters');
 
   // custom methods
   service.create = create;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatCashDescription = formatCashDescription;
-  service.formatFilterParameters = formatFilterParameters;
   service.openCancelCashModal = openCancelCashModal;
   service.checkCashPayment = checkCashPayment;
+  service.filters = cashFilters;
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -52,7 +56,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
    * @returns {object} payment A promise resolved with the database uuid.
    */
   function create(payment) {
-
     // create a temporary copy to send to the server
     var data = angular.copy(payment);
 
@@ -76,7 +79,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
    */
   function formatCashDescription(patient, payment) {
     var isCaution = payment.is_caution;
-    var date = payment.date;
 
     // invoice references
     var invoicesReferences = payment.invoices.map(function (invoice) {
@@ -108,7 +110,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
    * @returns {Array} - the array of currency ids to disable
    */
   function calculateDisabledIds(cashbox, currencies) {
-
     // collect cashbox ids in an array
     var cashboxCurrencyIds = cashbox.currencies.reduce(function (array, currency) {
       return array.concat(currency.currency_id);
@@ -123,59 +124,66 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
     return disabledCurrencyIds;
   }
 
-  /**
-   * @method formatFilterParameters
-   * @description format filters parameters
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'is_caution', displayName: 'FORM.LABELS.CAUTION' },
-      { field: 'cashbox_id', displayName: 'FORM.LABELS.CASHBOX' },
-      { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE_FROM', comparitor: '>', ngFilter: 'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE_TO', comparitor: '<', ngFilter: 'date' },
-      { field: 'currency_id', displayName: 'FORM.LABELS.CURRENCY' },
-      { field: 'reversed', displayName: 'CASH.REGISTRY.REVERSED_RECORDS' },
-      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT' },
-      { field : 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-      { field : 'invoiceReference', displayName: 'FORM.LABELS.INVOICE'},
-      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
-      { field : 'invoice_uuid', displayName: 'FORM.LABELS.INVOICE' },
-    ];
+  cashFilters.registerDefaultFilters([
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
-      var value = params[column.field];
+  cashFilters.registerCustomFilters([
+    { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
+    { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
+    { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'dateFrom', label : 'FORM.LABELS.DATE_FROM', comparitor : '>', valueFilter : 'date' },
+    { key : 'dateTo', label : 'FORM.LABELS.DATE_TO', comparitor : '<', valueFilter : 'date' },
+    { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
+    { key : 'reversed', label : 'CASH.REGISTRY.REVERSED_RECORDS' },
+    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
+    { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'invoiceReference', label : 'FORM.LABELS.INVOICE' },
+    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
+    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' }]);
 
-      if (angular.isDefined(value)) {
-        column.value = value;
-
-        if (column.field === 'invoice_uuid') {
-          column.value = column.value.slice(0, LIMIT_UUID_LENGTH).concat('...');
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    });
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    cashFilters.loadCache(filterCache.filters);
   }
 
-  //open a dialog box to Cancel Cash Payment
-  function openCancelCashModal(invoice) {
-    return Modal.open({
-      templateUrl : 'modules/cash/modals/modal-cancel-cash.html',
-      resolve     : { data: { invoice: invoice } },
-      size        : 'md',
-      animation   : false,
-      keyboard    : false,
-      backdrop    : 'static',
-      controller  : 'ModalCancelCashController as ModalCtrl',
-    }).result;
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(cashFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
+    if (!periodDefined) {
+      cashFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      cashFilters.assignFilter('limit', 100);
+    }
   }
+
+  service.removeFilter = function removeFilter(key) {
+    cashFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = cashFilters.formatCache();
+  };
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    cashFilters.loadCache(filterCache.filters || {});
+  };
 
   /**
    * @desc checkCashPayment the invoice from the database
@@ -190,6 +198,19 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate) {
     var url = urlCheckin + invoiceUuid;
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
+  }
+
+  // open a dialog box to Cancel Cash Payment
+  function openCancelCashModal(invoice) {
+    return Modal.open({
+      templateUrl : 'modules/cash/modals/modal-cancel-cash.html',
+      resolve     : { data : { invoice : invoice } },
+      size        : 'md',
+      animation   : false,
+      keyboard    : false,
+      backdrop    : 'static',
+      controller  : 'ModalCancelCashController as ModalCtrl',
+    }).result;
   }
 
   return service;

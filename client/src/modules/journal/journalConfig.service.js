@@ -17,6 +17,7 @@ function JournalConfigService(Modal) {
     return Modal.open({
       templateUrl : 'modules/journal/modals/search.modal.html',
       controller :  'JournalSearchModalController as ModalCtrl',
+      backdrop : 'static',
       resolve : {
         filters : function () { return filters; },
         options : function () { return options || {}; },

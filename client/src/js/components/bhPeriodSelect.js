@@ -2,10 +2,10 @@ angular.module('bhima.components')
 .component('bhPeriodSelect', {
   bindings : {
     defaultPeriod : '@',
-    onSelectCallback : '&'
+    onSelectCallback : '&',
   },
   templateUrl : 'modules/templates/bhPeriodSelect.tmpl.html',
-  controller : PeriodSelect
+  controller : PeriodSelect,
 });
 
 PeriodSelect.$inject = ['PeriodService', 'bhConstants'];
@@ -24,7 +24,7 @@ function PeriodSelect(Periods, bhConstants) {
 
   ctrl.customSelection = {
     from : new Date(),
-    to : new Date()
+    to : new Date(),
   };
 
   ctrl.dateFormat = bhConstants.dates.format;

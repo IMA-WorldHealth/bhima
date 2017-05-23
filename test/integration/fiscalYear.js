@@ -3,7 +3,6 @@
 const helpers = require('./helpers');
 
 describe('(/fiscal) Fiscal Year', function () {
-
   var newFiscalYear = {
     label : 'A new Fiscal Year 2018',
     start_date : new Date('2018-01-01 01:00'),
@@ -26,6 +25,15 @@ describe('(/fiscal) Fiscal Year', function () {
       .then(function (res){
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys(responseKeys);
+      })
+     .catch(helpers.handler);
+  });
+
+  it('POST /fiscal throws errors with invalid data', function () {
+    return agent.post('/fiscal')
+      .send({ label: 'Broken Year', end_date: new Date() })
+      .then((res) => {
+        helpers.api.errored(res, 400);
       })
      .catch(helpers.handler);
   });
