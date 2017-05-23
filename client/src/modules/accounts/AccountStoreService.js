@@ -17,7 +17,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
   var accounts = new Store();
   var accountTypes = new Store();
 
-  var request = Accounts.read(null, {detailed : 1})
+  var request = Accounts.read(null, { detailed : 1 })
     .then(function (result) {
       accounts.setData(result);
       initialLoad = false;

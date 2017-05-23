@@ -205,7 +205,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
-    Config.openSearchModal(filtersSnapshot)
+    Config.openSearchModal(filtersSnapshot, { hasDefaultAccount : true })
       .then(function (changes) {
         AccountStatement.filters.replaceFilters(changes);
 

@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 JournalSearchModalController.$inject = [
   '$uibModalInstance', 'ProjectService', 'NotifyService',
-  'Store', 'filters', 'PeriodService', 'VoucherService', '$translate',
+  'Store', 'filters', 'options', 'PeriodService', 'VoucherService', '$translate',
 ];
 
 function JournalSearchModalController(Instance, Projects, Notify,
-  Store, filters, Periods, Vouchers, $translate) {
+  Store, filters, options, Periods, Vouchers, $translate) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -32,6 +32,11 @@ function JournalSearchModalController(Instance, Projects, Notify,
     }
     return aggregate;
   }, {});
+
+  // has default account
+  if (options.hasDefaultAccount) {
+    vm.hasDefaultAccount = true;
+  }
 
   // assign default filters
   if (filters.limit) {
@@ -62,7 +67,7 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // handle component selection states
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
-    vm.searchQueries.account_id = account.id;
+    changes.post({ key : 'account_id', value : account.id, displayValue : account.label });
   };
 
   // custom filter user_id - assign the value to the searchQueries object
@@ -89,6 +94,10 @@ function JournalSearchModalController(Instance, Projects, Notify,
 
   // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
+    if (vm.defaultQueries[key]) {
+      delete vm.defaultQueries[key];
+      delete filters[key];
+    }
     delete vm.searchQueries[key];
   };
 

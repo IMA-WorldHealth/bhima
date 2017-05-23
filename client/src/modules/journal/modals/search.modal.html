@@ -31,14 +31,16 @@
           </div>
         </div>
 
-        <bh-account-select
-          account-id="ModalCtrl.options.account_id"
-          name="account_id"
-          on-select-callback="ModalCtrl.onSelectAccount(account)"
-          exclude-title-accounts="true"
-          required="0">
-          <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
-        </bh-account-select>
+        <div ng-if="!ModalCtrl.hasDefaultAccount">
+          <bh-account-select
+            account-id="ModalCtrl.options.account_id"
+            name="account_id"
+            on-select-callback="ModalCtrl.onSelectAccount(account)"
+            exclude-title-accounts="true"
+            required="0">
+            <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+          </bh-account-select>
+        </div>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
           <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
@@ -110,9 +112,16 @@
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
           <!-- account selection -->
-          <bh-account-select 
-            account-id="ModalCtrl.defaultQueries.account_id">
-          </bh-account-select>
+          <div ng-if="ModalCtrl.hasDefaultAccount">
+            <bh-account-select
+              account-id="ModalCtrl.defaultQueries.account_id"
+              name="account_id"
+              on-select-callback="ModalCtrl.onSelectAccount(account)"
+              exclude-title-accounts="true"
+              required="0">
+              <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+            </bh-account-select>
+          </div>
 
           <!-- period selection -->
           <!-- start period selection component -->

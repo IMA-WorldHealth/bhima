@@ -66,7 +66,6 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods)
   accountStatementFilters.registerCustomFilters([
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
-    // { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
     { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
