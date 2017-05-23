@@ -7,7 +7,7 @@ helpers.configure(chai);
 
 const AccountStatementCorePage = require('./account_statement.page.js');
 
-describe.only('Account Statement Core', () => {
+describe('Account Statement Core', () => {
   const path = '#!/account_statement';
   const AccountStatement = new AccountStatementCorePage();
 
