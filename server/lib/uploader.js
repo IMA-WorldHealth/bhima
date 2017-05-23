@@ -61,15 +61,13 @@ exports.middleware = Uploader;
  * @param {String} fields - the name given to the files uploaded (required)
  */
 function Uploader(prefix, fields) {
-
   // format the upload directory.  Add a trailing slash for consistency
   const hasTrailingSlash = (prefix[prefix.length - 1] === '/');
-  const directory = path.join(dir, hasTrailingSlash ? prefix : prefix + '/');
+  const directory = path.join(dir, hasTrailingSlash ? prefix : `${prefix}/`);
 
   // configure the storage space using multer's diskStorage.  This will allow
   const storage = multer.diskStorage({
     destination : (req, file, cb) => {
-
       // note: need absolute path here for mkdirp
       const folder = path.join(process.cwd(), directory);
       winston.verbose(`Creating upload directory ${folder}.`);
@@ -81,9 +79,9 @@ function Uploader(prefix, fields) {
       // ensure that a link is passed to the req.file object
       file.link = `${directory}${id}`;
       cb(null, id);
-    }
+    },
   });
 
   // set up multer as the middleware
-  return multer({ storage: storage }).array(fields);
+  return multer({ storage }).array(fields);
 }

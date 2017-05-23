@@ -1,3 +1,4 @@
+/* eslint import/no-unresolved:off */
 /**
  * @overview
  * This controller uses the Topic library to broadcast events to the client
@@ -14,6 +15,8 @@
 const os = require('os');
 const db = require('../lib/db');
 const Topic = require('../lib/topic');
+
+// this path is correct _when compiled_
 const pkg = require('../../../package.json');
 
 // GET system/stream

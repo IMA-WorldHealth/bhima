@@ -16,7 +16,6 @@
  *
  * @requires config/express
  * @requires config/routes
- * @requires PluginManager
  *
  * @license GPL-2.0
  * @copyright IMA World Health 2016
@@ -116,10 +115,6 @@ require('./config/routes').configure(app);
 
 // link error handling
 require('./config/express').errorHandling(app);
-
-// Load and configure plugins
-// @todo - find a better way to load in a list of plugins
-require('./lib/PluginManager')(app, []);
 
 // ensure the process terminates gracefully when an error occurs.
 process.on('uncaughtException', () => process.exit(1));

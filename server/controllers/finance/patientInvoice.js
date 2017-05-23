@@ -1,4 +1,3 @@
-
 /**
  * Patient Invoice API Controller
  *
@@ -11,16 +10,11 @@
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  */
 
-const Q = require('q');
-const moment = require('moment');
 const uuid = require('node-uuid');
-const _ = require('lodash');
 const identifiers = require('../../config/identifiers');
-const util = require('../../lib/util');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
 const FilterParser = require('../../lib/filter');
-const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
@@ -58,7 +52,7 @@ exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
  */
 function list(req, res, next) {
   find({})
-    .then(function (invoices) {
+    .then((invoices) => {
       res.status(200).json(invoices);
     })
     .catch(next)
@@ -100,12 +94,12 @@ function lookupInvoice(invoiceUuid) {
   const buid = db.bid(invoiceUuid);
 
   const invoiceDetailQuery =
-    `SELECT 
-      BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', 
-      project.abbr, invoice.reference) AS reference, invoice.cost, 
+    `SELECT
+      BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}',
+      project.abbr, invoice.reference) AS reference, invoice.cost,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, user.display_name, invoice.service_id, 
+      invoice.user_id, invoice.date, user.display_name, invoice.service_id,
       service.name AS serviceName, enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
@@ -116,17 +110,17 @@ function lookupInvoice(invoiceUuid) {
     WHERE invoice.uuid = ?;`;
 
   const invoiceItemsQuery =
-    `SELECT 
+    `SELECT
       BUID(invoice_item.uuid) as uuid, invoice_item.quantity, invoice_item.inventory_price,
-      invoice_item.transaction_price, inventory.code, inventory.text, 
+      invoice_item.transaction_price, inventory.code, inventory.text,
       inventory.consumable
     FROM invoice_item
     LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
     WHERE invoice_uuid = ?`;
 
   const invoiceBillingQuery =
-    `SELECT 
-      invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value, 
+    `SELECT
+      invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value,
       SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
     FROM invoice_billing_service
     JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
@@ -169,7 +163,7 @@ function lookupInvoice(invoiceUuid) {
 function detail(req, res, next) {
   // this assumes a value must be past for this route to initially match
   lookupInvoice(req.params.uuid)
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -253,7 +247,7 @@ function find(options) {
  */
 function search(req, res, next) {
   find(req.query)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -277,7 +271,7 @@ function lookupInvoiceCreditNote(invoiceUuid) {
     .then(creditNote => {
       return creditNote;
     })
-    .catch(err => {
+    .catch(() => {
       // db.one throw a critical error when there is not any record
       // and it must be handled
       return null;

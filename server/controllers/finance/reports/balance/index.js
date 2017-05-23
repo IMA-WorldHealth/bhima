@@ -11,7 +11,6 @@
  * @requires lib/errors/BadRequest
  */
 
-
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -45,12 +44,13 @@ function document(req, res, next) {
   session.classe_name = params.classe_name;
   session.enterprise = req.session.enterprise;
 
-  _.defaults(params, { orientation: 'landscape', user: req.session.user });
+  _.defaults(params, { orientation : 'landscape', user : req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
-    return next(e);
+    next(e);
+    return;
   }
 
   let accounts;
@@ -60,9 +60,7 @@ function document(req, res, next) {
 
   balanceReporting(params)
     .then(balances => processAccounts(balances, accounts, totals))
-    .then((result) => {
-      return report.render({ accounts: result.accounts, totals: result.totals, session });
-    })
+    .then((result) => report.render({ accounts : result.accounts, totals : result.totals, session }))
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
@@ -75,14 +73,13 @@ function document(req, res, next) {
  * @description process and format accounts balance
  * @param {object} balances The result of balanceReporting function
  */
-function processAccounts(balances, accounts, totals) {
-
+function processAccounts(balances, a, totals) {
   // format and process opening balance for accounts
-  accounts = balances.beginning.reduce(function (init, row) {
-    let account = init;
-    let id = row.number;
-    let obj = account[id] = {};
-    let sold = getSold(row);
+  const accounts = balances.beginning.reduce((account, row) => {
+    const id = row.number;
+    const obj = {};
+    account[id] = obj;
+    const sold = getSold(row);
     obj.label = row.label;
     obj.number = row.number;
     obj.beginDebit = sold.debit;
@@ -95,8 +92,8 @@ function processAccounts(balances, accounts, totals) {
   }, {});
 
   // format and process the monthly balance for accounts
-  balances.middle.forEach(function (row) {
-    let account = accounts[row.number] || {};
+  balances.middle.forEach((row) => {
+    const account = accounts[row.number] || {};
     account.middleDebit = row.debit;
     account.middleCredit = row.credit;
     account.label = row.label;
@@ -105,37 +102,39 @@ function processAccounts(balances, accounts, totals) {
     accounts[row.number] = account;
   });
 
-  Object.keys(accounts).forEach(function (item) {
+  Object.keys(accounts).forEach((item) => {
     accounts[item].endDebit = 0;
     accounts[item].endCredit = 0;
-    let sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit - accounts[item].middleCredit);
+    const sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0)
+      + (accounts[item].middleDebit - accounts[item].middleCredit);
     if (sold < 0) {
       accounts[item].endCredit = sold * -1;
     } else {
-     accounts[item].endDebit = sold;
+      accounts[item].endDebit = sold;
     }
   });
 
   // process for getting totals
-  totals = Object.keys(accounts).reduce(function (totals, key) {
-    let account = accounts[key];
-    totals.beginDebit += (account.beginDebit || 0);
-    totals.beginCredit += (account.beginCredit || 0);
-    totals.middleDebit += (account.middleDebit || 0);
-    totals.middleCredit += (account.middleCredit || 0);
-    totals.endDebit += (account.endDebit || 0);
-    totals.endCredit += (account.endCredit || 0);
-    return totals;
-  }, {
-    beginDebit   : 0,
-    beginCredit  : 0,
-    middleDebit  : 0,
-    middleCredit : 0,
-    endDebit     : 0,
-    endCredit    : 0,
-  });
+  const vtotals = Object.keys(accounts)
+    .reduce((t, key) => {
+      const account = accounts[key];
+      t.beginDebit += (account.beginDebit || 0);
+      t.beginCredit += (account.beginCredit || 0);
+      t.middleDebit += (account.middleDebit || 0);
+      t.middleCredit += (account.middleCredit || 0);
+      t.endDebit += (account.endDebit || 0);
+      t.endCredit += (account.endCredit || 0);
+      return totals;
+    }, {
+      beginDebit   : 0,
+      beginCredit  : 0,
+      middleDebit  : 0,
+      middleCredit : 0,
+      endDebit     : 0,
+      endCredit    : 0,
+    });
 
-  return { accounts, totals };
+  return { accounts, totals : vtotals };
 }
 
 /**
@@ -146,7 +145,7 @@ function processAccounts(balances, accounts, totals) {
 function getSold(item) {
   let debit = 0;
   let credit = 0;
-  let sold  = 0;
+  let sold = 0;
 
   if (item.is_asset === 1 || item.is_charge === 1) {
     sold = item.debit - item.credit;
@@ -172,45 +171,47 @@ function getSold(item) {
  * @param {object} params An object which contains dates range and the account class
  */
 function balanceReporting(params) {
-  let sql, hasClasse, dateRange, queryParameters,
-      query = params,
-      data = {};
+  const query = params;
+  const data = {};
 
-  hasClasse = (query.classe !== '*');
-  dateRange = (query.dateFrom && query.dateTo);
+  const hasClasse = (query.classe !== '*');
+  const dateRange = (query.dateFrom && query.dateTo);
 
   // gets the amount up to the current period
-  sql =
-    'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-    'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-    'JOIN period AS p ON pt.period_id = p.id ' +
-    'WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ? ' +
-     (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id ';
+  let sql = `
+    SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
+    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+    JOIN period AS p ON pt.period_id = p.id
+    WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ?
+    ${hasClasse ? 'AND a.classe = ? ' : ''}
+    GROUP BY a.id `;
 
   if (dateRange) {
-    sql =
-    'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-    'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-    'JOIN period AS p ON pt.period_id = p.id ' +
-    'WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ? ' +
-     (hasClasse ? 'AND a.classe = ? ' : '') +
-    'GROUP BY a.id ';
+    sql = `
+    SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
+    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+    JOIN period AS p ON pt.period_id = p.id
+    WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ?
+     ${hasClasse ? 'AND a.classe = ? ' : ''}
+    GROUP BY a.id `;
   }
 
-  queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
+  const queryParameters = (dateRange) ?
+    [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] :
+    [query.date, query.enterpriseId, query.classe];
 
   return db.exec(sql, queryParameters)
   .then((rows) => {
     data.beginning = rows;
 
-    sql =
-      'SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-      'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ? ' +
-       (hasClasse ? 'AND a.classe = ? ' : '') +
-      'GROUP BY a.id;';
+    sql = `
+      SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset,
+        SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
+      FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+      JOIN period AS p ON pt.period_id = p.id
+      WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?
+       ${hasClasse ? 'AND a.classe = ? ' : ''}
+      GROUP BY a.id;`;
 
     query.date = (dateRange) ? query.dateTo : query.date;
 
@@ -220,7 +221,7 @@ function balanceReporting(params) {
     data.middle = rows;
     return data;
   })
-  .then((rows) => {
+  .then(() => {
     // Manual mixing
 
     // fill with zero if all accounts
@@ -234,10 +235,8 @@ function balanceReporting(params) {
     if (!rows) { return data; }
 
     // Naive manipulation for filling with zero
-    let accounts = rows;
-    let touched  = data.beginning.map(item => {
-      return item.id;
-    });
+    const accounts = rows;
+    const touched = data.beginning.map(item => item.id);
 
     accounts.forEach(item => {
       if (touched.indexOf(item.id) === -1) {

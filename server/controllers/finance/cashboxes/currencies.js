@@ -29,16 +29,16 @@ exports.update = update;
  * GET /cashboxes/:id/currencies
  */
 function list(req, res, next) {
-  let sql =
+  const sql =
     `SELECT id, currency_id, account_id, transfer_account_id
     FROM cash_box_account_currency WHERE cash_box_id = ?;`;
 
   db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -50,23 +50,23 @@ function list(req, res, next) {
  * GET /cashboxes/:id/currencies/:currencyId
  */
 function detail(req, res, next) {
-  let sql =
+  const sql =
     `SELECT id, account_id, transfer_account_id
     FROM cash_box_account_currency
     WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [req.params.id, req.params.currencyId])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`
-        Could not find a cash box account currency with id ${req.params.currencyId}.
-      `);
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound(`
+          Could not find a cash box account currency with id ${req.params.currencyId}.
+        `);
+      }
 
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 }
 
 // POST /cashboxes/:id/currencies
@@ -77,27 +77,26 @@ function detail(req, res, next) {
  * This creates a new currency account in the database.
  */
 function create(req, res, next) {
-  let data = req.body;
+  const data = req.body;
   data.cash_box_id = req.params.id;
 
-  let sql =
+  const sql =
     'INSERT INTO cash_box_account_currency SET ?;';
 
   db.exec(sql, [data])
-  .then(function (row) {
+    .then((row) => {
+      // currency account changes are still a cashbox update
+      Topic.publish(Topic.channels.FINANCE, {
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.CASHBOX,
+        user_id : req.session.user.id,
+        id : data.cashbox_id,
+      });
 
-    // currency account changes are still a cashbox update
-    Topic.publish(Topic.channels.FINANCE, {
-      event: Topic.events.UPDATE,
-      entity: Topic.entities.CASHBOX,
-      user_id: req.session.user.id,
-      id: data.cashbox_id
-    });
-
-    res.status(201).json({ id: row.insertId });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -116,30 +115,29 @@ function update(req, res, next) {
     WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [data, req.params.id, req.params.currencyId])
-  .then(function (result) {
-
+  .then(() => {
     // send the changed object to the client
     sql =
       `SELECT id, account_id, transfer_account_id
       FROM cash_box_account_currency
       WHERE cash_box_id = ? AND currency_id = ?;`;
 
-    return db.exec(sql, [req.params.id, req.params.currencyId ]);
+    return db.exec(sql, [req.params.id, req.params.currencyId]);
   })
-  .then(function (rows) {
-
+  .then((rows) => {
     // in case an unknown id is sent to the server
     /** @todo - review this decision */
     if (!rows.length) {
-      return res.status(200).json({});
+      res.status(200).json({});
+      return;
     }
 
     // currency account changes are still a cashbox update
     Topic.publish(Topic.channels.FINANCE, {
-      event: Topic.events.UPDATE,
-      entity: Topic.entities.CASHBOX,
-      user_id: req.session.user.id,
-      id: req.params.id
+      event : Topic.events.UPDATE,
+      entity : Topic.entities.CASHBOX,
+      user_id : req.session.user.id,
+      id : req.params.id,
     });
 
     res.status(200).json(rows[0]);

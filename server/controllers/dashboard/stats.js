@@ -43,15 +43,15 @@ function invoiceStat(req, res, next) {
   const sqlInvoices =
     `
     SELECT
-      COUNT(*) AS total, SUM(cost) AS cost 
-    FROM 
+      COUNT(*) AS total, SUM(cost) AS cost
+    FROM
       invoice
-     WHERE 
+     WHERE
       ${DATE_CLAUSE} AND
      invoice.uuid NOT IN (
-      SELECT 
-        voucher.reference_uuid 
-      FROM 
+      SELECT
+        voucher.reference_uuid
+      FROM
         voucher
       WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
       );`;
@@ -71,12 +71,12 @@ function invoiceStat(req, res, next) {
         FROM general_ledger
         JOIN invoice ON general_ledger.record_uuid = invoice.uuid OR general_ledger.reference_uuid = invoice.uuid
         WHERE invoice.reversed = 0 AND ${DATE_CLAUSE} AND entity_uuid IS NOT NULL
-        GROUP BY invoice.uuid   
+        GROUP BY invoice.uuid
       )
      ) AS i
      JOIN project ON i.project_id = project.id
      `;
-     
+
   // promises requests
   const dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date])];
 

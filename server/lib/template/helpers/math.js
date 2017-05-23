@@ -29,12 +29,12 @@ function multiply(a, b) {
  * @return {number} the summation
  */
 function sum(array, column, ponderation) {
-  ponderation = typeof(ponderation) === 'string' ? ponderation : null;
+  const p = (typeof ponderation === 'string') ? ponderation : null;
 
-  if (!array || (array && !array.length)) { return; }
+  if (!Array.isArray(array)) { return ''; }
 
-  return array.reduce(function (a, b) {
-    return ponderation ? b[column] * b[ponderation] + a : b[column] + a ;
+  return array.reduce((a, b) => {
+    return p ? (b[column] * b[p]) + a : b[column] + a;
   }, 0);
 }
 

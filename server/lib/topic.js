@@ -1,3 +1,4 @@
+/* eslint class-methods-use-this:off */
 /**
  * @overview
  * This library is responsible for constructing and exposing the Topic class
@@ -21,7 +22,7 @@
 const _ = require('lodash');
 const Redis = require('ioredis');
 const winston = require('winston');
-const db = require('./db');
+// const db = require('./db');
 
 const hasEventsEnabled = (process.env.ENABLE_EVENTS === 'true');
 

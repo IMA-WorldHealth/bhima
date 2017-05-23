@@ -1,3 +1,4 @@
+/* eslint global-require:off, import/no-dynamic-require:off */
 /**
  * @module util
  *

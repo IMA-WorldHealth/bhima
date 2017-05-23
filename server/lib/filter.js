@@ -1,3 +1,5 @@
+/* eslint class-methods-use-this:off */
+
 const _ = require('lodash');
 const moment = require('moment');
 

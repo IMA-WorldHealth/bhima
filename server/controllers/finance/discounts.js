@@ -7,8 +7,8 @@
  * @requires lib/db
  */
 
-var NotFound = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 const db = require('../../lib/db');
 
 /**
@@ -19,7 +19,7 @@ const db = require('../../lib/db');
  * @returns {Promise} record
  */
 function lookupDiscount(id) {
-  var sql =
+  const sql =
     `SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid,
       d.account_id, d.value, a.number, i.text as inventoryLabel
     FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid
@@ -27,7 +27,7 @@ function lookupDiscount(id) {
     WHERE d.id = ?;`;
 
   return db.exec(sql, [id])
-  .then(function (rows) {
+  .then((rows) => {
     // if no matches in the database, throw a 404
     if (rows.length === 0) {
       throw new NotFound(`Could not find a discount with id ${id}`);
@@ -46,11 +46,11 @@ function lookupDiscount(id) {
  */
 exports.detail = function detail(req, res, next) {
   lookupDiscount(req.params.id)
-  .then(function (discount) {
-    res.status(200).json(discount);
-  })
-  .catch(next)
-  .done();
+    .then((discount) => {
+      res.status(200).json(discount);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -60,11 +60,11 @@ exports.detail = function detail(req, res, next) {
  * Returns HTTP status code 200 with an array containing zero or more records.
  */
 exports.list = function list(req, res, next) {
-  var sql =
+  const sql =
     'SELECT d.id, d.label, d.value FROM discount AS d;';
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -79,7 +79,7 @@ exports.list = function list(req, res, next) {
  */
 exports.create = function create(req, res, next) {
   // expects the proposed record to be namespaced by "discount"
-  var data = db.convert(req.body.discount, ['inventory_uuid']);
+  const data = db.convert(req.body.discount, ['inventory_uuid']);
 
   if (data.value < 0) {
     next(new BadRequest(`${data.value} must to be positive, but received a negative value.`, `ERRORS.NEGATIVE_VALUE`));
@@ -89,14 +89,13 @@ exports.create = function create(req, res, next) {
   const sql =
     'INSERT INTO discount SET ?;';
 
-
   // attempt to insert the record
   db.exec(sql, [data])
-  .then(function (result) {
-    res.status(201).json({ id : result.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((result) => {
+      res.status(201).json({ id : result.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -129,18 +128,13 @@ exports.update = function update(req, res, next) {
 
   // ensure the record exists by looking it up first
   lookupDiscount(id)
-  .then(function (record) {
-    // run the update query
-    return db.exec(sql, [data, id]);
-  }).then(function (rows) {
-    // read the changes from the database
-    return lookupDiscount(id);
-  }).then(function (discount) {
-    // return the fully changed database record
-    res.status(200).json(discount);
-  })
-  .catch(next)
-  .done();
+    .then(() => db.exec(sql, [data, id]))
+    .then(() => lookupDiscount(id))
+    .then((discount) => {
+      res.status(200).json(discount);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -156,14 +150,10 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM discount WHERE id = ?;';
 
   // make sure the record actually exists
+  // TODO(@jniles): migrate to db.one()
   lookupDiscount(id)
-  .then(function (discount) {
-    // run the delete query
-    return db.exec(sql, [id]);
-  }).then(function () {
-    // return a 204 NOT CONTENT success message
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+    .then(() => db.exec(sql, [id]))
+    .then(() => res.sendStatus(204))
+    .catch(next)
+    .done();
 };
