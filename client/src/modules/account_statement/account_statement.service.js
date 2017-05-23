@@ -64,6 +64,7 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods)
 
   // custom filters can be optionally applied
   accountStatementFilters.registerCustomFilters([
+    { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'amount', label : 'FORM.LABELS.AMOUNT' },

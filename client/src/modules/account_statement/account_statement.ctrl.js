@@ -6,8 +6,8 @@ AccountStatementController.$inject = [
   'GeneralLedgerService', 'NotifyService', 'JournalConfigService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
-  'AppCache', 'Store', 'FilterService', 'ModalService', 'LanguageService',
-  '$filter', '$translate', 'GridExportService',
+  'Store', 'FilterService', 'ModalService', 'LanguageService',
+  '$filter', 'GridExportService',
 ];
 
 /**
@@ -15,12 +15,11 @@ AccountStatementController.$inject = [
  */
 function AccountStatementController(GeneralLedger, Notify, Config,
   Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
-  AccountStatement, AppCache, Store, Filters, Modal, Languages,
-  $filter, $translate, GridExport) {
+  AccountStatement, Store, Filters, Modal, Languages,
+  $filter, GridExport) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
-  var cache = AppCache(cacheKey.concat('-module'));
 
   // expose to the view
   vm.selectedRows = [];
@@ -205,7 +204,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
-    Config.openSearchModal(filtersSnapshot, { hasDefaultAccount : true })
+    Config.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
       .then(function (changes) {
         AccountStatement.filters.replaceFilters(changes);
 
@@ -215,7 +214,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
         vm.loading = false;
         return load(AccountStatement.filters.formatHTTP(true));
       })
-      .catch(angular.noop);
+      .catch(Notify.handleError);
   };
 
   // remove a filter with from the filter object, save the filters and reload

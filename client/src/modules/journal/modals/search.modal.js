@@ -4,14 +4,17 @@ angular.module('bhima.controllers')
 JournalSearchModalController.$inject = [
   '$uibModalInstance', 'ProjectService', 'NotifyService',
   'Store', 'filters', 'options', 'PeriodService', 'VoucherService', '$translate',
+  'AccountService',
 ];
 
 function JournalSearchModalController(Instance, Projects, Notify,
-  Store, filters, options, Periods, Vouchers, $translate) {
+  Store, filters, options, Periods, Vouchers, $translate,
+  Account) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
+  vm.options = options;
 
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
@@ -48,6 +51,15 @@ function JournalSearchModalController(Instance, Projects, Notify,
     vm.defaultQueries.account_id = filters.account_id;
   }
 
+  Account.read()
+    .then(function (accounts) {
+      vm.hrAccounts = accounts.reduce(function (aggregate, account) {
+        aggregate[account.id] = String(account.number).concat(' - ', account.label);
+        return aggregate;
+      }, {});
+    })
+    .catch(Notify.handleError);
+
   Projects.read()
     .then(function (projects) {
       vm.projects = projects;
@@ -67,7 +79,7 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // handle component selection states
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
-    changes.post({ key : 'account_id', value : account.id, displayValue : account.label });
+    vm.searchQueries.account_id = account.id;
   };
 
   // custom filter user_id - assign the value to the searchQueries object
@@ -108,7 +120,11 @@ function JournalSearchModalController(Instance, Projects, Notify,
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        if (key === 'account_id') {
+          changes.post({ key : key, value : value, displayValue : vm.hrAccounts[value] });
+        } else {
+          changes.post({ key : key, value : value });
+        }
       }
     });
 

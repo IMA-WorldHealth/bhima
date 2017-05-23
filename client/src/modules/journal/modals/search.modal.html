@@ -7,7 +7,7 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.POSTING_JOURNAL </li>
+      <li class="static" translate> {{ ModalCtrl.options.title || TREE.POSTING_JOURNAL }} </li>
       <li class="title" translate> FORM.INFO.SEARCH </li>
     </ol>
   </div>
@@ -38,7 +38,6 @@
             on-select-callback="ModalCtrl.onSelectAccount(account)"
             exclude-title-accounts="true"
             required="0">
-            <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
           </bh-account-select>
         </div>
 
