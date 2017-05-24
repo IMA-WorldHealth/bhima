@@ -445,5 +445,5 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
 
 -- general ledger data
 INSERT INTO `general_ledger` VALUES 
-  (HUID('6b2b8aa9-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB10', '2017-05-23 13:06:46', HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3631, 25.0000, 0.0000, 25.0000, 0.0000, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), '', NULL, 11, 1, NULL, NULL),
-  (HUID('6b2b9882-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB11', '2017-05-23 13:06:46', HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3642, 0.0000, 25.0000, 0.0000, 25.0000, 2, '', '', NULL, 11, 1, NULL, NULL);
+  (HUID('6b2b8aa9-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB10', CURRENT_DATE(), HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3631, 25.0000, 0.0000, 25.0000, 0.0000, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), '', NULL, 11, 1, NULL, NULL),
+  (HUID('6b2b9882-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, 34, 'TPB11', CURRENT_DATE(), HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3642, 0.0000, 25.0000, 0.0000, 25.0000, 2, '', '', NULL, 11, 1, NULL, NULL);
