@@ -1,5 +1,3 @@
-'use strict';
-
 // import plugins
 const expect = require('chai').expect;
 
@@ -23,7 +21,8 @@ exports.handler = function handler(err) {
 };
 
 /* bindings for API-specific response tests */
-const api = exports.api = {};
+const api = {};
+exports.api = api;
 
 /* ensure that objectA's key/values are contained in and identical to objectB's */
 exports.identical = function identical(objectA, objectB) {

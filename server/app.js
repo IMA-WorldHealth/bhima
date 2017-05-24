@@ -47,10 +47,9 @@ function configureEnvironmentVariables() {
 
   // decode the file path for the environmental variables.
   const dotfile = `server/.env.${env}`.trim();
-
-  // load the environmental variables into process using the dotenv module
+// load the environmental variables into process using the dotenv module
   winston.info(`[app] Loading configuration from ${dotfile}.`);
-  dotEnv.config({ path: dotfile });
+  dotEnv.config({ path : dotfile });
 }
 
 /**
@@ -73,7 +72,7 @@ function configureLogger() {
 
   // allow logging to a file if needed
   if (logFile) {
-    winston.add(winston.transports.File, { filename: logFile });
+    winston.add(winston.transports.File, { filename : logFile });
   }
 
   // be sure to log unhandled exceptions
