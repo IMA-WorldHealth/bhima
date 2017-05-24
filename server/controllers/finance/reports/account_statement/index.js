@@ -7,6 +7,7 @@
  */
 
 const _ = require('lodash');
+const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const Journal = require('../../journal');
 
@@ -29,6 +30,7 @@ function report(req, res, next) {
   });
 
   let rm;
+  const glb = {};
 
   try {
     rm = new ReportManager(REPORT_TEMPLATE, req.session, options);
@@ -37,7 +39,24 @@ function report(req, res, next) {
   }
 
   return Journal.journalEntryList(options, 'general_ledger')
-    .then(rows => rm.render({ rows, isPosted : true }))
+    .then((rows) => {
+      glb.rows = rows;
+
+      const aggregateSql = `
+        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv, 
+          SUM(debit_equiv - credit_equiv) AS balance 
+        FROM general_ledger 
+        WHERE uuid IN (?);
+      `;
+      const transactionIds = rows.map(row => {
+        return db.bid(row.uuid);
+      });
+      return db.one(aggregateSql, [transactionIds]);
+    })
+    .then((result) => {
+      glb.aggregate = result;
+      return rm.render({ rows : glb.rows, aggregate : glb.aggregate });
+    })
     .then((result) => {
       res.set(result.headers).send(result.report);
     })

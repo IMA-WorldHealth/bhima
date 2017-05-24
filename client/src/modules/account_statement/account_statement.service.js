@@ -26,7 +26,7 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods)
    * @param {object} params - { uuids: An array of uuid, string: comment }
    */
   function commentAccountStatement(params) {
-    return $http.put(baseUrl.concat('comment'), { params : params })
+    return $http.put(baseUrl.concat('comments'), { params : params })
       .then(util.unwrapHttpResponse);
   }
 

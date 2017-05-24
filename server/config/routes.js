@@ -167,7 +167,7 @@ exports.configure = function configure(app) {
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
-  app.put('/general_ledger/comment', generalLedger.commentAccountStatement);
+  app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   // API for trial balance
   app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);

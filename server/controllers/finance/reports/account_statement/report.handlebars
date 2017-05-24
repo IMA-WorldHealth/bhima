@@ -53,15 +53,15 @@
 
   <div class="row">
     <div class="col-xs-4">
-      {{translate 'TABLE.COLUMNS.TOTAL'}} {{translate 'TABLE.COLUMNS.DEBIT'}}: <strong>{{currency (sum rows 'debit_equiv')}}</strong>
+      {{translate 'TABLE.COLUMNS.TOTAL'}} {{translate 'TABLE.COLUMNS.DEBIT'}}: <strong>{{currency aggregate.debit_equiv}}</strong>
     </div>
 
     <div class="col-xs-4">
-      {{translate 'TABLE.COLUMNS.TOTAL'}} {{translate 'TABLE.COLUMNS.CREDIT'}}: <strong>{{currency (sum rows 'credit_equiv')}}</strong>
+      {{translate 'TABLE.COLUMNS.TOTAL'}} {{translate 'TABLE.COLUMNS.CREDIT'}}: <strong>{{currency aggregate.credit_equiv}}</strong>
     </div>
 
     <div class="col-xs-4">
-      {{translate 'TABLE.COLUMNS.RESULT'}}: <strong>{{currency (substract (sum rows 'debit_equiv') (sum rows 'credit_equiv'))}}</strong>
+      {{translate 'TABLE.COLUMNS.RESULT'}}: <strong>{{currency aggregate.balance}}</strong>
     </div>
   </div>
 </div>

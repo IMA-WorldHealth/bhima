@@ -19,7 +19,7 @@ function CommentAccountStatementController(Instance, ModalParameters, AccountSta
     if (form.$invalid) { return; }
 
     var params = {
-      uuids : uuids(vm.rows),
+      uuids : getRowsUuid(vm.rows),
       comment : vm.comment,
     };
 
@@ -33,7 +33,7 @@ function CommentAccountStatementController(Instance, ModalParameters, AccountSta
   }
 
   // get rows uuid
-  function uuids(rows) {
+  function getRowsUuid(rows) {
     return rows.map(function (row) {
       return row.entity.uuid;
     });

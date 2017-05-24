@@ -30,7 +30,6 @@ function AccountStatementController(GeneralLedger, Notify, Config,
 
   vm.gridOptions = {
     enableColumnMenus        : false,
-    enableCellEdit           : false,
     showColumnFooter         : true,
     appScopeProvider         : vm,
     flatEntityAccess         : true,
@@ -101,11 +100,6 @@ function AccountStatementController(GeneralLedger, Notify, Config,
       headerCellFilter   : 'translate',
       visible            : false,
       footerCellTemplate : '<i></i>' },
-
-    { field            : 'uuid',
-      displayName      : 'TABLE.COLUMNS.ID',
-      headerCellFilter : 'translate',
-      visible          : false },
 
     { field            : 'project_name',
       displayName      : 'TABLE.COLUMNS.PROJECT',
