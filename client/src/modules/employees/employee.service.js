@@ -97,7 +97,6 @@ function EmployeeService($http, util, Filters) {
       { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
       { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', ngFilter:'date' },
       { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', ngFilter:'date' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
       { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
     ];
 

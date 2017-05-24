@@ -20,17 +20,18 @@
 
 const uuid = require('node-uuid');
 
-const db = require('./../../lib/db');
-const Topic = require('../../lib/topic');
-const NotFound = require('./../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
-const FilterParser = require('./../../lib/filter');
+const db = require('./../../../lib/db');
+const Topic = require('../../../lib/topic');
+const NotFound = require('./../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
+const FilterParser = require('./../../../lib/filter');
 
 exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.detail = detail;
 exports.search = search;
+exports.find = find;
 
 /**
  * @method list
@@ -486,7 +487,7 @@ function employeeEntityQuery(detailed) {
     detailedColumns = `
       , e.nb_spouse, e.nb_enfant, e.daily_salary, e.bank, e.bank_account, 
       e.adresse, e.phone, e.email, e.fonction_id, 
-      fonction.fonction_txt, e.grade_id, grade.text, grade.basic_salary,
+      fonction.fonction_txt, e.grade_id, grade.text as grade, grade.basic_salary,
       e.service_id, service.name, BUID(e.creditor_uuid) as creditor_uuid,
       e.locked
     `;

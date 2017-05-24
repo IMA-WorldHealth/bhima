@@ -146,8 +146,6 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   // this function loads employees from the database with search parameters
   // if passed in.
   function load(parameters) {
-    console.log('here are parameters', parameters);
-
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
@@ -160,7 +158,6 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
 
     // hook the returned patients up to the grid.
     request.then(function (employees) {
-      console.log('employees are : ', employees);
       employees.forEach(function (employee) {
         employee.employeeAge = util.getMomentAge(employee.dob, 'years');
       });
