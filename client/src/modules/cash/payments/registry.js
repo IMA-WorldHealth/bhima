@@ -136,10 +136,8 @@ function CashPaymentRegistryController(
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    var request = angular.isDefined(filters) ?
-      Cash.search(filters) :
-      Cash.read();
-
+    var request = Cash.read(null, filters);
+    
     request.then(function (rows) {
         rows.forEach(function (row) {
           var hasCreditNote = row.reversed;

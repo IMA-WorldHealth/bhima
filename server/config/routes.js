@@ -442,8 +442,7 @@ exports.configure = function configure(app) {
   app.delete('/prices/:uuid', priceList.delete);
 
   // cash API
-  app.get('/cash', cash.list);
-  app.get('/cash/search', cash.search);
+  app.get('/cash', cash.read);
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);

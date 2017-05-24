@@ -41,7 +41,8 @@ const entityIdentifier = identifiers.CASH_PAYMENT.key;
 exports.detail = detail;
 
 /** retrieves a list of all cash payments */
-exports.list = list;
+/** search cash payment by filtering */
+exports.read = read;
 
 /** creates cash payments */
 exports.create = cashCreate;
@@ -51,9 +52,6 @@ exports.update = update;
 
 /** searches for a cash payment's uuid by their human-readable reference */
 exports.reference = reference;
-
-/** search cash payment by filtering */
-exports.search = search;
 
 /** lookup a cash payment by it's uuid */
 exports.lookup = lookup;
@@ -113,29 +111,17 @@ function lookup(id) {
 
 /**
  *
- * @method list
+ * @method search
  *
  * @description
  * Lists the cash payments with optional filtering parameters.
+ * @description search cash payment by some filters given
  *
  * GET /cash
  *
  * @returns {Array} payments - an array of { uuid, reference, date } JSONs
  */
-function list(req, res, next) {
-  listPayment()
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * @method search
- * @description search cash payment by some filters given
- */
-function search(req, res, next) {
+function read(req, res, next) {
   listPayment(req.query)
    .then((rows) => {
      res.status(200).json(rows);
