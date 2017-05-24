@@ -1,23 +1,22 @@
-
 const accountingjs = require('accounting-js');
 const NumberToText = require('../../../lib/NumberToText');
 
-const USD_FMT = { precision: 2 };
+const USD_FMT = { precision : 2 };
 
 const FC_FMT = {
-  symbol: 'FC',
-  precision: 2,
-  thousand: '.',
-  decimal: ',',
-  format: '%v %s' // value before symbol
+  symbol : 'FC',
+  precision : 2,
+  thousand : '.',
+  decimal : ',',
+  format : '%v %s', // value before symbol
 };
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
-function currency(value, currencyId) {
+function currency(value = 0, currencyId) {
   // if currencyId is not defined, defaults to USD.
   // @TODO - super-hardcoded values for the moment.  Can we do better?
   const fmt = (Number(currencyId) === 1) ? FC_FMT : USD_FMT;
-  return accountingjs.formatMoney(value || 0, fmt);
+  return accountingjs.formatMoney(value, fmt);
 }
 
 /**
@@ -28,10 +27,9 @@ function currency(value, currencyId) {
  */
 function numberToText(value, lang, currencyName) {
   const numberText = NumberToText.convert(value, lang, currencyName);
-      
   const fmt = numberText;
   return fmt;
-} 
+}
 
 const INDENTATION_STEP = 40;
 
@@ -43,7 +41,7 @@ const INDENTATION_STEP = 40;
  */
 function indentAccount(depth) {
   // indentation step is fixed arbitrary to 40 (40px)
-  let number = Number(depth);
+  const number = Number(depth);
   return number ? number * INDENTATION_STEP : 0;
 }
 

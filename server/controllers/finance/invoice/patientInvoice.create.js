@@ -1,4 +1,3 @@
-
 /**
  * Patient Invoice - Create State
  * @module controllers/finance/patientInvoice
@@ -50,9 +49,9 @@ function createInvoice(invoiceDetails) {
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || uuid.v4());
 
-  let billingServices = processBillingServices(invoiceUuid, invoiceDetails.billingServices);
-  let subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
-  let items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
+  const billingServices = processBillingServices(invoiceUuid, invoiceDetails.billingServices);
+  const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
+  const items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
   const invoice = processInvoice(invoiceUuid, invoiceDetails);
 
@@ -92,7 +91,7 @@ function processInvoice(invoiceUuid, invoice) {
 
   const keys = [
     'date', 'cost', 'description', 'service_id',
-    'debtor_uuid', 'project_id', 'user_id', 'uuid'
+    'debtor_uuid', 'project_id', 'user_id', 'uuid',
   ];
 
   return keys.map(key => invoice[key]);
@@ -113,7 +112,7 @@ function processInvoice(invoiceUuid, invoice) {
  * @private
  */
 function processBillingServices(invoiceUuid, billingServiceDetails) {
-  let billingServices = billingServiceDetails || [];
+  const billingServices = billingServiceDetails || [];
   return billingServices.map(billingServiceId => [billingServiceId, invoiceUuid]);
 }
 
@@ -131,16 +130,16 @@ function processBillingServices(invoiceUuid, billingServiceDetails) {
  * @private
  */
 function processSubsidies(invoiceUuid, subsidiesDetails) {
-  let subsidies = subsidiesDetails || [];
+  const subsidies = subsidiesDetails || [];
   return subsidies.map(subsidyId => [subsidyId, invoiceUuid]);
 }
 
 // process invoice items, transforming UUIDs into binary.
 function processInvoiceItems(invoiceUuid, invoiceItems) {
-  let items = invoiceItems || [];
+  const items = invoiceItems || [];
 
   // make sure that invoice items have their uuids
-  items.forEach(function (item) {
+  items.forEach((item) => {
     item.uuid = db.bid(item.uuid || uuid.v4());
     item.invoice_uuid = invoiceUuid;
 
@@ -152,8 +151,10 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   });
 
   // create a filter to align invoice item columns to the SQL columns
-  let filter =
-    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'invoice_uuid');
+  const filter =
+    util.take(
+      'uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'invoice_uuid'
+    );
 
   // prepare invoice items for insertion into database
   return _.map(items, filter);

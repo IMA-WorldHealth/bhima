@@ -1,4 +1,3 @@
-
 const moment = require('moment');
 
 // format used in these helpers
@@ -16,9 +15,9 @@ const TIMESTAMP_FMT = 'DD/MM/YYYY HH:mm:ss';
  * @returns {String} - the formatted string for insertion into templates
  */
 function date(value, dateFormat) {
-  dateFormat = (!dateFormat || dateFormat.name === 'date') ? DATE_FMT : dateFormat;
-  let input = moment(value);
-  return input.isValid() ? input.format(dateFormat) :  '';
+  const fmt = (!dateFormat || dateFormat.name === 'date') ? DATE_FMT : dateFormat;
+  const input = moment(value);
+  return input.isValid() ? input.format(fmt) : '';
 }
 
 /**
@@ -33,7 +32,7 @@ function date(value, dateFormat) {
  * @returns {String} - the formatted string for insertion into templates
  */
 function timestamp(value) {
-  let input = moment(value);
+  const input = moment(value);
   return input.isValid() ? input.format(TIMESTAMP_FMT) : '';
 }
 
@@ -48,8 +47,8 @@ function timestamp(value) {
  * @returns {String} - the date difference in years between now and the provided
  *   date.
  */
-function age(date) {
-  return moment().diff(date, 'years');
+function age(dob) {
+  return moment().diff(dob, 'years');
 }
 
 exports.date = date;

@@ -1,7 +1,7 @@
 
 // test equality
 function equal(a, b, options) {
-  if(a === b) {
+  if (a === b) {
     return options.fn(this);
   }
   return options.inverse(this);
@@ -9,7 +9,7 @@ function equal(a, b, options) {
 
 // test equality
 function gt(a, b, options) {
-  if(a >= b) {
+  if (a >= b) {
     return options.fn(this);
   }
   return options.inverse(this);

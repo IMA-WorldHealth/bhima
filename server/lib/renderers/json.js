@@ -13,7 +13,7 @@
 const q = require('q');
 
 const headers = {
-  'Content-Type' : 'application/json'
+  'Content-Type' : 'application/json',
 };
 
 exports.render = renderJSON;
@@ -30,6 +30,6 @@ exports.headers = headers;
  * @returns {Object}          JSON Object representing a report that can be sent
  *                            to the client.
  */
-function renderJSON(data, template, options) {
+function renderJSON(data) {
   return q.resolve(data);
 }

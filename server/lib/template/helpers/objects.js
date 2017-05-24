@@ -7,14 +7,23 @@
  * @param {string} property2 The object property
  */
 function look(obj, property, property2) {
-  let hasProperInput    = obj && property && property2;
-  let hasFirstProperty  = hasProperInput && property2.name;
-  let hasSecondProperty = hasProperInput && !property2.name;
+  const hasProperInput = obj && property && property2;
+  const hasFirstProperty = hasProperInput && property2.name;
+  const hasSecondProperty = hasProperInput && !property2.name;
+
+  let value;
 
   // Missing parameter take the function name as name property
   // if property2 is missing, it will be an object with an attribute name: 'function name'
-  return hasFirstProperty ? obj[property] :
-         hasSecondProperty ? obj[property][property2] : '' ;
+  if (hasFirstProperty) {
+    value = obj[property];
+  } else if (hasSecondProperty) {
+    value = obj[property][property2];
+  } else {
+    value = '';
+  }
+
+  return value;
 }
 
 exports.look = look;

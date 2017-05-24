@@ -219,17 +219,16 @@ function list(req, res, next) {
   }
 
   promise
-    .then(function (journalResults) {
-
+    .then((journalResults) => {
       // aggregate information requested - return promise getting this info
       if (includeAggregates) {
         return addAggregateData(journalResults);
-      } else {
-        // no aggregates required - directly return results
-        return journalResults;
       }
+
+      // no aggregates required - directly return results
+      return journalResults;
     })
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -376,7 +375,7 @@ function transformColumns(rows, newRecord) {
           throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
         }
 
-        _.extend(row, { account_id: result[0].id });
+        _.extend(row, { account_id : result[0].id });
         return result;
       });
 
@@ -401,7 +400,7 @@ function transformColumns(rows, newRecord) {
           throw new BadRequest('Invalid entity for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ENTITY');
         }
 
-        _.extend(row, { entity_uuid: result[0].uuid });
+        _.extend(row, { entity_uuid : result[0].uuid });
         return result;
       });
 
@@ -491,7 +490,7 @@ function reverse(req, res, next) {
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
     })
-    .then(() => res.status(201).json({ uuid: voucherUuid }))
+    .then(() => res.status(201).json({ uuid : voucherUuid }))
     .catch(next)
     .done();
 }

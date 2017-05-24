@@ -1,4 +1,4 @@
-
+/* eslint class-methods-use-this:off */
 const q = require('q');
 const mysql = require('mysql');
 const winston = require('winston');
@@ -70,7 +70,10 @@ class DatabaseConnector {
   exec(sql, params) {
     const deferred = q.defer();
     this.pool.getConnection((error, connection) => {
-      if (error) { return deferred.reject(error); }
+      if (error) {
+        deferred.reject(error);
+        return;
+      }
 
       // format the SQL statement using MySQL's escapes
       const statement = mysql.format(sql.trim(), params);
@@ -153,7 +156,6 @@ class DatabaseConnector {
    * db.exec('INSERT INTO table SET uuid = ?;', binary);
    */
   bid(hexUuid) {
-
     // if already a buffer, no need to convert
     if (hexUuid instanceof Buffer) {
       return hexUuid;
@@ -192,10 +194,8 @@ class DatabaseConnector {
    * db.exec('INSERT into table SET ?;', [data]);
    */
   convert(data, keys) {
-
     // loop through each key
     keys.forEach(key => {
-
       // the key exists on the object and value is a string
       if (data[key] && typeof data[key] === 'string') {
         data[key] = this.bid(data[key]);

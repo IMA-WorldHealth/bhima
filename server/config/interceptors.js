@@ -1,4 +1,4 @@
-
+/* eslint no-unused-vars:off */
 /**
  * @overview interceptors
  * This modules defines a unified error handler for the server.

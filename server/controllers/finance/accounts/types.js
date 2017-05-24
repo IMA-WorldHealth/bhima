@@ -15,7 +15,6 @@
  * @requires NotFound
  */
 
-
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -29,7 +28,7 @@ const NotFound = require('../../../lib/errors/NotFound');
  */
 function detail(req, res, next) {
   lookupAccountType(req.params.id)
-    .then(function (row) {
+    .then((row) => {
       res.status(200).json(row);
     })
     .catch(next)
@@ -45,11 +44,11 @@ function detail(req, res, next) {
  * GET /accounts/types
  */
 function list(req, res, next) {
-  let sql =
+  const sql =
     'SELECT `id`, `type`, `translation_key` FROM account_type;';
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -75,8 +74,8 @@ function create(req, res, next) {
   record.translation_key = '';
 
   db.exec(sql, [record])
-    .then(function (result) {
-      res.status(201).json({ id: result.insertId});
+    .then((result) => {
+      res.status(201).json({ id : result.insertId });
     })
     .catch(next)
     .done();
@@ -98,13 +97,9 @@ function update(req, res, next) {
   delete data.id;
 
   lookupAccountType(id)
-    .then(function () {
-      return db.exec(sql, [data, id]);
-    })
-   .then(function () {
-      return lookupAccountType(id);
-    })
-    .then(function (accountType) {
+    .then(() => db.exec(sql, [data, id]))
+   .then(() => lookupAccountType(id))
+    .then((accountType) => {
       res.status(200).json(accountType);
     })
     .catch(next)
@@ -124,10 +119,10 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM account_type WHERE id = ?';
 
   lookupAccountType(id)
-    .then(function () {
+    .then(() => {
       return db.exec(sql, [id]);
     })
-    .then(function () {
+    .then(() => {
       res.sendStatus(204);
     })
     .catch(next)
@@ -144,11 +139,11 @@ function remove(req, res, next) {
  * @returns {Promise} - a promise resolving to the result of the database.
  */
 function lookupAccountType(id) {
-  let sql =
+  const sql =
     'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?;';
 
   return db.exec(sql, id)
-    .then(function (rows) {
+    .then((rows) => {
       if (rows.length === 0) {
         throw new NotFound(`Could not find an account type with id ${id}.`);
       }
