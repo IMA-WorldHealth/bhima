@@ -432,6 +432,25 @@
                     </div>
                   </div>
 
+                  <!-- Employee daily salary -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.daily_salary.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.DAILY_SALARY" | translate }}</label>
+                    <div class="col-md-9">
+                      <input
+                      type="number"
+                        class="form-control"
+                        name="daily_salary"
+                        ng-model="EmployeeCtrl.employee.daily_salary"
+                        autocomplete="off">
+                      <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Employee bank -->
                   <div
                     class="form-group"

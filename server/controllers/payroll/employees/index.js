@@ -55,12 +55,12 @@ function list(req, res, next) {
       service.name as service_name
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
-     JOIN fonction ON employee.fonction_id = fonction.id
+     LEFT JOIN fonction ON employee.fonction_id = fonction.id
      JOIN patient ON patient.uuid = employee.patient_uuid
      JOIN debtor ON patient.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     JOIN service ON service.id = employee.service_id
+     LEFT JOIN service ON service.id = employee.service_id
      ORDER BY employee.display_name ASC;
   `;
 
@@ -166,7 +166,7 @@ function lookupEmployee(id) {
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
       JOIN grade ON employee.grade_id = grade.uuid
-      JOIN fonction ON employee.fonction_id = fonction.id
+      LEFT JOIN fonction ON employee.fonction_id = fonction.id
       JOIN patient ON patient.uuid = employee.patient_uuid
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
@@ -455,6 +455,7 @@ function search(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
+  console.log('* options ', options);
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
 
@@ -499,8 +500,8 @@ function employeeEntityQuery(detailed) {
       e.code ${detailedColumns}
     FROM employee AS e
       JOIN grade ON grade.uuid = e.grade_id
-      JOIN fonction ON fonction.id = e.fonction_id
-      JOIN service ON service.id = e.service_id
+      LEFT JOIN fonction ON fonction.id = e.fonction_id
+      LEFT JOIN service ON service.id = e.service_id
       JOIN creditor ON e.creditor_uuid = creditor.uuid
       JOIN patient ON e.patient_uuid = patient.uuid
   `;
