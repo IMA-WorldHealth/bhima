@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('EmployeeService', EmployeeService);
 
-EmployeeService.$inject = ['$http', 'util', 'DepricatedFilterService'];
+EmployeeService.$inject = ['$http', 'util', 'DepricatedFilterService', '$uibModal'];
 
-function EmployeeService($http, util, Filters) {
+function EmployeeService($http, util, Filters, $uibModal) {
   var service = this;
   var baseUrl = '/employees/';
   var filter = new Filters();
@@ -14,6 +14,7 @@ function EmployeeService($http, util, Filters) {
   service.search = search;
 
   service.formatFilterParameters = formatFilterParameters;
+  service.openSearchModal = openSearchModal;
 
   /**
    * @desc Get an id (optional) and return back a list of employee or an employee
@@ -39,20 +40,15 @@ function EmployeeService($http, util, Filters) {
    * @param {object} options - a JSON of options to be parsed by Angular's
    * paramSerializer
    */
-    function search(options) {
-      options = angular.copy(options || {});
+  function search(options) {
+    options = angular.copy(options || {});
 
-      var target = baseUrl.concat('search');
+    var target = baseUrl.concat('search');
 
-      return $http.get(target, { params : options })
-        .then(util.unwrapHttpResponse);
-    }
-  // function search (key, value){
-  //   var url = baseUrl + key + '/' + value;
-  //   return $http.get(url)
-  //     .then(util.unwrapHttpResponse);
-  // }
-
+    return $http.get(target, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+ 
   /**
    * @desc It create an employee
    * @param {object} employee, employee to create
@@ -97,7 +93,6 @@ function EmployeeService($http, util, Filters) {
       { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
       { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', ngFilter:'date' },
       { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', ngFilter:'date' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
     ];
 
 
@@ -113,6 +108,27 @@ function EmployeeService($http, util, Filters) {
         return false;
       }
     });
+  }
+
+   /**
+   * @method openSearchModal
+   *
+   * @param {Object} params - an object of filter parameters to be passed to
+   *   the modal.
+   * @returns {Promise} modalInstance
+   */
+  function openSearchModal(params) {
+    return $uibModal.open({
+      templateUrl: 'modules/employees/registry/search.modal.html',
+      size: 'md',
+      keyboard: false,
+      animation: false,
+      backdrop: 'static',
+      controller: 'EmployeeRegistryModalController as ModalCtrl',
+      resolve : {
+        params : function paramsProvider() { return params; }
+      }
+    }).result;
   }
 
   // define the maximum DATE_EMBAUCHE

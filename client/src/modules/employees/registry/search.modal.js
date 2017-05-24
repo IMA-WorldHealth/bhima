@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('PatientRegistryModalController', PatientRegistryModalController);
+.controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
 
-PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'params', 'DebtorGroupService', 'PatientGroupService',
-  'bhConstants', 'moment'
+EmployeeRegistryModalController.$inject = [
+  '$uibModalInstance', 'params', 'FunctionService', 'GradeService',
+  'bhConstants', 'moment', 'ServiceService'
 ];
 
 /**
@@ -14,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment) {
+function EmployeeRegistryModalController(ModalInstance, params, Functions, Grades, bhConstants, moment, Services) {
   var vm = this;
   vm.today = new Date();
 
@@ -27,20 +27,20 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
   vm.cancel = cancel;
   vm.clear = clear;
 
-  DebtorGroups.read()
-    .then(function (result) {
-      vm.debtorGroups = result;
+  Grades.read()
+    .then(function (grades) {
+      vm.grades = grades;
     });
 
-  PatientGroupsService.read()
-    .then(function (result) {
-      vm.patientGroups = result;
+  Functions.read()
+    .then(function (functions) {
+      vm.functions = functions;
     });
 
-  // custom filter user_id - assign the value to the params object
-  vm.onSelectUser = function onSelectUser(user) {
-    vm.params.user_id = user.id;
-  };
+  Services.read()
+    .then(function (services) {
+      vm.services = services;
+    });
 
   // returns the parameters to the parent controller
   function submit(form) {
@@ -52,12 +52,12 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
     var formatDB = bhConstants.dates.formatDB;
 
     // convert dates to strings
-    if (parameters.dateRegistrationFrom) {
-      parameters.dateRegistrationFrom = moment(parameters.dateRegistrationFrom).format(formatDB);
+    if (parameters.dateEmbaucheFrom) {
+      parameters.dateEmbaucheFrom = moment(parameters.dateEmbaucheFrom).format(formatDB);
     }
 
-    if (parameters.dateRegistrationTo) {
-      parameters.dateRegistrationTo = moment(parameters.dateRegistrationTo).format(formatDB);
+    if (parameters.dateEmbaucheTo) {
+      parameters.dateEmbaucheTo = moment(parameters.dateEmbaucheTo).format(formatDB);
     }
 
     if (parameters.dateBirthFrom) {
@@ -81,9 +81,9 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
   // clears search parameters.  Custom logic if a date is used so that we can
   // clear two properties.
   function clear(value) {
-    if (value === 'registration') {
-      delete vm.params.dateRegistrationFrom;
-      delete vm.params.dateRegistrationTo;
+    if (value === 'embauche') {
+      delete vm.params.dateEmbaucheFrom;
+      delete vm.params.dateEmbaucheTo;
     } else if (value === 'dob') {
       delete vm.params.dateBirthFrom;
       delete vm.params.dateBirthTo;

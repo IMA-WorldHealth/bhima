@@ -372,53 +372,6 @@ function create(req, res, next) {
  * @method search
  *
  * @description
- * This function is responsible for looking for employee by display_name or code
- *
- * NOTE : eslint gives 34 warnings which are not judged as logic so it is ignored
- */
-// function search(req, res, next) {
-//   let searchOption = '';
-//   let sql = '';
-//   const keyValue = `%${req.params.value}%`;
-
-//   if (req.params.key === 'code') {
-//     searchOption = 'LOWER(employee.code)';
-//   } else if (req.params.key === 'display_name') {
-//     searchOption = 'LOWER(employee.display_name)';
-//   } else {
-//     next(new BadRequest('You sent a bad value for some parameters in research employee.'));
-//     return;
-//   }
-
-//   sql = `
-//     SELECT
-//       employee.id, employee.code AS code_employee, employee.display_name, employee.locked, 
-//       employee.bank, employee.bank_account, BUID(creditor.uuid) as creditor_uuid, 
-//       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
-//     FROM employee
-//     JOIN creditor ON employee.creditor_uuid = creditor.uuid
-//     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-//     WHERE ${searchOption} LIKE ? LIMIT 10;
-//   `;
-
-//   db.exec(sql, [keyValue])
-//   .then(rows => {
-//     Topic.publish(Topic.channels.ADMIN, {
-//       event : Topic.events.SEARCH,
-//       entity : Topic.entities.EMPLOYEE,
-//       user_id : req.session.user.id,
-//     });
-
-//     res.status(200).json(rows);
-//   })
-//   .catch(next)
-//   .done();
-// }
-
-/**
- * @method search
- *
- * @description
  * A multi-parameter function that uses find() to query the database for
  * employee records.
  *
@@ -455,7 +408,6 @@ function search(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-  console.log('* options ', options);
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
 

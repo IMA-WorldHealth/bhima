@@ -28,11 +28,11 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
-  // vm.patientCard = patientCard;
+  vm.employeeCard = employeeCard;
   vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
 
-  // track if module is making a HTTP request for patients
+  // track if module is making a HTTP request for employees
   vm.loading = false;
 
   var columnDefs = [
@@ -146,6 +146,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   // this function loads employees from the database with search parameters
   // if passed in.
   function load(parameters) {
+    console.log('loading with parameters', parameters);
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
@@ -171,11 +172,10 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     });
   }
 
-  // search and filter data in Patient Registry
+  // search and filter data in employee Registry
   function search() {
-    Patients.openSearchModal(vm.filters)
+    Employees.openSearchModal(vm.filters)
       .then(function (parameters) {
-
         // no parameters means the modal was dismissed.
         if (!parameters) { return; }
 
@@ -194,9 +194,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
 
   // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
   function cacheFilters(filters) {
-    filters = filter.applyDefaults(filters);
     vm.filters = cache.filters = filters;
-    vm.filtersFmt = Patients.formatFilterParameters(filters);
+    vm.filtersFmt = Employees.formatFilterParameters(filters);
 
     // check if there are filters applied and show the filter bar
     vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
@@ -220,8 +219,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     vm.loading = !vm.loading;
   }
 
-  // patient card
-  function patientCard(uuid) {
+  // employee patient card
+  function employeeCard(uuid) {
     Receipts.patient(uuid);
   }
 
