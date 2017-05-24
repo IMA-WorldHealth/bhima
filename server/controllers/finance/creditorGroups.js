@@ -1,4 +1,3 @@
-
 /**
  * @overview CreditorGroups
  *
@@ -6,7 +5,6 @@
  * This controller exposes an API to the client for reading and creditor_groups
  */
 const db = require('../../lib/db');
-const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const uuid = require('node-uuid');
 
@@ -31,15 +29,15 @@ function list(req, res, next) {
     sql = `
       SELECT creditor_group.enterprise_id, BUID(creditor_group.uuid) AS uuid, creditor_group.name,
         creditor_group.account_id, creditor_group.locked,
-        COUNT(creditor.uuid) AS total_creditors, account.number 
+        COUNT(creditor.uuid) AS total_creditors, account.number
       FROM creditor_group
-      JOIN account ON account.id = creditor_group.account_id 
+      JOIN account ON account.id = creditor_group.account_id
       LEFT JOIN creditor ON creditor.group_uuid = creditor_group.uuid
       GROUP BY creditor_group.uuid`;
   }
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -53,7 +51,7 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   lookupCreditorGroup(req.params.uuid)
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -77,7 +75,7 @@ function create(req, res, next) {
     'INSERT INTO creditor_group SET ? ';
 
   db.exec(sql, [data])
-    .then(function (row) {
+    .then(() => {
       res.status(201).json({ uuid : uuid.unparse(data.uuid) });
     })
     .catch(next)
@@ -97,10 +95,10 @@ function update(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   db.exec(sql, [req.body, uid])
-    .then(function () {
+    .then(() => {
       return lookupCreditorGroup(req.params.uuid);
     })
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)

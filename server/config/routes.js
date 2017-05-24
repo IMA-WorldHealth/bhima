@@ -52,7 +52,6 @@ const stockReports = require('../controllers/stock/reports');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
-const ledger = require('../controllers/finance/ledger');
 const fiscal = require('../controllers/finance/fiscal');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
@@ -174,12 +173,6 @@ exports.configure = function configure(app) {
   app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
   app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
-
-  // ledger routes
-  // TODO : needs renaming
-  app.get('/ledgers/debtor/:id', ledger.compileDebtorLedger);
-  app.get('/ledgers/debtor_group/:id', ledger.compileGroupLedger);
-  app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);

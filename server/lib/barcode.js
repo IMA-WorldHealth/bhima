@@ -8,6 +8,9 @@ const BadRequest = require('./errors/BadRequest');
 exports.generate = generate;
 exports.reverseLookup = reverseLookup;
 
+const lookupPatient = require('../controllers/medical/patients').lookupPatient;
+const lookupInvoice = require('../controllers/finance/patientInvoice').lookupInvoice;
+
 const identifiersIndex = {};
 indexIdentifiers();
 
@@ -22,7 +25,6 @@ indexIdentifiers();
  *
  */
 const UUID_ACCURACY_LENGTH = 8;
-
 function generate(receiptIdentifier, uuid) {
   const entityIdentifier = uuid.substr(0, UUID_ACCURACY_LENGTH);
   return `${receiptIdentifier}${entityIdentifier}`;
@@ -72,6 +74,6 @@ function indexIdentifiers() {
 
   // assign lookup methods to supported entity types
   // @TODO this method of mapping should be reviewed
-  identifiers.PATIENT.lookup = require('../controllers/medical/patients').lookupPatient;
-  identifiers.INVOICE.lookup = require('../controllers/finance/patientInvoice').lookupInvoice;
+  identifiers.PATIENT.lookup = lookupPatient;
+  identifiers.INVOICE.lookup = lookupInvoice;
 }

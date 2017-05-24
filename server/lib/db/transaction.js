@@ -104,11 +104,14 @@ class Transaction {
 
     // get a connection from the database to execute the transaction
     pool.getConnection((error, connection) => {
-      if (error) { return deferred.reject(error); }
+      if (error) {
+        deferred.reject(error);
+        return;
+      }
 
       // with the acquired connection, get a transaction object
-      connection.beginTransaction((error) => {
-        if (error) { return deferred.reject(error); }
+      connection.beginTransaction((e) => {
+        if (e) { return deferred.reject(e); }
 
         // map promises through to database queries
         const promises = queries.map(
@@ -119,25 +122,31 @@ class Transaction {
         return q.all(promises)
           .then((results) => {
             // all queries completed - attempt to commit
-            connection.commit((error) => {
-              if (error) { throw error; }
+            connection.commit((err) => {
+              if (err) { throw err; }
               connection.destroy();
               deferred.resolve(results);
             });
           })
-          .catch((error) => {
+          .catch((err) => {
             // individual query did not work - rollback transaction
             connection.rollback(() => {
               connection.destroy();
               winston.error(
-                `[Transaction] Encountered error ${error.code}.  Rolling transaction back and recoverying database connections.`
+                `[Transaction] Encountered error ${err.code}.`,
+                `Rolling transaction back and recoverying database connections.`
               );
             });
 
+            // increment the number of restarts
+            this.restarts += 1;
+
             // restart transactions a set number of times if the error is due to table deadlocks
-            if (error.code === 'ER_LOCK_DEADLOCK' && this.restarts++ < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
+            if (err.code === 'ER_LOCK_DEADLOCK' && this.restarts < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
               winston.error(
-                `[Transaction] Transacton deadlock discovered. Attempting ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts. [${ new Date().toLocaleString() }]`
+                `[Transaction] Transacton deadlock discovered.`,
+                `Attempting ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`,
+                `[${new Date().toLocaleString()}]`
               );
 
               // set up a promise to delay the transaction restart
@@ -151,17 +160,19 @@ class Transaction {
               // return the promise
               return delay.promise
                 .then(results => deferred.resolve(results))
-                .catch(err => deferred.reject(err));
+                .catch(sqlError => deferred.reject(sqlError));
             }
 
             // if we get here, all attempted restarts failed.  Report an error in case tables are permanently locked.
-            if (error.code === 'ER_LOCK_DEADLOCK') {
+            if (err.code === 'ER_LOCK_DEADLOCK') {
               winston.error(
-                `[Transaction] Unrecoverable deadlock error. Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts. [${ new Date().toLocaleString() }]`
+                `[Transaction] Unrecoverable deadlock error.`,
+                `Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`,
+                `[${new Date().toLocaleString()}]`
               );
             }
 
-            return deferred.reject(error);
+            return deferred.reject(err);
           });
       });
     });

@@ -15,17 +15,13 @@
 * @requires lib/errors/BadRequest
 */
 
-
-const q = require('q');
 const uuid = require('node-uuid');
-
-const db          = require('../../../lib/db');
-const NotFound    = require('../../../lib/errors/NotFound');
-const BadRequest  = require('../../../lib/errors/BadRequest');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 const identifiers = require('../../../config/identifiers');
 
-exports.list   = list;
+exports.list = list;
 exports.detail = detail;
 exports.update = update;
 exports.invoices = invoices;
@@ -38,14 +34,14 @@ exports.balance = balance;
  */
 function list(req, res, next) {
   const sql = `
-    SELECT BUID(d.uuid) AS uuid, BUID(d.group_uuid) AS group_uuid, 
+    SELECT BUID(d.uuid) AS uuid, BUID(d.group_uuid) AS group_uuid,
       d.text, map.text as hr_entity
-    FROM debtor d 
+    FROM debtor d
     JOIN entity_map map ON map.uuid = d.uuid;
   `;
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).send(rows);
     })
     .catch(next);
@@ -58,18 +54,17 @@ function detail(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   lookupDebtor(uid)
-  .then(function (debtor) {
-    res.status(200).json(debtor);
-  })
-  .catch(next);
+    .then((debtor) => {
+      res.status(200).json(debtor);
+    })
+    .catch(next);
 }
 
 /**
  * Updates a debtor's details (particularly group_uuid)
  */
 function update(req, res, next) {
-
-  var sql =
+  const sql =
     'UPDATE debtor SET ? WHERE uuid = ?';
 
   // delete the uuid if it exists
@@ -84,14 +79,12 @@ function update(req, res, next) {
   }
 
   db.exec(sql, [req.body, uid])
-  .then(function () {
-    return lookupDebtor(uid);
-  })
-  .then(function (debtor) {
-    res.status(200).json(debtor);
-  })
-  .catch(next)
-  .done();
+    .then(() => lookupDebtor(uid))
+    .then((debtor) => {
+      res.status(200).json(debtor);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -108,7 +101,7 @@ function lookupDebtor(uid) {
   `;
 
   return db.exec(sql, [db.bid(uid)])
-    .then(function (rows) {
+    .then((rows) => {
       if (!rows.length) {
         throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
       }
@@ -141,11 +134,9 @@ function invoices(req, res, next) {
   const options = req.query;
 
   getDebtorInvoices(req.params.uuid)
-    .then(function (uuids){
-      return invoiceBalances(req.params.uuid, uuids, options);
-    })
-    .then(function (invoices) {
-      res.status(200).json(invoices);
+    .then(uuids => invoiceBalances(req.params.uuid, uuids, options))
+    .then(debtorInvoices => {
+      res.status(200).json(debtorInvoices);
     })
     .catch(next)
     .done();
@@ -156,12 +147,12 @@ function invoices(req, res, next) {
  * which belong to a particular debtor
  **/
 
-function getDebtorInvoices (debtorUid){
-  debtorUid = db.bid(debtorUid);
+function getDebtorInvoices(debtorUuid) {
+  const debtorUid = db.bid(debtorUuid);
   const reversalVoucherType = 10;
 
   // get the debtor invoice uuids from the invoice table
-  let sql =`
+  const sql = `
     SELECT BUID(invoice.uuid) as uuid
     FROM invoice
     WHERE debtor_uuid = ? AND invoice.reversed = 0
@@ -172,32 +163,31 @@ function getDebtorInvoices (debtorUid){
     .then(uuids => {
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
-      uuids = uuids.map(item => item.uuid);
-      return uuids;
+      return uuids.map(item => item.uuid);
     });
 }
 
-function invoiceBalances(debtorUuid, uuids, paramOptions){
-  let debtorUid = db.bid(debtorUuid);
-  let options = paramOptions || {};
+function invoiceBalances(debtorUuid, uuids, options = {}) {
+  const debtorUid = db.bid(debtorUuid);
 
-  let balanced =
-     (options.balanced === '1') ? 'HAVING balance = 0' :
-     (options.balanced === '0') ? 'HAVING balance <> 0' :
-     '';
-  let invoices = uuids.map(uuid => db.bid(uuid));
+  let balanced = '';
 
-  if (uuids.length===0) {
-    return [];
+  if (options.balanced === '1') {
+    balanced = 'HAVING balance = 0';
+  } else if (options.balanced === '0') {
+    balanced = 'HAVING balance <> 0';
   }
 
+  const invs = uuids.map(uid => db.bid(uid));
+
+  if (uuids.length === 0) { return []; }
 
   // select all invoice and payments against invoices from the combined ledger
   // @TODO this query is used in many places and is crucial for finding balances
   //       it currently uses 5 sub queries - this should be improved
-  let sql = `
-    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
-      credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
+  const sql = `
+    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference)
+      AS reference, credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
     FROM (
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
       FROM (
@@ -231,7 +221,7 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
     ORDER BY invoice.date ASC, invoice.reference;
   `;
 
-  return db.exec(sql, [invoices, debtorUid, invoices, debtorUid, invoices, debtorUid, invoices, debtorUid]);
+  return db.exec(sql, [invs, debtorUid, invs, debtorUid, invs, debtorUid, invs, debtorUid]);
 }
 
 /**
@@ -250,41 +240,40 @@ function invoiceBalances(debtorUuid, uuids, paramOptions){
  * @todo - this function should be replaced by an SQL function stored in
  * procedures.sql for easy lookup
  */
-function balance(debtorUid) {
-  debtorUid = db.bid(debtorUid);
+function balance(debtorUuid) {
+  const debtorUid = db.bid(debtorUuid);
 
   // make sure the debtor exists
-  var sql =
+  let sql =
     'SELECT BUID(uuid) as uuid FROM debtor WHERE uuid = ?;';
 
   return db.exec(sql, [debtorUid])
-  .then(function (rows) {
+    .then(rows => {
+      // if the debtor doesn't exist, throw an error
+      if (!rows.length) {
+        throw new NotFound(
+          `Could not find a debtor with uuid ${debtorUid}`
+        );
+      }
 
-    // if the debtor doesn't exist, throw an error
-    if (!rows.length) {
-      throw new NotFound(
-        `Could not find a debtor with uuid ${debtorUid}`
-      );
-    }
+      // select all invoice and payments against invoices from the combined ledger
+      sql = `
+        SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
+        FROM (
+          SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
+          FROM posting_journal
+          WHERE entity_uuid = ?
 
-    // select all invoice and payments against invoices from the combined ledger
-    sql = `
-      SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
-      FROM (
-        SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
-        FROM posting_journal
-        WHERE entity_uuid = ?
+          UNION ALL
 
-        UNION ALL
+          SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
+          FROM general_ledger
+          WHERE entity_uuid = ?
 
-        SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
-        FROM general_ledger
-        WHERE entity_uuid = ?
+        ) AS ledger
+        GROUP BY ledger.entity_uuid;
+      `;
 
-      ) AS ledger
-      GROUP BY ledger.entity_uuid;
-    `;
-
-    return db.one(sql, [debtorUid, debtorUid]);
-  });
+      return db.one(sql, [debtorUid, debtorUid]);
+    });
 }

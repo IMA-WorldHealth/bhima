@@ -5,15 +5,12 @@
  * @requires express-handlebars
  * @requires server/lib/template
  */
-
-
-const exhbs = require('express-handlebars');
 const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
 const headers = {
-  'Content-Type' : 'text/html'
+  'Content-Type' : 'text/html',
 };
 
 exports.render = renderHTML;
@@ -26,13 +23,10 @@ exports.headers = headers;
  * @param {Object} options  The default options, including language setting
  * @returns {Promise}       Promise resolving in a rendered template (HTML)
  */
-function renderHTML(data, template, options) {
-
-  options = options || {};
-
+function renderHTML(data, template, options = {}) {
   // load local language for momentjs if possible
-  let languageDependencie = String().concat('moment/locale/', options.lang);
-  util.loadModuleIfExists(languageDependencie);
+  const languageDependency = `moment/locale/${options.lang}`;
+  util.loadModuleIfExists(languageDependency);
 
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the

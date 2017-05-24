@@ -26,7 +26,6 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const q = require('q');
-const mkdirp = require('mkdirp');
 const uuid = require('node-uuid');
 const translateHelper = require('./helpers/translate');
 
@@ -34,20 +33,20 @@ const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
 const db = require('./db');
 
+const json = require('./renderers/json');
+const html = require('./renderers/html');
+const pdf = require('./renderers/pdf');
+const csv = require('./renderers/csv');
+
 // renderers
-const renderers = {
-  json : require('./renderers/json'),
-  html : require('./renderers/html'),
-  pdf  : require('./renderers/pdf'),
-  csv  : require('./renderers/csv')
-};
+const renderers = { json, html, pdf, csv };
 
 // default report configuration
 const defaults = {
-  pageSize: 'A4',
-  orientation: 'portrait',
-  lang: 'en',
-  renderer: 'pdf'
+  pageSize : 'A4',
+  orientation : 'portrait',
+  lang : 'en',
+  renderer : 'pdf',
 };
 
 // Constants
@@ -92,12 +91,15 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-      throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
+      throw new BadRequest(
+        `The application does not support rendering ${options.renderer}.`,
+        'ERRORS.INVALID_RENDERER'
+      );
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
     if (this.options.saveReport && !this.options.user) {
-      let invalidSaveDescription = 'Report cannot be saved without providing a `user` entity to ReportManager';
+      const invalidSaveDescription = 'Report cannot be saved without providing a `user` entity to ReportManager';
       throw new InternalServerError(invalidSaveDescription);
     }
 
@@ -138,14 +140,14 @@ class ReportManager {
     return promise.then(reportStream => {
       this.stream = reportStream;
 
-      let renderHeaders = renderer.headers;
-      let report = reportStream;
+      const renderHeaders = renderer.headers;
+      const report = reportStream;
 
       if (this.options.filename) {
-        let translate = translateHelper(this.options.lang);
-        let translatedName = translate(this.options.filename);
-        let fileDate = (new Date()).toLocaleDateString();
-        let formattedName = `${translatedName} ${fileDate}`;
+        const translate = translateHelper(this.options.lang);
+        const translatedName = translate(this.options.filename);
+        const fileDate = (new Date()).toLocaleDateString();
+        const formattedName = `${translatedName} ${fileDate}`;
         renderHeaders['Content-Disposition'] = `filename=${formattedName}${renderer.extension}`;
       }
 
@@ -155,12 +157,10 @@ class ReportManager {
         // FIXME PDF report is sent back to the client even though this is a save operation
         // FIXME Errors are not propagated
         return this.save()
-          .then(function (result) {
-            return { headers: renderHeaders, report };
-          });
-      } else {
-        return { headers: renderHeaders, report };
+          .then((() => ({ headers : renderHeaders, report })));
       }
+
+      return { headers : renderHeaders, report };
     });
   }
 
@@ -189,19 +189,22 @@ class ReportManager {
     const link = path.join(SAVE_DIR, fname);
 
     const data = {
+      link,
       uuid : db.bid(reportId),
       label : options.label,
-      link : link,
       timestamp : new Date(),
       user_id : options.user.id,
-      report_id : options.reportId
+      report_id : options.reportId,
     };
 
     fs.writeFile(link, this.stream, (err) => {
-      if (err) { return dfd.reject(err); }
+      if (err) {
+        dfd.reject(err);
+        return;
+      }
 
       db.exec(SAVE_SQL, data)
-        .then(() => dfd.resolve({ uuid: reportId }))
+        .then(() => dfd.resolve({ uuid : reportId }))
         .catch(dfd.reject)
         .done();
     });
