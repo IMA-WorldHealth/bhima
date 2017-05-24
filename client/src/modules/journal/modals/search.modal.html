@@ -30,6 +30,7 @@
           </div>
         </div>
 
+        <!-- hasDefaultAccount is used to set a default account selection behavior -->
         <div ng-if="!ModalCtrl.hasDefaultAccount">
           <bh-account-select
             account-id="ModalCtrl.searchQueries.account_id"
@@ -110,7 +111,7 @@
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
-          <!-- account selection -->
+          <!-- hasDefaultAccount is used to set a default account selection behavior -->
           <div ng-if="ModalCtrl.hasDefaultAccount">
             <bh-account-select
               account-id="ModalCtrl.defaultQueries.account_id"

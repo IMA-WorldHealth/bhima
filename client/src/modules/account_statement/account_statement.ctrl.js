@@ -187,13 +187,20 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   // comment selected rows
   vm.commentRows = function commentRows() {
     AccountStatement.openCommentModal({ rows : vm.selectedRows })
-    .then(function (res) {
-      if (!res) { return; }
+    .then(function (comment) {
+      if (!comment) { return; }
+      updateGridComment(vm.selectedRows, comment);
       Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
-      load(AccountStatement.filters.formatHTTP(true));
     })
     .catch(Notify.handleError);
   };
+
+  // update local rows
+  function updateGridComment(rows, comment) {
+    rows.forEach(function (row) {
+      row.entity.comment = comment;
+    });
+  }
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -270,7 +277,6 @@ function AccountStatementController(GeneralLedger, Notify, Config,
     GeneralLedger.read(null, options)
     .then(function (data) {
       vm.gridOptions.data = data;
-      vm.loading = false;
     })
     .catch(handleError)
     .finally(function () {

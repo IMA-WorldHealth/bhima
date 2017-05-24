@@ -3,16 +3,16 @@ angular.module('bhima.controllers')
 
 // DI
 CommentAccountStatementController.$inject = [
-  '$uibModalInstance', 'data', 'AccountStatementService', 'NotifyService',
+  '$uibModalInstance', 'modalParameters', 'AccountStatementService', 'NotifyService',
 ];
 
 // Comment Account Statement Controller
-function CommentAccountStatementController(Instance, Data, AccountStatement, Notify) {
+function CommentAccountStatementController(Instance, ModalParameters, AccountStatement, Notify) {
   var vm = this;
 
   vm.cancel = Instance.dismiss;
   vm.submit = submit;
-  vm.rows = Data.rows;
+  vm.rows = ModalParameters.rows;
 
   // submit the comment
   function submit(form) {
@@ -26,7 +26,7 @@ function CommentAccountStatementController(Instance, Data, AccountStatement, Not
     AccountStatement.commentAccountStatement(params)
       .then(function (res) {
         if (!res) { return; }
-        Instance.close(res);
+        Instance.close(vm.comment);
       })
       .catch(Notify.handleError)
       .finally(Instance.close);

@@ -42,7 +42,7 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods)
       size         : 'md',
       backdrop     : 'static',
       resolve : {
-        data :  function dataProvider() { return request; },
+        modalParameters :  function dataProvider() { return request; },
       },
     };
     var instance = Modal.open(params);
