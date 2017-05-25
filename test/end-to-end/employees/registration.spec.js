@@ -3,69 +3,59 @@ const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 const expect = chai.expect;
+const RegistrationPage = require('./registration.page.js');
+
 helpers.configure(chai);
 
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-
-describe.skip('Employees', () => {
-  const path = '#!/employees';
-  before(() => helpers.navigate(path));
-
+describe.only('Employees', () => {
+  const path = '#!/employees/register';
+  const registrationPage =  new RegistrationPage();
   const employee = {
     code          : 'HBB80',
     display_name  : 'Sherlock Holmes Doyle',
     sexe          : 'M',
-    dob           : new Date('1960-06-30'),
-    date_embauche : new Date('1997-05-17'),
+    dob           : '1960-06-30',
+    date_embauche : '1997-05-17',
     nb_spouse     : 1,
     nb_enfant     : 2,
     bank          : 'BIAC',
     bank_account  : '00-99-88-77',
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
-  };
+    hospital_no   : 'TP003', 
+   };
 
+  before(() => {return helpers.navigate(path)});
   const employeeId = helpers.random(2);
 
   it('creates a new employee', () => {
-    FU.buttons.create();
+    registrationPage.setDisplayName(employee.display_name);
+    registrationPage.setDob(employee.dob);
+    registrationPage.setSex(employee.sexe);
+    registrationPage.setCode(employee.code);
+    registrationPage.setGrade('A1');
+    registrationPage.setHospitalNumber(employee.hospital_no);
+    registrationPage.setCreditorGroup('Personnel');
+    registrationPage.setDebtorGroup('Second Test Debtor Group');
+    registrationPage.setOriginLocation(helpers.data.locations);
+    registrationPage.setCurrentLocation(helpers.data.locations);
 
-    FU.input('EmployeeCtrl.employee.display_name', employee.display_name);
 
-    // input the date of birth
-    components.dateEditor.set(employee.dob, 'employee-dob');
-    FU.select('EmployeeCtrl.employee.sexe', 'F');
+    registrationPage.setHiringDate(employee.date_embauche); 
+    registrationPage.setNumberSpouse(employee.nb_spouse);
+    registrationPage.setNumberChild(employee.nb_enfant);       
+    registrationPage.setService('Administration');    
+    registrationPage.setFonction('Infirmier');
+    registrationPage.setEmail(employee.email);
+    registrationPage.setAddress(employee.adresse);    
+    registrationPage.setBank(employee.bank);
+    registrationPage.setBankAccount(employee.bank_account);    
 
-    FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
-    FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
-
-    // select the proper hiring date
-    components.dateEditor.set(employee.date_embauche, 'employee-date-hired');
-
-    FU.input('EmployeeCtrl.employee.code', employee.code);
-    FU.select('EmployeeCtrl.employee.service_id', 'Administration');
-    FU.select('EmployeeCtrl.employee.grade_id', 'A1');
-    FU.select('EmployeeCtrl.employee.fonction_id', 'Infirmier');
-    FU.select('EmployeeCtrl.employee.creditor_group_uuid', 'Personnel');
-    FU.select('EmployeeCtrl.employee.debtor_group_uuid', 'Second Test Debtor Group');
-    FU.input('EmployeeCtrl.employee.email', employee.email);
-    FU.input('EmployeeCtrl.employee.adresse', employee.adresse);
-
-    // select the locations specified
-    components.locationSelect.set(helpers.data.locations);
-
-    FU.input('EmployeeCtrl.employee.bank', employee.bank);
-    FU.input('EmployeeCtrl.employee.bank_account', employee.bank_account);
-
-    // submit the page to the server
-    FU.buttons.submit();
-
-    // expect a nice validation message
-    components.notification.hasSuccess();
+    registrationPage.createEmployee();
+    registrationPage.isEmpoyeeCreated();
   });
 
-  it('edits an employee', () => {
+  it.skip('edits an employee', () => {
     element(by.id(`employee-upd-${employeeId}`)).click();
 
     // modify the employee display_name
@@ -79,7 +69,7 @@ describe.skip('Employees', () => {
     components.notification.hasSuccess();
   });
 
-  it('unlocks an employee', () => {
+  it.skip('unlocks an employee', () => {
     element(by.id(`employee-upd-${employeeId}`)).click();
     element(by.id('bhima-employee-locked')).click();
     element(by.id('change_employee')).click();
@@ -88,7 +78,7 @@ describe.skip('Employees', () => {
     components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
+  it.skip('blocks invalid form submission with relevant error classes', () => {
     FU.buttons.create();
 
     // verify form has not been submitted
