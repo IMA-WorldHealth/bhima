@@ -392,10 +392,7 @@ function search(req, res, next) {
 
     res.status(200).json(rows);
   })
-  .catch(function (err){
-    console.log(err);
-
-  })
+  .catch(next)
   .done();
 }
 
@@ -421,7 +418,6 @@ function find(options) {
   filters.dateTo('dateEmbaucheTo', 'date_embauche');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
-  filters.equals('creditor_uuid', 'creditor_uuid', 'e');
   filters.equals('sexe', 'sexe', 'e');
 
   // @TODO Support ordering query

@@ -161,16 +161,6 @@ describe('(/employees) the employees API endpoint', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /employees/search with creditor_uuid retrieves the employee with that creditor_uuid', function () {
-      let conditions = { creditor_uuid : '42d3756a-7770-4bb8-a899-7953cd859892' };
-      return agent.get('/employees/search/')
-        .query(conditions)
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-        })
-        .catch(helpers.handler);
-    });
-
     it('GET /employees/search with detailed and limit parameters', function () {
       let conditions = { detailed: 1, limit: 5, sexe: 'M' };
 
