@@ -68,7 +68,7 @@ function CashBarController($state, Cashboxes, Notify, Barcodes, Patients, bhCons
       })
       .then(function (balance) {
         vm.balance = balance;
-        return Patients.search({ debtor_uuid : vm.invoice.debtor_uuid });
+        return Patients.read(null, { debtor_uuid : vm.invoice.debtor_uuid });
       })
       .then(function (patients) {
 

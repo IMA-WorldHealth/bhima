@@ -127,7 +127,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
 
     // query the patient's search endpoint for the
     // reference
-    Patients.search(options)
+    Patients.read(null, options)
       .then(function (patients) {
         selectPatient(patients[0]);
       })

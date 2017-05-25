@@ -94,11 +94,9 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // if we have search parameters, use search.  Otherwise, just read all
+    // if we have search parameters and read
     // invoices.
-    var request = angular.isDefined(parameters) ?
-      Invoices.search(parameters) :
-      Invoices.read();
+    var request = Invoices.read(null, parameters);
 
     // hook the returned patients up to the grid.
     request.then(function (invoices) {

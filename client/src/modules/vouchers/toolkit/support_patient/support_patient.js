@@ -51,7 +51,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
         
-        return Invoices.search({debtor_uuid: debtorId});
+        return Invoices.read(null, {debtor_uuid: debtorId});
       })
       .then(function (data) {
         vm.invoices = data;
@@ -105,7 +105,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     return rows;
   }
 
-  // format entityco
+  // format entity
   function formatEntity(uuid) {
     var entity = vm.patients.get(uuid);
     return {

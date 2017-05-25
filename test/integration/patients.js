@@ -77,17 +77,17 @@ describe('(/patients) Patients', function () {
   // HTTP API Test for /patients/search/ routes
   describe('(/search) Patient Search', function () {
 
-    it('GET /patients/search with missing necessary parameters should succeed', function () {
-      return agent.get('/patients/search/?')
+    it('GET /patients with missing necessary parameters should succeed', function () {
+      return agent.get('/patients/?')
         .then(function (res) {
           helpers.api.listed(res, 3);
         })
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with \'reference\' parameter', function () {
+    it('GET /patients with \'reference\' parameter', function () {
       let conditions = { reference : 'PA.TPA.1' };
-      return agent.get('/patients/search')
+      return agent.get('/patients')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
@@ -95,9 +95,9 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with \'display_name\' parameter', function () {
+    it('GET /patients with \'display_name\' parameter', function () {
       let conditions = { display_name : 'Test' };
-      return agent.get('/patients/search/')
+      return agent.get('/patients/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 2);
@@ -130,9 +130,9 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search should be composable', function () {
+    it('GET /patients should be composable', function () {
       let conditions = { sex: 'M', display_name : 2 };
-      return agent.get('/patients/search/')
+      return agent.get('/patients/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
@@ -140,9 +140,9 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
+    it('GET /patients with `name` and `reference` parameters for the priority of reference', function () {
       let conditions = { display_name : 'Test', reference : 'PA.TPA.1' };
-      return agent.get('/patients/search/')
+      return agent.get('/patients/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
@@ -152,9 +152,9 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with debtor_uuid retrieves the patients with that debtor_uuid', function () {
+    it('GET /patients with debtor_uuid retrieves the patients with that debtor_uuid', function () {
       let conditions = { debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107' };
-      return agent.get('/patients/search/')
+      return agent.get('/patients/')
         .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
@@ -162,10 +162,10 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with detailed and limit parameters', function () {
+    it('GET /patients with detailed and limit parameters', function () {
       let conditions = { detailed: 1, limit: 5, display_name: 'Test' };
 
-      return agent.get('/patients/search/')
+      return agent.get('/patients/')
         .query(conditions)
         .then(function (res) {
           var expected = [
@@ -179,7 +179,7 @@ describe('(/patients) Patients', function () {
           helpers.api.listed(res, 2);
 
           expect(res.body[0]).to.contain.all.keys(expected);
-          return agent.get('/patients/search/?display_name=Test&limit=1');
+          return agent.get('/patients/?display_name=Test&limit=1');
         })
         .then(function (res) {
           helpers.api.listed(res, 1);

@@ -200,7 +200,6 @@ exports.configure = function configure(app) {
   /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
-  app.get('/inventory/metadata/search', inventory.searchInventoryItems);
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
 
@@ -289,9 +288,8 @@ exports.configure = function configure(app) {
   app.get('/currencies/:id', currencies.detail);
 
   // Patient invoice API
-  app.get('/invoices', patientInvoice.list);
+  app.get('/invoices', patientInvoice.read);
   app.post('/invoices', patientInvoice.create);
-  app.get('/invoices/search', patientInvoice.search);
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
@@ -347,15 +345,13 @@ exports.configure = function configure(app) {
   app.put('/patients/groups/:uuid', patientGroups.update);
   app.delete('/patients/groups/:uuid', patientGroups.remove);
 
-  app.get('/patients/search', patients.search);
-
   // route specifically for quick searches on patient name, it will return minimal info
   app.get('/patients/search/name', patients.searchByName);
 
   app.get('/patients/visits', patients.visits.list);
 
   // Patients API
-  app.get('/patients', patients.list);
+  app.get('/patients', patients.read);
   app.post('/patients', patients.create);
   app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);

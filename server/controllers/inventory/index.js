@@ -46,7 +46,6 @@ exports.createInventoryItems = createInventoryItems;
 exports.updateInventoryItems = updateInventoryItems;
 exports.getInventoryItems = getInventoryItems;
 exports.getInventoryItemsById = getInventoryItemsById;
-exports.searchInventoryItems = searchInventoryItems;
 
 // expose inventory group methods
 exports.createInventoryGroups = createInventoryGroups;
@@ -119,39 +118,23 @@ function updateInventoryItems(req, res, next) {
     .done();
 }
 
+
 /**
-* GET /inventory/metadata
+* GET /inventory/metadata/
 * Returns a description all inventory items in the inventory table.
-*
-* @function getInventoryItems
-*/
-function getInventoryItems(req, res, next) {
-  core.getItemsMetadata()
-  .then((rows) => {
-    if (!rows.length) {
-      throw core.errors.NO_INVENTORY_ITEMS;
-    }
-
-    res.status(200).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
-}
-
-
-/**
-* GET /inventory/metadata/search
 * Returns a description the inventory items filter by params.
 *
 * @function searchInventoryItems
 */
-function searchInventoryItems(req, res, next) {
+function getInventoryItems(req, res, next) {
   const params = req.query;
 
-  core.getItemsMetadataSearch(params)
+  core.getItemsMetadata(params)
     .then((row) => {
+      if (!row.length) {
+        throw core.errors.NO_INVENTORY_ITEMS;
+      }
+
       res.status(200).json(row);
     })
     .catch((error) => {

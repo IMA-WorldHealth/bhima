@@ -131,9 +131,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
     // if we have search parameters, use search.  Otherwise, just read all
     // patients.
-    var request = angular.isDefined(parameters) && !isEmpty(parameters) ?
-      Patients.search(parameters) :
-      Patients.read();
+    var request = Patients.read(null, parameters);
 
     // hook the returned patients up to the grid.
     request.then(function (patients) {

@@ -60,10 +60,9 @@ exports.detail = detail;
 exports.update = update;
 
 // get list of patients
-exports.list = list;
-
 // search patients
-exports.search = search;
+exports.read = read;
+
 exports.searchByName = searchByName;
 exports.find = find;
 
@@ -287,13 +286,6 @@ function lookupByDebtorUuid(debtorUuid) {
     });
 }
 
-function list(req, res, next) {
-  find({})
-    .then(patients => res.status(200).json(patients))
-    .catch(next)
-    .done();
-}
-
 /**
  * This method implements the bhima unique API for hospital numbers; it is
  * responsible for informing the client if a hospital number has been used (is
@@ -443,18 +435,19 @@ function patientEntityQuery(detailed) {
 }
 
 /**
- * @method search
+ * @method read
  *
  * @description
  * A multi-parameter function that uses find() to query the database for
  * patient records.  It is the HTTP interface to find().
  *
  * @example
- * // GET /patient/search?name={string}&detail={boolean}&limit={number}
- * // GET /patient/search?reference={string}&detail={boolean}&limit={number}
- * // GET /patient/search?fields={object}
+ * // GET /patient/?name={string}&detail={boolean}&limit={number}
+ * // GET /patient/?reference={string}&detail={boolean}&limit={number}
+ * // GET /patient/?fields={object}
+ * // GET /patient 
  */
-function search(req, res, next) {
+function read(req, res, next) {
   find(req.query)
   .then((rows) => {
     // publish a SEARCH event on the medical channel
