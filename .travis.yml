@@ -17,12 +17,12 @@ services:
 language: node_js
 node_js:
   - "6"
-  - "7"
+  - node
 
 before_script:
-  - "export DISPLAY=:99.0"
-  - "./sh/travis.sh"
-  - "./sh/dependencies.sh"
+  - export DISPLAY=:99.0
+  - ./sh/travis.sh
+  - ./sh/dependencies.sh
 
 script:
   - npm run test
@@ -30,15 +30,9 @@ script:
 git:
   depth: 3
 
-before_cache:
-  - rm -f npm-debug.log
-
-notifications:
-  webhooks: http://kwilu.bhi.ma:54856/travis
-  email: false
-
 branches:
-  only:
-    - auto
-    - master
-    - try
+  except:
+    # do not build any branches that have *.tmp in their name
+    - /.*\.tmp$/
+
+
