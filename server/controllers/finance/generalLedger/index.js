@@ -130,7 +130,7 @@ function getlistAccounts(periodsId) {
       signPlus = period.number === 0 ? '' : '+';
       getBalance += `${signPlus} balance${period.number} `;
 
-      sqlCase += `, SUM(CASE 
+      sqlCase += `, SUM(CASE
           WHEN period_total.period_id = ${period.id} THEN period_total.debit - period_total.credit ELSE  0
         END) AS balance${period.number}
       `;
@@ -141,7 +141,7 @@ function getlistAccounts(periodsId) {
     `SELECT account.number, account.label, p.account_id AS id, ( ${getBalance}) AS balance ${headSql}
       FROM (
         SELECT period_total.account_id ${sqlCase}
-          FROM period_total GROUP BY period_total.account_id    
+          FROM period_total GROUP BY period_total.account_id
       ) AS p
       JOIN account ON account.id = p.account_id
       ORDER BY account.number ASC`;
