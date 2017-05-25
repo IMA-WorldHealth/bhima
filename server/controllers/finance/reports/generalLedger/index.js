@@ -14,6 +14,7 @@ const Accounts = require('../../accounts');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/generalLedger/report.handlebars';
 const ACCOUNT_SLIP_TEMPLATE = './server/controllers/finance/reports/generalLedger/accountSlip.handlebars';
+const Fiscal = require('../../fiscal');
 
 const GENERAL_LEDGER_SOURCE = 1;
 
@@ -29,18 +30,23 @@ exports.accountSlip = renderAccountSlip;
 function renderReport(req, res, next) {
   const options = _.extend(req.query, {
     filename : 'TREE.GENERAL_LEDGER',
+    orientation : 'landscape',
     csvKey   : 'rows',
   });
   let report;
   let data;
+  let currentDate = new Date();
 
   try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, options);
   } catch (e) {
     return next(e);
   }
-
-  return GeneralLedger.getlistAccounts()
+  
+  return Fiscal.getPeriodCurrent(currentDate)
+    .then((rows) => {
+      return GeneralLedger.getlistAccounts(rows);
+    })
     .then((rows) => {
       data = { rows };
       return report.render(data);
