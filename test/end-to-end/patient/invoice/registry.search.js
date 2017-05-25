@@ -1,11 +1,10 @@
 'use strict';
 
-/* global element, by, browser */
 const chai = require('chai');
-const expect = chai.expect;
-
 const helpers = require('../../shared/helpers');
+
 helpers.configure(chai);
+const expect = chai.expect;
 
 const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
@@ -13,14 +12,11 @@ const components = require('../../shared/components');
 const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
-
-  const NUM_INVOICES = 5;
-
   const params = {
     monthBillNumber : 0,
     referenceValue : 'IV.TPA.2',
     serviceValue : 'Test Service',
-    userValue : 'Super User'
+    userValue : 'Super User',
   };
 
   const page = new InvoiceRegistryPage();

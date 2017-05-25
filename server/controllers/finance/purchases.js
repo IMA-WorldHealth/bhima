@@ -93,7 +93,7 @@ function lookupPurchaseOrder(uid) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
-      p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
+      p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
     FROM purchase AS p
     JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -107,7 +107,7 @@ function lookupPurchaseOrder(uid) {
       record = row;
 
       sql = `
-        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, 
+        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total,
           BUID(pi.inventory_uuid) AS inventory_uuid, i.text
         FROM purchase_item AS pi
         JOIN inventory AS i ON i.uuid = pi.inventory_uuid
@@ -210,7 +210,7 @@ function list(req, res, next) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
+        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
@@ -295,7 +295,7 @@ function find(options) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received 
+        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
@@ -329,7 +329,7 @@ function purchaseStatus(req, res, next) {
   const sql = `
     SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid 
+    JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
     WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0;
   `;
@@ -371,21 +371,21 @@ function purchaseBalance(req, res, next) {
   const FROM_PURCHASE_ID = 1;
   const purchaseUuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT 
+    SELECT
       s.display_name, u.display_name, BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date, 
-      BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price, 
-      IFNULL(distributed.quantity, 0) AS distributed_quantity, 
+      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date,
+      BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price,
+      IFNULL(distributed.quantity, 0) AS distributed_quantity,
       (pi.quantity - IFNULL(distributed.quantity, 0)) AS balance
     FROM purchase p
     JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN supplier s ON s.uuid = p.supplier_uuid
     JOIN user u ON u.id = p.user_id
-    LEFT JOIN 
+    LEFT JOIN
     (
       SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.origin_uuid
-      FROM stock_movement m 
+      FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
       WHERE m.flux_id = ? AND m.is_exit = 0 AND l.origin_uuid = ?
