@@ -35,7 +35,9 @@ function formatFilters(qs) {
     { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate : true },
     { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', isDate : true },
     { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', isDate : true },
-    { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD' },
+    { field: 'grade_id', displayName: 'FORM.LABELS.GRADE' },
+    { field: 'fonction_id', displayName: 'FORM.LABELS.FUNCTION' },
+    { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
   ];
 
   return columns.filter(column => {

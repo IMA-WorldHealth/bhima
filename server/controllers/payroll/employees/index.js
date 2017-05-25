@@ -13,7 +13,7 @@
  * @requires uuid
  * @requires NotFound
  * @requires BadRequest
- * @requires Topic
+ * @requires topic
  * @requires filter
  */
 
@@ -261,9 +261,9 @@ function update(req, res, next) {
         throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
 
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.EMPLOYEE,
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.UPDATE,
+        entity : topic.entities.EMPLOYEE,
         user_id : req.session.user.id,
         id : req.params.id,
       });
@@ -355,9 +355,9 @@ function create(req, res, next) {
       // @todo - why is this not a UUID, but grade_id is a uuid?
       const employeeId = results[3].insertId;
 
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.EMPLOYEE,
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.CREATE,
+        entity : topic.entities.EMPLOYEE,
         user_id : req.session.user.id,
         id : employeeId,
       });
@@ -399,7 +399,6 @@ function search(req, res, next) {
   .done();
 }
 
-
 /**
  * @method find
  *
@@ -422,11 +421,10 @@ function find(options) {
   filters.dateTo('dateEmbaucheTo', 'date_embauche');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
+  filters.equals('creditor_uuid', 'creditor_uuid', 'e');
+  filters.equals('sexe', 'sexe', 'e');
 
-  // // default date embauche
-  // filters.period('defaultPeriod', 'date_embauche');
-
-  // @TODO Support ordering query (reference support for limit)?
+  // @TODO Support ordering query
   filters.setOrder('ORDER BY e.display_name DESC');
 
   // applies filters and limits to defined sql, get parameters in correct order

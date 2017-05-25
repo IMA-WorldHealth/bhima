@@ -108,38 +108,93 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /employees/code/:value should return a list of employees match the employee code token', function () {
-    return agent.get('/employees/code/' + String(employee.code).substring(0,1))
-      .then(function (res) {
-        helpers.api.listed(res, numEmployees);
-      })
-      .catch(helpers.handler);
-  });
+    // HTTP API Test for /employees/search/ routes
+  describe('(/employees/search) Employee Search', function () {
 
-  it('GET /employees/display_name/:value should return a list of employees match the employee display_name token', function () {
-    return agent.get('/employees/display_name/' + employee.display_name.substring(0,2))
-      .then(function (res) {
-        helpers.api.listed(res, numEmployees);
-      })
-      .catch(helpers.handler);
-  });
+    it('GET /employees/search with missing necessary parameters should succeed', function () {
+      return agent.get('/employees/search/?')
+        .then(function (res) {
+          helpers.api.listed(res, 2);
+        })
+        .catch(helpers.handler);
+    });
 
-  it('GET /employees/unknown/:value should return an error for an unknown key', function () {
-    return agent.get('/employees/unknown/' + employee.display_name.substring(0,2))
-      .then(function (res) {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
+    it('GET /employees/search with \'code\' parameter', function () {
+      let conditions = { code : 'x500' };
+      return agent.get('/employees/search')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+        })
+        .catch(helpers.handler);
+    });
 
-  it('GET /employees/code/:value should return an empty array for an unmatch value', function () {
-    return agent.get('/employees/code/unknown')
-      .then(function (res) {
-        helpers.api.listed(res, 0);
-      })
-      .catch(helpers.handler);
-  });
+    it('GET /employees/search with \'display_name\' parameter', function () {
+      let conditions = { display_name : 'Dedrick' };
+      return agent.get('/employees/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+        })
+        .catch(helpers.handler);
+    });
 
+    it('GET /employees/search should be composable', function () {
+      let conditions = { sexe: 'M', display_name : 'Dedrick' };
+      return agent.get('/employees/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /employees/search with `name` and `code` parameters for the priority of reference', function () {
+      let conditions = { display_name : 'Dedrick', code : 'E1' };
+      return agent.get('/employees/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+          expect(res.body[0].code).to.exist;
+          expect(res.body[0].code).to.be.equals(conditions.code);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /employees/search with creditor_uuid retrieves the employee with that creditor_uuid', function () {
+      let conditions = { creditor_uuid : '42d3756a-7770-4bb8-a899-7953cd859892' };
+      return agent.get('/employees/search/')
+        .query(conditions)
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /employees/search with detailed and limit parameters', function () {
+      let conditions = { detailed: 1, limit: 5, sexe: 'M' };
+
+      return agent.get('/employees/search/')
+        .query(conditions)
+        .then(function (res) {
+          var expected = [
+            'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
+            'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
+            'grade_id', 'grade', 'basic_salary', 'service_id', 'name', 
+            'creditor_uuid', 'locked'
+          ];
+
+          helpers.api.listed(res, 2);
+
+          expect(res.body[0]).to.contain.all.keys(expected);
+          return agent.get('/employees/search/?display_name=Charle&limit=1');
+        })
+        .then(function (res) {
+          helpers.api.listed(res, 1);
+        })
+        .catch(helpers.handler);
+    });
+  });
 
   it('PUT /employee/:id should update an existing employee ', function () {
     return agent.put('/employees/' + employee.id)
