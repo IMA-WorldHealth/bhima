@@ -463,9 +463,9 @@ exports.configure = function configure(app) {
   app.put('/enterprises/:id', enterprises.update);
 
   // employees
-  app.get('/employees', employees.list);
-  app.get('/employees/:id', employees.detail);
   app.get('/employees/search', employees.search);
+  app.get('/employees', employees.list);
+  app.get('/employees/:id', employees.detail);  
   app.post('/employees', employees.create); 
   app.put('/employees/:id', employees.update);  
 

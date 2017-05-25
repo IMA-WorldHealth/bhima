@@ -115,7 +115,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     },
     { name          : 'actions',
       displayName   : '',
-      cellTemplate  : '/modules/patients/templates/action.cell.html',
+      cellTemplate  : '/modules/employees/templates/action.cell.html',
       enableSorting : false 
     },
   ];
@@ -146,7 +146,6 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   // this function loads employees from the database with search parameters
   // if passed in.
   function load(parameters) {
-    console.log('loading with parameters', parameters);
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();

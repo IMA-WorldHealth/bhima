@@ -21,7 +21,7 @@
 const uuid = require('node-uuid');
 
 const db = require('./../../../lib/db');
-const Topic = require('../../../lib/topic');
+const topic = require('../../../lib/topic');
 const NotFound = require('./../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('./../../../lib/filter');
@@ -43,7 +43,7 @@ function list(req, res, next) {
   const sql =
     `
     SELECT 
-      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
+      employee.id, employee.code AS code, employee.display_name, employee.sexe, 
       employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
       employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
@@ -392,7 +392,10 @@ function search(req, res, next) {
 
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (err){
+    console.log(err);
+
+  })
   .done();
 }
 

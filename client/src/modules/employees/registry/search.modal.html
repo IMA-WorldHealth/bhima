@@ -102,7 +102,7 @@
         <select
           class="form-control"
           name="grade"
-          ng-options="grade.uuid as grade.name for grade in ModalCtrl.grades"
+          ng-options="grade.uuid as grade.text for grade in ModalCtrl.grades"
           ng-model="ModalCtrl.params.grade_id">
           <option disabled value="" translate>
             FORM.PLACEHOLDERS.GRADE

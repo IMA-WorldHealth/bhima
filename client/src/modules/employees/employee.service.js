@@ -93,6 +93,9 @@ function EmployeeService($http, util, Filters, $uibModal) {
       { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
       { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', ngFilter:'date' },
       { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', ngFilter:'date' },
+      { field: 'grade_id', displayName: 'FORM.LABELS.GRADE' },
+      { field: 'fonction_id', displayName: 'FORM.LABELS.FUNCTION' },
+      { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' }
     ];
 
 
