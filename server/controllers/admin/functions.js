@@ -13,7 +13,7 @@ function lookupFunction(id) {
     `SELECT id, fonction_txt FROM fonction
     WHERE fonction.id = ?`;
 
-  return db.exec(sql, [id])
+  return db.one(sql, [id])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a Function with id ${id}`);

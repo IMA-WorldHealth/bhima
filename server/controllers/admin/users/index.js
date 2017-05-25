@@ -52,7 +52,7 @@ function lookupUser(id) {
     FROM user WHERE user.id = ?;
   `;
 
-  return db.exec(sql, [id])
+  return db.one(sql, [id])
     .then(function (rows) {
       if (!rows.length) {
         throw new NotFound(`Could not find an user with id ${id}`);

@@ -134,7 +134,7 @@ function detail(req, res, next) {
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 
-  db.exec(sql, [req.session.enterprise.id, uid])
+  db.one(sql, [req.session.enterprise.id, uid])
   .then((rows) => {
     // make sure we find at least one depot
     if (rows.length < 1) {

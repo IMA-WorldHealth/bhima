@@ -31,7 +31,7 @@ function lookupBillingService(id) {
     FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
-  return db.exec(sql, [id])
+  return db.one(sql, [id])
     .then((rows) => {
       // if no records matching, throw a 404
       if (rows.length === 0) {

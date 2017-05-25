@@ -187,7 +187,7 @@ function lookupVillage(uid) {
       province.country_uuid = country.uuid
     WHERE village.uuid = ?;`;
 
-  return db.exec(sql, [bid])
+  return db.one(sql, [bid])
     .then(function (rows) {
       if (rows.length === 0) {
         throw new NotFound(`Could not find a village with uuid ${uid}.`);
@@ -209,7 +209,7 @@ function lookupSector(uid) {
       province.country_uuid = country.uuid
     WHERE sector.uuid = ?;`;
 
-  return db.exec(sql, [bid])
+  return db.one(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a sector with uuid ${uid}.`);
@@ -228,7 +228,7 @@ function lookupProvince(uid) {
       province.country_uuid = country.uuid
     WHERE province.uuid = ?;`;
 
-  return db.exec(sql, [bid])
+  return db.one(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a province with uuid ${uid}.`);
@@ -246,7 +246,7 @@ function lookupCountry(uid) {
     FROM country
     WHERE country.uuid = ?;`;
 
-  return db.exec(sql, [bid])
+  return db.one(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a country with uuid ${uid}.`);
@@ -278,7 +278,7 @@ exports.detail = function detail(req, res, next) {
       sector.province_uuid = province.uuid AND
       province.country_uuid = country.uuid AND village.uuid = ?;`;
 
-  db.exec(sql, [bid])
+  db.one(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a location with id ${uuid.unparse(bid)}`);

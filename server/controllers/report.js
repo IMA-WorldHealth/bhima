@@ -42,7 +42,7 @@ function keys(req, res, next) {
   const key = req.params.key;
   const sql = `SELECT * FROM report WHERE report_key = ?;`;
 
-  db.exec(sql, [key])
+  db.one(sql, [key])
     .then(keyDetail => {
       res.status(200).json(keyDetail);
     })
