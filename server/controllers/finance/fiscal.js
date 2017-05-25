@@ -638,7 +638,7 @@ function getPeriodCurrent(date) {
     SELECT period.number, period.id
     FROM period 
     JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
-    WHERE (period.number <> 0 AND period.number <> 13) 
+    WHERE period.number <> 13 
     AND (DATE(fiscal_year.start_date) <= DATE(?) AND DATE(fiscal_year.end_date) >= DATE(?));
   `;
 

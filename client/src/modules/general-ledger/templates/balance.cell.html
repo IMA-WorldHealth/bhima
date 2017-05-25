@@ -1,8 +1,3 @@
 <div class="ui-grid-cell-contents text-right">
-  <div ng-show="row.entity.debtor_balance" >
-      {{ row.entity.debtor_balance - row.entity.creditor_balance | currency: grid.appScope.enterprise.currency_id }}
-  </div>
-  <div ng-show="row.entity.creditor_balance" >
-      {{ row.entity.debtor_balance - row.entity.creditor_balance | currency: grid.appScope.enterprise.currency_id }}
-  </div>
+  {{ row.entity.balance | currency: grid.appScope.enterprise.currency_id }}
 </div>

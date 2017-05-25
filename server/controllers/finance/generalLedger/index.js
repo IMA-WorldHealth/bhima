@@ -79,40 +79,32 @@ function listAccounts(req, res, next) {
  * get list of accounts
  */
 function getlistAccounts(periodsId) {
-  let jointure = '';
+  let sqlCase = '';
+  let getBalance = '';
   let headSql = '';
 
   if(periodsId){
     periodsId.forEach(function (period) {
-      headSql += `
-        , periode${period.id}.balance AS balance${period.number}
-      `;
+      headSql += `, balance${period.number}`;
 
-      jointure += `
-        LEFT JOIN (
-        SELECT period_total.debit - period_total.credit AS balance, period_total.account_id
-        FROM period_total
-        WHERE period_total.period_id = ${period.id}
-        ) AS periode${period.id} ON periode${period.id}.account_id =  aggregator.id
+      let signPlus = period.number === 0? '' : '+';
+      getBalance += `${signPlus} balance${period.number} `;
+
+      sqlCase +=`, SUM(CASE 
+          WHEN period_total.period_id = ${period.id} THEN period_total.debit - period_total.credit ELSE  0
+        END) AS balance${period.number}
       `;
     });    
   }
 
   const sql =
-    `SELECT aggregator.id, aggregator.number, aggregator.label,
-      IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
-      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance, aggregator.balance
-      ${headSql}
-    FROM (
-      SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
-        a.id, a.number, a.label
-      FROM general_ledger AS gl
-        JOIN account a ON a.id = gl.account_id
-      GROUP BY a.id
-      ORDER BY a.number
-    ) AS aggregator ${jointure};`;
+    `SELECT account.number, account.label, p.account_id AS id, ( ${getBalance}) AS balance ${headSql}
+      FROM (
+        SELECT period_total.account_id ${sqlCase}
+          FROM period_total GROUP BY period_total.account_id    
+      ) AS p
+      JOIN account ON account.id = p.account_id
+      ORDER BY account.number ASC`;
 
   return db.exec(sql);
 }
-
-
