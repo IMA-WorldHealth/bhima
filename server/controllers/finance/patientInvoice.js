@@ -237,22 +237,7 @@ function find(options) {
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
 
-<<<<<<< 96e3b529f2f905c70511a19faa030fb6f7011a9e
-/**
- * Searches for a invoice by query parameters provided.
- *
- * GET /invoices/search
- */
-function search(req, res, next) {
-  find(req.query)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-=======
   return db.exec(query, parameters);
->>>>>>> Remove all entity/search endpoints with
 }
 
 /**
