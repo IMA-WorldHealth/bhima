@@ -124,8 +124,8 @@ function getlistAccounts(periodsId) {
   let headSql = '';
   let signPlus = '';
 
-  if(periodsId) {
-    periodsId.forEach( function (period) {
+  if (periodsId) {
+    periodsId.forEach(function (period) {
       headSql += `, balance${period.number}`;
 
       signPlus = period.number === 0 ? '' : '+';
