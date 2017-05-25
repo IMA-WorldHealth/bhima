@@ -445,7 +445,7 @@ function patientEntityQuery(detailed) {
  * // GET /patient/?name={string}&detail={boolean}&limit={number}
  * // GET /patient/?reference={string}&detail={boolean}&limit={number}
  * // GET /patient/?fields={object}
- * // GET /patient 
+ * // GET /patient
  */
 function read(req, res, next) {
   find(req.query)
