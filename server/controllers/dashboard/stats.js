@@ -1,4 +1,3 @@
-
 /**
  * Dashboard Stats Controller
  *
@@ -29,34 +28,18 @@ function invoiceStat(req, res, next) {
   const bundle = {};
 
   // date handler
-  const date = params.date ?
-    moment(params.date).format('YYYY-MM-DD').toString() :
-    moment().format('YYYY-MM-DD').toString();
-
-  // cancelled transaction type
-  const CANCELED_TRANSACTION_TYPE = 10;
+  const date = params.date ? new Date(params.date) : new Date();
 
   // date restriction
   const DATE_CLAUSE = '(MONTH(invoice.date) = MONTH(?) AND YEAR(invoice.date) = YEAR(?))';
 
   // query invoices which are not cancelled
-  const sqlInvoices =
-    `
-    SELECT
-      COUNT(*) AS total, SUM(cost) AS cost
-    FROM
-      invoice
-     WHERE
-      ${DATE_CLAUSE} AND
-     invoice.uuid NOT IN (
-      SELECT
-        voucher.reference_uuid
-      FROM
-        voucher
-      WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
-      );`;
+  const sqlInvoices = `
+    SELECT COUNT(uuid) AS total, SUM(cost) AS cost FROM invoice
+    WHERE ${DATE_CLAUSE} AND invoice.reversed = 1;
+  `;
 
-  // query invoices
+  // query invoices balances from the combined posting journal and GL
   const sqlBalance =
     `SELECT (debit - credit) as balance, project_id, cost
      FROM (
@@ -78,57 +61,57 @@ function invoiceStat(req, res, next) {
      `;
 
   // promises requests
-  const dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date])];
+  const dbPromise = [db.exec(sqlInvoices, [date, date]), db.exec(sqlBalance, [date, date, date, date])];
 
   Q.all(dbPromise)
-  .spread((invoices, invoiceBalances) => {
-    // total invoices
-    bundle.total = invoices[0].total;
-    bundle.total_cost = invoices[0].cost;
+    .spread((invoices, invoiceBalances) => {
+      // total invoices
+      bundle.total = invoices[0].total;
+      bundle.total_cost = invoices[0].cost;
 
-    /**
-     * Paid Invoices
-     * Get list of invoices which are fully paid
-     */
-    const paid = invoiceBalances.filter(item => {
-      return item.balance === 0;
-    });
-    bundle.invoice_paid_amount = paid.reduce((previous, current) => {
-      return current.cost + previous;
-    }, 0);
-    bundle.invoice_paid = paid.length;
+      /**
+       * Paid Invoices
+       * Get list of invoices which are fully paid
+       */
+      const paid = invoiceBalances.filter(item => {
+        return item.balance === 0;
+      });
+      bundle.invoice_paid_amount = paid.reduce((previous, current) => {
+        return current.cost + previous;
+      }, 0);
+      bundle.invoice_paid = paid.length;
 
-    /**
-     * Partial Paid Invoices
-     * Get list of invoices which are partially paid
-     */
-    const partial = invoiceBalances.filter(item => {
-      return item.balance > 0 && item.balance !== item.cost;
-    });
-    bundle.invoice_partial_amount = partial.reduce((previous, current) => {
-      return (current.cost - current.balance) + previous;
-    }, 0);
-    bundle.invoice_partial = partial.length;
+      /**
+       * Partial Paid Invoices
+       * Get list of invoices which are partially paid
+       */
+      const partial = invoiceBalances.filter(item => {
+        return item.balance > 0 && item.balance !== item.cost;
+      });
+      bundle.invoice_partial_amount = partial.reduce((previous, current) => {
+        return (current.cost - current.balance) + previous;
+      }, 0);
+      bundle.invoice_partial = partial.length;
 
-    /**
-     * Unpaid Invoices
-     * Get list of invoices which are not paid
-     */
-    const unpaid = invoiceBalances.filter(item => {
-      return item.balance > 0;
-    });
-    bundle.invoice_unpaid_amount = unpaid.reduce((previous, current) => {
-      return current.balance + previous;
-    }, 0);
-    bundle.invoice_unpaid = unpaid.length;
+      /**
+       * Unpaid Invoices
+       * Get list of invoices which are not paid
+       */
+      const unpaid = invoiceBalances.filter(item => {
+        return item.balance > 0;
+      });
+      bundle.invoice_unpaid_amount = unpaid.reduce((previous, current) => {
+        return current.balance + previous;
+      }, 0);
+      bundle.invoice_unpaid = unpaid.length;
 
-    // server date
-    bundle.date = date;
+      // server date
+      bundle.date = date;
 
-    res.status(200).json(bundle);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(bundle);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -160,12 +143,12 @@ function patientStats(req, res, next) {
   ];
 
   Q.all(dbPromise)
-  .spread((registration, visits) => {
-    bundle.total = registration[0].total;
-    bundle.total_visit = visits[0].total_visit;
-    bundle.date = date;
-    res.status(200).json(bundle);
-  })
-  .catch(next)
-  .done();
+    .spread((registration, visits) => {
+      bundle.total = registration[0].total;
+      bundle.total_visit = visits[0].total_visit;
+      bundle.date = date;
+      res.status(200).json(bundle);
+    })
+    .catch(next)
+    .done();
 }
