@@ -12,6 +12,40 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('cashDashboard', {
+        abstract : true,
+        url : '/cash/dashboard',
+        params : { data : null },
+        controller  : 'CashDashboardController as CashCtrl',
+        templateUrl : '/modules/cash/dashboard/dashboard.html',
+      })
+
+      .state('cashDashboard.chart', {
+        url : '',
+        views : {
+          'hourChart@cashDashboard' : {
+            templateUrl : 'modules/cash/dashboard/views/hour.chart.html',
+            controller : 'ChartCashDashboardController as ChartCtrl',
+          },
+          'dayChart@cashDashboard' : {
+            templateUrl : 'modules/cash/dashboard/views/day.chart.html',
+            controller : 'ChartCashDashboardController as ChartCtrl',
+          },
+          'monthChart@cashDashboard' : {
+            templateUrl : 'modules/cash/dashboard/views/month.chart.html',
+            controller : 'ChartCashDashboardController as ChartCtrl',
+          },
+          'summary@cashDashboard' : {
+            templateUrl : 'modules/cash/dashboard/views/summary.chart.html',
+            controller : 'ChartCashDashboardController as ChartCtrl',
+          },
+          'groupChart@cashDashboard' : {
+            templateUrl : 'modules/cash/dashboard/views/group.chart.html',
+            controller : 'ChartCashDashboardController as ChartCtrl',
+          },
+        },
+      })
+
       .state('cash', {
         url         : '/cash',
         abstract    : true,
@@ -56,7 +90,8 @@ angular.module('bhima.routes')
         params  : { id: { squash: true, value: null } },
         onEnter : ['$state', '$uibModal', scanCashBarcodeModal],
         onExit  : ['$uibModalStack', closeModal],
-      });
+      })
+      ;
   }]);
 
 

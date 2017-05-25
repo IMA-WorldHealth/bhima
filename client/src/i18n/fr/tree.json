@@ -14,6 +14,10 @@
 "CREDITOR_GROUP":"Gestion de groupes crediteurs",
 "CURRENCY":"Monnaie",
 "CUSTOMER_DEBTS":"Balance agée des clients",
+"DASHBOARD":{
+  "TITLE":"Tableau de bord",
+  "CASH_PAYMENT":"Tableau de bord - Paiements"
+},
 "DEBTOR_GROUP":"Gestion de groupes débiteurs",
 "EMPLOYEE":"Gestion Employés",
 "EMPLOYEE_REGISTRY" : "Registre des employees",
