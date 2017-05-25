@@ -2,7 +2,7 @@ var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
   'bhima.components', 'bhima.routes', 'ui.bootstrap',
   'pascalprecht.translate', 'ngStorage', 'chart.js',
-  'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
+  'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.saveState',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',

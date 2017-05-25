@@ -22,9 +22,16 @@
             <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
               <li role="menuitem">
                 <a href data-method="configure" ng-click="JournalCtrl.openColumnConfigModal()">
-                  <i class="fa fa-cogs"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+                  <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
                 </a>
               </li>
+
+              <li role="menuitem">
+                <a href data-method="save-state" ng-click="JournalCtrl.saveGridState()">
+                  <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+                </a>
+              </li>
+
               <li role="separator" class="divider"></li>
               <li role="menuitem">
                 <a href ng-click="JournalCtrl.openTrialBalanceModal()" data-method="trial">
@@ -121,7 +128,8 @@
           ui-grid-cellNav
           ui-grid-edit
           ui-grid-grouping
-          ui-grid-exporter>
+          ui-grid-exporter
+          ui-grid-save-state>
 
           <bh-grid-loading-indicator
             loading-state="JournalCtrl.loading"
