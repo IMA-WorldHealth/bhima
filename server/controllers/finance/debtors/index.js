@@ -100,7 +100,7 @@ function lookupDebtor(uid) {
     WHERE uuid = ?;
   `;
 
-  return db.exec(sql, [db.bid(uid)])
+  return db.one(sql, [db.bid(uid)])
     .then((rows) => {
       if (!rows.length) {
         throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
@@ -247,7 +247,7 @@ function balance(debtorUuid) {
   let sql =
     'SELECT BUID(uuid) as uuid FROM debtor WHERE uuid = ?;';
 
-  return db.exec(sql, [debtorUid])
+  return db.one(sql, [debtorUid])
     .then(rows => {
       // if the debtor doesn't exist, throw an error
       if (!rows.length) {

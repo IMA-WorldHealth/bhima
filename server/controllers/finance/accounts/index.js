@@ -247,7 +247,7 @@ function lookupAccount(id) {
 
   sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' : ' ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
-  return db.exec(sql, id)
+  return db.one(sql, id)
     .then(rows => {
       if (rows.length === 0) {
         throw new NotFound(`Could not find account with id ${id}.`);
