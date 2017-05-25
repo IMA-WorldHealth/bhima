@@ -25,8 +25,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       displayName      : 'TABLE.COLUMNS.ACCOUNT',
       enableFiltering  : true,
       cellTemplate     : '/modules/general-ledger/templates/account_number.cell.html',
-      headerCellFilter : 'translate',
-      width            : '10%' },
+      headerCellFilter : 'translate' },
 
     { field            : 'label',
       displayName      : 'TABLE.COLUMNS.LABEL',
@@ -34,21 +33,97 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : true,
       headerCellFilter : 'translate' },
 
-    { field            : 'debtor_sold',
-      displayName      : 'TABLE.COLUMNS.DEBTOR_SOLD',
+    { field            : 'balance',
+      displayName      : 'TABLE.COLUMNS.BALANCE',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : '/modules/general-ledger/templates/debtor.cell.html',
-      width            : '15%' },
+      cellTemplate     : '/modules/general-ledger/templates/balance.cell.html' },
 
-    { field            : 'creditor_sold',
-      displayName      : 'TABLE.COLUMNS.CREDITOR_SOLD',
+    { field            : 'balance1',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : '/modules/general-ledger/templates/creditor.cell.html',
-      width            : '15%' },
+       cellTemplate    : getCellTemplate('balance1')},
+
+    { field            : 'balance2',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.FEBRUARY',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance2') },
+
+    { field            : 'balance3',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.MARCH',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance3') },
+
+    { field            : 'balance4',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.APRIL',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance4') },
+
+    { field            : 'balance5',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.MAY',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance5') },
+
+    { field            : 'balance6',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.JUNE',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance6') },
+
+    { field            : 'balance7',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.JULY',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance7') },
+
+    { field            : 'balance8',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.AUGUST',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance8') },
+
+    { field            : 'balance9',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.SEPTEMBER',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance9') },
+
+    { field            : 'balance10',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.OCTOBER',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance10') },
+
+    { field            : 'balance11',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.NOVEMBER',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance11') },
+
+
+    { field            : 'balance12',
+      displayName      : 'TABLE.COLUMNS.DATE_MONTH.DECEMBER',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance12') },                                                      
 
     {
       field            : 'action',
@@ -57,7 +132,6 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       enableSorting    : false,
       enableColumnMenu : false,
-      width            : '10%',
     },
   ];
 
@@ -109,6 +183,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     Export.download(url, params, 'GENERAL_LEDGER.ACCOUNT_SLIP', 'export-'.concat(id));
   }
 
+  function getCellTemplate(key) {
+    return '<div class="ui-grid-cell-contents text-right">' +
+      '<div ng-show="row.entity.' + key +'" >' +
+        '{{ row.entity.' + key +' | currency: grid.appScope.enterprise.currency_id }}' +
+      '</div>' + 
+    '</div>';
+  }
 
   GeneralLedger.accounts.read()
     .then(loadData)
