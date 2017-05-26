@@ -119,7 +119,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
         WHERE account_id = ? ${dateCondition}
         GROUP BY record_uuid
         ORDER BY trans_date ASC
-      )c, (SELECT @cumsum := ${openingBalance || 0 })z
+      )c, (SELECT @cumsum := ${openingBalance || 0})z
     ) AS groups
   `;
 

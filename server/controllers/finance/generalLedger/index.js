@@ -20,7 +20,6 @@ const FilterParser = require('../../../lib/filter');
 
 // GET/ CURRENT FISCAL YEAR PERIOD
 const Fiscal = require('../fiscal');
-const Accounts = require('../accounts');
 
 // expose to the api
 exports.list = list;
@@ -102,11 +101,11 @@ function list(req, res, next) {
  * list accounts and their solds
  */
 function listAccounts(req, res, next) {
-  let currentDate = new Date();
+  const currentDate = new Date();
 
   Fiscal.getPeriodCurrent(currentDate)
   .then((rows) => {
-    return getlistAccounts(rows); 
+    return getlistAccounts(rows);
   })
   .then((rows) => {
     res.status(200).json(rows);
@@ -123,19 +122,20 @@ function getlistAccounts(periodsId) {
   let sqlCase = '';
   let getBalance = '';
   let headSql = '';
+  let signPlus = '';
 
-  if(periodsId){
-    periodsId.forEach(function (period) {
+  if(periodsId) {
+    periodsId.forEach( function (period) {
       headSql += `, balance${period.number}`;
 
-      let signPlus = period.number === 0? '' : '+';
+      signPlus = period.number === 0 ? '' : '+';
       getBalance += `${signPlus} balance${period.number} `;
 
-      sqlCase +=`, SUM(CASE 
+      sqlCase += `, SUM(CASE 
           WHEN period_total.period_id = ${period.id} THEN period_total.debit - period_total.credit ELSE  0
         END) AS balance${period.number}
       `;
-    });    
+    });
   }
 
   const sql =
@@ -171,3 +171,4 @@ function commentAccountStatement(req, res, next) {
     .catch(next)
     .done();
 }
+
