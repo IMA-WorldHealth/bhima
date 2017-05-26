@@ -68,14 +68,9 @@ function lookupPriceList(uid) {
     `SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
     FROM price_list WHERE uuid = ?;`;
 
-  return db.exec(sql, [uid])
-    .then((rows) => {
-      // if no matches found, send a 404 error
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a price list with uuid ${uuid.unparse(uid)}`);
-      }
-
-      priceList = rows[0];
+  return db.one(sql, [uid])
+    .then((row) => {
+      priceList = row;
 
       sql =
         `SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at

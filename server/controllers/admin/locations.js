@@ -187,14 +187,7 @@ function lookupVillage(uid) {
       province.country_uuid = country.uuid
     WHERE village.uuid = ?;`;
 
-  return db.exec(sql, [bid])
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a village with uuid ${uid}.`);
-      }
-
-      return rows[0];
-    });
+  return db.one(sql, [bid]);
 }
 
 function lookupSector(uid) {
@@ -209,14 +202,7 @@ function lookupSector(uid) {
       province.country_uuid = country.uuid
     WHERE sector.uuid = ?;`;
 
-  return db.exec(sql, [bid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a sector with uuid ${uid}.`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [bid]);
 }
 
 function lookupProvince(uid) {
@@ -228,14 +214,7 @@ function lookupProvince(uid) {
       province.country_uuid = country.uuid
     WHERE province.uuid = ?;`;
 
-  return db.exec(sql, [bid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a province with uuid ${uid}.`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [bid]);
 }
 
 function lookupCountry(uid) {
@@ -246,14 +225,7 @@ function lookupCountry(uid) {
     FROM country
     WHERE country.uuid = ?;`;
 
-  return db.exec(sql, [bid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a country with uuid ${uid}.`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [bid]);
 }
 
 /**
@@ -278,13 +250,9 @@ exports.detail = function detail(req, res, next) {
       sector.province_uuid = province.uuid AND
       province.country_uuid = country.uuid AND village.uuid = ?;`;
 
-  db.exec(sql, [bid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a location with id ${uuid.unparse(bid)}`);
-    }
-
-    res.status(200).json(rows[0]);
+  db.one(sql, [bid])
+  .then(function (row) {
+    res.status(200).json(row);
   })
   .catch(next)
   .done();

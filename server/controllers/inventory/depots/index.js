@@ -134,20 +134,10 @@ function detail(req, res, next) {
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 
-  db.exec(sql, [req.session.enterprise.id, uid])
-  .then((rows) => {
-    // make sure we find at least one depot
-    if (rows.length < 1) {
-      res.status(404).json({
-        code : 'ERR_NO_DEPOT',
-        reason : `No depot was found matching the uuid:${uuid.unparse(uid)}`,
-      });
-
-      return;
-    }
-
+  db.one(sql, [req.session.enterprise.id, uid])
+  .then((row) => {
     // return the json
-    res.status(200).json(rows[0]);
+    res.status(200).json(row);
   })
   .catch(next)
   .done();
