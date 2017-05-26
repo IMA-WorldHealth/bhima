@@ -23,16 +23,14 @@ const entityIdentifier = identifiers.INVOICE.key;
 const CREDIT_NOTE_ID = 10;
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
-exports.list = list;
+/** Filter the patient invoice table by any column via query strings */
+exports.read = read;
 
 /** Retrieves details for a specific patient invoice. */
 exports.detail = detail;
 
 /** Write a new patient invoice record and attempt to post it to the journal. */
 exports.create = create;
-
-/** Filter the patient invoice table by any column via query strings */
-exports.search = search;
 
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
@@ -46,14 +44,15 @@ exports.balance = balance;
 exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
 
 /**
- * list
+ * read
  *
- * Retrieves a list of all patient invoices in the database
+ * Retrieves a read of all patient invoices in the database
+ * Searches for a invoice by query parameters provided.
  */
-function list(req, res, next) {
-  find({})
-    .then((invoices) => {
-      res.status(200).json(invoices);
+function read(req, res, next) {
+  find(req.query)
+    .then(function (rows) {
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
@@ -237,21 +236,8 @@ function find(options) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-  return db.exec(query, parameters);
-}
 
-/**
- * Searches for a invoice by query parameters provided.
- *
- * GET /invoices/search
- */
-function search(req, res, next) {
-  find(req.query)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  return db.exec(query, parameters);
 }
 
 /**

@@ -84,9 +84,11 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   }
 
   function runResearch(params){
-
-    vm.filtersFmt = Inventory.formatFilterParameters(params);
-    Inventory.search(params)
+    if(params){
+      vm.filtersFmt = Inventory.formatFilterParameters(params);  
+    }
+    
+    Inventory.read(null, params)
       .then(function (rows) {
         vm.gridOptions.data = rows;
       })
@@ -122,18 +124,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.filters = {};
 
     // if filters are directly passed in
-    if ($state.params.filters) {
-      runResearch($state.params.filters);
-
-    } else {
-      Inventory.read()
-        .then(function (inventory) {
-          vm.gridOptions.data = inventory;
-        })
-        .catch(Notify.handleError);
-    }
-
-
+    runResearch($state.params.filters);
 
     // load the cached filter state
     vm.filterEnabled = cache.filterEnabled || false;

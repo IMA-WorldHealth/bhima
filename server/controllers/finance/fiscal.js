@@ -621,7 +621,6 @@ function closing(req, res, next) {
     .done();
 }
 
-
 /**
  * @method getPeriodCurrent
  *

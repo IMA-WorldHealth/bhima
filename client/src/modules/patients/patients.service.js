@@ -37,8 +37,6 @@ function PatientService($http, util, Session, $uibModal,
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
 
-  // uses the "search" endpoint to pass query strings to the database
-  service.search = search;
   service.searchByName = searchByName;
   service.formatFilterParameters = formatFilterParameters;
 
@@ -48,15 +46,26 @@ function PatientService($http, util, Session, $uibModal,
   service.latest = latest;
   service.balance = balance;
 
+
+
   /**
+   *
+   * @method read
+   *
    * This method returns information on a patient given the patients UUID. This
    * route provides almost all of the patients attributes.
+   * Uses query strings to generically search for patients.   
+   * @param {object} options - a JSON of options to be parsed by Angular's
+   * paramSerializer
    *
    * @param {String|Null} uuid   The patient's UUID  (could be null)
    * @return {Object}       Promise object that will return patient details
    */
-  function read(uuid) {
-    return $http.get(baseUrl.concat(uuid || ''))
+  function read(uuid, parameters) {
+    parameters = angular.copy(parameters || {});
+    var target = baseUrl.concat(uuid || '');
+
+    return $http.get(target, { params : parameters })
       .then(util.unwrapHttpResponse);
   }
 
@@ -143,23 +152,6 @@ function PatientService($http, util, Session, $uibModal,
     var path = baseUrl.concat(uuid, '/groups');
 
     return $http.post(path, options)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * Uses query strings to generically search for patients.
-   *
-   * @method search
-   *
-   * @param {object} options - a JSON of options to be parsed by Angular's
-   * paramSerializer
-   */
-  function search(options) {
-    options = angular.copy(options || {});
-
-    var target = baseUrl.concat('search');
-
-    return $http.get(target, { params : options })
       .then(util.unwrapHttpResponse);
   }
 

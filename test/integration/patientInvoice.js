@@ -64,19 +64,19 @@ describe('(/invoices) Patient Invoices', function () {
   });
 
 
-  describe('(/invoices/search) Search interface for the invoices table', function () {
+  describe('(/invoices) Search interface for the invoices table', function () {
 
     // no parameters provided
-    it('GET /invoices/search should return all invoices if no query string provided', function () {
-      return agent.get('/invoices/search')
+    it('GET /invoices/ should return all invoices if no query string provided', function () {
+      return agent.get('/invoices')
         .then(function (res) {
           helpers.api.listed(res, numInvoices + numCreatedInvoices);
         })
         .catch(helpers.handler);
     });
 
-    it('GET /invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', function () {
-      return agent.get('/invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
+    it('GET /invoices?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', function () {
+      return agent.get('/invoices?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
         .then(function (res) {
           helpers.api.listed(res, 5);
         })
@@ -84,8 +84,8 @@ describe('(/invoices) Patient Invoices', function () {
     });
 
     // valid filter, but no results expected
-    it('GET /invoices/search?cost=0 should return no invoices', function () {
-      return agent.get('/invoices/search?cost=0')
+    it('GET /invoices?cost=0 should return no invoices', function () {
+      return agent.get('/invoices?cost=0')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -95,8 +95,8 @@ describe('(/invoices) Patient Invoices', function () {
     });
 
     // invalid filter should fail with database error
-    it('GET /invoices/search?invalidKey=invalidValue should error w/ 400 status', function () {
-      return agent.get('/invoices/search?invalidKey=invalidValue')
+    it('GET /invoices?invalidKey=invalidValue should error w/ 400 status', function () {
+      return agent.get('/invoices?invalidKey=invalidValue')
         .then(function (res) {
           helpers.api.errored(res, 400);
         })
@@ -104,8 +104,8 @@ describe('(/invoices) Patient Invoices', function () {
     });
 
     // filter should find exactly one result
-    it('GET /invoices/search?cost=75 should return a single invoice', function () {
-      return agent.get('/invoices/search?cost=75')
+    it('GET /invoices?cost=75 should return a single invoice', function () {
+      return agent.get('/invoices?cost=75')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -119,10 +119,10 @@ describe('(/invoices) Patient Invoices', function () {
      * @fixme: there is more than one `project_id` which are returned,
      * the reason is the join between invoice and voucher tables
      * @fixme: not secure utility `util.queryCondition()` which allows to `table.column` synthax
-     * ex. /invoices/search?cost=75&project.id=1
+     * ex. /invoices?cost=75&project.id=1
      */
-    it.skip('GET /invoices/search?cost=75&project_id=1 should return a single invoice (combined filter)', function () {
-      return agent.get('/invoices/search?cost=75&project_id=1')
+    it.skip('GET /invoices?cost=75&project_id=1 should return a single invoice (combined filter)', function () {
+      return agent.get('/invoices?cost=75&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -134,8 +134,8 @@ describe('(/invoices) Patient Invoices', function () {
     /**
      * @fixme: same as above
      */
-    it.skip('GET /invoices/search?cost=15&project_id=1 should not return any results', function () {
-      return agent.get('/invoices/search?cost=15&project_id=1')
+    it.skip('GET /invoices?cost=15&project_id=1 should not return any results', function () {
+      return agent.get('/invoices?cost=15&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;

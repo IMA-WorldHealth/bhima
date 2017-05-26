@@ -41,7 +41,6 @@ exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
 exports.createItemsMetadata = createItemsMetadata;
 exports.updateItemsMetadata = updateItemsMetadata;
-exports.getItemsMetadataSearch = getItemsMetadataSearch;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
@@ -110,20 +109,26 @@ function getIds() {
 * @function getItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function getItemsMetadata() {
-  const sql =
-    `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
-      i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval
-    FROM inventory AS i JOIN inventory_type AS it
-      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
-      i.type_id = it.id AND i.group_uuid = ig.uuid AND
-      i.unit_id = iu.id
-    ORDER BY i.code;`;
+function getItemsMetadata(params) {
+  const filters = new FilterParser(params, { tableAlias : 'inventory' });
 
-  return db.exec(sql);
+  const sql =
+    `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
+      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
+      inventory.unit_weight, inventory.unit_volume, ig.sales_account, inventory.default_quantity
+    FROM inventory JOIN inventory_type AS it
+      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
+      inventory.unit_id = iu.id`;
+
+  filters.fullText('text', 'text', 'inventory');
+  filters.setOrder('ORDER BY inventory.code ASC');
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
+
 
 /**
 * This function finds inventory metadata for a particular inventory item.  The
@@ -148,26 +153,6 @@ function getItemsMetadataById(uid) {
   return db.one(sql, [db.bid(uid), uid, 'inventory']);
 }
 
-
-function getItemsMetadataSearch(params) {
-  const filters = new FilterParser(params, { tableAlias : 'inventory' });
-
-  const sql =
-    `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.text AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable, inventory.stock_min,
-      inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
-      inventory.unit_weight, inventory.unit_volume, ig.sales_account, inventory.default_quantity
-    FROM inventory JOIN inventory_type AS it
-      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
-      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
-      inventory.unit_id = iu.id`;
-
-  filters.fullText('text', 'text', 'inventory');
-  filters.setOrder('ORDER BY inventory.code ASC');
-  const query = filters.applyQuery(sql);
-  const parameters = filters.parameters();
-  return db.exec(query, parameters);
-}
 
 /**
 * Coerces values in to truth-y and false-y values.  Returns true if

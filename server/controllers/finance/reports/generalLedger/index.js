@@ -35,14 +35,14 @@ function renderReport(req, res, next) {
   });
   let report;
   let data;
-  let currentDate = new Date();
+  const currentDate = new Date();
 
   try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, options);
   } catch (e) {
     return next(e);
   }
-  
+
   return Fiscal.getPeriodCurrent(currentDate)
     .then((rows) => {
       return GeneralLedger.getlistAccounts(rows);

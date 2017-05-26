@@ -277,8 +277,8 @@ describe('(/inventory) The Inventory HTTP API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata/search Returns the list of filtered inventories', () => {
-    return agent.get('/inventory/metadata/search')
+  it('GET /inventory/metadata Returns the list of filtered inventories', () => {
+    return agent.get('/inventory/metadata')
       .query(metadataSearch)
       .then((res) => {
         expect(res).to.have.status(200);
