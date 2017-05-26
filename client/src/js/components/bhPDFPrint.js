@@ -33,7 +33,7 @@ angular.module('bhima.components')
 });
 
 
-bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService'];
+bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService', 'NotifyService'];
 
 /**
  * @class bhPDFPrintController
@@ -61,7 +61,7 @@ bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout'
  *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages) {
+function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages, Notify) {
   var cachedRequest;
   var component = this;
 
@@ -91,7 +91,7 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages)
   // to compensate for the delay in browsers opening the print dialog
   var loadingIndicatorDelay = 1000;
 
-  function print() {
+  function print() {    
     var url = component.pdfUrl;
     var configuration = requestOptions();
 
@@ -104,12 +104,15 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages)
 
     cachedRequest = configuration;
     component.$loading = true;
-
+    var testUrl =  false;
     // return the value to allow the controller to perform error handling
     return $http.get(url, {params : configuration, responseType : responseType})
       .then(function (result) {
         var file = new Blob([result.data], {type : pdfType});
         var fileURL = URL.createObjectURL(file);
+
+        // Check if fileURL return a valide file
+        testUrl = fileURL ? true : false;
 
         // expose the stored pdf to the hidden view
         // the print method is automatically called with the load listener on the $window option
@@ -127,6 +130,11 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages)
       })
       .finally(function () {
         $timeout(toggleLoading, loadingIndicatorDelay);
+        // Check if was not found on the server
+        if(!testUrl) {
+          Notify.danger('FORM.WARNINGS.DOC_NOT_FOUND');
+        }
+
       });
   }
 
