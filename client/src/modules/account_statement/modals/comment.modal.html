@@ -1,0 +1,34 @@
+<form name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  bh-form-defaults
+  novalidate>
+
+  <div class="modal-header" translate>
+    ACCOUNT_STATEMENT.COMMENT
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      {{ $ctrl.rows.length || 0 }}
+      <label translate>ACCOUNT_STATEMENT.SELECTED_ROWS</label>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.comment.$invalid }">
+      <input type="text" class="form-control" name="comment" ng-model="$ctrl.comment" required>
+
+      <div class="help-block" ng-messages="ModalForm.comment.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="$ctrl.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

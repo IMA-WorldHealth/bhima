@@ -111,6 +111,28 @@ function selectRow(gridId, rowNum) {
     .perform();
 }
 
+/**
+  * @name expectCellValueMatch
+  * @description Checks that a cell matches the specified value,
+  * takes a regEx or a simple string.
+  * @param {string} gridId the id of the grid that you want to inspect
+  * @param {integer} row the number of the row (within the visible rows)
+  * that you want to check the value of
+  * @param {integer} col the number of the column (within the visible columns)
+  * that you want to check the value of
+  * @param {string} value a regex or string of the value you expect in that cell
+  *
+  * @example
+  * <pre>
+  *   gridTestUtils.expectCellValueMatch('myGrid', 0, 2, 'CellValue');
+  * </pre>
+  *
+  */
+function expectCellValueMatch(gridId, row, col, value) {
+  var dataCell = getCell(gridId, row, col);
+  expect(dataCell.getText()).to.eventually.equal(value);
+}
+
 exports.getGrid = getGrid;
 exports.getRows = getRows;
 exports.getRow = getRow;
@@ -122,3 +144,4 @@ exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;
 exports.expectHeaderColumns = expectHeaderColumns;
 exports.selectRow = selectRow;
+exports.expectCellValueMatch = expectCellValueMatch;

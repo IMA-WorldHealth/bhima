@@ -151,7 +151,7 @@ function JournalController(Journal, Sorting, Grouping,
 
     { field            : 'period_end',
       displayName      : 'TABLE.COLUMNS.PERIOD',
-      headerCellFilter : 'translate' ,
+      headerCellFilter : 'translate',
       cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
       visible          : false,
       enableCellEdit   : false },
@@ -280,9 +280,9 @@ function JournalController(Journal, Sorting, Grouping,
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
 
-    vm.gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+    vm.gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
       if (newValue != oldValue) {
-        propagate(colDef.field,newValue);
+        propagate(colDef.field, newValue);
       }
     });
   }
@@ -294,7 +294,7 @@ function JournalController(Journal, Sorting, Grouping,
     });
   }
 
-  function propagate(column, value) {
+  function propagate(column, value){
     var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
 
     // Check if the column updated must be propragated in all transaction
@@ -322,7 +322,7 @@ function JournalController(Journal, Sorting, Grouping,
       return;
     }
 
-    $state.go('trialBalanceMain', { records: vm.grouping.getSelectedGroups() });
+    $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
   };
 
   // format Export Parameters

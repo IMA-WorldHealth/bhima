@@ -7,7 +7,7 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.POSTING_JOURNAL </li>
+      <li class="static" translate> {{ ModalCtrl.options.title || 'TREE.POSTING_JOURNAL' }} </li>
       <li class="title" translate> FORM.INFO.SEARCH </li>
     </ol>
   </div>
@@ -30,14 +30,17 @@
           </div>
         </div>
 
-        <bh-account-select
-          account-id="ModalCtrl.options.account_id"
-          name="account_id"
-          on-select-callback="ModalCtrl.onSelectAccount(account)"
-          exclude-title-accounts="true"
-          required="0">
-          <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
-        </bh-account-select>
+        <!-- hasDefaultAccount is used to set a default account selection behavior -->
+        <div ng-if="!ModalCtrl.hasDefaultAccount">
+          <bh-account-select
+            account-id="ModalCtrl.searchQueries.account_id"
+            name="account_id"
+            on-select-callback="ModalCtrl.onSelectAccount(account)"
+            exclude-title-accounts="true"
+            required="0">
+            <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
+          </bh-account-select>
+        </div>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
           <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
@@ -108,6 +111,16 @@
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
+          <!-- hasDefaultAccount is used to set a default account selection behavior -->
+          <div ng-if="ModalCtrl.hasDefaultAccount">
+            <bh-account-select
+              account-id="ModalCtrl.defaultQueries.account_id"
+              name="account_id"
+              on-select-callback="ModalCtrl.onSelectAccount(account)"
+              exclude-title-accounts="true"
+              required="0">
+            </bh-account-select>
+          </div>
 
           <!-- period selection -->
           <!-- start period selection component -->
@@ -124,7 +137,6 @@
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-
           </div>
           <!-- posted/ non-posted records -->
           <!-- <div class="form-group"> -->

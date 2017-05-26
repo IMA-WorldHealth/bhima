@@ -122,29 +122,29 @@ function FilterService(Store) {
     return activeFilters.map(function (filter) {
       return filter._key.concat(':', filter._label);
     });
-  }
+  };
 
   FilterList.prototype.formatCache = function formatCache() {
     return angular.copy(this._filterIndex);
-  }
+  };
 
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {
     Object.keys(storedCache).forEach(function (key) {
       var cached = storedCache[key];
       var currentFilter = this._filterIndex[key];
-      if(currentFilter) {
+      if (currentFilter) {
         currentFilter.setValue(cached._value, cached._displayValue);
       }
     }.bind(this));
-  }
+  };
 
   FilterList.prototype._indexList = function indexList(index, list) {
     index = list.reduce(function (aggregateIndex, filterDefinition) {
       aggregateIndex[filterDefinition._key] = filterDefinition;
       return aggregateIndex;
     }, index);
-  }
+  };
 
   // returns a flat array of filters that have values (and should be applied)
   FilterList.prototype._filterActiveFilters = function filterActiveFilters() {
@@ -158,7 +158,7 @@ function FilterService(Store) {
       }
     }.bind(this));
     return filtered;
-  }
+  };
 
   // expose Filter data element
   FilterList.prototype.Filter = Filter;
@@ -178,9 +178,10 @@ function Filter(key, label, valueFilter) {
 
   this.setDefault = function setDefault(value) {
     this._isDefault = value;
-  }
+  };
+
   this.setValue = function setValue(value, displayValue) {
     this._value = value;
     this._displayValue = displayValue;
-  }
+  };
 }

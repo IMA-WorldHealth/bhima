@@ -1,0 +1,8 @@
+{
+  "ACCOUNT_STATEMENT":{
+    "TITLE":"Relevé de compte",
+    "COMMENT":"Commentaire",
+    "SELECTED_ROWS":"Ligne(s) selectionnée(s)",
+    "SUCCESSFULLY_COMMENTED":"Ligne(s) commentées avec succès" 
+  }
+}

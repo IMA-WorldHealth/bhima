@@ -2,14 +2,19 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService', 'Store', 'filters', 'PeriodService', 'VoucherService', '$translate', 'util',
+  '$uibModalInstance', 'ProjectService', 'NotifyService',
+  'Store', 'filters', 'options', 'PeriodService', 'VoucherService', '$translate',
+  'AccountService', 'util',
 ];
 
-function JournalSearchModalController(Instance, Projects, Notify, Store, filters, Periods, Vouchers, $translate, util) {
+function JournalSearchModalController(Instance, Projects, Notify,
+  Store, filters, options, Periods, Vouchers, $translate,
+  Account, util) {
   var vm = this;
 
-  var changes = new Store({ identifier: 'key' });
+  var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
+  vm.options = options;
 
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
@@ -22,10 +27,37 @@ function JournalSearchModalController(Instance, Projects, Notify, Store, filters
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
+  /**
+   * hasDefaultAccount is used to set a default account selection behavior
+   * if the search modal need to set account selection in default query panel we can send it
+   * as parameters
+   * @example
+   * <pre>
+   * Config.openSearchModal(filters, { hasDefaultAccount : true })
+   * </pre>
+   */
+  if (options.hasDefaultAccount) {
+    vm.hasDefaultAccount = true;
+  }
+
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
+
+  // assing default account
+  if (filters.account_id) {
+    vm.defaultQueries.account_id = filters.account_id;
+  }
+
+  Account.read()
+    .then(function (accounts) {
+      vm.hrAccounts = accounts.reduce(function (aggregate, account) {
+        aggregate[account.id] = String(account.number).concat(' - ', account.label);
+        return aggregate;
+      }, {});
+    })
+    .catch(Notify.handleError);
 
   Projects.read()
     .then(function (projects) {
@@ -83,7 +115,11 @@ function JournalSearchModalController(Instance, Projects, Notify, Store, filters
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        if (key === 'account_id') {
+          changes.post({ key : key, value : value, displayValue : vm.hrAccounts[value] });
+        } else {
+          changes.post({ key : key, value : value });
+        }
       }
     });
 

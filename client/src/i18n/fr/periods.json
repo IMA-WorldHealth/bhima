@@ -15,7 +15,7 @@
     "PERIOD_LIMIT" : "Limite de période",
     "CUSTOM_FROM" : "de",
     "CUSTOM_TO" : "à",
-    "SELECT_PERIOD" : "Période choisie",
+    "SELECT_PERIOD" : "Choisir une période",
     "SELECT_CUSTOM_PERIOD" : "Période personnalisée",
 	"SUBMIT_CUSTOM_PERIOD" : "Valider la période"
   }

@@ -183,6 +183,7 @@
 "CLIENT_TO_IGNORE":"Client(s) to ignore",
 "CODE":"Code",
 "COLUMNS":"Columns",
+"COMMENT":"Comment",
 "CONFIRMATION":"Confirmation",
 "CONTACT":"Contact",
 "CONTACT_ADMIN":"Please contact the administrator",

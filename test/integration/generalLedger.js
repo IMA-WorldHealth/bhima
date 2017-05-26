@@ -16,7 +16,7 @@ describe('(/general_ledger) API endpoint', function () {
     allRecords : {number : 2},
   };
 
-  const NUM_ROW_ALL_RECORDS = 2;
+  const NUM_ROW_ALL_RECORDS = 4;
 
   it('GET /general_ledger : it returns a set of records after receiving data from posting journal ', function () {
 

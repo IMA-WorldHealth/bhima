@@ -1,0 +1,8 @@
+{
+  "ACCOUNT_STATEMENT":{
+    "TITLE":"Account Statement",
+    "COMMENT":"Comment",
+    "SELECTED_ROWS":"Selected Rows",
+    "SUCCESSFULLY_COMMENTED":"Rows successfully commented" 
+  }
+}
