@@ -111,11 +111,11 @@ function lookup(id) {
 
 /**
  *
- * @method search
+ * @method read
  *
  * @description
  * Lists the cash payments with optional filtering parameters.
- * @description search cash payment by some filters given
+ * search cash payment by some filters given
  *
  * GET /cash
  *
