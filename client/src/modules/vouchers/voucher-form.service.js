@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
-  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout', '$translate'
+  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout', '$translate',
 ];
 
 /**
@@ -16,15 +16,18 @@ VoucherFormService.$inject = [
  *
  * @todo - finish the caching implementation
  */
-function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout, $translate) {
-
-  var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
-
+function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout,
+  $translate
+) {
   // Error Flags
-  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE'; // must have transaction_type for certain cases
-  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION'; // must have sum(debits) === sum(credits)
-  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION'; // must have > 1 unique accounts
-  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION'; // must have > 1 rows
+  // must have transaction_type for certain cases
+  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
+  // must have sum(debits) === sum(credits)
+  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
+  // must have > 1 unique accounts
+  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
+  // must have > 1 rows
+  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
 
   // applied to the reduce
   function sumDebitsAndCredits(aggregates, row) {
@@ -48,7 +51,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
   /** @constructor */
   function VoucherForm(cacheKey) {
-
     if (!cacheKey) {
       throw new Error(
         'VoucherForm expected a cacheKey, but it was not provided.'
@@ -66,12 +68,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     var self = this;
 
     // load cashboxes for their accounts.
-    Cashboxes.read(null, { detailed: 1 })
+    Cashboxes.read(null, { detailed : 1 })
       .then(function (cashboxes) {
-
         self.cashAccounts = cashboxes
 
-          // collect a lost of all cashbox acounts
+          // collect a lost of all cashbox accounts
           .reduce(function (accounts, cashbox) {
             return accounts.concat([ cashbox.account_id, cashbox.transfer_account_id ]);
           }, [])
@@ -163,7 +164,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     }
 
     // validate that this uses multiple accounts in the transaction
-    
+
     // To prevent calling the validation function when selecting the transaction type before selecting accounts
     var hasNullAccounts = (uniqueAccountsArray.length === 0);
 
@@ -189,7 +190,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
       // return the boolean condition to the caller
       return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
-    }  
+    }
   };
 
   /**
@@ -243,7 +244,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * @method removeItem
    *
    * @description
-   * This method removes an item from the ui-grid by its index.
+   * This method removes an item from the ui-grid by its uuid.
    */
   VoucherForm.prototype.removeItem = function removeItem(uuid) {
     return this.store.remove(uuid);
@@ -256,7 +257,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * This method clears the entire grid, removing all items from the grid.
    */
   VoucherForm.prototype.clear = function clear() {
-
     this.store.clear();
 
     // directly running setup after clear adds the voucher items that have been
@@ -276,13 +276,13 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   /**
    * @method replaceFormRows
    */
-  VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) { 
+  VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) {
     this.clear();
 
     var form = this;
     var n = rows.length;
-    
-    rows.forEach(function (row) { 
+
+    rows.forEach(function (row) {
       form.addItems(1);
 
       var lastRowIdx = form.store.data.length - 1;
@@ -323,7 +323,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * @description
    * Checks to see if the invoice has cached items to recover.
    */
-  VoucherForm.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+  VoucherForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
   };
 
