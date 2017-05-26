@@ -144,10 +144,6 @@ function lookupAccountType(id) {
 
   return db.one(sql, id)
     .then((row) => {
-      if (row.length === 0) {
-        throw new NotFound(`Could not find an account type with id ${id}.`);
-      }
-
       return row;
     });
 }

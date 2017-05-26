@@ -33,10 +33,6 @@ function lookupBillingService(id) {
 
   return db.one(sql, [id])
     .then((row) => {
-      // if no records matching, throw a 404
-      if (row.length === 0) {
-        throw new NotFound(`Could not find a billing service with id: ${id}.`);
-      }
       // return a single JSON of the record
       return row;
     });

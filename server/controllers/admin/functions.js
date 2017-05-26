@@ -15,9 +15,6 @@ function lookupFunction(id) {
 
   return db.one(sql, [id])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a Function with id ${id}`);
-    }
     return row;
   });
 }

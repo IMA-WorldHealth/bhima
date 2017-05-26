@@ -136,16 +136,6 @@ function detail(req, res, next) {
 
   db.one(sql, [req.session.enterprise.id, uid])
   .then((row) => {
-    // make sure we find at least one depot
-    if (row.length < 1) {
-      res.status(404).json({
-        code : 'ERR_NO_DEPOT',
-        reason : `No depot was found matching the uuid:${uuid.unparse(uid)}`,
-      });
-
-      return;
-    }
-
     // return the json
     res.status(200).json(row);
   })

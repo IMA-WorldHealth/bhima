@@ -189,10 +189,6 @@ function lookupVillage(uid) {
 
   return db.one(sql, [bid])
     .then(function (row) {
-      if (row.length === 0) {
-        throw new NotFound(`Could not find a village with uuid ${uid}.`);
-      }
-
       return row;
     });
 }
@@ -211,10 +207,6 @@ function lookupSector(uid) {
 
   return db.one(sql, [bid])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a sector with uuid ${uid}.`);
-    }
-
     return row;
   });
 }
@@ -230,10 +222,6 @@ function lookupProvince(uid) {
 
   return db.one(sql, [bid])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a province with uuid ${uid}.`);
-    }
-
     return row;
   });
 }
@@ -248,10 +236,6 @@ function lookupCountry(uid) {
 
   return db.one(sql, [bid])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a country with uuid ${uid}.`);
-    }
-
     return row;
   });
 }
@@ -280,10 +264,6 @@ exports.detail = function detail(req, res, next) {
 
   db.one(sql, [bid])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a location with id ${uuid.unparse(bid)}`);
-    }
-
     res.status(200).json(row);
   })
   .catch(next)

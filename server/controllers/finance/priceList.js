@@ -70,11 +70,6 @@ function lookupPriceList(uid) {
 
   return db.one(sql, [uid])
     .then((row) => {
-      // if no matches found, send a 404 error
-      if (row.length === 0) {
-        throw new NotFound(`Could not find a price list with uuid ${uuid.unparse(uid)}`);
-      }
-
       priceList = row;
 
       sql =

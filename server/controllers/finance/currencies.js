@@ -36,9 +36,6 @@ exports.detail = function detail(req, res, next) {
 
   db.one(sql, [req.params.id])
   .then(function (row) {
-    if (row.length === 0) {
-      throw new NotFound(`Could not find a currency with id ${req.params.id}`);
-    }
     res.status(200).json(row);
   })
   .catch(next)
