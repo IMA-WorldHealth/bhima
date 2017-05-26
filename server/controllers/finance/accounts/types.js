@@ -142,13 +142,13 @@ function lookupAccountType(id) {
   const sql =
     'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?;';
 
-  return db.exec(sql, id)
-    .then((rows) => {
-      if (rows.length === 0) {
+  return db.one(sql, id)
+    .then((row) => {
+      if (row.length === 0) {
         throw new NotFound(`Could not find an account type with id ${id}.`);
       }
 
-      return rows[0];
+      return row;
     });
 }
 

@@ -34,12 +34,12 @@ exports.detail = function detail(req, res, next) {
     FROM currency AS c
     WHERE c.id = ?;`;
 
-  db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    if (rows.length === 0) {
+  db.one(sql, [req.params.id])
+  .then(function (row) {
+    if (row.length === 0) {
       throw new NotFound(`Could not find a currency with id ${req.params.id}`);
     }
-    res.status(200).json(rows[0]);
+    res.status(200).json(row);
   })
   .catch(next)
   .done();

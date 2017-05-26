@@ -31,14 +31,14 @@ function lookupBillingService(id) {
     FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
-  return db.exec(sql, [id])
-    .then((rows) => {
+  return db.one(sql, [id])
+    .then((row) => {
       // if no records matching, throw a 404
-      if (rows.length === 0) {
+      if (row.length === 0) {
         throw new NotFound(`Could not find a billing service with id: ${id}.`);
       }
       // return a single JSON of the record
-      return rows[0];
+      return row;
     });
 }
 
