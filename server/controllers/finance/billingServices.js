@@ -31,11 +31,7 @@ function lookupBillingService(id) {
     FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
-  return db.one(sql, [id])
-    .then((row) => {
-      // return a single JSON of the record
-      return row;
-    });
+  return db.one(sql, [id]);
 }
 
 

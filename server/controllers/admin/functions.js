@@ -13,10 +13,7 @@ function lookupFunction(id) {
     `SELECT id, fonction_txt FROM fonction
     WHERE fonction.id = ?`;
 
-  return db.one(sql, [id])
-  .then(function (row) {
-    return row;
-  });
+  return db.one(sql, [id]);
 }
 
 

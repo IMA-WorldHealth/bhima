@@ -142,10 +142,7 @@ function lookupAccountType(id) {
   const sql =
     'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?;';
 
-  return db.one(sql, id)
-    .then((row) => {
-      return row;
-    });
+  return db.one(sql, id);
 }
 
 exports.list = list;

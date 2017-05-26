@@ -187,10 +187,7 @@ function lookupVillage(uid) {
       province.country_uuid = country.uuid
     WHERE village.uuid = ?;`;
 
-  return db.one(sql, [bid])
-    .then(function (row) {
-      return row;
-    });
+  return db.one(sql, [bid]);
 }
 
 function lookupSector(uid) {
@@ -205,10 +202,7 @@ function lookupSector(uid) {
       province.country_uuid = country.uuid
     WHERE sector.uuid = ?;`;
 
-  return db.one(sql, [bid])
-  .then(function (row) {
-    return row;
-  });
+  return db.one(sql, [bid]);
 }
 
 function lookupProvince(uid) {
@@ -220,10 +214,7 @@ function lookupProvince(uid) {
       province.country_uuid = country.uuid
     WHERE province.uuid = ?;`;
 
-  return db.one(sql, [bid])
-  .then(function (row) {
-    return row;
-  });
+  return db.one(sql, [bid]);
 }
 
 function lookupCountry(uid) {
@@ -234,10 +225,7 @@ function lookupCountry(uid) {
     FROM country
     WHERE country.uuid = ?;`;
 
-  return db.one(sql, [bid])
-  .then(function (row) {
-    return row;
-  });
+  return db.one(sql, [bid]);
 }
 
 /**
