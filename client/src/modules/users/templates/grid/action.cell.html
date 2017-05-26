@@ -1,17 +1,34 @@
-<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
-  <a href>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body>
+  <a uib-dropdown-toggle href>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
-    <li><a data-method="edit" ng-click="grid.appScope.edit(row.entity)" href><i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span></a></li>
-    <li><a data-method="permission" ng-click="grid.appScope.editPermissions(row.entity)" href><i class="fa fa-key"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span></a></li>
-    <li ng-if="!row.entity.deactivated"><a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
-      <i class="fa fa-lock"></i> <span translate>FORM.LABELS.DEACTIVATE</span></a>
+    <li>
+      <a data-method="edit" ng-click="grid.appScope.edit(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
     </li>
-    <li ng-if="row.entity.deactivated"><a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
-      <i class="fa fa-unlock"></i><span translate>FORM.LABELS.ACTIVATE</span></a>
+    <li>
+      <a data-method="permission" ng-click="grid.appScope.editPermissions(row.entity)" href>
+        <i class="fa fa-key"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li ng-if="!row.entity.deactivated">
+      <a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
+        <span class="text-danger">
+          <i class="fa fa-lock"></i> <span translate>FORM.LABELS.DEACTIVATE</span>
+        </span>
+      </a>
+    </li>
+    <li ng-if="row.entity.deactivated">
+      <a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
+        <span class="text-danger">
+          <i class="fa fa-unlock"></i><span translate>FORM.LABELS.ACTIVATE</span>
+        </span>
+      </a>
     </li>
   </ul>
 </div>
