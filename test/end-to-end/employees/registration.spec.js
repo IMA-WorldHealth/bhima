@@ -26,7 +26,6 @@ describe.only('Employees', () => {
    };
 
   before(() => {return helpers.navigate(path)});
-  const employeeId = helpers.random(2);
 
   it('creates a new employee', () => {
     registrationPage.setDisplayName(employee.display_name);
@@ -39,8 +38,6 @@ describe.only('Employees', () => {
     registrationPage.setDebtorGroup('Second Test Debtor Group');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
-
-
     registrationPage.setHiringDate(employee.date_embauche); 
     registrationPage.setNumberSpouse(employee.nb_spouse);
     registrationPage.setNumberChild(employee.nb_enfant);       
@@ -52,8 +49,20 @@ describe.only('Employees', () => {
     registrationPage.setBankAccount(employee.bank_account);    
 
     registrationPage.createEmployee();
-    registrationPage.isEmpoyeeCreated();
+    registrationPage.isEmpoyeeCreated(true);
   });
+
+  it('blocks invalid form submission with relevant error classes', () => {
+    // refresh the page to make sure previous data is cleared
+    browser.refresh();
+
+     // verify we are in the current path
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+
+    registrationPage.createEmployee();   
+    registrationPage.requiredFIeldErrored();
+    registrationPage.noRequiredFieldOk();
+  });  
 
   it.skip('edits an employee', () => {
     element(by.id(`employee-upd-${employeeId}`)).click();
@@ -76,37 +85,5 @@ describe.only('Employees', () => {
 
     // make sure the success message appears
     components.notification.hasSuccess();
-  });
-
-  it.skip('blocks invalid form submission with relevant error classes', () => {
-    FU.buttons.create();
-
-    // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
-    element(by.id('submit-employee')).click();
-
-    // the following fields should be required
-    FU.validation.error('EmployeeCtrl.employee.display_name');
-    FU.validation.error('EmployeeCtrl.employee.sexe');
-    FU.validation.error('EmployeeCtrl.employee.code');
-    FU.validation.error('EmployeeCtrl.employee.service_id');
-    FU.validation.error('EmployeeCtrl.employee.grade_id');
-    FU.validation.error('EmployeeCtrl.employee.fonction_id');
-    FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
-    FU.validation.error('EmployeeCtrl.employee.debtor_group_uuid');
-    FU.validation.error('EmployeeCtrl.employee.adresse');
-
-    // the following fields are not required
-    FU.validation.ok('EmployeeCtrl.employee.locked');
-    FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
-    FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
-    FU.validation.ok('EmployeeCtrl.employee.locked');
-    FU.validation.ok('EmployeeCtrl.employee.phone');
-    FU.validation.ok('EmployeeCtrl.employee.email');
-    FU.validation.ok('EmployeeCtrl.employee.bank');
-    FU.validation.ok('EmployeeCtrl.employee.bank_account');
-
-    components.notification.hasDanger();
   });
 });

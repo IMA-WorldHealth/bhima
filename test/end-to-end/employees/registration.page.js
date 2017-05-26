@@ -114,9 +114,36 @@ function RegistrationPage (){
         components.locationSelect.set(locations, 'current-location-id');    
     }
     
-    function isEmpoyeeCreated (){
-        return FU.exists(by.id('receipt-confirm-created'), true);
+    function isEmpoyeeCreated (resp){
+        return FU.exists(by.id('receipt-confirm-created'), resp);
     }
+
+    function requiredFIeldErrored (){
+        FU.validation.error('EmployeeCtrl.employee.display_name');
+        FU.validation.error('EmployeeCtrl.employee.sexe');
+        FU.validation.error('EmployeeCtrl.employee.code');
+        FU.validation.error('EmployeeCtrl.employee.grade_id');
+        FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
+        FU.validation.error('EmployeeCtrl.employee.debtor_group_uuid');
+        FU.validation.error('EmployeeCtrl.employee.dob');
+        FU.validation.error('EmployeeCtrl.employee.hospital_no');
+    }
+
+    function noRequiredFieldOk(){
+        FU.validation.ok('EmployeeCtrl.employee.locked');
+        FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
+        FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
+        FU.validation.ok('EmployeeCtrl.employee.phone');
+        FU.validation.ok('EmployeeCtrl.employee.email');
+        FU.validation.ok('EmployeeCtrl.employee.bank');
+        FU.validation.ok('EmployeeCtrl.employee.bank_account');
+        FU.validation.ok('EmployeeCtrl.employee.service_id');
+        FU.validation.ok('EmployeeCtrl.employee.fonction_id');
+        FU.validation.ok('EmployeeCtrl.employee.adresse');
+    }
+
+    
+    // components.notification.hasDanger();
 
 
     page.createEmployee = createEmployee;
@@ -140,6 +167,8 @@ function RegistrationPage (){
     page.setOriginLocation = setOriginLocation;
     page.setCurrentLocation = setCurrentLocation;
     page.isEmpoyeeCreated = isEmpoyeeCreated;
+    page.requiredFIeldErrored = requiredFIeldErrored;
+    page.noRequiredFieldOk = noRequiredFieldOk;
 }
 
 module.exports = RegistrationPage;
