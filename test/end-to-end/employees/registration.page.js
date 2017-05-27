@@ -142,10 +142,6 @@ function RegistrationPage (){
         FU.validation.ok('EmployeeCtrl.employee.adresse');
     }
 
-    
-    // components.notification.hasDanger();
-
-
     page.createEmployee = createEmployee;
     page.setDisplayName = setDisplayName;
     page.setDob = setDob;

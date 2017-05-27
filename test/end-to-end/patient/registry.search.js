@@ -28,7 +28,7 @@ function PatientRegistrySearch() {
     dateBirthTo2: '16/05/2016',
   };
 
-  const defaultVisibleRowNumber = 1;
+  const defaultVisibleRowNumber = 2;
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
@@ -132,7 +132,7 @@ function PatientRegistrySearch() {
 
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(3);
     FU.buttons.clear();
   });
@@ -145,7 +145,7 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
+    expectNumberOfGridRows(2);
     expectNumberOfFilters(3);
 
     // click the "clear filters" button

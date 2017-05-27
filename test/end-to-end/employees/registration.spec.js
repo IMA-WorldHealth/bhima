@@ -7,7 +7,7 @@ const RegistrationPage = require('./registration.page.js');
 
 helpers.configure(chai);
 
-describe.only('Employees', () => {
+describe('Employees', () => {
   const path = '#!/employees/register';
   const registrationPage =  new RegistrationPage();
   const employee = {
@@ -26,6 +26,15 @@ describe.only('Employees', () => {
    };
 
   before(() => {return helpers.navigate(path)});
+
+  it('blocks invalid form submission with relevant error classes', () => {
+    // verify we are in the current path
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+
+    registrationPage.createEmployee();   
+    registrationPage.requiredFIeldErrored();
+    registrationPage.noRequiredFieldOk();
+  });
 
   it('creates a new employee', () => {
     registrationPage.setDisplayName(employee.display_name);
@@ -50,18 +59,7 @@ describe.only('Employees', () => {
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);
-  });
-
-  it('blocks invalid form submission with relevant error classes', () => {
-    // refresh the page to make sure previous data is cleared
-    browser.refresh();
-
-     // verify we are in the current path
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
-    registrationPage.createEmployee();   
-    registrationPage.requiredFIeldErrored();
-    registrationPage.noRequiredFieldOk();
+    browser.refresh();    
   });  
 
   it.skip('edits an employee', () => {
