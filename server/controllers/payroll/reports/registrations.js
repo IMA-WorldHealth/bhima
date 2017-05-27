@@ -28,16 +28,16 @@ const TEMPLATE = './server/controllers/payroll/reports/registrations.handlebars'
 // filtered on.
 function formatFilters(qs) {
   const columns = [
-    { field: 'display_name', displayName: 'FORM.LABELS.NAME' },
-    { field: 'sexe', displayName: 'FORM.LABELS.GENDER' },
-    { field: 'code', displayName: 'FORM.LABELS.CODE' },
-    { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', isDate : true },
-    { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate : true },
-    { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', isDate : true },
-    { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', isDate : true },
-    { field: 'grade_id', displayName: 'FORM.LABELS.GRADE' },
-    { field: 'fonction_id', displayName: 'FORM.LABELS.FUNCTION' },
-    { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
+    { field : 'display_name', displayName : 'FORM.LABELS.NAME' },
+    { field : 'sexe', displayName : 'FORM.LABELS.GENDER' },
+    { field : 'code', displayName : 'FORM.LABELS.CODE' },
+    { field : 'dateBirthFrom', displayName : 'FORM.LABELS.DOB', comparitor : '>', isDate : true },
+    { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
+    { field : 'dateEmbaucheFrom', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '>', isDate : true },
+    { field : 'dateEmbaucheTo', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '<', isDate : true },
+    { field : 'grade_id', displayName : 'FORM.LABELS.GRADE' },
+    { field : 'fonction_id', displayName : 'FORM.LABELS.FUNCTION' },
+    { field : 'service_id', displayName : 'FORM.LABELS.SERVICE' },
   ];
 
   return columns.filter(column => {
@@ -83,16 +83,15 @@ function build(req, res, next) {
   // enforce detailed columns
   options.detailed = 1;
 
-  const sql = 
+  const sql =
   `SELECT 
-	    COUNT(employee.id) AS numEmployees, SUM(sexe = 'F') AS numFemales, 
-        ROUND(SUM(sexe = 'F') / COUNT(employee.id) * 100) AS percentFemales,
-        SUM(sexe = 'M') AS numMales, ROUND(SUM(sexe = 'M') / COUNT(employee.id) * 100) AS percentMales
-    FROM 
-        employee
-    WHERE 
-        employee.id IN (?);
-  `;
+    COUNT(employee.id) AS numEmployees, SUM(sexe = 'F') AS numFemales, 
+    ROUND(SUM(sexe = 'F') / COUNT(employee.id) * 100) AS percentFemales, 
+    SUM(sexe = 'M') AS numMales, ROUND(SUM(sexe = 'M') / COUNT(employee.id) * 100) AS percentMales
+  FROM 
+    employee
+  WHERE 
+    employee.id IN (?);`;
 
   const data = { filters };
 

@@ -12,7 +12,6 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires BadRequest
  * @requires topic
  * @requires filter
  */
@@ -23,7 +22,6 @@ const uuid = require('node-uuid');
 const db = require('./../../../lib/db');
 const topic = require('../../../lib/topic');
 const NotFound = require('./../../../lib/errors/NotFound');
-const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('./../../../lib/filter');
 
 exports.list = list;
@@ -294,7 +292,7 @@ function create(req, res, next) {
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
     'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
-    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid'
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
   ]);
 
   if (employee.dob) {
@@ -315,7 +313,7 @@ function create(req, res, next) {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
     text : `Debiteur [${employee.display_name}]`,
-  };  
+  };
 
   const patient = {
     uuid : employee.patient_uuid,
