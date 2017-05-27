@@ -55,11 +55,11 @@ function formatFilters(qs) {
  * @method build
  *
  * @description
- * This method builds the report of patient registrations to be shipped back to
- * the client.  This method will eventually use the Patients.search() method to
+ * This method builds the report of employee registrations to be shipped back to
+ * the client.  This method will eventually use the Employees.search() method to
  * specify query conditions.
  *
- * GET /reports/patient/registrations
+ * GET /reports/payroll/employees
  */
 function build(req, res, next) {
   const options = _.extend(req.query, { csvKey : 'employees' });

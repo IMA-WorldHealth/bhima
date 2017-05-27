@@ -34,7 +34,6 @@ function EmployeeRegistryModalController(ModalInstance, params, Functions, Grade
 
   Functions.read()
     .then(function (functions) {
-      console.log(functions);
       vm.functions = functions;
     });
 

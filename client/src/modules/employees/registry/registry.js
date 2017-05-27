@@ -17,8 +17,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
   Columns, Sorting, bhConstants, Filters) {
   var vm = this;
-
   var filter = new Filters();
+
   vm.filter = filter;
 
   var cacheKey = 'EmployeeRegistry';
@@ -231,7 +231,6 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     }
 
     if (!cache.filters) { cache.filters = {}; }
-    // var filters = filter.applyDefaults(cache.filters);
 
     vm.filters = cache.filters;
     vm.filtersFmt = Employees.formatFilterParameters(vm.filters || {});
