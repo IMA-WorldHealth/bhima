@@ -17,7 +17,6 @@
 "MISSING_CASH":"Caisse manquante",
 "TITLE":"Selection caisse"},
 "TITLE":"Caisse Auxilliaire",
-"MENUS":"Menus",
 "TRANSFER":{"ACTION":"Vous avez transféré des fonds de la caisse.",
 "TITLE":"Transfert",
 "REMINDER":"S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",

@@ -34,7 +34,6 @@
 "CASH_TRANSFER":"Cash Transfer",
 "REPORT":"Voucher Report",
 "TITLE":"Voucher",
-"MENUS":"Menus",
 "TRANSFER_TYPE_INFO":"Transaction Type in case we have either incomes or expenses",
 "USE_FINANCIAL_ACCOUNT":"Use of cashes or banks accounts in this transaction",
 "RECEIPT":{"SUCCESS":"Voucher Payment recorded successfully."},
