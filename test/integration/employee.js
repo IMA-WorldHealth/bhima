@@ -21,7 +21,7 @@ describe('(/employees) the employees API endpoint', function () {
   var employee = {
     code : 'x500',
     display_name : 'Magnus Carolus Charlemagne',
-    sexe : 'M',
+    sex : 'M',
     dob : dob1,
     date_embauche : embaucheDate,
     nb_spouse : 0,
@@ -44,7 +44,7 @@ describe('(/employees) the employees API endpoint', function () {
   var updateEmployee = {
     code : 'x500',
     display_name : 'Charle Magne De France',
-    sexe : 'M',
+    sex : 'M',
     dob : dob2,
     date_embauche : embaucheDate,
     nb_spouse : 0,
@@ -108,82 +108,82 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-    // HTTP API Test for /employees/search/ routes
-  describe('(/employees/search) Employee Search', function () {
+  it('GET /employees with \'code\' parameter', function () {
+    let conditions = { code : 'x500' };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /employees/search with missing necessary parameters should succeed', function () {
-      return agent.get('/employees/search/?')
-        .then(function (res) {
-          helpers.api.listed(res, 2);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /employees with \'display_name\' parameter', function () {
+    let conditions = { display_name : 'Dedrick' };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /employees/search with \'code\' parameter', function () {
-      let conditions = { code : 'x500' };
-      return agent.get('/employees/search')
-        .query(conditions)
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /employees should be composable when using parameters', function () {
+    let conditions = { sex: 'M', display_name : 'Dedrick' };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /employees/search with \'display_name\' parameter', function () {
-      let conditions = { display_name : 'Dedrick' };
-      return agent.get('/employees/search/')
-        .query(conditions)
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /employees with `name` and `code` parameters for the priority of reference', function () {
+    let conditions = { display_name : 'Dedrick', code : 'E1' };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+        expect(res.body[0].code).to.exist;
+        expect(res.body[0].code).to.be.equals(conditions.code);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /employees/search should be composable', function () {
-      let conditions = { sexe: 'M', display_name : 'Dedrick' };
-      return agent.get('/employees/search/')
-        .query(conditions)
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /employees filter employee of a given service', function () {
+    let conditions = { service_id : 1 };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+        expect(res.body[0].service_id).to.exist;
+        expect(res.body[0].service_id).to.be.equals(conditions.service_id);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /employees/search with `name` and `code` parameters for the priority of reference', function () {
-      let conditions = { display_name : 'Dedrick', code : 'E1' };
-      return agent.get('/employees/search/')
-        .query(conditions)
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-          expect(res.body[0].code).to.exist;
-          expect(res.body[0].code).to.be.equals(conditions.code);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /employees with limit parameters', function () {
+    let conditions = { limit: 5, sex: 'M' };
 
-    it('GET /employees/search with detailed and limit parameters', function () {
-      let conditions = { detailed: 1, limit: 5, sexe: 'M' };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        var expected = [
+          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
+          'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
+          'grade_id', 'basic_salary', 'service_id', 
+          'creditor_uuid', 'locked'
+        ];
 
-      return agent.get('/employees/search/')
-        .query(conditions)
-        .then(function (res) {
-          var expected = [
-            'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
-            'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
-            'grade_id', 'grade', 'basic_salary', 'service_id', 'name', 
-            'creditor_uuid', 'locked'
-          ];
+        helpers.api.listed(res, 2);
 
-          helpers.api.listed(res, 2);
-
-          expect(res.body[0]).to.contain.all.keys(expected);
-          return agent.get('/employees/search/?display_name=Charle&limit=1');
-        })
-        .then(function (res) {
-          helpers.api.listed(res, 1);
-        })
-        .catch(helpers.handler);
-    });
+        expect(res.body[0]).to.contain.all.keys(expected);
+        return agent.get('/employees/?display_name=Charle&limit=1');
+      })
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
   });
 
   it('PUT /employee/:id should update an existing employee ', function () {

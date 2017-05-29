@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 
 /**
  * This class represents an employee registry page
@@ -9,32 +9,28 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const grid = require('../shared/GridUtils');
 
-function EmployeeRegistryPage (){
-    'use strict';
-    const page = this;
-    const gridId = 'employee-registry';
+class EmployeeRegistryPage {
+    constructor (){
+        this.gridId = 'employee-registry';
+    }
+    
 
-    function employeeCount(number, message){
-        grid.expectRowCount(gridId, number, message);
+    employeeCount(number, message){
+        grid.expectRowCount(this.gridId, number, message);
     }
 
-    function filterCount (){
+    filterCount (){
         const filters = $('[data-bh-filter-bar]').all(by.css('.label'));
         return filters.count();        
     }
 
-    function search (){
+    search (){
         FU.buttons.search();
     }
 
-    function clearFilter (){
+    clearFilter (){
         FU.buttons.clear();
     }
-
-    page.employeeCount = employeeCount;   
-    page.search = search; 
-    page.filterCount = filterCount;
-    page.clearFilter = clearFilter;
 }
 
 module.exports = EmployeeRegistryPage;

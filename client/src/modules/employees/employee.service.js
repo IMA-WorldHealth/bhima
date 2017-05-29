@@ -24,7 +24,7 @@ function EmployeeService(Filters, $uibModal, Api) {
   function formatFilterParameters(params) {
     var columns = [
       { field: 'display_name', displayName: 'FORM.LABELS.NAME' },
-      { field: 'sexe', displayName: 'FORM.LABELS.GENDER' },
+      { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
       { field: 'code', displayName: 'FORM.LABELS.CODE' },
       { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
       { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },

@@ -38,36 +38,12 @@ exports.find = find;
  * Returns an array of each employee in the database
  */
 function list(req, res, next) {
-  const sql =
-    `
-    SELECT 
-      employee.id, employee.code AS code, employee.display_name, employee.sexe, 
-      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
-      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
-      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
-      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
-      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
-      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
-      service.name as service_name
-    FROM employee
-     JOIN grade ON employee.grade_id = grade.uuid
-     LEFT JOIN fonction ON employee.fonction_id = fonction.id
-     JOIN patient ON patient.uuid = employee.patient_uuid
-     JOIN debtor ON patient.debtor_uuid = debtor.uuid
-     JOIN creditor ON employee.creditor_uuid = creditor.uuid
-     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     LEFT JOIN service ON service.id = employee.service_id
-     ORDER BY employee.display_name ASC;
-  `;
-
-  db.exec(sql)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+  find(req.query)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(function (err){console.log(err);})
+    .done();
 }
 
 /**
@@ -152,7 +128,7 @@ function lookupEmployee(id) {
   const sql =
     `
     SELECT 
-      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
+      employee.id, employee.code AS code_employee, employee.display_name, employee.sex, 
       employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
@@ -169,7 +145,7 @@ function lookupEmployee(id) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id
+      LEFT JOIN service ON service.id = employee.service_id 
     WHERE employee.id = ?;
   `;
 
@@ -224,7 +200,7 @@ function update(req, res, next) {
 
   const clean = {
     display_name : employee.display_name,
-    sexe : employee.sexe,
+    sex : employee.sex,
     dob : employee.dob,
     date_embauche : employee.date_embauche,
     service_id : employee.service_id,
@@ -325,7 +301,7 @@ function create(req, res, next) {
     hospital_no : employee.hospital_no,
     debtor_uuid : employee.debtor_uuid,
     user_id : req.session.user.id,
-    sex : employee.sexe,
+    sex : employee.sex,
   };
 
   delete employee.debtor_group_uuid;
@@ -405,21 +381,45 @@ function search(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
+  const sql =
+    `SELECT 
+      employee.id, employee.code AS code, employee.display_name, employee.sex, 
+      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
+      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
+      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
+      service.name as service_name
+    FROM employee
+     JOIN grade ON employee.grade_id = grade.uuid
+     LEFT JOIN fonction ON employee.fonction_id = fonction.id
+     JOIN patient ON patient.uuid = employee.patient_uuid
+     JOIN debtor ON patient.debtor_uuid = debtor.uuid
+     JOIN creditor ON employee.creditor_uuid = creditor.uuid
+     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+     LEFT JOIN service ON service.id = employee.service_id
+  `;
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'e' });
-  const sql = employeeEntityQuery(options.detailed);
+  const filters = new FilterParser(options, { tableAlias : 'employee', autoParseStatements : false });
 
   filters.fullText('display_name');
   filters.dateFrom('dateEmbaucheFrom', 'date_embauche');
   filters.dateTo('dateEmbaucheTo', 'date_embauche');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
-  filters.equals('sexe', 'sexe', 'e');
+  filters.equals('sex', 'sex', 'employee');
+  filters.equals('code', 'code', 'employee');
+  filters.equals('service_id', 'service_id', 'employee');
+  filters.equals('fonction_id', 'fonction_id', 'employee');
+  filters.equals('grade_id', 'grade_id', 'employee');
 
   // @TODO Support ordering query
-  filters.setOrder('ORDER BY e.display_name DESC');
+  filters.setOrder('ORDER BY employee.display_name DESC');
 
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
@@ -427,31 +427,3 @@ function find(options) {
   return db.exec(query, parameters);
 }
 
-function employeeEntityQuery(detailed) {
-  let detailedColumns = '';
-
-  // if the find should included detailed results
-  if (detailed) {
-    detailedColumns = `
-      , e.nb_spouse, e.nb_enfant, e.daily_salary, e.bank, e.bank_account, 
-      e.adresse, e.phone, e.email, e.fonction_id, 
-      fonction.fonction_txt, e.grade_id, grade.text as grade, grade.basic_salary,
-      e.service_id, service.name, BUID(e.creditor_uuid) as creditor_uuid,
-      e.locked
-    `;
-  }
-
-  const sql = `
-    SELECT 
-      e.id, e.display_name, e.sexe, e.dob, e.date_embauche,
-      e.code ${detailedColumns}
-    FROM employee AS e
-      JOIN grade ON grade.uuid = e.grade_id
-      LEFT JOIN fonction ON fonction.id = e.fonction_id
-      LEFT JOIN service ON service.id = e.service_id
-      JOIN creditor ON e.creditor_uuid = creditor.uuid
-      JOIN patient ON e.patient_uuid = patient.uuid
-  `;
-
-  return sql;
-}

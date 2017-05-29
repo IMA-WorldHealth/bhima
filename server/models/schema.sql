@@ -598,7 +598,7 @@ CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code`          VARCHAR(20) NOT NULL,
   `display_name`  TEXT NOT NULL,
-  `sexe`          VARCHAR(1) NOT NULL,
+  `sex`           VARCHAR(1) NOT NULL,
   `dob`           DATETIME NOT NULL,
   `date_embauche` DATETIME DEFAULT NULL,
   `grade_id`      BINARY(16) NOT NULL,

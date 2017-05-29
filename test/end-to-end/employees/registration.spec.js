@@ -13,7 +13,7 @@ describe('Employees', () => {
   const employee = {
     code          : 'HBB80',
     display_name  : 'Sherlock Holmes Doyle',
-    sexe          : 'M',
+    sex          : 'M',
     dob           : '1960-06-30',
     date_embauche : '1997-05-17',
     nb_spouse     : 1,
@@ -39,7 +39,7 @@ describe('Employees', () => {
   it('creates a new employee', () => {
     registrationPage.setDisplayName(employee.display_name);
     registrationPage.setDob(employee.dob);
-    registrationPage.setSex(employee.sexe);
+    registrationPage.setSex(employee.sex);
     registrationPage.setCode(employee.code);
     registrationPage.setGrade('A1');
     registrationPage.setHospitalNumber(employee.hospital_no);

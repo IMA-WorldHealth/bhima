@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   '$state', 'EmployeeService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
-  'GridColumnService', 'GridSortingService', 'bhConstants',
+  'GridColumnService', 'bhConstants',
   'DepricatedFilterService',
 ];
 
@@ -15,7 +15,7 @@ EmployeeRegistryController.$inject = [
  */
 function EmployeeRegistryController($state, Employees, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
-  Columns, Sorting, bhConstants, Filters) {
+  Columns, bhConstants, Filters) {
   var vm = this;
   var filter = new Filters();
 
@@ -28,7 +28,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
-  vm.employeeCard = employeeCard;
+  vm.openPatientCard = openPatientCard;
   vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
 
@@ -46,7 +46,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
       displayName      : 'TABLE.COLUMNS.NAME',
       headerCellFilter : 'translate',
     },
-    { field            : 'sexe',
+    { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
       headerCellFilter : 'translate',
     },
@@ -58,7 +58,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     { field            : 'date_embauche',
       displayName      : 'FORM.LABELS.DATE_EMBAUCHE',
       headerCellFilter : 'translate',
-      type             : 'date',  
+      type             : 'date',
+      visible          : false  
     },
     { field            : 'text',
       displayName      : 'TABLE.COLUMNS.GRADE',
@@ -68,15 +69,18 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
       displayName      : 'FORM.LABELS.NB_SPOUSE',
       headerCellFilter : 'translate',
       type             : 'number',
+      visible          : false
     },
     { field            : 'nb_enfant',
       displayName      : 'FORM.LABELS.NB_CHILD',
       headerCellFilter : 'translate',
       type             : 'number',
+      visible          : false
     },
     { field            : 'daily_salary',
       displayName      : 'FORM.LABELS.DAILY_SALARY',
       headerCellFilter : 'translate',
+      visible          : false
     },
     { field            : 'bank',
       displayName      : 'FORM.LABELS.BANK',
@@ -115,20 +119,17 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     },
     { name          : 'actions',
       displayName   : '',
-      cellTemplate  : '/modules/employees/templates/action.cell.html',
-      enableSorting : false 
-    },
+      cellTemplate  : '/modules/employees/templates/action.cell.html'
+    }
   ];
 
-  /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider  : vm,
     showColumnFooter  : true,
-    enableSorting     : true,
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
-    columnDefs        : columnDefs,
+    columnDefs        : columnDefs
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -150,25 +151,20 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // if we have search parameters, use search.  Otherwise, just read all
-    // employees.
-    var request = angular.isDefined(parameters) && !isEmpty(parameters) ?
-      Employees.search(parameters) :
-      Employees.read();
-
     // hook the returned patients up to the grid.
-    request.then(function (employees) {
-      employees.forEach(function (employee) {
-        employee.employeeAge = util.getMomentAge(employee.dob, 'years');
-      });
+    Employees.read(null, parameters)
+      .then(function (employees) {
+          employees.forEach(function (employee) {
+            employee.employeeAge = util.getMomentAge(employee.dob, 'years');
+          });
 
-      // put data in the grid
-      vm.uiGridOptions.data = employees;
-    })
-    .catch(handler)
-    .finally(function () {
-      toggleLoadingIndicator();
-    });
+          // put data in the grid
+          vm.uiGridOptions.data = employees;
+      })
+      .catch(handler)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
   }
 
   // search and filter data in employee Registry
@@ -219,7 +215,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   }
 
   // employee patient card
-  function employeeCard(uuid) {
+  function openPatientCard(uuid) {
     Receipts.patient(uuid);
   }
 

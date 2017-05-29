@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element */
 
 /**
  * This class represents a modal search page
@@ -9,30 +9,23 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const grid = require('../shared/GridUtils');
 
-function SearchModalPage (){
-    'use strict';
-    const page = this;
+class SearchModalPage{
 
-    function setDisplayName(displayName){
+    setDisplayName(displayName){
         FU.input('ModalCtrl.params.display_name', displayName);
     }
 
-    function submit (){
+    submit (){
         FU.modal.submit();
     }
 
-    function selectSex (sex){
+    selectSex (sex){
         return element(by.id(`${sex}`)).click();
     }
 
-    function setDateRange (range){
+    setDateRange (range){
         return $(`[data-date-range="${range}"]`).click();
     }
-
-    page.setDisplayName = setDisplayName; 
-    page.submit = submit;  
-    page.selectSex = selectSex; 
-    page.setDateRange = setDateRange;
 }
 
 module.exports = SearchModalPage;

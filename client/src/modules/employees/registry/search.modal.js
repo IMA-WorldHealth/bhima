@@ -7,12 +7,11 @@ EmployeeRegistryModalController.$inject = [
 ];
 
 /**
- * @class PatientRegistryModalController
+ * @class EmployeeRegistryModalController
  *
  * @description
- * This controller is responsible for setting up the filters for the patient
- * search functionality on the patient registry page.  Filters that are already
- * applied to the grid can be passed in via the params inject.
+ * This controller is responsible for setting up the filters for the employee
+ * search functionality on the employee registry page.
  */
 function EmployeeRegistryModalController(ModalInstance, params, Functions, Grades, bhConstants, moment, Services) {
   var vm = this;

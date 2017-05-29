@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 
 /**
  * This class is represents an employee registration page
@@ -8,119 +8,115 @@
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-function RegistrationPage (){
-    'use strict';
-
-    const page = this;
-
+class RegistrationPage {    
     //simulate the create employee button click
-    function createEmployee () {
+     createEmployee () {
         FU.buttons.submit();
     }
 
     // set display name
-    function setDisplayName(displayName){
+    setDisplayName(displayName){
         FU.input('EmployeeCtrl.employee.display_name', displayName);
     }
 
     // set dob
-    function setDob (dob){
+    setDob (dob){
         FU.input('EmployeeCtrl.employee.dob', dob);
     }
 
     // set sex
-    function setSex (sex){
+    setSex (sex){
         const position = sex === 'M' ? 0 : 1;
-        FU.radio('EmployeeCtrl.employee.sexe', position);
+        FU.radio('EmployeeCtrl.employee.sex', position);
     } 
 
     // set number of spouse
-    function setNumberSpouse (nbSpouse){
+    setNumberSpouse (nbSpouse){
         FU.input('EmployeeCtrl.employee.nb_spouse', nbSpouse);
     } 
 
     // set number of spouse
-    function setNumberChild (nbEnfant){
+    setNumberChild (nbEnfant){
         FU.input('EmployeeCtrl.employee.nb_enfant', nbEnfant);
     }
 
     // set hiring date
-    function setHiringDate (hiringDate){
+    setHiringDate (hiringDate){
         FU.input('EmployeeCtrl.employee.date_embauche', hiringDate);
     }
 
     // set the employee code
-    function setCode (code){
+    setCode (code){
         FU.input('EmployeeCtrl.employee.code', code);
     }
 
     //set service
-    function setService (service){
+    setService (service){
         FU.uiSelect('EmployeeCtrl.employee.service_id', service);
     }
 
     // set grade
-    function setGrade (grade){
+    setGrade (grade){
         FU.uiSelect('EmployeeCtrl.employee.grade_id', grade);
     }
 
     // set fonction
-    function setFonction (fonction){
+    setFonction (fonction){
         FU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
     }
 
     // set email
-    function setEmail (email){
+    setEmail (email){
         FU.input('EmployeeCtrl.employee.email', email);
     }
 
     // set address
-    function setAddress (address){
+    setAddress (address){
         FU.input('EmployeeCtrl.employee.adresse', address);
     }
 
     // set hospital Number
-    function setHospitalNumber(hn){
+    setHospitalNumber(hn){
         FU.input('EmployeeCtrl.employee.hospital_no', hn);
     }
 
     // set debtor group
-    function setDebtorGroup (dg){
+    setDebtorGroup (dg){
         FU.uiSelect('EmployeeCtrl.employee.debtor_group_uuid', dg);
     }
 
     // set creditor group
-    function setCreditorGroup (cg){
+    setCreditorGroup (cg){
         FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);        
     }
 
     // set bank
-    function setBank (bank){
+    setBank (bank){
         FU.input('EmployeeCtrl.employee.bank', bank);
     }
 
     // set bank account
-    function setBankAccount (bankAccount){
+    setBankAccount (bankAccount){
         FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
     }
 
     // set origin location
-    function setOriginLocation(locations){
+    setOriginLocation(locations){
         components.locationSelect.set(locations, 'origin-location-id');    
     }
 
     // set current location
-    function setCurrentLocation(locations){
+    setCurrentLocation(locations){
         components.locationSelect.set(locations, 'current-location-id');    
     }
     
-    function isEmpoyeeCreated (resp){
+    isEmpoyeeCreated (resp){
         return FU.exists(by.id('receipt-confirm-created'), resp);
     }
 
-    function requiredFIeldErrored (){
+    requiredFIeldErrored (){
         FU.validation.error('EmployeeCtrl.employee.display_name');
-        FU.validation.error('EmployeeCtrl.employee.sexe');
+        FU.validation.error('EmployeeCtrl.employee.sex');
         FU.validation.error('EmployeeCtrl.employee.code');
         FU.validation.error('EmployeeCtrl.employee.grade_id');
         FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
@@ -129,7 +125,7 @@ function RegistrationPage (){
         FU.validation.error('EmployeeCtrl.employee.hospital_no');
     }
 
-    function noRequiredFieldOk(){
+    noRequiredFieldOk(){
         FU.validation.ok('EmployeeCtrl.employee.locked');
         FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
         FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
@@ -141,30 +137,6 @@ function RegistrationPage (){
         FU.validation.ok('EmployeeCtrl.employee.fonction_id');
         FU.validation.ok('EmployeeCtrl.employee.adresse');
     }
-
-    page.createEmployee = createEmployee;
-    page.setDisplayName = setDisplayName;
-    page.setDob = setDob;
-    page.setSex = setSex;
-    page.setNumberSpouse = setNumberSpouse;
-    page.setNumberChild = setNumberChild;
-    page.setHiringDate = setHiringDate;
-    page.setCode = setCode;
-    page.setService = setService;
-    page.setGrade = setGrade;
-    page.setFonction = setFonction;
-    page.setEmail = setEmail;
-    page.setAddress = setAddress;
-    page.setHospitalNumber = setHospitalNumber;
-    page.setDebtorGroup = setDebtorGroup;
-    page.setCreditorGroup = setCreditorGroup;
-    page.setBank = setBank;
-    page.setBankAccount = setBankAccount;
-    page.setOriginLocation = setOriginLocation;
-    page.setCurrentLocation = setCurrentLocation;
-    page.isEmpoyeeCreated = isEmpoyeeCreated;
-    page.requiredFIeldErrored = requiredFIeldErrored;
-    page.noRequiredFieldOk = noRequiredFieldOk;
 }
 
 module.exports = RegistrationPage;

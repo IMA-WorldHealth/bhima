@@ -28,29 +28,29 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
   // Loading Grades
   Grades.read(null, { detailed : 1 }).then((data) => {
-    data.forEach((g) => {
-      g.format = `${g.code} - ${g.text}`;
+    data.forEach(function (g){
+      g.format = g.code + ' - ' + g.text;
     });      
     vm.grades = data;
   }).catch(Notify.handleError);
 
   // Loading Creditor Groups
-  CreditorGroups.read().then((data) => {
+  CreditorGroups.read().then(function (data) {
     vm.creditorGroups = data;
   }).catch(Notify.handleError);
 
   // Loading Debtor Groups
-  DebtorGroups.read().then((data) => {
+  DebtorGroups.read().then(function (data) {
     vm.debtorGroups = data;
   }).catch(Notify.handleError);
 
   // Loading Services
-  Services.read().then((services) => {
+  Services.read().then(function (services) {
     vm.services = services;
   }).catch(Notify.handleError);    
 
   // Loading Functions
-  Functions.read().then((data) => {
+  Functions.read().then(function (data) {
     vm.functions = data;
   }).catch(Notify.handleError);
 
@@ -60,10 +60,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     var promise;
 
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID');}
-    if (!employeeForm.$dirty) { return Notify.danger('FORM.ERRORS.NO_DATA_PROVIDED'); }
 
     return Employees.create(vm.employee)
-      .then((feedBack) =>  {
+      .then(function (feedBack) {
         Receipts.patient(feedBack.patient_uuid, true);
 
         // reset form state

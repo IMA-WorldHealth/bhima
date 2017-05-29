@@ -24,7 +24,7 @@ describe('Employees Registry', () => {
 
 
 
-  before(() => {return helpers.navigate(path)});
+  before(() => { helpers.navigate(path)});
 
   it('list all registered employees', () => {
       employeeRegistryPage.employeeCount(employeeCount, `The number of registered employee should be ${employeeCount}`);    

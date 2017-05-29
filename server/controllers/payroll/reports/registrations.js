@@ -29,7 +29,7 @@ const TEMPLATE = './server/controllers/payroll/reports/registrations.handlebars'
 function formatFilters(qs) {
   const columns = [
     { field : 'display_name', displayName : 'FORM.LABELS.NAME' },
-    { field : 'sexe', displayName : 'FORM.LABELS.GENDER' },
+    { field : 'sex', displayName : 'FORM.LABELS.GENDER' },
     { field : 'code', displayName : 'FORM.LABELS.CODE' },
     { field : 'dateBirthFrom', displayName : 'FORM.LABELS.DOB', comparitor : '>', isDate : true },
     { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
