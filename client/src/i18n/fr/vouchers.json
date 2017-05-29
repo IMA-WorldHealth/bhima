@@ -36,7 +36,7 @@
 "RECEIPT":{"SUCCESS":"Bon de paiement enregistré avec succès."},
 "REPORT":"Rapport des Quittances",
 "TITLE":"Quittance",
-"TOOLS":"Outils",
+"MENUS":"Menus",
 "TRANSFER_TYPE_INFO":"Type de transaction selon qu'on a soit une recette ou une depense",
 "USE_FINANCIAL_ACCOUNT":"Utilisation de compte de caisses ou banques dans cette transaction"},
 "SIMPLE":{"CASH_PAYMENT":"Paiement des clients",

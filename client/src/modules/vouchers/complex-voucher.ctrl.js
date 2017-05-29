@@ -55,7 +55,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
 
   // breadcrumb dropdown
   vm.dropdown = [{
-    label  : 'VOUCHERS.GLOBAL.TOOLS',
+    label  : 'VOUCHERS.GLOBAL.MENUS',
     color  : 'btn-default',
     icon   : 'fa-cogs',
     option : Toolkit.options,
