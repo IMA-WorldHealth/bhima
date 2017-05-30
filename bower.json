@@ -15,10 +15,10 @@
     "src"
   ],
   "dependencies": {
-    "angular": "1.6.2",
-    "angular-animate": "1.6.2",
-    "angular-sanitize": "1.6.2",
-    "angular-messages": "1.6.2",
+    "angular": "1.6.4",
+    "angular-animate": "1.6.4",
+    "angular-sanitize": "1.6.4",
+    "angular-messages": "1.6.4",
     "angular-bootstrap": "2.5.0",
     "angular-ui-router": "1.0.0-rc.1",
     "angular-ui-grid": "4.0.4",
@@ -37,13 +37,13 @@
     "components-font-awesome": "4.7.0",
     "angular-ui-select": "0.19.6",
     "JsBarcode": "jsbarcode#3.5.9",
-    "angular-touch": "1.6.2",
+    "angular-touch": "1.6.4",
     "angular-growl-notifications": "2.5.0"
   },
   "devDependencies": {
-    "angular-mocks": "1.6.2"
+    "angular-mocks": "1.6.4"
   },
   "resolutions": {
-    "angular": "1.6.2"
+    "angular": "1.6.4"
   }
 }
