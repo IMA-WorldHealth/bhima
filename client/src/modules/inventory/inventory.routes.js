@@ -30,6 +30,9 @@ angular.module('bhima.routes')
       })
       .state('inventory.create', {
         url : '/create',
+        params : {
+          creating : { value : true }
+        },        
         onEnter :['$state', 'ModalService', onEnterFactory('create')],
         onExit : ['$uibModalStack', closeModal]
       })

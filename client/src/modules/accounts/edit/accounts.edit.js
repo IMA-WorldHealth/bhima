@@ -13,11 +13,14 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   var cache = AppCache('AccountEdit');
   var vm = this;
   vm.stateParams = {};
+  vm.stateCurrent = {};
 
-  if($state.params.id){
+  if($state.params.id || $state.current.name){
     vm.stateParams = cache.stateParams = $state.params;
+    vm.stateCurrent = cache.stateCurrent = $state.current;
   } else {
     vm.stateParams = cache.stateParams;
+    vm.stateCurrent = cache.stateCurrent;
   }
 
   var id = vm.stateParams.id,
@@ -42,7 +45,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     edit : 'accounts.edit'
   };
 
-  vm.state = angular.copy($state.current.name);
+  vm.state = angular.copy(vm.stateCurrent.name);
   vm.isCreateState = vm.state === vm.states.create;
 
   // varaibles to track custom modal error handling, these will be replaced

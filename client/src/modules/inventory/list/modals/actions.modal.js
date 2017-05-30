@@ -14,7 +14,8 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
   vm.item = {};
   vm.stateParams = {};
 
-  if($state.params.uuid){
+  vm.stateParams = cache.stateParams = $state.params;
+  if($state.params.uuid || $state.params.creating){
     vm.stateParams = cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
