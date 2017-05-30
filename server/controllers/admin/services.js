@@ -44,7 +44,7 @@ function list(req, res, next) {
   sql += ' ORDER BY s.name;';
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -70,7 +70,7 @@ function create(req, res, next) {
   record.uuid = db.bid(uuid.v4());
 
   db.exec(sql, [record])
-    .then(function (result) {
+    .then((result) => {
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.CREATE,
         entity : Topic.entities.SERVICE,
@@ -106,14 +106,14 @@ function update(req, res, next) {
   delete queryData.uuid;
 
   db.exec(sql, [queryData, req.params.id])
-    .then(function (result) {
+    .then((result) => {
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
 
       return lookupService(req.params.id);
     })
-    .then(function (service) {
+    .then((service) => {
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.UPDATE,
         entity : Topic.entities.SERVICE,
@@ -137,7 +137,7 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM service WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-    .then(function (result) {
+    .then((result) => {
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
@@ -163,7 +163,7 @@ function remove(req, res, next) {
  */
 function detail(req, res, next) {
   lookupService(req.params.id)
-    .then(function (row) {
+    .then((row) => {
       res.status(200).json(row);
     })
     .catch(next)

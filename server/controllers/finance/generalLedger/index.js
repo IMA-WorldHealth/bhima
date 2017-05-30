@@ -13,7 +13,6 @@
 
 
 // module dependencies
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
@@ -125,7 +124,7 @@ function getlistAccounts(periodsId) {
   let signPlus = '';
 
   if (periodsId) {
-    periodsId.forEach(function (period) {
+    periodsId.forEach((period) => {
       headSql += `, balance${period.number}`;
 
       signPlus = period.number === 0 ? '' : '+';

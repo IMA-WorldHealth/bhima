@@ -25,7 +25,7 @@ exports.list = function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -36,7 +36,7 @@ exports.list = function list(req, res, next) {
 // GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
   lookupEnterprise(req.params.id)
-    .then(function (enterprise) {
+    .then((enterprise) => {
       res.status(200).json(enterprise);
     })
     .catch(next)
@@ -79,7 +79,7 @@ function lookupByProjectId(id) {
   `;
 
   return db.exec(sql, [id])
-    .then(function (rows) {
+    .then((rows) => {
       if (!rows.length) {
         throw new NotFound(`Could not find an enterprise with project id ${id}.`);
       }
@@ -94,7 +94,7 @@ exports.create = function create(req, res, next) {
   const sql = 'INSERT INTO enterprise SET ?;';
 
   db.exec(sql, [enterprise])
-    .then(function (row) {
+    .then((row) => {
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
@@ -108,14 +108,14 @@ exports.update = function update(req, res, next) {
   delete data.id;
 
   db.exec(sql, [data, req.params.id])
-  .then(function (row) {
+  .then((row) => {
     if (!row.affectedRows) {
       throw new NotFound(`Could not find an enterprise with id ${req.params.id}`);
     }
 
     return lookupEnterprise(req.params.id);
   })
-  .then(function (enterprise) {
+  .then((enterprise) => {
     res.status(200).json(enterprise);
   })
   .catch(next)

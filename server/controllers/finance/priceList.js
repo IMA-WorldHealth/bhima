@@ -15,7 +15,6 @@
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
-const NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Lists all price lists in the database

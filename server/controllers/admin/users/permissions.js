@@ -26,7 +26,7 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -41,7 +41,7 @@ function list(req, res, next) {
  * the user's permissions and then replacing them with the new permissions set.
  */
 function create(req, res, next) {
-  const data = req.body.permissions.map(function (id) {
+  const data = req.body.permissions.map((id) => {
     return [id, req.params.id];
   });
 
@@ -57,7 +57,7 @@ function create(req, res, next) {
   }
 
   transaction.execute()
-    .then(function () {
+    .then(() => {
       res.sendStatus(201);
     })
     .catch(next)
