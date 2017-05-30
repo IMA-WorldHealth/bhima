@@ -33,8 +33,15 @@
   "author": "IMA World Health",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/IMA-WorldHealth/bhima/issues"
+    "url": "https://github.com/IMA-WorldHealth/bhima-2.X/issues"
   },
+  "maintainers" : [
+    "jniles",
+    "sfount",
+    "lomamech",
+    "mbayopanda",
+    "dedrickenc"
+  ],
   "dependencies": {
     "accounting-js": "^1.1.1",
     "body-parser": "^1.15.0",
