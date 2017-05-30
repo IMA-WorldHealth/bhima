@@ -91,7 +91,8 @@ function find(options, source) {
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   // @FIXME selected the source between the posting journal and general ledger should be carefully designed
-  //        as it will be used in many places, allowing a calling method to arbitrarily define the table should be replaced
+  // as it will be used in many places, allowing a calling method
+  // to arbitrarily define the table should be replaced
   const origin = source || 'posting_journal';
 
   const sql = `
@@ -243,7 +244,7 @@ function list(req, res, next) {
  */
 function addAggregateData(journalRows) {
   return queryTransactionAggregates(journalRows)
-    .then(function (aggregateResults) {
+    .then((aggregateResults) => {
       // format object according to API specification
       return {
         journal   : journalRows,

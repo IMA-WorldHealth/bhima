@@ -16,7 +16,6 @@
  */
 
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
 /**
  * @method detail
@@ -70,7 +69,11 @@ function create(req, res, next) {
 
   delete record.id;
 
-  /** @todo design/ update account types to allow setting a translation_key - the implications of this are system wide */
+  /**
+   * @todo
+   * design/ update account types to allow setting a translation_key
+   * - the implications of this are system wide
+   **/
   record.translation_key = '';
 
   db.exec(sql, [record])

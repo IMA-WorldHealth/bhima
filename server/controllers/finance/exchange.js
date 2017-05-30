@@ -80,7 +80,7 @@ exports.create = function create(req, res, next) {
     VALUES (?);`;
 
   db.exec(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]])
-  .then(function (row) {
+  .then((row) => {
     res.status(201).json({ id : row.insertId });
   })
   .catch(next)
@@ -101,7 +101,7 @@ exports.update = function update(req, res, next) {
   }
 
   db.exec(sql, [req.body, req.params.id])
-  .then(function () {
+  .then(() => {
     sql =
       `SELECT
         exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
@@ -112,7 +112,7 @@ exports.update = function update(req, res, next) {
 
     return db.exec(sql, [req.params.id]);
   })
-  .then(function (rows) {
+  .then((rows) => {
     if (rows.length === 0) {
       throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
     }
@@ -128,7 +128,7 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM exchange_rate WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-  .then(function (row) {
+  .then((row) => {
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
       throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);

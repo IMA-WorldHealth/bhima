@@ -140,7 +140,7 @@ function create(req, res, next) {
         id      : row.insertId,
       });
 
-      res.status(201).json({ id: row.insertId });
+      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();

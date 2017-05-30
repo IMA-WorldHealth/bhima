@@ -51,7 +51,7 @@ exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
  */
 function read(req, res, next) {
   find(req.query)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)

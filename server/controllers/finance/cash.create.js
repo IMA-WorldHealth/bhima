@@ -23,7 +23,7 @@ module.exports = create;
 function processCashItems(cashUuid, items) {
   // make sure uuids are defined and converted
 
-  items.map(function (item) {
+  items.map((item) => {
     item.cash_uuid = cashUuid;
     item.uuid = item.uuid || uuid.v4();
     return db.convert(item, ['uuid', 'invoice_uuid']);

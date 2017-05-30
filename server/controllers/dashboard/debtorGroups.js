@@ -25,7 +25,7 @@ function getReport(req, res, next) {
   // ensure the latest data from both the posting journal and the general ledger
   // is used
   report.context({ combinedLedger : 1 })
-    .then(function (result) {
+    .then((result) => {
       timestamp = new Moment();
       cachedReport = result;
       res.status(200).send(formatResponse(result));

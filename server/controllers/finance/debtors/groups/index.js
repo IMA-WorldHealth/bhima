@@ -130,8 +130,8 @@ function create(req, res, next) {
   data.uuid = db.bid(data.uuid || uuid.v4());
 
   db.exec(sql, data)
-    .then(function () {
-      res.status(201).json({ uuid: uuid.unparse(data.uuid) });
+    .then(() => {
+      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
     })
     .catch(next)
     .done();
@@ -164,7 +164,7 @@ function update(req, res, next) {
 
       return lookupDebtorGroup(req.params.uuid);
     })
-    .then(function (group) {
+    .then((group) => {
       res.status(200).json(group);
     })
     .catch(next)
@@ -204,15 +204,17 @@ function list(req, res, next) {
      * more modular solution would be:
      * (SELECT COUNT(uuid) from debtor where group_uuid = debtor_group.uuid) as total_debtors
      */
-    sql = `
-      SELECT BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id, BUID(debtor_group.location_id) as location_id, 
-        debtor_group.phone, debtor_group.email, debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
-        BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at, debtor_group.apply_subsidies, debtor_group.apply_discounts, 
-        debtor_group.apply_billing_services, COUNT(debtor.uuid) as total_debtors, account.number AS account_number
+    sql =
+      `SELECT 
+        BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id, 
+        BUID(debtor_group.location_id) as location_id, debtor_group.phone, debtor_group.email, 
+        debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
+        BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at, debtor_group.apply_subsidies, 
+        debtor_group.apply_discounts, debtor_group.apply_billing_services, COUNT(debtor.uuid) as total_debtors, 
+        account.number AS account_number
       FROM debtor_group
       JOIN account ON account.id =  debtor_group.account_id
-      LEFT JOIN debtor
-      ON debtor.group_uuid = debtor_group.uuid
+      LEFT JOIN debtor ON debtor.group_uuid = debtor_group.uuid
     `;
 
     delete req.query.detailed;
