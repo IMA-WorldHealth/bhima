@@ -45,7 +45,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, Recei
       aggregationType: uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
       footerCellClass : 'text-center',
-      cellTemplate : '/partials/patient_invoice/registry/templates/reference.html',
+      cellTemplate : '/modules/invoices/registry/templates/reference.html',
       sortingAlgorithm : Sorting.algorithms.sortByReference,
     },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', type: 'date' },
