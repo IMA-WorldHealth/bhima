@@ -7,7 +7,8 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', '$scope',
+  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService',
+  'TransactionTypeService', 'GridStateService', '$scope',
 ];
 
 /**
@@ -34,7 +35,7 @@ function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter,
-  $translate, GridExport, TransactionType, $scope) {
+  $translate, GridExport, TransactionType, GridState, $scope) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -42,6 +43,7 @@ function JournalController(Journal, Sorting, Grouping,
   var columnConfig;
   var transactions;
   var exportation;
+  var state;
 
   var filter = new Filters();
 
@@ -97,6 +99,7 @@ function JournalController(Journal, Sorting, Grouping,
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
   exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
+  state = new GridState(vm.gridOptions, cacheKey);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -120,6 +123,12 @@ function JournalController(Journal, Sorting, Grouping,
    */
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
   }
 
   /**
@@ -309,7 +318,11 @@ function JournalController(Journal, Sorting, Grouping,
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openConfigurationModal();
+    columnConfig.openConfigurationModal()
+      .then(function (columnsResult) {
+        // modal has closed with success
+        state.saveGridState();
+      });
   };
 
   // This function opens a modal, to let the user posting transaction to the general ledger
@@ -463,11 +476,20 @@ function JournalController(Journal, Sorting, Grouping,
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
     if (vm.grouping.getCurrentGroupingColumn()) {
-      // alias for template speed/ convenience
       vm.grouping.removeGrouping('trans_id');
+
+      // save grids state to keep track of this change
+      state.saveGridState(false);
+
+      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
       vm.grouped = cache.grouped = false;
     } else {
       vm.grouping.changeGrouping('trans_id');
+
+      // save grids state to keep track of this change
+      state.saveGridState(false);
+
+      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
       vm.grouped = cache.grouped = true;
     }
   };
