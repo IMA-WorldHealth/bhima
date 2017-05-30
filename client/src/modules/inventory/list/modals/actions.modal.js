@@ -3,17 +3,25 @@ angular.module('bhima.controllers')
 
 InventoryListActionsModalController.$inject = [
   'AccountService', 'InventoryService','NotifyService',
-  '$uibModalInstance', '$state', 'util'
+  '$uibModalInstance', '$state', 'util', 'appcache'
 ];
 
-function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util) {
+function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util, AppCache) {
   var vm = this;
-
+  var cache = AppCache('InventoryList');
+  
   // this is the model
   vm.item = {};
+  vm.stateParams = {};
+
+  if($state.params.uuid){
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
 
   // this is the UUID of the update state.
-  vm.identifier = $state.params.uuid;
+  vm.identifier = vm.stateParams.uuid;
   vm.isUpdateState = angular.isDefined(vm.identifier);
   vm.isCreateState = !angular.isDefined(vm.identifier);
 

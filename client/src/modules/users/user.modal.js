@@ -1,14 +1,25 @@
 angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
-UserModalController.$inject = ['$state', 'ProjectService', 'UserService', 'NotifyService'];
+UserModalController.$inject = ['$state', 'ProjectService', 'UserService', 'NotifyService', 'appcache'];
 
-function UserModalController($state, Projects, Users, Notify) {
+function UserModalController($state, Projects, Users, Notify, AppCache) {
   var vm = this;
+
+  var cache = AppCache('UserModal');
 
   // the user object that is either edited or created
   vm.user = {};
-  vm.isCreating = $state.params.creating;
+  vm.stateParams = {};
+
+  if($state.params.creating || $state.params.id){
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+
+
+  vm.isCreating = vm.stateParams.creating;
 
   //exposed methods
   vm.submit = submit;
@@ -24,7 +35,7 @@ function UserModalController($state, Projects, Users, Notify) {
 
   if (!vm.isCreating) {
 
-    Users.read($state.params.id)
+    Users.read(vm.stateParams.id)
       .then(function (user) {
         vm.user = user;
       })

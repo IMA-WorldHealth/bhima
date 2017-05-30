@@ -5,13 +5,24 @@ angular.module('bhima.controllers')
   .controller('AccountEditController', AccountEditController);
 
 AccountEditController.$inject = [
-  '$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService'
+  '$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService', 'appcache'
 ];
 
-function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants, ModalService) {
+function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants, ModalService, AppCache) {
   var accountStore, typeStore;
+  var cache = AppCache('AccountEdit');
   var vm = this;
-  var id = $state.params.id, parentId = $state.params.parentId;
+  vm.stateParams = {};
+
+  if($state.params.id){
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+
+  var id = vm.stateParams.id,
+    parentId = vm.stateParams.parentId;
+
   vm.Constants = Constants;
 
   // expose utility methods
