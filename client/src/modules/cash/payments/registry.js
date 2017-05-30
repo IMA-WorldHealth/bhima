@@ -60,7 +60,7 @@ function CashPaymentRegistryController(
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
     sortingAlgorithm : Sorting.algorithms.sortByReference,
-    cellTemplate : '/partials/cash/payments/templates/reference.html',
+    cellTemplate : '/modules/cash/payments/templates/reference.html',
   }, {
     field : 'date',
     displayName : 'TABLE.COLUMNS.DATE',
