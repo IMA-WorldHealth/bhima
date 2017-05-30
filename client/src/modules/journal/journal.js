@@ -126,6 +126,10 @@ function JournalController(Journal, Sorting, Grouping,
   }
 
   vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
 
   /**
    * Column definitions; specify the configuration and behaviour for each column
@@ -314,7 +318,11 @@ function JournalController(Journal, Sorting, Grouping,
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openConfigurationModal();
+    columnConfig.openConfigurationModal()
+      .then(function (columnsResult) {
+        // modal has closed with success
+        state.saveGridState();
+      });
   };
 
   // This function opens a modal, to let the user posting transaction to the general ledger
@@ -468,11 +476,20 @@ function JournalController(Journal, Sorting, Grouping,
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
     if (vm.grouping.getCurrentGroupingColumn()) {
-      // alias for template speed/ convenience
       vm.grouping.removeGrouping('trans_id');
+
+      // save grids state to keep track of this change
+      state.saveGridState(false);
+
+      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
       vm.grouped = cache.grouped = false;
     } else {
       vm.grouping.changeGrouping('trans_id');
+
+      // save grids state to keep track of this change
+      state.saveGridState(false);
+
+      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
       vm.grouped = cache.grouped = true;
     }
   };

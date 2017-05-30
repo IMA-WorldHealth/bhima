@@ -40,6 +40,7 @@
 "RETURN":"Retourne",
 "SAVE":"Sauver",
 "SAVE_GRID_CONFIGURATION" : "Enregister la configuration",
+"CLEAR_GRID_CONFIGURATION" : "Effacer la configuration",
 "SEARCH":"Rechercher",
 "SELECT_INVOICES":"Sélectionner la(les) Facture(s)",
 "SUBMIT":"Soumettre",

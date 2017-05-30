@@ -27,19 +27,31 @@ function GridStateService(util, AppCache, Notify) {
 
     this.saveGridState = saveGridState.bind(this);
     this.restoreGridState = restoreGridState.bind(this);
+    this.clearGridState = clearGridState.bind(this);
   }
 
-  function saveGridState() {
+  function saveGridState(notifyFlag) {
+    var shouldNotify = angular.isDefined(notifyFlag) ? notifyFlag : true;
+
     if (this._gridApi) {
       this._cache.gridState = this._gridApi.saveState.save();
-      Notify.success('FORM.INFO.GRID_STATE_SUCCESS');
+
+      if (shouldNotify) {
+        Notify.success('FORM.INFO.GRID_STATE_SUCCESS');
+      }
     }
-  };
+  }
 
   function restoreGridState() {
     if (this._gridApi && this._cache.gridState) {
       this._gridApi.saveState.restore(null, this._cache.gridState);
     }
-  };
+  }
+
+  function clearGridState() {
+    if (this._gridApi && this._cache.gridState) {
+      this._cache.gridState = null;
+    }
+  }
   return StateInstance;
 }
