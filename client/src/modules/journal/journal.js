@@ -7,8 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  'FilterService', '$rootScope', '$filter', '$translate', 'GridExportService',
-  'TransactionTypeService', 'GridStateService', '$scope',
+  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService'
 ];
 
 /**
@@ -34,8 +33,8 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Config, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, Filters, $rootScope, $filter,
-  $translate, GridExport, TransactionType, GridState, $scope) {
+  uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
+  $translate, GridExport, TransactionType, GridState) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -45,16 +44,12 @@ function JournalController(Journal, Sorting, Grouping,
   var exportation;
   var state;
 
-  var filter = new Filters();
-
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
 
   // top level cache
   var cache = AppCache(cacheKey + '-module');
   var vm = this;
-
-  vm.filter = filter;
 
   // number of all of the transactions in the system
   Journal.count()
@@ -289,7 +284,7 @@ function JournalController(Journal, Sorting, Grouping,
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
 
-    vm.gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+    vm.gridApi.edit.on.afterCellEdit(null, function (rowEntity, colDef, newValue, oldValue) {
       if (newValue != oldValue) {
         propagate(colDef.field, newValue);
       }
