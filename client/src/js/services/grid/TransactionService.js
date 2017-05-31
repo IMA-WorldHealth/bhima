@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
 TransactionService.$inject = [
-  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q', 'moment'
+  '$timeout', 'util', 'uiGridConstants', 'bhConstants', 'NotifyService', 'uuid', 'JournalService', 'Store', '$q', 'moment',
 ];
 
 /**
@@ -374,7 +374,10 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       dateWrongPeriod = false,
       debitCreditNull = false,
       debitedCreditedNull = false,
-      variousTransactionType = false;
+      variousTransactionType = false,
+      dateTrans,
+      datePeriodStart,
+      datePeriodEnd;
 
     if (transaction[0].trans_date) {
       initialDate = transaction[0].trans_date;
@@ -403,8 +406,12 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
       // Check if they are value on debit and Credit
       debitedCreditedNull = (row.debit_equiv > 0 && row.credit_equiv > 0);
 
-      // check if trans_date is in bed period
-      if (new Date(row.trans_date) < new Date(row.period_start) || new Date(row.trans_date) > new Date(row.period_end)) {
+      // check if trans_date is in bad period
+      dateTrans = moment(row.trans_date).format(FORMAT_DB);
+      datePeriodStart = moment(row.period_start).format(FORMAT_DB);
+      datePeriodEnd = moment(row.period_end).format(FORMAT_DB);
+
+      if (new Date(dateTrans) < new Date(datePeriodStart) || new Date(dateTrans) > new Date(datePeriodEnd)) {
         dateWrongPeriod = true;
       }
 
