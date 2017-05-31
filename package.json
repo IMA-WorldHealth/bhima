@@ -40,7 +40,8 @@
     "sfount",
     "lomamech",
     "mbayopanda",
-    "dedrickenc"
+    "dedrickenc",
+    "jeremielodi"
   ],
   "dependencies": {
     "accounting-js": "^1.1.1",
