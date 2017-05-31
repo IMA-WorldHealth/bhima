@@ -135,6 +135,8 @@ function read(req, res, next) {
  * @description list all payment made
  */
 function listPayment(options) {
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['debtor_uuid']);  
   const filters = new FilterParser(options, { tableAlias : 'cash', autoParseStatements : false });
 
   const sql = `
@@ -180,6 +182,7 @@ function listPayment(options) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 
