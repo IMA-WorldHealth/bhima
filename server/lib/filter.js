@@ -152,9 +152,9 @@ class FilterParser {
 
     if (this._filters[filterKey]) {
       let valueString = '?';
-      if (filterKey.includes(DEFAULT_UUID_PARTIAL_KEY)) {
+      /*if (filterKey.includes(DEFAULT_UUID_PARTIAL_KEY)) {
         valueString = 'HUID(?)';
-      }
+      }*/
 
       const preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
 
