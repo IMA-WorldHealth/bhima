@@ -19,8 +19,8 @@ function UsersController($state, Users, Notify, Modal) {
     enableSorting     : true,
     columnDefs : [
       { field : 'display_name', name : 'Display Name' },
-      { field : 'username', name : 'User Name', cellTemplate: '/modules/users/templates/user.name.cell.html' },
-      { name : 'action', displayName : '', cellTemplate: '/modules/users/templates/grid/action.cell.html', enableSorting : false }
+      { field : 'username', name : 'User Name', cellTemplate : '/modules/users/templates/user.name.cell.html' },
+      { name : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false },
     ],
   };
 
@@ -40,9 +40,9 @@ function UsersController($state, Users, Notify, Modal) {
     $state.go('users.editPermission', { id: user.id });
   }
 
-  function activatePermissions(user, value, message){
+  function activatePermissions(user, value, message) {
     vm.user.deactivated = value;
-    
+
     Modal.confirm(message)
       .then(function (confirmResponse) {
         if (!confirmResponse) {
@@ -52,11 +52,11 @@ function UsersController($state, Users, Notify, Modal) {
         // user has confirmed activation or deactivation of debtor group
         return Users.update(user.id, vm.user)
           .then(function () {
-            Notify.success("USERS.UPDATED");
-            $state.go('users.list', null, {reload : true});
+            Notify.success('USERS.UPDATED');
+            $state.go('users.list', null, { reload : true });
           })
           .catch(Notify.handleError);
-      });    
+      });
   }
 
   function handleError(error) {

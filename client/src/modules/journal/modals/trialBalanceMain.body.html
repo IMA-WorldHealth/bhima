@@ -1,22 +1,9 @@
-<!-- exportation -->
-<div class="row text-right" style="margin: 5px;">
-  <div class="col-xs-12">
-    <button
-      id="export"
-      type="button"
-      class="btn btn-success"
-      ng-click="TrialBalanceMainBodyCtrl.exportGrid()">
-      <i class="fa fa-file-excel-o"></i> 
-      <span translate>FORM.BUTTONS.EXPORT</span>
-    </button>
-  </div>
-</div>
-
-<div class="row" style="margin: 5px;" ng-if="TrialBalanceMainBodyCtrl.showErrorButton">
-  <div class="col-xs-4">
+<!-- tools for data validation and export -->
+<div class="row " style="margin: 5px;">
+  <div class="col-xs-6">
     <button
       type="button"
-      class="btn"
+      class="btn btn-default"
       ng-class="{
         'btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
         'btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
@@ -26,6 +13,17 @@
       data-method="show-error">
       <i class="fa fa-bars"></i>
       <span translate>FORM.BUTTONS.VIEW_ERRORS</span>
+    </button>
+  </div>
+
+  <div class="col-xs-6 text-right">
+    <button
+      id="export"
+      type="button"
+      class="btn btn-default"
+      ng-click="TrialBalanceMainBodyCtrl.exportGrid()">
+      <i class="fa fa-file-excel-o"></i>
+      <span translate>FORM.BUTTONS.EXPORT</span>
     </button>
   </div>
 </div>
