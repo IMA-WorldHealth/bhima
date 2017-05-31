@@ -110,7 +110,7 @@ describe('(/patients) Patients', function () {
           helpers.api.listed(res, 2);
 
           const firstRecord = res.body[0];
-          expect(firstRecord).to.have.all.keys(['uuid', 'display_name', 'reference']);
+          expect(firstRecord).to.have.all.keys(['uuid', 'display_name', 'reference', 'color']);
         })
         .catch(helpers.handler);
     });

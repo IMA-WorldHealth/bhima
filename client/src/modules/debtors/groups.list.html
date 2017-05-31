@@ -39,7 +39,10 @@
           <div class="panel-body text-left">
             <div class="row">
               <div class="col-md-6">
-                <h4 style="margin-top : 0px;"><span ng-if="debtorGroup.locked" class="fa fa-lock text-danger"></span> <b>{{debtorGroup.name}}</b></h4>
+                <h4 style="margin-top : 0px;">
+                  <span ng-if="debtorGroup.locked" class="fa fa-lock text-danger"></span> <b>{{debtorGroup.name}}</b> 
+                  <i class="fa fa-circle" style="color: {{ debtorGroup.color }}"></i>
+                </h4>
                 <h5 style="margin-top : 0px;"></span><span translate> FORM.LABELS.ACCOUNT_NUMBER </span> : <b>{{debtorGroup.account_number}}</b></h5>
               </div>
               <div class="col-md-6 text-float-util">

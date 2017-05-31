@@ -21,6 +21,13 @@
             </div>
           </div>
 
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.color.$invalid && debtorGroup.$submitted}">
+            <label class="control-label" translate>FORM.LABELS.COLOR</label>
+            <input name="color" id="title-color" type="color" ng-model="GroupUpdateCtrl.group.color" class="form-control" ng-value="GroupUpdateCtrl.group.color">
+          </div>
+
           <bh-account-select
             name="account_id"
             account-id="GroupUpdateCtrl.group.account_id"

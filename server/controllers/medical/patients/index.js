@@ -340,10 +340,12 @@ function searchByName(req, res, next) {
 
   const sql = `
     SELECT
-      BUID(uuid) as uuid, display_name,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) as reference
+      BUID(patient.uuid) as uuid, display_name,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) as reference, debtor_group.color
     FROM patient
     JOIN project ON patient.project_id = project.id
+    JOIN debtor ON patient.debtor_uuid = debtor.uuid
+    JOIN debtor_group ON debtor.group_uuid = debtor_group.uuid
     WHERE LOWER(display_name) LIKE ?
     LIMIT ${limit}
   `;
@@ -420,7 +422,7 @@ function patientEntityQuery(detailed) {
       BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
-      u.display_name as userName, originVillage.name as originVillageName,
+      u.display_name as userName, originVillage.name as originVillageName, dg.color,
       originSector.name as originSectorName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
