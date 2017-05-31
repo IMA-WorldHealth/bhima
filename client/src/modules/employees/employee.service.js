@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('EmployeeService', EmployeeService);
 
-EmployeeService.$inject = ['DepricatedFilterService', '$uibModal', 'PrototypeApiService'];
+EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 'appcache'];
 
 /**
  * @class EmployeeService
@@ -10,45 +10,63 @@ EmployeeService.$inject = ['DepricatedFilterService', '$uibModal', 'PrototypeApi
  * @description
  * Encapsulates common requests to the /employees/ URL.
  */
-function EmployeeService(Filters, $uibModal, Api) {
+function EmployeeService(Filters, $uibModal, Api, AppCache) {
   var service = new Api('/employees/');
-  var filter = new Filters();
-  service.formatFilterParameters = formatFilterParameters;
+  var employeeFilters = new Filters();
+  var filterCache = new AppCache('employee-filters');
+
   service.openSearchModal = openSearchModal;
+  service.filters = employeeFilters;
+  service.removeFilter = removeFilter;
+  service.employeeFilters = employeeFilters;
+  service.loadCachedFilters = loadCachedFilters;
+  service.cacheFilters = cacheFilters;
 
-  /**
-   * This function prepares the headers employee properties which were filtered,
-   * Special treatment occurs when processing data related to the date
-   * @todo - this might be better in it's own service
-  */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'display_name', displayName: 'FORM.LABELS.NAME' },
-      { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
-      { field: 'code', displayName: 'FORM.LABELS.CODE' },
-      { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
-      { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
-      { field: 'dateEmbaucheFrom', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', ngFilter:'date' },
-      { field: 'dateEmbaucheTo', displayName: 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', ngFilter:'date' },
-      { field: 'grade_id', displayName: 'FORM.LABELS.GRADE' },
-      { field: 'fonction_id', displayName: 'FORM.LABELS.FUNCTION' },
-      { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' }
-    ];
+  employeeFilters.registerDefaultFilters([{ key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
-
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
-      var value = params[column.field];
-
-      if (angular.isDefined(value)) {
-        column.value = value;
-        return true;
-      } else {
-        return false;
-      }
-    });
+  employeeFilters.registerCustomFilters([
+      { key : 'display_name', label : 'FORM.LABELS.NAME' },
+      { key : 'sex', label : 'FORM.LABELS.GENDER' },
+      { key : 'code', label : 'FORM.LABELS.CODE' },
+      { key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor: '>', valueFilter:'date' },
+      { key : 'dateBirthTo', label : 'FORM.LABELS.DOB', comparitor: '<', valueFilter:'date' },
+      { key : 'dateEmbaucheFrom', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', valueFilter:'date' },
+      { key : 'dateEmbaucheTo', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', valueFilter:'date' },
+      { key : 'grade_id', label : 'FORM.LABELS.GRADE' },
+      { key : 'fonction_id', label : 'FORM.LABELS.FUNCTION' },
+      { key : 'service_id', label : 'FORM.LABELS.SERVICE' }
+    ]); 
+  
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    employeeFilters.loadCache(filterCache.filters);
   }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(employeeFilters.formatHTTP());
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      employeeFilters.assignFilter('limit', 100);
+    }
+  }
+
+  function removeFilter(key) {
+    employeeFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  function cacheFilters() {
+    filterCache.filters = employeeFilters.formatCache();
+  };
+
+  function loadCachedFilters() {
+    employeeFilters.loadCache(filterCache.filters || {});
+  };
 
   /**
    * @method openSearchModal
@@ -66,7 +84,7 @@ function EmployeeService(Filters, $uibModal, Api) {
       backdrop: 'static',
       controller: 'EmployeeRegistryModalController as ModalCtrl',
       resolve : {
-        params : function paramsProvider() { return params; }
+        filters : function paramsProvider() { return params; }
       }
     }).result;
   }

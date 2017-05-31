@@ -4,8 +4,7 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   '$state', 'EmployeeService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
-  'GridColumnService', 'bhConstants',
-  'DepricatedFilterService',
+  'GridColumnService', 'bhConstants', 'FilterService'
 ];
 
 /**
@@ -17,17 +16,16 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
   Columns, bhConstants, Filters) {
   var vm = this;
-  var filter = new Filters();
 
+  var filter = new Filters();
   vm.filter = filter;
+  vm.filtersFmt = [];
 
   var cacheKey = 'EmployeeRegistry';
-  var cache = AppCache(cacheKey);
   var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
   vm.openPatientCard = openPatientCard;
   vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
@@ -169,44 +167,34 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
 
   // search and filter data in employee Registry
   function search() {
-    Employees.openSearchModal(vm.filters)
+    var filtersSnapshot = Employees.filters.formatHTTP();
+
+    Employees.openSearchModal(filtersSnapshot)
       .then(function (parameters) {
         // no parameters means the modal was dismissed.
         if (!parameters) { return; }
 
-        if (parameters.defaultPeriod) {
-          delete parameters.defaultPeriod;
-        }
+        Employees.filters.replaceFilters(parameters);
+        Employees.cacheFilters();
+        vm.latestViewFilters = Employees.filters.formatView();
 
-        cacheFilters(parameters);
-        return load(vm.filters);
-      });
+        return load(Employees.filters.formatHTTP(true));
+      })
+      .catch(handler);
   }
 
   function openColumnConfiguration() {
     columnConfig.openConfigurationModal();
   }
 
-  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
-  function cacheFilters(filters) {
-    vm.filters = cache.filters = filters;
-    vm.filtersFmt = Employees.formatFilterParameters(filters);
-
-    // check if there are filters applied and show the filter bar
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
-  }
-
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    delete vm.filters[key];
-    cacheFilters(vm.filters);
-    load(vm.filters);
-  }
+    Employees.removeFilter(key);
 
-  // clears the filters by forcing a cache of an empty array
-  function clearFilters() {
-    cacheFilters({});
-    load(vm.filters);
+    Employees.cacheFilters();
+    vm.latestViewFilters = Employees.filters.formatView();
+
+    return load(Employees.filters.formatHTTP(true));
   }
 
   // toggles the loading indicator on or off
@@ -221,19 +209,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    // if filters are directly passed in through params, override cached filters
-    if ($state.params.filters) {
-      cacheFilters($state.params.filters);
-    }
-
-    if (!cache.filters) { cache.filters = {}; }
-
-    vm.filters = cache.filters;
-    vm.filtersFmt = Employees.formatFilterParameters(vm.filters || {});
-    load(vm.filters);
-
-    // check if there are filters applied
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
+    load(Employees.filters.formatHTTP(true));
+    vm.latestViewFilters = Employees.filters.formatView();
   }
 
   // fire up the module

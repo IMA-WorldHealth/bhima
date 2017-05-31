@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
 
 EmployeeRegistryModalController.$inject = [
-  '$uibModalInstance', 'params', 'FunctionService', 'GradeService',
-  'bhConstants', 'moment', 'ServiceService'
+  '$uibModalInstance', 'FunctionService', 'GradeService',
+  'bhConstants', 'moment', 'ServiceService', 'Store', 'util', 'filters'
 ];
 
 /**
@@ -13,13 +13,28 @@ EmployeeRegistryModalController.$inject = [
  * This controller is responsible for setting up the filters for the employee
  * search functionality on the employee registry page.
  */
-function EmployeeRegistryModalController(ModalInstance, params, Functions, Grades, bhConstants, moment, Services) {
+function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhConstants, moment, Services, Store, util, filters) {
   var vm = this;
+  var changes = new Store({identifier : 'key'});
+
+  vm.filters = filters;
+  vm.serchQueries = {};
+  vm.defaultQueries = {};
   vm.today = new Date();
 
-  // bind filters if they have already been applied.  Otherwise, default to an
-  // empty object.
-  vm.params = params || {};
+  // these properties will be used to filter employee data form the client
+  var searchQueryOptions = [
+    'display_name', 'sex', 'code', 'dateBirthFrom', 'dateBirthTo', 'dateEmbaucheFrom',
+    'dateEmbaucheTo', 'grade_id', 'fonction_id', 'service_id',
+  ];
+
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // assign default filters
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
+  }
 
   // bind methods
   vm.submit = submit;
@@ -41,58 +56,28 @@ function EmployeeRegistryModalController(ModalInstance, params, Functions, Grade
       vm.services = services;
     });
 
-  // returns the parameters to the parent controller
-  function submit(form) {
-    if (form.$invalid) { return; }
-
-    var parameters = angular.copy(vm.params);
-
-    // to get the format of data from Database
-    var formatDB = bhConstants.dates.formatDB;
-
-    // convert dates to strings
-    if (parameters.dateEmbaucheFrom) {
-      parameters.dateEmbaucheFrom = moment(parameters.dateEmbaucheFrom).format(formatDB);
-    }
-
-    if (parameters.dateEmbaucheTo) {
-      parameters.dateEmbaucheTo = moment(parameters.dateEmbaucheTo).format(formatDB);
-    }
-
-    if (parameters.dateBirthFrom) {
-      parameters.dateBirthFrom = moment(parameters.dateBirthFrom).format(formatDB);
-    }
-
-    if (parameters.dateBirthTo) {
-      parameters.dateBirthTo = moment(parameters.dateBirthTo).format(formatDB);
-    }
-
-    // make sure we don't have any undefined or empty parameters
-    angular.forEach(parameters, function (value, key) {
-      if (value === null || value === '') {
-        delete parameters[key];
-      }
-    });
-
-    return ModalInstance.close(parameters);
-  }
 
   // clears search parameters.  Custom logic if a date is used so that we can
   // clear two properties.
-  function clear(value) {
-    if (value === 'embauche') {
-      delete vm.params.dateEmbaucheFrom;
-      delete vm.params.dateEmbaucheTo;
-    } else if (value === 'dob') {
-      delete vm.params.dateBirthFrom;
-      delete vm.params.dateBirthTo;
-    } else {
-      delete vm.params[value];
-    }
+  function clear(key) {
+     delete vm.searchQueries[key];
   }
 
   // dismiss the modal
   function cancel() {
     ModalInstance.close();
+  }
+
+  // returns the parameters to the parent controller
+  function submit(form) {
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      if (angular.isDefined(value)) {
+        changes.post({ key : key, value : value });
+      }
+    });
+
+    var loggedChanges = changes.getAll();
+    return ModalInstance.close(loggedChanges);
   }
 }
