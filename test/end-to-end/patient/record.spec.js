@@ -17,11 +17,18 @@ describe('Patient Record', function () {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
+  // calcul Age dynamically
+  var currentDate = new Date();
+  var currentYear = currentDate.getFullYear();
+
+  // Calculate age and transform ageTestPatient2 to String
+  var ageTestPatient2 = (currentYear - 1990) + '';
+
   const patient = {
     name : 'Test 2 Patient',
     id : 'PA.TPA.2',
     hospital_no : '110',
-    age : '26',
+    age : ageTestPatient2,
     gender : 'M'
   };
 
