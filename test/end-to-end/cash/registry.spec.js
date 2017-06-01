@@ -58,6 +58,7 @@ function CashPaymentsRegistryTests() {
     modal.submit();
     GU.expectRowCount('payment-registry', 0);
   });
+  
   it('finds two payments in the primary cashbox', () => {
     modal.setPaymentReference('Test Primary Cashbox A');
     modal.submit();
@@ -66,6 +67,12 @@ function CashPaymentsRegistryTests() {
 
   it('finds all payments made by the super user', () => {
     modal.setUser('Super User');
+    modal.submit();
+    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
+  });
+
+  it('finds all payments for creditor group Second Test Debtor Group', () => {
+    modal.setDebtorGroup('Second Test Debtor Group');
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });

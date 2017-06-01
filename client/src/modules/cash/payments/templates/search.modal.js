@@ -3,13 +3,13 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util',
+  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util', 'DebtorGroupService',
 ];
 
 /**
  * Search Cash Payment controller
  */
-function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util) {
+function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util, DebtorGroups) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
@@ -39,6 +39,11 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
       vm.cashboxes = list;
     })
     .catch(Notify.handleError);
+
+  DebtorGroups.read()
+    .then(function (result) {
+      vm.debtorGroups = result;
+    });
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {

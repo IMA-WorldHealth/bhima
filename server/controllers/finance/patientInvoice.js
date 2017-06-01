@@ -194,7 +194,7 @@ function create(req, res, next) {
 
 function find(options) {
   // ensure expected options are parsed as binary
-  db.convert(options, ['patientUuid']);
+  db.convert(options, ['patientUuid', 'debtor_group_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'invoice' });
 
@@ -209,6 +209,7 @@ function find(options) {
       service.name as serviceName, user.display_name, invoice.user_id, invoice.reversed
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+    JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
@@ -217,6 +218,7 @@ function find(options) {
   filters.equals('patientUuid', 'uuid', 'patient');
   filters.dateFrom('billingDateFrom', 'date');
   filters.dateTo('billingDateTo', 'date');
+  filters.equals('debtor_group_uuid', 'group_uuid', 'd');
 
   filters.custom(
     'cash_uuid',

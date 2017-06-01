@@ -132,7 +132,8 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
       { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' },
       { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
       { field: 'cash_uuid', displayName : 'FORM.INFO.PAYMENT' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' }
+      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
+      { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' }
     ];
 
     // returns columns from filters
@@ -143,7 +144,7 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
       if (angular.isDefined(value)) {
         column.value = value;
 
-        if (column.field === 'cash_uuid') {
+        if (column.field === 'cash_uuid' || column.field === 'debtor_group_uuid') {
           column.value = column.value.slice(0, LIMIT_UUID_LENGTH).concat('...');
         }
 

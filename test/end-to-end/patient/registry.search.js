@@ -63,6 +63,16 @@ function PatientRegistrySearch() {
     FU.buttons.clear();
   });
 
+  it(`should find one patient with Debtor Group "Second Test Debtor Group"`, () => {
+    FU.buttons.search();
+    FU.select('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(2);
+    expectNumberOfFilters(1);
+    FU.buttons.clear();
+  });
+
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
     FU.buttons.search();

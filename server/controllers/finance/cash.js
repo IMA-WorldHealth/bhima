@@ -136,7 +136,7 @@ function read(req, res, next) {
  */
 function listPayment(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['debtor_uuid']);  
+  db.convert(options, ['debtor_uuid', 'debtor_group_uuid']);  
   const filters = new FilterParser(options, { tableAlias : 'cash', autoParseStatements : false });
 
   const sql = `
@@ -165,6 +165,7 @@ function listPayment(options) {
   filters.equals('debtor_uuid');
   filters.equals('currency_id');
   filters.equals('reversed');
+  filters.equals('debtor_group_uuid', 'group_uuid', 'd');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);

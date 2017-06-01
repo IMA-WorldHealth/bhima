@@ -59,6 +59,32 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.DEBTOR_GROUP
+        </label>
+
+        <!-- @todo make this a component - it is used everywhere. Calls back method
+             `clear` and resets the id passed to the component -->
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('debtor_group_uuid')" tabindex="-1">
+            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+          </a>
+        </span>
+
+        <!-- @todo make data driven selects components to handle loading and error states -->
+        <select
+          class="form-control"
+          name="debtorGroup"
+          ng-options="group.uuid as group.name for group in ModalCtrl.debtorGroups"
+          ng-model="ModalCtrl.params.debtor_group_uuid">
+          <option disabled value="" translate>
+            FORM.PLACEHOLDERS.DEBTOR_GROUP
+          </option>
+        </select>
+      </div>
+
+
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
         <label class="control-label" translate>FORM.LABELS.SERVICE</label>
         <bh-clear on-clear="ModalCtrl.clear('service_id')"></bh-clear>
