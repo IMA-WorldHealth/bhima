@@ -8,28 +8,25 @@
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const grid = require('../shared/GridUtils');
+const Filters = require('../shared/components/bhFilters');
 
 class EmployeeRegistryPage {
     constructor (){
         this.gridId = 'employee-registry';
+        this.filters = new Filters();
     }
     
 
     employeeCount(number, message){
         grid.expectRowCount(this.gridId, number, message);
     }
-
-    filterCount (){
-        const filters = $('[data-bh-filter-bar]').all(by.css('.label'));
-        return filters.count();        
-    }
-
+    
     search (){
         FU.buttons.search();
     }
 
     clearFilter (){
-        FU.buttons.clear();
+        this.filters.resetFilters();
     }
 }
 

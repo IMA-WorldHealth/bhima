@@ -13,7 +13,7 @@ describe('Employees Registry', () => {
   const employeeRegistryPage =  new EmployeeRegistryPage();
   const searchModalPage =  new SearchModalPage();
   const employeeCount = 2;
-  const ONE_EMPLOYEE = 1
+  const ONE_EMPLOYEE = 1;
   const parameters = {
       name : 'Dedrick',
       oneFilter : 1,
@@ -22,8 +22,8 @@ describe('Employees Registry', () => {
       fourFilters : 4,
   };
 
-
-
+  let modal;
+  
   before(() => { helpers.navigate(path)});
 
   it('list all registered employees', () => {
@@ -35,10 +35,6 @@ describe('Employees Registry', () => {
       searchModalPage.setDisplayName(parameters.name);
       searchModalPage.submit();
       employeeRegistryPage.employeeCount(ONE_EMPLOYEE, `The number of filtered employee should be ${ONE_EMPLOYEE}`); 
-
-      expect(employeeRegistryPage.filterCount(),
-      `Expected Employee Registry bh-filter-bar's filter count to be ${parameters.oneFilter}.`).
-      to.eventually.equal(parameters.oneFilter);
       employeeRegistryPage.clearFilter();
   });
 
@@ -49,10 +45,6 @@ describe('Employees Registry', () => {
      searchModalPage.submit();
 
      employeeRegistryPage.employeeCount(ONE_EMPLOYEE, `The number of filtered employee should be ${ONE_EMPLOYEE}`); 
-
-     expect(employeeRegistryPage.filterCount(),
-      `Expected Employee Registry bh-filter-bar's filter count to be ${parameters.twoFilters}.`).
-      to.eventually.equal(parameters.twoFilters);
       employeeRegistryPage.clearFilter();
   });
 
@@ -63,9 +55,6 @@ describe('Employees Registry', () => {
     searchModalPage.submit();
 
     employeeRegistryPage.employeeCount(0, `The number of filtered employee should be 0`);
-    expect(employeeRegistryPage.filterCount(),
-      `Expected Employee Registry bh-filter-bar's filter count to be ${parameters.threeFilters}.`).
-      to.eventually.equal(parameters.threeFilters);
     employeeRegistryPage.clearFilter();
   });
 
@@ -75,14 +64,7 @@ describe('Employees Registry', () => {
     searchModalPage.submit();
 
     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
-    expect(employeeRegistryPage.filterCount(),
-      `Expected Employee Registry bh-filter-bar's filter count to be ${parameters.oneFilter}.`).
-      to.eventually.equal(parameters.oneFilter);
     employeeRegistryPage.clearFilter();
-
-     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
-    expect(employeeRegistryPage.filterCount(),
-      `Expected Employee Registry bh-filter-bar's filter count to be 0.`).
-      to.eventually.equal(0);
+    employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
   });
 });

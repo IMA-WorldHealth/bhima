@@ -12,7 +12,7 @@ const grid = require('../shared/GridUtils');
 class SearchModalPage{
 
     setDisplayName(displayName){
-        FU.input('ModalCtrl.params.display_name', displayName);
+        FU.input('ModalCtrl.searchQueries.display_name', displayName);
     }
 
     submit (){
