@@ -28,7 +28,7 @@ function list(req, res, next) {
     FROM creditor AS c 
     JOIN creditor_group AS cg 
     JOIN account AS a ON c.group_uuid = cg.uuid AND cg.account_id = a.id 
-    LEFT JOIN entity_map map ON map.uuid = c.uuid;
+    JOIN entity_map map ON map.uuid = c.uuid;
   `;
 
   db.exec(sql)

@@ -1218,8 +1218,6 @@ CREATE PROCEDURE MergeLocations(
 
   UPDATE debtor_group SET location_id = afterUuid WHERE location_id = beforeUuid;
 
-  UPDATE employee SET location_id = afterUuid WHERE location_id = beforeUuid;
-
   UPDATE enterprise SET location_id = afterUuid WHERE location_id = beforeUuid;
 
   -- delete the beforeUuid village and leave the afterUuid village.
