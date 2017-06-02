@@ -1,13 +1,17 @@
 angular.module('bhima.controllers')
   .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
-// dependencies injections
 SearchCashPaymentModalController.$inject = [
   'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util', 'DebtorGroupService',
 ];
 
 /**
  * Search Cash Payment controller
+ *
+ * @description
+ * This controller powers the Invoice Search modal.  Invoices are passed in from the registry as
+ * POJO and are attached to the view.  They are modified here and returned to the parent controller
+ * as a POJO.
  */
 function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util, DebtorGroups) {
   var vm = this;

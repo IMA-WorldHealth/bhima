@@ -2,26 +2,28 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'util', 'SessionService', 'PrototypeApiService', 'DepricatedFilterService'
+  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
 ];
 
 /**
+ * @module
  * Patient Invoice Service
  *
- * Allows direct querying of the /invoices API.  Normally this should be done
- * through the PatientService, but for queries not tied to particular patients,
- * this service is particularly useful.
+ * @description
+ * This service wraps the /invoices URL and all CRUD on the underlying tables
+ * takes place through this service.
  */
-function PatientInvoiceService(Modal, util, Session, Api, Filters) {
+function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods) {
   var service = new Api('/invoices/');
 
-  var filter = new Filters();
+  var invoiceFilters = new Filters();
+  var filterCache = new AppCache('cash-filters');
 
   service.create = create;
   service.openSearchModal = openSearchModal;
-  service.formatFilterParameters = formatFilterParameters;
   service.openCreditNoteModal = openCreditNoteModal;
   service.balance = balance;
+  service.filters = invoiceFilters;
 
   /**
    * @method create
@@ -55,7 +57,7 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
 
     cp.description = description;
 
-    return Api.create.call(this, { invoice: cp });
+    return Api.create.call(this, { invoice : cp });
   }
 
   /**
@@ -83,7 +85,6 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
     delete item._invalid;
     delete item._initialised;
     delete item._hasPriceList;
-
     return item;
   }
 
@@ -96,13 +97,13 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
       keyboard  : false,
       backdrop : 'static',
       controller : 'InvoiceRegistrySearchModalController as ModalCtrl',
-      resolve: {
-        filters : function filtersProvider() { return filters; }
-      }
+      resolve : {
+        filters : function filtersProvider() { return filters; },
+      },
     }).result;
   }
 
-  //open a dialog box to Cancel Credit Note
+  // open a dialog box to Cancel Credit Note
   function openCreditNoteModal(invoice) {
     return Modal.open({
       templateUrl : 'modules/invoices/registry/modalCreditNote.html',
@@ -115,49 +116,63 @@ function PatientInvoiceService(Modal, util, Session, Api, Filters) {
     }, true).result;
   }
 
-  /**
-   * This function prepares the headers for invoice properties which were filtered,
-   * Special treatment occurs when processing data related to the date
-   * @todo - this might be better in its own service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'debtor_uuid', displayName: 'FORM.LABELS.CLIENT' },
-      { field : 'patientReference', displayName: 'FORM.LABELS.REFERENCE_PATIENT'},
-      { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
-      { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
-      { field: 'reversed', displayName : 'FORM.INFO.CREDIT_NOTE' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-      { field: 'cash_uuid', displayName : 'FORM.INFO.PAYMENT' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-      { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' }
-    ];
+  invoiceFilters.registerDefaultFilters([
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
-      var value = params[column.field];
+  invoiceFilters.registerCustomFilters([
+    { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
+    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
+    { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
+    { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
+    { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
+    { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
+  ]);
 
-      if (angular.isDefined(value)) {
-        column.value = value;
-
-        if (column.field === 'cash_uuid' || column.field === 'debtor_group_uuid') {
-          column.value = column.value.slice(0, LIMIT_UUID_LENGTH).concat('...');
-        }
-
-        // @FIXME tempoarary hack for default period
-        if (column.field === 'defaultPeriod') {
-          column.value = filter.lookupPeriod(value).label;
-        }
-        return true;
-      } else {
-        return false;
-      }
-    });
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    invoiceFilters.loadCache(filterCache.filters);
   }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(invoiceFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
+    if (!periodDefined) {
+      invoiceFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      invoiceFilters.assignFilter('limit', 100);
+    }
+  }
+
+  service.removeFilter = function removeFilter(key) {
+    invoiceFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = invoiceFilters.formatCache();
+  };
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    invoiceFilters.loadCache(filterCache.filters || {});
+  };
 
   return service;
 }
