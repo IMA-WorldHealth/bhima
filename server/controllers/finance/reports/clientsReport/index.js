@@ -9,7 +9,6 @@
  * @requires lib/db
  * @requires lib/ReportManager
  */
-
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -26,27 +25,17 @@ function document(req, res, next) {
   let report;
 
 
-  _.defaults(
-    session,
-    {
-      dateFrom : new Date(params.dateFrom),
-      dateTo : new Date(params.dateTo),
-      detailPrevious : params.detailPrevious,
-      ignoredClients : params.ignoredClients,
-      enterprise : req.session.enterprise,
-    });
-
+  _.defaults(session, { dateFrom : new Date(params.dateFrom), dateTo : new Date(params.dateTo), detailPrevious : params.detailPrevious, ignoredClients : params.ignoredClients, enterprise : req.session.enterprise });
   _.defaults(params, { user : req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
-    next(e);
-    return;
+    return next(e);
   }
 
   // Getting data to be rendered
-  fetchClientsData(session)
+  return fetchClientsData(session)
     .then((data) => {
       return report.render(data);
     })
@@ -54,7 +43,7 @@ function document(req, res, next) {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
-}
+ }
 
 /**
  * @function fetchClientsData
@@ -79,11 +68,11 @@ function fetchClientsData(session) {
   const previousDetailSql =
     `    
     SELECT 
-     t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, 
-     IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
+     t.number AS accountNumber, t.name, 
+     IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
     FROM
     (
-      SELECT 
+      SELECT
        ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
        SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
       FROM debtor_group dg 
@@ -92,36 +81,35 @@ function fetchClientsData(session) {
       WHERE pt.fiscal_year_id = ? ${notInStatement} GROUP BY ac.number
     ) AS t`;
 
-  // Getting a fiscal year and the previous fiscal year ID from the date start defined by the user
+  // getting a fiscal year and the previous fiscal year ID from the date start defined by the user
   return getFiscalYear(session.dateFrom)
     .then((rows) => {
       clientsData.fy = rows[0];
       clientsData.fy.openningBalanceDate = new Date(clientsData.fy.start_date);
-
-      // Just correcting the date value
+      // just correcting the date value
       clientsData.fy.openningBalanceDate.setDate(clientsData.fy.openningBalanceDate.getDate() - 1);
 
-      // Getting the client data for the previous fiscal year
+      // getting the client data for the previous fiscal year
       return db.exec(previousDetailSql, [clientsData.fy.previous_fiscal_year_id]);
     })
     .then((data) => {
-      // From previous fiscal year data, building the object containing all previous info to print
+      // from previous fiscal year data, building the object containing all previous info to print
       clientsData.lines = data.reduce((obj, clientInfo) => {
         const number = clientInfo.accountNumber;
         _.merge(obj[number] = {}, clientInfo);
         return obj;
       }, {});
 
-      // Getting total for previous fiscal year
+      // getting total for previous fiscal year
       const previousTotalSql =
         `
         SELECT 
-          IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit,
+          IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, 
           IFNULL(balance, 0) AS totalInitBalance 
         FROM 
         (
           SELECT 
-           SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance
+            SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
           FROM period_total pt
           JOIN debtor_group dg ON dg.account_id = pt.account_id 
           WHERE pt.fiscal_year_id = ? ${notInStatement} 
@@ -132,17 +120,17 @@ function fetchClientsData(session) {
     .then((previousTotal) => {
       _.merge(clientsData, previousTotal);
 
-      // Request to fetch the current fiscal year data of a client
+      // request to fetch the current fiscal year data of a client
       const currentDetailSql =
         `
         SELECT 
-         t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit,
-         IFNULL(t.credit, 0) AS credit, IFNULL(t.balance, 0) AS balance
+          t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
+          IFNULL(t.balance, 0) AS balance
         FROM 
         (
           SELECT 
-           ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit,
-           SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
+            ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
+            SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
           FROM debtor_group dg 
           JOIN account ac ON ac.id = dg.account_id 
           LEFT JOIN general_ledger gl ON ac.id = gl.account_id
@@ -150,34 +138,20 @@ function fetchClientsData(session) {
           GROUP BY ac.number
         ) AS t`;
 
-      // Fetching data of the current fiscal year
+      // fetching data of the current fiscal year
       return db.exec(currentDetailSql, [session.dateFrom, session.dateTo]);
     })
     .then((data) => {
-      // Completing the object {clientsData} by adding current info
+      // completing the object {clientsData} by adding current info
       data.forEach((dt) => {
-        // If there is no info about the client for the previous year
+        // if there is no info about the client for the previous year
         if (!clientsData.lines[dt.accountNumber]) {
-          _.merge(
-            clientsData.lines[dt.accountNumber] = {},
-            {
-              initDebit : 0,
-              initCredit : 0,
-              initBalance : 0,
-              name : dt.name,
-              accountNumber : dt.accountNumber,
-            });
+          _.merge(clientsData.lines[dt.accountNumber] = {}, { initDebit : 0, initCredit : 0, initBalance : 0, name : dt.name, accountNumber : dt.accountNumber });
         }
-        // Adding effectively current info to the object
-        // And adding the final balance of the client,
-        // no way to get it from the database directly without altering the current requests
-        _.merge(
-          clientsData.lines[dt.accountNumber],
-          {
-            debit : dt.debit,
-            credit : dt.credit,
-            finalBalance : clientsData.lines[dt.accountNumber].initBalance + dt.balance,
-          });
+
+        // adding effectively current info to the object
+        // and adding the final balance of the client, no way to get it from the database directly without altering the current requests
+        _.merge(clientsData.lines[dt.accountNumber], { debit : dt.debit, credit : dt.credit, finalBalance : clientsData.lines[dt.accountNumber].initBalance + dt.balance });
       });
 
       const currentTotalSql =
@@ -202,8 +176,7 @@ function fetchClientsData(session) {
       _.merge(clientsData, currentTotal);
 
       return clientsData;
-    })
-    .catch((e) => { throw e; });
+    });
 }
 
 /**
