@@ -85,7 +85,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading" translate> COUNTRY.REGISTER </div>
           <div class="panel-body">
-            <form name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+            <form name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
@@ -111,7 +111,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading" translate> COUNTRY.EDIT </div>
           <div class="panel-body">
-            <form name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+            <form name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" autocomplete="off" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>

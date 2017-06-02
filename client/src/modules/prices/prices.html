@@ -64,7 +64,7 @@
         <div class="panel panel-primary" ng-switch-when="create" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading" translate> PRICE_LIST.ADD_PRICE_LIST </div>
           <div class="panel-body">
-            <form name="CreateForm" bh-submit="PriceListCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
+            <form name="CreateForm" bh-submit="PriceListCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.DESIGNATION </label>
@@ -126,7 +126,7 @@
         <div class="panel panel-primary" ng-switch-when="update" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading" translate> PRICE_LIST.UPDATE </div>
           <div class="panel-body">
-            <form name="UpdateForm" bh-submit="PriceListCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
+            <form name="UpdateForm" bh-submit="PriceListCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.DESIGNATION </label>

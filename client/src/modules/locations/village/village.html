@@ -87,7 +87,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading" translate> VILLAGE.REGISTER </div>
           <div class="panel-body">
-            <form name="CreateForm" ng-submit="VillageCtrl.submit(CreateForm)" bh-form-defaults  novalidate>
+            <form name="CreateForm" ng-submit="VillageCtrl.submit(CreateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
@@ -169,7 +169,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading" translate> VILLAGE.EDIT </div>
           <div class="panel-body">
-            <form name="UpdateForm" ng-submit="VillageCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+            <form name="UpdateForm" ng-submit="VillageCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select

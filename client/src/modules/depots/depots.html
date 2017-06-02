@@ -58,7 +58,7 @@
         <div ng-switch-when="action">
           <form class="panel panel-primary"
             ng-class="{ 'panel-danger': DepotCtrl.action === 'remove'}"
-            name="ActionForm" ng-submit="DepotCtrl.submit(ActionForm)" bh-form-defaults novalidate>
+            name="ActionForm" ng-submit="DepotCtrl.submit(ActionForm)" novalidate>
             <div class="panel-heading">
               {{ DepotCtrl.actionTitle | translate }}
             </div>
