@@ -99,8 +99,8 @@ function InvoiceRegistrySearch() {
 
   it('filters by <select> should return three results', () => {
     FU.buttons.search();
-    FU.select('ModalCtrl.params.service_id', 'Administration');
-    FU.select('ModalCtrl.params.debtor_group_uuid', 'First Test Debtor Group');
+    FU.uiSelect('ModalCtrl.params.service_id', 'Administration');
+    FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'First Test Debtor Group');
 
     components.userSelect.set('Super User');
     FU.modal.submit();

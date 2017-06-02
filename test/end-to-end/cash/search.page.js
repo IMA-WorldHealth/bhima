@@ -60,7 +60,7 @@ class SearchModal {
   }
 
   setDebtorGroup(debtorGroup) {
-    FU.select('$ctrl.searchQueries.debtor_group_uuid', debtorGroup, this.element);
+    FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', debtorGroup, this.element);
   }
 
   setCustomPeriod(start, end) {

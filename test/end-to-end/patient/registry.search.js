@@ -65,7 +65,7 @@ function PatientRegistrySearch() {
 
   it(`should find one patient with Debtor Group "Second Test Debtor Group"`, () => {
     FU.buttons.search();
-    FU.select('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
+    FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
     FU.modal.submit();
 
     expectNumberOfGridRows(2);

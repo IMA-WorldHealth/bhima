@@ -35,11 +35,8 @@
         <label class="control-label">
           {{ 'FORM.LABELS.NAME' | translate }}
         </label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('display_name')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <bh-clear on-clear="ModalCtrl.clear('display_name')"></bh-clear>
+
         <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
         <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -50,11 +47,8 @@
         <label class="control-label">
           {{ 'FORM.LABELS.REFERENCE' | translate }}
         </label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('reference')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+
         <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -65,11 +59,8 @@
         <label class="control-label" translate>
             FORM.LABELS.HOSPITAL_FILE_NR
         </label>
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('hospital_no')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <bh-clear on-clear="ModalCtrl.clear('hospital_no')"></bh-clear>
+
         <input type="text" class="form-control" name="hospital_no" ng-model="ModalCtrl.params.hospital_no">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -79,12 +70,7 @@
       <div class="radio">
         <p class="control-label">
           <strong translate>FORM.LABELS.GENDER</strong>
-
-          <span style="display:inline-block;" class="pull-right">
-            <a href ng-click="ModalCtrl.clear('sex')" tabindex="-1">
-              <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-            </a>
-          </span>
+          <bh-clear on-clear="ModalCtrl.clear('sex')"></bh-clear>
         </p>
 
         <label>
@@ -105,24 +91,17 @@
           FORM.LABELS.DEBTOR_GROUP
         </label>
 
-        <!-- @todo make this a component - it is used everywhere. Calls back method
-             `clear` and resets the id passed to the component -->
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('debtor_group_uuid')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <bh-clear on-clear="ModalCtrl.clear('debtor_group_uuid')"></bh-clear>
 
         <!-- @todo make data driven selects components to handle loading and error states -->
-        <select
-          class="form-control"
+        <ui-select
           name="debtorGroup"
-          ng-options="group.uuid as group.name for group in ModalCtrl.debtorGroups"
           ng-model="ModalCtrl.params.debtor_group_uuid">
-          <option disabled value="" translate>
-            FORM.PLACEHOLDERS.DEBTOR_GROUP
-          </option>
-        </select>
+          <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.DEBTOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.debtorGroups | filter:$select.search | orderBy:'name') track by group.uuid">
+            <span ng-bind-html="group.name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
       </div>
 
       <div class="form-group">
@@ -130,24 +109,17 @@
           PATIENT_GROUP.PATIENT_GROUP
         </label>
 
-        <!-- @todo make this a component - it is used everywhere. Calls back method
-             `clear` and resets the id passed to the component -->
-        <span style="display:inline-block;" class="pull-right">
-          <a href ng-click="ModalCtrl.clear('patient_group_uuid')" tabindex="-1">
-            <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
-          </a>
-        </span>
+        <bh-clear on-clear="ModalCtrl.clear('patient_group_uuid')"></bh-clear>
 
         <!-- @todo make data driven selects components to handle loading and error states -->
-        <select
-          class="form-control"
+        <ui-select
           name="patientGroup"
-          ng-options="group.uuid as group.name for group in ModalCtrl.patientGroups"
           ng-model="ModalCtrl.params.patient_group_uuid">
-          <option disabled value="" translate>
-            FORM.PLACEHOLDERS.PATIENT_GROUP
-          </option>
-        </select>
+          <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PATIENT_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.patientGroups | filter:$select.search | orderBy:'name') track by group.uuid">
+            <span ng-bind-html="group.name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
       </div>
 
       <bh-user-select
