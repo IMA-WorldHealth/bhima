@@ -81,7 +81,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'EMPLOYEE.REGISTRATION_FORM' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="EmployeeCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="EmployeeCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.display_name.$invalid }">
                 <label class="control-label" for="bhima-employee-display_name">{{ 'FORM.LABELS.EMPLOYEE_NAME' | translate }}</label>
@@ -253,7 +253,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'EMPLOYEE.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="EmployeeCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="EmployeeCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.display_name.$invalid }">
                 <label class="control-label" for="bhima-employee-display_name">{{ 'FORM.LABELS.EMPLOYEE_NAME' | translate }}</label>

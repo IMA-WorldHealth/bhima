@@ -38,7 +38,7 @@
             PATIENT_EDIT.FINANCIAL_INFO
           </div>
           <div class="panel-body">
-            <form name="finance" bh-form-defaults novalidate>
+            <form name="finance" novalidate>
 
               <!-- Patient Group -->
               <div class="form-group">
@@ -90,7 +90,7 @@
 
       <div class="col-md-7 col-md-pull-5">
 
-        <form name="patientDetails" bh-submit="PatientEditCtrl.updatePatient(patientDetails)"  bh-form-defaults novalidate>
+        <form name="patientDetails" bh-submit="PatientEditCtrl.updatePatient(patientDetails)" novalidate>
           <div class="panel panel-default">
             <div class="panel-heading">
               {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
