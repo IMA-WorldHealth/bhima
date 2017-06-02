@@ -313,11 +313,9 @@ function JournalController(Journal, Sorting, Grouping,
 
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openConfigurationModal()
-      .then(function (columnsResult) {
-        // modal has closed with success
-        state.saveGridState();
-      });
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    columnConfig.openConfigurationModal();
   };
 
   // This function opens a modal, to let the user posting transaction to the general ledger
@@ -470,24 +468,23 @@ function JournalController(Journal, Sorting, Grouping,
   }
 
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
+    var transactionColumnKey = 'trans_id';
+
+    // column grouping is permenantly saved if the user saves the current grid state
     if (vm.grouping.getCurrentGroupingColumn()) {
-      vm.grouping.removeGrouping('trans_id');
-
-      // save grids state to keep track of this change
-      state.saveGridState(false);
-
-      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
-      vm.grouped = cache.grouped = false;
-    } else {
-      vm.grouping.changeGrouping('trans_id');
-
-      // save grids state to keep track of this change
-      state.saveGridState(false);
-
-      // @FIXME temporary cahced variable to track the grouped state - this should be encapsulated in a component
-      vm.grouped = cache.grouped = true;
+      // grid is currently grouped - toggle should remove the grouping
+      vm.grouping.removeGrouping(transactionColumnKey);
+      return;
     }
+
+    // grid is not currently grouped - toggle should group on the trans_id column
+    vm.grouping.changeGrouping(transactionColumnKey);
   };
+
+  // @TODO this method is called on every single digest to determine if the grid is
+  //       currently grouped - this should only be called once on grid load and then
+  //       updated to keep track of the current grid grouped state
+  vm.gridGroupedState = vm.grouping.getCurrentGroupingColumn;
 
   vm.saveAccountEdit = function saveAccountEdit(row, account) {
     row.account_id = account.id;
