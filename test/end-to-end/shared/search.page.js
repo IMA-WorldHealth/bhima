@@ -5,10 +5,29 @@ const bhPeriodSelect = require('../shared/components/bhPeriodSelect');
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
 
+/**
+ * @class SearchModal
+ *
+ * @description
+ * A generic wrapper for all search forms.  It's gigantic so that the spec.js
+ * runners can be smaller.  It should be able to handle most test runners as
+ * needed.
+ *
+ * @example
+ * let modal;
+ * beforeEach(() => {
+ *   modal = new SearchModal('your-search-modal-attribute');
+ *   SearchModal.open();
+ * });
+ *
+ * it('can do stuff', () => {
+ *   modal.setReference('TP.OKY.1');
+ *   modal.submit();
+ * });
+ */
 class SearchModal {
-
-  // specify the modal attribute to use.
   constructor(dataAttribute) {
+    // specify the modal attribute to use.
     this.element = $(`[data-modal="${dataAttribute}"]`);
   }
 
@@ -38,12 +57,40 @@ class SearchModal {
     FU.uiSelect('$ctrl.searchQueries.cashbox_id', cashbox, this.element);
   }
 
+  setService(service) {
+    FU.select('$ctrl.searchQueries.service_id', service, this.element);
+  }
+
+  setDebtorGroup(name) {
+    FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
+  }
+
+  setPatientGroup(name) {
+    FU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
+  }
+
+  setReference(reference) {
+    FU.input('$ctrl.searchQueries.reference', reference, this.element);
+  }
+
+  /*
+   NOTE:
+   Since these modules are shared between all search forms, please make sure you always use
+   setReference() for searching on the reference of the document contained in the current
+   registry under test.  Use the other setXXXReference() when you need to filter by references
+   _not_ contained in the registry under test.
+  */
+
   setPatientReference(reference) {
     FU.input('$ctrl.searchQueries.patientReference', reference, this.element);
   }
 
-  setPaymentReference(reference) {
-    FU.input('$ctrl.searchQueries.reference', reference, this.element);
+  setCashReference(reference) {
+    FU.input('$ctrl.searchQueries.cashReference', reference, this.element);
+  }
+
+  setInvoiceReference(reference) {
+    FU.input('$ctrl.searchQueries.invoiceReference', reference, this.element);
   }
 
   setLimit(limit) {
@@ -57,10 +104,6 @@ class SearchModal {
 
   setPeriod(period) {
     bhPeriodSelect.select(period);
-  }
-
-  setDebtorGroup(debtorGroup) {
-    FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', debtorGroup, this.element);
   }
 
   setCustomPeriod(start, end) {

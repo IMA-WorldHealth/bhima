@@ -2,7 +2,7 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 
 const Filters = require('../shared/components/bhFilters');
-const SearchModal = require('./search.page');
+const SearchModal = require('../shared/search.page');
 
 describe('Payments Registry', CashPaymentsRegistryTests);
 
@@ -48,19 +48,19 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds a payment given a reference', () => {
-    modal.setPaymentReference('CP.TPA.1');
+    modal.setReference('CP.TPA.1');
     modal.submit();
     GU.expectRowCount('payment-registry', 1);
   });
 
   it('produces an empty grid for an invalid payment', () => {
-    modal.setPaymentReference('NOT_A_REFERENCE');
+    modal.setReference('NOT_A_REFERENCE');
     modal.submit();
     GU.expectRowCount('payment-registry', 0);
   });
-  
+
   it('finds two payments in the primary cashbox', () => {
-    modal.setPaymentReference('Test Primary Cashbox A');
+    modal.setReference('Test Primary Cashbox A');
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
   });

@@ -96,7 +96,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods) 
       animation : false,
       keyboard  : false,
       backdrop : 'static',
-      controller : 'InvoiceRegistrySearchModalController as ModalCtrl',
+      controller : 'InvoiceRegistrySearchModalController as $ctrl',
       resolve : {
         filters : function filtersProvider() { return filters; },
       },

@@ -1,130 +1,88 @@
-'use strict';
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-const expect = chai.expect;
-
-const FU = require('../../shared/FormUtils');
-const components = require('../../shared/components');
-
+const Filters = require('../../shared/components/bhFilters');
+const SearchModal = require('../../shared/search.page');
 const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
-  const params = {
-    monthBillNumber : 0,
-    referenceValue : 'IV.TPA.2',
-    serviceValue : 'Test Service',
-    userValue : 'Super User',
-  };
+  let modal;
+  let filters;
 
   const page = new InvoiceRegistryPage();
 
-  function expectNumberOfGridRows(number) {
-    expect(page.getInvoiceNumber(),
-      `Expected Invoice Registry's ui-grid row count to be ${number}.`
-    ).to.eventually.equal(number);
-  }
-
-  function expectNumberOfFilters(number) {
-    const filters = $('[data-bh-filter-bar]').all(by.css('.label'));
-    expect(filters.count(),
-      `Expected Invoice Registry bh-filter-bar's filter count to be ${number}.`
-    ).to.eventually.equal(number);
-  }
-
-  it('filters invoices by clicking on date buttons', () => {
-    // set the filters to month
-    FU.buttons.search();
-    $('[data-date-range="month"]').click();
-    FU.modal.submit();
-
-    expectNumberOfGridRows(params.monthBillNumber);
-    expectNumberOfFilters(2);
-
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+  beforeEach(() => {
+    SearchModal.open();
+    modal = new SearchModal('invoice-search');
+    filters = new Filters();
   });
 
-  it('filters invoices by manually setting the date', () => {
+  afterEach(() => {
+    filters.resetFilters();
+  });
 
-    // set the date inputs manually
-    FU.buttons.search();
-    components.dateInterval.dateTo('30/01/2015');
-    FU.modal.submit();
+  it('filters 0 invoice for today', () => {
+    const DEFAULT_INVOICES_FOR_TODAY = 0;
 
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(1);
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('today');
+    modal.submit();
 
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+    page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
+  });
+
+  it('filters 5 invoices for all time', () => {
+    const DEFAULT_INVOICES_FOR_ALL_TIME = 5;
+
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    modal.submit();
+
+    page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_ALL_TIME);
   });
 
   it('filters by reference should return a single result', () => {
-    FU.buttons.search();
-    FU.input('ModalCtrl.params.reference', 'IV.TPA.2');
-    FU.modal.submit();
+    const NUM_MATCHING = 1;
 
-    expectNumberOfGridRows(1);
-    expectNumberOfFilters(1);
+    modal.setReference('IV.TPA.2');
+    modal.submit();
 
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+    page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by reference of patient should get no result', () => {
-    FU.buttons.search();
-    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.3');
-    FU.modal.submit();
+  it('filtering by a patient reference should get no results', () => {
+    const NUM_MATCHING = 0;
 
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(1);
+    modal.setPatientReference('PA.TPA.0');
+    modal.submit();
 
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+    page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by reference of patient should get some result', () => {
-    FU.buttons.search();
-    FU.input('ModalCtrl.params.patientReference', 'PA.TPA.1');
-    FU.modal.submit();
+  it('filters by service "Administration" to get three results', () => {
+    const NUM_MATCHING = 3;
 
-    expectNumberOfGridRows(3);
-    expectNumberOfFilters(1);
+    modal.setService('Administration');
+    modal.submit();
 
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+    page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by <select> should return three results', () => {
-    FU.buttons.search();
-    FU.uiSelect('ModalCtrl.params.service_id', 'Administration');
-    FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'First Test Debtor Group');
+  it('filters by debtor group "First Test Debtor Group" to get three results', () => {
+    const NUM_MATCHING = 5;
 
-    components.userSelect.set('Super User');
-    FU.modal.submit();
+    modal.setDebtorGroup('First Test Debtor Group');
+    modal.submit();
 
-    expectNumberOfGridRows(3);
-    expectNumberOfFilters(3);
-
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
+    page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  // it.skip('clear filters should remove all filters on the registry', () => {
-  //   FU.buttons.search();
-  //   FU.input('ModalCtrl.params.reference', 'IV.TPA.1');
-  //   FU.modal.submit();
 
-  //   expectNumberOfGridRows(1);
-  //   expectNumberOfFilters(1);
+  it('filters by user "Super User" should return three results', () => {
+    const NUM_MATCHING = 5;
 
-  //   FU.buttons.clear();
+    modal.setUser('Super User');
+    modal.submit();
 
-  //   expectNumberOfGridRows(NUM_INVOICES);
-  //   expectNumberOfFilters(0);
-  // });
+    page.expectNumberOfGridRows(NUM_MATCHING);
+  });
 }
 
 module.exports = InvoiceRegistrySearch;

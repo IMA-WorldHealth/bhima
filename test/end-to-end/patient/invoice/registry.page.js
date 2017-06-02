@@ -1,26 +1,27 @@
-/* global element, by, browser */
-
-const FU = require('../../shared/FormUtils');
+/* global by */
+const chai = require('chai');
 const GU = require('../../shared/GridUtils');
 
-function InvoiceRegistryPage() {
-  const page = this;
+const expect = chai.expect;
 
-  const gridId = 'invoice-registry';
+const RECEIPT_COLUMN_NUMBER = 6;
 
-  function getInvoiceNumber() {
-    return GU.getRows(gridId).count();
+class InvoiceRegistryPage {
+  constructor() {
+    this.gridId = 'invoice-registry';
+  }
+
+  getInvoiceNumber() {
+    return GU.getRows(this.gridId).count();
   }
 
   /**
    * @param {number} n the index of the row
    * @param {string} actionType invoiceReceipt|creditNoteReceipt|createCreditNote
    */
-  function clickOnMethod(n, actionType) {
-    const receiptColumnNumber = 6;
-
+  clickOnMethod(n, actionType) {
     // get the proper cell
-    const cell = GU.getCell(gridId, n, receiptColumnNumber);
+    const cell = GU.getCell(this.gridId, n, RECEIPT_COLUMN_NUMBER);
 
     // click the dropdown toggle
     cell.element(by.css('[uib-dropdown-toggle]')).click();
@@ -29,8 +30,12 @@ function InvoiceRegistryPage() {
     $(`[data-list="${n}"]`).$(`[data-method="${actionType}"]`).click();
   }
 
-  page.getInvoiceNumber = getInvoiceNumber;
-  page.clickOnMethod = clickOnMethod;
+  // asserts that the grid has a certain number of rows
+  expectNumberOfGridRows(number) {
+    expect(this.getInvoiceNumber(),
+      `Expected Invoice Registry's ui-grid row count to be ${number}.`
+    ).to.eventually.equal(number);
+  }
 }
 
 module.exports = InvoiceRegistryPage;
