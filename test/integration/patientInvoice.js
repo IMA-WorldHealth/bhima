@@ -92,15 +92,6 @@ describe('(/invoices) Patient Invoices', function () {
         .catch(helpers.handler);
     });
 
-    // invalid filter should fail with database error
-    it('GET /invoices?invalidKey=invalidValue should error w/ 400 status', function () {
-      return agent.get('/invoices?invalidKey=invalidValue')
-        .then((res) => {
-          helpers.api.errored(res, 400);
-        })
-        .catch(helpers.handler);
-    });
-
     // filter should find exactly one result
     it('GET /invoices?cost=75 should return a single invoice', function () {
       return agent.get('/invoices?cost=75')
