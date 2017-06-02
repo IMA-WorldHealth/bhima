@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
-  'GridSortingService', '$state', 'FilterService',
+  'GridSortingService',
 ];
 
 /**
@@ -14,7 +14,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, $state, Filters
+  ModalService, Cash, Sorting
 ) {
   var vm = this;
 
@@ -24,16 +24,13 @@ function InvoiceRegistryController(
 
   var columnDefs;
 
-  var filter = new Filters();
-  vm.filter = filter;
-
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
   vm.creditNoteReceipt = Receipt.creditNote;
   vm.onRemoveFilter = onRemoveFilter;
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
-  vm.filterBarHeight = {};
+  vm.download = Invoices.download;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;

@@ -3,6 +3,7 @@ angular.module('bhima.services')
 
 PatientInvoiceService.$inject = [
   '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
+  '$httpParamSerializer', 'LanguageService',
 ];
 
 /**
@@ -13,7 +14,7 @@ PatientInvoiceService.$inject = [
  * This service wraps the /invoices URL and all CRUD on the underlying tables
  * takes place through this service.
  */
-function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods) {
+function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer, Languages) {
   var service = new Api('/invoices/');
 
   var invoiceFilters = new Filters();
@@ -172,6 +173,18 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods) 
 
   service.loadCachedFilters = function loadCachedFilters() {
     invoiceFilters.loadCache(filterCache.filters || {});
+  };
+
+  // downloads a type of report based on the
+  service.download = function download(type) {
+    var filterOpts = invoiceFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   };
 
   return service;
