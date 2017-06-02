@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
-  'GridSortingService',
+  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
 ];
 
 /**
@@ -14,15 +14,18 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting
+  ModalService, Cash, Sorting, Columns, GridState, $state
 ) {
   var vm = this;
 
   // Background color for make the difference between the valid and cancel invoice
   var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
   var regularBackgroundColor = { 'background-color' : 'none' };
+  var cacheKey = 'invoice-grid';
 
   var columnDefs;
+  var gridColumns;
+  var state;
 
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
@@ -92,6 +95,9 @@ function InvoiceRegistryController(
     rowTemplate       : '/modules/invoices/templates/grid.creditNote.tmpl.html',
   };
 
+  gridColumns = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
+
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
@@ -157,6 +163,21 @@ function InvoiceRegistryController(
     load(Invoices.filters.formatHTTP(true));
     vm.latestViewFilters = Invoices.filters.formatView();
   }
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the invoice registry's columns.
+  vm.openColumnConfigModal = function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  };
+
+  // saves the grid's current configuration
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
  // Call the opening of Modal
   function openModal(invoice) {
