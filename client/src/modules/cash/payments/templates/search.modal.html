@@ -55,6 +55,22 @@
 
           <div class="form-group">
             <label class="control-label" translate>
+              FORM.LABELS.DEBTOR_GROUP
+            </label>
+            <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
+            <!-- @todo make data driven selects components to handle loading and error states -->
+            <ui-select
+              name="debtor_group_uuid"
+              ng-model="$ctrl.searchQueries.debtor_group_uuid">
+              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.DEBTOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in ($ctrl.debtorGroups | filter:$select.search | orderBy:'name') track by group.uuid">
+                <span ng-bind-html="group.name | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" translate>
               FORM.LABELS.REFERENCE_PATIENT
             </label>
             <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
