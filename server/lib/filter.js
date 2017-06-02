@@ -151,7 +151,7 @@ class FilterParser {
     const tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      let valueString = '?';
+      const valueString = '?';
       const preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
