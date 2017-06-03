@@ -13,7 +13,7 @@ FOR EACH ROW BEGIN
   INSERT INTO entity_map
     SELECT new.uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
 
-  -- debtor entity reference removed to allow for reverse lookups - if debot
+  -- debtor entity reference removed to allow for reverse lookups - if debit
   -- entity is refined this can point directly to the debtor
 
   -- this writes a debtor entity into the entity_map table
@@ -80,7 +80,7 @@ FOR EACH ROW BEGIN
 
   -- Since employees do not have UUIDs or project associations, we create their mapping by simply concatenating
   -- the id with a prefix like this: E.{{employee.id}}.
-  INSERT INTO entity_map SELECT new.debtor_uuid, CONCAT_WS('.', 'EM', new.id);
+  INSERT INTO entity_map SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', new.id);
 END$$
 
 

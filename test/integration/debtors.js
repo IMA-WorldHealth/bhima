@@ -52,7 +52,7 @@ describe('(/debtors) The /debtors API', function () {
   it('GET /debtors should return a list of all debtors', function () {
     return agent.get('/debtors')
       .then(function (res) {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

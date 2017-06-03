@@ -36,7 +36,7 @@ function list(req, res, next) {
   const sql = `
     SELECT BUID(d.uuid) AS uuid, BUID(d.group_uuid) AS group_uuid,
       d.text, map.text as hr_entity
-    FROM debtor d
+    FROM debtor d 
     JOIN entity_map map ON map.uuid = d.uuid;
   `;
 

@@ -16,6 +16,11 @@
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires lib/barcode
+ * @requires lib/filter
+ *
+ * @requires config/identifiers
+ *
  * @requires medical/patients/groups
  * @requires medical/patients/documents
  * @requires medical/patients/vists
@@ -30,12 +35,11 @@ const q = require('q');
 const uuid = require('node-uuid');
 
 const identifiers = require('../../../config/identifiers');
-const barcode = require('../../../lib/barcode');
 
+const barcode = require('../../../lib/barcode');
 const db = require('../../../lib/db');
 const topic = require('../../../lib/topic');
 const FilterParser = require('../../../lib/filter');
-
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -92,11 +96,12 @@ function create(req, res, next) {
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
   if (invalidParameters) {
-    return next(
+    next(
       new BadRequest(
         'Both financial and medical information must be provided to register a patient.'
       )
     );
+    return;
   }
 
   // optionally allow client to specify UUID
@@ -126,7 +131,7 @@ function create(req, res, next) {
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
     .addQuery(writePatientQuery, [medical]);
 
-  return transaction.execute()
+  transaction.execute()
     .then(() => {
       res.status(201).json({
         uuid : uuid.unparse(medical.uuid),

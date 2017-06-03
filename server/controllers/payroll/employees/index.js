@@ -12,24 +12,24 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires BadRequest
- * @requires Topic
+ * @requires topic
+ * @requires filter
  */
 
 
 const uuid = require('node-uuid');
 
-const db = require('./../../lib/db');
-const Topic = require('../../lib/topic');
-
-const NotFound = require('./../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
+const db = require('./../../../lib/db');
+const topic = require('../../../lib/topic');
+const NotFound = require('./../../../lib/errors/NotFound');
+const FilterParser = require('./../../../lib/filter');
 
 exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.detail = detail;
 exports.search = search;
+exports.find = find;
 
 /**
  * @method list
@@ -38,33 +38,12 @@ exports.search = search;
  * Returns an array of each employee in the database
  */
 function list(req, res, next) {
-  const sql =
-    `
-    SELECT 
-      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
-      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
-      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
-      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
-      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) AS location_id, grade.code AS code_grade,
-      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
-      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
-    FROM employee
-     JOIN grade ON employee.grade_id = grade.uuid
-     JOIN fonction ON employee.fonction_id = fonction.id
-     JOIN debtor ON employee.debtor_uuid = debtor.uuid
-     JOIN creditor ON employee.creditor_uuid = creditor.uuid
-     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     ORDER BY employee.display_name ASC;
-  `;
-
-  db.exec(sql)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+  find(req.query)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -96,8 +75,8 @@ exports.listHolidays = function listHolidays(req, res, next) {
 };
 
 /**
-* Check an existing holiday
-*/
+ * Check an existing holiday
+ */
 exports.checkHoliday = function checkHoliday(req, res, next) {
   let sql =
     `SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_id = ?
@@ -149,23 +128,24 @@ function lookupEmployee(id) {
   const sql =
     `
     SELECT 
-      employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, 
+      employee.id, employee.code AS code_employee, employee.display_name, employee.sex, 
       employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, 
-      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
       JOIN grade ON employee.grade_id = grade.uuid
-      JOIN fonction ON employee.fonction_id = fonction.id
-      JOIN debtor ON employee.debtor_uuid = debtor.uuid
+      LEFT JOIN fonction ON employee.fonction_id = fonction.id
+      JOIN patient ON patient.uuid = employee.patient_uuid
+      JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id
+      LEFT JOIN service ON service.id = employee.service_id 
     WHERE employee.id = ?;
   `;
 
@@ -195,7 +175,7 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
   ]);
 
   if (employee.dob) {
@@ -220,7 +200,7 @@ function update(req, res, next) {
 
   const clean = {
     display_name : employee.display_name,
-    sexe : employee.sexe,
+    sex : employee.sex,
     dob : employee.dob,
     date_embauche : employee.date_embauche,
     service_id : employee.service_id,
@@ -235,7 +215,6 @@ function update(req, res, next) {
     bank : employee.bank,
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
-    location_id : employee.location_id,
     code : employee.code,
   };
 
@@ -256,9 +235,9 @@ function update(req, res, next) {
         throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
 
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.EMPLOYEE,
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.UPDATE,
+        entity : topic.entities.EMPLOYEE,
         user_id : req.session.user.id,
         id : req.params.id,
       });
@@ -281,12 +260,15 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
+  const patientID = uuid.v4();
   data.creditor_uuid = uuid.v4();
   data.debtor_uuid = uuid.v4();
+  data.patient_uuid = patientID;
 
   // convert uuids to binary uuids as necessary
-  const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id',
+  const employee = db.convert(data, [
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
   ]);
 
   if (employee.dob) {
@@ -309,11 +291,29 @@ function create(req, res, next) {
     text : `Debiteur [${employee.display_name}]`,
   };
 
+  const patient = {
+    uuid : employee.patient_uuid,
+    project_id : req.session.project.id,
+    display_name : employee.display_name,
+    dob : employee.dob,
+    current_location_id : employee.current_location_id,
+    origin_location_id : employee.origin_location_id,
+    hospital_no : employee.hospital_no,
+    debtor_uuid : employee.debtor_uuid,
+    user_id : req.session.user.id,
+    sex : employee.sex,
+  };
+
   delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
+  delete employee.current_location_id;
+  delete employee.origin_location_id;
+  delete employee.debtor_uuid;
+  delete employee.hospital_no;
 
   const writeCreditor = 'INSERT INTO creditor SET ?';
   const writeDebtor = 'INSERT INTO debtor SET ?';
+  const writePatient = 'INSERT INTO patient SET ?';
   const sql = 'INSERT INTO employee SET ?';
 
   const transaction = db.transaction();
@@ -321,21 +321,22 @@ function create(req, res, next) {
   transaction
     .addQuery(writeCreditor, [creditor])
     .addQuery(writeDebtor, [debtor])
+    .addQuery(writePatient, [patient])
     .addQuery(sql, [employee]);
 
   transaction.execute()
     .then(results => {
       // @todo - why is this not a UUID, but grade_id is a uuid?
-      const employeeId = results[2].insertId;
+      const employeeId = results[3].insertId;
 
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.EMPLOYEE,
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.CREATE,
+        entity : topic.entities.EMPLOYEE,
         user_id : req.session.user.id,
         id : employeeId,
       });
 
-      res.status(201).json({ id : employeeId });
+      res.status(201).json({ id : employeeId, patient_uuid : patientID });
     })
     .catch(next)
     .done();
@@ -345,40 +346,21 @@ function create(req, res, next) {
  * @method search
  *
  * @description
- * This function is responsible for looking for employee by display_name or code
+ * A multi-parameter function that uses find() to query the database for
+ * employee records.
  *
- * NOTE : eslint gives 34 warnings which are not judged as logic so it is ignored
+ * @example
+ * // GET /employees/search?name={string}&detail={boolean}&limit={number}
+ * // GET /employees/search?reference={string}&detail={boolean}&limit={number}
+ * // GET /employees/search?fields={object}
  */
 function search(req, res, next) {
-  let searchOption = '';
-  let sql = '';
-  const keyValue = `%${req.params.value}%`;
-
-  if (req.params.key === 'code') {
-    searchOption = 'LOWER(employee.code)';
-  } else if (req.params.key === 'display_name') {
-    searchOption = 'LOWER(employee.display_name)';
-  } else {
-    next(new BadRequest('You sent a bad value for some parameters in research employee.'));
-    return;
-  }
-
-  sql = `
-    SELECT
-      employee.id, employee.code AS code_employee, employee.display_name, employee.locked, 
-      employee.bank, employee.bank_account, BUID(creditor.uuid) as creditor_uuid, 
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
-    FROM employee
-    JOIN creditor ON employee.creditor_uuid = creditor.uuid
-    JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-    WHERE ${searchOption} LIKE ? LIMIT 10;
-  `;
-
-  db.exec(sql, [keyValue])
-  .then(rows => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.SEARCH,
-      entity : Topic.entities.EMPLOYEE,
+  find(req.query)
+  .then((rows) => {
+    // publish a SEARCH event on the medical channel
+    topic.publish(topic.channels.MEDICAL, {
+      event   : topic.events.SEARCH,
+      entity  : topic.entities.PATIENT,
       user_id : req.session.user.id,
     });
 
@@ -387,3 +369,61 @@ function search(req, res, next) {
   .catch(next)
   .done();
 }
+
+/**
+ * @method find
+ *
+ * @description
+ * This function scans the employee table in the database to find all values
+ * matching parameters provided in the options parameter.
+ *
+ * @param {Object} options - a JSON of query parameters
+ * @returns {Promise} - the result of the promise query on the database.
+ */
+function find(options) {
+  const sql =
+    `SELECT 
+      employee.id, employee.code AS code, employee.display_name, employee.sex, 
+      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
+      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
+      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
+      service.name as service_name
+    FROM employee
+     JOIN grade ON employee.grade_id = grade.uuid
+     LEFT JOIN fonction ON employee.fonction_id = fonction.id
+     JOIN patient ON patient.uuid = employee.patient_uuid
+     JOIN debtor ON patient.debtor_uuid = debtor.uuid
+     JOIN creditor ON employee.creditor_uuid = creditor.uuid
+     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+     LEFT JOIN service ON service.id = employee.service_id
+  `;
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
+
+  const filters = new FilterParser(options, { tableAlias : 'employee', autoParseStatements : false });
+
+  filters.fullText('display_name');
+  filters.dateFrom('dateEmbaucheFrom', 'date_embauche');
+  filters.dateTo('dateEmbaucheTo', 'date_embauche');
+  filters.dateFrom('dateBirthFrom', 'dob');
+  filters.dateTo('dateBirthTo', 'dob');
+  filters.equals('sex', 'sex', 'employee');
+  filters.equals('code', 'code', 'employee');
+  filters.equals('service_id', 'service_id', 'employee');
+  filters.equals('fonction_id', 'fonction_id', 'employee');
+  filters.equals('grade_id', 'grade_id', 'employee');
+
+  // @TODO Support ordering query
+  filters.setOrder('ORDER BY employee.display_name DESC');
+
+  // applies filters and limits to defined sql, get parameters in correct order
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
+}
+

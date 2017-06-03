@@ -27,7 +27,6 @@ const report = require('../controllers/report');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
-const employees = require('../controllers/admin/employees');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
@@ -42,6 +41,11 @@ const patientGroups = require('../controllers/medical/patientGroups');
 const snis = require('../controllers/medical/snis');
 const medicalReports = require('../controllers/medical/reports');
 const diagnoses = require('../controllers/medical/diagnoses');
+
+// humaine ressource route
+const employees = require('../controllers/payroll/employees');
+const employeeReports = require('../controllers/payroll/reports');
+
 
 // stock and inventory routes
 const inventory = require('../controllers/inventory');
@@ -293,6 +297,9 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
+  //interface for employee report
+  app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
+
   // route for invoice Report
 
   // reports API: Invoices (receipts)
@@ -456,13 +463,11 @@ exports.configure = function configure(app) {
   app.put('/enterprises/:id', enterprises.update);
 
   // employees
+  app.get('/employees/search', employees.search);
   app.get('/employees', employees.list);
-  app.get('/employees/:id', employees.detail);
-
-  // @todo - use query strings
-  app.get('/employees/:key/:value', employees.search);
-  app.put('/employees/:id', employees.update);
-  app.post('/employees', employees.create);
+  app.get('/employees/:id', employees.detail);  
+  app.post('/employees', employees.create); 
+  app.put('/employees/:id', employees.update);  
 
   // billing services
   app.get('/billing_services', billingServices.list);

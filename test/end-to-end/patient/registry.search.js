@@ -28,7 +28,7 @@ function PatientRegistrySearch() {
     dateBirthTo2: '16/05/2016',
   };
 
-  const defaultVisibleRowNumber = 1;
+  const defaultVisibleRowNumber = 2;
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
@@ -47,7 +47,7 @@ function PatientRegistrySearch() {
   }
 
   // ensure the grid loads!
-  it('grid should have 1 visible rows', function () {
+  it('grid should have 2 visible rows', function () {
     expectNumberOfGridRows(defaultVisibleRowNumber);
     expectNumberOfFilters(1);
   });
@@ -63,12 +63,12 @@ function PatientRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it(`should find one patient with Debtor Group "Second Test Debtor Group"`, () => {
+  it(`should find three patient with Debtor Group "Second Test Debtor Group"`, () => {
     FU.buttons.search();
     FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(1);
     FU.buttons.clear();
   });
@@ -132,7 +132,7 @@ function PatientRegistrySearch() {
 
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(3);
     FU.buttons.clear();
   });
@@ -145,7 +145,7 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
+    expectNumberOfGridRows(2);
     expectNumberOfFilters(3);
 
     // click the "clear filters" button

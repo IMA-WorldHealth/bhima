@@ -1,81 +1,93 @@
 angular.module('bhima.services')
   .service('EmployeeService', EmployeeService);
 
-EmployeeService.$inject = ['$http', 'util'];
+EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 'appcache'];
 
-function EmployeeService($http, util) {
-  var service = this;
-  var baseUrl = '/employees/';
+/**
+ * @class EmployeeService
+ * @extends PrototypeApiService
+ *
+ * @description
+ * Encapsulates common requests to the /employees/ URL.
+ */
+function EmployeeService(Filters, $uibModal, Api, AppCache) {
+  var service = new Api('/employees/');
+  var employeeFilters = new Filters();
+  var filterCache = new AppCache('employee-filters');
 
-  service.read = read;
-  service.create = create;
-  service.update = update;
-  service.search = search;
+  service.openSearchModal = openSearchModal;
+  service.filters = employeeFilters;
+  service.removeFilter = removeFilter;
+  service.employeeFilters = employeeFilters;
+  service.loadCachedFilters = loadCachedFilters;
+  service.cacheFilters = cacheFilters;
 
-  /**
-   * @desc Get an id (optional) and return back a list of employee or an employee
-   * @param {Integer} id, the id of the employee (optional)
-   * @return {object} a promise object, with the response.body inside.
-   * @example
-   * service.read()
-   * .then(function (employees){
-   *   your code here
-   *  });
-   */
-  function read(id) {
-    var url = baseUrl.concat(id || '');
-    return $http.get(url)
-      .then(util.unwrapHttpResponse);
+  employeeFilters.registerDefaultFilters([{ key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+
+  employeeFilters.registerCustomFilters([
+      { key : 'display_name', label : 'FORM.LABELS.NAME' },
+      { key : 'sex', label : 'FORM.LABELS.GENDER' },
+      { key : 'code', label : 'FORM.LABELS.CODE' },
+      { key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor: '>', valueFilter:'date' },
+      { key : 'dateBirthTo', label : 'FORM.LABELS.DOB', comparitor: '<', valueFilter:'date' },
+      { key : 'dateEmbaucheFrom', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '>', valueFilter:'date' },
+      { key : 'dateEmbaucheTo', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', valueFilter:'date' },
+      { key : 'grade_id', label : 'FORM.LABELS.GRADE' },
+      { key : 'fonction_id', label : 'FORM.LABELS.FUNCTION' },
+      { key : 'service_id', label : 'FORM.LABELS.SERVICE' }
+    ]); 
+  
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    employeeFilters.loadCache(filterCache.filters);
   }
 
-  /**
-   * @desc It search for employee from the database
-   * @param {String} key, can be code or display_name
-   * @return {String} value a token taped by the user.
-   * @example
-   * service.search(code, value)
-   * .then(function (employees){
-   *   your code here
-   *  });
-   */
-  function search (key, value){
-    var url = baseUrl + key + '/' + value;
-    return $http.get(url)
-      .then(util.unwrapHttpResponse);
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(employeeFilters.formatHTTP());
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      employeeFilters.assignFilter('limit', 100);
+    }
   }
 
-  /**
-   * @desc It create an employee
-   * @param {object} employee, employee to create
-   * @example
-   * service.create(employee)
-   * .then(function (res){
-   *   your code here
-   *  });
-   */
-  function create(employee) {
-    return $http.post(baseUrl, employee)
-      .then(util.unwrapHttpResponse);
-  }
+  function removeFilter(key) {
+    employeeFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  function cacheFilters() {
+    filterCache.filters = employeeFilters.formatCache();
+  };
+
+  function loadCachedFilters() {
+    employeeFilters.loadCache(filterCache.filters || {});
+  };
 
   /**
-   * @desc It updates an employee
-   * @param {Integer} id, employee id to update
-   * @param {object} employee, employee to update
-   * @example
-   * service.update(id, employee)
-   * .then(function (res){
-   *   your code here
-   *  });
+   * @method openSearchModal
+   *
+   * @param {Object} params - an object of filter parameters to be passed to
+   *   the modal.
+   * @returns {Promise} modalInstance
    */
-  function update(id, employee) {
-    delete employee.id;
-    return $http.put(baseUrl.concat(id), employee)
-      .then(util.unwrapHttpResponse);
+  function openSearchModal(params) {
+    return $uibModal.open({
+      templateUrl: 'modules/employees/registry/search.modal.html',
+      size: 'md',
+      keyboard: false,
+      animation: false,
+      backdrop: 'static',
+      controller: 'EmployeeRegistryModalController as ModalCtrl',
+      resolve : {
+        filters : function paramsProvider() { return params; }
+      }
+    }).result;
   }
-
-  // define the maximum DATE_EMBAUCHE
-  service.maxDateEmbauche = new Date();
 
   return service;
 }

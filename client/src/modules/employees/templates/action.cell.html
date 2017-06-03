@@ -1,0 +1,31 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.code}}</li>    
+    <li>
+      <a data-method="edit" href>
+        <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="card" href>
+        <span class="fa fa-id-card-o"></span> <span translate>PATIENT_REGISTRY.CARD</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="invoice" href>
+        <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
+      </a>
+    </li>
+    <li>
+    <a data-method="payment" href>
+        <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
+      </a>
+    </li>
+  </ul>
+</div>

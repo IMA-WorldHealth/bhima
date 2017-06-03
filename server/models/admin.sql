@@ -9,11 +9,7 @@ DELIMITER $$
 CREATE PROCEDURE zRecomputeEntityMap()
 BEGIN
   DELETE FROM entity_map;
-
-  -- employee
-  INSERT INTO entity_map
-    SELECT employee.debtor_uuid, CONCAT_WS('.', 'EM', employee.id) FROM employee;
-
+  
   -- patient
   INSERT INTO entity_map
     SELECT patient.uuid, CONCAT_WS('.', 'PA', project.abbr, patient.reference)

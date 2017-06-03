@@ -1,0 +1,91 @@
+{{> head title="EMPLOYEE.TITLE" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center">{{translate "EMPLOYEE.TITLE"}}</h3>
+
+  <p class="pills">
+    {{#each filters}}
+      <span class="label label-primary text-capitalize">
+        <i class="fa fa-filter"></i> {{translate this.displayName}}
+
+        {{#if this.comparitor}} {{this.comparitor}}
+        {{else}}: {{/if}}
+
+        {{#if this.isDate}} {{date this.value}}
+        {{else}} {{this.value}} {{/if}}
+      </span>
+    {{/each}}
+  </p>
+
+  <section style="size: 0.75em;">
+    <table class="table table-condensed table-bordered ">
+      <thead>
+        <tr class="text-capitalize text-center">
+          <th>{{translate "TABLE.COLUMNS.CODE" }}</th>
+          <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
+          <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
+          <th>{{translate "TABLE.COLUMNS.AGE" }} ({{translate "TABLE.COLUMNS.DOB"}})</th>
+          <th>{{translate "FORM.LABELS.GRADE" }}</th>
+          <th>{{translate "FORM.LABELS.FUNCTION" }}</th>
+          <th>{{translate "FORM.LABELS.DATE_EMBAUCHE" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each employees}}
+          <tr>
+            <td>{{this.code}}</td>
+            <td>{{this.display_name}}</td>
+            <td>{{this.sexe}}</td>
+            <td>{{this.age}} ({{date this.dob}})</td>
+            <td>{{this.grade}}</td>            
+            <td>{{this.fonction_txt}}</td>
+            <td>{{date this.date_embauche}}</td>
+          </tr>
+        {{else}}
+          <tr>
+            <td colspan="7" class="text-center">
+              {{translate "TABLE.COLUMNS.EMPTY"}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="7" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ employees.length }}</th>
+        </tr>
+      </tfoot>
+    </table>
+
+    {{#if aggregates}}
+      <div class="row">
+        <div class="col-xs-6">
+          <!-- summary table -->
+          <table class="table table-condensed table-bordered table-striped">
+            <tbody>
+              <tr>
+                <th colspan="2" class="text-center">
+                  {{ translate 'FORM.LABELS.SUMMARY' }}
+                </th>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_EMPLOYEES' }}</th>
+                <td class="text-right">{{ aggregates.numEmployees}}</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_WOMEN' }}</th>
+                <td class="text-right">{{ aggregates.numFemales }} ({{ aggregates.percentFemales }}%)</td>
+              </tr>
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_MEN' }}</th>
+                <td class="text-right">{{ aggregates.numMales }} ({{ aggregates.percentMales }}%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {{/if}}
+  </section>
+</body>

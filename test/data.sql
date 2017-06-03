@@ -103,8 +103,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Payroll Management
 (57, 1),
 
--- Employee Management
+-- Employee registration
 (61, 1),
+
+-- Employee Registry
+(62, 1),
 
 -- subsidie Management
 (82, 1),
@@ -392,7 +395,7 @@ INSERT INTO `exchange_rate` VALUES
   (2,1,1,930.0000, NOW());
 
 INSERT INTO `employee` VALUES
-  (1,'E1','Dedrick Kitamuka Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),NULL);
+  (1,'E1','Dedrick Kitamuka Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03','kinshasa','0896611111','my@email.com',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'));
 
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

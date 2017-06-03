@@ -10,8 +10,8 @@ const helpers = require('./helpers');
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
-  const numEmployees = 1;
-
+  const numEmployees = 1; 
+  
   // custom dates
   let embaucheDate  = new Date('2016-01-01');
   let dob1 = new Date('1987-04-17');
@@ -21,7 +21,7 @@ describe('(/employees) the employees API endpoint', function () {
   var employee = {
     code : 'x500',
     display_name : 'Magnus Carolus Charlemagne',
-    sexe : 'M',
+    sex : 'M',
     dob : dob1,
     date_embauche : embaucheDate,
     nb_spouse : 0,
@@ -34,15 +34,17 @@ describe('(/employees) the employees API endpoint', function () {
     fonction_id : 1,
     locked : 0,
     service_id : 1,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    hospital_no : 'TP30',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',    
+    current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
   };
 
   var updateEmployee = {
     code : 'x500',
     display_name : 'Charle Magne De France',
-    sexe : 'M',
+    sex : 'M',
     dob : dob2,
     date_embauche : embaucheDate,
     nb_spouse : 0,
@@ -54,7 +56,6 @@ describe('(/employees) the employees API endpoint', function () {
     email : 'me@info.com',
     fonction_id : 1,
     service_id : 1,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
     debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
@@ -90,6 +91,11 @@ describe('(/employees) the employees API endpoint', function () {
   it('GET /employees/:id should return a specific employee', function () {
     return agent.get('/employees/' + employee.id)
       .then(function (res) {
+        let keyEmployeeTest = employee;
+        delete keyEmployeeTest.hospital_no;
+        delete keyEmployeeTest.current_location_id;
+        delete keyEmployeeTest.origin_location_id;
+
         var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -102,38 +108,83 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /employees/code/:value should return a list of employees match the employee code token', function () {
-    return agent.get('/employees/code/' + String(employee.code).substring(0,1))
+  it('GET /employees with \'code\' parameter', function () {
+    let conditions = { code : 'x500' };
+    return agent.get('/employees')
+      .query(conditions)
       .then(function (res) {
-        helpers.api.listed(res, numEmployees);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /employees/display_name/:value should return a list of employees match the employee display_name token', function () {
-    return agent.get('/employees/display_name/' + employee.display_name.substring(0,2))
+  it('GET /employees with \'display_name\' parameter', function () {
+    let conditions = { display_name : 'Dedrick' };
+    return agent.get('/employees')
+      .query(conditions)
       .then(function (res) {
-        helpers.api.listed(res, numEmployees);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /employees/unknown/:value should return an error for an unknown key', function () {
-    return agent.get('/employees/unknown/' + employee.display_name.substring(0,2))
+  it('GET /employees should be composable when using parameters', function () {
+    let conditions = { sex: 'M', display_name : 'Dedrick' };
+    return agent.get('/employees')
+      .query(conditions)
       .then(function (res) {
-        helpers.api.errored(res, 400);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /employees/code/:value should return an empty array for an unmatch value', function () {
-    return agent.get('/employees/code/unknown')
+  it('GET /employees with `name` and `code` parameters for the priority of reference', function () {
+    let conditions = { display_name : 'Dedrick', code : 'E1' };
+    return agent.get('/employees')
+      .query(conditions)
       .then(function (res) {
-        helpers.api.listed(res, 0);
+        helpers.api.listed(res, 1);
+        expect(res.body[0].code).to.exist;
+        expect(res.body[0].code).to.be.equals(conditions.code);
       })
       .catch(helpers.handler);
   });
 
+  it('GET /employees filter employee of a given service', function () {
+    let conditions = { service_id : 1 };
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+        expect(res.body[0].service_id).to.exist;
+        expect(res.body[0].service_id).to.be.equals(conditions.service_id);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /employees with limit parameters', function () {
+    let conditions = { limit: 5, sex: 'M' };
+
+    return agent.get('/employees')
+      .query(conditions)
+      .then(function (res) {
+        var expected = [
+          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
+          'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
+          'grade_id', 'basic_salary', 'service_id', 
+          'creditor_uuid', 'locked'
+        ];
+
+        helpers.api.listed(res, 2);
+
+        expect(res.body[0]).to.contain.all.keys(expected);
+        return agent.get('/employees/?display_name=Charle&limit=1');
+      })
+      .then(function (res) {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
 
   it('PUT /employee/:id should update an existing employee ', function () {
     return agent.put('/employees/' + employee.id)
