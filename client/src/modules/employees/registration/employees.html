@@ -131,7 +131,7 @@
                         <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
                           <span>{{$select.selected.format}}</span>
                         </ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="g.uuid as g in EmployeeCtrl.grades | filter:{format : $select.search} | orderBy:'text'">
+                        <ui-select-choices ui-select-focus-patch repeat="g.uuid as g in EmployeeCtrl.grades | filter:{format : $select.search}">
                           <span ng-bind-html="g.format | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
@@ -439,12 +439,15 @@
 
                     <label class="col-md-3 control-label" translate>FORM.LABELS.DAILY_SALARY</label>
                     <div class="col-md-9">
-                      <input
-                      type="number"
-                        class="form-control"
-                        name="daily_salary"
-                        ng-model="EmployeeCtrl.employee.daily_salary"
-                        autocomplete="off">
+                      <div class="input-group">
+                        <span class="input-group-addon text-uppercase">{{ EmployeeCtrl.enterprise.currencySymbol || '...' }}</span>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="daily_salary"
+                          ng-model="EmployeeCtrl.employee.daily_salary"
+                          autocomplete="off">                        
+                      </div>                      
                       <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>

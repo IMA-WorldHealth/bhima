@@ -5,11 +5,12 @@ angular.module('bhima.controllers')
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
   'CreditorGroupService', 'DebtorGroupService', 'util', 'NotifyService',
-  'bhConstants', 'ReceiptModal'
+  'bhConstants', 'ReceiptModal', 'SessionService'
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants, Receipts) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants, Receipts, Session) {
   var vm = this;
+  vm.enterprise = Session.enterprise;
 
   // Expose lenths from util
   vm.length20 = util.length20;
@@ -27,7 +28,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.submit = submit;
 
   // Loading Grades
-  Grades.read(null, { detailed : 1 }).then((data) => {
+  Grades.read(null, { detailed : 1 }).then(function (data) {
     data.forEach(function (g){
       g.format = g.code + ' - ' + g.text;
     });      

@@ -18,7 +18,7 @@ function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhCon
   var changes = new Store({identifier : 'key'});
 
   vm.filters = filters;
-  vm.serchQueries = {};
+  vm.searchQueries = {};
   vm.defaultQueries = {};
   vm.today = new Date();
 

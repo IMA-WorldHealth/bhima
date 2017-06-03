@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('EmployeeRegistryController', EmployeeRegistryController);
 
 EmployeeRegistryController.$inject = [
-  '$state', 'EmployeeService', 'NotifyService', 'AppCache',
-  'util', 'ReceiptModal', 'uiGridConstants', '$translate',
+  'EmployeeService', 'NotifyService',
+  'util', 'ReceiptModal', 'uiGridConstants',
   'GridColumnService', 'bhConstants', 'FilterService'
 ];
 
@@ -12,8 +12,8 @@ EmployeeRegistryController.$inject = [
  *
  * This module is responsible for the management of Employe Registry.
  */
-function EmployeeRegistryController($state, Employees, Notify, AppCache,
-  util, Receipts, uiGridConstants, $translate,
+function EmployeeRegistryController(Employees, Notify,
+  util, Receipts, uiGridConstants,
   Columns, bhConstants, Filters) {
   var vm = this;
 
