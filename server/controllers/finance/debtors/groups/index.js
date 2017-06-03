@@ -53,7 +53,7 @@ function lookupDebtorGroup(uid) {
   const sql = `
     SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
-      apply_subsidies, apply_discounts, apply_billing_services
+      apply_subsidies, apply_discounts, apply_billing_services, color
     FROM debtor_group
     WHERE uuid = ?;
   `;
@@ -210,7 +210,7 @@ function list(req, res, next) {
         debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
         BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at,
         debtor_group.apply_subsidies, debtor_group.apply_discounts, debtor_group.apply_billing_services,
-        COUNT(debtor.uuid) as total_debtors, account.number AS account_number
+        COUNT(debtor.uuid) as total_debtors, account.number AS account_number, color
       FROM debtor_group
       JOIN account ON account.id =  debtor_group.account_id
       LEFT JOIN debtor ON debtor.group_uuid = debtor_group.uuid

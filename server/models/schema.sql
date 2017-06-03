@@ -494,6 +494,7 @@ CREATE TABLE `debtor_group` (
   `apply_discounts` BOOLEAN NOT NULL DEFAULT TRUE,
   `apply_billing_services` BOOLEAN NOT NULL DEFAULT TRUE,
   `apply_subsidies` BOOLEAN NOT NULL DEFAULT TRUE,
+  `color` VARCHAR(8) NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),

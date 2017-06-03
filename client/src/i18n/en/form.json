@@ -186,6 +186,7 @@
 "CLIENT_ID":"Client ID",
 "CLIENT_TO_IGNORE":"Client(s) to ignore",
 "CODE":"Code",
+"COLOR":"Color",
 "COLUMNS":"Columns",
 "COMMENT":"Comment",
 "CONFIRMATION":"Confirmation",

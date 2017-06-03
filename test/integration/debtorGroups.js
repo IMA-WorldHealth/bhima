@@ -40,6 +40,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
     apply_discounts : 1,
     apply_billing_services : 1,
     apply_subsidies : 1,
+	color: '#00ffff',
   };
 
   const lockedGroup = {
