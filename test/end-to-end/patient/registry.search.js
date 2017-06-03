@@ -47,7 +47,7 @@ function PatientRegistrySearch() {
   }
 
   // ensure the grid loads!
-  it('grid should have 1 visible rows', function () {
+  it('grid should have 2 visible rows', function () {
     expectNumberOfGridRows(defaultVisibleRowNumber);
     expectNumberOfFilters(1);
   });
@@ -63,12 +63,12 @@ function PatientRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it(`should find one patient with Debtor Group "Second Test Debtor Group"`, () => {
+  it(`should find three patient with Debtor Group "Second Test Debtor Group"`, () => {
     FU.buttons.search();
     FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(3);
     expectNumberOfFilters(1);
     FU.buttons.clear();
   });

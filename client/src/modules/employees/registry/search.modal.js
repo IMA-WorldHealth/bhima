@@ -70,6 +70,8 @@ function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhCon
 
   // returns the parameters to the parent controller
   function submit(form) {
+    if (form.$invalid) { return; }
+    
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
