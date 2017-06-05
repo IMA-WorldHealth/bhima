@@ -194,9 +194,11 @@ function create(req, res, next) {
 
 function find(options) {
   // ensure expected options are parsed as binary
-  db.convert(options, ['patientUuid', 'debtor_group_uuid']);
+  db.convert(options, [
+    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid',
+  ]);
 
-  const filters = new FilterParser(options, { tableAlias : 'invoice' });
+  const filters = new FilterParser(options, { tableAlias : 'invoice', autoParseStatements : false });
 
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
@@ -216,16 +218,22 @@ function find(options) {
   `;
 
   filters.equals('patientUuid', 'uuid', 'patient');
-  filters.dateFrom('billingDateFrom', 'date');
-  filters.dateTo('billingDateTo', 'date');
+  filters.equals('user_id');
+  filters.equals('debtor_uuid');
+  filters.equals('reversed');
+  filters.equals('cost');
+  filters.equals('service_id');
+  filters.equals('project_id');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
 
   filters.custom(
     'cash_uuid',
-    'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = HUID(?))'
+    'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = ?)'
   );
 
-  filters.period('defaultPeriod', 'date');
+  filters.period('period', 'date');
+  filters.dateFrom('custion_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
   filters.custom('reference', referenceStatement);
@@ -243,6 +251,9 @@ function find(options) {
 }
 
 /**
+ * @function lookupInvoiceCreditNote
+ *
+ * @description
  * CreditNote for an invoice
  */
 function lookupInvoiceCreditNote(invoiceUuid) {

@@ -28,8 +28,6 @@ function CashPaymentRegistryController(
   vm.filter = filter;
 
   // global variables
-  // vm.filters = { lang: Languages.key };
-  vm.filtersFmt = [];
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
@@ -137,7 +135,7 @@ function CashPaymentRegistryController(
     toggleLoadingIndicator();
 
     var request = Cash.read(null, filters);
-    
+
     request.then(function (rows) {
         rows.forEach(function (row) {
           var hasCreditNote = row.reversed;

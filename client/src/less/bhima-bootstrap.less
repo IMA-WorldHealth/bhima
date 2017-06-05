@@ -14,9 +14,7 @@
 @ima-light-orange:    #fdba64;
 @ima-light-blue:      #6fbdee;
 
-/** @todo move all structure code into less with configurable variables */
-/**
- * Application structure variables - these widths are used to determine how much
+/** @todo move all structure code into less with configurable variables */ /** * Application structure variables - these widths are used to determine how much
  * space the tree navigation takes up in its `expanded` and `collapsed` states.
  */
 @expanded-offset:  260px;
@@ -266,6 +264,14 @@ input[type=number] {-moz-appearance: textfield;}
 
 /* large button as menu */
 .bg-ima-dark-blue { background: @ima-dark-blue; }
-.bg-ima-dark-blue .value, 
-.bg-ima-dark-blue .uilabel 
+.bg-ima-dark-blue .value,
+.bg-ima-dark-blue .uilabel
 { color: white !important; }
+
+/* experimental usage of the search-modal */
+.search-modal {
+  overflow : auto;
+  max-height:600px;
+  padding:0px;
+}
+
