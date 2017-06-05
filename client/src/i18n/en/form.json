@@ -557,6 +557,7 @@
 "REQUIRED_EMAIL":"required Email",
 "UNIQUE":"This field must be unique. This value is already taken."},
 "WARNINGS":{"BAD_FILE_TYPE":"Bad file type",
+"DOC_NOT_FOUND":"The document was not found on the server",
 "EMPTY_SELECTION":"Empty Selection",
 "NOT_AUTHORISED":"The requested page is not authorised",
 "NOT_FOUND":"Not found",
