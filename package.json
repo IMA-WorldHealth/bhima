@@ -45,6 +45,7 @@
   ],
   "dependencies": {
     "accounting-js": "^1.1.1",
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.15.0",
     "bower-npm-resolver": "^0.7.0",
     "compression": "^1.5.2",

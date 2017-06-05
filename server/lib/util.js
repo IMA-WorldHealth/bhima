@@ -6,16 +6,21 @@
  * This module contains useful utility functions
  *
  * @required lodash
+ * @requires q
+ * @requires bcrypt
  */
 
 const _ = require('lodash');
 const q = require('q');
+const Bcrypt = require('bcrypt');
+
 
 /** The query string conditions builder */
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 
 exports.resolveObject = resolveObject;
+exports.hashString = hashString;
 
 /**
  * @function take
@@ -94,4 +99,13 @@ function resolveObject(object) {
       _.keys(object).forEach((key, index) => { settled[key] = results[index]; });
       return settled;
     });
+}
+
+/**
+* @method hashString
+* @description hash a given string and it the result back
+*/
+function hashString (text) {
+  const salt = 10;
+  return Bcrypt.hash(text, salt);
 }

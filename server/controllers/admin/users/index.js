@@ -9,6 +9,8 @@
  * @requires db
  * @requires NotFound
  * @requires BadRequest
+ * @requires topic
+ * @requires util
  */
 
 
@@ -17,6 +19,7 @@ const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const Topic = require('../../../lib/topic');
+const util = require('../../../lib/util');
 
 // expose submodules
 exports.permissions = require('./permissions');
@@ -148,7 +151,10 @@ function create(req, res, next) {
     (?, PASSWORD(?), ?, ?);
   `;
 
-  db.exec(sql, [data.username, data.password, data.email, data.display_name])
+  util.hashString(data.password)
+  .then((pw) => {
+    return db.exec(sql, [data.username, pw, data.email, data.display_name]);
+  })
   .then((row) => {
     // retain the insert id
     userId = row.insertId;
@@ -157,7 +163,7 @@ function create(req, res, next) {
 
     const projects = data.projects.map(projectId => [userId, projectId]);
 
-    return db.exec(sql, [projects]);
+    db.exec(sql, [projects]);
   })
   .then(() => {
     Topic.publish(Topic.channels.ADMIN, {
