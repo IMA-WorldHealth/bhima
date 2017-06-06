@@ -13,12 +13,14 @@
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/Forbidden
  * @requires lib/errors/InternalServerError
+ * @requires lib/util
  */
 
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const InternalServerError = require('../lib/errors/InternalServerError');
 const Topic = require('../lib/topic');
+const util = require('../lib/util');
 
 // POST /auth/login
 exports.login = login;
@@ -54,36 +56,53 @@ function login(req, res, next) {
     project_permission JOIN project ON user.id = project_permission.user_id 
     AND project.id = project_permission.project_id
     WHERE 
-      user.username = ? AND user.password = PASSWORD(?) 
-      AND project_permission.project_id = ?;
+      user.username = ? AND project_permission.project_id = ?;
   `;
 
   const sqlUser = `
-    SELECT user.id FROM user
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+    SELECT user.id, user.password FROM user
+    WHERE user.username = ?`;
 
   const sqlPermission =
     `SELECT permission.id FROM permission
     JOIN user ON user.id = permission.user_id
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+    WHERE user.username = ?`;
 
 
-  db.exec(sql, [username, password, projectId])
+  db.exec(sql, [username, projectId])
     .then((rows) => {
       param.connect = rows;
-
-      return db.exec(sqlUser, [username, password]);
+      return db.exec(sqlUser, [username]);
     })
     .then((rows) => {
       param.user = rows;
-      return db.exec(sqlPermission, [username, password]);
+      return db.exec(sqlPermission, [username]);
     })
     .then((rows) => {
       param.permission = rows;
+
+      // check if username is correct
+      if (param.user.length === 0) {
+        throw new Unauthorized('The user name provided is bad.');
+      }
+
+      // check if password is set
+      if (!password) {
+        throw new Unauthorized('No password provided.');
+      }
+
+      return util.checkString(password, param.user[0].password);
+    })
+    .then((resp) => {
       const connect = param.connect.length;
       const permission = param.permission.length;
-      const user = param.user.length;
 
+      // Will be false if the password does not much
+      if (!resp) {
+        throw new Unauthorized('Bad password, Please Try again', 'FORM.ERRORS.PASSWORD_MATCH');
+      }
+
+      // Once every thing is correct, check permission
       if (connect === 1) {
         if (Boolean(param.connect[0].deactivated)) {
           throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
@@ -93,11 +112,7 @@ function login(req, res, next) {
           throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
         }
       } else if (connect === 0) {
-        if (user === 0) {
-          throw new Unauthorized('Bad username and password combination.');
-        } else {
-          throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
-        }
+        throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
       }
 
       return loadSessionInformation(param.connect[0]);

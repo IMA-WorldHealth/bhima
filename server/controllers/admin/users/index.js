@@ -148,8 +148,14 @@ function create(req, res, next) {
 
   let sql = `
     INSERT INTO user (username, password, email, display_name) VALUES
-    (?, PASSWORD(?), ?, ?);
+    (?, ?, ?, ?);
   `;
+
+  if (!data.password) {
+    next(new BadRequest(`You cannot create a user without a password.`,
+        `ERRORS.NO_PASSWORD`));
+    return;
+  }
 
   util.hashString(data.password)
   .then((pw) => {
@@ -163,7 +169,7 @@ function create(req, res, next) {
 
     const projects = data.projects.map(projectId => [userId, projectId]);
 
-    db.exec(sql, [projects]);
+    return db.exec(sql, [projects]);
   })
   .then(() => {
     Topic.publish(Topic.channels.ADMIN, {
@@ -265,9 +271,12 @@ function update(req, res, next) {
 function password(req, res, next) {
   // TODO -- strict check to see if the user is either signed in or has
   // sudo permissions.
-  const sql = `UPDATE user SET password = PASSWORD(?) WHERE id = ?;`;
+  const sql = `UPDATE user SET password = ? WHERE id = ?;`;
 
-  db.exec(sql, [req.body.password, req.params.id])
+  util.hashString(req.body.password)
+  .then((pw) => {
+    return db.exec(sql, [pw, req.params.id]);
+  })
   .then(() => lookupUser(req.params.id))
   .then((data) => {
     res.status(200).json(data);

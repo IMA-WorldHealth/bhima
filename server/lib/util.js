@@ -18,9 +18,10 @@ const Bcrypt = require('bcrypt');
 /** The query string conditions builder */
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
+module.exports.hashString = hashString;
+module.exports.checkString = checkString;
 
 exports.resolveObject = resolveObject;
-exports.hashString = hashString;
 
 /**
  * @function take
@@ -103,9 +104,30 @@ function resolveObject(object) {
 
 /**
 * @method hashString
-* @description hash a given string and it the result back
+* @description hash a given string and sends the result back
+* the string is hashed using the bcrypt library
 */
-function hashString (text) {
+function hashString (plainText) {
+  const deferred = q.defer();
   const salt = 10;
-  return Bcrypt.hash(text, salt);
+
+  Bcrypt.hash(plainText, salt, function (err, hashed){
+    return (err) ? deferred.reject(err) : deferred.resolve(hashed);
+  });
+
+  return deferred.promise;
+}
+
+/**
+* @method check
+* @description compares a hashed string (bcrypt library) with a plain text
+*/
+function checkString (plainText, hashedText) {
+  const deferred = q.defer();
+  
+  Bcrypt.compare(plainText, hashedText, function (err, resp){
+    return (err) ? deferred.reject(err) : deferred.resolve(resp);
+  });
+
+  return deferred.promise;
 }
