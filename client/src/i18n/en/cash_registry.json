@@ -1,0 +1,6 @@
+{
+    "CASH_REGISTRY" : {
+        "TITLE" : "Payment registry",
+        "RECEIPT_CURRENCY" : "receipt Currency" 
+    }
+}
