@@ -104,7 +104,6 @@ function CashPaymentRegistryController(
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
-    // enableFiltering   : vm.filterEnabled,
     columnDefs        : columnDefs,
     rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
   };
