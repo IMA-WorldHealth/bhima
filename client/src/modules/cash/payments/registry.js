@@ -4,8 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
-  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
-  'GridSortingService', '$state', 'FilterService',
+  'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
+  'GridColumnService', 'GridStateService'
 ];
 
 /**
@@ -15,20 +15,25 @@ CashPaymentRegistryController.$inject = [
  * print and search utilities for the registry.`j
  */
 function CashPaymentRegistryController(
-  Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages,
-  AppCache, Receipt, Modal, Sorting, $state, Filters
+  Cash, bhConstants, Notify, Session, uiGridConstants,
+  Receipt, Modal, Sorting, $state, Filters, Columns,
+  GridState
 ) {
   var vm = this;
 
   // Background color for make the difference between the valid and cancel paiement
   var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
   var regularBackgroundColor = { 'background-color' : 'none' };
+  var cacheKey = 'payment-grid';
+  
 
+  var gridColumns;
+  var columnDefs;
+  var state;
   var filter = new Filters();
-  vm.filter = filter;
 
+  vm.filter = filter;
   // global variables
-  vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
 
@@ -39,19 +44,11 @@ function CashPaymentRegistryController(
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.cancelCash = cancelCash;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
+  vm.download = Cash.download;
 
-  // grid default options
-  vm.gridOptions = {
-    appScopeProvider  : vm,
-    showColumnFooter  : true,
-    enableColumnMenus : false,
-    flatEntityAccess  : true,
-    fastWatch         : true,
-    enableFiltering   : vm.filterEnabled,
-    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
-  };
-
-  vm.gridOptions.columnDefs = [{
+  columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
@@ -64,6 +61,7 @@ function CashPaymentRegistryController(
     displayName : 'TABLE.COLUMNS.DATE',
     headerCellFilter : 'translate',
     cellFilter : 'date:"mediumDate"',
+    type : 'date',
   }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.CLIENT',
@@ -98,6 +96,28 @@ function CashPaymentRegistryController(
     enableSorting : false,
     cellTemplate : 'modules/cash/payments/templates/action.cell.html',
   }];
+
+   // grid default options
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
+    enableColumnMenus : false,
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    // enableFiltering   : vm.filterEnabled,
+    columnDefs        : columnDefs,
+    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
+  };
+
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+  
+  // saves the grid's current configuration
+  vm.saveGridState = state.saveGridState;
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   function handleError(error) {
     vm.hasError = true;
@@ -169,6 +189,12 @@ function CashPaymentRegistryController(
     load(Cash.filters.formatHTTP(true));
     vm.latestViewFilters = Cash.filters.formatView();
   }
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the cash registry's columns.
+  function openColumnConfigModal() {
+    gridColumns.openConfigurationModal();
+  };
 
   startup();
 }
