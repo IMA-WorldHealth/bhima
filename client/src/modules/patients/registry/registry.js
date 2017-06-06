@@ -5,8 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
   'GridColumnService', 'GridSortingService', 'bhConstants',
-  'DepricatedFilterService',
-];
+  'DepricatedFilterService', 'GridStateService', 'LanguageService', 'ExportService'];
 
 /**
  * Patient Registry Controller
@@ -15,7 +14,7 @@ PatientRegistryController.$inject = [
  */
 function PatientRegistryController($state, Patients, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
-  Columns, Sorting, bhConstants, Filters) {
+  Columns, Sorting, bhConstants, Filters, GridState, Languages, Export) {
   var vm = this;
 
   var filter = new Filters();
@@ -24,6 +23,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
   var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  var state;
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
@@ -31,6 +31,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   vm.patientCard = patientCard;
   vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
+  vm.gridApi = {};
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -107,9 +108,22 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs        : columnDefs,
+    onRegisterApi     : onRegisterApi,
   };
 
+  // API register function
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }  
 
   // error handler
   function handler(error) {
@@ -201,6 +215,31 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   function patientCard(uuid) {
     Receipts.patient(uuid);
   }
+
+  // format Export Parameters
+  function formatExportParameters(type) {
+    return { renderer: type || 'pdf', lang: Languages.key };
+  }
+
+  // display the patient registry printable report
+  vm.openJournalReport = function openJournalReport() {
+    var url = '/reports/medical/patients';
+    var params = formatExportParameters('pdf');
+
+    if (!params) { return; }
+
+    Export.download(url, params, 'PATIENT_REGISTRY.TITLE', 'print');
+  };
+
+  // export data into csv file
+  vm.exportFile = function exportFile() {
+    var url = '/reports/medical/patients';
+    var params = formatExportParameters('csv');
+
+    if (!params) { return; }
+
+    Export.download(url, params, 'PATIENT_REGISTRY.TITLE');
+  };
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
