@@ -1,6 +1,6 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="title" translate> ReportConfigCtrl.report.title_key </li>
+    <li class="title" translate> {{ ReportConfigCtrl.report.title_key }} </li>
     <span class="badge badge-success text-uppercase" translate> FORM.LABELS.CREATE</span>
   </ol>
 </div>
@@ -13,7 +13,7 @@
       <input class="form-control" name="label" autocomplete="off" ng-model="ReportConfigCtrl.label" required />
 
       <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
