@@ -61,22 +61,11 @@
   </div>
 </div>
 
-<div class="flex-util bh-filter-bar" ng-show="PatientRegistryCtrl.filtersFmt.length > 0">
-  <bh-filters-applied
-    style="max-width:90%"
-    filters="PatientRegistryCtrl.filtersFmt"
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="PatientRegistryCtrl.latestViewFilters"
     on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)">
-  </bh-filters-applied>
-
-  <a
-    href
-    ng-if="PatientRegistryCtrl.filter.customFiltersApplied(PatientRegistryCtrl.filters)"
-    ng-click="PatientRegistryCtrl.clearFilters()"
-    class="text-danger"
-    data-method="clear">
-    <i class="fa fa-close text-danger"></i>
-    <span translate>FORM.INFO.CLEAR_FILTERS</span>
-  </a>
+  </bh-filters>
 </div>
 
 <div class="flex-content">

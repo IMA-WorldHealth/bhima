@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PatientService.$inject = [
   '$http', 'util', 'SessionService', '$uibModal',
-  'DocumentService', 'VisitService', 'DepricatedFilterService',
+  'DocumentService', 'VisitService', 'FilterService', 'appcache', 'PeriodService', 'PrototypeApiService', '$httpParamSerializer'
 ];
 
 /**
@@ -22,23 +22,22 @@ PatientService.$inject = [
  *  }
  */
 function PatientService($http, util, Session, $uibModal,
-  Documents, Visits, Filters) {
-  var service = this;
+  Documents, Visits, Filters, AppCache, Periods, Api, $httpParamSerializer) {
   var baseUrl = '/patients/';
-  var filter = new Filters();
+  var service = new Api(baseUrl);
 
-  service.read = read;
+  var patientFilters = new Filters();
+  var filterCache = new AppCache('cash-filters');
+    
+  service.filters = patientFilters;
   service.create = create;
-  service.update = update;
   service.groups = groups;
   service.updateGroups = updateGroups;
 
   service.billingServices = billingServices;
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
-
   service.searchByName = searchByName;
-  service.formatFilterParameters = formatFilterParameters;
 
   // document exposition definition
   service.Documents = Documents;
@@ -220,50 +219,65 @@ function PatientService($http, util, Session, $uibModal,
   }
 
 
-  /**
-   * This function prepares the headers patient properties which were filtered,
-   * Special treatment occurs when processing data related to the date
-   * @todo - this might be better in it's own service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'display_name', displayName: 'FORM.LABELS.NAME' },
-      { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
-      { field: 'hospital_no', displayName: 'FORM.LABELS.HOSPITAL_NO' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
-      { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
-      { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', ngFilter:'date' },
-      { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
-      { field: 'debtor_group_uuid', displayName: 'FORM.LABELS.DEBTOR_GROUP' },
-      { field: 'patient_group_uuid', displayName: 'PATIENT_GROUP.PATIENT_GROUP' },
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-    ];
+  patientFilters.registerDefaultFilters([
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
+  patientFilters.registerCustomFilters([
+    { key : 'display_name', label : 'FORM.LABELS.NAME' },
+    { key : 'sex', label : 'FORM.LABELS.GENDER' },
+    { key : 'hospital_no', label : 'FORM.LABELS.HOSPITAL_NO' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
+    { key : 'dateBirthTo', label : 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
+    { key : 'dateRegistrationFrom', label: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', ngFilter:'date' },
+    { key : 'dateRegistrationTo', label: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
+    { key : 'debtor_group_uuid', label: 'FORM.LABELS.DEBTOR_GROUP' },
+    { key : 'patient_group_uuid', label: 'PATIENT_GROUP.PATIENT_GROUP' },
+    { key : 'user_id', label: 'FORM.LABELS.USER' },
+    { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
+  ]);
 
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
-      var value = params[column.field];
-
-      if (angular.isDefined(value)) {
-        column.value = value;
-
-        if (column.field === 'debtor_group_uuid' || column.field === 'patient_group_uuid') {
-          column.value = column.value.slice(0, LIMIT_UUID_LENGTH);
-        }
-
-        if (column.field === 'defaultPeriod') {
-          column.value = filter.lookupPeriod(value).label;
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    });
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    patientFilters.loadCache(filterCache.filters);
   }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(patientFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
+    if (!periodDefined) {
+      patientFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      patientFilters.assignFilter('limit', 100);
+    }
+  }
+
+  service.removeFilter = function removeFilter(key) {
+    patientFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = patientFilters.formatCache();
+  };
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    patientFilters.loadCache(filterCache.filters || {});
+  };
 
   /**
    * @method openSearchModal
@@ -285,6 +299,18 @@ function PatientService($http, util, Session, $uibModal,
       }
     }).result;
   }
+
+  // downloads a type of report based on the
+  service.download = function download(type) {
+    var filterOpts = patientFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
 
   return service;
 }

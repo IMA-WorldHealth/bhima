@@ -1,21 +1,16 @@
-/* global element, by, browser */
 'use strict';
 
 const chai = require('chai');
 const expect = chai.expect;
 
-const helpers = require('../shared/helpers');
+const Filters = require('../shared/components/bhFilters');
+const SearchModal = require('../shared/search.page');
 const components = require('../shared/components');
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 
-/*
- * Patient Search Tests
- *
- * These test ensure that the Patient Search Modal behaves properly.
- */
 function PatientRegistrySearch() {
+  let modal;
+  let filters;
 
   const parameters = {
     name: 'Mock',
@@ -28,10 +23,19 @@ function PatientRegistrySearch() {
     dateBirthTo2: '16/05/2016',
   };
 
-  const defaultVisibleRowNumber = 2;
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
-    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));  
+
+  beforeEach(() => {
+    SearchModal.open();
+    modal = new SearchModal('patient-search');
+    filters = new Filters();
+  });
+
+  afterEach(() => {
+    filters.resetFilters();
+  });
 
   function expectNumberOfGridRows(number) {
     expect(rows.count(),
@@ -39,143 +43,99 @@ function PatientRegistrySearch() {
     ).to.eventually.equal(number);
   }
 
-  function expectNumberOfFilters(number) {
-    const filters = $('[data-bh-filter-bar]').all(by.css('.label'));
-    expect(filters.count(),
-      `Expected Patient Registry bh-filter-bar's filter count to be ${number}.`
-    ).to.eventually.equal(number);
-  }
+  it('grid should have 2 visible rows', () => {
+    const DEFAULT_INVOICES_FOR_TODAY = 2;
 
-  // ensure the grid loads!
-  it('grid should have 2 visible rows', function () {
-    expectNumberOfGridRows(defaultVisibleRowNumber);
-    expectNumberOfFilters(1);
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('today');
+    modal.submit();
+
+    expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
   });
+
 
   // demonstrates that filtering works
   it(`should find one patient with name "${parameters.name}"`, () => {
-    FU.buttons.search();
+    const NUM_MATCHING = 1;
     FU.input('ModalCtrl.params.display_name', parameters.name);
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
-    expectNumberOfFilters(1);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   it(`should find three patient with Debtor Group "Second Test Debtor Group"`, () => {
-    FU.buttons.search();
+    const NUM_MATCHING = 2;
+
     FU.uiSelect('ModalCtrl.params.debtor_group_uuid', 'Second Test Debtor Group');
     FU.modal.submit();
 
-    expectNumberOfGridRows(3);
-    expectNumberOfFilters(1);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
-    FU.buttons.search();
+    const NUM_MATCHING = 1;
     FU.input('ModalCtrl.params.display_name', parameters.name1);
     element(by.id('male')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
-    expectNumberOfFilters(2);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates that additive + time-delimited filtering works
   it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
-    FU.buttons.search();
+    const NUM_MATCHING = 0;
     FU.input('ModalCtrl.params.display_name', parameters.name1);
-    $('[data-date-range="week"]').click();
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('lastWeek');
     FU.modal.submit();
 
-    expectNumberOfGridRows(1);
-    expectNumberOfFilters(3);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates that sex + time-delimited filtering works
   it('should find no female patients registered in the last year.', function () {
-    FU.buttons.search();
-    $('[data-date-range="year"]').click();
+    const NUM_MATCHING = 1; 
     element(by.id('female')).click();
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('lastYear');
     FU.modal.submit();
 
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(3);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // changes every single date input manually.
   it('should not find any patients with complex limited dates.', function () {
-    FU.buttons.search();
-    components.dateInterval.range(parameters.dateRegistrationFrom, parameters.dateRegistrationTo, 'registration-date');
-    components.dateInterval.range(parameters.dateBirthFrom, parameters.dateBirthTo, 'dob-date');
-
-    FU.modal.submit();
-
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(4);
-    FU.buttons.clear();
-  });
-
-  // combines dates with manual date manipulation
-  it('setting dates manually should find two patients.', function () {
-    FU.buttons.search();
+    const NUM_MATCHING = 4;
     components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
-
-
-    element(by.id('male')).click();
-
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');    
     FU.modal.submit();
 
-    expectNumberOfGridRows(3);
-    expectNumberOfFilters(3);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // clears filters to assert that the "error state" bug does not occur when the
   // cancel button is clicked
   it('clearing filters restores default number of rows to the grid', () => {
-    FU.buttons.search();
-    $('[data-date-range="year"]').click();
+    const NUM_MATCHING = 3;
     element(by.id('male')).click();
-    FU.modal.submit();
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    FU.modal.submit(); 
 
-    expectNumberOfGridRows(2);
-    expectNumberOfFilters(3);
-
-    // click the "clear filters" button
-    FU.buttons.clear();
-
-    // the filter bar shouldn't exist
-    expectNumberOfGridRows(defaultVisibleRowNumber);
-    expectNumberOfFilters(1);
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 
   it('should remember the cached filters', () => {
-
-    FU.buttons.search();
-
-    // Add all the filters (4 in total)
-    element.all(by.css('[data-date-range="year"]')).get(1).click();
-
+    const NUM_MATCHING = 0;
     element(by.id('male')).click();
     FU.input('ModalCtrl.params.display_name', 'Some Non-Existant Patient');
-
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('year');
     FU.modal.submit();
 
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(4);
-
-    browser.refresh();
-
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(4);
-    FU.buttons.clear();
+    expectNumberOfGridRows(NUM_MATCHING);
   });
 }
 

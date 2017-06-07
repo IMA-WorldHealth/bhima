@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistryModalController.$inject = [
   '$uibModalInstance', 'params', 'DebtorGroupService', 'PatientGroupService',
-  'bhConstants', 'moment'
+  'bhConstants', 'moment', 'Store', 'util', 'PeriodService'
 ];
 
 /**
@@ -14,13 +14,29 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment) {
+function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment, Store, util, Periods) {
   var vm = this;
+  var changes = new Store({ identifier : 'key' });  
   vm.today = new Date();
 
   // bind filters if they have already been applied.  Otherwise, default to an
   // empty object.
-  vm.params = params || {};
+  vm.defaultQueries = {};
+
+  // assign default limit filter
+  if (params.limit) {
+    vm.defaultQueries.limit = params.limit;
+  }
+
+  // @TODO ideally these should be passed in when the modal is initialised
+  //       these are known when the filter service is defined
+  var searchQueryOptions = [
+    'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo', 'dateRegistrationFrom', 'dateRegistrationTo',
+    'debtor_group_uuid', 'patient_group_uuid', 'user_id', 'defaultPeriod'
+  ];
+
+  // assign already defined custom params to searchQueries object
+  vm.params = util.maskObjectFromKeys(params, searchQueryOptions);
 
   // bind methods
   vm.submit = submit;
@@ -42,54 +58,43 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
     vm.params.user_id = user.id;
   };
 
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
+  };
+
+  // default filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
+  };
+
+
   // returns the parameters to the parent controller
   function submit(form) {
-    if (form.$invalid) { return; }
-
-    var parameters = angular.copy(vm.params);
-
-    // to get the format of data from Database
-    var formatDB = bhConstants.dates.formatDB;
-
-    // convert dates to strings
-    if (parameters.dateRegistrationFrom) {
-      parameters.dateRegistrationFrom = moment(parameters.dateRegistrationFrom).format(formatDB);
-    }
-
-    if (parameters.dateRegistrationTo) {
-      parameters.dateRegistrationTo = moment(parameters.dateRegistrationTo).format(formatDB);
-    }
-
-    if (parameters.dateBirthFrom) {
-      parameters.dateBirthFrom = moment(parameters.dateBirthFrom).format(formatDB);
-    }
-
-    if (parameters.dateBirthTo) {
-      parameters.dateBirthTo = moment(parameters.dateBirthTo).format(formatDB);
-    }
-
-    // make sure we don't have any undefined or empty parameters
-    angular.forEach(parameters, function (value, key) {
-      if (value === null || value === '') {
-        delete parameters[key];
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.params, function (value, key) {
+      if (angular.isDefined(value)) {
+        changes.post({ key : key, value : value });
       }
     });
 
-    return ModalInstance.close(parameters);
+    var loggedChanges = changes.getAll();
+
+    // return values to the Patient Registry Controller
+    return ModalInstance.close(loggedChanges);
   }
 
   // clears search parameters.  Custom logic if a date is used so that we can
   // clear two properties.
   function clear(value) {
-    if (value === 'registration') {
-      delete vm.params.dateRegistrationFrom;
-      delete vm.params.dateRegistrationTo;
-    } else if (value === 'dob') {
-      delete vm.params.dateBirthFrom;
-      delete vm.params.dateBirthTo;
-    } else {
-      delete vm.params[value];
-    }
+    delete vm.params[value];
   }
 
   // dismiss the modal
