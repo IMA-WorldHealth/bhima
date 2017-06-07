@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherService.$inject = [
   'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
-  'DepricatedFilterService',
+  'FilterService', 'PeriodService'
 ];
 
 /**
@@ -15,18 +15,76 @@ VoucherService.$inject = [
  * includes some utilities that are useful for voucher pages.
  */
 function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
-  Filters) {
+  Filters, Periods) {
   var service = new Api('/vouchers/');
+  var voucherFilters = new Filters();
+  var filterCache = new AppCache('voucher-filters');
 
   // @todo - remove this reference to baseUrl
   var baseUrl = '/journal/';
-  var filter = new Filters();
 
   service.create = create;
   service.reverse = reverse;
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
-  service.formatFilterParameters = formatFilterParameters;
+
+  // service.formatFilterParameters = formatFilterParameters;
+  service.filters = voucherFilters;
+  service.cacheFilters = cacheFilters;
+  service.removeFilter = removeFilter;
+  service.loadCachedFilters = loadCachedFilters;
+
+  voucherFilters.registerDefaultFilters([
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+
+  voucherFilters.registerCustomFilters([
+      { key: 'user_id', label: 'FORM.LABELS.USER' },
+      { key: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
+      { key: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
+      { key: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
+      { key: 'reversed', displayName: 'FORM.INFO.ANNULLED' },
+      { key: 'description', displayname: 'FORM.LABELS.DESCRIPTION' }]);
+
+  if(filterCache.filters){
+    voucherFilters.loadCache(filterCache.filters);
+  }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(voucherFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
+    if (!periodDefined) {
+      voucherFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      voucherFilters.assignFilter('limit', 100);
+    }
+  }
+
+  function removeFilter(key) {
+    voucherFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  function cacheFilters() {
+    filterCache.filters = voucherFilters.formatCache();
+  };
+
+  function loadCachedFilters() {
+    voucherFilters.loadCache(filterCache.filters || {});
+  };
 
   // returns true if the key starts with an underscore
   function isInternalKey(key) {
@@ -96,37 +154,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    */
   function transactionType() {
     return TransactionTypeStore.load();
-  }
-
-  /**
-   * @TODO - this should be using a standardized filter service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter: 'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
-      { field: 'reversed', displayName: 'FORM.INFO.ANNULLED' },
-      { field: 'description', displayname: 'FORM.LABELS.DESCRIPTION' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-    ];
-
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var value = params[column.field];
-      if (angular.isDefined(value)) {
-        column.value = value;
-
-        if (column.field === 'defaultPeriod') {
-          column.value = filter.lookupPeriod(value).label;
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    });
   }
 
   /**

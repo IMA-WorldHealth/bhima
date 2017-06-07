@@ -45,7 +45,7 @@
   </div>
 </div>
 
-<div class="flex-util bh-filter-bar" ng-show="VoucherCtrl.filtersFmt.length > 0">
+<!--<div class="flex-util bh-filter-bar" ng-show="VoucherCtrl.filtersFmt.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="VoucherCtrl.filtersFmt"
@@ -61,6 +61,14 @@
     <i class="fa fa-close text-danger"></i>
     <span translate>FORM.INFO.CLEAR_FILTERS</span>
   </a>
+</div>-->
+
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
+    style="max-width:90%"
+    filters="VoucherCtrl.latestViewFilters"
+    on-remove-filter="VoucherCtrl.onRemoveFilter(filter)">
+  </bh-filters>
 </div>
 
 <div class="flex-content">

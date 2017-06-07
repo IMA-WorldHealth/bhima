@@ -108,7 +108,7 @@ function lookupVoucher(vUuid) {
 }
 
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'v' });
+  const filters = new FilterParser(options, { tableAlias : 'v', autoParseStatements : false});
 
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
