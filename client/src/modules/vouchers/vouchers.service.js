@@ -42,11 +42,11 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
 
   voucherFilters.registerCustomFilters([
       { key: 'user_id', label: 'FORM.LABELS.USER' },
-      { key: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { key: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
-      { key: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
-      { key: 'reversed', displayName: 'FORM.INFO.ANNULLED' },
-      { key: 'description', displayname: 'FORM.LABELS.DESCRIPTION' }]);
+      { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
+      { key: 'dateFrom', label: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
+      { key: 'dateTo', label: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
+      { key: 'reversed', label: 'FORM.INFO.ANNULLED' },
+      { key: 'description', label: 'FORM.LABELS.DESCRIPTION' }]);
 
   if(filterCache.filters){
     voucherFilters.loadCache(filterCache.filters);
