@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'GridFilteringService', 'uiGridGroupingConstants', 'uiGridConstants',
   'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache',
-  'DepricatedFilterService',
+  'FilterService',
 ];
 
 /**
@@ -37,7 +37,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   vm.search = search;
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
 
   vm.loading = false;
 
@@ -141,17 +140,17 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
 
   // search voucher
   function search() {
-    Vouchers.openSearchModal(vm.filters)
-      .then(function (parameters) {
-        if (!parameters) { return; }
+    var filtersSnapshot = Vouchers.filters.formatHTTP();
 
-        if (parameters.defaultPeriod) {
-          delete parameters.defaultPeriod;
-        }
+    Vouchers.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
+        Vouchers.filters.replaceFilters(changes);
+        Vouchers.cacheFilters();
+        vm.latestViewFilters = Vouchers.filters.formatView();
 
-        cacheFilters(parameters);
-        return load(vm.filters);
-      });
+       return load(Vouchers.filters.formatHTTP(true));
+      })
+      .catch(angular.noop);
   }
 
   // showReceipt
@@ -163,12 +162,12 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     return Object.keys(object).length === 0;
   }
 
-  function load(parameters) {
+  function load(filters) {
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    Vouchers.read(null, parameters).then(function (vouchers) {
+    Vouchers.read(null, filters).then(function (vouchers) {
         vm.gridOptions.data = vouchers;
 
         // loop through the vouchers and precompute the voucher type tags
@@ -192,28 +191,14 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
       });
   }
 
-
-  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
-  function cacheFilters(filters) {
-    filters = filter.applyDefaults(filters);
-    vm.filters = cache.filters = filters;
-    vm.filtersFmt = Vouchers.formatFilterParameters(filters);
-
-    // show filter bar as needed
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
-  }
-
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    delete vm.filters[key];
-    cacheFilters(vm.filters);
-    load(vm.filters);
-  }
+    Vouchers.removeFilter(key);
 
-  // clears the filters by forcing a cache of an empty array
-  function clearFilters() {
-    cacheFilters({});
-    load(vm.filters);
+    Vouchers.cacheFilters();
+    vm.latestViewFilters = Vouchers.filters.formatView();
+
+    return load(Vouchers.filters.formatHTTP(true));
   }
 
   /**
@@ -247,14 +232,8 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
       })
       .catch(Notify.handleError);
 
-    if ($state.params.filters) {
-      cacheFilters($state.params.filters);
-    }
-    cacheFilters({});
-
-    vm.filters = cache.filters;
-    vm.filtersFmt = Vouchers.formatFilterParameters(vm.filters || {});
-    load(vm.filters);
+    load(Vouchers.filters.formatHTTP(true));
+    vm.latestViewFilters = Vouchers.filters.formatView();
   }
 
   startup();

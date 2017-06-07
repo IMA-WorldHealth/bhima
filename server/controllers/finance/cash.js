@@ -135,6 +135,7 @@ function read(req, res, next) {
  * @description list all payment made
  */
 function listPayment(options) {
+  console.log('opons cash', options);
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['debtor_uuid', 'debtor_group_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'cash', autoParseStatements : false });
