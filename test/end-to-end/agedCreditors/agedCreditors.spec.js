@@ -10,7 +10,7 @@ const GU = require('../shared/GridUtils');
 
 helpers.configure(chai);
 
-describe('Aged Creditors Report', () => {
+describe.skip('Aged Creditors Report', () => {
   function getInvoiceNumber(gridId) {
     return GU.getRows(gridId).count();
   }
