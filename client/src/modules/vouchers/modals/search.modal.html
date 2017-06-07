@@ -11,39 +11,51 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow: auto; max-height: 400px;">
+  <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
 
-    <bh-date-interval
-      validation-trigger="ModalForm.$submitted"
-      date-from="ModalCtrl.params.dateFrom"
-      date-to="ModalCtrl.params.dateTo"
-      mode="clean">
-    </bh-date-interval>
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+            <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
+            <textarea ng-model="ModalCtrl.params.description" class="form-control" rows="2"></textarea>
+          </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-      <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
-      <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
-      <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+          <bh-user-select
+            user-id="ModalCtrl.params.user_id"
+            name="user_id"
+            on-select-callback="ModalCtrl.onSelectUser(user)">
+            <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <bh-period-select
+            default-period="{{ModalCtrl.filters.period}}"
+            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+          </bh-period-select>
 
-    <!-- @TODO - functionality for reversals missing before we can search on reversals -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
-      <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
-      <textarea ng-model="ModalCtrl.params.description" class="form-control" rows="2"></textarea>
-    </div>
-
-    <bh-user-select
-      user-id="ModalCtrl.params.user_id"
-      name="user_id"
-      on-select-callback="ModalCtrl.onSelectUser(user)">
-      <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-    </bh-user-select>    
-
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">
