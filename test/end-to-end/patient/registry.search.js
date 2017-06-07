@@ -44,13 +44,13 @@ function PatientRegistrySearch() {
   }
 
   it('grid should have 2 visible rows', () => {
-    const DEFAULT_INVOICES_FOR_TODAY = 2;
+    const DEFAULT_PATIENTS_FOR_TODAY = 2;
 
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
 
-    expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
+    expectNumberOfGridRows(DEFAULT_PATIENTS_FOR_TODAY);
   });
 
 
