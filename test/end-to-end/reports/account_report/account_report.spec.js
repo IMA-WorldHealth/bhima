@@ -9,7 +9,7 @@ const ReportAccountPage = require('./account_report.page');
 
 describe('Accounts report ::', () => {
   let Page;
-  const key = 'report_accounts';
+  const key = 'account_report';
 
   const dataset = {
     account : '41002',

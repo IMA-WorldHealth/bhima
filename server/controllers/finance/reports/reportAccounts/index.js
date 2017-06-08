@@ -22,6 +22,10 @@ const sourceMap = {
     table : 'posting_journal',
     key : 'FORM.LABELS.POSTING_JOURNAL',
   },
+  3 : {
+    table : 'combined_ledger',
+    key : 'FORM.LABELS.ALL',
+  },
 };
 
 /**

@@ -3,7 +3,7 @@
 
 const helpers = require('../../helpers');
 
-const target = '/reports/finance/account';
+const target = '/reports/finance/account_report';
 
 describe(`(${target}) Report Account`, function () {
 
