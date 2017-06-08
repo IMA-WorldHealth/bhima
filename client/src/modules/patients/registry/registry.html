@@ -34,7 +34,7 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a href data-method="print" id="print" ng-click="PatientRegistryCtrl.openJournalReport()">
+              <a href data-method="print" id="print" ng-click="PatientRegistryCtrl.patientReport()">
                 <i class="fa fa-file-pdf-o"></i> <span translate>FORM.BUTTONS.PDF_EXPORT</span>
               </a>
             </li>
@@ -72,7 +72,7 @@
   <div class="container-fluid">
     <div
       id="patient-registry"
-      class="grid-full-height"
+      class="grid-full-height-with-filters"
       ng-style="PatientRegistryCtrl.filterBarHeight"
       ui-grid="PatientRegistryCtrl.uiGridOptions"
       ui-grid-auto-resize

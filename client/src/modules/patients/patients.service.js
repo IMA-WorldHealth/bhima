@@ -300,17 +300,5 @@ function PatientService($http, util, Session, $uibModal,
     }).result;
   }
 
-  // downloads a type of report based on the
-  service.download = function download(type) {
-    var filterOpts = patientFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
-
-    // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
-
-    // return  serialized options
-    return $httpParamSerializer(options);
-  };
-
   return service;
 }

@@ -107,13 +107,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs        : columnDefs,
-    onRegisterApi     : onRegisterApi,
   };
-
-  // API register function
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
   state = new GridState(vm.uiGridOptions, cacheKey);
@@ -202,7 +196,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   }
 
   // display the patient registry printable report
-  vm.openJournalReport = function openJournalReport() {
+  vm.patientReport = function patientReport() {
     var url = '/reports/medical/patients';
     var params = formatExportParameters('pdf');
 
