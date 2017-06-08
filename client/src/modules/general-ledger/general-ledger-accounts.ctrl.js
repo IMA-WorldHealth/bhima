@@ -152,12 +152,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
-    onRegisterApi     : onRegisterApi,
   };
-
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
 
   var columnConfig = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
