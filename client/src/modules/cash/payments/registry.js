@@ -150,7 +150,6 @@ function CashPaymentRegistryController(
 
   // load cash
   function load(filters) {
-    console.log('loading', filters);
     vm.hasError = false;
     toggleLoadingIndicator();
 

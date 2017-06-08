@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherService.$inject = [
   'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
-  'FilterService', 'PeriodService'
+  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer'
 ];
 
 /**
@@ -15,7 +15,7 @@ VoucherService.$inject = [
  * includes some utilities that are useful for voucher pages.
  */
 function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
-  Filters, Periods) {
+  Filters, Periods, Languages, $httpParamSerializer) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
   var filterCache = new AppCache('voucher-filters');
@@ -33,6 +33,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
   service.cacheFilters = cacheFilters;
   service.removeFilter = removeFilter;
   service.loadCachedFilters = loadCachedFilters;
+  service.download = download;
 
   voucherFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
@@ -155,6 +156,18 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
   function transactionType() {
     return TransactionTypeStore.load();
   }
+
+  // downloads a type of report based on the
+  function download(type) {
+    var filterOpts = voucherFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
 
   /**
    * @function openSearchModal

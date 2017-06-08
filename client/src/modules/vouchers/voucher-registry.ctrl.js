@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 VoucherController.$inject = [
-  'VoucherService', 'NotifyService', 'GridFilteringService', 'uiGridGroupingConstants', 'uiGridConstants',
-  'bhConstants', 'ReceiptModal', 'GridSortingService', '$state', 'appcache',
-  'FilterService',
+  'VoucherService', 'NotifyService', 'uiGridGroupingConstants', 'uiGridConstants',
+  'bhConstants', 'ReceiptModal', 'GridSortingService', 'GridColumnService',
+  'GridStateService', '$state',
 ];
 
 /**
@@ -14,47 +14,35 @@ VoucherController.$inject = [
  * @description
  * This controller is responsible for display all vouchers in the voucher table.
  */
-function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
-  uiGridConstants, bhConstants, Receipts, Sorting, $state, AppCache,
-  Filters) {
+function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
+  uiGridConstants, bhConstants, Receipts, Sorting, Columns, GridState, $state) {
   var vm = this;
-  var cache = new AppCache('VoucherRegistry');
 
-  var filter = new Filters();
-  var filtering;
-  var FILTER_BAR_HEIGHT;
+  var cacheKey = 'voucher-grid';
+  var gridColumns;
+  var state;
+  var columnDefs;
 
+  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
   var INCOME = bhConstants.transactionType.INCOME;
   var EXPENSE = bhConstants.transactionType.EXPENSE;
   var OTHER = bhConstants.transactionType.OTHER;
 
   /* global variables */
-  vm.filter = filter;
-  vm.filterEnabled = false;
   vm.transactionTypes = {};
   vm.gridApi = {};
   vm.gridOptions = {};
+
   vm.search = search;
-  vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
+  vm.download = Vouchers.download;
 
   vm.loading = false;
 
-  FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
-
-  // init the filter service
-  filtering = new Filtering(vm.gridOptions);
-
-  vm.gridOptions = {
-    appScopeProvider : vm,
-    showColumnFooter : true,
-    flatEntityAccess : true,
-    fastWatch        : true,
-    enableFiltering  : vm.filterEnabled,
-  };
-
   // grid default options
-  vm.gridOptions.columnDefs = [{
+  var columnDefs = [{
     field                : 'reference',
     displayName          : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter     : 'translate',
@@ -74,8 +62,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     field                       : 'date',
     displayName                 : 'TABLE.COLUMNS.DATE',
     headerCellFilter            : 'translate',
-    cellFilter                  : 'date',
-    filter                      : { condition: filtering.filterByDate },
     type                        : 'date',
     groupingShowAggregationMenu : false,
   }, {
@@ -107,20 +93,25 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     cellTemplate     : 'modules/vouchers/templates/action.cell.html',
   }];
 
-  // register API
-  vm.gridOptions.onRegisterApi = onRegisterApi;
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    showColumnFooter : true,
+    enableColumnMenu : false,
+    enableSorting    : true,
+    flatEntityAccess : true,
+    fastWatch        : true,
+    columnDefs        : columnDefs,
+  };
+
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
 
   // expose function
   vm.get = get;
   vm.isDefined = isDefined;
   vm.showReceipt = showReceipt;
   vm.bhConstants = bhConstants;
-
-  // API register function
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
-
+ 
   // isDefined Type
   function isDefined(row) {
     return row.uuid && (row.type_id === null || row.type_id === undefined);
@@ -130,12 +121,6 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
   function get(originId) {
     if (originId === null || originId === undefined) { return {}; }
     return vm.transactionTypes.get(originId);
-  }
-
-  // enable filter
-  function toggleFilter() {
-    vm.gridOptions.enableFiltering = vm.filterEnabled = !vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // search voucher
@@ -235,6 +220,22 @@ function VoucherController(Vouchers, Notify, Filtering, uiGridGroupingConstants,
     load(Vouchers.filters.formatHTTP(true));
     vm.latestViewFilters = Vouchers.filters.formatView();
   }
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the voucher registry's columns.
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  };
+
+
+  vm.saveGridState = state.saveGridState;
+  // saves the grid's current configuration
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   startup();
 }
