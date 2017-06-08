@@ -124,11 +124,12 @@ function find(options) {
 
   delete options.detailed;
 
+  filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-  filters.period('period', 'date');
   
   filters.equals('user_id');
+  filters.equals('type_id');
 
   filters.custom('reference', referenceStatement);
 

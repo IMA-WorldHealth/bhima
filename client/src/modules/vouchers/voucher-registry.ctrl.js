@@ -63,6 +63,7 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
     displayName                 : 'TABLE.COLUMNS.DATE',
     headerCellFilter            : 'translate',
     type                        : 'date',
+    cellFilter                  : 'date:"mediumDate"',
     groupingShowAggregationMenu : false,
   }, {
     field                       : 'description',
@@ -148,6 +149,7 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
   }
 
   function load(filters) {
+    console.log('filters', filters);
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
