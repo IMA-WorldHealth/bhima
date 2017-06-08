@@ -123,9 +123,10 @@ function find(options) {
 
   delete options.detailed;
 
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
-  filters.period('defaultPeriod', 'date');
+  filters.dateFrom('custom_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.period('period', 'date');
+  filters.equals('user_id');
 
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   filters.custom('reference', referenceStatement);

@@ -18,7 +18,7 @@
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
             <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
-            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.searchQueries.reference">
             <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
@@ -27,11 +27,11 @@
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
             <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
             <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
-            <textarea ng-model="ModalCtrl.params.description" class="form-control" rows="2"></textarea>
+            <textarea ng-model="ModalCtrl.searchQueries.description" class="form-control" rows="2"></textarea>
           </div>
 
           <bh-user-select
-            user-id="ModalCtrl.params.user_id"
+            user-id="ModalCtrl.searchQueries.user_id"
             name="user_id"
             on-select-callback="ModalCtrl.onSelectUser(user)">
             <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
@@ -47,7 +47,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
