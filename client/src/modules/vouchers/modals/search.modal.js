@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'bhConstants', 'PeriodService', 'Store', 'util'
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 
+  'bhConstants', 'PeriodService', 'Store', 'util', 'TransactionTypeService', '$translate'
 ];
 
 /**
@@ -13,7 +14,8 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, bhConstants, Periods, Store, util) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, 
+bhConstants, Periods, Store, util, TransactionTypes, $translate) {
   var vm = this;
   var changes = new Store({identifier : 'key'});
   vm.filters = filters;
@@ -23,6 +25,15 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
   var searchQueryOptions = [
     'reference', 'description', 'user_id',
   ];
+
+  TransactionTypes.read()
+      .then(function (transactionTypes) {
+        transactionTypes.forEach(function(item){
+          item.plainText = $translate.instant(item.text);
+        });
+        vm.transactionTypes = transactionTypes;
+      })
+      .catch(Notify.handleError);
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
