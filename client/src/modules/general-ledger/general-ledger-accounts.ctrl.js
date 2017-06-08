@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 GeneralLedgerAccountsController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService',
-  'uiGridConstants', 'ReceiptModal', 'ExportService',
+  'uiGridConstants', 'ReceiptModal', 'ExportService', 'GridColumnService', 'AppCache', 'GridStateService', '$state', 'LanguageService'
 ];
 
 /**
@@ -13,12 +13,17 @@ GeneralLedgerAccountsController.$inject = [
  * This controller is responsible for displaying accounts and their balances
  */
 function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
-  uiGridConstants, Receipts, Export) {
+  uiGridConstants, Receipts, Export, Columns, AppCache, GridState, $state, Languages) {
   var vm = this;
   var columns;
+  var state;
+
+  var cacheKey = 'GeneralLedgerAccounts';
+  var cache = AppCache(cacheKey);  
 
   vm.enterprise = Session.enterprise;
   vm.filterEnabled = false;
+  vm.openColumnConfiguration = openColumnConfiguration;
 
   columns = [
     { field            : 'number',
@@ -147,12 +152,21 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
-    onRegisterApi     : onRegisterApiFn,
+    onRegisterApi     : onRegisterApi,
   };
 
-  function onRegisterApiFn(gridApi) {
+  function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
   }
+
+  var columnConfig = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }  
 
   function handleError(err) {
     vm.hasError = true;
@@ -161,6 +175,10 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   function toggleFilter() {
@@ -190,6 +208,31 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       '</div>' + 
     '</div>';
   }
+
+  // format Export Parameters
+  function formatExportParameters(type) {
+    return { renderer: type || 'pdf', lang: Languages.key };
+  }
+
+  // display the patient registry printable report
+  vm.openLedgerReport = function openLedgerReport() {
+    var url = '/reports/finance/general_ledger';
+    var params = formatExportParameters('pdf');
+
+    if (!params) { return; }
+
+    Export.download(url, params, 'GENERAL_LEDGER.TITLE', 'print');
+  };
+
+  // export data into csv file
+  vm.exportFile = function exportFile() {
+    var url = '/reports/finance/general_ledger';
+    var params = formatExportParameters('csv');
+
+    if (!params) { return; }
+
+    Export.download(url, params, 'GENERAL_LEDGER.TITLE');
+  };
 
   GeneralLedger.accounts.read()
     .then(loadData)
