@@ -214,7 +214,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     return { renderer: type || 'pdf', lang: Languages.key };
   }
 
-  // display the patient registry printable report
+  // display the printable report
   vm.openLedgerReport = function openLedgerReport() {
     var url = '/reports/finance/general_ledger';
     var params = formatExportParameters('pdf');
