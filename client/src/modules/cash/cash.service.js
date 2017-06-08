@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
-  'FilterService', 'appcache', 'PeriodService',
+  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer'
 ];
 
 /**
@@ -13,7 +13,7 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods) {
+function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods, Languages, $httpParamSerializer) {
   var service = new Api('/cash/');
   var urlCheckin = '/cash/checkin/';
 
@@ -184,6 +184,18 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
 
   service.loadCachedFilters = function loadCachedFilters() {
     cashFilters.loadCache(filterCache.filters || {});
+  };
+
+  // downloads a the registry as a given type (pdf, csv)
+  service.download = function download(type) {
+    var filterOpts = cashFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   };
 
   /**
