@@ -2,8 +2,8 @@ angular.module('bhima.components')
 .component('bhReportPreview', {
   bindings : {
     sourceDocument : '<',
-    onClearCallback : '&',
-    onSaveCallback : '&',
+    onClearCallback : '&', // called on the template for claering the preview (go back to report config)
+    onSaveCallback : '&',  // called on the template for saving the report
   },
   templateUrl : 'modules/templates/bhReportPreview.tmpl.html',
   controller : bhReportPreviewController,

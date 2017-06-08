@@ -5,7 +5,7 @@ const helpers = require('../../shared/helpers');
 
 helpers.configure(chai);
 
-const ReportAccountPage = require('./report_accounts.page');
+const ReportAccountPage = require('./account_report.page');
 
 describe('Accounts report ::', () => {
   let Page;

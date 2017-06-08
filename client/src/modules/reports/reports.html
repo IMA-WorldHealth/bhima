@@ -5,7 +5,7 @@
       <li class="static" translate>TREE.REPORTS</li>
       <li ng-hide="ReportCtrl.isArchive()" class="title" translate>{{ ReportCtrl.report.title_key }}</li>
       <li ng-show="ReportCtrl.isArchive()">
-        <a data-method="report-config" ng-href="#!/reports/{{ReportCtrl.report.report_key}}" translate>{{ ReportCtrl.report.title_key }}</a>
+        <a data-method="report-config" ui-sref="^.reportsBase.{{ReportCtrl.report.report_key}}" translate>{{ ReportCtrl.report.title_key }}</a>
       </li>
       <li ng-show="ReportCtrl.isArchive()" class="title" translate>REPORT.UTIL.VIEW_ARCHIVE</li>
     </ol>

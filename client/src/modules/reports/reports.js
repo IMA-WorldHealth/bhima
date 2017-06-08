@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('ReportsController', ReportsController);
 
 ReportsController.$inject = [
-  '$state', 'NotifyService', 'reportData',
+  '$state', 'reportData',
 ];
 
-function ReportsController($state, Notify, reportData) {
+function ReportsController($state, reportData) {
   var vm = this;
   var archiveState = 'reportsBase.reportsArchive';
 

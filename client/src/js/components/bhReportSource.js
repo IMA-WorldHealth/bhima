@@ -1,7 +1,7 @@
 angular.module('bhima.components')
 .component('bhReportSource', {
   bindings : {
-    onSelectCallback : '&?',
+    onSelectCallback : '&',
     label : '@?',
     name : '@?',
 
@@ -25,23 +25,24 @@ function bhReportSourceController() {
   var ctrl = this;
   var DEFAULT_SOURCE = 1;
 
-  ctrl.label = ctrl.label || 'FORM.SELECT.SOURCE';
-  ctrl.name = ctrl.name || 'source';
-
   /* @const */
   ctrl.sources = [
     { id : 1, label : 'FORM.LABELS.GENERAL_LEDGER' },
     { id : 2, label : 'FORM.LABELS.POSTING_JOURNAL' },
+    { id : 3, label : 'FORM.LABELS.ALL' },
   ];
 
-  ctrl.$onInit = function() {
+  ctrl.$onInit = function $onInit() {
+    ctrl.label = ctrl.label || 'FORM.SELECT.SOURCE';
+    ctrl.name = ctrl.name || 'source';
+
     // select default value if nothing is selected
     if (angular.isUndefined(ctrl.value)) {
       ctrl.onSelect(DEFAULT_SOURCE);
     }
   };
 
-  ctrl.onSelect = function ($item) {
+  ctrl.onSelect = function onSelect($item) {
     ctrl.onSelectCallback({ source : $item });
   };
 }

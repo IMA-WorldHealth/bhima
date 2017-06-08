@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
-  .controller('report_accountsController', ReportAccountsConfigController);
+  .controller('account_reportController', AccountReportConfigController);
 
-ReportAccountsConfigController.$inject = [
+AccountReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-function ReportAccountsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function AccountReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   var vm = this;
-  var cache = new AppCache('configure_reports_account');
-  var reportUrl = 'reports/finance/account';
+  var cache = new AppCache('configure_account_report');
+  var reportUrl = 'reports/finance/account_report';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -39,7 +39,7 @@ function ReportAccountsConfigController($sce, Notify, SavedReports, AppCache, re
 
     return SavedReports.saveAsModal(options)
       .then(function () {
-        $state.go('reportsBase.reportsArchive', { key : options.report_key });
+        $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
   };

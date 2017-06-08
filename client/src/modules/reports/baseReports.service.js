@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('BaseReportService', BaseReportService);
 
-BaseReportService.$inject = ['$http', '$uibModal', 'util'];
+BaseReportService.$inject = ['$http', '$uibModal', 'util', 'LanguageService'];
 
-function BaseReportService($http, Modal, util) {
+function BaseReportService($http, Modal, util, Languages) {
   var service = this;
 
   service.requestKey = requestKey;
@@ -31,6 +31,7 @@ function BaseReportService($http, Modal, util) {
       reportId : reportId,
       saveReport : '0',
       renderer : 'html',
+      lang : Languages.key,
     };
 
     var options = angular.merge(reportOptions, htmlParams);

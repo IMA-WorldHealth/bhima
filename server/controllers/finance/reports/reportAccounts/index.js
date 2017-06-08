@@ -4,6 +4,9 @@ const ReportManager = require('../../../../lib/ReportManager');
 
 const Accounts = require('../../accounts');
 
+// TODO(@jniles) - merge this into the regular accounts controller
+const AccountsExtra = require('../../accounts/extra');
+
 const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
@@ -55,10 +58,25 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return getAccountTransactions(params.account_id, params.source, params.dateFrom, params.dateTo)
+  const dateFrom = (params.dateFrom) ? new Date(params.dateFrom) : new Date();
+
+  return AccountsExtra.getOpeningBalanceForDate(params.account_id, dateFrom)
+    .then((balance) => {
+      const openingBalance = {
+        date            : dateFrom,
+        amount          : balance,
+        isCreditBalance : balance < 0,
+      };
+
+      _.extend(bundle, { openingBalance });
+      return getAccountTransactions(params.account_id, params.source, params.dateFrom, params.dateTo, balance);
+    })
     .then((result) => {
-      _.extend(bundle, result);
-      _.extend(bundle, { params });
+      _.extend(bundle, {
+        accountDetails : result.accountDetails,
+        transactions : result.transactions,
+        sum : result.sum,
+        params });
       return report.render(bundle);
     })
     .then((result) => {
@@ -73,13 +91,24 @@ function document(req, res, next) {
  * @function getAccountTransactions
  * This feature select all transactions for a specific account
 */
-function getAccountTransactions(accountId, source, dateFrom, dateTo) {
-  const sourceId = Number(source);
+function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBalance) {
+  const sourceId = parseInt(source, 10);
+  let tableName;
 
-  // get the table name
-  const tableName = sourceMap[sourceId].table;
+  if (sourceId === 3) {
+    tableName = `(
+      (SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
+        FROM posting_journal ) 
+      UNION (
+      SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
+      FROM general_ledger )
+    ) as comb `;
+  } else {
+    // get the table name
+    tableName = sourceMap[sourceId].table;
+  }
+
   const params = [accountId];
-
   let dateCondition = '';
 
   if (dateFrom && dateTo) {
@@ -101,7 +130,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
         WHERE account_id = ? ${dateCondition}
         GROUP BY record_uuid
         ORDER BY trans_date ASC
-      )c, (SELECT @cumsum := 0)z
+      )c, (SELECT @cumsum := ${openingBalance || 0})z
     ) AS groups
   `;
 
@@ -128,6 +157,9 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo) {
       return db.one(sqlAggrega, params);
     })
     .then((sum) => {
+      // if the sum come back as zero (because there were no lines), set the default sum to the
+      // opening balance
+      sum.balance = sum.balance || openingBalance;
       _.extend(bundle, { sum });
       return bundle;
     });

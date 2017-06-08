@@ -1,12 +1,12 @@
 {{> head title="REPORT.ACCOUNT" }}
 
-<!-- ensure HTML report has enough room to be rendered -->
-<body class="a4-report-body">
+<body>
   {{> header }}
 
   <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.ACCOUNT"}}</strong></h3>
 
   <h4 class="text-center"><strong>{{ accountDetails.number }} | {{ accountDetails.label}}</strong></h4>
+
   {{#if params.dateFrom }}
     <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
       {{date params.dateFrom }} - {{date params.dateTo }}
@@ -14,7 +14,7 @@
   {{/if}}
 
   <section>
-    <table class="table table-condensed table-striped table-report table-bordered">
+    <table class="table table-condensed table-report table-bordered">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;">
           <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
@@ -27,6 +27,20 @@
         </tr>
       </thead>
       <tbody>
+
+        {{! Opening Balance Line }}
+        <tr>
+          <th>{{ date openingBalance.date }}</th>
+          <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
+          <th class="text-right">
+            {{#unless openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/unless}}
+          </th>
+          <th class="text-right">
+            {{#if openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/if}}
+          </th>
+          <th class="text-right">{{currency openingBalance.amount metadata.enterprise.currency_id}}</th>
+        </tr>
+
         {{#each transactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
