@@ -30,7 +30,7 @@ function FilterService(Store) {
   //       with a toggle between the array to populate and the default value
   FilterList.prototype.registerDefaultFilters = function registerDefaultFilters(filterDefinitions) {
     var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter);
+      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
       filter.setDefault(true);
 
       if (filterDefinition.defaultValue) {
@@ -46,7 +46,7 @@ function FilterService(Store) {
 
   FilterList.prototype.registerCustomFilters = function registerCustomFilters(filterDefinitions) {
     var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter);
+      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
       filter.setDefault(false);
       return filter;
     });
@@ -70,7 +70,7 @@ function FilterService(Store) {
   // ]
   FilterList.prototype.assignFilters = function assignFilters(valueList) {
     valueList.forEach(function (valueMap) {
-      this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue);
+      this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue, valueMap.comparitor);
     }.bind(this));
   };
 
@@ -167,11 +167,12 @@ function FilterService(Store) {
 
 // Filter class for storing filter information in a uniform way
 // @TODO add debug asserts to ensure that key and value are specified when required
-function Filter(key, label, valueFilter) {
+function Filter(key, label, valueFilter, comparitor) {
   // initialise internal state
   this._key = key;
   this._label = label;
   this._valueFilter = valueFilter;
+  this._comparitor = comparitor;
   this._value = null;
   this._isDefault = null;
   this._displayValue = null;
