@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="ModalCtrl.submit(ModalForm)"
+  ng-submit="$ctrl.submit(ModalForm)"
   data-modal="voucher-search"
   novalidate>
 
@@ -17,8 +17,8 @@
         <div class="tab-body">
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-            <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
-            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.searchQueries.reference">
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
             <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
@@ -26,25 +26,25 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
             <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
-            <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
-            <textarea ng-model="ModalCtrl.searchQueries.description" class="form-control" rows="2"></textarea>
+            <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+            <textarea ng-model="$ctrl.searchQueries.description" class="form-control" rows="2"></textarea>
           </div>
 
           <bh-user-select
-            user-id="ModalCtrl.searchQueries.user_id"
+            user-id="$ctrl.searchQueries.user_id"
             name="user_id"
-            on-select-callback="ModalCtrl.onSelectUser(user)">
-            <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transactionType.$invalid }">
             <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
-            <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('type_id')"></bh-clear>
             <select
               class="form-control"
               name="transactionType"
-              ng-model="ModalCtrl.searchQueries.type_id"
-              ng-options="t.id as t.plainText for t in ModalCtrl.transactionTypes | orderBy:'plainText'">
+              ng-model="$ctrl.searchQueries.type_id"
+              ng-options="t.id as t.plainText for t in $ctrl.transactionTypes | orderBy:'plainText'">
               <option value="" disabled translate>FORM.SELECT.TRANSACTION_TYPE</option>
             </select>
           </div>
@@ -53,13 +53,13 @@
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
           <bh-period-select
-            default-period="{{ModalCtrl.filters.period}}"
-            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -71,7 +71,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" translate>
       FORM.BUTTONS.CLOSE
     </button>
 

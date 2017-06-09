@@ -149,7 +149,6 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
   }
 
   function load(filters) {
-    console.log('filters', filters);
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
