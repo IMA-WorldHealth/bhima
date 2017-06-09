@@ -23,4 +23,5 @@ module.exports = {
   depotDropdown  : require('./bhDepotDropdown'),
   datePicker     : require('./bhDatePicker'),
   userSelect     : require('./bhUserSelect'),
+  reportSource   : require('./bhReportSource'),
 };

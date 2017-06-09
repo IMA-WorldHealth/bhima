@@ -27,7 +27,6 @@
     "PRODUCED_BY":"Produit par",
     "PRODUCED_DATE":"Date de generation",
     "PRODUCED_ON":"Produit le",
-    "REPORT_ACCOUNTS":"Rapport de comptes",
     "SINCE":"Depuis",
     "SIXTY_TO_NINETY_DAYS":"60 a 90 jours",
     "THIRTY_TO_SIXTY_DAYS":"30 a 60 jours",
@@ -36,7 +35,22 @@
     "VIEW_PATIENT":"Voir le Patient",
     "VIEW_PAYMENTS":"Voir les payments",
     "VIEW_RECEIPT":"Voir le document",
-    "VIEW_RECEIPT":"Voir le document",
-    "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours"
+    "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours",
+    "REPORT_ACCOUNTS" : {
+      "TITLE":"Rapport de comptes",
+      "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée"
+    },
+    "UTIL":{
+      "CANCEL_PREVIEW":"Fermer l'Aperçu",
+      "SAVE_AS":"Enregistrer sous",
+      "DOCUMENT_PREVIEW":"Aperçu du document",
+      "PDF":"PDF",
+      "CSV":"CSV",
+      "SAVE_SUCCESS":"Rapport enregistré avec succès",
+      "BACK":"Revenir en arriere",
+      "OPTIONS":"Options",
+      "PREVIEW":"Aperçu",
+      "VIEW_ARCHIVE":"Archives"
+    }
   }
 }

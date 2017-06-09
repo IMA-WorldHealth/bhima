@@ -5,7 +5,7 @@
   </ol>
 </div>
 
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" novalidate>
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" bh-form-defaults novalidate>
   <div class="modal-body">
     <div class="form-group"
          ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
@@ -13,7 +13,7 @@
       <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
 
       <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
 
     </div>

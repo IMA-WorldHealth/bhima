@@ -7,7 +7,7 @@
   </ol>
 </div>
 
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" novalidate>
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" bh-form-defaults novalidate>
   <div class="modal-body">
 
     <div class="form-group"
@@ -15,7 +15,7 @@
       <label class="control-label" translate>FORM.LABELS.LABEL</label>
       <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
       <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
@@ -49,7 +49,7 @@
         <option value="" disabled translate>FORM.SELECT.CASHBOX</option>
       </select>
       <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
   </div>

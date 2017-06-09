@@ -9,7 +9,7 @@ const moment = require('moment');
 
 helpers.configure(chai);
 
-describe('Balance Report Generation', () => {
+describe.skip('Balance Report Generation', () => {
   before(() => helpers.navigate('#!/reports/balance'));
 
   const annualReport = {
