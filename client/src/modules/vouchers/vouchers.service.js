@@ -182,7 +182,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
       animation   : false,
       keyboard    : false,
       backdrop    : 'static',
-      controller  : 'VoucherRegistrySearchModalController as ModalCtrl',
+      controller  : 'VoucherRegistrySearchModalController as $ctrl',
       resolve     : {
         filters : function filtersProvider() { return filters; },
       },
