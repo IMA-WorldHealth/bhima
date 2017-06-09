@@ -83,9 +83,28 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
+
+//email report routes
+const report_group=require('../controllers/report-group');
+const email_report=require('../controllers/email-report');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
+
+
+//email report routes
+  app.post('/report-group', report_group.create);
+  app.get('/report-group', report_group.list);
+  app.delete('/report-group/:code', report_group.delete);
+  app.put('/report-group', report_group.update);
+
+  app.post('/email-report', email_report.create);
+  app.delete('/email-report/:id', email_report.delete);
+  app.put('/email-report/:id', email_report.update);
+  app.get('/email-report', email_report.list);
+  app.post('/email-report/list-people', email_report.list_people);
+ 
 
   // exposed to the outside without authentication
   app.get('/languages', languages.list);
