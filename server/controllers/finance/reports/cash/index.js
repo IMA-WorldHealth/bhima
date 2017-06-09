@@ -134,22 +134,13 @@ function receipt(req, res, next) {
  * GET /reports/finance/cash
  */
 function report(req, res, next) {
-  let options = {};
-  let display = {};
-  let hasFilter = false;
-
   let reportInstance;
-  const optionReport = _.extend(req.query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', orientation : 'landscape' });
+  const query = _.clone(req.query);
+  _.extend(query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', csvKey : 'rows' });
 
   // set up the report with report manager
   try {
-    if (req.query.identifiers && req.query.display) {
-      options = JSON.parse(req.query.identifiers);
-      display = JSON.parse(req.query.display);
-      hasFilter = Object.keys(display).length > 0;
-    }
-
-    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
+    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
   } catch (e) {
     next(e);
     return;
@@ -180,15 +171,14 @@ function report(req, res, next) {
   const data = {};
   let uuids;
 
-  CashPayments.listPayment(options)
+  CashPayments.listPayment(query)
     .then(rows => {
       data.rows = rows;
-      data.hasFilter = hasFilter;
-      data.csv = rows;
-      data.display = display;
 
       // map the uuids for aggregate sql consumption
       uuids = rows.map(row => db.bid(row.uuid));
+
+      if (!uuids.length) { return false; }
 
       return db.one(aggregateSql, [uuids]);
     })
@@ -198,6 +188,8 @@ function report(req, res, next) {
       // conditional switches
       data.hasMultipleProjects = aggregates.numProjects > 1;
       data.hasMultipleCashboxes = aggregates.numCashboxes > 1;
+
+      if (!uuids.length) { return false; }
 
       return db.exec(costSql, [uuids]);
     })

@@ -9,7 +9,7 @@
     -->
     <span class="label label-warning">
       <i class="fa fa-filter"></i>
-      <span translate>{{filter._label}}</span> {{ filter.comparitor ? " " + filter.comparitor : ":" }}
+      <span translate>{{filter._label}}</span> {{ filter._comparitor ? " " + filter._comparitor : ":" }}
       {{ filter.displayValue }}
     </span>
   </li>
@@ -24,7 +24,7 @@
     <span class="label label-primary">
       <i class="fa fa-filter"></i>
       <span translate>{{filter._label}}</span>
-      {{ filter.comparitor ? " " + filter.comparitor : ":" }}
+      {{ filter._comparitor ? " " + filter._comparitor : ":" }}
       {{ filter.displayValue }}
 
       <a ng-if="!filter.isDefault" href ng-click="$ctrl.onRemoveFilter({ filter : filter._key })"

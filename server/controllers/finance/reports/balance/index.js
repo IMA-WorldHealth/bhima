@@ -124,7 +124,7 @@ function processAccounts(balances, a, totals) {
       t.middleCredit += (account.middleCredit || 0);
       t.endDebit += (account.endDebit || 0);
       t.endCredit += (account.endCredit || 0);
-      return totals;
+      return t;
     }, {
       beginDebit   : 0,
       beginCredit  : 0,

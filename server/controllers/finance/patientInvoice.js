@@ -232,7 +232,7 @@ function find(options) {
   );
 
   filters.period('period', 'date');
-  filters.dateFrom('custion_period_start', 'date');
+  filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
