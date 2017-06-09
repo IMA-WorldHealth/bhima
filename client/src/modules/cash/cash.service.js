@@ -126,8 +126,8 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
 
   cashFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date', comparitor : '>' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date', comparitor : '<' },
     { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   cashFilters.registerCustomFilters([
