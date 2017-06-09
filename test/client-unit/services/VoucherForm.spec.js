@@ -55,7 +55,8 @@ describe('VoucherForm', () => {
       'ui.bootstrap',
       'bhima.constants',
       'ngStorage',
-      'pascalprecht.translate'
+      'pascalprecht.translate',
+      'tmh.dynamicLocale'
     )
   );
 

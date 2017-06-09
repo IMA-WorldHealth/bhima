@@ -34,12 +34,12 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('pdf') }}" download="{{ 'INVOICE_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('csv') }}" download="{{ 'INVOICE_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
@@ -56,44 +56,6 @@
         </button>
       </div>
     </div>
-
-    <!--<div class="toolbar">
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="VoucherCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
-
-      <div class="toolbar-item">
-        <bh-pdf-print
-          pdf-url="/reports/finance/vouchers"
-          options="VoucherCtrl.dateInterval"
-          disable-cache="true">
-        </bh-pdf-print>
-      </div>
-
-      <div class="toolbar-item">
-        <bh-renderer-dropdown
-          report-url="/reports/finance/vouchers"
-          report-options="VoucherCtrl.dateInterval">
-        </bh-renderer-dropdown>
-      </div>
-
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="VoucherCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : VoucherCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
-    </div>-->
   </div>
 </div>
 

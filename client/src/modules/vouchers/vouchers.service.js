@@ -37,8 +37,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
 
   voucherFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
     { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   voucherFilters.registerCustomFilters([
