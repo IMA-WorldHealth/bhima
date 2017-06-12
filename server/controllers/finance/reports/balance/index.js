@@ -53,13 +53,10 @@ function document(req, res, next) {
     return;
   }
 
-  let accounts;
-  let totals;
-
   params.enterpriseId = session.enterprise.id;
 
   balanceReporting(params)
-    .then(balances => processAccounts(balances, accounts, totals))
+    .then(balances => processAccounts(balances))
     .then((result) => report.render({ accounts : result.accounts, totals : result.totals, session }))
     .then((result) => {
       res.set(result.headers).send(result.report);
@@ -73,8 +70,9 @@ function document(req, res, next) {
  * @description process and format accounts balance
  * @param {object} balances The result of balanceReporting function
  */
-function processAccounts(balances, a, totals) {
+function processAccounts(balances) {
   // format and process opening balance for accounts
+
   const accounts = balances.beginning.reduce((account, row) => {
     const id = row.number;
     const obj = {};
