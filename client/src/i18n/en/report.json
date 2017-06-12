@@ -27,7 +27,6 @@
     "PRODUCED_BY":"Produced by",
     "PRODUCED_DATE":"Production Date",
     "PRODUCED_ON":"Produced on",
-    "REPORT_ACCOUNTS":"Report accounts",
     "SINCE":"Since",
     "SIXTY_TO_NINETY_DAYS":"60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS":"30 to 60 Days",
@@ -36,6 +35,22 @@
     "VIEW_PATIENT":"View Patient",
     "VIEW_PAYMENTS":"View Cash Payments",
     "VIEW_RECEIPT":"View Receipt",
-    "ZERO_TO_THIRTY_DAYS":"Less Than 30 Days"
+    "ZERO_TO_THIRTY_DAYS":"Less Than 30 Days",
+    "REPORT_ACCOUNTS" : {
+      "TITLE":"Account Report",
+      "DESCRIPTION":"This report show all transaction for an individual account for a give fiscal year"
+    },
+    "UTIL":{
+      "CANCEL_PREVIEW":"Cancel Preview",
+      "SAVE_AS":"Save As",
+      "DOCUMENT_PREVIEW":"Document Preview",
+      "PDF":"PDF",
+      "CSV":"CSV",
+      "SAVE_SUCCESS":"Report successfully saved",
+      "BACK":"Back to the previous page",
+      "OPTIONS":"Options",
+      "PREVIEW":"Preview",
+      "VIEW_ARCHIVE":"Archives"
+    }
   }
 }

@@ -10,19 +10,20 @@ helpers.configure(chai);
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
 // However, this decision can be reviewed
-const buttons =  {
+const buttons = {
   create : function create() { return $('[data-method="create"]').click(); },
   search : function search() { return $('[data-method="search"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
   clear  : function clear() { return $('[data-method="clear"]').click(); },
+  print  : function print() { return $('[data-method="print"]').click(); },
   back   : function back() { return $('[data-method="back"]').click(); },
   reset  : function reset() { return $('[data-method="reset"]').click(); },
   delete : function delet() { return $('[data-method="delete"]').click(); },
   configure : function configure() { return $('[data-method="configure"]').click(); },
   add : function configure() { return $('[data-method="add"]').click(); },
   save : function configure() { return $('[data-method="save"]').click(); },
-  grouping : function grouping() { return $('[data-method="grouping"]').click(); }
+  grouping : function grouping() { return $('[data-method="grouping"]').click(); },
 };
 
 // This methods are for easily working with modals.  Works with the same custom

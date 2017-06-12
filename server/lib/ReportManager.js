@@ -14,7 +14,6 @@
  * @requires path
  * @requires fs
  * @requires q
- * @requires mkdirp
  * @requires node-uuid
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
@@ -33,13 +32,13 @@ const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
 const db = require('./db');
 
-const json = require('./renderers/json');
-const html = require('./renderers/html');
-const pdf = require('./renderers/pdf');
-const csv = require('./renderers/csv');
-
 // renderers
-const renderers = { json, html, pdf, csv };
+const renderers = {
+  json : require('./renderers/json'),
+  html : require('./renderers/html'),
+  pdf  : require('./renderers/pdf'),
+  csv  : require('./renderers/csv'),
+};
 
 // default report configuration
 const defaults = {
@@ -91,10 +90,7 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-      throw new BadRequest(
-        `The application does not support rendering ${options.renderer}.`,
-        'ERRORS.INVALID_RENDERER'
-      );
+      throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
@@ -130,6 +126,10 @@ class ReportManager {
     // set the render timestamp
     metadata.timestamp = new Date();
 
+    // @TODO fit this better into the code flow
+    // sanitise save report option
+    this.options.saveReport = Boolean(Number(this.options.saveReport));
+
     // merge the data object before templating
     _.merge(data, { metadata });
 
@@ -157,9 +157,10 @@ class ReportManager {
         // FIXME PDF report is sent back to the client even though this is a save operation
         // FIXME Errors are not propagated
         return this.save()
-          .then((() => ({ headers : renderHeaders, report })));
+          .then(() => {
+            return { headers : renderHeaders, report };
+          });
       }
-
       return { headers : renderHeaders, report };
     });
   }
@@ -189,21 +190,18 @@ class ReportManager {
     const link = path.join(SAVE_DIR, fname);
 
     const data = {
-      link,
       uuid : db.bid(reportId),
       label : options.label,
+      link : link,
       timestamp : new Date(),
       user_id : options.user.id,
       report_id : options.reportId,
     };
 
     fs.writeFile(link, this.stream, (err) => {
-      if (err) {
-        dfd.reject(err);
-        return;
-      }
+      if (err) { return dfd.reject(err); }
 
-      db.exec(SAVE_SQL, data)
+      return db.exec(SAVE_SQL, data)
         .then(() => dfd.resolve({ uuid : reportId }))
         .catch(dfd.reject)
         .done();

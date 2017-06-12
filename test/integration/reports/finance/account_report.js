@@ -3,13 +3,13 @@
 
 const helpers = require('../../helpers');
 
-const target = '/reports/finance/account';
+const target = '/reports/finance/account_report';
 
 describe(`(${target}) Report Account`, function () {
 
   const parameters = {
     account_id : '3627',
-    sourceId : 2
+    source : 2,
   };
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
@@ -17,7 +17,7 @@ describe(`(${target}) Report Account`, function () {
   const clone = (object) => JSON.parse(JSON.stringify(object));
 
   it(`GET ${target} should return a BAD_REQUEST response`, function () {
-    return agent.get('/reports/finance/account')
+    return agent.get(target)
       .then(res => {
         expect(res).to.have.status(400);
         expect(res).to.be.json;

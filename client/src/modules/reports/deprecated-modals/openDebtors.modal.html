@@ -1,4 +1,4 @@
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" novalidate autocomplete="none">
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" bh-form-defaults novalidate autocomplete="none">
 
   <div class="modal-header">
     <ol class="headercrumb">
@@ -14,7 +14,7 @@
       <label class="control-label" translate>FORM.LABELS.LABEL</label>
       <input class="form-control" name="label" autocomplete="off" ng-model="ReportConfigCtrl.label" required />
       <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 

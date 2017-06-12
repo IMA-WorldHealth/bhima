@@ -5,11 +5,11 @@
 
   <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.ACCOUNT"}}</strong></h3>
 
-  <h4 class="text-center"><strong>{{ title.accountNumber }} | {{ title.accountLabel}}</strong></h4>
+  <h4 class="text-center"><strong>{{ accountDetails.number }} | {{ accountDetails.label}}</strong></h4>
 
-  {{#if title.dateFrom }}
+  {{#if params.dateFrom }}
     <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-      {{date title.dateFrom }} - {{date title.dateTo }}
+      {{date params.dateFrom }} - {{date params.dateTo }}
     </h5>
   {{/if}}
 
@@ -84,7 +84,7 @@
       </tr>
       <tr>
         <th colspan="5" class="text-right">
-          <i>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate title.source }}</i>
+          <i>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate params.sourceLabel }}</i>
         </th>
       </tr>
     </table>

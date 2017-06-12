@@ -344,7 +344,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
-  app.get('/reports/finance/account', financeReports.reportAccounts.document);
+  app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
   app.get('/reports/finance/posted_journal', financeReports.journal.postedReport);
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
