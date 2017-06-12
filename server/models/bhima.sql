@@ -48,7 +48,7 @@ INSERT INTO unit VALUES
   -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
-  -- (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
+  (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/reports/income_expense', '/reports/income_expense'),
   -- (150, 'Balance Report', 'TREE.BALANCE', 'Balance report module', 144, 'null', '/reports/balance'),
   -- (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/partials/finance/reports/agedDebtors', '/reports/agedDebtors'),
   (152, 'Account report', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/modules/reports/account_report', '/reports/account_report'),
