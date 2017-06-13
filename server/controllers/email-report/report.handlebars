@@ -1,0 +1,24 @@
+{{> head title="PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE" }}
+
+<body>
+
+  {{> header }}
+ 
+ <br/>
+  <br/>
+  <table class="table table-condensed table-bordered">
+         <tr>
+            <th colspan="2" class="text-center">{{translate "WEEKLY BHIMA SUMMARY REPORT"}}</th>
+          </tr>
+          <tr>
+            <td style="width: 50%">{{translate "THIS WEEK PATIENT(S) REGISTERED"}}</td>
+            <td class="text-center">{{patientsData.NumberOfpatientsThisWeek}}</td>
+          </tr>
+            <tr>
+            <td>{{translate "LAST WEEK PATIENT(S) REGISTERED"}}</td>
+            <td class="text-center">{{patientsData.NumberOfpatientsLastWeek}}</td>
+          </tr>
+      
+        
+  </table>
+</body>

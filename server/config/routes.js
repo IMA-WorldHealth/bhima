@@ -87,7 +87,7 @@ const stats = require('../controllers/dashboard/stats');
 //email report routes
 const report_group=require('../controllers/report-group');
 const email_report=require('../controllers/email-report');
-
+const email_report_reports=require('../controllers/email-report/reports');
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
@@ -104,6 +104,11 @@ exports.configure = function configure(app) {
   app.put('/email-report/:id', email_report.update);
   app.get('/email-report', email_report.list);
   app.post('/email-report/list-people', email_report.list_people);
+
+  app.get('/email-report/weekly_summary_report', email_report_reports.weekly_summary_report);
+  app.get('/email-report/weekly_summary_report_view1', email_report_reports.view1);
+
+
  
 
   // exposed to the outside without authentication

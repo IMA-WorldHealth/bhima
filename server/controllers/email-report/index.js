@@ -18,12 +18,15 @@ const Topic = require('../../lib/topic');
 
 const BadRequest = require('../../lib/errors/BadRequest');
 const NotFound = require('../../lib/errors/NotFound');
+const Period = require('../../lib/period');
 
 exports.create = create;
 exports.list = list;
 exports.list_people=list_people;
 exports.delete = remove; 
 exports.update=update;
+exports.weekly_summary_report=weekly_summary_report;
+
 
 
 /**
@@ -169,4 +172,57 @@ function remove(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+
+function weekly_summary_report(req, res, next) {
+
+var period=new Period(new Date());
+
+   
+ var week=period.periods.week.limit;
+
+ var monday=week.start();
+ var sunday=week.end();
+ 
+
+ var Lastweek=period.periods.lastWeek.limit;
+
+ var lastmonday=Lastweek.start();
+ var lastsunday=Lastweek.end();
+  
+
+  //patients registered this week
+
+  var sql=`
+          SELECT t1.NumberOfpatientsThisWeek,t2.NumberOfpatientsLastWeek
+           FROM 
+          (
+            SELECT count(uuid) as NumberOfpatientsThisWeek
+            FROM patient
+            WHERE (registration_date BETWEEN ? AND ? )
+          ) as t1,
+          (
+            SELECT count(uuid) as NumberOfpatientsLastWeek
+            FROM patient
+            WHERE (registration_date BETWEEN ? AND ? )
+          ) as t2
+          `;
+
+   var values=[monday,sunday,lastmonday, lastsunday];
+
+  var thisWeekPatients=[];
+
+  db.exec(sql, values)
+  .then(rows => {
+     res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+
+
+
+   
+
+   
 }
