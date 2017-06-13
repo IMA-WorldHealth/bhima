@@ -11,24 +11,6 @@ const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.han
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /**
- * global constants
- */
-const sourceMap = {
-  1 : {
-    table : 'general_ledger',
-    key : 'FORM.LABELS.GENERAL_LEDGER',
-  },
-  2 : {
-    table : 'posting_journal',
-    key : 'FORM.LABELS.POSTING_JOURNAL',
-  },
-  3 : {
-    table : 'combined_ledger',
-    key : 'FORM.LABELS.ALL',
-  },
-};
-
-/**
  * Expose to controllers
  */
 exports.getAccountTransactions = getAccountTransactions;
@@ -45,16 +27,11 @@ function document(req, res, next) {
 
   const params = req.query;
 
-  if (!params.source) {
-    throw new BadRequest('A source ID `source` must be specified.', 'ERRORS.BAD_REQUEST');
-  }
-
   if (!params.account_id) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
   }
 
   params.user = req.session.user;
-  params.sourceLabel = sourceMap[params.source].key;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -73,7 +50,7 @@ function document(req, res, next) {
       };
 
       _.extend(bundle, { openingBalance });
-      return getAccountTransactions(params.account_id, params.source, params.dateFrom, params.dateTo, balance);
+      return getAccountTransactions(params.account_id, params.dateFrom, params.dateTo, balance);
     })
     .then((result) => {
       _.extend(bundle, {
@@ -95,22 +72,7 @@ function document(req, res, next) {
  * @function getAccountTransactions
  * This feature select all transactions for a specific account
 */
-function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBalance) {
-  const sourceId = parseInt(source, 10);
-  let tableName;
-
-  if (sourceId === 3) {
-    tableName = `(
-      (SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
-        FROM posting_journal ) 
-      UNION (
-      SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
-      FROM general_ledger )
-    ) as comb `;
-  } else {
-    // get the table name
-    tableName = sourceMap[sourceId].table;
-  }
+function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
 
   const params = [accountId];
   let dateCondition = '';
@@ -129,7 +91,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
       FROM (
         SELECT trans_id, description, trans_date, document_map.text AS document_reference,
           SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
-        FROM ${tableName}
+        FROM general_ledger
         LEFT JOIN document_map ON record_uuid = document_map.uuid
         WHERE account_id = ? ${dateCondition}
         GROUP BY record_uuid
@@ -142,7 +104,7 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
     SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
     FROM (
       SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
-      FROM ${tableName}
+      FROM general_ledger
       WHERE account_id = ? ${dateCondition}
       GROUP BY record_uuid
       ORDER BY trans_date ASC

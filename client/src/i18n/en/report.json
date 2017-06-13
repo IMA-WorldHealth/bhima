@@ -1,6 +1,6 @@
 {
   "REPORT":{
-    "ACCOUNT":"Report of Account",
+    "ACCOUNT":"Account Statement",
     "AGED_CREDITORS":"Aged Debts",
     "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
     "BALANCE":"Balance Report",
