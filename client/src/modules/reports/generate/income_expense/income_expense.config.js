@@ -65,7 +65,7 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
       })
       .catch(Notify.handleError);
   };
-    
+
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);

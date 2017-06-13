@@ -45,6 +45,10 @@
       "TITLE" : "Income Expense Report",
       "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
     },
+    "REPORT_INCOME_EXPENSE" : {
+      "TITLE" : "Income Expense Report",
+      "DESCRIPTION" : "This report show all income and expense occured in the enterprise"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",
       "SAVE_AS":"Save As",
