@@ -33,12 +33,12 @@
           <th>{{ date openingBalance.date }}</th>
           <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
           <th class="text-right">
-            {{#unless openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/unless}}
+            {{currency openingBalance.debit metadata.enterprise.currency_id}}
           </th>
           <th class="text-right">
-            {{#if openingBalance.isCreditBalance}} {{currency openingBalance.amount metadata.enterprise.currency_id}} {{/if}}
+            {{currency openingBalance.credit metadata.enterprise.currency_id}}
           </th>
-          <th class="text-right">{{currency openingBalance.amount metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{currency openingBalance.balance metadata.enterprise.currency_id}}</th>
         </tr>
 
         {{#each transactions}}
@@ -46,7 +46,7 @@
             <td>{{date this.trans_date}}</td>
             <td>{{this.trans_id}}</td>
             <td>{{this.document_reference}}</td>
-            <td>{{this.description}}</td>
+            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{this.description}}</td>
             <td class="text-right">
               {{#if this.debit}}
                 {{currency this.debit ../metadata.enterprise.currency_id}}
@@ -79,7 +79,7 @@
     <table class="table table-condensed">
       <tr>
         <th colspan="5" class="text-right">
-          <strong>{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance metadata.enterprise.currency_id}}</strong>
+          <strong>{{translate "FORM.LABELS.BALANCE" }} ({{date params.dateTo }}) {{currency sum.balance metadata.enterprise.currency_id}}</strong>
         </th>
       </tr>
     </table>
