@@ -2,7 +2,7 @@ angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
 
     $stateProvider
-     state('emailreport', {
+     .state('emailreport', {
         url         : '/email-report/',
         controller  : 'EmailReportController as EmailReportCtrl',
         templateUrl : 'modules/email-report/index.html',
