@@ -75,15 +75,14 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
   `;
 
   const sql = `
-    SELECT SUM(debit - credit) AS balance
+    SELECT IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit, IFNULL(SUM(debit - credit), 0) AS balance
     FROM period_total JOIN period ON period.id = period_total.period_id
     WHERE period_total.account_id = ?
       AND ${periodCondition}
       AND period.fiscal_year_id = ?;
   `;
 
-  return db.one(sql, [accountId, date, fiscalYearId])
-    .then(data => data.balance);
+  return db.one(sql, [accountId, date, fiscalYearId]);
 }
 
 /**
@@ -95,14 +94,13 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
  */
 function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
   const sql = `
-    SELECT SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger
+    SELECT IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit, IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance FROM general_ledger
     WHERE account_id = ?
       AND trans_date <= DATE(?)
       AND period_id = ?;
   `;
 
-  return db.one(sql, [accountId, date, periodId])
-    .then(data => data.balance);
+  return db.one(sql, [accountId, date, periodId]);
 }
 
 
@@ -120,6 +118,8 @@ function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
  */
 function getOpeningBalanceForDate(accountId, date) {
   let balance = 0;
+  let credit = 0;
+  let debit = 0;
 
   return getFiscalYearForDate(date)
 
@@ -129,8 +129,11 @@ function getOpeningBalanceForDate(accountId, date) {
     )
 
     // 2. fetch the current dates period
-    .then((previousPeriodClosingBalance) => {
-      balance += previousPeriodClosingBalance;
+    .then((previousPeriodClosing) => {
+      balance += previousPeriodClosing.balance;
+      credit += previousPeriodClosing.credit;
+      debit += previousPeriodClosing.debit;
+
       return getPeriodForDate(date);
     })
 
@@ -139,7 +142,13 @@ function getOpeningBalanceForDate(accountId, date) {
     .then(periodId =>
       getComputedAccountBalanceUntilDate(accountId, date, periodId)
     )
-    .then(runningPeriodBalance => (balance + runningPeriodBalance).toFixed(4));
+    .then(runningPeriod => {
+      return {
+        balance : (balance + runningPeriod.balance).toFixed(4),
+        credit : (credit + runningPeriod.credit).toFixed(4),
+        debit : (debit + runningPeriod.debit).toFixed(4)
+      }
+    });
 }
 
 exports.getOpeningBalanceForDate = getOpeningBalanceForDate;

@@ -45,12 +45,14 @@ function document(req, res, next) {
     .then((balance) => {
       const openingBalance = {
         date            : dateFrom,
-        amount          : balance,
+        balance         : balance.balance,
+        credit          : balance.credit,
+        debit           : balance.debit,
         isCreditBalance : balance < 0,
       };
 
       _.extend(bundle, { openingBalance });
-      return getAccountTransactions(params.account_id, params.dateFrom, params.dateTo, balance);
+      return getAccountTransactions(params.account_id, params.dateFrom, params.dateTo, balance.balance);
     })
     .then((result) => {
       _.extend(bundle, {
@@ -73,7 +75,6 @@ function document(req, res, next) {
  * This feature select all transactions for a specific account
 */
 function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
-
   const params = [accountId];
   let dateCondition = '';
 
@@ -100,17 +101,6 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
     ) AS groups
   `;
 
-  const sqlAggrega = `
-    SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
-    FROM (
-      SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
-      FROM general_ledger
-      WHERE account_id = ? ${dateCondition}
-      GROUP BY record_uuid
-      ORDER BY trans_date ASC
-    ) AS t
-  `;
-
   const bundle = {};
 
   return Accounts.lookupAccount(accountId)
@@ -120,12 +110,16 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
     })
     .then((transactions) => {
       _.extend(bundle, { transactions });
-      return db.one(sqlAggrega, params);
+
+      // get the balance at the final date
+      return AccountsExtra.getOpeningBalanceForDate(accountId, dateTo);
     })
     .then((sum) => {
       // if the sum come back as zero (because there were no lines), set the default sum to the
       // opening balance
-      sum.balance = sum.balance || openingBalance;
+      sum.credit = sum.credit || 0;
+      sum.debit = sum.debit || 0;
+      sum.balance = sum.balance || 0;
       _.extend(bundle, { sum });
       return bundle;
     });
