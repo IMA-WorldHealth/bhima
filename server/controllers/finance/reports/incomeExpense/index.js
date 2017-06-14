@@ -157,4 +157,3 @@ function getDateRange(periodIdFrom, periodIdTo) {
 
     return db.one(sql);
 }
-
