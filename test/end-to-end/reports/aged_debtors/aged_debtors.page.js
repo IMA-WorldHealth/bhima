@@ -38,7 +38,7 @@ class DebtorsReportPage {
     this.page.backToConfig();
   }
 
-  // print an account report
+  // print an debtors report
   printDebtorsReport(includeZero) {
     this.showDebtorsReportPreview(includeZero);
     this.page.printPreview();
