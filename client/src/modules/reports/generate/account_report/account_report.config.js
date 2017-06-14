@@ -32,10 +32,11 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.requestSaveAs = function requestSaveAs() {
     parseDateInterval(vm.reportDetails);
 
+    // @FIXME
     var options = {
       url : reportUrl,
       report : reportData,
-      reportOptions : angular.copy(vm.reportDetails),
+      reportOptions : sanitiseDateStrings(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
@@ -54,7 +55,7 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    var sendDetails = angular.copy(vm.reportDetails);
+    var sendDetails = sanitiseDateStrings(vm.reportDetails);
     sendDetails.dateTo = Moment(sendDetails.dateTo).format('YYYY-MM-DD');
     sendDetails.dateFrom = Moment(sendDetails.dateFrom).format('YYYY-MM-DD');
 
@@ -65,6 +66,13 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
       })
       .catch(Notify.handleError);
   };
+
+  function sanitiseDateStrings(options) {
+    var sanitisedOptions = angular.copy(options);
+    sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format('YYYY-MM-DD');
+    sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format('YYYY-MM-DD');
+    return sanitisedOptions;
+  }
 
   // @TODO validation on dates - this should be done through a 'period select' component
   function parseDateInterval(reportDetails) {
