@@ -14,7 +14,7 @@ class DebtorsReportPage {
     this.page = new ReportPage(key);
   }
 
-  // preview an account report
+  // preview a Debtors report
   showDebtorsReportPreview(includeZero) {
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
@@ -23,7 +23,7 @@ class DebtorsReportPage {
     this.page.preview();
   }
 
-  // save an account report
+  // save a Debtors report
   saveDebtorsReport(includeZero, reportName, reportFormat) {
     this.showDebtorsReportPreview();
 
@@ -38,7 +38,7 @@ class DebtorsReportPage {
     this.page.backToConfig();
   }
 
-  // print an debtors report
+  // print a debtors report
   printDebtorsReport(includeZero) {
     this.showDebtorsReportPreview(includeZero);
     this.page.printPreview();
