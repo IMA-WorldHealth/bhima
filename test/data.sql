@@ -164,9 +164,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Chart of account:      (148, 1),
 -- Income Expense report: (149,1),
 -- Balance report:        (150, 1),
--- Report Customer Debts: (151,1),
 -- Clients report:        (159, 1),
 -- Aged Debts report:     (168, 1),
+
+-- [Folder] reports/aged_debtors: The Report Aged Debtors 
+(151,1),
 
 -- [Folder] reports/account_reports: The Report accounts
 (152,1),
