@@ -63,11 +63,15 @@ function getPeriodForDate(date) {
  * @returns Promise - promise wrapping the balance object
  */
 function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
-  // always factor in period 0 which does not have a valid end date entry
+  // - always factor in period 0 which does not have a valid end date entry
+  // - period end date is strictly less than the current date as the transactions
+  // for the current period will be added on top - if the last (end) date of a period
+  // is selected transactions will be added on top and the current period will
+  // be selected
   const periodCondition = `
     period.number = 0
     OR
-    period.end_date <= DATE(?)
+    period.end_date < DATE(?)
   `;
 
   const sql = `
