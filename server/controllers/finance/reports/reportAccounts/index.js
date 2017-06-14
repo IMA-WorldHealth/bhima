@@ -48,7 +48,7 @@ function document(req, res, next) {
         balance         : balance.balance,
         credit          : balance.credit,
         debit           : balance.debit,
-        isCreditBalance : balance < 0,
+        isCreditBalance : balance.balance < 0,
       };
 
       _.extend(bundle, { openingBalance });
@@ -88,8 +88,7 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       groups.document_reference, groups.cumsum, groups.description
     FROM (
       SELECT trans_id, description, trans_date, document_reference, debit, credit,
-        @cumsum := balance + @cumsum AS cumsum
-      FROM (
+        @cumsum := balance + @cumsum AS cumsum FROM (
         SELECT trans_id, description, trans_date, document_map.text AS document_reference,
           SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
         FROM general_ledger
@@ -120,6 +119,14 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       sum.credit = sum.credit || 0;
       sum.debit = sum.debit || 0;
       sum.balance = sum.balance || 0;
+      sum.isCreditBalance = sum.balance < 0;
+
+      // @TODO sum calculated using javascript and may not line up with MySQLs values
+      //       this should be done with a mysql query
+      sum.customPeriodDebitSum = _.sumBy(bundle.transactions, 'debit');
+      sum.customPeriodCreditSum = _.sumBy(bundle.transactions, 'credit');
+      sum.customPeriodBalanceSum = _.sumBy(bundle.transactions, (transaction) => transaction.debit - transaction.credit);
+
       _.extend(bundle, { sum });
       return bundle;
     });
