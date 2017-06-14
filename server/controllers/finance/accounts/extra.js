@@ -69,9 +69,9 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
   // is selected transactions will be added on top and the current period will
   // be selected
   const periodCondition = `
-    period.number = 0
+    (period.number = 0
     OR
-    period.end_date < DATE(?)
+    period.end_date <= DATE(?))
   `;
 
   const sql = `
@@ -96,7 +96,7 @@ function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
   const sql = `
     SELECT IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit, IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance FROM general_ledger
     WHERE account_id = ?
-      AND trans_date <= DATE(?)
+      AND DATE(trans_date) <= DATE(?)
       AND period_id = ?;
   `;
 

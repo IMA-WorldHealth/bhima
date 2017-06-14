@@ -32,13 +32,15 @@
         <tr>
           <th>{{ date openingBalance.date }}</th>
           <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
+
           <th class="text-right">
-            {{currency openingBalance.debit metadata.enterprise.currency_id}}
+            {{#unless openingBalance.isCreditBalance}} {{currency openingBalance.balance metadata.enterprise.currency_id}} {{/unless}}
           </th>
           <th class="text-right">
-            {{currency openingBalance.credit metadata.enterprise.currency_id}}
+            {{#if openingBalance.isCreditBalance}} {{currency openingBalance.balance metadata.enterprise.currency_id}} {{/if}}
           </th>
           <th class="text-right">{{currency openingBalance.balance metadata.enterprise.currency_id}}</th>
+
         </tr>
 
         {{#each transactions}}
@@ -66,13 +68,29 @@
         {{else}}
           {{> emptyTable columns=7}}
         {{/each}}
+
+        {{#if transactions}} 
+          <tr>
+            <td><strong>{{date params.dateTo}}</strong></th>
+            <td colspan="3"><strong>{{translate "FORM.LABELS.PERIOD_TOTAL"}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.customPeriodDebitSum}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.customPeriodCreditSum}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.customPeriodBalanceSum}}</strong></td>
+          </tr>
+        {{/if}}
       </tbody>
       <tfoot>
         <tr style="background-color: #ddd;">
           <td colspan="4"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
-          <td class="text-right"><strong>{{currency sum.debit metadata.enterprise.currency_id}}</strong></td>
-          <td class="text-right"><strong>{{currency sum.credit metadata.enterprise.currency_id}}</strong></td>
-          <td class="text-right"><strong>{{currency sum.balance metadata.enterprise.currency_id}}</strong></td>
+        
+          <th class="text-right">
+            {{#unless sum.isCreditBalance}} {{currency sum.balance metadata.enterprise.currency_id}} {{/unless}}
+          </th>
+          <th class="text-right">
+            {{#if sum.isCreditBalance}} {{currency sum.balance metadata.enterprise.currency_id}} {{/if}}
+          </th>
+          <th class="text-right">{{currency sum.balance metadata.enterprise.currency_id}}</th>
+
         </tr>
       </tfoot>
     </table>

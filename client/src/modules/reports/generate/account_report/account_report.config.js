@@ -2,10 +2,11 @@ angular.module('bhima.controllers')
   .controller('account_reportController', AccountReportConfigController);
 
 AccountReportConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData',
+  '$state', 'moment'
 ];
 
-function AccountReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function AccountReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment) {
   var vm = this;
   var cache = new AppCache('configure_account_report');
   var reportUrl = 'reports/finance/account_report';
@@ -49,10 +50,15 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
     parseDateInterval(vm.reportDetails);
 
+
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    var sendDetails = angular.copy(vm.reportDetails);
+    sendDetails.dateTo = Moment(sendDetails.dateTo).format('YYYY-MM-DD');
+    sendDetails.dateFrom = Moment(sendDetails.dateFrom).format('YYYY-MM-DD');
+
+    return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then(function (result) {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
