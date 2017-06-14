@@ -60,6 +60,27 @@ function document(req, res, next) {
         transactions : result.transactions,
         sum : result.sum,
         params });
+
+      return getNumberOfFiscalYears(params.dateFrom, params.dateTo);
+    })
+    .then((result) => {
+
+      // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
+      // @TODO these constants should be system shared variables
+      const incomeAccountId = 1;
+      const expenseAccountId = 2;
+
+      const multipleFiscalYears = result.fiscalYearSpan > 1;
+      const incomeExpenseAccount = bundle.accountDetails.type_id === incomeAccountId || bundle.accountDetails.type_id === expenseAccountId;
+
+      console.log('account details', bundle.accountDetails);
+      console.log('fiscal year span', result.fiscalYearSpan);
+
+      if (multipleFiscalYears && incomeExpenseAccount) {
+        _.extend(bundle, {
+          warnMultipleFiscalYears : true
+        });
+      }
       return report.render(bundle);
     })
     .then((result) => {
@@ -69,6 +90,18 @@ function document(req, res, next) {
     .done();
 }
 
+function getNumberOfFiscalYears(dateFrom, dateTo) {
+
+  const sql = `
+    SELECT COUNT(id) as fiscalYearSpan from fiscal_year
+    WHERE
+      start_date <= DATE(?) AND end_date >= DATE(?)
+    OR
+      start_date <= DATE(?) AND end_date >= DATE(?)
+  `;
+
+  return db.one(sql, [dateFrom, dateFrom, dateTo, dateTo]);
+}
 
 /**
  * @function getAccountTransactions

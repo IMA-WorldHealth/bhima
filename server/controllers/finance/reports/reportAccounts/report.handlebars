@@ -13,6 +13,12 @@
     </h5>
   {{/if}}
 
+  {{#if warnMultipleFiscalYears}}
+  <section style="border : 1px solid black; padding : 5px; margin-bottom : 10px">
+    <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_MULTIPLE"}}</p>
+  </section>
+  {{/if}}
+
   <section>
     <table class="table table-condensed table-report table-bordered">
       <thead>
@@ -60,9 +66,7 @@
               {{/if}}
             </td>
             <td class="text-right">
-              {{#if this.cumsum}}
                 {{currency this.cumsum ../metadata.enterprise.currency_id}}
-              {{/if}}
             </td>
           </tr>
         {{else}}
