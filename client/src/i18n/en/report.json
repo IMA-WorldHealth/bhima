@@ -56,6 +56,10 @@
       "TITLE" : "Income Expense Report",
       "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
     },
+    "BALANCE_REPORT": {
+      "TITLE":"Balance Report",
+      "DESCRIPTION":"This report show the balance of accounts for a given period"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",
       "SAVE_AS":"Save As",

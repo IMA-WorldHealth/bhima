@@ -1304,4 +1304,10 @@ BEGIN
   SELECT DISTINCT BUID(record_uuid) AS record_uuid, trans_id, code FROM stage_trial_balance_errors ORDER BY code, trans_id;
 END $$
 
+-- compute account class
+CREATE PROCEDURE ComputeAccountClass()
+BEGIN
+  UPDATE account SET classe = LEFT(number, 1);
+END $$
+
 DELIMITER ;

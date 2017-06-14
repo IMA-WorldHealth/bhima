@@ -9,7 +9,7 @@ helpers.configure(chai);
 
 describe('Employees', () => {
   const path = '#!/employees/register';
-  const registrationPage =  new RegistrationPage();
+  const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
     display_name  : 'Sherlock Holmes Doyle',
@@ -23,9 +23,9 @@ describe('Employees', () => {
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
     hospital_no   : 'TP003',
-   };
+  };
 
-  before(() => {return helpers.navigate(path)});
+  before(() => { return helpers.navigate(path); });
 
   it('blocks invalid form submission with relevant error classes', () => {
     // verify we are in the current path
@@ -62,6 +62,7 @@ describe('Employees', () => {
     browser.refresh();
   });
 
+  // FIXME: skip throws an error
   // it.skip('edits an employee', () => {
   //   element(by.id(`employee-upd-${employeeId}`)).click();
 
@@ -76,6 +77,7 @@ describe('Employees', () => {
   //   components.notification.hasSuccess();
   // });
 
+  // FIXME: skip throws an error
   // it.skip('unlocks an employee', () => {
   //   element(by.id(`employee-upd-${employeeId}`)).click();
   //   element(by.id('bhima-employee-locked')).click();
