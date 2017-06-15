@@ -77,9 +77,9 @@
           <tr>
             <td><strong>{{date params.dateTo}}</strong></th>
             <td colspan="3"><strong>{{translate "FORM.LABELS.PERIOD_TOTAL"}}</strong></td>
-            <td class="text-right"><strong>{{currency sum.customPeriodDebitSum}}</strong></td>
-            <td class="text-right"><strong>{{currency sum.customPeriodCreditSum}}</strong></td>
-            <td class="text-right"><strong>{{currency sum.customPeriodBalanceSum}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.period.debit}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.period.credit}}</strong></td>
+            <td class="text-right"><strong>{{currency sum.period.balance}}</strong></td>
           </tr>
         {{/if}}
       </tbody>

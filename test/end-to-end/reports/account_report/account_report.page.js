@@ -15,15 +15,14 @@ class AccountReportPage {
   }
 
   // preview an account report
-  showAccountReportPreview(account, source) {
+  showAccountReportPreview(account) {
     components.accountSelect.set(account);
-    components.reportSource.set(source);
     this.page.preview();
   }
 
   // save an account report
-  saveAccountReport(account, source, reportName, reportFormat) {
-    this.showAccountReportPreview(account, source);
+  saveAccountReport(account, reportName, reportFormat) {
+    this.showAccountReportPreview(account);
 
     // save report as PDF
     this.page.saveAs();
@@ -37,8 +36,8 @@ class AccountReportPage {
   }
 
   // print an account report
-  printAccountReport(account, source) {
-    this.showAccountReportPreview(account, source);
+  printAccountReport(account) {
+    this.showAccountReportPreview(account);
     this.page.printPreview();
   }
 

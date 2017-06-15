@@ -31,6 +31,10 @@ function document(req, res, next) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
   }
 
+  if (!params.dateFrom || !params.dateTo) {
+    throw new BadRequest('Report must specify date boundaries', 'ERRORS.BAD_REQUEST');
+  }
+
   params.user = req.session.user;
 
   try {
@@ -64,7 +68,6 @@ function document(req, res, next) {
       return getNumberOfFiscalYears(params.dateFrom, params.dateTo);
     })
     .then((result) => {
-
       // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
       // @TODO these constants should be system shared variables
       const incomeAccountId = 1;
@@ -72,9 +75,6 @@ function document(req, res, next) {
 
       const multipleFiscalYears = result.fiscalYearSpan > 1;
       const incomeExpenseAccount = bundle.accountDetails.type_id === incomeAccountId || bundle.accountDetails.type_id === expenseAccountId;
-
-      console.log('account details', bundle.accountDetails);
-      console.log('fiscal year span', result.fiscalYearSpan);
 
       if (multipleFiscalYears && incomeExpenseAccount) {
         _.extend(bundle, {
@@ -133,6 +133,15 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
     ) AS groups
   `;
 
+  // @TODO define standards for displaying and rounding totals, unless numbers are rounded
+  //       uniformly they may be displayed differently from what is recorded
+  const sqlTotals = `
+    SELECT SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit, (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
+    FROM general_ledger
+    WHERE account_id = ?
+    ${dateCondition}
+  `;
+
   const bundle = {};
 
   return Accounts.lookupAccount(accountId)
@@ -154,13 +163,17 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       sum.balance = sum.balance || 0;
       sum.isCreditBalance = sum.balance < 0;
 
-      // @TODO sum calculated using javascript and may not line up with MySQLs values
-      //       this should be done with a mysql query
-      sum.customPeriodDebitSum = _.sumBy(bundle.transactions, 'debit');
-      sum.customPeriodCreditSum = _.sumBy(bundle.transactions, 'credit');
-      sum.customPeriodBalanceSum = _.sumBy(bundle.transactions, (transaction) => transaction.debit - transaction.credit);
-
       _.extend(bundle, { sum });
+      // get totals for this period
+      return db.one(sqlTotals, [accountId, dateFrom, dateTo]);
+    })
+    .then((totals) => {
+      let period = {};
+      period.debit = totals.debit;
+      period.credit = totals.credit;
+      period.balance = totals.balance;
+
+      _.merge(bundle.sum, { period });
       return bundle;
     });
 }
