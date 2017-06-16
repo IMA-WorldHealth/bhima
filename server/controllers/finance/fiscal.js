@@ -29,6 +29,7 @@ exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
 exports.getPeriodCurrent = getPeriodCurrent;
+exports.getPeriodFiscalYear = getPeriodFiscalYear;
 
 /**
  * @method lookupFiscalYear
@@ -642,4 +643,32 @@ function getPeriodCurrent(date) {
   `;
 
   return db.exec(sql, [date, date]);
+}
+
+
+/**
+ * @method getPeriodFiscalYear
+ *
+ * @description
+ *  This function returns all period of current fiscal Year
+ * metadata, such as progress through the current fiscal year.
+ */
+function getPeriodFiscalYear(req, res, next) {
+  const date = new Date(req.query.date);
+
+  // select all period of all Fiscal Year
+  const sql = `
+    SELECT period.number, period.id, period.start_date, period.end_date
+    FROM period 
+    JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
+    WHERE period.number <> 13 AND period.number <> 0 AND DATE(period.start_date) <= DATE(CURDATE())
+    ORDER BY period.end_date DESC;
+  `;
+
+  db.exec(sql)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }

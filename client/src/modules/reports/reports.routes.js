@@ -4,7 +4,7 @@ angular.module('bhima.routes')
     // the ui-view to be populated with the correct report configuration form
     /* @const */
     var SUPPORTED_REPORTS = [
-      'account_report',
+      'account_report', 'aged_debtors',
     ];
 
     $stateProvider
