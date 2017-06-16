@@ -1,21 +1,23 @@
 angular.module('bhima.controllers')
-  .controller('income_expenseController', IncomeExpenseConfigController);
+  .controller('cash_reportController', CashReportConfigController);
 
-IncomeExpenseConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+CashReportConfigController.$inject = [
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'CashboxService',
 ];
 
-function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function CashReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Cashbox) {
   var vm = this;
-  var cache = new AppCache('configure_income_expense');
-  var reportUrl = 'reports/finance/income_expense';
+  var cache = new AppCache('configure_cash_report');
+  var reportUrl = 'reports/finance/cash_report';
+
+  vm.previewGenerated = false;
   vm.reportDetails = {};
   vm.previewGenerated = false;
 
   vm.reportTypes = [
-    { id: 1, label: 'FORM.LABELS.INCOME_EXPENSE' },
-    { id: 2, label: 'FORM.LABELS.INCOME' },
-    { id: 3, label: 'FORM.LABELS.EXPENSE' },
+    { id: 1, label: 'FORM.LABELS.ENTRY_EXIT' },
+    { id: 2, label: 'FORM.LABELS.ENTRY' },
+    { id: 3, label: 'FORM.LABELS.EXIT' },
   ];
 
   checkCachedConfiguration();

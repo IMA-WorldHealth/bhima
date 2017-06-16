@@ -44,6 +44,10 @@
       "TITLE" : "Rapport des Comptes d'exploitation",
       "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
     },
+    "CASH_REPORT" : {
+      "TITLE" : "Rapport de caisse",
+      "DESCRIPTION" : "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
       "SAVE_AS":"Enregistrer sous",

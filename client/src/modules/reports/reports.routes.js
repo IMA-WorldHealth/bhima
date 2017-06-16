@@ -4,7 +4,7 @@ angular.module('bhima.routes')
     // the ui-view to be populated with the correct report configuration form
     /* @const */
     var SUPPORTED_REPORTS = [      
-      'income_expense',
+      'cash_report',
       'account_report',
       'income_expense',
     ];

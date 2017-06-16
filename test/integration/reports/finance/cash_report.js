@@ -1,10 +1,10 @@
 /* global expect, chai, agent */
 
 const RenderingTests = require('../rendering');
-const target = '/reports/finance/income_expense';
+const target = '/reports/finance/cash_report';
 const helpers = require('../../helpers');
 
-describe(`(${target}) Income Expense Reports`, function () {
+describe.only(`(${target}) Income Expense Reports`, function () {
 
   const keys = [
     'incomes', 'expenses', 'dateFrom', 'dateTo', 'isEmpty', 'isLost', 'overallBalance', 'type_id',
