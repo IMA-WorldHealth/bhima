@@ -7,7 +7,7 @@ helpers.configure(chai);
 
 const ReportDebtorsPage = require('./aged_debtors.page');
 
-describe.only('Aged Debtors Report ::', () => {
+describe('Aged Debtors Report ::', () => {
   let Page;
   const key = 'aged_debtors';
 
