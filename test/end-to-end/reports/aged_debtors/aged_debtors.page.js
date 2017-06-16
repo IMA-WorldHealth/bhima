@@ -15,7 +15,9 @@ class DebtorsReportPage {
   }
 
   // preview a Debtors report
-  showDebtorsReportPreview(includeZero) {
+  showDebtorsReportPreview(period, includeZero) {
+    components.reportPeriodSelect.set(period);
+
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
     }
@@ -24,8 +26,8 @@ class DebtorsReportPage {
   }
 
   // save a Debtors report
-  saveDebtorsReport(includeZero, reportName, reportFormat) {
-    this.showDebtorsReportPreview();
+  saveDebtorsReport(period, includeZero, reportName, reportFormat) {
+    this.showDebtorsReportPreview(period, includeZero);
 
     // save report as PDF
     this.page.saveAs();
@@ -39,8 +41,8 @@ class DebtorsReportPage {
   }
 
   // print a debtors report
-  printDebtorsReport(includeZero) {
-    this.showDebtorsReportPreview(includeZero);
+  printDebtorsReport(period, includeZero) {
+    this.showDebtorsReportPreview(period, includeZero);
     this.page.printPreview();
   }
 
