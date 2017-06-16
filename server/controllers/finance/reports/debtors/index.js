@@ -66,7 +66,7 @@ function queryContext(queryParams) {
   const includeZeroes = Boolean(Number(params.zeroes));
 
   // format the dates for MySQL escape
-  const dates = _.fill(Array(4), new Date());
+  const dates = _.fill(Array(4), new Date(params.date));
 
   const data = {};
   const source = 'general_ledger';
@@ -103,6 +103,7 @@ function queryContext(queryParams) {
   return db.exec(debtorSql, dates)
     .then(debtors => {
       data.debtors = debtors;
+      data.dateUntil = params.date;
       return db.exec(aggregateSql, dates);
     })
     .then(aggregates => {

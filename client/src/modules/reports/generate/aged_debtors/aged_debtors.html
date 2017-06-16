@@ -22,6 +22,12 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-report-period-select
+              periodId = "ReportConfigCtrl.reportDetails.date"
+              name = "period"
+              on-select-callback = "ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-report-period-select>
+
             <!-- included Total Zeros  -->
             <div class="checkbox">
               <label>
