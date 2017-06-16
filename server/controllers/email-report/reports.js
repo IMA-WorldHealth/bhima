@@ -18,92 +18,43 @@ const Topic = require('../../lib/topic');
 
 const BadRequest = require('../../lib/errors/BadRequest');
 const NotFound = require('../../lib/errors/NotFound');
-const Period = require('../../lib/period'); 
+const Period = require('../../lib/period');
 
 const ReportManager = require('../../lib/ReportManager');
 const _ = require('lodash');
 
 const TEMPLATE = './server/controllers/email-report/report.handlebars';
 
-exports.weekly_summary_report=weekly_summary_report;
-exports.view1=view1;
- let documentReport;
+exports.view1 = view1;
+exports.report1 = report1;
+let documentReport;
 
 
 
 
-function weekly_summary_report(req, res, next) {
-
-var period=new Period(new Date());
-
-   
- var week=period.periods.week.limit;
-
- var monday=week.start();
- var sunday=week.end();
- 
-
- var Lastweek=period.periods.lastWeek.limit;
-
- var lastmonday=Lastweek.start();
- var lastsunday=Lastweek.end();
-  
-
-  //patients registered this week
-
-  var sql=`
-          SELECT t1.NumberOfpatientsThisWeek,t2.NumberOfpatientsLastWeek
-           FROM 
-          (
-            SELECT count(uuid) as NumberOfpatientsThisWeek
-            FROM patient
-            WHERE (registration_date BETWEEN ? AND ? )
-          ) as t1,
-          (
-            SELECT count(uuid) as NumberOfpatientsLastWeek
-            FROM patient
-            WHERE (registration_date BETWEEN ? AND ? )
-          ) as t2
-          `;
-
-   var values=[monday,sunday,lastmonday, lastsunday];
-
-  var thisWeekPatients=[];
-
-  db.exec(sql, values)
-  .then(rows => {
-     res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
 
 
-
-   
-
-   
-}
 
 function loadPatientData() {
 
-var period=new Period(new Date());
+  var period = new Period(new Date());
 
-   
- var week=period.periods.week.limit;
 
- var monday=week.start();
- var sunday=week.end();
- 
+  var week = period.periods.week.limit;
 
- var Lastweek=period.periods.lastWeek.limit;
+  var monday = week.start();
+  var sunday = week.end();
 
- var lastmonday=Lastweek.start();
- var lastsunday=Lastweek.end();
-  
+
+  var Lastweek = period.periods.lastWeek.limit;
+
+  var lastmonday = Lastweek.start();
+  var lastsunday = Lastweek.end();
+
 
   //patients registered this week
 
-  var sql=`
+  var sql = `
           SELECT t1.NumberOfpatientsThisWeek,t2.NumberOfpatientsLastWeek
            FROM 
           (
@@ -118,60 +69,88 @@ var period=new Period(new Date());
           ) as t2
           `;
 
-   var values=[monday,sunday,lastmonday, lastsunday];
+  var values = [monday, sunday, lastmonday, lastsunday];
 
-  var thisWeekPatients=[];
+  var thisWeekPatients = [];
 
   return db.exec(sql, values);
 
-
-
-   
-
-   
 }
 
 
 function view1(req, res, next) {
 
-const options = {
-    renderer : 'pdf',
-    saveReport : false,
-    filename : 'test_summary_report',
-    orientation : 'landscape',
+  const options = {
+    renderer: 'pdf',
+    saveReport: false,
+    filename: 'test_summary_report',
+    orientation: 'landscape',
   };
-   
- 
+
+
   loadPatientData().then(rows => {
-    
-      var _patientsData=rows;
-      var  report = new ReportManager(TEMPLATE, req.session,options);
 
-      if(_patientsData.lenght===0){
-        _patientsData={"NumberOfpatientsThisWeek":0,"NumberOfpatientsLastWeek":0};
-      }else{
-         _patientsData= _patientsData[0];
-      }
+    var _patientsData = rows;
+    var report = new ReportManager(TEMPLATE, req.session, options);
 
-      var data={
-        patientsData:_patientsData
-      }
+    if (_patientsData.lenght === 0) {
+      _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
+    } else {
+      _patientsData = _patientsData[0];
+    }
 
-        report.render(data)
-          .then((result) => { 
-            res.set(result.headers).send(result.report);
-          })
-          .catch(next);
+    var data = {
+      patientsData: _patientsData
+    }
+
+    report.render(data)
+      .then((result) => {
+        res.set(result.headers).send(result.report);
+      })
+      .catch(next);
 
   })
-  .catch(next)
-  .done();
+    .catch(next)
+    .done();
 
 
 
-   
 
 
 
+
+
+}
+
+function report1(_renderer, req, res, next) {
+
+  const options = {
+    renderer: _renderer,
+    saveReport: false,
+    filename: 'test_summary_report',
+    orientation: 'landscape',
+  };
+
+
+  return loadPatientData().then(rows => {
+
+    var _patientsData = rows;
+    var report = new ReportManager(TEMPLATE, req.session, options);
+
+    if (_patientsData.lenght === 0) {
+      _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
+    } else {
+      _patientsData = _patientsData[0];
+    }
+
+    var data = {
+      patientsData: _patientsData
+    }
+
+    return report.render(data);
+
+
+  })
+    ;
 
 }

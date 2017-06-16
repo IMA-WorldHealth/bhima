@@ -16,8 +16,10 @@ function EmailReportService($http, util, Session, $uibModal,
         Documents, Visits, Filters) {
 
     var service = this;
+    
 
     service.frequencies = ["Dayly", "Weekly", "Monthly"];
+
 
     var baseUrl = '/email-report/';
     var baseUrl_list_people = '/email-report/list-people';

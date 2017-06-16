@@ -98,6 +98,7 @@ exports.configure = function configure(app) {
   app.get('/report-group', report_group.list);
   app.delete('/report-group/:code', report_group.delete);
   app.put('/report-group', report_group.update);
+   app.get('/report-group/sendEmails', report_group.sendReport);
 
   app.post('/email-report', email_report.create);
   app.delete('/email-report/:id', email_report.delete);
@@ -105,7 +106,6 @@ exports.configure = function configure(app) {
   app.get('/email-report', email_report.list);
   app.post('/email-report/list-people', email_report.list_people);
 
-  app.get('/email-report/weekly_summary_report', email_report_reports.weekly_summary_report);
   app.get('/email-report/weekly_summary_report_view1', email_report_reports.view1);
 
 
