@@ -68,7 +68,8 @@ INSERT INTO unit VALUES
   (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
   -- (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
-  (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement');
+  (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
+  (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES

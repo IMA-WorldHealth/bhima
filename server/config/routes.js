@@ -57,6 +57,7 @@ const stockReports = require('../controllers/stock/reports');
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');
+const fiscalPeriod = require('../controllers/finance/fiscalPeriod');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
 const debtors = require('../controllers/finance/debtors');
@@ -188,6 +189,10 @@ exports.configure = function configure(app) {
   app.put('/fiscal/:id/closing', fiscal.closing);
   app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);
+
+  // Period routes
+  app.get('/period', fiscalPeriod.list);
+
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
