@@ -71,11 +71,20 @@ INSERT INTO unit VALUES
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement');
 
 -- Reserved system account type
-INSERT INTO `account_type` VALUES
+INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
   (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
   (4, 'title', 'ACCOUNT.TYPES.TITLE');
+
+-- Reserved system account category
+INSERT INTO `account_type` VALUES
+  (1, 'asset', 'ACCOUNT.CATEGORY.ASSET', 3),
+  (2, 'liability', 'ACCOUNT.CATEGORY.LIABILITY', 3),
+  (3, 'equity', 'ACCOUNT.CATEGORY.EQUITY', 3),
+  (4, 'revenue', 'ACCOUNT.CATEGORY.REVENUE', 1),
+  (5, 'expense', 'ACCOUNT.CATEGORY.EXPENSE', 2),
+  (6, 'title', 'ACCOUNT.TYPES.TITLE', 4);
 
 -- core BHIMA reports
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES

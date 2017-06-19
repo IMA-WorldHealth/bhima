@@ -138,7 +138,13 @@ exports.configure = function configure(app) {
   app.post('/accounts/types', accounts.types.create);
   app.put('/accounts/types/:id', accounts.types.update);
   app.delete('/accounts/types/:id', accounts.types.remove);
-  app.delete('/accounts/:id', accounts.remove);
+
+  // API for account categories routes CRUD
+  app.get('/accounts/categories', accounts.categories.list);
+  app.get('/accounts/categories/:id', accounts.categories.detail);
+  app.post('/accounts/categories', accounts.categories.create);
+  app.put('/accounts/categories/:id', accounts.categories.update);
+  app.delete('/accounts/categories/:id', accounts.categories.remove);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);
@@ -146,6 +152,7 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
+  app.delete('/accounts/:id', accounts.remove);
 
   // API for service routes
   app.post('/services', services.create);

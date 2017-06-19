@@ -12,7 +12,7 @@ function constantConfig() {
   return {
     accounts : {
       ROOT  : 0,
-      TITLE : 4,
+      TITLE : 6,
     },
     purchase : {
       GRID_HEIGHT : 200,
