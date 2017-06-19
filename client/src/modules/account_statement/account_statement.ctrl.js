@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // DI
 AccountStatementController.$inject = [
-  'GeneralLedgerService', 'NotifyService', 'JournalConfigService',
+  'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
   'Store', 'FilterService', 'ModalService', 'LanguageService',
@@ -13,7 +13,7 @@ AccountStatementController.$inject = [
 /**
  * @module AccountStatementController
  */
-function AccountStatementController(GeneralLedger, Notify, Config,
+function AccountStatementController(GeneralLedger, Notify, Journal,
   Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
   AccountStatement, Store, Filters, Modal, Languages,
   $filter, GridExport) {
@@ -205,7 +205,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
-    Config.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
+    Journal.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
       .then(function (changes) {
         AccountStatement.filters.replaceFilters(changes);
 
