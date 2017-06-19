@@ -2,18 +2,19 @@ angular.module('bhima.services')
   .service('JournalService', JournalService);
 
 // Dependencies injection
-JournalService.$inject = ['PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService'];
+JournalService.$inject = ['PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService', '$uibModal'];
 
 /**
  * Journal Service
  * This service is responsible of all process with the posting journal
  */
-function JournalService(Api, AppCache, Filters, Periods) {
+function JournalService(Api, AppCache, Filters, Periods, Modal) {
   var URL = '/journal/';
   var service = new Api(URL);
 
   service.grid = grid;
   service.saveChanges = saveChanges;
+  service.openSearchModal = openSearchModal;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -114,6 +115,23 @@ function JournalService(Api, AppCache, Filters, Periods) {
   service.loadCachedFilters = function loadCachedFilters() {
     journalFilters.loadCache(filterCache.filters || {});
   };
+
+  /**
+   * openSearchModal
+   * @param {object} filters
+   * @param {object} options - { hasDefaultAccount: true } define other options
+   */
+  function openSearchModal(filters, options) {
+    return Modal.open({
+      templateUrl : 'modules/journal/modals/search.modal.html',
+      controller :  'JournalSearchModalController as ModalCtrl',
+      backdrop : 'static',
+      resolve : {
+        filters : function () { return filters; },
+        options : function () { return options || {}; },
+      },
+    }).result;
+  }
 
   return service;
 }
