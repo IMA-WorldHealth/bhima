@@ -27,7 +27,6 @@ const reportTypes = {
     3: fetchExpense,
 }
 
-
 // expose to the API
 exports.document = document;
 exports.report = report;
@@ -87,19 +86,64 @@ function fetchIncomeExpense(options) {
 }
 
 function fetchIncome(options) {
+    let incomeResult = {};
     // For getting just income account
     _.merge(options, { type_id: accountType.income });
     return periodTotal.getAccountBalance(options)
-    .then(((incomes) => {
-        return {incomes};
-    }));
+    .then((incomes) => {
+        _.merge(incomeResult, {incomes});
+
+        // Aggregating data of incomes
+        const aggregateSql = 
+                `SELECT 
+                    MAX(p.end_date) AS maxEndDate, MIN(p.start_date) AS minStartDate, 
+                    IFNULL(SUM(pt.credit - pt.debit), 0) AS balance
+                 FROM 
+                    period_total AS pt
+                 JOIN 
+                    account AS ac ON ac.id = pt.account_id
+                 JOIN 
+                    period AS p ON pt.period_id = p.id
+                WHERE 
+                    pt.period_id IN (${options.periods.join(',')}) AND
+                    ac.type_id = ${accountType.income}
+                 `
+
+        return db.one(aggregateSql);
+    })
+    .then((incomeAggregation) => {
+        _.merge(incomeResult, {incomeAggregation});
+        return incomeResult;
+    });
 }
 
 function fetchExpense(options) {
+    let expenseResult = {};
     // For getting just expense account
     _.merge(options, { type_id : accountType.expense });
     return periodTotal.getAccountBalance(options)
-    .then(((expenses) => {
-        return {expenses};
-    }));
+    .then((expenses) => {
+        _.merge(expenseResult, {expenses});
+        // Aggregating data of expenses
+        const aggregateSql = 
+                `SELECT 
+                    MAX(p.end_date) AS maxEndDate, MIN(p.start_date) AS minStartDate, 
+                    IFNULL(SUM(pt.debit - pt.credit), 0) AS balance
+                 FROM 
+                    period_total AS pt
+                 JOIN 
+                    account AS ac ON ac.id = pt.account_id
+                 JOIN 
+                    period AS p ON pt.period_id = p.id
+                WHERE 
+                    pt.period_id IN (${options.periods.join(',')}) AND
+                    ac.type_id = ${accountType.expense}
+                 `
+
+        return db.one(aggregateSql);
+    })
+    .then((expenseAggregation) => {
+        _.merge(expenseResult, {expenseAggregation});
+        return expenseResult;
+    });
 }

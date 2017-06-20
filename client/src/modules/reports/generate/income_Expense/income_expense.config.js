@@ -10,12 +10,15 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
   var cache = new AppCache('configure_income_expense');
   var reportUrl = 'reports/finance/income_expense';
   vm.reportDetails = {};
+  vm.previewGenerated = false;
 
   vm.reportTypes = [
     { id: 1, label: 'FORM.LABELS.INCOME_EXPENSE' },
     { id: 2, label: 'FORM.LABELS.INCOME' },
     { id: 3, label: 'FORM.LABELS.EXPENSE' },
   ];
+
+  checkCachedConfiguration();
 
   vm.onSelectFiscalPeriod = function onSelectFiscalPeriod(periods) {
     vm.reportDetails.periods = periods;
@@ -33,5 +36,31 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
-  }; 
+  };
+
+  vm.clearPreview = function clearPreview() {
+    vm.previewGenerated = false;
+    vm.previewResult = null;
+  };
+
+  vm.requestSaveAs = function requestSaveAs() {
+
+    var options = {
+      url : reportUrl,
+      report : reportData,
+      reportOptions : angular.copy(vm.reportDetails),
+    };
+
+    return SavedReports.saveAsModal(options)
+      .then(function () {
+        $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
+      })
+      .catch(Notify.handleError);
+  };
+    
+  function checkCachedConfiguration() {
+    if (cache.reportDetails) {
+      vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+  } 
 }
