@@ -1,32 +1,36 @@
 angular.module('bhima.components')
-.component('bhFiscalPeriodSelect', {
-    bindings : {
-        validationTrigger : '<',
-        onSelectCallback : '&',
-        formName : '@',
-    },
-    templateUrl : 'modules/templates/bhFiscalPeriodSelect.tmpl.html',
-    controller : FiscalPeriodSelect,
-});
+    .component('bhFiscalPeriodSelect', {
+        bindings: {
+            validationTrigger: '<',
+            onSelectCallback: '&?',
+            formName: '@',
+        },
+        templateUrl: 'modules/templates/bhFiscalPeriodSelect.tmpl.html',
+        controller: FiscalPeriodSelect,
+    });
 
-FiscalPeriodSelect.$inject = ['FiscalService', 'PeriodService'];
+FiscalPeriodSelect.$inject = ['FiscalService', 'FisaclPeriodService'];
 
-function FiscalPeriodSelect (Fiscals, Periods){
+function FiscalPeriodSelect(Fiscals, Periods) {
     var $ctrl = this;
 
     // If there is no name provided by default, a default name will be provided
     $ctrl.formName = $ctrl.formName || 'FiscalPeriodSelectForm';
 
     Fiscals.read()
-    .then(function(fiscals){
-        $ctrl.fiscals = fiscals;
-    });
+        .then(function (fiscals) {
+            $ctrl.fiscals = fiscals;
+        });       
 
-    $ctrl.loadPeriod = function (fiscals){
-        Periods.read()
-        .then(function(periods){
-            $ctrl.periods = periods;
-        });        
+    $ctrl.loadPeriod = function (fiscal_id) {
+        Periods.read(null, { fiscal_year_id: fiscal_id })
+            .then(function (periods) {
+                $ctrl.periods = periods;
+            });
+    }
+
+    $ctrl.onSelect = function onSelect (selectedItems){
+        $ctrl.onSelectCallback({ periods : selectedItems });
     }
 
 }

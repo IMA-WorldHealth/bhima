@@ -3,31 +3,33 @@
     novalidate
     data-bh-fiscal-period-select>
 
-    <div class="form-group" 
-        ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.fiscals.$invalid }">
-        <div>
-            <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
-            <ui-select multiple  name="fiscals" ng-model="$ctrl.selectedFiscals" theme="bootstrap" close-on-select="false" ng-change="$ctrl.loadPeriod($ctrl.selectedFiscals)" required>
-                <ui-select-match placeholder="{{ 'FORM.SELECT.FISCAL_YEAR' | translate }}">
-                    <span>{{$item.label}}</span>
-                </ui-select-match>
-
-                <ui-select-choices repeat="fiscal.id as fiscal in $ctrl.fiscals| filter:{label: $select.search}">
-                    <span ng-bind-html="fiscal.label | highlight: $select.search"></span>
-                </ui-select-choices>
-            </ui-select>
-
-            <div class="help-block" ng-messages="$ctrl.formName.fiscals.$error" ng-show="$ctrl.validationTrigger">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-        </div>
-    </div>
+    <div class="form-group"
+        ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.fiscal.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
+        <select
+            class="form-control"
+            ng-model="$ctrl.selectedFiscal"
+            name="fiscal"
+            ng-options="fiscal.id as fiscal.label for fiscal in $ctrl.fiscals"
+            ng-change="$ctrl.loadPeriod($ctrl.selectedFiscal)"
+            data-fiscal-select
+            required>
+            <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>
+        </select>
+  </div>
 
     <div class="form-group" 
         ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.periods.$invalid }">
         <div>
-            <label class="control-label" translate>FORM.LABELS.PERIOD</label>
-            <ui-select multiple  name="periods" ng-model="$ctrl.selectedPeriods" theme="bootstrap" close-on-select="false" required>
+            <label class="control-label" translate>FORM.LABELS.PERIODES</label>
+            <ui-select 
+                multiple
+                name="periods"
+                ng-model="$ctrl.selectedPeriods"
+                theme="bootstrap"
+                close-on-select="false"
+                on-select="$ctrl.onSelect($ctrl.selectedPeriods)"
+                required>
                 <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}">
                     <span>{{$item.label}}</span>
                 </ui-select-match>
@@ -43,6 +45,3 @@
         </div>
     </div>
 </fieldset>
-
-
-

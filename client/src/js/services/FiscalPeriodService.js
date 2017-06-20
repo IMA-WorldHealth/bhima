@@ -11,12 +11,9 @@ FiscalPeriodService.$inject = [ 'PrototypeApiService' ];
  *
  * @requires PrototypeApiService
  */
-function FiscalService(Api) {
+function FiscalPeriodService(Api) {
 
   // extend the PrototypeApiService with period routes
-  var service = new Api('/fiscal/');
-  
-
-
+  var service = new Api('/periods');
   return service;
 }

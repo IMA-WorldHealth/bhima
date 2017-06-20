@@ -191,7 +191,7 @@ exports.configure = function configure(app) {
   app.delete('/fiscal/:id', fiscal.remove);
 
   // Period routes
-  app.get('/period', fiscalPeriod.list);
+  app.get('/periods', fiscalPeriod.list);
 
 
   /* load a user's tree */
