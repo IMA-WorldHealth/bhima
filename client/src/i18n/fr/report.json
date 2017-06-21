@@ -4,6 +4,10 @@
     "AGED_CREDITORS":"Balance agée des Créances",
     "AGED_DEBTORS":{"TITLE":"Balance agée des clients"},
     "BALANCE":"Rapport de la Balance",
+    "BALANCE_SHEET":{
+      "TITLE":"Bilan",
+      "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise"
+    },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",
     "CASHFLOW":"Cashflow",

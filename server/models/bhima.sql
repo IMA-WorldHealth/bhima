@@ -68,7 +68,8 @@ INSERT INTO unit VALUES
   (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
   -- (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
-  (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement');
+  (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
+  (171, 'Balance Sheet Statement', 'TREE.BALANCE_SHEET', 'Balance Sheet Module', 144, '/modules/reports/balance_sheet_report/', '/reports/balance_sheet_report');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -97,7 +98,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
   (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS_REPORT'),
-  (10, 'agedCreditors','REPORT.AGED_CREDITORS');
+  (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
+  (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

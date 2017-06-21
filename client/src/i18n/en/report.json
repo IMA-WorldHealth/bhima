@@ -4,6 +4,10 @@
     "AGED_CREDITORS":"Aged Debts",
     "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
     "BALANCE":"Balance Report",
+    "BALANCE_SHEET":{
+      "TITLE":"Balance Sheet",
+      "DESCRIPTION":"This report shows the balance sheet of the enterprise"
+    },
     "CASH_EXPENSE":"Expenses",
     "CASHFLOW_BY_SERVICE":"Cashflow By Service",
     "CASHFLOW":"Cashflow",

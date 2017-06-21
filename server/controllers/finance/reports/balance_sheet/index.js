@@ -1,0 +1,211 @@
+/**
+ * Balance sheet Controller
+ *
+ * This controller is responsible for processing
+ * the balance sheet (bilan) report.
+ *
+ * @module reports/balance_sheet
+ *
+ * @requires lodash
+ * @requires lib/db
+ * @requires lib/ReportManager
+ * @requires lib/errors/BadRequest
+ */
+
+const _ = require('lodash');
+const moment = require('moment');
+const db = require('../../../../lib/db');
+const ReportManager = require('../../../../lib/ReportManager');
+
+// report template
+const TEMPLATE = './server/controllers/finance/reports/balance_sheet/report.handlebars';
+
+const ASSET = 1;
+const LIABILITY = 2;
+const EQUITY = 3;
+const REVENUE = 4;
+const EXPENSE = 5;
+const DATE_FORMAT = 'YYYY-MM-DD';
+const FC_CURRENCY = 1;
+
+
+// expose to the API
+exports.document = document;
+
+/**
+ * @function document
+ * @description process and render the balance report document
+ */
+function document(req, res, next) {
+  const params = req.query;
+  const session = {};
+  const bundle = {};
+  let report;
+
+  // date options
+  if (params.dateFrom && params.dateTo) {
+    session.dateFrom = moment(params.dateFrom).format(DATE_FORMAT);
+    session.dateTo = moment(params.dateTo).format(DATE_FORMAT);
+  } else {
+    session.date = moment(params.date).format(DATE_FORMAT);
+  }
+
+  session.enterprise = req.session.enterprise;
+  params.enterpriseId = session.enterprise.id;
+
+  _.defaults(params, { user : req.session.user });
+
+  try {
+    report = new ReportManager(TEMPLATE, req.session, params);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  computeBalanceSheet(params)
+    .then(GroupAccountByType)
+    .then(processAccounts)
+    .then((result) => {
+      bundle.session = session;
+      bundle.assets = result[ASSET] || {};
+      bundle.liabilities = result[LIABILITY] || {};
+      bundle.equity = result[EQUITY] || {};
+      bundle.revenue = result[REVENUE] || {};
+      bundle.expense = result[EXPENSE] || {};
+
+      // get the exchange rate for the given date
+      const query = `
+        SELECT e.rate, c.symbol, c.name, e.currency_id FROM exchange_rate e 
+        JOIN currency c ON c.id = e.currency_id 
+        WHERE e.currency_id = ? AND DATE(e.date) <= DATE(?) AND e.enterprise_id = ?
+        ORDER BY e.id DESC LIMIT 1;`;
+      return db.exec(query, [FC_CURRENCY, session.date, session.enterprise.id]);
+    })
+    .then((rate) => {
+      bundle.rate = rate.pop() || {};
+      return report.render(bundle);
+    })
+    .then((result) => res.set(result.headers).send(result.report))
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method processAccounts
+ * @description process and format accounts balance
+ * @param {object} balances The result of balanceReporting function
+ */
+function processAccounts(data) {
+  const collection = Object.keys(data);
+  const bundle = {};
+
+  collection.forEach((type) => {
+    const balances = data[type];
+
+    const accounts = balances.reduce((account, row) => {
+      const id = row.number;
+      const obj = {};
+      account[id] = obj;
+      const sold = getSold(row);
+      obj.label = row.label;
+      obj.number = row.number;
+      obj.debit = sold.debit;
+      obj.credit = sold.credit;
+      obj.balance = sold.debit - sold.credit;
+      obj.is_charge = row.is_charge;
+      obj.is_asset = row.is_asset;
+      return account;
+    }, {});
+
+    // process for getting totals
+    const totals = Object.keys(accounts)
+    .reduce((t, key) => {
+      const account = accounts[key];
+      t.debit += (account.debit || 0);
+      t.credit += (account.credit || 0);
+      t.balance += (account.balance || 0);
+      return t;
+    }, {
+      debit   : 0,
+      credit  : 0,
+      balance  : 0,
+    });
+
+    bundle[type] = { accounts, totals };
+  });
+
+  return bundle;
+}
+
+/**
+ * GroupAccountByType
+ * @description group accounts by account type
+ * @param {array} rows - data from computeBalanceSheet
+ * @returns {object}
+ */
+function GroupAccountByType(rows) {
+  return _.groupBy(rows, 'type_id');
+}
+
+/**
+ * @function getSold
+ * @description return the balance of an account
+ * @param {object} object An object from the array returned by computeBalanceSheet function
+ */
+function getSold(item) {
+  let debit = 0;
+  let credit = 0;
+  let sold = 0;
+
+  if (item.type_id === ASSET || item.type_id === LIABILITY) {
+    sold = item.debit - item.credit;
+    if (sold < 0) {
+      credit = sold * -1;
+    } else {
+      debit = sold;
+    }
+  } else {
+    sold = item.credit - item.debit;
+    if (sold < 0) {
+      debit = sold * -1;
+    } else {
+      credit = sold;
+    }
+  }
+  return { debit, credit };
+}
+
+/**
+ * @function computeBalanceSheet
+ * @description return the balance sheet data according given parameters
+ * @param {object} params An object which contains dates range and the account class
+ */
+function computeBalanceSheet(params) {
+  const query = params;
+  const dateRange = (query.dateFrom && query.dateTo);
+
+  // gets the amount up to the current period
+  let sql = `
+    SELECT a.number, a.id, a.label, a.type_id,
+      SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance 
+    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+    JOIN period AS p ON pt.period_id = p.id
+    WHERE p.start_date <= DATE(?) AND pt.enterprise_id = ?
+    GROUP BY a.id `;
+
+  if (dateRange) {
+    sql = `
+    SELECT a.number, a.id, a.label, a.type_id,
+      SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance 
+    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+    JOIN period AS p ON pt.period_id = p.id
+    WHERE p.start_date >= DATE(?) AND start_date <= DATE(?) AND pt.enterprise_id = ?
+    GROUP BY a.id `;
+  }
+
+  const queryParameters = (dateRange) ?
+    [query.dateFrom, query.dateTo, query.enterpriseId] :
+    [query.date, query.enterpriseId];
+
+  return db.exec(sql, queryParameters);
+}
