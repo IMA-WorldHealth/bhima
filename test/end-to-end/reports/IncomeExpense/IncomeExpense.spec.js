@@ -7,7 +7,7 @@ helpers.configure(chai);
 
 const ReportIncomeExpensePage = require('./income_expense.page');
 
-describe('Income Expense report ::', () => {
+describe.skip('Income Expense report ::', () => {
   let Page;
   const key = 'income_expense';
 
@@ -40,7 +40,6 @@ describe('Income Expense report ::', () => {
 
   it('report has been saved into archive', () => {
     Page.checkSavedIncomeExpenseReport(dataset.report_name);
-    browser.pause();
   });
 
   it('print the previewed report', () => {
