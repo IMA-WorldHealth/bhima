@@ -12,7 +12,6 @@ const components = require('../../shared/components');
 class IncomeExpenseReportPage {
   constructor(key) {
     this.page = new ReportPage(key);
-    browser.refresh();
   }
 
   // preview an income expense report

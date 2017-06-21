@@ -24,6 +24,7 @@ describe.skip('Income Expense report ::', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportIncomeExpensePage(key);
+    browser.refresh();
   });
 
   it('preview a new income expense report', () => {
