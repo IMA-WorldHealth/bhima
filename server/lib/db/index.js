@@ -20,8 +20,7 @@ const NotFound = require('../errors/NotFound');
  * @requires q
  * @requires mysql
  * @requires winston
- * @requires node-uuid
- * @requires Transaction
+ * @requires node-uuid @requires Transaction
  */
 class DatabaseConnector {
 
@@ -35,6 +34,23 @@ class DatabaseConnector {
     };
 
     this.pool = mysql.createPool(params);
+  }
+
+  /**
+   * @method setPoolOptions
+   *
+   * @description
+   * This method is primarily for testing - it resets the internal MySQL pool
+   * with difference connection options.  This allows us to change databases in integration
+   * tests and such.
+   *
+   * @param {Object} options -the new pool options
+   * @returns this
+   */
+  setPoolOptions(options) {
+    this.pool.end(() => {
+      this.pool = mysql.createPool(options);
+    });
   }
 
   /**

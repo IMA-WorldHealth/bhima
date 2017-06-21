@@ -73,6 +73,7 @@
     "wkhtmltopdf": "^0.3.3"
   },
   "devDependencies": {
+    "ava": "^0.19.1",
     "bower": "^1.7.7",
     "chai": "^3.4.0",
     "chai-as-promised": "^6.0.0",
@@ -111,6 +112,12 @@
   "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
   "directories": {
     "doc": "docs"
+  },
+  "ava": {
+    "require": ["babel-register"]
+  },
+  "babel": {
+    "presets": ["@ava/stage-4"]
   },
   "config": {
     "commitizen": {

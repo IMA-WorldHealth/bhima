@@ -33,7 +33,6 @@ function detail(req, res, next) {
 /** create transfer type */
 function create(req, res, next) {
   const sql = `INSERT INTO transaction_type SET ?`;
-
   db.exec(sql, [req.body])
   .then(rows => {
     return res.status(201).json({ id : rows.insertId });
