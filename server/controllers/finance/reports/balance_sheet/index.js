@@ -182,30 +182,21 @@ function getSold(item) {
  */
 function computeBalanceSheet(params) {
   const query = params;
-  const dateRange = (query.dateFrom && query.dateTo);
+
+  query.date = moment(query.date).format(DATE_FORMAT);
 
   // gets the amount up to the current period
-  let sql = `
+  const sql = `
     SELECT a.number, a.id, a.label, a.type_id,
       SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance 
     FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
     JOIN period AS p ON pt.period_id = p.id
-    WHERE p.start_date <= DATE(?) AND pt.enterprise_id = ?
+    WHERE pt.enterprise_id = ?  
+      AND (DATE(p.start_date) <= DATE(?) OR (p.start_date IS NULL OR p.end_date IS NULL))
+      AND pt.fiscal_year_id = (SELECT f.id FROM fiscal_year f WHERE DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date) LIMIT 1)
     GROUP BY a.id `;
 
-  if (dateRange) {
-    sql = `
-    SELECT a.number, a.id, a.label, a.type_id,
-      SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance 
-    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-    JOIN period AS p ON pt.period_id = p.id
-    WHERE p.start_date >= DATE(?) AND start_date <= DATE(?) AND pt.enterprise_id = ?
-    GROUP BY a.id `;
-  }
-
-  const queryParameters = (dateRange) ?
-    [query.dateFrom, query.dateTo, query.enterpriseId] :
-    [query.date, query.enterpriseId];
+  const queryParameters = [query.enterpriseId, query.date, query.date];
 
   return db.exec(sql, queryParameters);
 }

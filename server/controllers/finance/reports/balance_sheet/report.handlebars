@@ -99,6 +99,57 @@
           </tr>
         </tfoot>
       </table>
+
+      {{!-- revenue --}}
+      <table class="report-condensed-table">
+        <thead class="title">
+          <tr>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.REVENUE"}}</th>
+            <th class="text-right">{{currency (multiply revenue.totals.balance -1) metadata.enterprise.currency_id}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each revenue.accounts as |account|}}
+            {{#if account.balance}}
+            <tr class="text-right">
+              <td class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
+              <td class="text-right">{{currency (multiply account.balance -1) metadata.enterprise.currency_id}}</td>
+            </tr>
+            {{/if}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.REVENUE"}}</th>
+            <td class="text-right">{{currency (multiply revenue.totals.balance -1) metadata.enterprise.currency_id }}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <table class="report-condensed-table">
+        <thead class="title">
+          <tr>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.EXPENSE"}}</th>
+            <th class="text-right">{{currency expense.totals.balance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each expense.accounts as |account|}}
+            {{#if account.balance}}
+            <tr class="text-right">
+              <td class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
+              <td class="text-right">{{currency account.balance metadata.enterprise.currency_id}}</td>
+            </tr>
+            {{/if}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.EXPENSE"}}</th>
+            <td class="text-right">{{currency expense.totals.balance metadata.enterprise.currency_id }}</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </div>
 

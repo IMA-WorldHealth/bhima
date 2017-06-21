@@ -3,17 +3,20 @@ angular.module('bhima.controllers')
 
 BalanceSheetReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'reportData', '$state', 'LanguageService',
+  'reportData', '$state', 'LanguageService', '$timeout',
 ];
 
 function BalanceSheetReportConfigController($sce, Notify, SavedReports, AppCache,
-  reportData, $state, Languages) {
+  reportData, $state, Languages, $timeout) {
   var vm = this;
   var cache = new AppCache('configure_balance_sheet_report');
   var reportUrl = 'reports/finance/balance_sheet';
 
   vm.previewGenerated = false;
-  vm.reportDetails = { date : new Date() };
+
+  $timeout(function run() {
+    vm.reportDetails = { date : new Date() };
+  }, 0);
 
   checkCachedConfiguration();
 
