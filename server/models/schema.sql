@@ -1926,10 +1926,10 @@ DROP TABLE IF EXISTS `email_report`;
 
 CREATE TABLE IF NOT EXISTS `email_report` (
   `id` int(11)  PRIMARY KEY  AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `frequency` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `code_report_group` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(50)  NOT NULL,
+  `email` varchar(40)  NOT NULL,
+  `frequency` varchar(30)  NOT NULL,
+  `code_report_group` varchar(40)  NOT NULL,
   KEY `code_report_group` (`code_report_group`),    
-  FOREIGN KEY (`code_report_group`) REFERENCES `report_group` (`code`)
+  FOREIGN KEY (`code_report_group`) REFERENCES `report_group` (`code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
