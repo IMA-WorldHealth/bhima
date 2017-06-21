@@ -75,7 +75,7 @@
   "devDependencies": {
     "bower": "^1.7.7",
     "chai": "^3.4.0",
-    "chai-as-promised": "^6.0.0",
+    "chai-as-promised": "^7.0.0",
     "chai-datetime": "^1.4.0",
     "chai-http": "^1.0.0",
     "chai-spies": "^0.7.1",
