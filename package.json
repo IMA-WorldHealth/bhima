@@ -8,6 +8,7 @@
     "dev": "NODE_ENV=development ./node_modules/.bin/gulp build && cd bin && NODE_ENV=development node server/app.js",
     "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
+    "test:reports": "./sh/report-tests.sh",
     "test:ends": "./sh/test-ends.sh",
     "test:lint": "./sh/lint.sh",
     "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",

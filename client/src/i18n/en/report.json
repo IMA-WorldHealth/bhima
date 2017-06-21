@@ -1,6 +1,6 @@
 {
   "REPORT":{
-    "ACCOUNT":"Report of Account",
+    "ACCOUNT":"Account Statement",
     "AGED_CREDITORS":"Aged Debts",
     "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
     "BALANCE":"Balance Report",
@@ -38,7 +38,8 @@
     "ZERO_TO_THIRTY_DAYS":"Less Than 30 Days",
     "REPORT_ACCOUNTS" : {
       "TITLE":"Account Report",
-      "DESCRIPTION":"This report show all transaction for an individual account for a give fiscal year"
+      "DESCRIPTION":"This report shows all transactions for an individual account given a set time period.",
+      "WARN_MULTIPLE":"N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the begining of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year."
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",

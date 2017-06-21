@@ -11,24 +11,6 @@ const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.han
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
 /**
- * global constants
- */
-const sourceMap = {
-  1 : {
-    table : 'general_ledger',
-    key : 'FORM.LABELS.GENERAL_LEDGER',
-  },
-  2 : {
-    table : 'posting_journal',
-    key : 'FORM.LABELS.POSTING_JOURNAL',
-  },
-  3 : {
-    table : 'combined_ledger',
-    key : 'FORM.LABELS.ALL',
-  },
-};
-
-/**
  * Expose to controllers
  */
 exports.getAccountTransactions = getAccountTransactions;
@@ -45,16 +27,15 @@ function document(req, res, next) {
 
   const params = req.query;
 
-  if (!params.source) {
-    throw new BadRequest('A source ID `source` must be specified.', 'ERRORS.BAD_REQUEST');
-  }
-
   if (!params.account_id) {
     throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
   }
 
+  if (!params.dateFrom || !params.dateTo) {
+    throw new BadRequest('Report must specify date boundaries', 'ERRORS.BAD_REQUEST');
+  }
+
   params.user = req.session.user;
-  params.sourceLabel = sourceMap[params.source].key;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -68,12 +49,14 @@ function document(req, res, next) {
     .then((balance) => {
       const openingBalance = {
         date            : dateFrom,
-        amount          : balance,
-        isCreditBalance : balance < 0,
+        balance         : balance.balance,
+        credit          : balance.credit,
+        debit           : balance.debit,
+        isCreditBalance : balance.balance < 0,
       };
 
       _.extend(bundle, { openingBalance });
-      return getAccountTransactions(params.account_id, params.source, params.dateFrom, params.dateTo, balance);
+      return getAccountTransactions(params.account_id, params.dateFrom, params.dateTo, balance.balance);
     })
     .then((result) => {
       _.extend(bundle, {
@@ -81,6 +64,23 @@ function document(req, res, next) {
         transactions : result.transactions,
         sum : result.sum,
         params });
+
+      return getNumberOfFiscalYears(params.dateFrom, params.dateTo);
+    })
+    .then((result) => {
+      // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
+      // @TODO these constants should be system shared variables
+      const incomeAccountId = 1;
+      const expenseAccountId = 2;
+
+      const multipleFiscalYears = result.fiscalYearSpan > 1;
+      const incomeExpenseAccount = bundle.accountDetails.type_id === incomeAccountId || bundle.accountDetails.type_id === expenseAccountId;
+
+      if (multipleFiscalYears && incomeExpenseAccount) {
+        _.extend(bundle, {
+          warnMultipleFiscalYears : true
+        });
+      }
       return report.render(bundle);
     })
     .then((result) => {
@@ -90,28 +90,24 @@ function document(req, res, next) {
     .done();
 }
 
+function getNumberOfFiscalYears(dateFrom, dateTo) {
+
+  const sql = `
+    SELECT COUNT(id) as fiscalYearSpan from fiscal_year
+    WHERE
+      start_date <= DATE(?) AND end_date >= DATE(?)
+    OR
+      start_date <= DATE(?) AND end_date >= DATE(?)
+  `;
+
+  return db.one(sql, [dateFrom, dateFrom, dateTo, dateTo]);
+}
 
 /**
  * @function getAccountTransactions
  * This feature select all transactions for a specific account
 */
-function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBalance) {
-  const sourceId = parseInt(source, 10);
-  let tableName;
-
-  if (sourceId === 3) {
-    tableName = `(
-      (SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
-        FROM posting_journal ) 
-      UNION (
-      SELECT trans_id, description, account_id, trans_date, debit_equiv, credit_equiv, record_uuid
-      FROM general_ledger )
-    ) as comb `;
-  } else {
-    // get the table name
-    tableName = sourceMap[sourceId].table;
-  }
-
+function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
   const params = [accountId];
   let dateCondition = '';
 
@@ -125,11 +121,10 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
       groups.document_reference, groups.cumsum, groups.description
     FROM (
       SELECT trans_id, description, trans_date, document_reference, debit, credit,
-        @cumsum := balance + @cumsum AS cumsum
-      FROM (
+        @cumsum := balance + @cumsum AS cumsum FROM (
         SELECT trans_id, description, trans_date, document_map.text AS document_reference,
           SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
-        FROM ${tableName}
+        FROM general_ledger
         LEFT JOIN document_map ON record_uuid = document_map.uuid
         WHERE account_id = ? ${dateCondition}
         GROUP BY record_uuid
@@ -138,15 +133,13 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
     ) AS groups
   `;
 
-  const sqlAggrega = `
-    SELECT SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
-    FROM (
-      SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) AS credit
-      FROM ${tableName}
-      WHERE account_id = ? ${dateCondition}
-      GROUP BY record_uuid
-      ORDER BY trans_date ASC
-    ) AS t
+  // @TODO define standards for displaying and rounding totals, unless numbers are rounded
+  //       uniformly they may be displayed differently from what is recorded
+  const sqlTotals = `
+    SELECT SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit, (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
+    FROM general_ledger
+    WHERE account_id = ?
+    ${dateCondition}
   `;
 
   const bundle = {};
@@ -158,13 +151,29 @@ function getAccountTransactions(accountId, source, dateFrom, dateTo, openingBala
     })
     .then((transactions) => {
       _.extend(bundle, { transactions });
-      return db.one(sqlAggrega, params);
+
+      // get the balance at the final date
+      return AccountsExtra.getOpeningBalanceForDate(accountId, dateTo);
     })
     .then((sum) => {
       // if the sum come back as zero (because there were no lines), set the default sum to the
       // opening balance
-      sum.balance = sum.balance || openingBalance;
+      sum.credit = sum.credit || 0;
+      sum.debit = sum.debit || 0;
+      sum.balance = sum.balance || 0;
+      sum.isCreditBalance = sum.balance < 0;
+
       _.extend(bundle, { sum });
+      // get totals for this period
+      return db.one(sqlTotals, [accountId, dateFrom, dateTo]);
+    })
+    .then((totals) => {
+      let period = {};
+      period.debit = totals.debit;
+      period.credit = totals.credit;
+      period.balance = totals.balance;
+
+      _.merge(bundle.sum, { period });
       return bundle;
     });
 }
