@@ -23,7 +23,7 @@ function FiscalPeriodSelect(Fiscals, Periods) {
         });       
 
     $ctrl.loadPeriod = function (fiscal_id) {
-        Periods.read(null, { fiscal_year_id: fiscal_id })
+        Periods.read(null, { fiscal_year_id : fiscal_id,  excludeExtremityPeriod : true })
             .then(function (periods) {
                 $ctrl.periods = periods;
             });

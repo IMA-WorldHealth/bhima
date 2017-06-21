@@ -1,7 +1,7 @@
 <fieldset
     ng-form="{{$ctrl.formName}}"
     novalidate
-    data-bh-fiscal-period-select>
+    bh-fiscal-period-select>
 
     <div class="form-group"
         ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.fiscal.$invalid }">
@@ -29,6 +29,7 @@
                 theme="bootstrap"
                 close-on-select="false"
                 on-select="$ctrl.onSelect($ctrl.selectedPeriods)"
+                data-period-select
                 required>
                 <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}">
                     <span>{{$item.label}}</span>

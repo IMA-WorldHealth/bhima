@@ -7,15 +7,12 @@ const helpers = require('../../helpers');
 describe(`(${target}) Income Expense Reports`, function () {
 
   const keys = [
-    'incomes', 'expenses', 'reportIncome', 'reportExpense', 'dateFrom',
-    'dateTo', 'accountName', 'accountNumber', 'sumIncome', 'sumExpense'
+    'incomes', 'expenses', 'expenseAggregation', 'incomeAggregation',
   ];
 
   const parameters = {
-    account_id: 3627,
-    dateFrom: '2016-01-01',
-    dateTo: '2016-12-31',
-    reportType : 1
+    periods: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+    type : 1
   };
 
   describe(`${target} Rendering`, RenderingTests(target, null, parameters));

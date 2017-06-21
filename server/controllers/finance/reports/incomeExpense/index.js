@@ -37,6 +37,7 @@ function document(req, res, next) {
     const options = _.extend(req.query, {
         filename: 'TREE.INCOME_EXPENSE',
         csvKey: 'rows',
+        user : req.session.user,
     });
 
     if(!_.isArray(options.periods)){
