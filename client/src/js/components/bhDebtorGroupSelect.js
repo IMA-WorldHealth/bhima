@@ -14,9 +14,7 @@ angular.module('bhima.components')
     },
   });
 
-DebtorGroupSelectController.$inject = [
-  'DebtorService',
-];
+DebtorGroupSelectController.$inject = ['DebtorService'];
 
 /**
  * Debtor Group selection component

@@ -9,20 +9,16 @@ ClientsReportConfigController.$inject = [
 function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment) {
   var vm = this;
   var cache = new AppCache('configure_clients_report');
-  var reportUrl = 'reports/finance/clients_report';
+  var reportUrl = 'reports/finance/clientsReport';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
 
   checkCachedConfiguration();
 
-  vm.selectAccount = function selectAccount(account) {
-    vm.reportDetails.account_id = account.id;
-  };
-
-  vm.selectSource = function selectSource(source) {
-    vm.reportDetails.source = source;
-  };
+  vm.onDebtorGroupSelected = function onDebtorGroupSelected (debtorGroups){
+    vm.reportDetails.ignoredClients = debtorGroups;
+  }
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
@@ -49,9 +45,6 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
 
-    parseDateInterval(vm.reportDetails);
-
-
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
@@ -72,13 +65,6 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
     sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format('YYYY-MM-DD');
     sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format('YYYY-MM-DD');
     return sanitisedOptions;
-  }
-
-  // @TODO validation on dates - this should be done through a 'period select' component
-  function parseDateInterval(reportDetails) {
-    if (!vm.dateInterval) {
-      reportDetails.dateTo = reportDetails.dateFrom = null;
-    }
   }
 
   function checkCachedConfiguration() {

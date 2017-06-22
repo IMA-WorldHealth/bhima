@@ -1,0 +1,20 @@
+<div ng-form="{{ $ctrl.formName }}" bh-multi-debtor-group-select>
+  <div class="form-group">
+    <label class="control-label" translate>{{$ctrl.label}}</label>
+      <ui-select 
+        multiple
+        name="clients"
+        ng-model="$ctrl.selectedDebtorGroups"
+        on-select="$ctrl.onSelect($ctrl.selectedDebtorGroups)"
+        theme="bootstrap"
+        close-on-select="false">
+          <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
+            <span>{{$item.name}}</span>
+          </ui-select-match>
+
+          <ui-select-choices repeat="dg.uuid as dg in $ctrl.debtorGroups| filter:{name: $select.search}">
+            <span ng-bind-html="dg.name | highlight: $select.search"></span>
+          </ui-select-choices>
+      </ui-select>
+  </div>
+</div>

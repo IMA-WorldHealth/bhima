@@ -97,8 +97,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (5, 'aged_debtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
-  (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (9, 'clients_report','REPORT.CLIENTS_REPORT'),
+  (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
+  (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE');
 
