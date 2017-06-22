@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PatientService.$inject = [
   '$http', 'util', 'SessionService', '$uibModal',
-  'DocumentService', 'VisitService', 'FilterService', 'appcache', 'PeriodService', 'PrototypeApiService', '$httpParamSerializer'
+  'DocumentService', 'VisitService', 'FilterService', 'appcache', 'PeriodService', 'PrototypeApiService', '$httpParamSerializer', 'LanguageService'
 ];
 
 /**
@@ -22,7 +22,7 @@ PatientService.$inject = [
  *  }
  */
 function PatientService($http, util, Session, $uibModal,
-  Documents, Visits, Filters, AppCache, Periods, Api, $httpParamSerializer) {
+  Documents, Visits, Filters, AppCache, Periods, Api, $httpParamSerializer, Languages) {
   var baseUrl = '/patients/';
   var service = new Api(baseUrl);
 
@@ -44,6 +44,7 @@ function PatientService($http, util, Session, $uibModal,
   service.Visits = Visits;
   service.latest = latest;
   service.balance = balance;
+  service.download = download;
 
 
 
@@ -299,6 +300,18 @@ function PatientService($http, util, Session, $uibModal,
       }
     }).result;
   }
+
+  function download(type) {
+    var filterOpts = patientFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+    
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  }
+
 
   return service;
 }

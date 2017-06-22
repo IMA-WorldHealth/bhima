@@ -31,6 +31,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
+  vm.download = Patients.download;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -189,31 +190,6 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   function patientCard(uuid) {
     Receipts.patient(uuid);
   }
-
-  // format Export Parameters
-  function formatExportParameters(type) {
-    return { renderer: type || 'pdf', lang: Languages.key };
-  }
-
-  // display the patient registry printable report
-  vm.patientReport = function patientReport() {
-    var url = '/reports/medical/patients';
-    var params = formatExportParameters('pdf');
-
-    if (!params) { return; }
-
-    Export.download(url, params, 'PATIENT_REGISTRY.TITLE', 'print');
-  };
-
-  // export data into csv file
-  vm.exportFile = function exportFile() {
-    var url = '/reports/medical/patients';
-    var params = formatExportParameters('csv');
-
-    if (!params) { return; }
-
-    Export.download(url, params, 'PATIENT_REGISTRY.TITLE');
-  };
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {

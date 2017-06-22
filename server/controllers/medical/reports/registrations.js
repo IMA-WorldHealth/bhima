@@ -64,14 +64,15 @@ function formatFilters(qs) {
  */
 function build(req, res, next) {
   const options = _.clone(req.query);
-  _.extend(options, { filename : 'PATIENT_REG.PAGE_TITLE', csvKey : 'rows', orientation : 'landscape' });
+
+  _.extend(options, { filename : 'PATIENT_REG.PAGE_TITLE', csvKey : 'patients', orientation : 'landscape' });
 
   let report;
 
   // set up the report with report manager
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
-    delete options.orientation;
+     delete options.orientation;
   } catch (e) {
     next(e);
     return;
