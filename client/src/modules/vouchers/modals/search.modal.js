@@ -23,7 +23,7 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
   vm.defaultQueries = {};
 
   var searchQueryOptions = [
-    'reference', 'description', 'user_id',
+    'reference', 'description', 'user_id', 'type_id',
   ];
 
   TransactionTypes.read()
