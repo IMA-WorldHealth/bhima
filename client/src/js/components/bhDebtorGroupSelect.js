@@ -2,7 +2,7 @@ angular.module('bhima.components')
   .component('bhDebtorGroupSelect', {
     templateUrl : 'modules/templates/bhDebtorGroupSelect.tmpl.html',
     controller  : DebtorGroupSelectController,
-    // transclude  : true,
+    transclude  : true,
     bindings    : {
       debtorGroupUuid   : '<',
       disable           : '<?',
