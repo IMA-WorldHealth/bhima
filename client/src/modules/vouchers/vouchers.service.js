@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherService.$inject = [
   'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
-  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer'
+  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer', 'appcache',
 ];
 
 /**
@@ -15,7 +15,7 @@ VoucherService.$inject = [
  * includes some utilities that are useful for voucher pages.
  */
 function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
-  Filters, Periods, Languages, $httpParamSerializer) {
+  Filters, Periods, Languages, $httpParamSerializer, AppCache) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
   var filterCache = new AppCache('voucher-filters');
