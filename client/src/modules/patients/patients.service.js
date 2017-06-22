@@ -27,7 +27,7 @@ function PatientService($http, util, Session, $uibModal,
   var service = new Api(baseUrl);
 
   var patientFilters = new Filters();
-  var filterCache = new AppCache('cash-filters');
+  var filterCache = new AppCache('patient-filters');
     
   service.filters = patientFilters;
   service.create = create;
@@ -221,8 +221,8 @@ function PatientService($http, util, Session, $uibModal,
 
   patientFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date', comparitor : '>'},
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date', comparitor: '<'},
     { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   patientFilters.registerCustomFilters([
