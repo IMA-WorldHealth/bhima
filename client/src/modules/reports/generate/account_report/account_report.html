@@ -22,30 +22,51 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+
+
+
             <!-- account selection  -->
-            <bh-account-select
-              id="account-id"
-              account-id="ReportConfigCtrl.account"
-              label="FORM.SELECT.ACCOUNT"
-              name="account"
-              on-select-callback="ReportConfigCtrl.selectAccount(account)">
-            </bh-account-select>
+
+            <div class="form-group"
+             ng-class="{'has-error' : ConfigForm.account.$invalid && ConfigForm.$submitted}">
+            
+                <div class="input-group col-lg-12">
+                  <bh-account-select 
+                  id="account-id"
+                  account-id="ReportConfigCtrl.account"
+                  label="FORM.SELECT.ACCOUNT"
+                  name="account"
+                  on-select-callback="ReportConfigCtrl.selectAccount(account)"
+                  required=''
+                  >
+                </bh-account-select>
+                <div class="help-block" ng-messages=" ConfigForm.account.$error"  ng-show="ConfigForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+            </div>
+           
+
 
             <!-- included Date interval  -->
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="ReportConfigCtrl.dateInterval" ng-true-value="1" ng-false-value="0">
-                <span translate>FORM.LABELS.INCLUDE_DATE_INTERVAL</span>
-              </label>
-            </div>
+            
 
             <!-- Date interval  -->
             <!-- @TODO this should use a component that callsback with well defined dates -->
             <div ng-if="ReportConfigCtrl.dateInterval === 1">
-              <bh-date-interval
-                date-from="ReportConfigCtrl.reportDetails.dateFrom"
-                date-to="ReportConfigCtrl.reportDetails.dateTo">
-              </bh-date-interval>
+               <div class="form-group">
+                
+                    <div class="input-group col-lg-12">
+                  <bh-date-interval
+                  
+                    date-from="ReportConfigCtrl.reportDetails.dateFrom"
+                    date-to="ReportConfigCtrl.reportDetails.dateTo"
+                    required
+                    validation-trigger="ConfigForm.$submitted"
+                    >
+                  </bh-date-interval>
+               </div>
+               </div>
             </div>
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
