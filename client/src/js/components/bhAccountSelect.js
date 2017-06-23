@@ -11,6 +11,7 @@ angular.module('bhima.components')
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
+      validationTrigger:  '<',
     },
   });
 
@@ -47,6 +48,9 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
+
+    //parent from summitted
+    $ctrl.validationTrigger=false;
 
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
