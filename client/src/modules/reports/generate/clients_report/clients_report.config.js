@@ -23,6 +23,8 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+    // We don't nee to save this data
+    delete vm.reportDetails.ignoredClients;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
@@ -45,15 +47,17 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
 
-    // update cached configuration
-    cache.reportDetails = angular.copy(vm.reportDetails);
-
     var sendDetails = sanitiseDateStrings(vm.reportDetails);
     sendDetails.dateTo = Moment(sendDetails.dateTo).format('YYYY-MM-DD');
     sendDetails.dateFrom = Moment(sendDetails.dateFrom).format('YYYY-MM-DD');
 
     return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then(function (result) {
+        // We don't nee to save this data
+        delete vm.reportDetails.ignoredClients;
+        
+        // update cached configuration
+        cache.reportDetails = angular.copy(vm.reportDetails);
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })

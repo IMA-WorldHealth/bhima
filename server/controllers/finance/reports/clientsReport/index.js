@@ -23,6 +23,7 @@ function document(req, res, next) {
   const params = req.query;
   const session = {};
   let report;
+  console.log('here is the params', params);
 
 
   _.defaults(session, {
