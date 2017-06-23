@@ -13,6 +13,7 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
+  vm.dateInterval=1;
 
   checkCachedConfiguration();
 
