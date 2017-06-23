@@ -67,6 +67,7 @@ function document(req, res, next) {
     .then(processAccounts)
     .then((result) => {
       bundle.session = session;
+      bundle.showExploitation = Number(params.showExploitation || 0);
       bundle.assets = result[ASSET] || {};
       bundle.liabilities = result[LIABILITY] || {};
       bundle.equity = result[EQUITY] || {};

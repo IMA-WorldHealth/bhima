@@ -6,7 +6,8 @@
     "BALANCE":"Rapport de la Balance",
     "BALANCE_SHEET":{
       "TITLE":"Bilan",
-      "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise"
+      "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise",
+      "SHOW_EXPLOITATION":"Afficher les exploitations"
     },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",

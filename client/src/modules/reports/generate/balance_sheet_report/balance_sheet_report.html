@@ -28,6 +28,16 @@
               date-value="ReportConfigCtrl.reportDetails.date">
             </bh-date-editor>
 
+            <!--display also revenue and expense-->
+            <div class="form-group">
+              <label>
+                <input type="checkbox" 
+                  ng-model="ReportConfigCtrl.reportDetails.showExploitation"
+                  ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.BALANCE_SHEET.SHOW_EXPLOITATION</span>
+              </label>
+            </div>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
