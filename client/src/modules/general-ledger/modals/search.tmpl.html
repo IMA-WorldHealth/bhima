@@ -1,0 +1,39 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="ledger-search">
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>GENERAL_LEDGER.TITLE</li>
+      <li class="title" translate>FISCAL.FISCAL_YEAR</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+      <!-- fiscal Year -->
+    <div class="form-group">
+      <label class="control-label" translate>
+        FORM.SELECT.FISCAL_YEAR
+      </label>
+      <ui-select
+        name="fiscal_year_id"
+        ng-model="$ctrl.bundle.fiscal_year_id">
+        <ui-select-match placeholder="{{ 'FORM.SELECT.FISCAL_YEAR' | translate }}"><span>{{$select.selected.label}}</span></ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="fiscalYear as fiscalYear in $ctrl.fiscalYears | filter:$select.search">
+          <span ng-bind-html="fiscalYear.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <button class="btn btn-primary" type="submit" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

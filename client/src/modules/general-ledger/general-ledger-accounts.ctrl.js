@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 GeneralLedgerAccountsController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService',
-  'uiGridConstants', 'ReceiptModal', 'ExportService', 'GridColumnService', 'AppCache', 'GridStateService', '$state', 'LanguageService'
+  'uiGridConstants', 'ReceiptModal', 'ExportService', 'GridColumnService', 'AppCache', 'GridStateService', '$state', 'LanguageService', 'ModalService'
 ];
 
 /**
@@ -13,7 +13,7 @@ GeneralLedgerAccountsController.$inject = [
  * This controller is responsible for displaying accounts and their balances
  */
 function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
-  uiGridConstants, Receipts, Export, Columns, AppCache, GridState, $state, Languages) {
+  uiGridConstants, Receipts, Export, Columns, AppCache, GridState, $state, Languages, Modal) {
   var vm = this;
   var columns;
   var state;
@@ -228,6 +228,17 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
 
     Export.download(url, params, 'GENERAL_LEDGER.TITLE');
   };
+
+  // open search modal
+  vm.openFiscalYearConfiguration = function openFiscalYearConfiguration() {
+    Modal.openSelectFiscalYear()
+      .then(function (filters) {
+        if (!filters) { return; }
+        reload(filters);
+      })
+      .catch(Notify.handleError);
+
+  };  
 
   GeneralLedger.accounts.read()
     .then(loadData)

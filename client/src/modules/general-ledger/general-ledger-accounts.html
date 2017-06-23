@@ -14,6 +14,13 @@
           
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
+              <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openFiscalYearConfiguration()">
+                <i class="fa fa-calendar"></i> <span translate>FISCAL.FISCAL_YEAR</span>
+              </a>
+            </li> 
+
+            <li role="separator" class="divider"></li>          
+            <li role="menuitem">
               <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openColumnConfiguration()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
