@@ -7,7 +7,7 @@ helpers.configure(chai);
 
 const ReportIncomeExpensePage = require('./income_expense.page');
 
-describe.skip('Income Expense report ::', () => {
+describe('Income Expense report ::', () => {
   let Page;
   const key = 'income_expense';
 
