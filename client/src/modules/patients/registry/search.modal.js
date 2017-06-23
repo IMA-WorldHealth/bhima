@@ -16,7 +16,9 @@ PatientRegistryModalController.$inject = [
  */
 function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment, Store, util, Periods) {
   var vm = this;
-  var changes = new Store({ identifier : 'key' });  
+  var changes = new Store({ identifier : 'key' });
+  vm.filters = params;
+
   vm.today = new Date();
 
   // bind filters if they have already been applied.  Otherwise, default to an
