@@ -4,13 +4,14 @@
  * @description
  * This controller is responsible for implementing all crud on the
  * fiscal year period trough the `/period` endpoint.
- *
+ * 
+ * @requires moment
  * @requires db
  * @requires filter
  */
 
 
-
+const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 
@@ -19,6 +20,8 @@ const PERIOD_13_NUM = 13;
 
 exports.list = list;
 exports.find = find;
+exports.getPeriodDiff = getPeriodDiff;
+exports.isInSameFiscalYear = isInSameFiscalYear;
 
 /**
  * @method list
@@ -54,6 +57,7 @@ function find(options) {
 
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
   filters.equals('fiscal_year_id', 'fiscal_year_id', 'p');
+  filters.equals('id', 'id', 'p');
   const exludePeriods = options.excludeExtremityPeriod === 'true';
 
   if(exludePeriods){
@@ -61,11 +65,50 @@ function find(options) {
   }  
 
   // @TODO Support ordering query
-  filters.setOrder('ORDER BY p.id DESC');
+  filters.setOrder('ORDER BY p.id ASC');
 
   // applies filters and limits to define sql, get parameters in correct order
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
   return db.exec(query, parameters);
+}
+
+function isInSameFiscalYear(opt){
+  if(opt.periods.length !== 2){
+    return false;
+  }
+  const sql = `
+  SELECT 
+    p.fiscal_year_id 
+  FROM 
+    period AS p`
+  const filters = new FilterParser(opt, { tableAlias : 'p', autoParseStatements : false });
+  filters.custom('periods', `p.id IN (${opt.periods.join(',')})`);
+  const query = filters.applyQuery(sql);
+  return db.exec(query)
+    .then(function (res){
+      const value = res.reduce(function (x, y){
+        return x.fiscal_year_id === y.fiscal_year_id;
+      });
+      return value;
+    });
+}
+
+function getPeriodDiff (periodIdA, periodIdB){ 
+  let periodA;
+  let periodB;
+
+  return find({id : periodIdA})
+    .then((pA) => {
+      periodA = pA[0];
+      return find({id : periodIdB})
+    })
+    .then((pB) => {
+      periodB = pB[0];
+      let date1 = moment(periodA.start_date).format('YYYY-MM-DD').toString();
+      let date2 = moment(periodB.start_date).format('YYYY-MM-DD').toString();
+      const sql = `SELECT DATEDIFF('${date1}','${date2}') AS nb`;
+      return db.one(sql);
+    });
 }
 

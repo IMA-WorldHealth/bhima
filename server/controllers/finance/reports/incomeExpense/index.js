@@ -18,6 +18,8 @@ const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const periodTotal = require('../../periodTotal');
+const fiscalPeriod = require('../../fiscalPeriod');
+
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
 const accountType = { income: 1, expense: 2 };
@@ -47,10 +49,24 @@ function document(req, res, next) {
         return;
     }
 
-    return getDateRange(options.periodFrom, options.periodTo)
-        .then((range) => {
+    fiscalPeriod.getPeriodDiff(options.periodFrom, options.periodTo)
+        .then((ans) =>{
 
+            if(ans.nb > 0){
+                throw new BadRequest(`The period From should be before the period To`);
+            }
+
+            return getDateRange(options.periodFrom, options.periodTo);
+        })
+        .then((range) => {
             _.merge(options, { dateFrom : new Date(range.dateFrom), dateTo : new Date(range.dateTo) });
+            return fiscalPeriod.isInSameFiscalYear({ periods : [options.periodFrom, options.periodTo] })
+        })
+        .then((ans) => {
+
+            if(!ans){
+                throw new BadRequest(`The two period selected must be in the same fiscal year`);
+            }
             return getRecord(options);
         })
         .then((records) => {
@@ -70,6 +86,7 @@ function report(req, res, next) {
 function getRecord(options) {
     return reportTypes[options.type](options)
         .then((data) => {
+            _.merge(data, { dateFrom : options.dateFrom, dateTo : options.dateTo });
             return data;
         })
 }

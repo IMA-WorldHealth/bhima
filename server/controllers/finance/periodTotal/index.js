@@ -79,6 +79,7 @@ function getAccountsBalance (options){
         JOIN 
          period p ON p.id = pt.period_id `;
 
+    // fix me the filter logic for that seems complicate
     filterParser.dateFrom('dateFrom', 'start_date', 'p');
     filterParser.dateTo('dateTo', 'end_date', 'p');
     filterParser.custom('type_id', `ac.type_id IN (${options.type_id})`);
@@ -98,6 +99,6 @@ function getAccountsBalance (options){
     FROM (${query}) AS t
     `;
 
-    return db.exec(sql, parameters);
+    return db.one(sql, parameters);
 }
 

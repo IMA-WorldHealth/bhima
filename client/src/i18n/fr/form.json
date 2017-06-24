@@ -351,6 +351,8 @@
 "PAYMENT_DETAILS":"Details Paiement",
 "PAYMENT_METHOD":"Mode de paiement",
 "PERIODES":"Périodes",
+"PERIOD_FROM" : "Periode Debut",
+"PERIOD_TO" : "Periode Fin",
 "PERIOD_TOTAL" : "Periode Total",
 "PHONE":"Téléphone",
 "PHONE_NO":"Numéro de Téléphone",

@@ -352,6 +352,8 @@
 "PAYMENT_DETAILS":"Payment Details",
 "PAYMENT_METHOD":"Payment Method",
 "PERIODES":"Periods",
+"PERIOD_FROM" : "Period From",
+"PERIOD_TO" : "Period To",
 "PHONE":"Phone",
 "PHONE_NO":"Phone Number",
 "POSITION":"Position",
