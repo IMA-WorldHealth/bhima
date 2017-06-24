@@ -2,7 +2,8 @@ angular.module('bhima.components')
     .component('bhFiscalPeriodSelect', {
         bindings: {
             validationTrigger: '<',
-            onSelectCallback: '&?',
+            onSelectPeriodFromCallback: '&?',
+            onSelectPeriodToCallback : '&?',
             formName: '@',
         },
         templateUrl: 'modules/templates/bhFiscalPeriodSelect.tmpl.html',
@@ -29,8 +30,12 @@ function FiscalPeriodSelect(Fiscals, Periods) {
             });
     }
 
-    $ctrl.onSelect = function onSelect (selectedItems){
-        $ctrl.onSelectCallback({ periods : selectedItems });
+    $ctrl.onSelectPeriodFrom = function onSelect (selectedItem){
+        $ctrl.onSelectPeriodFromCallback({ period : selectedItem });
+    }
+
+    $ctrl.onSelectPeriodTo = function onSelect (selectedItem){
+        $ctrl.onSelectPeriodToCallback({ period : selectedItem });
     }
 
 }

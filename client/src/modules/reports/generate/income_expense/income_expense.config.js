@@ -20,8 +20,12 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
 
   checkCachedConfiguration();
 
-  vm.onSelectFiscalPeriod = function onSelectFiscalPeriod(periods) {
-    vm.reportDetails.periods = periods;
+  vm.onSelectPeriodFrom = function onSelectPeriodFrom(period) {
+    vm.reportDetails.periodFrom = period;
+  };
+
+  vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
+    vm.reportDetails.periodTo = period;
   };
 
   vm.preview = function preview(form) {
