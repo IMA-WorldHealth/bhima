@@ -15,16 +15,16 @@ class IncomeExpenseReportPage {
   }
 
   // preview an income expense report
-  showIncomeExpenseReportPreview(fiscal_id, periods, type) {
-    components.fiscalPeriodSelect.set(fiscal_id, periods);
+  showIncomeExpenseReportPreview(fiscal_id, periodFrom_id, periodTo_id, type) {
+    components.fiscalPeriodSelect.set(fiscal_id, periodFrom_id, periodTo_id);
 
     FU.select('ReportConfigCtrl.reportDetails.type', type);
     this.page.preview();
   }
 
   // save an income expense report
-  saveIncomeExpenseReport(fiscal_id, periods, type, reportName, reportFormat) {
-    this.showIncomeExpenseReportPreview(fiscal_id, periods, type);
+  saveIncomeExpenseReport(fiscal_id, periodFrom_id, periodTo_id, type, reportName, reportFormat) {
+    this.showIncomeExpenseReportPreview(fiscal_id, periodFrom_id, periodTo_id, type);
 
     // save report as PDF
     this.page.saveAs();
@@ -38,8 +38,8 @@ class IncomeExpenseReportPage {
   }
 
   // print an income expense report
-  printIncomeExpenseReport(fiscal_id, periods, type) {
-    this.showIncomeExpenseReportPreview(fiscal_id, periods, type);
+  printIncomeExpenseReport(fiscal_id, periodFrom_id, periodTo_id, type) {
+    this.showIncomeExpenseReportPreview(fiscal_id, periodFrom_id, periodTo_id, type);
     this.page.printPreview();
   }
 

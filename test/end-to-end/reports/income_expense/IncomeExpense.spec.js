@@ -13,12 +13,11 @@ describe('Income Expense report ::', () => {
 
   const dataset = {
     fiscal_id : 2,
-    periods : ['2016-01-01/2016-01-31', '2016-02-01/2016-02-29', '2016-03-01/2016-03-31'],
+    periodFrom_id : 16,
+    periodTo_id : 27,
     type : 'Recettes et dépenses',
     report_name : 'Income Expense Report Saved by E2E',
     renderer : 'PDF',
-    OnePeriod : ['2016-04-01/2016-04-30'],
-    twoPeriods : ['2016-05-01/2016-05-31', '2016-06-01/2016-06-30'],
   };
 
   before(() => {
@@ -28,7 +27,7 @@ describe('Income Expense report ::', () => {
   });
 
   it('preview a new income expense report', () => {
-    Page.showIncomeExpenseReportPreview(dataset.fiscal_id, dataset.periods, dataset.type);
+    Page.showIncomeExpenseReportPreview(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type);
   });
 
   it('close the previewed report', () => {
@@ -36,7 +35,7 @@ describe('Income Expense report ::', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveIncomeExpenseReport(dataset.fiscal_id, dataset.OnePeriod, dataset.type, dataset.report_name, dataset.renderer);
+    Page.saveIncomeExpenseReport(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -44,6 +43,6 @@ describe('Income Expense report ::', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printIncomeExpenseReport(dataset.fiscal_id, dataset.twoPeriods, dataset.type);
+    Page.printIncomeExpenseReport(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type);
   });
 });

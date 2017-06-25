@@ -4,9 +4,8 @@ const FU = require('../FormUtils');
 
 module.exports = {
   mainSelector : '[bh-fiscal-period-select]',
-  periodSelector : '[data-period-select]',
-  set      : function set(fiscal_year_id, periods, id) {
-      var opts, periodUibSelect;
+  set : function set(fiscal_year_id, periodFrom_id, periodTo_id, id) {
+      var opts;
     /** return selector for an option element */
     function getValue(id) {
       return by.css('option[value="number:?"]'.replace('?', id));
@@ -17,11 +16,13 @@ module.exports = {
     opts = bhFiscalPeriod.element(by.model('$ctrl.selectedFiscal'));
     opts.element(getValue(fiscal_year_id)).click();
 
-    periods.forEach(function (period){
-        FU.uiSelect('$ctrl.selectedPeriods', period);
-    });
+    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodFrom'));
+    opts.element(getValue(periodFrom_id)).click();
+
+    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodTo'));
+    opts.element(getValue(periodTo_id)).click();
 
     // click away to free the space
-    element(by.id("logo")).click();
+    // element(by.id("logo")).click();
   },
 };
