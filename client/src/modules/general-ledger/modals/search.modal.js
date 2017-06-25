@@ -12,15 +12,13 @@ function SearchFiscalYearModalController(Notify, Instance, SearchFilterFormat, F
   vm.submit = submit;
 
   // load Fiscal Year Service 
-  Fiscal.read()
+  Fiscal.read(null, { detailed : 1 })
     .then(function (fiscalYears) {
       vm.fiscalYears = fiscalYears;
     })
     .catch(Notify.handleError);
 
-
   function submit() {
-    var params = SearchFilterFormat.formatFilter(vm.bundle, true);
-    Instance.close(params);
+    Instance.close(vm.bundle);
   }
 }

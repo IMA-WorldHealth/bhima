@@ -29,7 +29,7 @@ exports.create = create;
 exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
-exports.getPeriodCurrent = getPeriodCurrent;
+exports.getPeriodByFiscal = getPeriodByFiscal;
 
 /**
  * @method lookupFiscalYear
@@ -628,24 +628,23 @@ function closing(req, res, next) {
 }
 
 /**
- * @method getPeriodCurrent
+ * @method getPeriodByFiscal
  *
  * @description
- * This function returns all period of current fiscal Year
- * the Date provided.  If no record is found, it throws a NotFound error.
+ * This function returns all Fiscal Year's periods
+ * the Fiscal Year provided.  If no record is found, it throws a NotFound error.
  *
- * @param {date} Date - The date determines the fiscal year in progress as well as the different periods
+ * @param {fiscal_year_id}  - Makes it possible to select the different periods of the fiscal year
  * @returns {Promise} - a promise resolving to the periods record
  *
  */
-function getPeriodCurrent(date) {
+function getPeriodByFiscal(fiscal_year_id) {
   const sql = `
     SELECT period.number, period.id
     FROM period 
     JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
-    WHERE period.number <> 13 
-    AND (DATE(fiscal_year.start_date) <= DATE(?) AND DATE(fiscal_year.end_date) >= DATE(?));
+    WHERE period.fiscal_year_id = ? AND period.number <> 13;
   `;
 
-  return db.exec(sql, [date, date]);
+  return db.exec(sql, [fiscal_year_id]);
 }

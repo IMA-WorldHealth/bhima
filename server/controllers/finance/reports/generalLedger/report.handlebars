@@ -9,12 +9,15 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h2 class="text-center text-capitalize">
+      <h1 class="text-center text-capitalize">
         {{translate 'TREE.GENERAL_LEDGER'}}
+      </h1>
+      <h2 class="text-center text-capitalize">
+        {{ fiscal_year_label}}
       </h2>
 
       <!-- invoices listed  -->
-      <table class="table table-condensed table-bordered table-striped small">
+      <table class="table table-condensed table-striped table-bordered">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>

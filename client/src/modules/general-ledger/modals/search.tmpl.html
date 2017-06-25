@@ -17,8 +17,8 @@
         FORM.SELECT.FISCAL_YEAR
       </label>
       <ui-select
-        name="fiscal_year_id"
-        ng-model="$ctrl.bundle.fiscal_year_id">
+        name="fiscal_year"
+        ng-model="$ctrl.bundle.fiscal_year">
         <ui-select-match placeholder="{{ 'FORM.SELECT.FISCAL_YEAR' | translate }}"><span>{{$select.selected.label}}</span></ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="fiscalYear as fiscalYear in $ctrl.fiscalYears | filter:$select.search">
           <span ng-bind-html="fiscalYear.label | highlight:$select.search"></span>
