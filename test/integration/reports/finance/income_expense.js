@@ -11,7 +11,8 @@ describe(`(${target}) Income Expense Reports`, function () {
   ];
 
   const parameters = {
-    periods: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+    periodFrom : 16,
+    periodTo : 27,
     type : 1
   };
 
