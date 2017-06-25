@@ -35,7 +35,6 @@ exports.report = report;
 
 function document(req, res, next) {
     let docReport;
-
     const options = _.extend(req.query, {
         filename: 'TREE.INCOME_EXPENSE',
         csvKey: 'rows',
