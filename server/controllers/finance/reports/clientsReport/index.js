@@ -23,8 +23,6 @@ function document(req, res, next) {
   const params = req.query;
   const session = {};
   let report;
-  console.log('here is the params', params);
-
 
   _.defaults(session, {
     dateFrom : new Date(params.dateFrom),
@@ -45,6 +43,8 @@ function document(req, res, next) {
   // Getting data to be rendered
   return fetchClientsData(session)
     .then((data) => {
+      //getting a boolean value from a string
+      data.detailPrevious = data.detailPrevious === 'true';
       return report.render(data);
     })
     .then((result) => {

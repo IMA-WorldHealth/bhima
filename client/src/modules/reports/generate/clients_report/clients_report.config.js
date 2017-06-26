@@ -28,9 +28,6 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    parseDateInterval(vm.reportDetails);
-
-    // @FIXME
     var options = {
       url : reportUrl,
       report : reportData,
