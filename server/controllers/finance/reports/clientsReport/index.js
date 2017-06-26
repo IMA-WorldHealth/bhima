@@ -24,6 +24,8 @@ function document(req, res, next) {
   const session = {};
   let report;
 
+  console.log('params', params);
+
   _.defaults(session, {
     dateFrom : new Date(params.dateFrom),
     dateTo : new Date(params.dateTo),

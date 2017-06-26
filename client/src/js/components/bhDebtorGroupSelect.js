@@ -27,6 +27,9 @@ function DebtorGroupSelectController(Debtors) {
     // fired when a Debtor Group has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
+    // fired when an debtor group has been removed
+    $ctrl.onRemoveCallback = $ctrl.onRemoveCallback || angular.noop;
+
     // default for form name
     $ctrl.name = $ctrl.name || 'DebtorForm';
 

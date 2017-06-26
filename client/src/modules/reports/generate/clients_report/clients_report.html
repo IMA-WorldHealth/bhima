@@ -41,6 +41,7 @@
               label="FORM.LABELS.CLIENT_TO_IGNORE"
               formName="ConfigForm"
               on-select-callback="ReportConfigCtrl.onDebtorGroupSelected(debtorGroups)"
+              on-remove-callback="ReportConfigCtrl.onDebtorGroupRemoved(debtorGroups)"
               ></bh-multiple-debtor-group-select>
             
             <bh-loading-button loading-state="ConfigForm.$loading">

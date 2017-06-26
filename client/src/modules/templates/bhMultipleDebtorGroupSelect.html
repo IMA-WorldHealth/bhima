@@ -1,4 +1,4 @@
-<div ng-form="{{ $ctrl.formName }}" bh-multi-debtor-group-select>
+<div bh-multiple-debtor-group-select>
   <div class="form-group">
     <label class="control-label" translate>{{$ctrl.label}}</label>
       <ui-select 
@@ -6,6 +6,7 @@
         name="clients"
         ng-model="$ctrl.selectedDebtorGroups"
         on-select="$ctrl.onSelect($ctrl.selectedDebtorGroups)"
+        on-remove="$ctrl.onRemove($ctrl.selectedDebtorGroups)"
         theme="bootstrap"
         close-on-select="false">
           <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
@@ -18,3 +19,4 @@
       </ui-select>
   </div>
 </div>
+

@@ -3,11 +3,12 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhMultipleDebtorGroupSelect.tmpl.html',
     controller  : DebtorGroupSelectController,
     transclude  : true,
-    bindings    : {
+    bindings    : { 
       label            : '@?',
       onSelectCallback : '&',
+      onRemoveCallback : '&',
       formName         : '@?',
-      required         : '<?'      
+      required         : '<?'     
     },
   });
 
@@ -42,5 +43,9 @@ function DebtorGroupSelectController(DebtorGroups) {
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = function (models) {
     $ctrl.onSelectCallback({ debtorGroups : models });
+  };
+
+  $ctrl.onRemove = function (models) {
+    $ctrl.onRemoveCallback({ debtorGroups : models });
   };
 }
