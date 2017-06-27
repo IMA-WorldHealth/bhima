@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-        .controller('CategoriesPeopleListController', CategoriesPeopleListController);
+    .controller('CategoriesPeopleListController', CategoriesPeopleListController);
 
 CategoriesPeopleListController.$inject = ['$state', 'EmailReportService', 'CategoriesPeopleService', 'SessionService', 'util',
     'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
@@ -27,11 +27,7 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
     vm.loading = false;
     vm.hasError = false;
 
-
-
-
     function load(filters) {
-
         /*
          category people index is save in the localStorage as expained after
          if there's no index, we can use it, in the most case when the user refresh the page
@@ -64,14 +60,17 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
 
             // grid columns
             var columns = [
-                {field: currentCategory.Columns[0],
+                {
+                    field: currentCategory.Columns[0],
                     displayName: 'Name',
                     headerCellFilter: 'translate',
                     aggregationType: uiGridConstants.aggregationTypes.count,
                 },
-                {field: currentCategory.Columns[1],
+                {
+                    field: currentCategory.Columns[1],
                     displayName: 'Email',
-                    headerCellFilter: 'translate'},
+                    headerCellFilter: 'translate'
+                },
             ];
 
             // options for the UI grid
@@ -101,7 +100,7 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
                     var name = row[currentCategory.Columns[0]];
                     var email = row[currentCategory.Columns[1]];
 
-                    $state.go('emailreport', {data: {name: name, email: email}});
+                    $state.go('emailreport', { data: { name: name, email: email } });
 
                 }
             }
@@ -113,7 +112,7 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
                 vm.gridOptions.data = people;
 
             })
-                    .catch(Notify.handleError);
+                .catch(Notify.handleError);
 
         }
 

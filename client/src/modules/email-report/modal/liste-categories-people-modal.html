@@ -3,37 +3,28 @@
 
     <div class="modal-header">
         <ol class="headercrumb">
-            <li class="static" translate>Profile origin</li> 
+            <li class="static" translate>Profile origin</li>
     </div>
-</div>
+    </div>
 
-<div class="modal-body" style="height: 100px">
+    <div class="modal-body" style="height: 100px">
 
-    <div class="col-lg-12">
-        <ul>
-            <li ng-repeat="cat in catPeopleModalListCtrl.listCategoriesPeople">
-                <a  
-                    data-method="category"
-                    ui-sref="emailreport.groupProileList({index_current_category:$index})"
-
-                    ui-sref-opts="{notify:true}" >
+        <div class="col-lg-12">
+            <ul>
+                <li ng-repeat="cat in catPeopleModalListCtrl.listCategoriesPeople">
+                    <a data-method="category" ui-sref="emailreport.groupProileList({index_current_category:$index})" ui-sref-opts="{notify:true}">
                     {{cat.table_display}}
                 </a>
-            </li>
+                </li>
+            </ul>
+        </div>
 
-
-        </ul>
     </div>
 
-</div>
-
-<div class="modal-footer">
-    <a   class="btn btn-default"
-         data-method="selectProfile"
-         ui-sref="emailreport"
-         data-method="back"  translate>
+    <div class="modal-footer">
+        <a class="btn btn-default" data-method="selectProfile" ui-sref="emailreport" data-method="back" translate>
         FORM.BUTTONS.BACK
     </a>
 
-</div>
+    </div>
 </form>

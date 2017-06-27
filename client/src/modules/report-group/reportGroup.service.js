@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-        .service('ReportGroupService', ReportGroupService);
+    .service('ReportGroupService', ReportGroupService);
 
 ReportGroupService.$inject = [
     '$http', 'util', 'SessionService', '$uibModal',
@@ -13,7 +13,7 @@ ReportGroupService.$inject = [
  * module controllers and the server /tools/bed/ API.
  */
 function ReportGroupService($http, util, Session, $uibModal,
-        Documents, Visits, Filters) {
+    Documents, Visits, Filters) {
 
     var service = this;
     var baseUrl = '/report-group/';
@@ -40,31 +40,31 @@ function ReportGroupService($http, util, Session, $uibModal,
         };
 
         return $http.post(baseUrl, formatBedRequest)
-                .then(util.unwrapHttpResponse);
+            .then(util.unwrapHttpResponse);
     }
 
     //reading data from the server
     function read() {
         return $http.get(baseUrl, {})
-                .then(util.unwrapHttpResponse);
+            .then(util.unwrapHttpResponse);
     }
 
 
 
-//deteting a record from the server
+    //deteting a record from the server
     function remove(_Code) {
         return $http.delete(baseUrl + _Code, {})
-                .then(util.unwrapHttpResponse);
+            .then(util.unwrapHttpResponse);
     }
 
-//updating
+    //updating
     function update(report_Group) {
         var formatBedRequest = {
             reportGroup: report_Group
         };
 
         return $http.put(baseUrl, formatBedRequest)
-                .then(util.unwrapHttpResponse);
+            .then(util.unwrapHttpResponse);
     }
 
     return service;

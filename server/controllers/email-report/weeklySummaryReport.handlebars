@@ -1,0 +1,105 @@
+{{> head title="PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE" }}
+
+<body>
+    <style type="text/css">
+        .right {
+            float: right;
+        }
+
+        #exportButton {
+            float: left;
+        }
+
+        table {
+            box-shadow: 1px 2px 3px #aaa;
+            background: #aaa;
+            width: 100%;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            background: #fff;
+        }
+
+        th {
+            color: rgba(121, 164, 64, 1.0);
+            background: #ddd
+        }
+
+        .odd td {
+            background: #fafafa;
+        }
+    </style>
+
+
+
+    {{> header }}
+
+    <br/>
+    <br/>
+    <h3>WEEKLY REPORT</h3>
+    <table class="table table-condensed table-bordered">
+        <tr>
+            <th colspan="2" class="text-center">{{translate "REGISTERED PATIENTS "}}</th>
+        </tr>
+        <tr>
+            <td style="width: 50%">{{translate "THIS WEEK"}}</td>
+            <td class="text-right">{{patientsData.NumberOfpatientsThisWeek}}</td>
+        </tr>
+        <tr>
+            <td>{{translate "LAST WEEK"}}</td>
+            <td class="text-right">{{patientsData.NumberOfpatientsLastWeek}}</td>
+        </tr>
+
+
+    </table>
+
+
+
+    <table class="table table-condensed table-bordered">
+        <tr>
+            <th colspan="2" class="text-center">{{translate "INCOME BY SERVICE"}}</th>
+        </tr>
+        {{#each servicesIncome}}
+        <tr>
+            <td style="width: 50%">{{this.serviceName}}</td>
+            <td class="text-right">{{this.sumCost}}</td>
+
+        </tr>
+        {{/each}} 
+        {{#unless servicesIncome}}
+        <tr colspan='2'>
+            <td>No income found in services.</td>
+        </tr>
+        {{/unless}}
+
+
+    </table>
+
+    <table class="table table-condensed table-bordered">
+        <tr>
+            <th colspan="2" class="text-center">{{translate "FIRST AND LAST INVOICE CREATED PER DAY"}}</th>
+        </tr>
+        <tr>
+            <td class="text-center">{{translate "FIRST"}}</td>
+            <td class="text-center">{{translate "LAST"}}</td>
+        </tr>
+        {{#each MaxMinInvoiceDate}}
+        <tr>
+            <td>{{timestamp this.minDate}}</td>
+            <td>{{timestamp this.maxDate}}</td>
+
+        </tr>
+        {{/each}}
+        {{#unless MaxMinInvoiceDate}}
+        <tr colspan='2'>
+            <td>There was no invoice this week.</td>
+        </tr>
+        {{/unless}}
+
+
+    </table>
+
+
+</body>

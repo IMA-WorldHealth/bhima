@@ -7,11 +7,7 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu>
     <li>
-      <a href
-          data-method="edit"
-          data-edit-metadata="{{ row.entity.code }}"
-          ng-hide="row.groupHeader" 
-          ui-sref="emailreport({data : {selectedEmailReport:row.entity} })">
+      <a href data-method="edit" data-edit-metadata="{{ row.entity.code }}" ng-hide="row.groupHeader" ui-sref="emailreport({data : {selectedEmailReport:row.entity} })">
           <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
           
       </a>

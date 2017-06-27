@@ -1,7 +1,8 @@
 angular.module('bhima.controllers')
-        .controller('EmailReportController', EmailReportController);
+    .controller('EmailReportController', EmailReportController);
 
-EmailReportController.$inject = ['$state', 'EmailReportService', 'ReportGroupService', 'SessionService', 'util',
+EmailReportController.$inject = ['$state', 'EmailReportService',
+    'ReportGroupService', 'SessionService', 'util',
     'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
 ];
 
@@ -69,15 +70,15 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
         //loading report groups
         ReportGroupSvc.read().then(function (reportGroups) {
             vm.report_groups = reportGroups;
- 
+
         })
-                .catch(Notify.handleError);
+            .catch(Notify.handleError);
 
 
     }
 
 
-// reset the form state
+    // reset the form state
     function resetForm(RegistrationForm) {
 
         vm.emailReport = {};
@@ -89,7 +90,7 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
         ScrollTo('anchor');
     }
 
-//insertin a new email for reporting in the database
+    //insertin a new email for reporting in the database
     function save(RegistrationForm) {
 
         // end propagation for invalid state - this could scroll to an $invalid element on the form
@@ -102,30 +103,30 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
 
             //calling the EmailReportService create method
             return EmailReportSvc.create(vm.emailReport)
-                    .then(function (confirmation) {
-                        alert('saved successfully');
-                        //fille the ui grid
-                        load();
-                        // reset the form state
-                        resetForm(RegistrationForm);
+                .then(function (confirmation) {
+                    alert('saved successfully');
+                    //fille the ui grid
+                    load();
+                    // reset the form state
+                    resetForm(RegistrationForm);
 
 
-                    })
-                    .catch(Notify.handleError);
+                })
+                .catch(Notify.handleError);
 
         } else {
             //calling the EmailReportService update method
             return EmailReportSvc.update(vm.emailReport)
-                    .then(function (confirmation) {
-                        alert('updated successfully');
-                        //fille the ui grid
-                        load();
-                        // reset the form state
-                        resetForm(RegistrationForm);
+                .then(function (confirmation) {
+                    alert('updated successfully');
+                    //fille the ui grid
+                    load();
+                    // reset the form state
+                    resetForm(RegistrationForm);
 
 
-                    })
-                    .catch(Notify.handleError);
+                })
+                .catch(Notify.handleError);
         }
 
 
@@ -137,36 +138,41 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
 
         //calling the EmailReportService create method
         return EmailReportSvc.remove(vm.selectedEmailReport.id)
-                .then(function (confirmation) {
-                    alert('deleted successfully');
-                    //fille the ui grid
-                    load();
-                    // reset the form state
-                    resetForm(RegistrationForm);
-                })
-                .catch(Notify.handleError);
+            .then(function (confirmation) {
+                alert('deleted successfully');
+                //fille the ui grid
+                load();
+                // reset the form state
+                resetForm(RegistrationForm);
+            })
+            .catch(Notify.handleError);
     }
 
-//the ui grid
+    //the ui grid
 
     vm.loading = false;
     vm.hasError = false;
 
     // grid columns
     var columns = [
-        {field: 'name',
+        {
+            field: 'name',
             displayName: 'Name',
             headerCellFilter: 'translate',
             aggregationType: uiGridConstants.aggregationTypes.count,
         },
-        {field: 'email',
+        {
+            field: 'email',
             displayName: 'Email',
-            headerCellFilter: 'translate'},
-        {field: 'frequency',
+            headerCellFilter: 'translate'
+        },
+        {
+            field: 'frequency',
             displayName: 'Frequency',
             headerCellFilter: 'translate',
         },
-        {field: 'report_group',
+        {
+            field: 'report_group',
             displayName: 'Report group',
             headerCellFilter: 'translate',
         },
@@ -178,7 +184,6 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
             enableSorting: false,
             enableColumnMenu: false,
         }
-
 
     ];
 
@@ -196,7 +201,7 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
 
 
 
-//fill the grid
+    //fill the grid
     function load(filters) {
 
         EmailReportSvc.read().then(function (reportGroups) {
@@ -204,7 +209,7 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc, Session, 
             vm.gridOptions.data = reportGroups;
 
         })
-                .catch(Notify.handleError);
+            .catch(Notify.handleError);
     }
 
     load();

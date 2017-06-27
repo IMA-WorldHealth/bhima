@@ -1,9 +1,12 @@
 angular.module('bhima.controllers')
-        .controller('ReportGroupController', ReportGroupController);
+    .controller('ReportGroupController', ReportGroupController);
 
-ReportGroupController.$inject = ['$state', 'ReportGroupService', 'SessionService', 'util',
-    'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
-];
+ReportGroupController.$inject =
+    [
+        '$state', 'ReportGroupService', 'SessionService',
+        'util', 'NotifyService', 'ScrollService', 'bhConstants',
+        'uiGridConstants',
+    ];
 
 
 /**
@@ -32,7 +35,7 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
 
     init();
 
-//initialisation
+    //initialisation
 
     function init() {
         //If the user has selected a profile, fill name and email field
@@ -63,45 +66,28 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
         if (vm.selectedReportGroup.selected == true) { //should update
 
             return ReportGroupSvc.update(vm.reportGroup)
-                    .then(function (confirmation) {
-                        alert('updated successfully');
-                        
-                        // reset form state
-                        vm.reportGroup = {};
-                        RegistrationForm.$setPristine();
-                        RegistrationForm.$setUntouched();
+                .then(function (confirmation) {
+                    alert('updated successfully');
 
-                        vm.selectedReportGroup.selected = false;
-                        ScrollTo('anchor');
-                        load();
+                    // reset form state
+                    vm.reportGroup = {};
+                    RegistrationForm.$setPristine();
+                    RegistrationForm.$setUntouched();
 
-                    })
-                    .catch(Notify.handleError);
+                    vm.selectedReportGroup.selected = false;
+                    ScrollTo('anchor');
+                    load();
+
+                })
+                .catch(Notify.handleError);
 
         } else {
             //calling the ReportGroupService create method
             return ReportGroupSvc.create(vm.reportGroup)
-                    .then(function (confirmation) {
-                        alert('saved successfully');
-                        load();
-
-                        // reset form state
-                        vm.reportGroup = {};
-                        RegistrationForm.$setPristine();
-                        RegistrationForm.$setUntouched();
-                        ScrollTo('anchor');
-                    })
-                    .catch(Notify.handleError);
-        }
-
-    }
-
-    function remove(RegistrationForm) {
-
-        return ReportGroupSvc.remove(vm.reportGroup.code)
-                .then(function () {
-                    alert('deleted successfully');
+                .then(function (confirmation) {
+                    alert('saved successfully');
                     load();
+
                     // reset form state
                     vm.reportGroup = {};
                     RegistrationForm.$setPristine();
@@ -109,25 +95,46 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
                     ScrollTo('anchor');
                 })
                 .catch(Notify.handleError);
+        }
+
     }
 
-//the ui grid
+    function remove(RegistrationForm) {
+
+        return ReportGroupSvc.remove(vm.reportGroup.code)
+            .then(function () {
+                alert('deleted successfully');
+                load();
+                // reset form state
+                vm.reportGroup = {};
+                RegistrationForm.$setPristine();
+                RegistrationForm.$setUntouched();
+                ScrollTo('anchor');
+            })
+            .catch(Notify.handleError);
+    }
+
+    //the ui grid
 
     vm.loading = false;
     vm.hasError = false;
 
     // grid columns
     var columns = [
-        {field: 'code',
+        {
+            field: 'code',
             displayName: 'Code',
             headerCellFilter: 'translate',
             aggregationType: uiGridConstants.aggregationTypes.count,
             width: 90,
         },
-        {field: 'name',
+        {
+            field: 'name',
             displayName: 'Name',
-            headerCellFilter: 'translate'},
-        {field: 'description',
+            headerCellFilter: 'translate'
+        },
+        {
+            field: 'description',
             displayName: 'Description',
             headerCellFilter: 'translate',
         },
@@ -154,7 +161,7 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
     };
 
 
-//filling the ui grid
+    //filling the ui grid
     function load(filters) {
 
         ReportGroupSvc.read().then(function (reportGroups) {
@@ -162,7 +169,7 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
             vm.gridOptions.data = reportGroups;
 
         })
-                .catch(Notify.handleError);
+            .catch(Notify.handleError);
 
 
     }

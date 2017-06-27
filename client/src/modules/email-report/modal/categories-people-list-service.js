@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-        .service('CategoriesPeopleService', CategoriesPeopleService);
+    .service('CategoriesPeopleService', CategoriesPeopleService);
 
 CategoriesPeopleService.$inject = [
     '$http', 'util', 'SessionService', '$uibModal',
@@ -13,7 +13,7 @@ CategoriesPeopleService.$inject = [
  * module controllers and the server /tools/bed/ API.
  */
 function CategoriesPeopleService($http, util, Session, $uibModal,
-        Documents, Visits, Filters) {
+    Documents, Visits, Filters) {
 
     var service = this;
 

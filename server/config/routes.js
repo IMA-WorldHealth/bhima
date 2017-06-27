@@ -87,10 +87,12 @@ const stats = require('../controllers/dashboard/stats');
 //email report routes
 const report_group=require('../controllers/report-group');
 const email_report=require('../controllers/email-report');
-const email_report_reports=require('../controllers/email-report/reports');
+const weeklySummaryReport=require('../controllers/email-report/weeklySummaryReport');
+const mail=require('../controllers/report-group/mail');
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
+
 
 
 //email report routes
@@ -98,7 +100,7 @@ exports.configure = function configure(app) {
   app.get('/report-group', report_group.list);
   app.delete('/report-group/:code', report_group.delete);
   app.put('/report-group', report_group.update);
-   app.get('/report-group/sendEmails', report_group.sendReport);
+  app.get('/report-group/sendEmails', mail.sendReport);
 
   app.post('/email-report', email_report.create);
   app.delete('/email-report/:id', email_report.delete);
@@ -106,7 +108,7 @@ exports.configure = function configure(app) {
   app.get('/email-report', email_report.list);
   app.post('/email-report/list-people', email_report.list_people);
 
-  app.get('/email-report/weekly_summary_report_view1', email_report_reports.view1);
+  app.get('/email-report/weekly_summary_report_view1', weeklySummaryReport.view1);
 
 
  
