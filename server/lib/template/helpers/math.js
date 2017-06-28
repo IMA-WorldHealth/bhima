@@ -11,7 +11,6 @@ function multiply(a, b) {
   return a * b;
 }
 
-
 /**
  * @function sum
  * @desc This function is responsible to calculate the sum of an array given

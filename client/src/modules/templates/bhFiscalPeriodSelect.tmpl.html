@@ -27,6 +27,7 @@
             name="periodFrom"
             ng-options="periodFrom.id as periodFrom.label for periodFrom in $ctrl.periods"
             ng-change="$ctrl.onSelectPeriodFrom($ctrl.selectedPeriodFrom)"
+            ng-disabled="!$ctrl.selectedFiscal"
             data-period-from-select
             required>
             <option value="" disabled translate>FORM.SELECT.PERIOD</option>
@@ -42,6 +43,7 @@
             name="periodTo"
             ng-options="periodTo.id as periodTo.label for periodTo in $ctrl.periods"
             ng-change="$ctrl.onSelectPeriodTo($ctrl.selectedPeriodTo)"
+            ng-disabled="!$ctrl.selectedFiscal"
             data-period-to-select
             required>
             <option value="" disabled translate>FORM.SELECT.PERIOD</option>

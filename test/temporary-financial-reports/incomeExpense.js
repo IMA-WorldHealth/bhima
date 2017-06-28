@@ -48,8 +48,11 @@ describe('Income expense Report', () => {
 
     // independently tested by summing the general ledger
     it('Returns correct data for a one period january 2016', () => {
+        // see server/controllers/finance/periodTotal/index.js, getAccountsBalance method
         const incomeBalance = 3.3979;
         const expenseBalance = 70;
+
+        // see server/controllers/finance/periodTotal/index.js, getAccountsBalances method
         const incomesLength = 2;
         const expensesLength = 2;
         
@@ -68,8 +71,11 @@ describe('Income expense Report', () => {
     });
 
     it('Returns correct data for all 2016 periods', () => {
+        // see server/controllers/finance/periodTotal/index.js, getAccountsBalance method
         const incomeBalance = 56.3312;
         const expenseBalance = 840.0052;
+
+        // see server/controllers/finance/periodTotal/index.js, getAccountsBalances method
         const incomesLength = 3;
         const expensesLength = 3;
         
@@ -88,7 +94,8 @@ describe('Income expense Report', () => {
     });
 
     it('Throw an error when period interval is not set correctly', () => {
-            return agent.get(reportURL)
+        //see server/controllers/finance/fiscalPeriod.js, getPeriodDiff method
+        return agent.get(reportURL)
             .query(badPeriodRangeRequest)
             .then((result) => {
                 const report = result.body;
@@ -98,6 +105,7 @@ describe('Income expense Report', () => {
     });
 
     it('Throw an error when periods are in diferent fiscal year', () => {
+         //see server/controllers/finance/fiscalPeriod.js, isInSameFiscalYear method
             return agent.get(reportURL)
             .query(periodInDiferentFYRequest)
             .then((result) => {

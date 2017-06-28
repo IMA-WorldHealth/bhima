@@ -52,7 +52,7 @@ function document(req, res, next) {
         .then((ans) =>{
 
             if(ans.nb > 0){
-                throw new BadRequest(`The period From should be before the period To`);
+                throw new BadRequest(`The period From should be before the period To`, 'FORM.ERRORS.PERIOD_ORDER');
             }
 
             return getDateRange(options.periodFrom, options.periodTo);
@@ -64,7 +64,7 @@ function document(req, res, next) {
         .then((ans) => {
 
             if(!ans){
-                throw new BadRequest(`The two period selected must be in the same fiscal year`);
+                throw new BadRequest(`The two period selected must be in the same fiscal year`, 'FORM.ERRORS.PERIOD_DIFF_FISCAL');
             }
             return getRecord(options);
         })
@@ -83,11 +83,12 @@ function report(req, res, next) {
 }
 
 function getRecord(options) {
+    let data;
     return reportTypes[options.type](options)
         .then((data) => {
-            _.merge(data, { dateFrom : options.dateFrom, dateTo : options.dateTo });
+            _.merge(data, { dateFrom : options.dateFrom, dateTo : options.dateTo, type_id : options.type });
             return data;
-        })
+        });
 }
 
 function fetchIncomeExpense(options) {
@@ -99,6 +100,13 @@ function fetchIncomeExpense(options) {
         })
         .then((expenses) => {
             _.merge(result, expenses);
+            return db.one(`SELECT IFNULL(${result.incomeAggregation.balance} - ${result.expenseAggregation.balance}, 0) AS finalBalance`);
+        })
+        .then((finalAggregate) =>{
+            result.isLost = finalAggregate.finalBalance <= 0;            
+            _.merge(result, {finalBalance : finalAggregate.finalBalance <= 0 ? finalAggregate.finalBalance * -1 : finalAggregate.finalBalance });
+            // it is an incomeExpense report            
+            result.isIncomeExpense = true;
             return result;
         });
 }
