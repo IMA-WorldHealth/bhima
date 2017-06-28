@@ -1,5 +1,5 @@
 /**
- * @module email-report/report-group
+ * @module mail
  *
  * @description
  * small description of this module
@@ -26,7 +26,7 @@ const reports_def = require('../email-report/weeklySummaryReport');
 const email_report = require('../email-report/index');
 
 exports.sendReport = sendReport;
-
+exports.sendScheduledReport = sendScheduledReport;
 
 
 /**
@@ -95,6 +95,55 @@ function sendReport(req, res, next, frequency = 'Weekly') {
 
 
 
+function sendScheduledReport(frequency) {
+
+    const sql = 'SELECT  * FROM report_group';
+
+    //linking report groups data in the database to pdf report generable from bhima
+    const reportMap = {
+        '001': {
+            fct: reports_def.weeklySummaryReport,
+            fileName: 'weeklySummaryReport.pdf'
+        },
+        '002': {
+            fct: reports_def.weeklySummaryReport,
+            fileName: 'weeklySummaryReport.pdf'
+        },
+    };
+
+    // getting all report_group
+    return db.exec(sql, {})
+        .then(rows => {
+
+            //forEach report_group we should get profiles(name + email) and then email them
+            const groupsPromiseExecution = rows.map((reportGroup) => {
+
+                //getting profiles
+                  return email_report.getProfile(reportGroup.code, frequency)
+                    .then((profiles) => {
+
+                        //profiles found
+                        if (profiles.length > 0) {
+
+                            console.log('profiles nomber :' + profiles.length);
+                        
+                            //rendering the report
+                            var session={};
+                            return reportMap[reportGroup.code].fct(session)
+                                .then((report_result) => {
+                                    //every infomations are collectted for sending email
+                                    //let use the mailgun api 
+                                    mailgun(profiles, report_result.report, reportMap[reportGroup.code].fileName);
+
+                                });
+                        }
+                    })
+
+            });
+
+            return Promise.all(groupsPromiseExecution);
+        });
+}
 //sending email using mailgun API
 
 
@@ -132,7 +181,7 @@ function mailgun(profiles, file, fileName) {
         to: 'Jeremie Lodi<jeremielodi@gmail.com>',
         bcc: bcc_emails,
         subject: 'BHIMA reports',
-        text: 'The report is attached',
+        text: 'node-schedule test,The report is attached',
         attachment: attch
     };
 

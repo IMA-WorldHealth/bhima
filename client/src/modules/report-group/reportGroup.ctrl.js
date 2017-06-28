@@ -8,7 +8,6 @@ ReportGroupController.$inject =
         'uiGridConstants',
     ];
 
-
 /**
  * Report group Controller
  *
@@ -27,18 +26,15 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
 
     vm.selectedReportGroup = {};
     vm.selectedReportGroup.selected = false;
-
     vm.save = save;
     vm.remove = remove;
-
-
 
     init();
 
     //initialisation
 
     function init() {
-        //If the user has selected a profile, fill name and email field
+        //If the user has selected a profile from the grill modal, fill name and email fields
         try {
             if ($state.params.data.selectedReportGroup.code) {
                 vm.reportGroup = $state.params.data.selectedReportGroup;

@@ -121,6 +121,7 @@ function MaxMinInvoiceDate() {
   return db.exec(sql, [monday, sunday]);
 }
 
+//test to see how to the report looks like
 function view1(req, res, next) {
 
   const options = {
@@ -170,9 +171,8 @@ function view1(req, res, next) {
 
 
 //one of the reports that bhima send by email
-function weeklySummaryReport(req, res, next) {
-
-
+function weeklySummaryReport(currentSession) {
+ 
   const options = {
     renderer: 'pdf',
     saveReport: false,
@@ -182,17 +182,18 @@ function weeklySummaryReport(req, res, next) {
 
   //patient registered
   return loadPatientData().then(_patientsData => {
-
+ 
     //services incomes
     return loadServicesIncome().then(_servicesIncome => {
 
 
       //max and min date of invoice each day for a week
       return MaxMinInvoiceDate().then(_MaxMinInvoiceDate => {
-
+       
         //rendering the report
-        var report = new ReportManager(TEMPLATE, req.session, options);
+        var report = new ReportManager(TEMPLATE, currentSession, options);
 
+        
         if (_patientsData.lenght === 0) {
           _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
         } else {

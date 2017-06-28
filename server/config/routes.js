@@ -89,11 +89,14 @@ const report_group=require('../controllers/report-group');
 const email_report=require('../controllers/email-report');
 const weeklySummaryReport=require('../controllers/email-report/weeklySummaryReport');
 const mail=require('../controllers/report-group/mail');
+const scheduler=require('../controllers/report-group/scheduler');
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
 
 
+
+scheduler.setScheduler();
 
 //email report routes
   app.post('/report-group', report_group.create);
