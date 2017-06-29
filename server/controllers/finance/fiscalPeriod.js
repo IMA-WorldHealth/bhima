@@ -52,7 +52,9 @@ function find(options) {
   const sql =
     `
     SELECT 
-      p.id, p.fiscal_year_id, p.number, p.start_date, p.end_date, CONCAT(IFNULL(p.start_date, p.number), '/',  IFNULL(p.end_date, p.number)) AS label
+      p.id, p.fiscal_year_id, p.number, p.start_date, p.end_date,
+      CONCAT(IFNULL(p.start_date, p.number), '/',  IFNULL(p.end_date, p.number)) AS label,
+      MONTH(p.start_date) AS month_number, YEAR(p.start_date) AS year_number
     FROM period AS p `;
 
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
