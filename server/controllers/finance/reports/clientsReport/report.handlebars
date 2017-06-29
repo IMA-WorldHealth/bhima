@@ -12,10 +12,10 @@
       </h2>
       <br/>
       
-      <table class="table table-condensed table-striped table-bordered">
+      <table class="table table-condensed table-report">
         <thead>
-          <tr class="text-uppercase">
-            <th rowspan="2" class="text-center">{{ translate 'ACCOUNT.NUMBER' }}</th>
+          <tr style="background-color:#ddd;">
+            <th rowspan="2" class="text-center">{{ translate 'TABLE.COLUMNS.ACCOUNT' }}</th>
             <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>
             {{#if detailPrevious}}
               <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.PREVIOUS_MVT'}} : {{date fy.openningBalanceDate}}</th>
@@ -25,7 +25,7 @@
             <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.CURRENT_MVT' }}</th>
             <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}<br /> {{date dateTo}}</th>
           </tr>
-          <tr class="text-uppercase">
+          <tr style="background-color:#ddd;">
             {{#if detailPrevious}}
               <th class="text-center">{{ translate 'FORM.LABELS.DEBIT' }}</th>
               <th class="text-center">{{ translate 'FORM.LABELS.CREDIT' }}</th>
@@ -53,7 +53,7 @@
           {{/each}}
         </tbody>
         <tfoot>
-          <tr>
+          <tr style="background-color:#ddd;">
             <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
             {{#if detailPrevious}}
               <th class="text-right">{{currency totalInitDebit enterprise.currency_id}}</th>
