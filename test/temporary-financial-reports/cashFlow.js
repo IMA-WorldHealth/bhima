@@ -18,45 +18,153 @@ describe.only('Cash Flow Report', () => {
     weekly: '0' 
   };
 
+  const may2015 = { 
+    account_id: '190',
+    cashbox: '4',
+    dateFrom: '2015-05-01',
+    dateTo: '2015-05-31',
+    lang: 'fr',
+    renderer: 'json',
+    reportId: '1',
+    saveReport: '0',
+    weekly: '1' 
+  };
+
+  var periodicBalance = {
+    jan : 1131.42,
+    feb : 1061.45,
+    mar : 991.54,
+    apr : 924.43,
+    may : 855.9599999999999,
+    jun : 786.43,
+    jul : 717.27,
+    aug : 650.88,
+    sep : 637.87,
+    oct : 568.47,
+    nov : 498.82000000000005,
+    dec :  429.12000000000006
+  }
+
+  var totalIncomes = {
+    jan : 1.7,
+    feb : 0.03,
+    mar : 0.09,
+    apr : 2.89,
+    may : 1.53,
+    jun : 0.47,
+    jul : 0.84,
+    aug : 3.61,
+    sep : 56.99,
+    oct : 0.6,
+    nov : 0.35,
+    dec : 0.3
+  }
+
+  var totalExpenses = {
+    jan : 70,
+    feb : 70,
+    mar : 70,
+    apr : 70,
+    may : 70,
+    jun : 70,
+    jul : 70,
+    aug : 70,
+    sep : 70,
+    oct : 70,
+    nov : 70,
+    dec : 70,
+  }
+
+  var periodicOpenningBalance = {
+    jan : 1199.7200,
+    feb : 1131.42,
+    mar : 1061.45,
+    apr : 991.54,
+    may : 924.43,
+    jun : 855.9599999999999,
+    jul : 786.43,
+    aug : 717.27,
+    sep : 650.88,
+    oct : 637.87,
+    nov : 568.47,
+    dec : 498.82000000000005,
+  };
+
+  var periodicBalanceWeek = { 
+    'week1' : 1725.36,
+    'week2' : 1725.36,
+    'week3' : 1655.36,
+    'week4' : 1655.36,
+    'week5' : 1678.3 
+  };
+
+  var periodicOpenningBalanceWeek = { 
+    'week1' : 1725.3600,
+    'week2' : 1725.36,
+    'week3' : 1725.36,
+    'week4' : 1655.36,
+    'week5' : 1655.36, 
+  };
+
+  var totalIncomesWeek = { 
+    'week5': 22.94 
+  };
+  
+  var totalExpensesWeek = { 
+    'week3': 70 
+  };
+
+  var openningBalance = '1725.3600';
+
   // Cash Flow Report for the 'Hospital Primary Cashbox' with the currency Dollars in 2016
   it('Returns expected Cash Flow Report for the Hospital Primary Cashbox with the currency Dollars in 2016', () => {
     return agent.get(reportURL)
       .query(year2016)
       .then((result) => {
-        var periodicBalance = {
-          jan : -870.28,
-          feb : -940.28,
-          mar : -1010.28,
-          apr : -1080.28,
-          may : -1150.28,
-          jun : -1220.28,
-          jul : -1290.28,
-          aug : -1360.28,
-          sep : -1430.28,
-          oct : -1500.28,
-          nov : -1570.28,
-          dec : -1640.28           
-        };
-
-        var periodicOpenningBalance = {
-          jan : -800.28,
-          feb : -870.28,
-          mar : -940.28,
-          apr : -1010.28,
-          may : -1080.28,
-          jun : -1150.28,
-          jul : -1220.28,
-          aug : -1290.28,
-          sep : -1360.28,
-          oct : -1430.28,
-          nov : -1500.28,
-          dec : -1570.28 
-        };
-
         expect(Number(result.body.periodicBalance['2016-01-01'])).to.equal(periodicBalance.jan);
-        expect(Number(result.body.periodicOpenningBalance['2016-12-01'])).to.equal(periodicOpenningBalance.dec);
-        expect(Number(result.body.periodicOpenningBalance['2016-06-01'])).to.not.equal(periodicOpenningBalance.may);
+        expect(Number(result.body.periodicBalance['2016-06-01'])).to.equal(periodicBalance.jun);
+        expect(Number(result.body.periodicBalance['2016-09-01'])).to.equal(periodicBalance.sep);
+        expect(Number(result.body.periodicBalance['2016-12-01'])).to.equal(periodicBalance.dec);
 
+        expect(Number(result.body.totalIncomes['2016-04-01'])).to.equal(totalIncomes.apr);
+        expect(Number(result.body.totalIncomes['2016-06-01'])).to.equal(totalIncomes.jun);
+        expect(Number(result.body.totalIncomes['2016-11-01'])).to.equal(totalIncomes.nov);
+        expect(Number(result.body.totalIncomes['2016-12-01'])).to.equal(totalIncomes.dec);
+
+        expect(Number(result.body.totalExpenses['2016-01-01'])).to.equal(totalExpenses.jan);
+        expect(Number(result.body.totalExpenses['2016-03-01'])).to.equal(totalExpenses.mar);
+        expect(Number(result.body.totalExpenses['2016-07-01'])).to.equal(totalExpenses.jul);
+        expect(Number(result.body.totalExpenses['2016-10-01'])).to.equal(totalExpenses.oct);
+
+        expect(Number(result.body.periodicOpenningBalance['2016-01-01'])).to.equal(periodicOpenningBalance.jan);
+        expect(Number(result.body.periodicOpenningBalance['2016-05-01'])).to.equal(periodicOpenningBalance.may);
+        expect(Number(result.body.periodicOpenningBalance['2016-08-01'])).to.equal(periodicOpenningBalance.aug);
+        expect(Number(result.body.periodicOpenningBalance['2016-11-01'])).to.not.equal(periodicOpenningBalance.dec);
+      });
+  });
+
+  // Cash Flow Report for the 'Hospital Primary Cashbox' with the currency Dollars in May 2015
+  it('Returns expected the Weekly Cash Flow Report for the Hospital Primary Cashbox with the currency Dollars in May 2005', () => {
+    return agent.get(reportURL)
+      .query(may2015)
+      .then((result) => {
+        expect(result.body.openningBalance).to.equal(openningBalance);
+
+        expect(Number(result.body.periodicBalance['2015-04-27'])).to.equal(periodicBalanceWeek.week1);
+        expect(Number(result.body.periodicBalance['2015-05-04'])).to.equal(periodicBalanceWeek.week2);
+        expect(Number(result.body.periodicBalance['2015-05-11'])).to.equal(periodicBalanceWeek.week3);
+        expect(Number(result.body.periodicBalance['2015-05-18'])).to.equal(periodicBalanceWeek.week4);
+        expect(Number(result.body.periodicBalance['2015-05-25'])).to.equal(periodicBalanceWeek.week5);
+
+        expect(Number(result.body.periodicOpenningBalance['2015-04-27'])).to.equal(periodicOpenningBalanceWeek.week1);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-04'])).to.equal(periodicOpenningBalanceWeek.week2);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-11'])).to.equal(periodicOpenningBalanceWeek.week3);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-18'])).to.equal(periodicOpenningBalanceWeek.week4);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-25'])).to.equal(periodicOpenningBalanceWeek.week5);
+
+        expect(Number(result.body.totalIncomes['2015-05-25'])).to.equal(totalIncomesWeek.week5);
+        expect(Number(result.body.totalExpenses['2015-05-11'])).to.equal(totalExpensesWeek.week3);
+        expect(Number(result.body.totalExpenses['2015-05-11'])).to.not.equal(periodicBalanceWeek.week2);
       });
   });
 
