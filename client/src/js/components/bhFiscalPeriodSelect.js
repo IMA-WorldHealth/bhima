@@ -10,9 +10,9 @@ angular.module('bhima.components')
         controller: FiscalPeriodSelect,
     });
 
-FiscalPeriodSelect.$inject = ['FiscalService', 'FisaclPeriodService'];
+FiscalPeriodSelect.$inject = ['FiscalService', 'FisaclPeriodService', '$translate'];
 
-function FiscalPeriodSelect(Fiscals, Periods) {
+function FiscalPeriodSelect(Fiscals, Periods, $translate) {
     var $ctrl = this;
     var monthMap = {
         1: 'FORM.LABELS.JANUARY',
@@ -42,7 +42,9 @@ function FiscalPeriodSelect(Fiscals, Periods) {
             .then(function (periods) {
                 periods.forEach(function (period) {
                     if (period.number >= 1 && period.number <= 12) {
-                        period.hrLabel = monthMap[period.month_number];
+                        period.hrLabel = $translate.instant(monthMap[period.month_number]);
+                        period.hrLabel = [period.hrLabel, period.year_number].join(' ');
+
                     }else{
                         period.hrLabel = period.label;
                     }

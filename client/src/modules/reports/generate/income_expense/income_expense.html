@@ -40,7 +40,7 @@
                     class="form-control"
                     name="type"
                     ng-model="ReportConfigCtrl.reportDetails.type"
-                    ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes track by type.id"
+                    ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
                     required>
                     <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
                 </select>

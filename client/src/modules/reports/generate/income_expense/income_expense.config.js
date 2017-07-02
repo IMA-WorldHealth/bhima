@@ -66,5 +66,6 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+    vm.reportDetails.type = 1;
   } 
 }

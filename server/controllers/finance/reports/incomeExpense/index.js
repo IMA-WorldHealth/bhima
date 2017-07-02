@@ -69,6 +69,7 @@ function document(req, res, next) {
             return getRecord(options);
         })
         .then((records) => {
+            records.isEmpty = records.incomes.length === 0 && records.expenses.length === 0;
             return docReport.render({ incomeExpense: records });
         })
         .then((result) => {

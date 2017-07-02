@@ -57,14 +57,14 @@ function find(options) {
       MONTH(p.start_date) AS month_number, YEAR(p.start_date) AS year_number
     FROM period AS p `;
 
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias: 'p', autoParseStatements: false });
   filters.equals('fiscal_year_id', 'fiscal_year_id', 'p');
   filters.equals('id', 'id', 'p');
   const exludePeriods = options.excludeExtremityPeriod === 'true';
 
-  if(exludePeriods){
+  if (exludePeriods) {
     filters.custom('excludeExtremityPeriod', `p.number NOT IN (${PERIOD_0_NUM}, ${PERIOD_13_NUM})`);
-  }  
+  }
 
   // @TODO Support ordering query
   filters.setOrder('ORDER BY p.id ASC');
@@ -75,42 +75,32 @@ function find(options) {
   return db.exec(query, parameters);
 }
 
-function isInSameFiscalYear(opt){
-  if(opt.periods.length !== 2){
+function isInSameFiscalYear(opt) {
+  if (opt.periods.length !== 2) {
     return false;
   }
   const sql = `
   SELECT 
     p.fiscal_year_id 
   FROM 
-    period AS p`
-  const filters = new FilterParser(opt, { tableAlias : 'p', autoParseStatements : false });
-  filters.custom('periods', `p.id IN (${opt.periods.join(',')})`);
-  const query = filters.applyQuery(sql);
-  return db.exec(query)
-    .then(function (res){
-      const value = res.reduce(function (x, y){
-        return x.fiscal_year_id === y.fiscal_year_id;
-      });
-      return value;
+    period AS p
+  WHERE p.id IN (${opt.periods.join(',')})
+  GROUP BY 
+    p.fiscal_year_id`;
+
+  return db.exec(sql)
+    .then(function (res) {      
+      return res.length === 1;
     });
 }
 
-function getPeriodDiff (periodIdA, periodIdB){ 
-  let periodA;
-  let periodB;
-
-  return find({id : periodIdA})
-    .then((pA) => {
-      periodA = pA[0];
-      return find({id : periodIdB})
-    })
-    .then((pB) => {
-      periodB = pB[0];
-      let date1 = moment(periodA.start_date).format('YYYY-MM-DD').toString();
-      let date2 = moment(periodB.start_date).format('YYYY-MM-DD').toString();
-      const sql = `SELECT DATEDIFF('${date1}','${date2}') AS nb`;
-      return db.one(sql);
-    });
+function getPeriodDiff(periodIdA, periodIdB) {
+  const sql = 
+  `
+  SELECT 
+  DATEDIFF(
+   (SELECT start_date FROM period where id = ?), (SELECT start_date FROM period WHERE id = ?)
+  ) as nb`;
+  return db.one(sql, [periodIdA, periodIdB]);
 }
 
