@@ -11,9 +11,11 @@
  */
 const _ = require('lodash');
 const db = require('../../../../lib/db');
+const FilterParser = require('../../../../lib/filter');
 const ReportManager = require('../../../../lib/ReportManager');
 
-const TEMPLATE = './server/controllers/finance/reports/clientsReport/report.handlebars';
+const TEMPLATE_SIMPLE = './server/controllers/finance/reports/clientsReport/report_simple.handlebars';
+const TEMPLATE_COMPLEX = './server/controllers/finance/reports/clientsReport/report_complex.handlebars';
 
 /**
  * @function document
@@ -21,6 +23,8 @@ const TEMPLATE = './server/controllers/finance/reports/clientsReport/report.hand
  */
 function document(req, res, next) {
   const params = req.query;
+  //should be removed, just for test
+  params.simpleReport = true;
   const session = {};
   let report;
 
@@ -30,6 +34,7 @@ function document(req, res, next) {
     dateFrom : new Date(params.dateFrom),
     dateTo : new Date(params.dateTo),
     detailPrevious : params.detailPrevious,
+    simpleReport : params.simpleReport,
     ignoredClients : params.ignoredClients,
     enterprise : req.session.enterprise,
   });
@@ -37,6 +42,7 @@ function document(req, res, next) {
   _.defaults(params, { user : req.session.user });
 
   try {
+    const TEMPLATE = session.simpleReport ? TEMPLATE_SIMPLE : TEMPLATE_COMPLEX;
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
     return next(e);
@@ -52,7 +58,9 @@ function document(req, res, next) {
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next);
+    .catch(function (err){
+      console.log(err);
+    });
 }
 
 /**
@@ -65,31 +73,14 @@ function document(req, res, next) {
 function fetchClientsData(session) {
   const clientsData = {};
   let ignoredClients;
-  let notInStatement = '';
+  let notInStatement;
 
   _.defaults(clientsData, session);
 
   if (session.ignoredClients) {
     ignoredClients = (Array.isArray(session.ignoredClients)) ? session.ignoredClients : [session.ignoredClients];
-    notInStatement = `AND dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
+    notInStatement = `dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
   }
-
-  // request to fetch data of previous year
-  const previousDetailSql =
-    `    
-    SELECT 
-     t.number AS accountNumber, t.name, 
-     IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
-    FROM
-    (
-      SELECT
-       ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
-       SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
-      FROM debtor_group dg 
-      JOIN account ac ON ac.id = dg.account_id 
-      LEFT JOIN period_total pt ON ac.id = pt.account_id
-      WHERE pt.fiscal_year_id = ? ${notInStatement} GROUP BY ac.number
-    ) AS t`;
 
   // getting a fiscal year and the previous fiscal year ID from the date start defined by the user
   return getFiscalYear(session.dateFrom)
@@ -100,7 +91,7 @@ function fetchClientsData(session) {
       clientsData.fy.openningBalanceDate.setDate(clientsData.fy.openningBalanceDate.getDate() - 1);
 
       // getting the client data for the previous fiscal year
-      return db.exec(previousDetailSql, [clientsData.fy.previous_fiscal_year_id]);
+      return getClientsData({ fiscal_year_id : clientsData.fy.previous_fiscal_year_id, ignoredClients : notInStatement });
     })
     .then((data) => {
       // from previous fiscal year data, building the object containing all previous info to print
@@ -166,7 +157,7 @@ function fetchClientsData(session) {
         }
 
         // adding effectively current info to the object
-        // and adding the final balance of the client,
+        // and adding the current balance of the client,
         // no way to get it from the database directly without altering the current requests
         _.merge(clientsData.lines[dt.accountNumber], {
           debit : dt.debit,
@@ -227,6 +218,44 @@ function escapeItems(list) {
     t.push(db.escape(db.bid(item)));
     return t;
   }, []);
+}
+
+/**
+ * @function getClientsData
+ * @param {object} options The object for filtering data using filterParser lib
+ * @description
+ * This function is responsible of returning a list of debtor and their balance
+ **/
+function getClientsData(options) {
+  const filterParser = new FilterParser(options, { tableAlias : 'dg', autoParseStatements : false });
+  
+  const sql = `
+    SELECT
+      ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
+      SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+    FROM debtor_group dg 
+    JOIN 
+      account ac ON ac.id = dg.account_id 
+    LEFT JOIN period_total pt ON ac.id = pt.account_id   
+  `;
+  
+
+  filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
+  filterParser.custom('ignoredClients', options.ignoredClients);
+  filterParser.setGroup('GROUP BY ac.number');
+
+  const query = filterParser.applyQuery(sql);
+  const parameters = filterParser.parameters();
+
+  const finalQuery =
+    `    
+    SELECT 
+     t.number AS accountNumber, t.name, 
+     IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
+    FROM 
+      (${query}) AS t`;
+
+    return db.exec(finalQuery);
 }
 
 exports.document = document;
