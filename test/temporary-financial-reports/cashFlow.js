@@ -2,7 +2,7 @@
 const expect = require('chai').expect;
 const _ = require('lodash');
 
-describe.only('Cash Flow Report', () => {
+describe('Cash Flow Report', () => {
 
   const reportURL = '/reports/finance/cashflow';
 
