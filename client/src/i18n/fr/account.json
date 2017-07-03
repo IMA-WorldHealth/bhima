@@ -2,14 +2,6 @@
   "ACCOUNT": {
     "ALL_CLASSES": "Toutes les classes",
     "ASSET": "Comptes des valeurs immobilisées",
-    "CATEGORY": {
-      "ASSET":"Actif",
-      "LIABILITY":"Passif",
-      "EQUITY":"Capital",
-      "REVENUE":"Produit",
-      "EXPENSE":"Charge",
-      "TIERS":"Tiers"
-    },
     "CHART": "Plan Comptable",
     "COST": "Comptes des charges et pertes par nature",
     "EQUITY": "Comptes des fonds propres et emprunts a plus d'un an",
@@ -57,7 +49,12 @@
       "BALANCE": "Balance",
       "TITLE": "Titre",
       "INCOME": "Produit",
-      "EXPENSE": "Charge"
+      "EXPENSE": "Charge",
+      "ASSET":"Actif",
+      "LIABILITY":"Passif",
+      "EQUITY":"Capital",
+      "REVENUE":"Produit",
+      "TIERS":"Tiers"
     },
     "UPDATED": "Les données du compte ont été mis à jour"
   }

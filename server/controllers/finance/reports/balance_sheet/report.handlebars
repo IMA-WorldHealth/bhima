@@ -26,7 +26,7 @@
       <table class="report-condensed-table">
         <thead class="title">
           <tr>
-            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.ASSET"}}</th>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.TYPES.ASSET"}}</th>
             <th class="text-right">{{currency assets.totals.balance metadata.enterprise.currency_id}}</th>
           </tr>
         </thead>
@@ -42,7 +42,7 @@
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.ASSET"}}</th>
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.ASSET"}}</th>
             <td class="text-right">{{currency assets.totals.balance metadata.enterprise.currency_id }}</td>
           </tr>
         </tfoot>
@@ -52,7 +52,7 @@
       <table class="report-condensed-table">
         <thead class="title">
           <tr>
-            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.LIABILITY"}}</th>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.TYPES.LIABILITY"}}</th>
             <th class="text-right">{{currency (multiply liabilities.totals.balance -1) metadata.enterprise.currency_id}}</th>
           </tr>
         </thead>
@@ -68,7 +68,7 @@
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.LIABILITY"}}</th>
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.LIABILITY"}}</th>
             <td class="text-right">{{currency (multiply liabilities.totals.balance -1) metadata.enterprise.currency_id }}</td>
           </tr>
         </tfoot>
@@ -78,7 +78,7 @@
       <table class="report-condensed-table">
         <thead class="title">
           <tr>
-            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.EQUITY"}}</th>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.TYPES.EQUITY"}}</th>
             <th class="text-right">{{currency (multiply equity.totals.balance -1) metadata.enterprise.currency_id}}</th>
           </tr>
         </thead>
@@ -94,7 +94,7 @@
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.EQUITY"}}</th>
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.EQUITY"}}</th>
             <td class="text-right">{{currency (multiply equity.totals.balance -1) metadata.enterprise.currency_id }}</td>
           </tr>
         </tfoot>
@@ -105,7 +105,7 @@
       <table class="report-condensed-table">
         <thead class="title">
           <tr>
-            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.REVENUE"}}</th>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.TYPES.REVENUE"}}</th>
             <th class="text-right">{{currency (multiply revenue.totals.balance -1) metadata.enterprise.currency_id}}</th>
           </tr>
         </thead>
@@ -121,7 +121,7 @@
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.REVENUE"}}</th>
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.REVENUE"}}</th>
             <td class="text-right">{{currency (multiply revenue.totals.balance -1) metadata.enterprise.currency_id }}</td>
           </tr>
         </tfoot>
@@ -130,7 +130,7 @@
       <table class="report-condensed-table">
         <thead class="title">
           <tr>
-            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.CATEGORY.EXPENSE"}}</th>
+            <th style="width: 70%" class="text-left">{{translate "ACCOUNT.TYPES.EXPENSE"}}</th>
             <th class="text-right">{{currency expense.totals.balance metadata.enterprise.currency_id}}</th>
           </tr>
         </thead>
@@ -146,7 +146,7 @@
         </tbody>
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.CATEGORY.EXPENSE"}}</th>
+            <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.EXPENSE"}}</th>
             <td class="text-right">{{currency expense.totals.balance metadata.enterprise.currency_id }}</td>
           </tr>
         </tfoot>

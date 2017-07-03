@@ -2,14 +2,6 @@
   "ACCOUNT":{
     "ALL_CLASSES":"All classes",
     "ASSET":"Asset Accounts",
-    "CATEGORY": {
-      "ASSET":"Asset",
-      "LIABILITY":"Liability",
-      "EQUITY":"Equity",
-      "REVENUE":"Revenue",
-      "EXPENSE":"Expense",
-      "TIERS":"Tiers"
-    },
     "CHART":"Chart of Accounts",
     "COST":"Costs Accounts",
     "EQUITY":"Accounts of equity and borrowing more than a year",
@@ -58,7 +50,12 @@
       "INCOME":"Income",
       "EXPENSE":"Expense",
       "BALANCE":"Balance",
-      "TITLE":"Title"
+      "TITLE":"Title",
+      "ASSET":"Asset",
+      "LIABILITY":"Liability",
+      "EQUITY":"Equity",
+      "REVENUE":"Revenue",
+      "TIERS":"Tiers"
     }
   }
 }
