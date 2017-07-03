@@ -22,14 +22,23 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+             <!-- show a simple or complex report  -->
+            <div class="form-group">
+              <label class="text-action">
+                <input type="checkbox" name="simple_preview" ng-model="ReportConfigCtrl.reportDetails.simplePreview" ng-true-value="true" ng-false-value="false">
+                <span translate>FORM.LABELS.SHOW_SIMPLE_PREVIEW</span>
+              </label>
+            </div>
+
             <!-- Date interval  -->
             <bh-date-interval
+              ng-if="!ReportConfigCtrl.reportDetails.simplePreview"
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
               date-to="ReportConfigCtrl.reportDetails.dateTo">
             </bh-date-interval>            
 
             <!-- detail the previous year flag  -->
-            <div class="form-group">
+            <div class="form-group" ng-if="!ReportConfigCtrl.reportDetails.simplePreview">
               <label class="text-action">
                 <input type="checkbox" name="detail_previous" ng-model="ReportConfigCtrl.reportDetails.detailPrevious">
                 <span translate>FORM.LABELS.DETAIL_PREVIOUS</span>

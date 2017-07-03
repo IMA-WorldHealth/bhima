@@ -23,44 +23,66 @@ const TEMPLATE_COMPLEX = './server/controllers/finance/reports/clientsReport/rep
  */
 function document(req, res, next) {
   const params = req.query;
-  //should be removed, just for test
-  params.simpleReport = true;
   const session = {};
   let report;
-
-  console.log('params', params);
 
   _.defaults(session, {
     dateFrom : new Date(params.dateFrom),
     dateTo : new Date(params.dateTo),
     detailPrevious : params.detailPrevious,
-    simpleReport : params.simpleReport,
     ignoredClients : params.ignoredClients,
+    simplePreview : params.simplePreview,
     enterprise : req.session.enterprise,
   });
 
   _.defaults(params, { user : req.session.user });
+  session.simplePreview = session.simplePreview === 'true';
 
   try {
-    const TEMPLATE = session.simpleReport ? TEMPLATE_SIMPLE : TEMPLATE_COMPLEX;
+    const TEMPLATE = session.simplePreview ? TEMPLATE_SIMPLE : TEMPLATE_COMPLEX;
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
     return next(e);
   }
 
+  if (session.ignoredClients) {
+    const ignoredClients = (Array.isArray(session.ignoredClients)) ? session.ignoredClients : [session.ignoredClients];
+    session.notInStatement = `dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
+  }
+
+  const promise = session.simplePreview ? buildSimpleReport(session) : buildComplexReport(session);
+
   // Getting data to be rendered
-  return fetchClientsData(session)
-    .then((data) => {
+  // return fetchClientsData(session)
+  promise
+  .then((data) => {
+    console.log('here is the data', data);
       //getting a boolean value from a string
-      data.detailPrevious = data.detailPrevious === 'true';
+      // data.detailPrevious = data.detailPrevious === 'true';
       return report.render(data);
     })
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(function (err){
-      console.log(err);
+    .catch(next);
+}
+
+function buildSimpleReport (opt){
+  let data = {};
+
+  return getClientsData(opt)
+    .then((clientsRecords) => {
+      data.lines = clientsRecords;
+      return getClientsTotal(opt);
+    })
+    .then((clientTotal) => {
+      data.totalBalance = clientTotal.balance;
+      return data;
     });
+}
+
+function buildComplexReport (session){
+  return 1;
 }
 
 /**
@@ -206,7 +228,7 @@ function getFiscalYear(date) {
 }
 
 /**
- * @function escape
+ * @function escapeItems
  * @param {Array} list a list of debtor group uuids
  * @return {Array} a list of escaped debtor group uuids
  * @description
@@ -227,6 +249,7 @@ function escapeItems(list) {
  * This function is responsible of returning a list of debtor and their balance
  **/
 function getClientsData(options) {
+  let finalQuery;
   const filterParser = new FilterParser(options, { tableAlias : 'dg', autoParseStatements : false });
   
   const sql = `
@@ -238,7 +261,6 @@ function getClientsData(options) {
       account ac ON ac.id = dg.account_id 
     LEFT JOIN period_total pt ON ac.id = pt.account_id   
   `;
-  
 
   filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
   filterParser.custom('ignoredClients', options.ignoredClients);
@@ -247,15 +269,65 @@ function getClientsData(options) {
   const query = filterParser.applyQuery(sql);
   const parameters = filterParser.parameters();
 
-  const finalQuery =
-    `    
+  if (options.simplePreview) {
+    finalQuery = 
+    `
     SELECT 
-     t.number AS accountNumber, t.name, 
-     IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance
+      t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance 
+    FROM 
+    (${query}) AS t`;
+
+  }else{
+    finalQuery = 
+    `
+    SELECT 
+      t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, 
+      IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance 
     FROM 
       (${query}) AS t`;
+  }
 
-    return db.exec(finalQuery);
+  return db.exec(finalQuery);
+}
+
+function getClientsTotal (options){
+  let finalQuery;
+  const filterParser = new FilterParser(options, { tableAlias : 'pt', autoParseStatements : false });
+  
+  const sql = `
+    SELECT
+      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+    FROM 
+      period_total pt
+    JOIN 
+      debtor_group dg ON dg.account_id = pt.account_id    
+  `;
+
+  filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
+  filterParser.custom('ignoredClients', options.ignoredClients);
+
+  const query = filterParser.applyQuery(sql);
+  const parameters = filterParser.parameters();
+
+  if (options.simplePreview) {
+    finalQuery = 
+    `
+    SELECT 
+      IFNULL(t.balance, 0) AS balance 
+    FROM 
+    (${query}) AS t`;
+
+  }else{
+    finalQuery = 
+    `
+    SELECT 
+      IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, 
+      IFNULL(balance, 0) AS totalInitBalance 
+    FROM 
+      (${query}) AS t`;
+  }
+
+  return db.one(finalQuery);
 }
 
 exports.document = document;

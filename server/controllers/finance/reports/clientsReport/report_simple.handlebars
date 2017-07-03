@@ -17,7 +17,7 @@
           <tr style="background-color:#ddd;">
             <th rowspan="2" class="text-center">{{ translate 'TABLE.COLUMNS.ACCOUNT' }}</th>
             <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>            
-            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}<br /> {{date dateTo}}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}</th>
           </tr>
         </thead>
 
@@ -26,14 +26,14 @@
             <tr>
               <td>{{this.accountNumber}}</td>
               <td>{{this.name}}</td>
-              <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.balance ../enterprise.currency_id}} </td>
             </tr>
           {{/each}}
         </tbody>
         <tfoot>
           <tr style="background-color:#ddd;">
             <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>           
-            <th class="text-right">{{currency totalFinalBalance enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalBalance enterprise.currency_id}}</th>
           </tr>
         </tfoot>
       </table>
