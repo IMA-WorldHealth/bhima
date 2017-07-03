@@ -75,7 +75,7 @@
     "CLIENTS_REPORT" : {
       "TITLE" : "Rapport Clients",
       "CURRENT_MVT" : "Mouvement Courant",
-      "PREVIOUS_MVT" : "Mouvement Precedent",
+      "PREVIOUS_MVT" : "Du debut Au :",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },
     "UTIL":{

@@ -18,12 +18,13 @@
             <th rowspan="2" class="text-center">{{ translate 'TABLE.COLUMNS.ACCOUNT' }}</th>
             <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>
             {{#if detailPrevious}}
-              <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.PREVIOUS_MVT'}} : {{date fy.openningBalanceDate}}</th>
+              <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.PREVIOUS_MVT'}} {{date fy.openningBalanceDate}}</th>
               {{else}}
-              <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}<br /> {{date fy.openningBalanceDate}}</th>
+              <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE_PREVIOUS' }}<br /> {{date fy.openningBalanceDate}}</th>
             {{/if}}
-            <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.CURRENT_MVT' }}</th>
-            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}<br /> {{date dateTo}}</th>
+            <th colspan="2" class="text-center">{{date this.dateFrom}} - {{date this.dateTo}}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE_INTERMEDIATE' }}<br /> {{date this.dateFrom}} - {{date this.dateTo}}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE_FINAL' }}</th>
           </tr>
           <tr style="background-color:#ddd;">
             {{#if detailPrevious}}
@@ -48,6 +49,7 @@
               {{/if}}
               <td class='text-right'> {{currency this.debit ../enterprise.currency_id}} </td>
               <td class='text-right'> {{currency this.credit ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.currentBalance ../enterprise.currency_id}} </td>
               <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
             </tr>
           {{/each}}
@@ -63,6 +65,7 @@
             {{/if}}
             <th class="text-right">{{currency totalDebit enterprise.currency_id}}</th>
             <th class="text-right">{{currency totalCredit enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentBalance enterprise.currency_id}}</th>
             <th class="text-right">{{currency totalFinalBalance enterprise.currency_id}}</th>
           </tr>
         </tfoot>
