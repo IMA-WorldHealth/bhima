@@ -1,72 +1,73 @@
 {{> head title="REPORT.CASHFLOW_BY_SERVICE.TITLE" }}
 
-<div class="container-fluid">
-  <!-- heading  -->
-  <div class="row">
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
-      <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
-      </p>
-    </div>
+<body>
+  {{> header }}
 
-    <div class="col-xs-4">
-      <h3 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{translate 'REPORT.CASHFLOW_BY_SERVICE.TITLE'}}<br>
-        <small>{{date dateFrom }} - {{date dateTo }}</small>
-      </h3>
-    </div>
-  </div>
+  <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.CASHFLOW_BY_SERVICE.TITLE"}}</strong></h3>
 
-  <div class="row">
-    <div class="col-xs-12">
-      <table class="table table-bordered table-condensed"  style="font-size:0.75em;">
-        <thead>
-          <tr>
-            <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
-            {{#each services as |service| }}
-              <th>{{ service }}</th>
+  {{#if dateFrom }}
+    <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+      {{date dateFrom }} - {{date dateTo }}
+    </h4>
+  {{/if}}
+
+
+  <section>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-condensed table-report table-bordered">
+          <thead>
+            <tr class="text-capitalize text-center" style="background-color: #ddd;">
+              <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
+              {{#each services as |service| }}
+                <th>{{ service }}</th>
+              {{/each}}
+              <th>{{translate "FORM.LABELS.BALANCE"}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each matrix as | row |}}
+              <tr>
+                {{#each row as |value |}}
+                  {{! this is the balance calculation }}
+                  {{#if @last}}
+                    <th class="text-right">{{currency value metadata.enterprise.currency_id}}</th>
+
+                  {{! this is the rest of the matrix }}
+                  {{else}}
+                    <td {{#unless @first}}class="text-right"{{/unless}}>
+                      {{#if @first}}
+                        {{value}}
+                      {{else}}
+                        {{#equal @index 1}}
+                          {{value}}
+                        {{/equal}}
+                        {{#gt @index 2}}
+                          {{#if value}}
+                            {{currency value metadata.enterprise.currency_id}}
+                          {{/if}}
+                        {{/gt}}
+                      {{/if}}
+                    </td>
+                  {{/if}}
+                {{/each}}
+              </tr>
+            {{else}}
+              {{> emptyTable columns=3}}
             {{/each}}
-            <th>{{translate "FORM.LABELS.BALANCE"}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each matrix as | row |}}
+          </tbody>
+
+          <tfoot>
             <tr>
-              {{#each row as |value |}}
-
-                {{! this is the balance calculation }}
-                {{#if @last}}
-                  <th class="text-right">{{value}}</th>
-
-                {{! this is the rest of the matrix }}
-                {{else}}
-                  <td {{#unless @first}}class="text-right"{{/unless}}>
-                    {{#if value}}
-                      {{value}}
-                    {{/if}}
-                  </td>
-                {{/if}}
+              <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
+              {{#each aggregates as | aggregate |}}
+                <th class="text-right">{{currency aggregate.totalCashIncome metadata.enterprise.currency_id}}</th>
               {{/each}}
             </tr>
-          {{else}}
-            {{> emptyTable columns=3}}
-          {{/each}}
-        </tbody>
-
-        <tfoot>
-          <tr>
-            <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
-            {{#each aggregates as | aggregate |}}
-              <th class="text-right">{{aggregate.totalCashIncome}}</th>
-            {{/each}}
-          </tr>
-        </tfoot>
-      </table>
+          </tfoot>
+        </table>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
+</body>
