@@ -143,6 +143,7 @@
 "VIEW_BEGINING_BALANCE":"Aperçue de la balance d'ouverture",
 "VIEW_CLOSING_BALANCE":"Aperçue de la balance de cloture"},
 "LABELS":{"ABBREVIATION":"Abbreviation",
+"AS_OF" : "Au",
 "BALANCE_INTERMEDIATE" : "Balance Intermediare",
 "BALANCE_FINAL" : "Balance Finale",
 "BALANCE_PREVIOUS" : "Balance Annee anterieure",
