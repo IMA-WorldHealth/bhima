@@ -38,6 +38,7 @@ const hbs = exphbs.create({
     look          : objects.look,
     equal         : logic.equal,
     gt            : logic.gt,
+    lt            : logic.lt,
   },
 
   // load partials from the partials sub-directory

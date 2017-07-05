@@ -73,6 +73,8 @@ function document(req, res, next) {
       bundle.equity = result[EQUITY] || {};
       bundle.revenue = result[REVENUE] || {};
       bundle.expense = result[EXPENSE] || {};
+      bundle.result = handleExploitationResult(bundle.revenue, bundle.expense);
+      bundle.totals = getTotalBalance(bundle);
 
       // get the exchange rate for the given date
       const query = `
@@ -89,6 +91,57 @@ function document(req, res, next) {
     .then((result) => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
+}
+
+/**
+ * getBalance
+ *
+ * @param {object} element
+ */
+function getBalance(element) {
+  return element.totals ? element.totals.balance : 0;
+}
+
+/**
+ * handleExploitationResult
+ *
+ * @param {object} revenue
+ * @param {object} expense
+ * @returns {object}
+ */
+function handleExploitationResult(revenue, expense) {
+  const _revenue = getBalance(revenue) * -1;
+  const _expense = getBalance(expense);
+  return { balance : _revenue - _expense };
+}
+
+
+/**
+ * getTotalBalance
+ *
+ * @param {object} bundle
+ */
+function getTotalBalance(bundle) {
+  const assets = getBalance(bundle.assets);
+  const liabilities = getBalance(bundle.liabilities);
+  const equity = getBalance(bundle.equity);
+  const result = bundle.result.balance;
+
+  const totals = { debit : [], credit : [] };
+  if (assets >= 0) { totals.debit.push(assets); } else { totals.credit.push(assets * -1); }
+  if (liabilities >= 0) { totals.debit.push(liabilities); } else { totals.credit.push(liabilities * -1); }
+  if (equity >= 0) { totals.debit.push(equity); } else { totals.credit.push(equity * -1); }
+  if (result >= 0) { totals.credit.push(result); } else { totals.debit.push(result * -1); }
+
+  return {
+    debit : totals.debit.reduce(sum, 0),
+    credit : totals.credit.reduce(sum, 0),
+  };
+}
+
+// sum aggrega
+function sum(a, b) {
+  return a + b;
 }
 
 /**

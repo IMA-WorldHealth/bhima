@@ -7,7 +7,10 @@
     "BALANCE_SHEET":{
       "TITLE":"Bilan",
       "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise",
-      "SHOW_EXPLOITATION":"Afficher les exploitations"
+      "SHOW_EXPLOITATION":"Afficher les exploitations",
+      "DEBTOR_SOLD":"Debit",
+      "CREDITOR_SOLD":"Credit",
+      "EXPLOITATION_RESULT":"Resultat d'exploitation"
     },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",
