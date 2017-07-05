@@ -17,7 +17,7 @@ describe('Clients report ::', () => {
     end_date : '31/12/2016',
     clients : ['First Test Debtor Group'],
     report_name : 'Clients Report Saved by E2E',
-    renderer : 'PDF',
+    renderer : 'PDF'
   };
 
   before(() => {

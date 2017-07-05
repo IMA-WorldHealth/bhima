@@ -27,6 +27,23 @@ describe('Clients Report', () => {
     saveReport : 0
   };
 
+  const simpleReportCurrentYear = {
+    simplePreview : 'true',
+    lang : 'fr',
+    renderer : 'json',
+    reportId : 9,
+    saveReport : 0    
+  };
+
+  const simpleReportCurrentYearWithoutREGIDESO = {
+    ignoredClients : '650cc2dc-60ac-4e39-b873-cbf65e6c61aa',
+    simplePreview : 'true',
+    lang : 'fr',
+    renderer : 'json',
+    reportId : 9,
+    saveReport : 0    
+  };
+
   it('Returns expected data for the fiscal year 2017', () => {
     const previousTotalDebit = 166.4337;
     const previousTotalCredit =  109.12;
@@ -35,6 +52,8 @@ describe('Clients Report', () => {
     const currentTotalDebit = 0;
     const currentTotalCredit = 0;
     const currentBalance = 0;
+
+    const finalBalance = 57.3137; 
 
     const totalLines = 4;
 
@@ -47,12 +66,13 @@ describe('Clients Report', () => {
         expect(Number(report.totalInitCredit)).to.equal(previousTotalCredit);
         expect(Number(report.totalInitBalance)).to.equal(previousBalance);
 
-        expect(Number(report.totalDebit)).to.equal(currentTotalDebit);
-        expect(Number(report.totalCredit)).to.equal(currentTotalCredit);
-        expect(Number(report.totalFinalBalance)).to.equal(currentBalance);
+        expect(Number(report.totalCurrentDebit)).to.equal(currentTotalDebit);
+        expect(Number(report.totalCurrentCredit)).to.equal(currentTotalCredit);
+        expect(Number(report.totalCurrentBalance)).to.equal(currentBalance);
+
+        expect(Number(report.totalFinalBalance)).to.equal(finalBalance);
         expect(Number(Object.keys(report.lines).length)).to.equal(totalLines);
       });
-
   });
 
   it('Returns expected data for the fiscal year 2017 when RESIDESO is skipped', () => {
@@ -63,6 +83,8 @@ describe('Clients Report', () => {
     const currentTotalDebit = 0;
     const currentTotalCredit = 0;
     const currentBalance = 0;
+
+    const totalBalance = 30.5299;
 
     const totalLines = 3;
 
@@ -75,10 +97,40 @@ describe('Clients Report', () => {
         expect(Number(report.totalInitCredit)).to.equal(previousTotalCredit);
         expect(Number(report.totalInitBalance)).to.equal(previousBalance);
 
-        expect(Number(report.totalDebit)).to.equal(currentTotalDebit);
-        expect(Number(report.totalCredit)).to.equal(currentTotalCredit);
-        expect(Number(report.totalFinalBalance)).to.equal(currentBalance);
+        expect(Number(report.totalCurrentDebit)).to.equal(currentTotalDebit);
+        expect(Number(report.totalCurrentCredit)).to.equal(currentTotalCredit);
+        expect(Number(report.totalCurrentBalance)).to.equal(currentBalance);
+
+        expect(Number(report.totalFinalBalance)).to.equal(totalBalance);
         expect(Number(Object.keys(report.lines).length)).to.equal(totalLines);
       });
-  });  
+  });
+
+  it('Returns expected data for a simple report preview', () => {
+    const finalBalance = 57.3137;
+    const totalLines = 4;
+
+    return agent.get(reportURL)
+      .query(simpleReportCurrentYear)
+      .then((result) => {
+        const report = result.body;
+
+        expect(Number(report.totalBalance)).to.equal(finalBalance);
+        expect(Number(Object.keys(report.lines).length)).to.equal(totalLines);
+      });
+  });
+
+  it('Returns expected data for a simple report preview without REGIDESO', () => {
+    const finalBalance = 30.5299;
+    const totalLines = 3;
+
+    return agent.get(reportURL)
+      .query(simpleReportCurrentYearWithoutREGIDESO)
+      .then((result) => {
+        const report = result.body;
+
+        expect(Number(report.totalBalance)).to.equal(finalBalance);
+        expect(Number(Object.keys(report.lines).length)).to.equal(totalLines);
+      });
+  });   
 });

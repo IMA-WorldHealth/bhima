@@ -255,7 +255,7 @@ function getClientsData(options, isFromPeriodTotal, isIniial) {
     filterParser.setGroup('GROUP BY ac.number');
 
     const query = filterParser.applyQuery(sql);
-    parameters = filterParser.parameters();
+    parameters = filterParser.parameters();    
 
     // In the simple report preview only the accountNumber, name, and balance is needed
     if (options.simplePreview) {
@@ -335,7 +335,7 @@ function getClientsTotal(options, isFromPeriodTotal, isIniial) {
 
     filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
     filterParser.equals('period_id', 'period_id', 'pt');
-    filterParser.custom('ignoredClients', options.ignoredClients);
+    filterParser.custom('ignoredClients', options.notInStatement);
 
     const query = filterParser.applyQuery(sql);
     parameters = filterParser.parameters();
