@@ -7,10 +7,11 @@ const helpers = require('../../helpers');
 describe(`(${target}) Income Expense Reports`, function () {
 
   const keys = [
-    'incomes', 'expenses', 'expenseAggregation', 'incomeAggregation',
+    'incomes', 'expenses', 'dateFrom', 'dateTo', 'isEmpty', 'isLost', 'overallBalance', 'type_id',
   ];
 
   const parameters = {
+    fiscal : 2,
     periodFrom : 16,
     periodTo : 27,
     type : 1
@@ -25,7 +26,7 @@ describe(`(${target}) Income Expense Reports`, function () {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.incomeExpense).to.contain.all.keys(keys);
+        expect(res.body).to.contain.all.keys(keys);
       })
       .catch(helpers.handler);
   });

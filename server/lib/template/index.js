@@ -40,6 +40,9 @@ const hbs = exphbs.create({
     equal         : logic.equal,
     gt            : logic.gt,
     getIncomeExpenseTitle : presentation.getTitle,
+    isIncomeViewable : presentation.isIncomeViewable,
+    isExpenseViewable : presentation.isExpenseViewable,
+    isResultViewable : presentation.isResultViewable,
   },
 
   // load partials from the partials sub-directory

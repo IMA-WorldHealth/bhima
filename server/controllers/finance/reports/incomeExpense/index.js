@@ -17,17 +17,11 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
-const periodTotal = require('../../periodTotal');
 const fiscalPeriod = require('../../fiscalPeriod');
 
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
-const accountType = { income: 1, expense: 2 };
-const reportTypes = {
-    1: fetchIncomeExpense,
-    2: fetchIncome,
-    3: fetchExpense,
-}
+const types = [1, 2];
 
 // expose to the API
 exports.document = document;
@@ -49,28 +43,45 @@ function document(req, res, next) {
     }
 
     fiscalPeriod.getPeriodDiff(options.periodFrom, options.periodTo)
-        .then((ans) =>{
+        .then((ans) => {
 
-            if(ans.nb > 0){
+            if (ans.nb > 0) {
                 throw new BadRequest(`The period From should be before the period To`, 'FORM.ERRORS.PERIOD_ORDER');
             }
 
             return getDateRange(options.periodFrom, options.periodTo);
         })
         .then((range) => {
-            _.merge(options, { dateFrom : new Date(range.dateFrom), dateTo : new Date(range.dateTo) });
-            return fiscalPeriod.isInSameFiscalYear({ periods : [options.periodFrom, options.periodTo] })
+            _.merge(options, { dateFrom: new Date(range.dateFrom), dateTo: new Date(range.dateTo) });
+            return fiscalPeriod.isInSameFiscalYear({ periods: [options.periodFrom, options.periodTo] })
         })
         .then((ans) => {
 
-            if(!ans){
+            if (!ans) {
                 throw new BadRequest(`The two period selected must be in the same fiscal year`, 'FORM.ERRORS.PERIOD_DIFF_FISCAL');
             }
-            return getRecord(options);
+            return sumIncomeExpenseAccounts(options.fiscal, options.periodFrom, options.periodTo);
         })
-        .then((records) => {
-            records.isEmpty = records.incomes.length === 0 && records.expenses.length === 0;
-            return docReport.render({ incomeExpense: records });
+        .then((reportContext) => {
+            const contents = reportContext.accounts.reduce((obj, item) => {
+                if (item.type_id === 1) {
+                    obj.incomes.push(item);
+                } else {
+                    obj.expenses.push(item);
+                }
+                return obj;
+            }, { incomes: [], expenses: [] });
+
+            _.merge(reportContext, {
+                isEmpty: reportContext.accounts.length === 0,
+                dateFrom: options.dateFrom,
+                dateTo: options.dateTo,
+                type_id: Number(options.type),
+                isLost : reportContext.overallBalance.debit > reportContext.overallBalance.credit,
+            });
+            _.merge(reportContext, contents);
+            delete reportContext.accounts;
+            return docReport.render(reportContext);
         })
         .then((result) => {
             res.set(result.headers).send(result.report);
@@ -79,69 +90,58 @@ function document(req, res, next) {
         .done();
 }
 
+function getQuery(fiscalYearId, periodFromId, periodToId, groupToken = '') {
+    // get all of the period IDs between the first periods number and the second periods number (within a fiscal year)
+    const periodCondition = `
+        SELECT id FROM period
+        WHERE fiscal_year_id = ${fiscalYearId}
+        AND number BETWEEN (SELECT number FROM period WHERE id = ${periodFromId}) AND (SELECT number FROM period WHERE id = ${periodToId})
+    `;
+    // Get the absolute value of the balance, if the value is negative a positive value will be returned    
+    const balanceQuery = `
+        SELECT 
+            account.type_id, account.number, account.label,
+            SUM(credit) as credit, SUM(debit) as debit, 
+            ABS(SUM(credit) - SUM(debit)) as balance
+        FROM 
+            period_total             
+        JOIN 
+            account ON period_total.account_id = account.id
+        JOIN 
+            period ON period.id = period_total.period_id
+        WHERE 
+            period.id IN (${periodCondition}) AND 
+            account.type_id IN (?)
+        ${groupToken}
+    `;
+    return balanceQuery;
+}
+
+function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
+    let reportContext = {};
+
+    // grouping by account_id gives us the individual account line items
+    return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY account_id'), [types])
+        .then((accountBalances) => {
+            reportContext.accounts = accountBalances;
+            // grouping by type_id gives us total income/ expense types balance
+            return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY type_id'), [types]);
+        })
+        .then((typeBalances) => {
+            reportContext.incomeBalance = typeBalances[0];
+            reportContext.expenseBalance = typeBalances[1];
+
+            // grouping by nothing gives us the overall balance of all types
+            return db.one(getQuery(fiscalYearId, periodFromId, periodToId), [types]);
+        })
+        .then((overallBalance) => {
+            reportContext.overallBalance = overallBalance;
+            return reportContext;
+        });
+}
+
 function report(req, res, next) {
     res.status(200).json([]);
-}
-
-function getRecord(options) {
-    let data;
-    return reportTypes[options.type](options)
-        .then((data) => {
-            _.merge(data, { dateFrom : options.dateFrom, dateTo : options.dateTo, type_id : options.type });
-            return data;
-        });
-}
-
-function fetchIncomeExpense(options) {
-    let result = {};
-    return fetchIncome(options)
-        .then((incomes) => {
-            _.merge(result, incomes);
-            return fetchExpense(options);
-        })
-        .then((expenses) => {
-            _.merge(result, expenses);
-            return db.one(`SELECT IFNULL(${result.incomeAggregation.balance} - ${result.expenseAggregation.balance}, 0) AS finalBalance`);
-        })
-        .then((finalAggregate) =>{
-            result.isLost = finalAggregate.finalBalance <= 0;            
-            _.merge(result, {finalBalance : finalAggregate.finalBalance <= 0 ? finalAggregate.finalBalance * -1 : finalAggregate.finalBalance });
-            // it is an incomeExpense report            
-            result.isIncomeExpense = true;
-            return result;
-        });
-}
-
-function fetchIncome(options) {
-    let incomeResult = {};
-    // For getting just income account
-    _.merge(options, { type_id: accountType.income });
-    return periodTotal.getAccountsBalances(options)
-        .then((incomes) => {
-            _.merge(incomeResult, { incomes });
-            // Aggregating data of incomes
-            return periodTotal.getAccountsBalance(options);
-        })
-        .then((incomeAggregation) => {
-            _.merge(incomeResult, { incomeAggregation });
-            return incomeResult;
-        });
-}
-
-function fetchExpense(options) {
-    let expenseResult = {};
-    // For getting just expense account
-    _.merge(options, { type_id: accountType.expense });
-    return periodTotal.getAccountsBalances(options)
-        .then((expenses) => {
-            _.merge(expenseResult, { expenses });
-            // Aggregating data of expenses
-            return periodTotal.getAccountsBalance(options);
-        })
-        .then((expenseAggregation) => {
-            _.merge(expenseResult, { expenseAggregation });
-            return expenseResult;
-        });
 }
 
 function getDateRange(periodIdFrom, periodIdTo) {

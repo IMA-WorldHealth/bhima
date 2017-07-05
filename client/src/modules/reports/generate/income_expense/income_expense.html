@@ -25,6 +25,7 @@
             <bh-fiscal-period-select
               validation-trigger="ConfigForm.$submitted"
               formName="ConfigForm"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
               on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
