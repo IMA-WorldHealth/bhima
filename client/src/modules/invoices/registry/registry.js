@@ -168,7 +168,6 @@ function InvoiceRegistryController(
       Invoices.cacheFilters();
     }
 
-
     load(Invoices.filters.formatHTTP(true));
     vm.latestViewFilters = Invoices.filters.formatView();
   }
