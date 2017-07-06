@@ -185,6 +185,14 @@ function CashPaymentRegistryController(
   }
 
   function startup() {
+    if ($state.params.filters) {
+      // Fix me, generate change dynamically 
+      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+
+      Cash.filters.replaceFilters(change);
+      Cash.cacheFilters();
+    }
+
     load(Cash.filters.formatHTTP(true));
     vm.latestViewFilters = Cash.filters.formatView();
   }
