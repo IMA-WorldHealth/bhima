@@ -57,6 +57,7 @@ const stockReports = require('../controllers/stock/reports');
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');
+const fiscalPeriod = require('../controllers/finance/fiscalPeriod');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
 const debtors = require('../controllers/finance/debtors');
@@ -188,6 +189,10 @@ exports.configure = function configure(app) {
   app.put('/fiscal/:id/closing', fiscal.closing);
   app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);
+
+  // Period routes
+  app.get('/periods', fiscalPeriod.list);
+
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -537,7 +542,7 @@ exports.configure = function configure(app) {
 
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
-  app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+  // app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);

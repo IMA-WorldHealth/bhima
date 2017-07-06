@@ -40,6 +40,10 @@
       "TITLE":"Rapport de comptes",
       "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée"
     },
+    "INCOME_EXPENSE_REPORT" : {
+      "TITLE" : "Rapport des Comptes d'exploitation",
+      "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
       "SAVE_AS":"Enregistrer sous",

@@ -24,4 +24,5 @@ module.exports = {
   datePicker     : require('./bhDatePicker'),
   userSelect     : require('./bhUserSelect'),
   reportSource   : require('./bhReportSource'),
+  fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
 };
