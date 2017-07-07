@@ -340,8 +340,12 @@ function document(req, res, next) {
 
   getCashRecord(params.account_id, params.dateFrom, params.dateTo)
     .then((reportContext) => {
+<<<<<<< 5f207116aaa7ddd0f067b52b5ebd589233bb7c05
       reportContext.type_id = params.type;
       // console.log('reportContext', reportContext);
+=======
+      console.log('reportContext', reportContext);
+>>>>>>> refactoring server side cash report
       return documentReport.render(reportContext);
     })
     .then(result => {
