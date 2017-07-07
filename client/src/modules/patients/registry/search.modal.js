@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'params', 'DebtorGroupService', 'PatientGroupService',
+  '$uibModalInstance', 'params', 'PatientGroupService',
   'bhConstants', 'moment', 'Store', 'util', 'PeriodService'
 ];
 
@@ -14,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, params, DebtorGroups, PatientGroupsService, bhConstants, moment, Store, util, Periods) {
+function PatientRegistryModalController(ModalInstance, params, PatientGroupsService, bhConstants, moment, Store, util, Periods) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = params;
@@ -45,10 +45,12 @@ function PatientRegistryModalController(ModalInstance, params, DebtorGroups, Pat
   vm.cancel = cancel;
   vm.clear = clear;
 
-  DebtorGroups.read()
-    .then(function (result) {
-      vm.debtorGroups = result;
-    });
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    vm.params.debtor_group_uuid = debtorGroup.uuid;
+  }
 
   PatientGroupsService.read()
     .then(function (result) {
