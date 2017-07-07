@@ -63,17 +63,16 @@ function formatFilters(qs) {
  * GET /reports/patient/registrations
  */
 function build(req, res, next) {
-  const options = _.extend(req.query, { csvKey : 'patients' });
-  let report;
+  const options = _.clone(req.query);
 
-  // for now ReportManager will translate any key provided for filename as well as add a uniform timestamp
-  options.filename = 'PATIENT_REG.PAGE_TITLE';
+  _.extend(options, { filename : 'PATIENT_REG.PAGE_TITLE', csvKey : 'patients', orientation : 'landscape' });
+
+  let report;
 
   // set up the report with report manager
   try {
-    options.orientation = 'landscape';
     report = new ReportManager(TEMPLATE, req.session, options);
-    delete options.orientation;
+     delete options.orientation;
   } catch (e) {
     next(e);
     return;

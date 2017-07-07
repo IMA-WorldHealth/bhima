@@ -22,6 +22,7 @@ const dates = require('./helpers/dates');
 const finance = require('./helpers/finance');
 const objects = require('./helpers/objects');
 const logic = require('./helpers/logic');
+const presentation = require('./helpers/presentation');
 
 const hbs = exphbs.create({
   helpers : {
@@ -39,6 +40,10 @@ const hbs = exphbs.create({
     equal         : logic.equal,
     gt            : logic.gt,
     lt            : logic.lt,
+    getIncomeExpenseTitle : presentation.getTitle,
+    isIncomeViewable : presentation.isIncomeViewable,
+    isExpenseViewable : presentation.isExpenseViewable,
+    isResultViewable : presentation.isResultViewable,
   },
 
   // load partials from the partials sub-directory

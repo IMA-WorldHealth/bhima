@@ -1,0 +1,52 @@
+<fieldset
+    ng-form="{{$ctrl.formName}}"
+    novalidate
+    bh-fiscal-period-select>
+
+    <div class="form-group"
+        ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.fiscal.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
+        <select
+            class="form-control"
+            ng-model="$ctrl.selectedFiscal"
+            name="fiscal"
+            ng-options="fiscal.id as fiscal.label for fiscal in $ctrl.fiscals"
+            ng-change="$ctrl.loadPeriod($ctrl.selectedFiscal)"
+            data-fiscal-select
+            required>
+            <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>
+        </select>
+    </div>
+
+    <div class="form-group"
+        ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.periodFrom.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.PERIOD_FROM</label>
+        <select
+            class="form-control"
+            ng-model="$ctrl.selectedPeriodFrom"
+            name="periodFrom"
+            ng-options="periodFrom.id as periodFrom.hrLabel for periodFrom in $ctrl.periods"
+            ng-change="$ctrl.onSelectPeriodFrom($ctrl.selectedPeriodFrom)"
+            ng-disabled="!$ctrl.selectedFiscal"
+            data-period-from-select
+            required>
+            <option value="" disabled translate>FORM.SELECT.PERIOD</option>
+        </select>
+    </div>
+
+    <div class="form-group"
+        ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.periodTo.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.PERIOD_TO</label>
+        <select
+            class="form-control"
+            ng-model="$ctrl.selectedPeriodTo"
+            name="periodTo"
+            ng-options="periodTo.id as periodTo.hrLabel for periodTo in $ctrl.periods"
+            ng-change="$ctrl.onSelectPeriodTo($ctrl.selectedPeriodTo)"
+            ng-disabled="!$ctrl.selectedFiscal"
+            data-period-to-select
+            required>
+            <option value="" disabled translate>FORM.SELECT.PERIOD</option>
+        </select>
+    </div>
+</fieldset>

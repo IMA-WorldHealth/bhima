@@ -49,6 +49,10 @@
       "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
       "WARN_MULTIPLE":"N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
     },
+    "INCOME_EXPENSE_REPORT" : {
+      "TITLE" : "Rapport des Comptes d'exploitation",
+      "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
       "SAVE_AS":"Enregistrer sous",
