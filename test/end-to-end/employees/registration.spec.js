@@ -22,7 +22,7 @@ describe('Employees', () => {
     bank_account  : '00-99-88-77',
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
-    hospital_no   : 'TP003', 
+    hospital_no   : 'TP003',
    };
 
   before(() => {return helpers.navigate(path)});
@@ -31,7 +31,7 @@ describe('Employees', () => {
     // verify we are in the current path
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
-    registrationPage.createEmployee();   
+    registrationPage.createEmployee();
     registrationPage.requiredFIeldErrored();
     registrationPage.noRequiredFieldOk();
   });
@@ -47,20 +47,20 @@ describe('Employees', () => {
     registrationPage.setDebtorGroup('Second Test Debtor Group');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
-    registrationPage.setHiringDate(employee.date_embauche); 
+    registrationPage.setHiringDate(employee.date_embauche);
     registrationPage.setNumberSpouse(employee.nb_spouse);
-    registrationPage.setNumberChild(employee.nb_enfant);       
-    registrationPage.setService('Administration');    
+    registrationPage.setNumberChild(employee.nb_enfant);
+    registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
     registrationPage.setEmail(employee.email);
-    registrationPage.setAddress(employee.adresse);    
+    registrationPage.setAddress(employee.adresse);
     registrationPage.setBank(employee.bank);
-    registrationPage.setBankAccount(employee.bank_account);    
+    registrationPage.setBankAccount(employee.bank_account);
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);
-    browser.refresh();    
-  });  
+    browser.refresh();
+  });
 
   // it.skip('edits an employee', () => {
   //   element(by.id(`employee-upd-${employeeId}`)).click();
