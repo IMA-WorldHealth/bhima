@@ -11,7 +11,7 @@ angular.module('bhima.components')
         controller: FiscalPeriodSelect,
     });
 
-FiscalPeriodSelect.$inject = ['FiscalService', 'FisaclPeriodService', '$translate'];
+FiscalPeriodSelect.$inject = ['FiscalService', 'FiscalPeriodService', '$translate'];
 
 function FiscalPeriodSelect(Fiscals, Periods, $translate) {
     var $ctrl = this;
