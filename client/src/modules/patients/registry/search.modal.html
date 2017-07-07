@@ -11,6 +11,7 @@
     </ol>
   </div>
 
+<<<<<<< 301036f7770bdd5319d04c5fbc7576b8828cc3d0
   <div class="modal-body search-modal">
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
@@ -139,6 +140,60 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
+=======
+  <div class="modal-body" style="max-height : 400px; overflow: auto;">
+    <fieldset>
+      <legend translate>FORM.LABELS.DATE_REGISTRATION</legend>
+      <bh-date-interval
+        date-id="registration-date"
+        validation-trigger="ModalForm.$submitted"
+        date-from="ModalCtrl.params.dateRegistrationFrom"
+        date-to="ModalCtrl.params.dateRegistrationTo"
+        mode="clean">
+      </bh-date-interval>
+    </fieldset>
+
+    <br />
+
+    <fieldset>
+      <legend translate>
+        FORM.LABELS.PATIENT_DETAILS
+      </legend>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.NAME
+        </label>
+        <bh-clear on-clear="ModalCtrl.clear('display_name')"></bh-clear>
+
+        <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
+        <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.REFERENCE
+        </label>
+        <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+
+        <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
+        <label class="control-label" translate>
+            FORM.LABELS.HOSPITAL_FILE_NR
+        </label>
+        <bh-clear on-clear="ModalCtrl.clear('hospital_no')"></bh-clear>
+
+        <input type="text" class="form-control" name="hospital_no" ng-model="ModalCtrl.params.hospital_no">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+>>>>>>> feature(bhDebtorGroupSelect)
         </div>
       </uib-tab>
       

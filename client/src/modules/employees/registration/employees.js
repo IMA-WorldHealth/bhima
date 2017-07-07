@@ -4,11 +4,11 @@ angular.module('bhima.controllers')
 
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
-  'CreditorGroupService', 'DebtorGroupService', 'util', 'NotifyService',
-  'bhConstants', 'ReceiptModal', 'SessionService'
+  'CreditorGroupService', 'util', 'NotifyService',
+  'bhConstants', 'ReceiptModal', 'SessionService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants, Receipts, Session) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, bhConstants, Receipts, Session,) {
   var vm = this;
   vm.enterprise = Session.enterprise;
 
@@ -18,7 +18,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Expose validation rule for date
   vm.datepickerOptions = {
     maxDate : new Date(),
-    minDate : bhConstants.dates.minDOB
+    minDate : bhConstants.dates.minDOB,
   };
 
   // Expose employee to the scope
@@ -27,11 +27,18 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Expose methods to the scope
   vm.submit = submit;
 
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    vm.employee.debtor_group_uuid = debtorGroup.uuid;
+  }
+
   // Loading Grades
   Grades.read(null, { detailed : 1 }).then(function (data) {
-    data.forEach(function (g){
+    data.forEach(function (g) {
       g.format = g.code + ' - ' + g.text;
-    });      
+    });
     vm.grades = data;
   }).catch(Notify.handleError);
 
@@ -40,15 +47,10 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     vm.creditorGroups = data;
   }).catch(Notify.handleError);
 
-  // Loading Debtor Groups
-  DebtorGroups.read().then(function (data) {
-    vm.debtorGroups = data;
-  }).catch(Notify.handleError);
-
   // Loading Services
   Services.read().then(function (services) {
     vm.services = services;
-  }).catch(Notify.handleError);    
+  }).catch(Notify.handleError);
 
   // Loading Functions
   Functions.read().then(function (data) {
@@ -58,10 +60,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
   // submit the data to the server
   function submit(employeeForm) {
-    var promise;
-
-    if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID');}
-
+    if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
     return Employees.create(vm.employee)
       .then(function (feedBack) {
         Receipts.patient(feedBack.patient_uuid, true);

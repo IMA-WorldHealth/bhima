@@ -14,14 +14,11 @@
     </p>
 
     <div class="form-group has-feedback">
-      <label class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
-      <select
-        class="form-control"
-        name="debtorGroup"
-        ng-options="group.uuid as group.name for group in UpdateDebtorGroupCtrl.debtorGroups | orderBy :'name'"
-        ng-model="UpdateDebtorGroupCtrl.debtor_group_uuid"
-        required>
-      </select>
+      <bh-debtor-group-select
+        debtor-group-uuid = "UpdateDebtorGroupCtrl.patient.debtor_group_uuid"
+        name = "debtorGroup"
+        on-select-callback = "UpdateDebtorGroupCtrl.onSelectDebtor(debtorGroup)">
+      </bh-debtor-group-select>
     </div>
   </div>
 

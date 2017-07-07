@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('UpdateDebtorGroup', UpdateDebtorGroup);
 
 UpdateDebtorGroup.$inject = [
-  '$uibModalInstance', 'DebtorService',  'patient', 'updateModel', 'NotifyService'
+  '$uibModalInstance', 'DebtorService', 'patient', 'updateModel', 'NotifyService'
 ];
 
 function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Notify) {
@@ -10,29 +10,15 @@ function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Not
   var originalGroupUuid;
 
   viewModel.patient = patient;
-  debtors.groups()
-    .then(function (debtorGroups) {
-      originalGroupUuid = patient.debtor_group_uuid;
-      viewModel.debtor_group_uuid = patient.debtor_group_uuid;
-      viewModel.debtorGroups = debtorGroups;
-    })
-    .catch(Notify.handleError);
 
-  // TODO Refactor - use stores?
-  function fetchGroupName(uuid) {
-    var name;
-    var groups = viewModel.debtorGroups;
-    var i = groups.length;
+  // Set up page elements data (debtor select data)
+  viewModel.onSelectDebtor = onSelectDebtor;
 
-    while (i--) {
-      if (groups[i].uuid === uuid) {
-        name = groups[i].name;
-        break;
-      }
-    }
-
-    return name;
-  }
+  function onSelectDebtor(debtorGroup) {
+    originalGroupUuid = viewModel.patient.debtor_group_uuid;
+    viewModel.debtor_group_uuid = debtorGroup.uuid;
+    viewModel.debtorGroup = debtorGroup;
+  }  
 
   // form submission
   viewModel.confirmGroup = function confirmGroup(groupForm) {
@@ -51,15 +37,9 @@ function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Not
 
     return debtors.update(patient.debtor_uuid, updateRequest)
       .then(function () {
-
-        updateModel(
-          viewModel.debtor_group_uuid,
-          fetchGroupName(viewModel.debtor_group_uuid)
-        );
-
+        updateModel(viewModel.debtor_group_uuid, viewModel.debtorGroup.name);
         closeModal();
       });
-
   };
 
   viewModel.closeModal = closeModal;

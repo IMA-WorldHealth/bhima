@@ -82,7 +82,7 @@ class RegistrationPage {
 
     // set debtor group
     setDebtorGroup (dg){
-        FU.uiSelect('EmployeeCtrl.employee.debtor_group_uuid', dg);
+        components.debtorGroupSelect.set(dg);
     }
 
     // set creditor group
@@ -120,7 +120,7 @@ class RegistrationPage {
         FU.validation.error('EmployeeCtrl.employee.code');
         FU.validation.error('EmployeeCtrl.employee.grade_id');
         FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
-        FU.validation.error('EmployeeCtrl.employee.debtor_group_uuid');
+        FU.validation.error('$ctrl.debtorGroupUuid');
         FU.validation.error('EmployeeCtrl.employee.dob');
         FU.validation.error('EmployeeCtrl.employee.hospital_no');
     }
