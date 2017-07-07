@@ -2,7 +2,10 @@
   "REPORT":{
     "ACCOUNT":"Account Statement",
     "AGED_CREDITORS":"Aged Debts",
-    "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
+    "AGED_DEBTORS":{
+      "TITLE":"Aged Debtors",
+      "DESCRIPTION":"This report show all the debts of the clients, while specifying the debts per period"
+    },
     "BALANCE":"Balance Report",
     "CASH_EXPENSE":"Expenses",
     "CASHFLOW_BY_SERVICE":"Cashflow By Service",

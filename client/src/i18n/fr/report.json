@@ -2,7 +2,10 @@
   "REPORT":{
     "ACCOUNT":"Rapport du Compte",
     "AGED_CREDITORS":"Balance agée des Créances",
-    "AGED_DEBTORS":{"TITLE":"Balance agée des clients"},
+    "AGED_DEBTORS":{
+      "TITLE":"Balance agée des clients",
+      "DESCRIPTION":"Ce rapport affiche toutes les dettes des clients, tout en spécifiant les dettes par période"
+    },
     "BALANCE":"Rapport de la Balance",
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",

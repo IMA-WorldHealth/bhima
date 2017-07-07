@@ -1,0 +1,21 @@
+<div ng-form="PeriodForm" bh-report-period-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && PeriodForm.period_id.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    <ui-select name="period_id" 
+      ng-model="$ctrl.periodId"
+      on-select="$ctrl.onSelect($item, $model)" required>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}">{{$select.selected.monthYear}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="period.id as period in ($ctrl.periodes | filter:$select.search) track by period.id">
+        <span ng-bind-html="period.monthYear | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="PeriodForm.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
