@@ -15,14 +15,14 @@ angular.module('bhima.components')
   });
 
 ReportPeriodSelectController.$inject = [
-  'FiscalService', '$filter'
+  'FiscalPeriodService', '$filter'
 ];
 
 /**
  * Fiscal Year Period selection component
  *
  */
-function ReportPeriodSelectController(Fiscal, $filter) {
+function ReportPeriodSelectController(FiscalPeriod, $filter) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -33,10 +33,10 @@ function ReportPeriodSelectController(Fiscal, $filter) {
     $ctrl.name = $ctrl.name || 'PeriodForm';
 
     // translated label for the form input
-    $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIODS';
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIODES';
 
     // load all Fiscal Yeal Period
-    Fiscal.periodFiscalYear()
+    FiscalPeriod.read(null, { excludeExtremityPeriod : true })
       .then(function (periodes) {
         periodes.forEach(function (period) {
           period.monthYear = $filter('date')(period.end_date, 'MMMM yyyy');

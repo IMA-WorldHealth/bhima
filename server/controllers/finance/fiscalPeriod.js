@@ -67,7 +67,7 @@ function find(options) {
   }
 
   // @TODO Support ordering query
-  filters.setOrder('ORDER BY p.id ASC');
+  filters.setOrder('ORDER BY p.end_date DESC');
 
   // applies filters and limits to define sql, get parameters in correct order
   const query = filters.applyQuery(sql);
