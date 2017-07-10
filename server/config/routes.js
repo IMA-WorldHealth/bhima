@@ -328,7 +328,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
-  app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
+  app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
@@ -542,7 +542,7 @@ exports.configure = function configure(app) {
 
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
-  // app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+  app.get('/finance/incomeExpense', financeReports.cashReport.report);
 
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);

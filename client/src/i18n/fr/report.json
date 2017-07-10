@@ -4,10 +4,10 @@
     "AGED_CREDITORS":"Balance agée des Créances",
     "AGED_DEBTORS":{"TITLE":"Balance agée des clients"},
     "BALANCE":"Rapport de la Balance",
-    "CASH_EXPENSE":"Depenses",
+    "CASH_EXPENSE":"Sorties",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",
     "CASHFLOW":"Cashflow",
-    "CASH_INCOME":"Recettes",
+    "CASH_INCOME":"Entrees",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
     "CLIENTS_REPORT":{"TITLE":"Rapport Clients", "CURRENT_MVT":"Mouvement Courant", "PREVIOUS_MVT":"Mouvement Precedent"},
     "CLOSING_BALANCE":"Balance à la cloture",
@@ -43,6 +43,10 @@
     "INCOME_EXPENSE_REPORT" : {
       "TITLE" : "Rapport des Comptes d'exploitation",
       "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    },
+    "CASH_REPORT" : {
+      "TITLE" : "Rapport de caisse",
+      "DESCRIPTION" : "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",

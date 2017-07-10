@@ -4,10 +4,10 @@
     "AGED_CREDITORS":"Aged Debts",
     "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
     "BALANCE":"Balance Report",
-    "CASH_EXPENSE":"Expenses",
+    "CASH_EXPENSE":"Exits",
     "CASHFLOW_BY_SERVICE":"Cashflow By Service",
     "CASHFLOW":"Cashflow",
-    "CASH_INCOME":"Incomes",
+    "CASH_INCOME":"Entries",
     "CHART_OF_ACCOUNTS":"Chart of Accounts",
     "CLIENTS_REPORT":{"TITLE":"Clients Report", "CURRENT_MVT":"Current Movement", "PREVIOUS_MVT":"Previous Movement"},
     "CLOSING_BALANCE":"Closing Balance",
@@ -44,6 +44,14 @@
     "INCOME_EXPENSE_REPORT" : {
       "TITLE" : "Income Expense Report",
       "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
+    },
+    "REPORT_INCOME_EXPENSE" : {
+      "TITLE" : "Income Expense Report",
+      "DESCRIPTION" : "This report show all income and expense occured in the enterprise"
+    },
+    "CASH_REPORT" : {
+      "TITLE" : "Cash Report",
+      "DESCRIPTION" : "This report show all entries and exits of cash inside the enterprise"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",

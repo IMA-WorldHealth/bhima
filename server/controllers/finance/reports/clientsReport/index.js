@@ -32,7 +32,7 @@ function document(req, res, next) {
     ignoredClients : params.ignoredClients,
     enterprise : req.session.enterprise,
   });
-
+  
   _.defaults(params, { user : req.session.user });
 
   try {
