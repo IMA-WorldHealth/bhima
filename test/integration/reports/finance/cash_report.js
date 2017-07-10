@@ -4,17 +4,19 @@ const RenderingTests = require('../rendering');
 const target = '/reports/finance/cash_report';
 const helpers = require('../../helpers');
 
-describe(`(${target}) Income Expense Reports`, function () {
+describe(`(${target}) cash Reports`, function () {
 
   const keys = [
-    'incomes', 'expenses', 'dateFrom', 'dateTo', 'isEmpty', 'isLost', 'overallBalance', 'type_id',
-  ];
+     'cashCurrency', 'cashName', 'entries', 
+     'expenses', 'finalTotal', 'isEmpty', 'metadata', 'totalEntry', 
+     'totalExpense', 'type_id',
+     ];
 
   const parameters = {
-    fiscal : 2,
-    periodFrom : 16,
-    periodTo : 27,
-    type : 1
+    dateFrom : '2016-01-01',
+    dateTo : '2016-12-31',
+    type : 1,
+    account_id : 3627
   };
 
   describe(`${target} Rendering`, RenderingTests(target, null, parameters));
@@ -26,7 +28,7 @@ describe(`(${target}) Income Expense Reports`, function () {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.entryExit).to.contain.all.keys(keys);
+        expect(res.body).to.contain.all.keys(keys);
       })
       .catch(helpers.handler);
   });

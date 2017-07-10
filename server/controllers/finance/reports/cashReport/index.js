@@ -20,89 +20,89 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 const TEMPLATE = './server/controllers/finance/reports/cashReport/report.handlebars';
 
 // expose to the API
-exports.report = report;
+// exports.report = report;
 exports.document = document;
 
 /**
  * @function report
  * @desc This function is responsible of generating the cash data for the report
  */
-function report(req, res, next) {
-  const params = req.query;
+// function report(req, res, next) {
+  // const params = req.query;
 
-  /**
-   * For allow the select of all transaction who are saved during the Date
-   * Because the field trans_date is type DATETIME
-   */
-  params.dateTo += ' 23:59:59';
-  params.reportType = parseInt(params.reportType, 10);
+  // /**
+  //  * For allow the select of all transaction who are saved during the Date
+  //  * Because the field trans_date is type DATETIME
+  //  */
+  // params.dateTo += ' 23:59:59';
+  // params.reportType = parseInt(params.reportType, 10);
 
-  const type = params.reportType;
-  const typeMapping = {
-    1 : processingCashEntryExitReport,
-    2 : processingEntryReport,
-    3 : processingExitReport,
-  };
+  // const type = params.reportType;
+  // const typeMapping = {
+  //   1 : processingCashEntryExitReport,
+  //   2 : processingEntryReport,
+  //   3 : processingExitReport,
+  // };
 
-  if (!typeMapping[type]) {
-    next(new BadRequest('The report type is missing and cannot work.'));
-    return;
-  }
+  // if (!typeMapping[type]) {
+  //   next(new BadRequest('The report type is missing and cannot work.'));
+  //   return;
+  // }
 
-  // call the report processing function
-  let promise;
-  try {
-    promise = typeMapping[type](params);
-  } catch (e) {
-    next(e);
-    return;
-  }
+  // // call the report processing function
+  // let promise;
+  // try {
+  //   promise = typeMapping[type](params);
+  // } catch (e) {
+  //   next(e);
+  //   return;
+  // }
 
   // once the report is rendered, return to sender
-  promise
-    .then(result => res.status(200).json(result))
-    .catch(next);
-}
+  // promise
+  //   .then(result => res.status(200).json(result))
+  //   .catch(next);
+// }
 
 /** processingCashEntryExitReport */
-function processingCashEntryExitReport(params) {
-  const glb = {};
+// function processingCashEntryExitReport(params) {
+//   const glb = {};
 
-  return getEntryReport(params.account_id, params.dateFrom, params.dateTo)
-    .then((entries) => {
-      glb.entries = entries;
-      return getExitReport(params.account_id, params.dateFrom, params.dateTo);
-    })
-    .then((exits) => {
-      glb.exits = exits;
-      return glb;
-    });
-}
+//   return getEntryReport(params.account_id, params.dateFrom, params.dateTo)
+//     .then((entries) => {
+//       glb.entries = entries;
+//       return getExitReport(params.account_id, params.dateFrom, params.dateTo);
+//     })
+//     .then((exits) => {
+//       glb.exits = exits;
+//       return glb;
+//     });
+// }
 
 
 /** processingEntryReport */
-function processingEntryReport(params) {
-  const glb = {};
+// function processingEntryReport(params) {
+//   const glb = {};
 
-  // get entry report
-  return getEntryReport(params.account_id, params.dateFrom, params.dateTo)
-    .then((entries) => {
-      glb.entries = entries;
-      return glb;
-    });
-}
+//   // get entry report
+//   return getEntryReport(params.account_id, params.dateFrom, params.dateTo)
+//     .then((entries) => {
+//       glb.entries = entries;
+//       return glb;
+//     });
+// }
 
 /** processingExitReport */
-function processingExitReport(params) {
-  const glb = {};
+// function processingExitReport(params) {
+//   const glb = {};
 
-  // get entry report
-  return getExitReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(exits => {
-      glb.exits = exits;
-      return glb;
-    });
-}
+//   // get entry report
+//   return getExitReport(params.account_id, params.dateFrom, params.dateTo)
+//     .then(exits => {
+//       glb.exits = exits;
+//       return glb;
+//     });
+// }
 
 /**
  * @function getEntryReport
@@ -110,48 +110,48 @@ function processingExitReport(params) {
  * @param {date} dateFrom A starting date
  * @param {date} dateTo A stop date
  */
-function getEntryReport(accountId, dateFrom, dateTo) {
-  const query = `
-    SELECT 
-      t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
-      t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-      BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, 
-      t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
-      t.user_id, u.username, a.number, tr.text AS transactionType, 
-      a.label
-    FROM
-    (
-      (
-      SELECT 
-        posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
-        posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
-        posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
-        posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id=? AND 
-        (posting_journal.trans_date >=? AND posting_journal.trans_date <=?)
-      ) UNION (
-      SELECT 
-        general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
-        general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
-        general_ledger.record_uuid, general_ledger.entity_uuid, general_ledger.reference_uuid,
-        general_ledger.currency_id, general_ledger.trans_id, general_ledger.description, 
-        general_ledger.comment, general_ledger.origin_id, general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id=? AND 
-        (general_ledger.trans_date >=? AND general_ledger.trans_date <=?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.debit > 0 GROUP BY t.trans_id;
-  `;
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-}
+// function getEntryReport(accountId, dateFrom, dateTo) {
+//   const query = `
+//     SELECT 
+//       t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
+//       t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
+//       BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, 
+//       t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
+//       t.user_id, u.username, a.number, tr.text AS transactionType, 
+//       a.label
+//     FROM
+//     (
+//       (
+//       SELECT 
+//         posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
+//         posting_journal.debit_equiv, posting_journal.credit_equiv,
+//         posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
+//         posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
+//         posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
+//         posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
+//       FROM posting_journal
+//         WHERE posting_journal.account_id=? AND 
+//         (posting_journal.trans_date >=? AND posting_journal.trans_date <=?)
+//       ) UNION (
+//       SELECT 
+//         general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
+//         general_ledger.debit_equiv, general_ledger.credit_equiv,
+//         general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
+//         general_ledger.record_uuid, general_ledger.entity_uuid, general_ledger.reference_uuid,
+//         general_ledger.currency_id, general_ledger.trans_id, general_ledger.description, 
+//         general_ledger.comment, general_ledger.origin_id, general_ledger.user_id
+//       FROM general_ledger
+//         WHERE general_ledger.account_id=? AND 
+//         (general_ledger.trans_date >=? AND general_ledger.trans_date <=?)
+//       )
+//     ) AS t
+//     JOIN user u ON t.user_id = u.id
+//     JOIN account a ON t.account_id = a.id
+//     LEFT JOIN transaction_type tr ON tr.id = t.origin_id
+//     WHERE t.debit > 0 GROUP BY t.trans_id;
+//   `;
+//   return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+// }
 
 
 /**
@@ -160,49 +160,49 @@ function getEntryReport(accountId, dateFrom, dateTo) {
  * @param {date} dateFrom A starting date
  * @param {date} dateTo A stop date
  */
-function getExitReport(accountId, dateFrom, dateTo) {
-  const query = `
-    SELECT 
-      t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
-      t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-      BUID(t.entity_uuid) AS entity_uuid, BUID(t.reference_uuid) AS record_uuid, 
-      t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
-      t.user_id, u.username, a.number, tr.text AS transactionType, 
-      a.label
-    FROM
-    (
-      (
-      SELECT 
-        posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
-        posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
-        posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
-        posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id= ? AND 
-        (posting_journal.trans_date >= ? AND posting_journal.trans_date <= ?)
-      ) UNION (
-      SELECT 
-        general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
-        general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
-        general_ledger.record_uuid, general_ledger.entity_uuid, 
-        general_ledger.reference_uuid, general_ledger.currency_id, general_ledger.trans_id, 
-        general_ledger.description, general_ledger.comment, general_ledger.origin_id, 
-        general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id= ? AND 
-        (general_ledger.trans_date >= ? AND general_ledger.trans_date <= ?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.credit > 0 GROUP BY t.trans_id;`;
+// function getExitReport(accountId, dateFrom, dateTo) {
+//   const query = `
+//     SELECT 
+//       t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
+//       t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
+//       BUID(t.entity_uuid) AS entity_uuid, BUID(t.reference_uuid) AS record_uuid, 
+//       t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
+//       t.user_id, u.username, a.number, tr.text AS transactionType, 
+//       a.label
+//     FROM
+//     (
+//       (
+//       SELECT 
+//         posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
+//         posting_journal.debit_equiv, posting_journal.credit_equiv,
+//         posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
+//         posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
+//         posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
+//         posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
+//       FROM posting_journal
+//         WHERE posting_journal.account_id= ? AND 
+//         (posting_journal.trans_date >= ? AND posting_journal.trans_date <= ?)
+//       ) UNION (
+//       SELECT 
+//         general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
+//         general_ledger.debit_equiv, general_ledger.credit_equiv,
+//         general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
+//         general_ledger.record_uuid, general_ledger.entity_uuid, 
+//         general_ledger.reference_uuid, general_ledger.currency_id, general_ledger.trans_id, 
+//         general_ledger.description, general_ledger.comment, general_ledger.origin_id, 
+//         general_ledger.user_id
+//       FROM general_ledger
+//         WHERE general_ledger.account_id= ? AND 
+//         (general_ledger.trans_date >= ? AND general_ledger.trans_date <= ?)
+//       )
+//     ) AS t
+//     JOIN user u ON t.user_id = u.id
+//     JOIN account a ON t.account_id = a.id
+//     LEFT JOIN transaction_type tr ON tr.id = t.origin_id
+//     WHERE t.credit > 0 GROUP BY t.trans_id;`;
 
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-}
+//   return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+// }
 
 function getRecordQuery (token){
   const query =
@@ -305,6 +305,22 @@ function getCashRecord (accountId, dateFrom, dateTo){
     })
     .then((finalTotal) => {
       reportContext.finalTotal = finalTotal.balance;
+
+      const sql = 
+      `SELECT
+	      c.label AS cashName, cu.symbol AS cashCurrency
+      FROM 
+        cash_box AS c
+      JOIN 
+        cash_box_account_currency AS cac ON c.id = cac.cash_box_id
+      JOIN 
+        currency AS cu ON cac.currency_id = cu.id
+      WHERE cac.account_id = ?;`
+
+      return db.one(sql, [accountId]);
+    })
+    .then((cashDetail) => {
+      _.merge(reportContext, cashDetail);
       return reportContext;
     });
 }
@@ -338,10 +354,11 @@ function document(req, res, next) {
   }
 
   getCashRecord(params.account_id, params.dateFrom, params.dateTo)
-    .then((reportContext) => {
-      reportContext.type_id = params.type;
-      _.merge(reportContext, {label : reportContext.entries[0].label, number : reportContext.entries[0].number }); 
-      console.log('reportContext', reportContext);
+    .then((reportContext) => {      
+      _.merge(reportContext, {
+        type_id : Number(params.type),
+        isEmpty : reportContext.entries.length === 0 && reportContext.expenses.length === 0
+      }); 
       return documentReport.render(reportContext);
     })
     .then(result => {
