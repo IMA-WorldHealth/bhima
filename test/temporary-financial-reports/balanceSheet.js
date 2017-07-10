@@ -35,9 +35,9 @@ describe('Balance Sheet Report', () => {
      */
     const totalAssets = 486.43;
     const totalLiabilities = 0;
-    const totalEquity = 729.89;  // equity has a debtor sold (normal sold must be creditor which means negative value)
-    const totalRevenue = -56.33; // revenue has a creditor sold (negative)
-    const totalExpense = 840.01; // expense has a debtor sold (positive)
+    const totalEquity = -1270.11; // equity has a creditor sold (negative)
+    const totalRevenue = -56.33;  // revenue has a creditor sold (negative)
+    const totalExpense = 840.01;  // expense has a debtor sold (positive)
 
     result2016 = totalEquity + totalRevenue + totalExpense;
 
@@ -71,7 +71,7 @@ describe('Balance Sheet Report', () => {
 
         expect(Number((report.assets.totals.balance || 0).toFixed(2))).to.equal(totalAssets);
         expect(Number((report.liabilities.totals.balance || 0).toFixed(2))).to.equal(totalLiabilities);
-        expect(Number((report.equity.totals.balance || 0).toFixed(2))).to.equal(result2016);
+        expect(Number((report.equity.totals.balance || 0).toFixed(2))).to.equal(round(result2016, 2));
         expect(Number((report.revenue.totals.balance || 0).toFixed(2))).to.equal(totalRevenue);
         expect(Number((report.expense.totals.balance || 0).toFixed(2))).to.equal(totalExpense);
       });
@@ -83,5 +83,10 @@ describe('Balance Sheet Report', () => {
     report.equity.totals = report.equity.totals || {};
     report.revenue.totals = report.revenue.totals || {};
     report.expense.totals = report.expense.totals || {};
+  }
+
+  function round(value, decimals) {
+    // The rounding problem can be avoided by using numbers represented in exponential notation
+    return Number(`${Math.round(`${value}e${decimals}`)}e-${decimals}`);
   }
 });

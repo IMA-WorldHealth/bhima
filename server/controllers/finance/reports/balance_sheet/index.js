@@ -160,12 +160,11 @@ function processAccounts(data) {
       const id = row.number;
       const obj = {};
       account[id] = obj;
-      const sold = getSold(row);
       obj.label = row.label;
       obj.number = row.number;
-      obj.debit = sold.debit;
-      obj.credit = sold.credit;
-      obj.balance = sold.debit - sold.credit;
+      obj.debit = row.debit;
+      obj.credit = row.credit;
+      obj.balance = row.balance;
       obj.is_charge = row.is_charge;
       obj.is_asset = row.is_asset;
       return account;
@@ -199,34 +198,6 @@ function processAccounts(data) {
  */
 function GroupAccountByType(rows) {
   return _.groupBy(rows, 'type_id');
-}
-
-/**
- * @function getSold
- * @description return the balance of an account
- * @param {object} object An object from the array returned by computeBalanceSheet function
- */
-function getSold(item) {
-  let debit = 0;
-  let credit = 0;
-  let sold = 0;
-
-  if (item.type_id === ASSET || item.type_id === LIABILITY) {
-    sold = item.debit - item.credit;
-    if (sold < 0) {
-      credit = sold * -1;
-    } else {
-      debit = sold;
-    }
-  } else {
-    sold = item.credit - item.debit;
-    if (sold < 0) {
-      debit = sold * -1;
-    } else {
-      credit = sold;
-    }
-  }
-  return { debit, credit };
 }
 
 /**
