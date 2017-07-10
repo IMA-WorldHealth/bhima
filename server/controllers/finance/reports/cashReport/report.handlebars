@@ -10,13 +10,11 @@
         <strong>{{translate 'TREE.CASH_REPORT'}}</strong>
       </h3>
       <h5 class="text-center text-uppercase">
-        {{ entryExit.accountNumber}} : {{ entryExit.accountName}}
+        {{ this.number}} : {{ this.label}}
       </h5>
       <h6 class="text-center text-uppercase">
-        {{date entryExit.dateFrom }} - {{date entryExit.dateTo }}
+        {{date this.dateFrom }} - {{date this.dateTo }}
       </h6>
-
-      {{#if (isEntryViewable this.type_id) }}
 
         <h6 class="text-center text-uppercase">
           {{ translate 'REPORT.CASH_INCOME' }}
@@ -33,7 +31,7 @@
             </tr>            
           </thead>
           <tbody>
-            {{#each entryExit.entries}}
+            {{#each this.entries}}
               <tr>
                 <td class="text-left">{{ trans_id }}</td>
                 <td class="text-left">{{ date trans_date }}</td>              
@@ -55,13 +53,11 @@
           <tfoot>
             <tr style="background-color:#ddd;">
               <th class="text-right" colspan="6"> 
-                {{ translate 'TABLE.COLUMNS.TOTAL' }} : {{ currency entryExit.sumEntry metadata.enterprise.currency_id}}
+                {{ translate 'TABLE.COLUMNS.TOTAL' }} : {{ currency this.totalEntry metadata.enterprise.currency_id}}
               </th>
             </tr>
           </tfoot>
         </table>
-      {{/if}}
-      {{#if entryExit.reportExit }}
         <h6 class="text-center text-uppercase">
           {{ translate 'REPORT.CASH_EXPENSE' }}
         </h6>
@@ -77,7 +73,7 @@
             </tr>            
           </thead>
           <tbody>
-            {{#each entryExit.exits}}
+            {{#each this.expenses}}
               <tr>
                 <td class="text-left">{{ trans_id }}</td>
                 <td class="text-left">{{ date trans_date }}</td>              
@@ -99,18 +95,17 @@
           <tfoot>
             <tr style="background-color:#ddd;">
               <th class="text-right" colspan="6">
-                {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency entryExit.sumExit metadata.enterprise.currency_id}}
+                {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency this.totalExpense metadata.enterprise.currency_id}}
               </th>
             </tr>
             <tr>
               <th colspan="4"><br/></th>
             </tr>
             <tr style="background-color:#ddd;">
-              <th class="text-right" colspan="6">{{translate 'TABLE.COLUMNS.TOTAL'}} : {{ currency entryExit.sumExit metadata.enterprise.currency_id}}</th>
+              <th class="text-right" colspan="6">{{translate 'TABLE.COLUMNS.TOTAL'}} : {{ currency this.finalTotal metadata.enterprise.currency_id}}</th>
             </tr>
           </tfoot>
         </table>
-      {{/if}}
     </div>
   </div>
 </div>

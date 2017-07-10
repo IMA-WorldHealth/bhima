@@ -207,7 +207,7 @@ function getExitReport(accountId, dateFrom, dateTo) {
 function getRecordQuery (token){
   const query =
   `SELECT
-    t.trans_date, t.debit_equiv, t.credit_equiv, t.description, 
+    t.trans_id, t.trans_date, t.debit_equiv AS debit, t.credit_equiv AS credit, t.description, 
 		t.origin_id, t.user_id, u.username, a.number, 
 		tr.text AS transactionType, a.label
   FROM
@@ -316,7 +316,6 @@ function getCashRecord (accountId, dateFrom, dateTo){
  */
 function document(req, res, next) {
   const params = req.query;
-  console.log(params);
   let documentReport;
 
   if (!params.dateFrom || !params.dateTo) {
@@ -340,12 +339,9 @@ function document(req, res, next) {
 
   getCashRecord(params.account_id, params.dateFrom, params.dateTo)
     .then((reportContext) => {
-<<<<<<< 5f207116aaa7ddd0f067b52b5ebd589233bb7c05
       reportContext.type_id = params.type;
-      // console.log('reportContext', reportContext);
-=======
+      _.merge(reportContext, {label : reportContext.entries[0].label, number : reportContext.entries[0].number }); 
       console.log('reportContext', reportContext);
->>>>>>> refactoring server side cash report
       return documentReport.render(reportContext);
     })
     .then(result => {
@@ -353,58 +349,4 @@ function document(req, res, next) {
     })
     .catch(next)
     .done();
-
-
-  // processingCashEntryExitReport(params)
-  //   .then(entryExit => {
-  //     entryExit.reportEntry = false;
-  //     entryExit.reportExit = false;
-  //     entryExit.dateFrom = params.dateFrom;
-  //     entryExit.dateTo = params.dateTo;
-
-  //     // pick the cashbox account name
-  //     if (!entryExit.accountName && entryExit.entries.length) {
-  //       entryExit.accountName = entryExit.entries[0].label;
-  //     } else if (!entryExit.accountName && entryExit.exits && entryExit.exits.length) {
-  //       entryExit.accountName = entryExit.exits[0].label;
-  //     } else {
-  //       entryExit.accountName = entryExit.accountName;
-  //     }
-
-  //     // pick the cashbox account Number
-  //     if (!entryExit.accountNumber && entryExit.entries.length) {
-  //       entryExit.accountNumber = entryExit.entries[0].number;
-  //     } else if (!entryExit.accountNumber && entryExit.exits && entryExit.exits.length) {
-  //       entryExit.accountNumber = entryExit.exits[0].number;
-  //     } else {
-  //       entryExit.accountNumber = entryExit.accountNumber;
-  //     }
-
-  //     const reportType = parseInt(params.type, 10);
-
-  //     if (reportType === 1 || reportType === 2) {
-  //       entryExit.entries.forEach((entry) => {
-  //         sumEntry += entry.debit;
-  //       });
-
-  //       entryExit.reportEntry = true;
-  //       entryExit.sumEntry = sumEntry;
-  //     }
-
-  //     if (reportType === 1 || reportType === 3) {
-  //       entryExit.exits.forEach((exit) => {
-  //         sumExit += exit.credit;
-  //       });
-
-  //       entryExit.reportExit = true;
-  //       entryExit.sumExit = sumExit;
-  //     }
-
-  //     return documentReport.render({ entryExit });
-  //   })
-  //   .then(result => {
-  //     res.set(result.headers).send(result.report);
-  //   })
-  //   .catch(next)
-  //   .done();
 }

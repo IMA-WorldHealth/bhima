@@ -12,8 +12,6 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-  vm.previewGenerated = false;
-
   vm.reportTypes = [
     { id: 1, label: 'FORM.LABELS.ENTRY_EXIT' },
     { id: 2, label: 'FORM.LABELS.ENTRY' },
@@ -22,21 +20,27 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
 
   checkCachedConfiguration();
 
-  vm.onSelectFiscal = function onSelectFiscal(fiscal) {
-    vm.reportDetails.fiscal = fiscal;
-  };
+  Cashbox.read(null, { detailed: 1 })
+    .then(function (cashboxes) {
+      cashboxes.forEach(function (cashbox) {
+        cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
+      });
 
-  vm.onSelectPeriodFrom = function onSelectPeriodFrom(period) {
-    vm.reportDetails.periodFrom = period;
-  };
+      vm.cashboxes = cashboxes;
+    })
+    .catch(Notify.handleError);
 
-  vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
-    vm.reportDetails.periodTo = period;
+  vm.clearPreview = function clearPreview() {
+    vm.previewGenerated = false;
+    vm.previewResult = null;
   };
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
 
+    vm.reportDetails.account_id = vm.reportDetails.cashbox.account_id;
+    delete vm.reportDetails.cashbox;
+    
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
@@ -48,13 +52,7 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
       .catch(Notify.handleError);
   };
 
-  vm.clearPreview = function clearPreview() {
-    vm.previewGenerated = false;
-    vm.previewResult = null;
-  };
-
   vm.requestSaveAs = function requestSaveAs() {
-
     var options = {
       url : reportUrl,
       report : reportData,
@@ -72,6 +70,5 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
-    vm.reportDetails.type = 1;
-  } 
+  }
 }
