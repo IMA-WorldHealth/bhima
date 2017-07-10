@@ -34,3 +34,6 @@ test/artifacts/
 .vscode/*
 nbproject/*
 
+# ignore netbeans files
+nbproject/
+

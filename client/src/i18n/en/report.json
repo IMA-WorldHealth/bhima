@@ -78,6 +78,14 @@
       "TITLE": "Balance Report",
       "DESCRIPTION": "This report show the balance of accounts for a given period"
     },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Income Expense Report",
+      "DESCRIPTION": "This report show all income and expense occured in the enterprise"
+    },
+    "CASH_REPORT": {
+      "TITLE": "Cash Report",
+      "DESCRIPTION": "This report show all entries and exits of cash inside the enterprise"
+    },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",
       "SAVE_AS": "Save As",
