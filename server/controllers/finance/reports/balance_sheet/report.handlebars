@@ -40,8 +40,8 @@
             {{#if account.balance}}
             <tr>
               <td style="width: 70%;" class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-              <td style="width: 15%;" class="text-right">{{#gt account.balance 0}}{{currency account.balance metadata.enterprise.currency_id}}{{/gt}}</td>
-              <td style="width: 15%;" class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) metadata.enterprise.currency_id}}{{/lt}}</td>
+              <td style="width: 15%;" class="text-right">{{#gt account.balance 0}}{{currency account.balance ../metadata.enterprise.currency_id}}{{/gt}}</td>
+              <td style="width: 15%;" class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) ../metadata.enterprise.currency_id}}{{/lt}}</td>
             </tr>
             {{/if}}
           {{/each}}
@@ -63,8 +63,8 @@
             {{#if account.balance}}
             <tr class="text-right">
               <td style="width: 70%;"  class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-              <td style="width: 15%;"  class="text-right">{{#gt account.balance 0}}{{currency account.balance metadata.enterprise.currency_id}}{{/gt}}</td>
-              <td style="width: 15%;"  class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) metadata.enterprise.currency_id}}{{/lt}}</td>
+              <td style="width: 15%;"  class="text-right">{{#gt account.balance 0}}{{currency account.balance ../metadata.enterprise.currency_id}}{{/gt}}</td>
+              <td style="width: 15%;"  class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) ../metadata.enterprise.currency_id}}{{/lt}}</td>
             </tr>
             {{/if}}
           {{/each}}
@@ -87,8 +87,8 @@
             {{#if account.balance}}
             <tr class="text-right">
               <td style="width: 70%;"  class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-              <td style="width: 15%;"  class="text-right">{{#gt account.balance 0}}{{currency account.balance metadata.enterprise.currency_id}}{{/gt}}</td>
-              <td style="width: 15%;"  class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) metadata.enterprise.currency_id}}{{/lt}}</td>
+              <td style="width: 15%;"  class="text-right">{{#gt account.balance 0}}{{currency account.balance ../metadata.enterprise.currency_id}}{{/gt}}</td>
+              <td style="width: 15%;"  class="text-right">{{#lt account.balance 0}}{{currency (multiply account.balance -1) ../metadata.enterprise.currency_id}}{{/lt}}</td>
             </tr>
             {{/if}}
           {{/each}}
