@@ -2,6 +2,7 @@
 
 <body>
 
+<div class="container">
   {{> header}}
 
   <!-- body  -->
@@ -22,19 +23,15 @@
         {{/if}}
       </h4>
 
-      <table class="report-condensed-table">
+      {{!-- assets --}}
+      <table class="table table-condensed table-report" style="margin-bottom: 15px;">
         <thead>
-          <tr>
-            <th style="width: 70%;"></th>
+          <tr style="background-color:#ddd;">
+            <th style="width: 70%;">{{translate "ACCOUNT.TYPES.ASSET"}}</th>
             <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.DEBTOR_SOLD'}}</th>
             <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.CREDITOR_SOLD'}}</th>
           </tr>
         </thead>
-      </table>
-
-      {{!-- assets --}}
-      <h4 style="margin: 2px;"><strong>{{translate "ACCOUNT.TYPES.ASSET"}}</strong></h4>
-      <table class="report-condensed-table">
         <tbody>
           {{#each assets.accounts as |account|}}
             {{#if account.balance}}
@@ -56,8 +53,14 @@
       </table>
 
       {{!-- liabilities --}}
-      <h4 style="margin: 2px;"><strong>{{translate "ACCOUNT.TYPES.LIABILITY"}}</strong></h4>
-      <table class="report-condensed-table">
+      <table class="table table-condensed table-report" style="margin-bottom: 15px;">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th style="width: 70%;">{{translate "ACCOUNT.TYPES.LIABILITY"}}</th>
+            <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.DEBTOR_SOLD'}}</th>
+            <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.CREDITOR_SOLD'}}</th>
+          </tr>
+        </thead>
         <tbody>
           {{#each liabilities.accounts as |account|}}
             {{#if account.balance}}
@@ -72,7 +75,6 @@
         <tfoot>
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
             <th>{{translate "FORM.LABELS.TOTAL"}} {{translate "ACCOUNT.TYPES.LIABILITY"}}</th>
-            {{!--<td class="text-right">{{currency (multiply liabilities.totals.balance -1) metadata.enterprise.currency_id }}</td>--}}
             <th class="text-right">{{#gt liabilities.totals.balance 0}}{{currency liabilities.totals.balance metadata.enterprise.currency_id}}{{/gt}}</th>
             <th class="text-right">{{#lt liabilities.totals.balance 0}}{{currency (multiply liabilities.totals.balance -1) metadata.enterprise.currency_id}}{{/lt}}</th>
           </tr>
@@ -80,8 +82,14 @@
       </table>
       
       {{!-- equity --}}
-      <h4 style="margin: 2px;"><strong>{{translate "ACCOUNT.TYPES.EQUITY"}}</strong></h4>
-      <table class="report-condensed-table">
+      <table class="table table-condensed table-report" style="margin-bottom: 15px;">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th style="width: 70%;">{{translate "ACCOUNT.TYPES.EQUITY"}}</th>
+            <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.DEBTOR_SOLD'}}</th>
+            <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.CREDITOR_SOLD'}}</th>
+          </tr>
+        </thead>
         <tbody>
           {{#each equity.accounts as |account|}}
             {{#if account.balance}}
@@ -104,17 +112,27 @@
 
       {{#if showExploitation}}
 
-        <table class="report-condensed-table">
-          <thead class="title">
-            {{!--exploitaton--}}
+        <table class="table table-condensed table-report" style="margin-bottom: 15px;">
+          <thead>
+            <tr style="background-color:#ddd;">
+              <th style="width: 70%;">{{translate "REPORT.BALANCE_SHEET.EXPLOITATION_RESULT"}}</th>
+              <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.DEBTOR_SOLD'}}</th>
+              <th style="width: 15%;" class="text-center">{{translate 'REPORT.BALANCE_SHEET.CREDITOR_SOLD'}}</th>
+            </tr>
+          </thead>
+          <tfoot>
             <tr>
-              <th style="width: 70%" class="text-left">{{translate "REPORT.BALANCE_SHEET.EXPLOITATION_RESULT"}}</th>
+              <th style="width: 70%" class="text-left">{{translate "FORM.LABELS.TOTAL"}} {{translate "REPORT.BALANCE_SHEET.EXPLOITATION_RESULT"}}</th>
               <th style="width: 15%" class="text-right">{{#lt result.balance 0}}{{currency (multiply result.balance -1) metadata.enterprise.currency_id}}{{/lt}}</th>
               <th style="width: 15%" class="text-right">{{#gt result.balance 0}}{{currency result.balance metadata.enterprise.currency_id}}{{/gt}}</th>
             </tr>
+          </tfoot>
+        </table>
 
-            {{!--total--}}
-            <tr  style="font-weight: bold; background-color: #efefef;">
+        {{!--total--}}
+        <table class="table table-condensed table-report" style="margin-bottom: 15px;">
+          <thead>
+            <tr  style="font-weight: bold; background-color: #efefef; border-top: 1px solid #000;">
               <th style="width: 70%" class="text-left">{{translate "FORM.LABELS.TOTAL"}}</th>
               <th style="width: 15%" class="text-right">{{currency totals.debit metadata.enterprise.currency_id}}</th>
               <th style="width: 15%" class="text-right">{{currency totals.credit metadata.enterprise.currency_id}}</th>
@@ -135,4 +153,6 @@
       {{/if}}
     </div>
   </div>
+
+</div>
 </body>
