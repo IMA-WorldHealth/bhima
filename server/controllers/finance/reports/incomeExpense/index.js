@@ -21,7 +21,7 @@ const fiscalPeriod = require('../../fiscalPeriod');
 
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
-const types = [1, 2];
+const types = [4, 5]; // revenue and expense type
 
 // expose to the API
 exports.document = document;
@@ -64,7 +64,7 @@ function document(req, res, next) {
         })
         .then((reportContext) => {
             const contents = reportContext.accounts.reduce((obj, item) => {
-                if (item.type_id === 1) {
+                if (item.type_id === 4) {
                     obj.incomes.push(item);
                 } else {
                     obj.expenses.push(item);
