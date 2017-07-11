@@ -29,18 +29,16 @@ function LatestInvoice(Patient, moment, Notify, Session) {
     if (!vm.debtorUuid) { return; }
     vm.loading = true;
 
-    Patient.latest(vm.debtorUuid)
-      .then(function (patientInvoice) {
-        vm.loading = false;
-        vm.patientInvoice = patientInvoice;
-        vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
-      })
-      .catch(Notify.handleError);
-
     Patient.balance(vm.debtorUuid)
       .then(function (balance) {
-        vm.patientBalance = balance;
+        vm.balance = balance;
+        return Patient.latest(vm.debtorUuid);
       })
+      .then(function (patientInvoice) {
+        vm.patientBalance = vm.balance;
+        vm.patientInvoice = patientInvoice;
+        vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
+      })      
       .catch(Notify.handleError)
       .finally(function () {
         vm.loading = false;
