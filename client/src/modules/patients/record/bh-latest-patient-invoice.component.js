@@ -9,13 +9,13 @@ angular.module('bhima.components')
 });
 
 LatestInvoice.$inject = [
-  'PatientService', 'moment', 'NotifyService', 'SessionService',
+  'PatientService', 'moment', 'NotifyService', 'SessionService', '$q'
 ];
 
 /**
  * This component is responsible for displaying the Latest Invoice
  */
-function LatestInvoice(Patient, moment, Notify, Session) {
+function LatestInvoice(Patient, moment, Notify, Session, $q) {
   var vm = this;
 
   this.$onInit = function $onInit() {
@@ -29,19 +29,21 @@ function LatestInvoice(Patient, moment, Notify, Session) {
     if (!vm.debtorUuid) { return; }
     vm.loading = true;
 
-    Patient.balance(vm.debtorUuid)
-      .then(function (balance) {
-        vm.balance = balance;
-        return Patient.latest(vm.debtorUuid);
-      })
-      .then(function (patientInvoice) {
-        vm.patientBalance = vm.balance;
-        vm.patientInvoice = patientInvoice;
-        vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
-      })      
-      .catch(Notify.handleError)
-      .finally(function () {
-        vm.loading = false;
-      });      
+    var requests = $q.all([
+      Patient.latest(vm.debtorUuid),
+      Patient.balance(vm.debtorUuid)
+    ]);
+
+    requests.then(function (results) {
+      vm.patientInvoice = results[0];  // returned from the latest() call
+      vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
+
+      vm.patientBalance = results[1]; // returned from balance() call
+    })
+     .catch(Notify.handleError)
+     .finally(function () {
+       vm.loading = false;
+      });
+ 
   }
 }
