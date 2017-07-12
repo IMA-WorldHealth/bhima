@@ -5,8 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
   'GridColumnService', 'GridSortingService', 'bhConstants',
-  'DepricatedFilterService',
-];
+  'DepricatedFilterService', 'GridStateService', 'LanguageService', 'ExportService'];
 
 /**
  * Patient Registry Controller
@@ -15,7 +14,7 @@ PatientRegistryController.$inject = [
  */
 function PatientRegistryController($state, Patients, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
-  Columns, Sorting, bhConstants, Filters) {
+  Columns, Sorting, bhConstants, Filters, GridState, Languages, Export) {
   var vm = this;
 
   var filter = new Filters();
@@ -24,13 +23,15 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
   var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  var state;
 
   vm.search = search;
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
   vm.patientCard = patientCard;
   vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
+  vm.gridApi = {};
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.download = Patients.download;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -110,6 +111,13 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }  
 
   // error handler
   function handler(error) {
@@ -148,48 +156,29 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     });
   }
 
-  // search and filter data in Patient Registry
   function search() {
-    Patients.openSearchModal(vm.filters)
-      .then(function (parameters) {
+    var filtersSnapshot = Patients.filters.formatHTTP();
 
-        // no parameters means the modal was dismissed.
-        if (!parameters) { return; }
+    Patients.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
+        Patients.filters.replaceFilters(changes);
 
-        if (parameters.defaultPeriod) {
-          delete parameters.defaultPeriod;
-        }
-
-        cacheFilters(parameters);
-        return load(vm.filters);
+        Patients.cacheFilters();
+        vm.latestViewFilters = Patients.filters.formatView();
+        return load(Patients.filters.formatHTTP(true));
       });
-  }
-
-  function openColumnConfiguration() {
-    columnConfig.openConfigurationModal();
-  }
-
-  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
-  function cacheFilters(filters) {
-    filters = filter.applyDefaults(filters);
-    vm.filters = cache.filters = filters;
-    vm.filtersFmt = Patients.formatFilterParameters(filters);
-
-    // check if there are filters applied and show the filter bar
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?  FILTER_BAR_HEIGHT : {};
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    delete vm.filters[key];
-    cacheFilters(vm.filters);
-    load(vm.filters);
+    Patients.removeFilter(key);
+    Patients.cacheFilters();
+    vm.latestViewFilters = Patients.filters.formatView();
+    return load(Patients.filters.formatHTTP(true));
   }
 
-  // clears the filters by forcing a cache of an empty array
-  function clearFilters() {
-    cacheFilters({});
-    load(vm.filters);
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   // toggles the loading indicator on or off
@@ -204,21 +193,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-
-    // if filters are directly passed in through params, override cached filters
-    if ($state.params.filters) {
-      cacheFilters($state.params.filters);
-    }
-
-    if (!cache.filters) { cache.filters = {}; }
-    var filters = filter.applyDefaults(cache.filters);
-
-    vm.filters = filters;
-    vm.filtersFmt = Patients.formatFilterParameters(vm.filters || {});
-    load(vm.filters);
-
-    // check if there are filters applied
-    vm.filterBarHeight = (vm.filtersFmt.length > 0) ? FILTER_BAR_HEIGHT : {};
+    load(Patients.filters.formatHTTP(true));
+    vm.latestViewFilters = Patients.filters.formatView();
   }
 
   // fire up the module

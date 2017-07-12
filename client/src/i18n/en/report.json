@@ -41,6 +41,10 @@
       "DESCRIPTION":"This report shows all transactions for an individual account given a set time period.",
       "WARN_MULTIPLE":"N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the begining of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year."
     },
+    "INCOME_EXPENSE_REPORT" : {
+      "TITLE" : "Income Expense Report",
+      "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",
       "SAVE_AS":"Save As",

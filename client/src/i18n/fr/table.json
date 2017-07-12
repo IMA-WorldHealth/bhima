@@ -1,5 +1,6 @@
 {"TABLE":{"COLUMNS":{"ABBREVIATION":"Abbreviation",
 "ACCOUNT":"Compte",
+"ACCOUNT_NAME" : "Intitule Compte",
 "ACTION":"Action",
 "AFTER":"Apres",
 "AGE":"Age",

@@ -162,7 +162,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] Reports
 -- Cashflow report:       (145,1),
 -- Chart of account:      (148, 1),
--- Income Expense report: (149,1),
+(180,1),
 -- Balance report:        (150, 1),
 -- Report Customer Debts: (151,1),
 -- Clients report:        (159, 1),
