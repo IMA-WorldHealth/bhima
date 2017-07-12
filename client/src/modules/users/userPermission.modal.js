@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('UserPermissionModalController', UserPermissionModalController);
 
 UserPermissionModalController.$inject = [
-  '$translate', '$http', '$state', 'util', 'UserService', 'NodeTreeService', 'NotifyService', 'appcache'
+  '$translate', '$http', '$state', 'util', 'UserService', 'NodeTreeService', 'NotifyService', 'appcache', 'SessionService'
 ];
 
 
-function UserPermissionModalController($translate, $http, $state, util, Users, NT, Notify, AppCache) {
+function UserPermissionModalController($translate, $http, $state, util, Users, NT, Notify, AppCache, SessionService) {
   var vm = this;
   var cache = AppCache('UserPermission');
 
@@ -127,6 +127,8 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
     return Users.updatePermissions(vm.user.id, permissions)
       .then(function () {
         Notify.success('USERS.UPDATED');
+        SessionService.reload();
+
         $state.go('users.list', null, {reload : true});
       })
       .catch(Notify.handleError);
