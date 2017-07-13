@@ -62,26 +62,26 @@ describe('Employees', () => {
     browser.refresh();    
   });  
 
-  it.skip('edits an employee', () => {
-    element(by.id(`employee-upd-${employeeId}`)).click();
+  // it.skip('edits an employee', () => {
+  //   element(by.id(`employee-upd-${employeeId}`)).click();
 
-    // modify the employee display_name
-    FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
-    FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
+  //   // modify the employee display_name
+  //   FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
+  //   FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
 
-    element(by.id('bhima-employee-locked')).click();
-    element(by.id('change_employee')).click();
+  //   element(by.id('bhima-employee-locked')).click();
+  //   element(by.id('change_employee')).click();
 
-    // make sure the success message appears
-    components.notification.hasSuccess();
-  });
+  //   // make sure the success message appears
+  //   components.notification.hasSuccess();
+  // });
 
-  it.skip('unlocks an employee', () => {
-    element(by.id(`employee-upd-${employeeId}`)).click();
-    element(by.id('bhima-employee-locked')).click();
-    element(by.id('change_employee')).click();
+  // it.skip('unlocks an employee', () => {
+  //   element(by.id(`employee-upd-${employeeId}`)).click();
+  //   element(by.id('bhima-employee-locked')).click();
+  //   element(by.id('change_employee')).click();
 
-    // make sure the success message appears
-    components.notification.hasSuccess();
-  });
+  //   // make sure the success message appears
+  //   components.notification.hasSuccess();
+  // });
 });

@@ -35,13 +35,25 @@ CREATE TABLE `account` (
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `account_category`;
+CREATE TABLE `account_category` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category` VARCHAR(35) NOT NULL,
+  `translation_key` VARCHAR(35) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_category_1` (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(35) NOT NULL,
   `translation_key` VARCHAR(35) NOT NULL,
+  `account_category_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `account_type_1` (`type`)
+  UNIQUE KEY `account_type_1` (`type`),
+  KEY `account_category_id` (`account_category_id`),
+  FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `assignation_patient`;

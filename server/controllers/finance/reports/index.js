@@ -21,3 +21,4 @@ exports.generalLedger = require('./generalLedger');
 exports.clientsReport = require('./clientsReport');
 exports.creditors = require('./creditors');
 exports.accountStatement = require('./account_statement');
+exports.balanceSheet = require('./balance_sheet');
