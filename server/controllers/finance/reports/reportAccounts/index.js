@@ -74,11 +74,12 @@ function document(req, res, next) {
       const expenseAccountId = 2;
 
       const multipleFiscalYears = result.fiscalYearSpan > 1;
-      const incomeExpenseAccount = bundle.accountDetails.type_id === incomeAccountId || bundle.accountDetails.type_id === expenseAccountId;
+      const incomeExpenseAccount = (bundle.accountDetails.type_id === incomeAccountId) ||
+      (bundle.accountDetails.type_id === expenseAccountId);
 
       if (multipleFiscalYears && incomeExpenseAccount) {
         _.extend(bundle, {
-          warnMultipleFiscalYears : true
+          warnMultipleFiscalYears : true,
         });
       }
       return report.render(bundle);
@@ -91,7 +92,6 @@ function document(req, res, next) {
 }
 
 function getNumberOfFiscalYears(dateFrom, dateTo) {
-
   const sql = `
     SELECT COUNT(id) as fiscalYearSpan from fiscal_year
     WHERE
@@ -136,10 +136,14 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
   // @TODO define standards for displaying and rounding totals, unless numbers are rounded
   //       uniformly they may be displayed differently from what is recorded
   const sqlTotals = `
-    SELECT SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit, (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
-    FROM general_ledger
-    WHERE account_id = ?
-    ${dateCondition}
+    SELECT 
+      SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit,
+      (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
+    FROM 
+      general_ledger
+    WHERE 
+      account_id = ?
+      ${dateCondition}
   `;
 
   const bundle = {};
@@ -168,7 +172,7 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       return db.one(sqlTotals, [accountId, dateFrom, dateTo]);
     })
     .then((totals) => {
-      let period = {};
+      const period = {};
       period.debit = totals.debit;
       period.credit = totals.credit;
       period.balance = totals.balance;
