@@ -6,6 +6,8 @@
       "TITLE":"Aged Debtors",
       "DESCRIPTION":"This report show all the debts of the clients, while specifying the debts per period"
     },
+    "BY_ASC":"By Ascending Order",
+    "BY_DESC":"By Descending Order",
     "BALANCE":"Balance Report",
     "BALANCE_SHEET":{
       "TITLE":"Balance Sheet",
@@ -30,8 +32,18 @@
     "INCOME_EXPENSE": "Income Expense Report",
     "INCOME_REPORT":"Incomes Report",
     "MONTHLY_BALANCE":"Monthly Balance",
-    "OPEN_DEBTORS":{ "TITLE":"Debtors with Unpaid Debts", "TREE":"Open Debtors" },
+    "OPEN_DEBTORS":{ 
+      "DESCRIPTION":"This report shows indebted debtors",
+      "TITLE":"Debtors with Unpaid Debts", 
+      "TREE":"Open Debtors" 
+    },
     "OPENING_BALANCE":"Opening Balance",
+    "ORDER":{
+      "LAST_INVOICE":"Date of last invoice",
+      "LAST_PAYMENT":"Date of last payment",
+      "PATIENT_NAME":"Nom du patient",
+      "TOTAL_DEBT":"Total Debts"
+    },    
     "OVER_NINETY_DAYS":"Over 90 Days",
     "PERIOD_START":"Start",
     "PERIOD_STOP":"Stop",

@@ -56,7 +56,7 @@ INSERT INTO unit VALUES
   (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
   (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
   (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
-  -- (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/partials/finance/debtors/open', '/reports/openDebtors'),
+  (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/modules/finance/open_debtors', '/reports/open_debtors'),
   (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted'),
   -- (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/partials/finance/clients_report', '/reports/clients_report'),
   (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/partials/stock', '/stock'),
@@ -97,7 +97,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (5, 'aged_debtors', 'TREE.CUSTOMER_DEBTS'),
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
-  (8, 'openDebtors', 'REPORT.OPEN_DEBTORS.TITLE'),
+  (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS_REPORT'),
   (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE');
