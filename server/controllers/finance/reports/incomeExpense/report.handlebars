@@ -38,8 +38,8 @@
                 <tr>
                   <td>{{number}}</td>
                   <td>{{label}}</td>
-                  <td class="text-right">{{currency debit}}</td>
-                  <td class="text-right">{{currency credit}}</td>
+                  <td class="text-right">{{currency debit ../enterprise.currency_id}}</td>
+                  <td class="text-right">{{currency credit ../enterprise.currency_id}}</td>
                 </tr>
                 {{/each}}
               </tbody>
@@ -47,7 +47,7 @@
                 <tr style="background-color:#ddd; ">
                   <th>{{translate 'TABLE.COLUMNS.BALANCE'}}</th>
                   <th colspan="3" class="text-right">
-                    {{currency this.incomeBalance.balance}}
+                    {{currency this.incomeBalance.balance this.enterprise.currency_id}}
                   </th>
                 </tr>
               </tfoot>
@@ -71,8 +71,8 @@
                 <tr>
                   <td>{{number}}</td>
                   <td>{{label}}</td>
-                  <td class="text-right">{{currency debit}}</td>
-                  <td class="text-right">{{currency credit}}</td>
+                  <td class="text-right">{{currency debit ../enterprise.currency_id}}</td>
+                  <td class="text-right">{{currency credit ../enterprise.currency_id}}</td>
                 </tr>
                 {{/each}}
               </tbody>
@@ -80,7 +80,7 @@
                 <tr style="background-color:#ddd;">
                   <th>{{translate 'TABLE.COLUMNS.BALANCE'}}</th>
                   <th colspan="2" class="text-right">
-                    {{currency this.expenseBalance.balance}}
+                    {{currency this.expenseBalance.balance this.enterprise.currency_id}}
                   </th>
                   <th></th>
                 </tr>
@@ -92,11 +92,11 @@
                   <th>{{translate 'TABLE.COLUMNS.RESULT'}}</th>
                   {{#if this.isLost}}
                   <th colspan="2" class="text-right">
-                    {{currency this.overallBalance.balance}}
+                    {{currency this.overallBalance.balance this.enterprise.currency_id}}
                   </th>
                   <th></th>
                   {{else}}
-                  <th colspan="3" class="text-right">{{currency this.overallBalance.balance}}</th>
+                  <th colspan="3" class="text-right">{{currency this.overallBalance.balance this.enterprise.currency_id}}</th>
                   {{/if}}
                 </tr>
                 {{/if}}
