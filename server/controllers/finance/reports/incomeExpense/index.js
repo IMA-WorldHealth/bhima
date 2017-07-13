@@ -73,6 +73,7 @@ function document(req, res, next) {
             }, { incomes: [], expenses: [] });
 
             _.merge(reportContext, {
+                enterprise : req.session.enterprise,
                 isEmpty: reportContext.accounts.length === 0,
                 dateFrom: options.dateFrom,
                 dateTo: options.dateTo,
