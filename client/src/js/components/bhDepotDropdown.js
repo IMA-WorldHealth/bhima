@@ -22,9 +22,8 @@ function bhDepotController(Depot, AppCache, Notify) {
     .then(function (rows) {
       if (!rows.length) { return; }
       $ctrl.depots = rows;
-      $ctrl.depotsAvailable = !!rows.length;
+      $ctrl.hasDepotsAvailable = !!rows.length;
       $ctrl.selection = cachedDepotExist() ? cache.selection : $ctrl.depots[0];
-      $ctrl.loading = false;
       $ctrl.onSelect({ depot : $ctrl.selection });
     })
     .catch(Notify.handleError)
@@ -41,6 +40,8 @@ function bhDepotController(Depot, AppCache, Notify) {
 
   function cachedDepotExist() {
     if (!cache.selection) { return false; }
-    return $ctrl.depots.indexOf(cache.selection.uuid) > -1;
+    return $ctrl.depots.filter(function (item) {
+      return item.uuid === cache.selection.uuid;
+    }).length;
   }
 }

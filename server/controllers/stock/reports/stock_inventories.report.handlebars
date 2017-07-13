@@ -13,75 +13,92 @@
         {{translate 'TREE.STOCK_INVENTORY'}}
       </h2>
 
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
       <!-- filters  -->
       {{#if hasFilter}}
-      <br />
         <div>
-          <i class="fa fa-filter"></i>
           {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
           {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
           {{#if display.status}} {{translate 'STOCK.STATUS.LABEL'}}: {{look display 'status'}} /{{/if}}
         </div>
-        <br />
       {{/if}}
 
       <br>
 
       <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-report">
         <thead>
           <tr>
-            <th>{{translate 'STOCK.DEPOT'}}</th>
             <th>{{translate 'STOCK.CODE'}}</th>
             <th>{{translate 'STOCK.INVENTORY'}}</th>
             <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.UNIT'}}</th>
             <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
-            <th>CMM</th>
-            <th>{{translate 'STOCK.MONTH'}}</th>
-            <th>SS</th>
-            <th>MIN</th>
-            <th>MAX</th>
-            <th>Q</th>
+            <th class="text-right">CMM</th>
+            <th class="text-right">MS</th>
+            <th class="text-right">SS</th>
+            <th class="text-right">MIN</th>
+            <th class="text-right">MAX</th>
+            <th class="text-right">Q</th>
           </tr>
         </thead>
         <tbody>
-          {{#each rows}}
-            <tr>
-              <td>{{depot_text}}</td>
-              <td>{{code}}</td>
-              <td>{{text}}</td>
-              <td class="text-right" style="font-weight: bold;">{{quantity}}</td>
-              <td>
-                {{#equal status 'sold_out'}}<span class="label label-danger">{{translate 'STOCK.STATUS.SOLD_OUT'}}</span>{{/equal}}
-                {{#equal status 'in_stock'}}<span class="label label-success">{{translate 'STOCK.STATUS.IN_STOCK'}}</span>{{/equal}}
-                {{#equal status 'security_reached'}}<span class="label label-warning">{{translate 'STOCK.STATUS.SECURITY'}}</span>{{/equal}}
-                {{#equal status 'minimum_reached'}}<span class="label label-info">{{translate 'STOCK.STATUS.MINIMUM'}}</span>{{/equal}}
-                {{#equal status 'over_maximum'}}<span class="label label-primary">{{translate 'STOCK.STATUS.OVER_MAX'}}</span>{{/equal}}
-              </td>
-              <td class="text-right">{{avg_consumption}}</td>
-              <td class="text-right">{{S_MONTH}}</td>
-              <td class="text-right">{{S_SEC}}</td>
-              <td class="text-right">{{S_MIN}}</td>
-              <td class="text-right">{{S_MAX}}</td>
-              <td class="text-right">
-                {{#gt S_Q 0}}<span>{{S_Q}}</span>{{else}} 0 {{/gt}}
-              </td>
+          {{!-- for each depots which contains inventories --}}
+          {{#each depots as | items name |}}
+
+            <!-- this is the depot group header -->
+            <tr style="border:none">
+              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+                {{ name }}
+              </th>
+
+              <th colspan="10" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+              </th>
             </tr>
-          {{else}}
-            {{> emptyTable columns=9}}
+
+            <!-- these are the items for each group -->
+            {{#each items as | item | }}
+              <tr>
+                <td>{{code}}</td>
+                <td>{{text}}</td>
+                <td class="text-right" style="font-weight: bold;">{{quantity}}</td>
+                <td>{{unit_type}}</td>
+                <td style="font-weight: bold;">
+                  {{#equal status 'sold_out'}}{{translate 'STOCK.STATUS.SOLD_OUT'}}{{/equal}}
+                  {{#equal status 'in_stock'}}{{translate 'STOCK.STATUS.IN_STOCK'}}{{/equal}}
+                  {{#equal status 'security_reached'}}{{translate 'STOCK.STATUS.SECURITY'}}{{/equal}}
+                  {{#equal status 'minimum_reached'}}{{translate 'STOCK.STATUS.MINIMUM'}}{{/equal}}
+                  {{#equal status 'over_maximum'}}{{translate 'STOCK.STATUS.OVER_MAX'}}{{/equal}}
+                </td>
+                <td class="text-right">{{avg_consumption}}</td>
+                <td class="text-right">{{S_MONTH}}</td>
+                <td class="text-right">{{S_SEC}}</td>
+                <td class="text-right">{{S_MIN}}</td>
+                <td class="text-right">{{S_MAX}}</td>
+                <td class="text-right">{{S_Q}}</td>
+              </tr>
+            {{/each}}
+
+            <!-- blank row  -->
+            {{#unless @last }}
+              <!-- blank line -->
+              <tr style="border:none;">
+                <th style="border:none;"></th>
+              </tr>
+            {{/unless}}
+
           {{/each}}
         </tbody>
-        <tfoot>
-          <tr style="font-weight: bold;">
-            <td colspan="11">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-          </tr>
-        </tfoot>
       </table>
     </div>
 
     {{!-- legend --}}
-    <fieldset class="col-xs-4">
-      <table class="table table-condensed table-bordered table-striped">
+    <fieldset style="margin-top: 20px;" class="col-xs-4">
+      <table class="table table-condensed table-bordered table-striped table-report">
         <thead>
           <tr>
             <td colspan="2" class="text-center">{{translate 'STOCK.LEGEND'}}</td>
@@ -91,6 +108,10 @@
           <tr>
             <td>CMM</td>
             <td>{{translate 'STOCK.MONTHLY_CONSUM'}}</td>
+          </tr>
+          <tr>
+            <td>MS</td>
+            <td>{{translate 'STOCK.MONTH_OF_STOCK'}}</td>
           </tr>
           <tr>
             <td>SS</td>

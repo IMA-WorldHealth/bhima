@@ -134,6 +134,7 @@ function createMovement(req, res, next) {
 function normalMovement(document, params) {
   let createMovementQuery;
   let createMovementObject;
+  let isDistributable;
 
   const transaction = db.transaction();
   const parameters = params;
@@ -160,8 +161,10 @@ function normalMovement(document, params) {
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
 
+    isDistributable = !!(parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE);
+
     // track distribution to patient
-    if (parameters.is_exit && parameters.flux_id === core.flux.TO_PATIENT) {
+    if (parameters.is_exit && isDistributable) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
       ];
@@ -179,6 +182,7 @@ function normalMovement(document, params) {
 function depotMovement(document, params) {
   let paramIn;
   let paramOut;
+  let isWarehouse;
 
   const transaction = db.transaction();
   const parameters = params;
@@ -220,6 +224,16 @@ function depotMovement(document, params) {
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [paramOut]);
     transaction.addQuery('INSERT INTO stock_movement SET ?', [paramIn]);
+
+    isWarehouse = !!(parameters.from_depot_is_warehouse);
+
+    // track distribution to patient
+    if (paramOut.is_exit && isWarehouse) {
+      const consumptionParams = [
+        db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
+      ];
+      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+    }
   });
 
   return transaction.execute();

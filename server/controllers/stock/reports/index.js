@@ -594,7 +594,12 @@ function stockLotsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_LOTS', orientation : 'landscape' });
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_LOTS',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -621,6 +626,16 @@ function stockLotsReport(req, res, next) {
       data.csv = rows;
       data.display = display;
 
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {
@@ -646,7 +661,12 @@ function stockMovementsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_MOVEMENTS', orientation : 'landscape' });
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_MOVEMENTS',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -668,6 +688,16 @@ function stockMovementsReport(req, res, next) {
       data.csv = rows;
       data.display = display;
 
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {
@@ -693,7 +723,12 @@ function stockInventoriesReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_INVENTORY', orientation : 'landscape' });
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_INVENTORY',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -715,6 +750,16 @@ function stockInventoriesReport(req, res, next) {
       data.csv = rows;
       data.display = display;
 
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {

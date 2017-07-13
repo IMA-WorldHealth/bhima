@@ -32,6 +32,9 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
 echo "[update] account type to account category"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/account_type.sql
 
+echo "[update] service uuid identifiers"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/service_uuid.sql
+
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();"
 

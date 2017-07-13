@@ -30,6 +30,8 @@ const flux = {
   FROM_INTEGRATION : 13,
 };
 
+const BASE_NUMBER_OF_MONTHS = 6;
+
 // exports
 exports.flux = flux;
 exports.getLots = getLots;
@@ -240,9 +242,10 @@ function stockManagementProcess(inventories) {
     inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
     inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
-    inventory.S_MONTH = Math.round(inventory.quantity / CM); // mois de stock
+    inventory.S_MONTH = Math.floor(inventory.quantity / CM); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
-        // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
+    inventory.S_Q = inventory.S_Q > 0 ? inventory.S_Q : 0;
+    // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
 
     if (Q <= 0) {
       inventory.status = 'sold_out';
@@ -297,15 +300,15 @@ function getStockConsumption(periodIds) {
  * @param {number} numberOfMonths - the number of months for calculating the average
  */
 function getStockConsumptionAverage(periodId, numberOfMonths) {
-  const baseAvgNumberOfMonths = numberOfMonths || 6;
+  const baseAvgNumberOfMonths = numberOfMonths || BASE_NUMBER_OF_MONTHS;
 
   const queryPeriodRange = `
     SELECT id FROM period WHERE id BETWEEN ? AND ?;
   `;
 
   const queryPeriodId = periodId ?
-    'SELECT id FROM period WHERE id = ? ' :
-    'SELECT id FROM period WHERE CURRENT_DATE() BETWEEN DATE(start_date) AND DATE(end_date);';
+    'SELECT id FROM period WHERE id = ? LIMIT 1;' :
+    'SELECT id FROM period WHERE CURRENT_DATE() BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
     SELECT ROUND(AVG(s.quantity)) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid, d.text AS depot_text
@@ -324,14 +327,9 @@ function getStockConsumptionAverage(periodId, numberOfMonths) {
       return db.exec(queryPeriodRange, paramPeriodRange);
     })
     .then((rows) => {
-      const ids = rows.map(row => {
-        return row.id;
-      });
+      const ids = rows.map(row => row.id);
 
       return db.exec(queryStockConsumption, [ids]);
-    })
-    .then((rows) => {
-      return rows;
     });
 }
 
@@ -391,9 +389,7 @@ function GetInventoryQuantityAndConsumption(params) {
     .then(stockManagementProcess)
     .then((rows) => {
       if (status) {
-        return rows.filter((row) => {
-          return row.status === status;
-        });
+        return rows.filter(row => row.status === status);
       }
       return rows;
     });

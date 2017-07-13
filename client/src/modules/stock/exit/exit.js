@@ -317,6 +317,7 @@ function StockExitController(Depots, Inventory, Notify,
   function submitDepot() {
     var movement = {
       from_depot  : vm.depot.uuid,
+      from_depot_is_warehouse : vm.depot.is_warehouse,
       to_depot    : vm.movement.entity.uuid,
       date        : vm.movement.date,
       description : vm.movement.description,
