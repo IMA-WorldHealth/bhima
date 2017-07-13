@@ -7,6 +7,7 @@ angular.module('bhima.routes')
       'account_report',
       'balance_sheet_report',
       'income_expense',
+      'aged_debtors',
     ];
 
     $stateProvider

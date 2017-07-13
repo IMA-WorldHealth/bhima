@@ -188,6 +188,7 @@ exports.configure = function configure(app) {
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
+
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);

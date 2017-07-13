@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('FisaclPeriodService', FiscalPeriodService);
+.service('FiscalPeriodService', FiscalPeriodService);
 
 FiscalPeriodService.$inject = [ 'PrototypeApiService' ];
 
