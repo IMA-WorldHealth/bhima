@@ -8,14 +8,18 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <a class="btn btn-default  pull-right" ui-sref="reportGroup" ui-sref-opts="{notify:false}"><i class="fa fa-plus"></i> <span translate="" class="ng-scope">Report group</span>
+        <a class="btn btn-default pull-right" 
+          ui-sref="reportGroup"
+          ui-sref-opts="{notify:false}">
+            <i class="fa fa-plus"></i>
+            <span translate="" class="ng-scope">Report group</span>
         </a>
       </div>
 
     </div>
 
   </div>
-
+  
 </div>
 
 
@@ -28,112 +32,146 @@
       <div class="col-lg-5">
         <h4> {{"New email for reporting"}}</h4>
 
+        <form
+          name="EmailReportRegistrationForm"
+          bh-submit="EmailReportCtrl.save(EmailReportRegistrationForm)"
+          bh-form-defaults
+          novalidate>
 
-        <form name="EmailReportRegistrationForm" bh-submit="EmailReportCtrl.save(EmailReportRegistrationForm)" bh-form-defaults novalidate>
-
-          <!--select a profile -->
-
-          <div class="form-group">
-            <a class="pull-right" data-method="selectProfile" ui-sref="emailreport.selectProfile" ui-sref-opts="{notify:false}">
-
-                select a profile
-            </a>
-
-
-          </div>
-
-
-          <!-- name -->
-          <div class="form-group" ng-class="{'has-error' : EmailReportRegistrationForm.name.$invalid && EmailReportRegistrationForm.$submitted}">
+            <!--select a profile -->
+            <div class="form-group">
+              <a  class="pull-right"
+                data-method="selectProfile"
+                ui-sref="emailreport.selectProfile"
+                ui-sref-opts="{notify:false}">
+                  select a profile
+              </a>
+            </div>
 
 
-            <label class="control-label ng-binding">
-               Name
-            </label>
+            <!-- name -->
+            <div class="form-group" 
+              ng-class="{'has-error':EmailReportRegistrationForm.name.$invalid && EmailReportRegistrationForm.$submitted}">
 
-            <div class="input-group col-lg-12">
-              <input class="form-control" name="name" ng-model="EmailReportCtrl.emailReport.name" autocomplete="off" required>
-              <div class="help-block" ng-messages="EmailReportRegistrationForm.name.$error" ng-show="EmailReportRegistrationForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              <label class="control-label ng-binding">
+                Name
+              </label>
+
+              <div class="input-group col-lg-12">
+                <input class="form-control"
+                  name="name"
+                  ng-model="EmailReportCtrl.emailReport.name"
+                  autocomplete="off"
+                  required/>
+                <div class="help-block"
+                  ng-messages="EmailReportRegistrationForm.name.$error"
+                  ng-show="EmailReportRegistrationForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html">
+                    </div>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- email -->
-          <div class="form-group" ng-class="{'has-error' : EmailReportRegistrationForm.email.$invalid && EmailReportRegistrationForm.$submitted}">
+            <!-- email -->
+            <div class="form-group"
+              ng-class="{'has-error' : EmailReportRegistrationForm.email.$invalid && EmailReportRegistrationForm.$submitted}">
 
-            <label class="control-label ng-binding">
-              Email
-            </label>
+              <label class="control-label ng-binding">
+                Email
+              </label>
 
-            <div class="input-group col-lg-12">
-              <input class="form-control" name="email" ng-model="EmailReportCtrl.emailReport.email" autocomplete="off" type="email" required>
-              <div class="help-block" ng-messages="EmailReportRegistrationForm.email.$error" ng-show="EmailReportRegistrationForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              <div class="input-group col-lg-12">
+                <input
+                  class="form-control"
+                  name="email"
+                  ng-model="EmailReportCtrl.emailReport.email"
+                  autocomplete="off"
+                  type="email"
+                  required/>
+                <div class="help-block"
+                  ng-messages="EmailReportRegistrationForm.email.$error"
+                  ng-show="EmailReportRegistrationForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html">
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- frequency -->
+            <!-- frequency -->
 
-          <div class="form-group" ng-class="{'has-error' : EmailReportRegistrationForm.frequency.$invalid && ReportGroupRegistrationForm.$submitted}">
+            <div
+              class="form-group"
+              ng-class="{'has-error' : EmailReportRegistrationForm.frequency.$invalid && ReportGroupRegistrationForm.$submitted}">
 
+              <label class="control-label ng-binding">
+                Frequency
+              </label>
 
-            <label class="control-label ng-binding">
-              Frequency
-            </label>
+              <div class="input-group col-lg-12">
 
-            <div class="input-group col-lg-12">
+                <select
+                  ng-required=""
+                  name="frequency"
+                  ng-model="EmailReportCtrl.emailReport.frequency"
+                  class="form-control">
+                    <option  
+                      ng-repeat="item in EmailReportCtrl.frequencies"
+                      value="{{item}}">
+                        {{item}}
+                    </option>
+                </select>
+                <div class="help-block" ng-messages="EmailReportRegistrationForm.frequency.$error" ng-show="EmailReportRegistrationForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
 
-              <select ng-required="" name="frequency" ng-model="EmailReportCtrl.emailReport.frequency" class="form-control">
-                 <option 
-                  ng-repeat="item in EmailReportCtrl.frequencies"
-                  value="{{item}}">
-                    {{item}}
-                </option>
-              </select>
-              <div class="help-block" ng-messages="EmailReportRegistrationForm.frequency.$error" ng-show="EmailReportRegistrationForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
-
             </div>
-          </div>
 
 
-          <!-- report Group -->
+            <!-- report Group -->
 
-          <div class="form-group" ng-class="{'has-error' : EmailReportCtrl.emailReport.code_report_group.$invalid && ReportGroupRegistrationForm.$submitted}">
+            <div
+              class="form-group"
+              ng-class="{'has-error' : EmailReportCtrl.emailReport.code_report_group.$invalid && ReportGroupRegistrationForm.$submitted}">
 
+              <label class="control-label ng-binding">
+                Report group
+              </label>
 
-            <label class="control-label ng-binding">
-              Report group
-             </label>
+              <div class="input-group col-lg-12">
+                <select 
+                  required=""
+                  ng-model="EmailReportCtrl.emailReport.code_report_group"
+                  class="form-control">
+                    <option 
+                      ng-repeat="item in EmailReportCtrl.report_groups"  
+                      value="{{item.code}}">
+                        {{item.name}}
+                    </option>
+                </select>
 
-            <div class="input-group col-lg-12">
-
-              <select required="" ng-model="EmailReportCtrl.emailReport.code_report_group" class="form-control">
-                   <option 
-                    ng-repeat="item in EmailReportCtrl.report_groups"  
-                    value="{{item.code}}">
-                      {{item.name}}
-                  </option>
-              </select>
-
+              </div>
             </div>
-          </div>
 
 
 
-          <bh-loading-button ng-show="EmailReportCtrl.selectedEmailReport.selected==false" class="pull-right" loading-state="BedRegistrationForm.$loading">
-            {{ "Save"}}
-          </bh-loading-button>
+            <bh-loading-button 
+             ng-show="EmailReportCtrl.selectedEmailReport.selected==false"
+             class="pull-right" loading-state="BedRegistrationForm.$loading">
+              {{ "Save"}}
+            </bh-loading-button>
 
-          <span class="btn btn-danger" ng-click="EmailReportCtrl.remove(EmailReportRegistrationForm)" ng-show="EmailReportCtrl.selectedEmailReport.selected==true"
-            class="pull-right">
-                          {{ "Delete"}}
-                      </span>
+            <span class="btn btn-danger" 
+              ng-click="EmailReportCtrl.remove(EmailReportRegistrationForm)"
+              ng-show="EmailReportCtrl.selectedEmailReport.selected==true"
+              class="pull-right">
+                {{ "Delete"}}
+            </span>
 
-          <bh-loading-button ng-show="EmailReportCtrl.selectedEmailReport.selected==true" class="pull-right" loading-state="BedRegistrationForm.$loading">
-            {{ "Update"}}
-          </bh-loading-button>
+            <bh-loading-button
+              ng-show="EmailReportCtrl.selectedEmailReport.selected==true"
+              class="pull-right"
+              loading-state="BedRegistrationForm.$loading">
+                {{ "Update"}}
+            </bh-loading-button>
 
         </form>
 
@@ -145,10 +183,20 @@
       <div class="col-lg-7">
 
         <!--the grid -->
-
-        <div id="report-groups-grid" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns ui-grid-cellNav ui-grid-grouping
-          ui-grid-exporter ui-grid-save-state ui-grid="EmailReportCtrl.gridOptions" class="grid-full-height">
-          <bh-grid-loading-indicator loading-state="EmailReportCtrl.loading" empty-state="EmailReportCtrl.gridOptions.data.length === 0"
+        <div 
+          id="report-groups-grid"
+          ui-grid-auto-resize
+          ui-grid-resize-columns
+          ui-grid-move-columns
+          ui-grid-cellNav
+          ui-grid-grouping
+          ui-grid-exporter
+          ui-grid-save-state
+          ui-grid="EmailReportCtrl.gridOptions"
+          class="grid-full-height">
+          <bh-grid-loading-indicator 
+            loading-state="EmailReportCtrl.loading"
+            empty-state="EmailReportCtrl.gridOptions.data.length === 0"
             error-state="EmailReportCtrl.hasError">
           </bh-grid-loading-indicator>
         </div>

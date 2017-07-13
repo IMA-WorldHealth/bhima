@@ -138,7 +138,6 @@ function sendScheduledReport(frequency) {
                                 });
                         }
                     })
-
             });
 
             return Promise.all(groupsPromiseExecution);
@@ -167,7 +166,6 @@ function mailgun(profiles, file, fileName) {
     profiles.forEach((profile) => {
         bcc_emails += profile.name + '<' + profile.email + '>, ';
     });
-
 
     //formation the attach name it should include the date
 

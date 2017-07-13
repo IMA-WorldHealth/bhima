@@ -7,7 +7,13 @@
 
         <div class="toolbar">
             <div class="toolbar-item">
-                <a class="btn btn-default  pull-right" ui-sref="emailreport" ui-sref-opts="{notify:false}"><i class="fa fa-plus"></i> <span translate="" class="ng-scope">Email Report</span>
+                <a  class="btn btn-default pull-right"
+                    ui-sref="emailreport"
+                    ui-sref-opts="{notify:false}">
+                        <i class="fa fa-plus"></i>
+                        <span  translate=""  class="ng-scope">
+                            Email Report
+                        </span>
                 </a>
             </div>
 
@@ -26,67 +32,104 @@
                 <h4> {{"New reporting group"}}</h4>
 
 
-                <form name="ReportGroupRegistrationForm" bh-submit="ReportGroupCtrl.save(ReportGroupRegistrationForm)" bh-form-defaults novalidate>
-
+                <form 
+                    name="ReportGroupRegistrationForm"
+                    bh-submit="ReportGroupCtrl.save(ReportGroupRegistrationForm)"
+                    bh-form-defaults
+                    novalidate>
                     <!-- code -->
-                    <div class="form-group" ng-class="{'has-error' : ReportGroupRegistrationForm.code.$invalid && ReportGroupRegistrationForm.$submitted}">
-
+                    <div 
+                        class="form-group"
+                        ng-class="{'has-error' : ReportGroupRegistrationForm.code.$invalid && ReportGroupRegistrationForm.$submitted}">
 
                         <label class="control-label ng-binding">
                             Code
                         </label>
 
                         <div class="input-group col-lg-12">
-                            <input class="form-control" name="code" ng-model="ReportGroupCtrl.reportGroup.code" autocomplete="off" required>
-                            <div class="help-block" ng-messages="ReportGroupRegistrationForm.code.$error" ng-show="ReportGroupRegistrationForm.$submitted">
+                            <input 
+                                class="form-control"
+                                name="code"
+                                ng-model="ReportGroupCtrl.reportGroup.code"
+                                autocomplete="off"
+                                required>
+
+                            <div class="help-block"
+                                ng-messages="ReportGroupRegistrationForm.code.$error"
+                                ng-show="ReportGroupRegistrationForm.$submitted">
                                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                             </div>
                         </div>
                     </div>
                     <!-- name -->
-                    <div class="form-group" ng-class="{'has-error' : ReportGroupRegistrationForm.name.$invalid && ReportGroupRegistrationForm.$submitted}">
-
+                    <div 
+                        class="form-group"
+                        ng-class="{'has-error' : ReportGroupRegistrationForm.name.$invalid && ReportGroupRegistrationForm.$submitted}">
 
                         <label class="control-label ng-binding">
                             Name
                         </label>
 
                         <div class="input-group col-lg-12">
-                            <input class="form-control" type="text" name="name" ng-model="ReportGroupCtrl.reportGroup.name" autocomplete="off" required>
-                            <div class="help-block" ng-messages="ReportGroupRegistrationForm.name.$error" ng-show="ReportGroupRegistrationForm.$submitted">
+                            <input class="form-control"
+                                type="text"
+                                name="name"
+                                ng-model="ReportGroupCtrl.reportGroup.name"
+                                autocomplete="off"
+                                required/>
+                            <div class="help-block"
+                                ng-messages="ReportGroupRegistrationForm.name.$error"
+                                ng-show="ReportGroupRegistrationForm.$submitted">
+                                
                                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                             </div>
                         </div>
                     </div>
                     <!-- description -->
 
-                    <div class="form-group" ng-class="{'has-error' : ReportGroupRegistrationForm.description.$invalid && ReportGroupRegistrationForm.$submitted}">
-
+                    <div
+                        class="form-group"
+                        ng-class="{'has-error' : ReportGroupRegistrationForm.description.$invalid && ReportGroupRegistrationForm.$submitted}">
 
                         <label class="control-label ng-binding">
                             Description
                         </label>
 
                         <div class="input-group col-lg-12">
-                            <textarea class="form-control" name="description" ng-model="ReportGroupCtrl.reportGroup.description" autocomplete="off" required>
+                            <textarea 
+                                class="form-control"
+                                name="description"
+                                ng-model="ReportGroupCtrl.reportGroup.description"
+                                autocomplete="off"
+                                required>
                             </textarea>
-                            <div class="help-block" ng-messages="ReportGroupRegistrationForm.description.$error" ng-show="ReportGroupRegistrationForm.$submitted">
-                                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                            <div class="help-block"
+                                ng-messages="ReportGroupRegistrationForm.description.$error"
+                                ng-show="ReportGroupRegistrationForm.$submitted">
+                                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                             </div>
                         </div>
                     </div>
 
 
-                    <bh-loading-button ng-show="ReportGroupCtrl.selectedReportGroup.selected == false" class="pull-right" loading-state="BedRegistrationForm.$loading">
-                        {{ "Save"}}
+                    <bh-loading-button 
+                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == false"
+                        class="pull-right" loading-state="BedRegistrationForm.$loading">
+                            {{ "Save"}}
                     </bh-loading-button>
 
-                    <span class="btn btn-danger" ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)" ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
+                    <span 
+                        class="btn btn-danger"
+                        ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)"
+                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
                         class="pull-right">
-                        {{ "Delete"}}
+                            {{ "Delete"}}
                     </span>
 
-                    <bh-loading-button ng-show="ReportGroupCtrl.selectedReportGroup.selected == true" class="pull-right" loading-state="BedRegistrationForm.$loading">
+                    <bh-loading-button 
+                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
+                        class="pull-right"
+                        loading-state="BedRegistrationForm.$loading">
                         {{ "Update"}}
                     </bh-loading-button>
 
@@ -100,11 +143,22 @@
             <div class="col-lg-7">
                 <!--the grid -->
 
-                <div id="report-groups-grid" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns ui-grid-cellNav ui-grid-grouping
-                    ui-grid-exporter ui-grid-save-state ui-grid="ReportGroupCtrl.gridOptions" class="grid-full-height">
-                    <bh-grid-loading-indicator loading-state="ReportGroupCtrl.loading" empty-state="ReportGroupCtrl.gridOptions.data.length === 0"
-                        error-state="ReportGroupCtrl.hasError">
-                    </bh-grid-loading-indicator>
+                <div 
+                    id="report-groups-grid"
+                    ui-grid-auto-resize
+                    ui-grid-resize-columns
+                    ui-grid-move-columns
+                    ui-grid-cellNav
+                    ui-grid-grouping
+                    ui-grid-exporter
+                    ui-grid-save-state
+                    ui-grid="ReportGroupCtrl.gridOptions"
+                    class="grid-full-height">
+                        <bh-grid-loading-indicator
+                            loading-state="ReportGroupCtrl.loading"
+                            empty-state="ReportGroupCtrl.gridOptions.data.length === 0"
+                            error-state="ReportGroupCtrl.hasError">
+                        </bh-grid-loading-indicator>
                 </div>
 
             </div>

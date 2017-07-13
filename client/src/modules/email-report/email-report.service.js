@@ -12,14 +12,11 @@ EmailReportService.$inject = [
  * This service is responsible for providing an interface between angular
  * module controllers and the server /email-report/ API.
  */
-function EmailReportService($http, util, Session, $uibModal,
-        Documents, Visits, Filters) {
+function EmailReportService($http, util, Session, $uibModal,Documents, Visits, Filters) {
 
     var service = this;
     
-
     service.frequencies = ["Dayly", "Weekly", "Monthly"];
-
 
     var baseUrl = '/email-report/';
     var baseUrl_list_people = '/email-report/list-people';
@@ -46,7 +43,6 @@ function EmailReportService($http, util, Session, $uibModal,
             emailReport: email_report
         };
 
-
         return $http.post(baseUrl, formatBedRequest)
                 .then(util.unwrapHttpResponse);
     }
@@ -67,7 +63,6 @@ function EmailReportService($http, util, Session, $uibModal,
 
         return $http.put(baseUrl + email_report.id, formatBedRequest)
                 .then(util.unwrapHttpResponse);
-
     }
 
     //reading data from the server
@@ -90,7 +85,7 @@ function EmailReportService($http, util, Session, $uibModal,
 
 
     /*
-     delete an email report
+     delete an email report (a profile)
      */
     function remove(_id) {
         return $http.delete(baseUrl + _id, {})

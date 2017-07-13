@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents" data-row-item="{{ row.entity.code}}" uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents" data-row-item="{{row.entity.code}}" uib-dropdown dropdown-append-to-body>
 
     <a href uib-dropdown-toggle>
         <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
@@ -13,7 +13,6 @@
                ng-hide="row.groupHeader" 
                ui-sref="reportGroup({data : {selectedReportGroup:row.entity} })">
                 <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
-
             </a>
         </li>
     </ul>

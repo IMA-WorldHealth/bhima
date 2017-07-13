@@ -12,7 +12,6 @@
 
 
 const uuid = require('node-uuid');
-
 const db = require('../../lib/db');
 const Topic = require('../../lib/topic');
 const moment = require('moment');
@@ -139,7 +138,6 @@ function remove(req, res, next) {
           `Could not find report group with code ${code}.`
         );
       }
-
 
       res.sendStatus(204);
     })

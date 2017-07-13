@@ -18,9 +18,7 @@ function ReportGroupService($http, util, Session, $uibModal,
     var service = this;
     var baseUrl = '/report-group/';
 
-
     var filter = new Filters();
-
     service.read = read;
     service.create = create;
     service.remove = remove;

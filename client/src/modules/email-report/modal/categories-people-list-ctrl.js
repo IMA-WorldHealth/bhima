@@ -1,7 +1,8 @@
 angular.module('bhima.controllers')
     .controller('CategoriesPeopleListController', CategoriesPeopleListController);
 
-CategoriesPeopleListController.$inject = ['$state', 'EmailReportService', 'CategoriesPeopleService', 'SessionService', 'util',
+CategoriesPeopleListController.$inject = [
+    '$state', 'EmailReportService', 'CategoriesPeopleService', 'SessionService', 'util',
     'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
 ];
 
@@ -10,7 +11,13 @@ CategoriesPeopleListController.$inject = ['$state', 'EmailReportService', 'Categ
  * Report group Controller
  *
  * @description
- 
+ *CategoriesPeopleListController give the possibility to select a group of people
+ * from de database, they can be users, patients, donators..
+ * Once this list is displayed in a table , the user can select one of theme
+ * for eache person the application can get automaticly his email and name 
+ * 
+ * This selection is usefull if the use don't know a person email or name but he is registered
+ * in the database
  */
 
 function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople, Session, util, Notify, ScrollTo, bhConstants, uiGridConstants) {
@@ -18,11 +25,8 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
     var vm = this;
     //emailReport is the object that contains : name,email, frequence and report-group
 
-
     vm.listCategoriesPeople = CategoriesPeople.list;
     vm.selectedCategory = {};
-
-
 
     vm.loading = false;
     vm.hasError = false;
@@ -118,7 +122,7 @@ function CategoriesPeopleListController($state, EmailReportSvc, CategoriesPeople
 
     }
 
-
+   //once the user enter this page  the list will be displayed , thanks to this function below
     load();
     return vm;
 }

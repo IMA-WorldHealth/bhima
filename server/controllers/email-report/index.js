@@ -28,6 +28,10 @@ exports.update = update;
 exports.getProfile = getProfile;
 
 
+/**
+ * Serve side for managing profiles (email and name) 
+ * whitch should receive a report by mail
+ */
 
 /**
  * @method create
@@ -104,8 +108,7 @@ function list(req, res, next) {
   const sql = `
     SELECT  er.* , rp.name as 'report_group'
     FROM email_report er, report_group rp 
-    WHERE er.code_report_group=rp.code;
-  `;
+    WHERE er.code_report_group=rp.code; `;
 
   db.exec(sql, {})
     .then(rows => {
@@ -134,7 +137,6 @@ function list_people(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 
 
@@ -170,10 +172,7 @@ function getProfile(code_groupe, frequency) {
 function remove(req, res, next) {
 
   const _id = req.params.id;
-
-  const sql = `
-    DELETE FROM email_report WHERE id = ?;
-  `;
+  const sql = `DELETE FROM email_report WHERE id = ?;`;
 
   db.exec(sql, [_id])
     .then(rows => {

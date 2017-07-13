@@ -1,18 +1,17 @@
 angular.module('bhima.controllers')
     .controller('ReportGroupController', ReportGroupController);
 
-ReportGroupController.$inject =
-    [
-        '$state', 'ReportGroupService', 'SessionService',
-        'util', 'NotifyService', 'ScrollService', 'bhConstants',
-        'uiGridConstants',
-    ];
+ReportGroupController.$inject = [
+    '$state', 'ReportGroupService', 'SessionService', 'util', 'NotifyService', 'ScrollService',
+    'bhConstants', 'uiGridConstants',
+];
 
 /**
  * Report group Controller
  *
  * @description
- 
+ *this controller enable to save,update, delete reporting groups
+ * Every report that the system should send by email must be registered 
  */
 
 function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, ScrollTo, bhConstants, uiGridConstants) {
@@ -23,16 +22,13 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
      in UI form
      */
     vm.reportGroup = {};
-
-    vm.selectedReportGroup = {};
-    vm.selectedReportGroup.selected = false;
+    vm.selectedReportGroup = { selected: false };
     vm.save = save;
     vm.remove = remove;
 
     init();
 
     //initialisation
-
     function init() {
         //If the user has selected a profile from the grill modal, fill name and email fields
         try {
@@ -40,12 +36,10 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
                 vm.reportGroup = $state.params.data.selectedReportGroup;
                 vm.reportGroup.old_code = vm.reportGroup.code;
                 vm.selectedReportGroup.selected = true;
-
             }
         } catch (ex) {
 
         }
-
     }
 
 
@@ -111,7 +105,6 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
     }
 
     //the ui grid
-
     vm.loading = false;
     vm.hasError = false;
 
@@ -160,18 +153,15 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
     //filling the ui grid
     function load(filters) {
 
-        ReportGroupSvc.read().then(function (reportGroups) {
-            vm.loading = false;
-            vm.gridOptions.data = reportGroups;
-
-        })
+        ReportGroupSvc.read()
+            .then(function (reportGroups) {
+                vm.loading = false;
+                vm.gridOptions.data = reportGroups;
+            })
             .catch(Notify.handleError);
-
-
     }
 
     load();
-
 
 
     return vm;

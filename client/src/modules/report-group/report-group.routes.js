@@ -9,6 +9,5 @@ angular.module('bhima.routes')
                 params: {
                     data: null,
                 }
-
             })
     }]);

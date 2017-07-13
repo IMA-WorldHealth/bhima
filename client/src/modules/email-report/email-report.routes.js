@@ -50,7 +50,6 @@ function onSelectProfileFactory(stateType) {
         if (error) {
           Notify.handleError(error);
         }
-
       });
   };
 }
@@ -60,7 +59,6 @@ function onSelectProfileCategoryFactory(stateType) {
   var isCreateState = (stateType === 'category');
 
   var ctrl = 'CategoriesPeopleListController as catPeopleListCtrl';
-
 
   return function onEnter($state, Modal, Notify) {
     Modal.open({
@@ -76,7 +74,6 @@ function onSelectProfileCategoryFactory(stateType) {
         if (error) {
           Notify.handleError(error);
         }
-
       });
   };
 }

@@ -16,13 +16,9 @@ function CategoriesPeopleService($http, util, Session, $uibModal,
     Documents, Visits, Filters) {
 
     var service = this;
-
     service.list = [];
 
-
     init();
-
-
     function init() {
         service.list = [
             {

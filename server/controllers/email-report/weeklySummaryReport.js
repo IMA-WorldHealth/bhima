@@ -56,7 +56,6 @@ function loadServicesIncome() {
 
   var values = [monday, sunday];
 
-
   return db.exec(sql, values);
 
 }
@@ -81,18 +80,18 @@ function loadPatientData() {
   //patients registered this week
 
   var sql = `
-          SELECT t1.NumberOfpatientsThisWeek,t2.NumberOfpatientsLastWeek
+          SELECT subquery1.NumberOfpatientsThisWeek, subquery2.NumberOfpatientsLastWeek
            FROM 
           (
             SELECT count(uuid) as NumberOfpatientsThisWeek
             FROM patient
             WHERE (registration_date BETWEEN ? AND ? )
-          ) as t1,
+          ) as subquery1,
           (
             SELECT count(uuid) as NumberOfpatientsLastWeek
             FROM patient
             WHERE (registration_date BETWEEN ? AND ? )
-          ) as t2
+          ) as subquery2
           `;
 
   var values = [monday, sunday, lastmonday, lastsunday];
@@ -103,14 +102,13 @@ function loadPatientData() {
 
 }
 
-
 //first and last invoice per day for a week
 function MaxMinInvoiceDate() {
 
   var sql = `SELECT  MIN(i.date) as minDate, MAX(i.date) as maxDate
-              From invoice i
-              WHERE DATE(i.date) BETWEEN ? AND ?
-              GROUP BY DATE(i.date)`;
+             From invoice i
+             WHERE DATE(i.date) BETWEEN ? AND ?
+             GROUP BY DATE(i.date)`;
 
   var period = new Period(new Date());
   var week = period.periods.week.limit;
@@ -172,7 +170,7 @@ function view1(req, res, next) {
 
 //one of the reports that bhima send by email
 function weeklySummaryReport(currentSession) {
- 
+
   const options = {
     renderer: 'pdf',
     saveReport: false,
@@ -182,18 +180,18 @@ function weeklySummaryReport(currentSession) {
 
   //patient registered
   return loadPatientData().then(_patientsData => {
- 
+
     //services incomes
     return loadServicesIncome().then(_servicesIncome => {
 
 
       //max and min date of invoice each day for a week
       return MaxMinInvoiceDate().then(_MaxMinInvoiceDate => {
-       
+
         //rendering the report
         var report = new ReportManager(TEMPLATE, currentSession, options);
 
-        
+
         if (_patientsData.lenght === 0) {
           _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
         } else {
