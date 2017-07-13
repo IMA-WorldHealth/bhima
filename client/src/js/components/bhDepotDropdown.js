@@ -22,9 +22,10 @@ function bhDepotController(Depot, AppCache, Notify) {
     .then(function (rows) {
       if (!rows.length) { return; }
       $ctrl.depots = rows;
-      $ctrl.selection = cache.selection || $ctrl.depots[0];
+      $ctrl.depotsAvailable = !!rows.length;
+      $ctrl.selection = cachedDepotExist() ? cache.selection : $ctrl.depots[0];
       $ctrl.loading = false;
-      $ctrl.onSelect({ depot: $ctrl.selection });
+      $ctrl.onSelect({ depot : $ctrl.selection });
     })
     .catch(Notify.handleError)
     .finally(function () {
@@ -35,6 +36,11 @@ function bhDepotController(Depot, AppCache, Notify) {
   $ctrl.select = function select(option) {
     $ctrl.selection = option;
     cache.selection = $ctrl.selection;
-    $ctrl.onSelect({ depot: $ctrl.selection });
+    $ctrl.onSelect({ depot : $ctrl.selection });
   };
+
+  function cachedDepotExist() {
+    if (!cache.selection) { return false; }
+    return $ctrl.depots.indexOf(cache.selection.uuid) > -1;
+  }
 }

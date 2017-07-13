@@ -1914,3 +1914,15 @@ CREATE TABLE `integration` (
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- stock consumption total
+CREATE TABLE `stock_consumption` (
+  `inventory_uuid`  BINARY(16) NOT NULL,
+  `depot_uuid`      BINARY(16) NOT NULL,
+  `period_id`       MEDIUMINT(8) NOT NULL,
+  `quantity`        INT(11) DEFAULT 0,
+  PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY `period_id` (`period_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

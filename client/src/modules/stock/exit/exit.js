@@ -20,10 +20,10 @@ function StockExitController(Depots, Inventory, Notify,
   uiGridGroupingConstants, $translate) {
   var vm = this;
   var mapExit = {
-    patient : { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
-    service : { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
-    depot   : { description: 'STOCK.EXIT_DEPOT', find: findDepot, submit: submitDepot },
-    loss    : { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
+    patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
+    service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitService },
+    depot   : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
+    loss    : { description : 'STOCK.EXIT_LOSS', find : configureLoss, submit : submitLoss },
   };
 
   vm.Stock = new StockForm('StockExit');
@@ -107,7 +107,7 @@ function StockExitController(Depots, Inventory, Notify,
         headerCellFilter : 'translate',
         cellTemplate     : 'modules/stock/exit/templates/expiration.tmpl.html' },
 
-      { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
+      { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
     ],
     onRegisterApi    : onRegisterApi,
     data             : vm.Stock.store.data,
@@ -156,7 +156,7 @@ function StockExitController(Depots, Inventory, Notify,
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
+    Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
       .then(function (lots) {
         item.lots = lots;
       })
@@ -165,7 +165,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // init actions
   function moduleInit() {
-    vm.movement = { date: new Date(), entity: {} };
+    vm.movement = { date : new Date(), entity : {} };
     loadInventories(vm.depot);
     setupDepot(vm.depot);
     checkValidity();
@@ -174,7 +174,7 @@ function StockExitController(Depots, Inventory, Notify,
   // ============================ Inventories ==========================
   function loadInventories(depot) {
     var givenDepot = depot || vm.depot;
-    Stock.inventories.read(null, { depot_uuid: givenDepot.uuid })
+    Stock.inventories.read(null, { depot_uuid : givenDepot.uuid })
       .then(function (inventories) {
         vm.selectableInventories = angular.copy(inventories);
       })
@@ -220,7 +220,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // find depot
   function findDepot() {
-    StockModal.openFindDepot({ depot: vm.depot })
+    StockModal.openFindDepot({ depot : vm.depot })
     .then(function (depot) {
       if (!depot) { return; }
       vm.movement.entity = {
@@ -265,6 +265,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
+        inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
         uuid      : row.lot.uuid,
         quantity  : row.quantity,
         unit_cost : row.lot.unit_cost,
@@ -295,6 +296,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
+        inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
         uuid      : row.lot.uuid,
         quantity  : row.quantity,
         unit_cost : row.lot.unit_cost,
@@ -323,6 +325,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
+        inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
         uuid      : row.lot.uuid,
         quantity  : row.quantity,
         unit_cost : row.lot.unit_cost,
@@ -353,6 +356,7 @@ function StockExitController(Depots, Inventory, Notify,
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
+        inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
         uuid      : row.lot.uuid,
         quantity  : row.quantity,
         unit_cost : row.lot.unit_cost,

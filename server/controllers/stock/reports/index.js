@@ -609,6 +609,11 @@ function stockLotsReport(req, res, next) {
     return next(e);
   }
 
+  if (options.defaultPeriod) {
+    options.defaultPeriodEntry = options.defaultPeriod;
+    delete options.defaultPeriod;
+  }
+
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       data.rows = rows;
@@ -703,7 +708,7 @@ function stockInventoriesReport(req, res, next) {
     return next(e);
   }
 
-  return Stock.getLotsDepot(null, options, ' GROUP BY l.inventory_uuid ')
+  return Stock.GetInventoryQuantityAndConsumption(options)
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;

@@ -30,6 +30,10 @@ exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
 
+// stock consumption
+exports.getStockConsumption = getStockConsumption;
+exports.getStockConsumptionAverage = getStockConsumptionAverage;
+
 
 /**
  * POST /stock/lots
@@ -153,8 +157,16 @@ function normalMovement(document, params) {
       user_id       : document.user,
     };
 
-        // transaction - add movement
+    // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
+
+    // track distribution to patient
+    if (parameters.is_exit && parameters.flux_id === core.flux.TO_PATIENT) {
+      const consumptionParams = [
+        db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
+      ];
+      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+    }
   });
 
   return transaction.execute();
@@ -250,6 +262,11 @@ function listLotsMovements(req, res, next) {
 function listLotsDepot(req, res, next) {
   const params = req.query;
 
+  if (params.defaultPeriod) {
+    params.defaultPeriodEntry = params.defaultPeriod;
+    delete params.defaultPeriod;
+  }
+
   core.getLotsDepot(null, params)
     .then((rows) => {
       res.status(200).json(rows);
@@ -260,17 +277,15 @@ function listLotsDepot(req, res, next) {
 
 /**
  * GET /stock/inventory/depots/
- * returns list of each inventory in a given depot with their quantities
+ * returns list of each inventory in a given depot with their quantities and CMM
  * @todo process stock alert, rupture of stock
  * @todo prevision for purchase
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
 
-  core.getLotsDepot(null, params, ' GROUP BY l.inventory_uuid, m.depot_uuid ')
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
+  core.GetInventoryQuantityAndConsumption(params)
+    .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();
 }
@@ -320,6 +335,31 @@ function listStockFlux(req, res, next) {
   db.exec('SELECT id, label FROM flux;')
     .then((rows) => {
       res.status(200).json(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * GET /stock/consumptions/:periodId
+ */
+function getStockConsumption(req, res, next) {
+  const params = req.params;
+  core.getStockConsumption(params.periodId)
+    .then((rows) => {
+      res.status(200).send(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * GET /stock/consumptions/average/:periodId?number_of_months=...
+ */
+function getStockConsumptionAverage(req, res, next) {
+  const query = req.query;
+  const params = req.params;
+  core.getStockConsumptionAverage(params.periodId, query.number_of_months)
+    .then((rows) => {
+      res.status(200).send(rows);
     })
     .catch(next);
 }

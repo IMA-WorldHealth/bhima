@@ -59,7 +59,7 @@ function StockInventoriesController(Stock, Notify,
       cellTemplate     : 'modules/stock/inventories/templates/status.cell.html' },
 
     { field           : 'avg_consumption',
-      displayName     : 'CM',
+      displayName     : 'CMM',
       enableFiltering : false,
       enableSorting   : false,
       cellClass       : 'text-right',

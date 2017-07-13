@@ -36,6 +36,12 @@ exports.getLots = getLots;
 exports.getLotsDepot = getLotsDepot;
 exports.getLotsMovements = getLotsMovements;
 exports.getLotsOrigins = getLotsOrigins;
+exports.stockManagementProcess = stockManagementProcess;
+
+// stock consumption
+exports.getStockConsumption = getStockConsumption;
+exports.getStockConsumptionAverage = getStockConsumptionAverage;
+exports.GetInventoryQuantityAndConsumption = GetInventoryQuantityAndConsumption;
 
 /**
  * @function getLots
@@ -69,6 +75,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('label', 'label', 'l');
 
   filters.period('defaultPeriod', 'date');
+  filters.period('defaultPeriodEntry', 'entry_date', 'l');
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
@@ -233,7 +240,7 @@ function stockManagementProcess(inventories) {
     inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
     inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
-    inventory.S_MONTH = inventory.quantity / CM; // mois de stock
+    inventory.S_MONTH = Math.round(inventory.quantity / CM); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
         // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
 
@@ -258,4 +265,136 @@ function stockManagementProcess(inventories) {
     inventory.delay_expiration = moment.duration(delay).humanize();
     return inventory;
   });
+}
+
+/**
+ * @function getStockConsumption
+ *
+ * @description returns the monthly (periodic) stock consumption (CM)
+ *
+ * @param {array} periodIds
+ */
+function getStockConsumption(periodIds) {
+  const sql = `
+    SELECT SUM(s.quantity) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, d.text
+    FROM stock_consumption s
+    JOIN inventory i ON i.uuid = s.inventory_uuid 
+    JOIN depot d ON d.uuid = s.depot_uuid
+    JOIN period p ON p.id = s.period_id
+    WHERE p.id IN (?) 
+    GROUP BY i.uuid, d.uuid
+  `;
+  return db.exec(sql, [periodIds]);
+}
+
+/**
+ * @function getStockConsumptionAverage
+ *
+ * @description returns average of stock consumption (CMM)
+ *
+ * @param {number} periodId - the base period
+ *
+ * @param {number} numberOfMonths - the number of months for calculating the average
+ */
+function getStockConsumptionAverage(periodId, numberOfMonths) {
+  const baseAvgNumberOfMonths = numberOfMonths || 6;
+
+  const queryPeriodRange = `
+    SELECT id FROM period WHERE id BETWEEN ? AND ?;
+  `;
+
+  const queryPeriodId = periodId ?
+    'SELECT id FROM period WHERE id = ? ' :
+    'SELECT id FROM period WHERE CURRENT_DATE() BETWEEN DATE(start_date) AND DATE(end_date);';
+
+  const queryStockConsumption = `
+    SELECT ROUND(AVG(s.quantity)) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid, d.text AS depot_text
+    FROM stock_consumption s
+    JOIN inventory i ON i.uuid = s.inventory_uuid 
+    JOIN depot d ON d.uuid = s.depot_uuid
+    JOIN period p ON p.id = s.period_id
+    WHERE p.id IN (?) 
+    GROUP BY i.uuid, d.uuid
+  `;
+
+  return db.one(queryPeriodId, [periodId])
+    .then((period) => {
+      const beginingPeriod = period.id - baseAvgNumberOfMonths;
+      const paramPeriodRange = beginingPeriod > 0 ? [beginingPeriod + 1, period.id] : [1, period.id];
+      return db.exec(queryPeriodRange, paramPeriodRange);
+    })
+    .then((rows) => {
+      const ids = rows.map(row => {
+        return row.id;
+      });
+
+      return db.exec(queryStockConsumption, [ids]);
+    })
+    .then((rows) => {
+      return rows;
+    });
+}
+
+/**
+ * Inventory Quantity and Consumptions
+ */
+function GetInventoryQuantityAndConsumption(params) {
+  const bundle = {};
+  let status;
+
+  if (params.status) {
+    status = params.status;
+    delete params.status;
+  }
+
+  const sql = `
+    SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, 
+        SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity, 
+        d.text AS depot_text, l.unit_cost, l.expiration_date, 
+        BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+        l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+        i.avg_consumption, i.purchase_interval, i.delay,
+        iu.text AS unit_type
+    FROM stock_movement m 
+    JOIN lot l ON l.uuid = m.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN depot d ON d.uuid = m.depot_uuid 
+  `;
+
+  const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ';
+
+  return getLots(sql, params, clause)
+    .then((rows) => {
+      bundle.inventories = rows;
+      return getStockConsumptionAverage();
+    })
+    .then((rows) => {
+      var sameInventory;
+      var sameDepot;
+
+      bundle.consumptions = rows;
+
+      for (let i = 0; i < bundle.consumptions.length; i++) {
+        for (let j = 0; j < bundle.inventories.length; j++) {
+          sameInventory = bundle.consumptions[i].uuid === bundle.inventories[j].inventory_uuid;
+          sameDepot = bundle.consumptions[i].depot_uuid === bundle.inventories[j].depot_uuid;
+          if (sameInventory && sameDepot) {
+            bundle.inventories[j].avg_consumption = bundle.consumptions[i].quantity;
+            break;
+          }
+        }
+      }
+
+      return bundle.inventories;
+    })
+    .then(stockManagementProcess)
+    .then((rows) => {
+      if (status) {
+        return rows.filter((row) => {
+          return row.status === status;
+        });
+      }
+      return rows;
+    });
 }

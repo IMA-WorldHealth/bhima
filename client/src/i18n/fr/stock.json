@@ -46,7 +46,7 @@
     "MAXIMUM"         : "Stock maximum",
     "MINIMUM"         : "Stock minimum",
     "MONTH"           : "Mois de stock",
-    "MONTHLY_CONSUM"  : "Consommation Mensuelle",
+    "MONTHLY_CONSUM"  : "Consommation Mensuelle Moyenne",
     "MOTIF"           : "Motif",
     "MOVEMENTS"       : "Mouvements",
     "NO_ORDER"        : "Pas de commandes",
