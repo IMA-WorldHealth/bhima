@@ -24,6 +24,10 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   vm.close = Instance.close;
   vm.import = submit;
 
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+
   // accounts from store
   AccountStore.accounts()
     .then(function (data) {
@@ -38,19 +42,17 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
     })
     .catch(Notify.handleError);
 
+  function onSelectDebtor(debtorGroup) {
+    vm.convention = debtorGroup;
+    selectGroupInvoices(vm.convention);
+  }  
+
   //  optimization with `Store` will be well
   Invoices.read()
   .then(function (data) {
     vm.invoices = data;
   })
   .catch(Notify.handleError);
-
-  // load debtors
-  Debtors.read()
-    .then(function (list) {
-      vm.debtorList = list;
-    })
-    .catch(Notify.handleError);
 
   // load conventions
   DebtorGroup.read()

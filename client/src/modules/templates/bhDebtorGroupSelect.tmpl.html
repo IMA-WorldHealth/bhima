@@ -1,0 +1,22 @@
+<div ng-form="DebtorForm" bh-debtor-group-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && DebtorForm.debtor_group_uuid.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    <ng-transclude></ng-transclude>
+    <ui-select name="debtor_group_uuid" 
+      ng-model="$ctrl.debtorGroupUuid"
+      on-select="$ctrl.onSelect($item, $model)" required>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">{{$select.selected.name}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in ($ctrl.debtorGroups | filter:$select.search | orderBy:'name') track by group.uuid">
+        <span ng-bind-html="group.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="DebtorForm.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

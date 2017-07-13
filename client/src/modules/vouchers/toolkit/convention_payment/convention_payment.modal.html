@@ -34,33 +34,13 @@
       </div>
     </div>
 
-    <!-- select the convention  -->
-    <div
-      class="form-group"
-      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.convention.$invalid }">
-      <label class="control-label" translate>
-        FORM.LABELS.CONVENTION
-      </label>
-
-      <ui-select
-        name="convention"
-        ng-model="ToolCtrl.convention"
-        theme="bootstrap"
-        on-select="ToolCtrl.selectGroupInvoices($item)"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.DEBTOR_GROUP' | translate }}">
-          <span>{{$select.selected.name}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="convention in ToolCtrl.conventionGroupList | filter:$select.search">
-          <span ng-bind-html="convention.name | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-
-      <div class="help-block" ng-messages="ToolForm.convention.$error" ng-show="ToolForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
+    <bh-debtor-group-select
+      debtor-group-uuid = "ToolCtrl.convention"
+      name = "convention"
+      label = "FORM.LABELS.CONVENTION"
+      on-select-callback = "ToolCtrl.onSelectDebtor(debtorGroup)">
+    </bh-debtor-group-select>
+  
     <!-- select invoices  -->
     <div ng-show="ToolCtrl.convention">
       <div

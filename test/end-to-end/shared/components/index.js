@@ -26,4 +26,5 @@ module.exports = {
   userSelect     : require('./bhUserSelect'),
   reportSource   : require('./bhReportSource'),
   fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
+  debtorGroupSelect : require('./bhDebtorGroupSelect'),
 };
