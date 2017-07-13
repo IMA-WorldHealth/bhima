@@ -31,6 +31,7 @@ module.exports = {
     }],
     "no-param-reassign": ["error", { "props": false }],
     "no-var" : "off",
+    "no-plusplus" : "off",
     "max-len": ["warn", 120],
     "func-names" : ["warn", "as-needed"],
     "no-underscore-dangle": ["error", {

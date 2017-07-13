@@ -91,6 +91,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Supplier Management
 (19,1),
 
+-- Depot Management
+(20,1),
+
 -- Price list Management
 (21, 1),
 

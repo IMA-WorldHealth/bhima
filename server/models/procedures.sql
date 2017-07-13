@@ -1304,4 +1304,32 @@ BEGIN
   SELECT DISTINCT BUID(record_uuid) AS record_uuid, trans_id, code FROM stage_trial_balance_errors ORDER BY code, trans_id;
 END $$
 
+-- stock consumption
+CREATE PROCEDURE ComputeStockConsumptionByPeriod (
+  IN inventory_uuid BINARY(16),
+  IN depot_uuid BINARY(16),
+  IN period_id MEDIUMINT(8),
+  IN movementQuantity INT(11)
+) 
+BEGIN 
+  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES 
+    (inventory_uuid, depot_uuid, period_id, movementQuantity)
+  ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
+END $$
+
+-- compute stock consumption
+CREATE PROCEDURE ComputeStockConsumptionByDate (
+  IN inventory_uuid BINARY(16),
+  IN depot_uuid BINARY(16),
+  IN movementDate DATE,
+  IN movementQuantity INT(11)
+) 
+BEGIN 
+  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) 
+    SELECT inventory_uuid, depot_uuid, p.id, movementQuantity 
+    FROM period p 
+    WHERE DATE(movementDate) BETWEEN DATE(p.start_date) AND DATE(p.end_date) 
+  ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
+END $$
+
 DELIMITER ;

@@ -1,4 +1,4 @@
-<div class="btn-group" uib-dropdown>
+<div ng-if="$ctrl.hasDepotsAvailable" class="btn-group" uib-dropdown>
   <a class="btn btn-default">
     <span ng-show="$ctrl.loading">
       <i class="fa fa-circle-notch-o"></i> <span translate>FORM.INFO.LOAING</span>
@@ -17,4 +17,11 @@
       </a>
     </li>
   </ul>
+</div>
+<div ng-if="!$ctrl.hasDepotsAvailable" class="btn-group" uib-dropdown>
+  <a class="btn btn-warning" ui-sref="depots">
+    <span>
+      <i class="fa fa-warning"></i> <span translate>DEPOT.NO_DEPOT</span>
+    </span>
+  </a>
 </div>

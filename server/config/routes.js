@@ -596,5 +596,9 @@ exports.configure = function configure(app) {
 
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
 
+  // stock consumption API
+  app.get('/stock/consumptions/average/:periodId', stock.getStockConsumptionAverage);
+  app.get('/stock/consumptions/:periodId', stock.getStockConsumption);
+
   app.get('/diagnoses', diagnoses.list);
 };
