@@ -10,7 +10,7 @@
       ng-click="GroupsCtrl.addInventoryGroup()"
       class="pull-right btn btn-default btn-sm"
       type="button" data-create-group>
-      <i class="fa fa-plus"></i><span translate> FORM.LABELS.ADD </span>
+      <i class="fa fa-plus"> </i><span translate> FORM.LABELS.ADD </span>
     </button>
   </div>
 
@@ -48,7 +48,7 @@
             <a href
               ng-click="GroupsCtrl.editInventoryGroup(group.uuid)"
               data-edit-group="{{ group.code }}">
-              <i class="fa fa-edit"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
+              <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
             </a>
           </td>
           <td>
@@ -56,7 +56,7 @@
               ng-click="GroupsCtrl.deleteInventoryGroup(group.uuid)"
               class="text-danger"
               data-delete-group="{{ group.code }}">
-              <i class="fa fa-remove"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}
+              <i class="fa fa-remove"></i> <span translate>FORM.BUTTONS.DELETE</span>
             </a>
           </td>
         </tr>
