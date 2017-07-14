@@ -1,0 +1,64 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.CLIENTS_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.CLIENTS_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+             <!-- show a simple or complex report  -->
+            <div class="form-group">
+              <label class="text-action">
+                <input type="checkbox" name="simple_preview" ng-model="ReportConfigCtrl.reportDetails.simplePreview" ng-true-value="true" ng-false-value="false">
+                <span translate>FORM.LABELS.SHOW_SIMPLE_PREVIEW</span>
+              </label>
+            </div>
+
+            <!-- Date interval  -->
+            <bh-date-interval
+              ng-if="!ReportConfigCtrl.reportDetails.simplePreview"
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo">
+            </bh-date-interval>            
+
+            <!-- detail the previous year flag  -->
+            <div class="form-group" ng-if="!ReportConfigCtrl.reportDetails.simplePreview">
+              <label class="text-action">
+                <input type="checkbox" name="detail_previous" ng-model="ReportConfigCtrl.reportDetails.detailPrevious">
+                <span translate>FORM.LABELS.DETAIL_PREVIOUS</span>
+              </label>
+            </div>
+
+            <!-- Client to ignore  -->
+            <bh-multiple-debtor-group-select
+              label="FORM.LABELS.CLIENT_TO_IGNORE"
+              formName="ConfigForm"
+              on-select-callback="ReportConfigCtrl.onDebtorGroupSelected(debtorGroups)"
+              on-remove-callback="ReportConfigCtrl.onDebtorGroupRemoved(debtorGroups)"
+              ></bh-multiple-debtor-group-select>
+            
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

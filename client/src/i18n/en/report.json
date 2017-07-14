@@ -20,7 +20,7 @@
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS":"Chart of Accounts",
-    "CLIENTS_REPORT":{"TITLE":"Clients Report", "CURRENT_MVT":"Current Movement", "PREVIOUS_MVT":"Previous Movement"},
+    "CLIENTS_REPORT":{"TITLE":"Clients Report", "CURRENT_MVT":"Current Movement", "PREVIOUS_MVT":"From biginning to :"},
     "CLOSING_BALANCE":"Closing Balance",
     "CONFIGURATION":"Report Configuration",
     "DELETE":"Delete Report",
