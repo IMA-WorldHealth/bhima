@@ -100,10 +100,9 @@ function list(req, res, next) {
  * list accounts and their solds
  */
 function listAccounts(req, res, next) {
-  let fiscal_year_id;
-  fiscal_year_id = req.query.fiscal_year_id;    
+  const fiscalYearId = req.query.fiscal_year_id;
 
-  Fiscal.getPeriodByFiscal(fiscal_year_id)
+  Fiscal.getPeriodByFiscal(fiscalYearId)
   .then((rows) => {
     return getlistAccounts(rows);
   })

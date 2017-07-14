@@ -42,9 +42,9 @@ function renderReport(req, res, next) {
     return next(e);
   }
 
-  let fiscal_year_id = options.fiscal_year_id;
+  const fiscalYearId = options.fiscal_year_id;
 
-  return Fiscal.getPeriodByFiscal(fiscal_year_id)
+  return Fiscal.getPeriodByFiscal(fiscalYearId)
     .then((rows) => {
       return GeneralLedger.getlistAccounts(rows);
     })

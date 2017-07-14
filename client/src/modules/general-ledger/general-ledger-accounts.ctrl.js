@@ -218,20 +218,20 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     Modal.openSelectFiscalYear()
       .then(function (filters) {
         if (!filters) { return; }
-          vm.fiscalYearLabel = filters.fiscal_year.label;
-          vm.filters.fiscal_year_label = filters.fiscal_year.label;
+        vm.fiscalYearLabel = filters.fiscal_year.label;
+        vm.filters.fiscal_year_label = filters.fiscal_year.label;
 
-          vm.filters = {
-            fiscal_year_id : filters.fiscal_year.id, 
-            fiscal_year_label : filters.fiscal_year.label
-          };
-          
-          vm.filtersSlip = {
-            dateFrom : filters.fiscal_year.start_date, 
-            dateTo : filters.fiscal_year.end_date
-          };
+        vm.filters = {
+          fiscal_year_id : filters.fiscal_year.id, 
+          fiscal_year_label : filters.fiscal_year.label
+        };
+        
+        vm.filtersSlip = {
+          dateFrom : filters.fiscal_year.start_date, 
+          dateTo : filters.fiscal_year.end_date
+        };
 
-          load(vm.filters);
+        load(vm.filters);
       })
       .catch(Notify.handleError);
 
