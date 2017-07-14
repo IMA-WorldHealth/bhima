@@ -11,7 +11,7 @@
                   {{fiscal.label}}
                 </a>
               </strong>
-              <span ng-show="fiscal.locked" style="color : #ABABAB;">[<span translate> FORM.INFO.CLOSED" | translate }}]</span>
+              <span ng-show="fiscal.locked" style="color : #ABABAB;">[<span translate> FORM.INFO.CLOSED </span>]</span>
 
               <span ng-if="fiscal.id === FiscalCtrl.previousFiscalYearId" class="label label-warning" translate>
                 FORM.INFO.PREVIOUS
@@ -40,7 +40,7 @@
             </div>
 
             <div class="row text-lowercase">
-              <i class="fa fa-clock-o"></i> <span translate> FORM.INFO.CREATED </span> <span am-time-ago="fiscal.created_at"></span>
+              <i class="fa fa-clock-o"></i> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
               <span translate> FORM.INFO.BY </span>
               <a href="">
                 <i class="fa fa-user"></i> {{ fiscal.display_name }}
