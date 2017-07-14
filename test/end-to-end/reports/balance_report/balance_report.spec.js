@@ -14,6 +14,7 @@ describe('Balance report ::', () => {
   const dataset = {
     dateFrom   : '01/01/2016',
     dateTo     : '31/12/2016',
+    date       : new Date('2016-12-31 12:00'),
     dateOption : 0,
     classe     : '*',
     report_name : 'Balance Report Saved by E2E',
@@ -26,7 +27,7 @@ describe('Balance report ::', () => {
   });
 
   it('preview a new balance report', () => {
-    Page.showBalanceReportPreview(dataset.classe, dataset.dateOption, dataset.dateFrom, dataset.dateTo);
+    Page.showBalanceReportPreview(dataset.date);
   });
 
   it('close the previewed report', () => {
@@ -34,11 +35,7 @@ describe('Balance report ::', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveBalanceReport(
-      dataset.classe, dataset.dateOption,
-      dataset.dateFrom, dataset.dateTo,
-      dataset.report_name, dataset.renderer
-    );
+    Page.saveBalanceReport(dataset.date, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -46,6 +43,6 @@ describe('Balance report ::', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printBalanceReport(dataset.classe, dataset.dateOption, dataset.dateFrom, dataset.dateTo);
+    Page.printBalanceReport(dataset.date);
   });
 });

@@ -16,16 +16,14 @@ class BalanceReportPage {
   }
 
   // preview an account report
-  showBalanceReportPreview(classe, dateOption, dateFrom, dateTo) {
-    FU.uiSelect('ReportConfigCtrl.classe', classe);
-    FU.radio('ReportConfigCtrl.dateOption', dateOption);
-    components.dateInterval.range(dateFrom, dateTo);
+  showBalanceReportPreview(date) {
+    components.dateEditor.set(date);
     this.page.preview();
   }
 
   // save an account report
-  saveBalanceReport(classe, dateOption, dateFrom, dateTo, reportName, reportFormat) {
-    this.showBalanceReportPreview(classe, dateOption, dateFrom, dateTo);
+  saveBalanceReport(date, reportName, reportFormat) {
+    this.showBalanceReportPreview(date);
 
     // save report as PDF
     this.page.saveAs();
@@ -39,8 +37,8 @@ class BalanceReportPage {
   }
 
   // print an account report
-  printBalanceReport(classe, dateOption, dateFrom, dateTo) {
-    this.showBalanceReportPreview(classe, dateOption, dateFrom, dateTo);
+  printBalanceReport(date) {
+    this.showBalanceReportPreview(date);
     this.page.printPreview();
   }
 
