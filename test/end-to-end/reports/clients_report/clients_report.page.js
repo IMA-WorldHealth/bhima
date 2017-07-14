@@ -18,7 +18,7 @@ class ClientsReportPage {
   showClientsReportPreview(start_date, end_date, clients) {
     components.dateInterval.range(start_date, end_date);
     if (clients) {
-      components.debtorGroupSelect.set(clients);
+      components.multipleDebtorGroupSelect.set(clients);
     }    
     this.page.preview();
   }
