@@ -45,7 +45,14 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
       cellTemplate     : '/modules/general-ledger/templates/balance.cell.html' },
-
+    
+    { field            : 'balance0',
+      displayName      : 'TABLE.COLUMNS.OPENING_BALANCE',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance0')},
+      
     { field            : 'balance1',
       displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
       enableFiltering  : false,
@@ -150,6 +157,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
+    onRegisterApi     : onRegisterApi,
   };
 
   var columnConfig = new Columns(vm.gridOptions, cacheKey);
@@ -168,6 +176,11 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  // API register function
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
   }
 
   function openColumnConfiguration() {
