@@ -12,7 +12,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   const date = new Date();
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const numVouchers = 6;
+  const numVouchers = 7;
 
   // balanced transaction with two lines (USD)
   const voucher = {

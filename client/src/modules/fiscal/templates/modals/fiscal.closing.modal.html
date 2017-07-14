@@ -9,48 +9,59 @@
   <div class="modal-body">
     <div ng-show="!$ctrl.fiscal.locked">
 
-      <h1 class="text-center">
+      <h2 class="text-center">
         <span translate>FORM.INFO.CLOSE_FISCAL_YEAR</span>
         <br>
         <strong>{{ $ctrl.fiscal.label }}</strong>
-      </h1>
+      </h2>
 
       <div ng-switch="$ctrl.steps">
         <div ng-switch-default>
 
+          <!--exploitation grid-->
+          <div
+            id="exploitation-grid"
+            style="max-height: 250px;"
+            ui-grid="$ctrl.gridOptions"
+            ui-grid-grouping>
+            <bh-grid-loading-indicator
+              loading-state="$ctrl.loading"
+              empty-state="$ctrl.gridOptions.data.length === 0"
+              error-state="$ctrl.hasError">
+            </bh-grid-loading-indicator>
+          </div>
+
           <!-- first step  -->
-          <dl class="dl-horizontal">
+          <dl class="well well-sm dl-horizontal">
             <!-- incomes  -->
-            <h3 class="text-success">
+            <h4 class="text-success">
               <dt translate>FORM.LABELS.PROFIT</dt>
               <dd class="text-right">
                 {{ $ctrl.profit | currency: $ctrl.currency_id }}
               </dd>
-            </h3>
+            </h4>
 
             <!-- expenses  -->
-            <h3 style="margin: 10px 0px;" class="text-danger">
+            <h4 style="margin: 10px 0px;" class="text-danger">
               <dt translate>FORM.LABELS.CHARGE</dt>
               <dd class="text-right">
                 {{ $ctrl.charge | currency: $ctrl.currency_id }}
               </dd>
-            </h3>
+            </h4>
 
             <!-- results  -->
-            <h3 style="border-top: 1px dashed #ccc; margin-top: 10px;" class="text-bold">
+            <h4 style="border-top: 1px dashed #ccc; margin-top: 10px;" class="text-bold">
               <dt translate>FORM.LABELS.RESULT</dt>
               <dd class="text-right" ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
                 {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
               </dd>
-            </h3>
+            </h4>
           </dl>
-
-          <br>
 
           <bh-account-select
             account-id="$ctrl.resultAccount.id"
             on-select-callback="$ctrl.onSelectAccount(account)"
-            label="FORM.LABELS.RESULT_ACCOUNT_SCT"
+            label="FORM.SELECT.RESULT_ACCOUNT"
             excludeTitleAccounts="true">
           </bh-account-select>
         </div>
