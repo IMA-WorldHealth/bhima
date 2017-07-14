@@ -70,8 +70,8 @@ function document(req, res, next) {
     .then((result) => {
       // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
       // @TODO these constants should be system shared variables
-      const incomeAccountId = 1;
-      const expenseAccountId = 2;
+      const incomeAccountId = 4;
+      const expenseAccountId = 5;
 
       const multipleFiscalYears = result.fiscalYearSpan > 1;
       const incomeExpenseAccount = (bundle.accountDetails.type_id === incomeAccountId) ||
@@ -95,12 +95,10 @@ function getNumberOfFiscalYears(dateFrom, dateTo) {
   const sql = `
     SELECT COUNT(id) as fiscalYearSpan from fiscal_year
     WHERE
-      start_date <= DATE(?) AND end_date >= DATE(?)
-    OR
-      start_date <= DATE(?) AND end_date >= DATE(?)
+    start_date >= DATE(?) AND end_date <= DATE(?)
   `;
 
-  return db.one(sql, [dateFrom, dateFrom, dateTo, dateTo]);
+  return db.one(sql, [dateFrom, dateTo]);
 }
 
 /**
