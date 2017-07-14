@@ -10,7 +10,7 @@
       ng-click="GroupsCtrl.addInventoryGroup()"
       class="pull-right btn btn-default btn-sm"
       type="button" data-create-group>
-      <i class="fa fa-plus"> </i><span translate> FORM.LABELS.ADD </span>
+      <i class="fa fa-plus"> </i> <span translate>FORM.LABELS.ADD</span>
     </button>
   </div>
 
@@ -38,7 +38,7 @@
           <td>{{ group.name }}</td>
           <td>
             <a ui-sref="inventory.list({ filters : { group_uuid : group.uuid }})" href>
-              {{ group.inventory_counted }} <small class="text-lowercase" translate> INVENTORY.ELEMENT</small>(s)<span class="fa fa-link"></span>
+              {{ group.inventory_counted }} <span class="text-lowercase" translate> INVENTORY.ELEMENT</span>(s)
             </a>
           </td>
           <td class="text-center">{{ group.saleAccountNumber }}</td>
