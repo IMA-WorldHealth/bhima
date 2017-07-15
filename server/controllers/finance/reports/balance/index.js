@@ -190,11 +190,11 @@ function balanceReporting(params) {
 
       sql = `
         SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, 
-          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
+          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
         FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
         JOIN period AS p ON pt.period_id = p.id
         WHERE (p.end_date < DATE(?) OR p.number = 0) AND pt.enterprise_id = ? AND p.fiscal_year_id = ?
-        GROUP BY a.id `;
+        GROUP BY a.id HAVING balance <> 0;`;
 
       const queryParameters = [query.date, query.enterpriseId, fiscal.id];
       return db.exec(sql, queryParameters);
@@ -204,16 +204,17 @@ function balanceReporting(params) {
 
       sql = `
         SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset,
-          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
+          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
         FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
         JOIN period AS p ON pt.period_id = p.id
         WHERE (DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?)
-          OR (DATE(?) >= DATE(p.start_date) AND pt.enterprise_id = ? AND p.number = ? AND p.fiscal_year_id = ?)
-        GROUP BY a.id;`;
+          OR (MONTH(?) = ? AND pt.enterprise_id = ? AND p.number = ? AND p.fiscal_year_id = ?)
+        GROUP BY a.id HAVING balance <> 0;`;
 
+      const period13 = fiscal.number_of_months + 1;
       return db.exec(sql, [
-        query.date, query.enterpriseId, query.date,
-        query.enterpriseId, fiscal.number_of_months + 1, fiscal.id,
+        query.date, query.enterpriseId,
+        query.date, fiscal.number_of_months, query.enterpriseId, period13, fiscal.id,
       ]);
     })
     .then((rows) => {
