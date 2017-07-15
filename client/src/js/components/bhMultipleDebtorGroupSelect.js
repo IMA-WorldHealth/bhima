@@ -1,7 +1,7 @@
 angular.module('bhima.components')
   .component('bhMultipleDebtorGroupSelect', {
     templateUrl : 'modules/templates/bhMultipleDebtorGroupSelect.tmpl.html',
-    controller  : DebtorGroupSelectController,
+    controller  : MultipleDebtorGroupSelectController,
     transclude  : true,
     bindings    : { 
       label            : '@?',
@@ -12,7 +12,7 @@ angular.module('bhima.components')
     },
   });
 
-DebtorGroupSelectController.$inject = [
+MultipleDebtorGroupSelectController.$inject = [
   'DebtorGroupService'
 ];
 
@@ -20,7 +20,7 @@ DebtorGroupSelectController.$inject = [
  * User selection component
  *
  */
-function DebtorGroupSelectController(DebtorGroups) {
+function MultipleDebtorGroupSelectController(DebtorGroups) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {

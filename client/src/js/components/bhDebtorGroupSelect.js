@@ -14,7 +14,9 @@ angular.module('bhima.components')
     },
   });
 
-DebtorGroupSelectController.$inject = ['DebtorService'];
+DebtorGroupSelectController.$inject = [
+  'DebtorService',
+];
 
 /**
  * Debtor Group selection component
@@ -26,9 +28,6 @@ function DebtorGroupSelectController(Debtors) {
   $ctrl.$onInit = function onInit() {
     // fired when a Debtor Group has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
-    // fired when an debtor group has been removed
-    $ctrl.onRemoveCallback = $ctrl.onRemoveCallback || angular.noop;
 
     // default for form name
     $ctrl.name = $ctrl.name || 'DebtorForm';
@@ -46,7 +45,7 @@ function DebtorGroupSelectController(Debtors) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = function ($item, model) {
     $ctrl.onSelectCallback({ debtorGroup : $item });
   };
 }
