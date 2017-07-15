@@ -20,7 +20,12 @@
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
-    "CLIENTS_REPORT":{"TITLE":"Rapport Clients", "CURRENT_MVT":"Mouvement Courant", "PREVIOUS_MVT":"Mouvement Precedent"},
+    "CLIENTS_REPORT" : {
+      "TITLE" : "Rapport Clients",
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Du debut Au :",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
+    },
     "CLOSING_BALANCE":"Balance à la cloture",
     "CONFIGURATION":"Configuration rapport",
     "DELETE":"Supprimer un rapport",
