@@ -21,9 +21,9 @@ describe('Clients report ::', () => {
   };
 
   before(() => {
-    browser.refresh();    
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportClientsPage(key);
+    browser.refresh();    
   });
 
   it('preview a new clients report', () => {
