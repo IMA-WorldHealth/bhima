@@ -1,12 +1,20 @@
 #!/bin/bash
+##
+## Lint Test
+##
+
+# bash 'strict mode'
 set -uo pipefail
 
+# locate local the eslint binary
 ESLINT="./node_modules/.bin/eslint"
 
-# eslint will not report warnings, just errors
-$ESLINT --quiet --env node server/
+# Compare the current branch to the master branch and retain files that
+# have changed.
+FILES=$(git diff master --stat --name-only | grep .js)
+LINES=$(echo "$FILES" | wc -l)
 
-#$ESLINT client/src/js/
-#$ESLINT client/src/partials/
-
-exit 0
+if [ -n "$FILES" ]; then
+  echo "git diff shows $LINES changed.  Linting those files."
+  $ESLINT --quiet --env node $FILES
+fi
