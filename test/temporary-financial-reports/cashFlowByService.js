@@ -17,7 +17,7 @@ describe('Cash Flow Report', () => {
   var totalCashAdmin = 32.04;
   var totalCashMI = 3.89;
   var totalPediatrie = 3.79;
-  var totalCashIncome = 39.72;
+  var totalCashIncome = 39.719999999999985;
 
 
   // Report Cash Flow by Service in 2015

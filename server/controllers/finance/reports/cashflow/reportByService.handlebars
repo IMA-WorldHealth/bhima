@@ -59,7 +59,7 @@
           </tbody>
 
           <tfoot>
-            <tr>
+            <tr class="text-capitalize text-center" style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
               {{#each aggregates as | aggregate |}}
                 <th class="text-right">{{currency aggregate.totalCashIncome metadata.enterprise.currency_id}}</th>
