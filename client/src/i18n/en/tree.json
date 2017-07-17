@@ -15,6 +15,10 @@
 "CREDITOR_GROUP":"Creditor Group Management",
 "CURRENCY":"Currency",
 "CUSTOMER_DEBTS":"Customer Debts",
+"DASHBOARD":{
+  "TITLE":"Dashboard",
+  "CASH_PAYMENT":"Dashboard - Payments"
+},
 "DEBTOR_GROUP":"Debtor Group Management",
 "EMPLOYEE":"Employee",
 "EMPLOYEE_REGISTRY" : "Employees registry",

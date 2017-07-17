@@ -81,6 +81,8 @@ const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
 const financialPatient = require('../controllers/finance/patient');
 
+// dashboards
+const dashboard = require('../controllers/dashboard');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
@@ -587,4 +589,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
 
   app.get('/diagnoses', diagnoses.list);
+
+  // dashboard API
+  app.get('/dashboard/cash_payment', dashboard.cash.getPaymentStat);
 };

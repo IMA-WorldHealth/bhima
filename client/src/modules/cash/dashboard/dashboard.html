@@ -1,0 +1,49 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>TREE.DASHBOARD.CASH_PAYMENT</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-period-dropdown
+          default-period="{{ CashCtrl.defaultPeriodKey }}"
+          on-select-callback="CashCtrl.onSelectPeriod(period)">
+        </bh-period-dropdown>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div ui-view="summary"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-xs-6">
+        <div ui-view="hourChart"></div>
+      </div>
+
+      <div class="col-md-4 col-xs-6">
+        <div ui-view="dayChart"></div>
+      </div>
+
+      <div class="col-md-4 col-xs-6">
+        <div ui-view="monthChart"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-xs-6">
+        <div ui-view="groupChart"></div>
+      </div>
+    </div>
+
+    <div style="position: fixed; bottom: 5px; right: 50px;" ng-if="CashCtrl.loading">
+      <loading-indicator></loading-indicator>
+    </div>
+  </div>
+</div>

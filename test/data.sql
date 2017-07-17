@@ -173,6 +173,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] reports/account_reports: The Report accounts
 (152,1),
 
+-- [Folder] reports/balance_sheet_reports: The Report balance sheet
+(172,1),
+
 -- Creditor groups Management
 (146,1),
 
@@ -191,6 +194,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Account statement
 (170, 1),
 
+-- Dashbord
 (171, 1);
 
 -- Fiscal Year 2015

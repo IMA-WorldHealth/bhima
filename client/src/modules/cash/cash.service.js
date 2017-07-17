@@ -15,10 +15,15 @@ CashService.$inject = [
  */
 function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods, Languages, $httpParamSerializer) {
   var service = new Api('/cash/');
+  var dashboard = new Api('/dashboard/cash_payment');
+
   var urlCheckin = '/cash/checkin/';
 
   var cashFilters = new Filters();
   var filterCache = new AppCache('cash-filters');
+
+  // bind other api
+  service.dashboard = dashboard;
 
   // custom methods
   service.create = create;

@@ -1,0 +1,38 @@
+{"DASHBOARD":{
+  "CASH": {
+    "AMOUNT":"Amount",
+    "COUNT":"Number",
+    "DEBTOR_GROUP":"Debtor Groups",
+    "HOUR" : "Hour of day",
+    "PAYMENT":"Payments",
+    "SUMMARY":"Payments Summary",
+    "REVERSED":"Reversed",
+    "CHART_HOUR": "Payment by hour of day",
+    "CHART_DAY": "Payment by day of week",
+    "CHART_MONTH": "Payment by month of year",
+    "VALUE":"Value"
+  },
+  "DAYS":{
+    "MONDAY":"Monday",
+    "TUESDAY":"Tuesday",
+    "WEDNESDAY":"Wednesday",
+    "THURSDAY":"Thursday",
+    "FRIDAY":"Friday",
+    "SATURDAY":"Saturday",
+    "SUNDAY":"Sunday"
+  },
+  "MONTHS":{
+    "JANUARY":"January",
+    "FEBRUARY":"February",
+    "MARCH":"March",
+    "APRIL":"April",
+    "MAY":"May",
+    "JUNE":"June",
+    "JULY":"July",
+    "AUGUST":"August",
+    "SEPTEMBER":"September",
+    "OCTOBER":"October",
+    "NOVEMBER":"November",
+    "DECEMBER":"December"
+  }
+}}
