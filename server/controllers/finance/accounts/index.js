@@ -18,12 +18,14 @@
  * @requires db
  * @requires NotFound
  * @requires accounts/types
+ * @requires accounts/categories
  */
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const types = require('./types');
+const categories = require('./categories');
 
 
 /**
@@ -325,3 +327,4 @@ exports.lookupAccount = lookupAccount;
 exports.processAccountDepth = processAccountDepth;
 exports.list = list;
 exports.remove = remove;
+exports.categories = categories;

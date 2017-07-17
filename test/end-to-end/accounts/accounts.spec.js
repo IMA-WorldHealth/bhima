@@ -115,7 +115,7 @@ describe('Account Management', function () {
     FU.uiSelect('AccountEditCtrl.account.parent', parentNumber);
 
     // set to income
-    select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
+    select.element(by.css('[data-key="ACCOUNT.TYPES.REVENUE"]')).click();
 
     for (let i = 1; i < numberOfAccounts; i++) {
       mockAccount.number += 20;

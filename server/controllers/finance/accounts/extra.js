@@ -94,8 +94,13 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
  */
 function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
   const sql = `
-    SELECT IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit, IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance FROM general_ledger
-    WHERE account_id = ?
+    SELECT 
+      IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit,
+      IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance 
+    FROM 
+      general_ledger
+    WHERE 
+      account_id = ?
       AND DATE(trans_date) <= DATE(?)
       AND period_id = ?;
   `;
@@ -146,8 +151,8 @@ function getOpeningBalanceForDate(accountId, date) {
       return {
         balance : (balance + runningPeriod.balance).toFixed(4),
         credit : (credit + runningPeriod.credit).toFixed(4),
-        debit : (debit + runningPeriod.debit).toFixed(4)
-      }
+        debit : (debit + runningPeriod.debit).toFixed(4),
+      };
     });
 }
 

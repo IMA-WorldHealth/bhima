@@ -196,33 +196,16 @@
                   </div>
 
                   <!-- Employee debtor group-->
-                  <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.debtor_group.$invalid && EmployeeRegistrationForm.$submitted}">
-
-                    <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.debtorGroups.length === 0">
-                      <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.NO_DEBTOR_GROUP</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
-                    </uib-alert>
-
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.DEBTOR_GROUP</label>
-                    <div class="col-md-9">
-                      <ui-select
-                        name="debtor_group"
-                        ng-model="EmployeeCtrl.employee.debtor_group_uuid"
-                        required>
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
-                          <span>{{$select.selected.name}}</span>
-                        </ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="dg.uuid as dg in EmployeeCtrl.debtorGroups | filter:{name : $select.search} | orderBy:'name'">
-                          <span ng-bind-html="dg.name | highlight:$select.search"></span>
-                        </ui-select-choices>
-                      </ui-select>
-
-                      <div class="help-block" ng-messages="DetailForm.debtor_group.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                      </div>
+                  <div class="row">
+                    <div class="col-md-1 col-md-offset-1">
                     </div>
+                    <div class="col-md-9 col-md-offset-1">                  
+                      <bh-debtor-group-select
+                        debtor-group-uuid = "EmployeeCtrl.employee.debtor_group_uuid"
+                        validation-trigger="EmployeeRegistrationForm.$submitted"
+                        on-select-callback = "EmployeeCtrl.onSelectDebtor(debtorGroup)">
+                      </bh-debtor-group-select>                  
+                    </div>                                
                   </div>
 
                   <!-- Employee location -->
