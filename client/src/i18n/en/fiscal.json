@@ -1,6 +1,7 @@
 {"FISCAL":{"ALREADY_CLOSED":"Already closed",
 "CAN_NOT_DELETE_FY":"Can not delete this fiscal year because there are transactions of which were made",
 "CLOSING_FISCAL_YEAR":"Closing a fiscal year",
+"CLOSING_BALANCE":"Closing Balance",
 "CLOSING_SUCCESS":"Fiscal year closed with success",
 "FAILURE_CLOSING":"Failure of closing the fiscal year",
 "FISCAL_YEAR":"Fiscal Year",

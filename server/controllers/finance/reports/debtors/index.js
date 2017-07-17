@@ -66,7 +66,7 @@ function queryContext(queryParams) {
   const includeZeroes = Boolean(Number(params.zeroes));
 
   // format the dates for MySQL escape
-  const dates = _.fill(Array(4), new Date(params.date));
+  const dates = _.fill(Array(5), new Date(params.date));
 
   const data = {};
   const source = 'general_ledger';
@@ -82,6 +82,7 @@ function queryContext(queryParams) {
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
+    WHERE DATE(gl.trans_date) <= DATE(?)  
     GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY dg.name;
@@ -97,12 +98,14 @@ function queryContext(queryParams) {
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
+    WHERE DATE(gl.trans_date) <= DATE(?)
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
 
   return db.exec(debtorSql, dates)
     .then(debtors => {
       data.debtors = debtors;
+      data.dateUntil = params.date;
       return db.exec(aggregateSql, dates);
     })
     .then(aggregates => {

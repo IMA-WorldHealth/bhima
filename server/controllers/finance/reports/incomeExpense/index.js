@@ -17,282 +17,143 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
+const fiscalPeriod = require('../../fiscalPeriod');
+
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
+const types = [4, 5]; // revenue and expense type
 
 // expose to the API
-exports.report = report;
 exports.document = document;
+exports.report = report;
 
-/**
- * @function report
- * @desc This function is responsible of generating the incomeExpense data for the report
- */
-function report(req, res, next) {
-  const params = req.query;
-
-  /**
-   * For allow the select of all transaction who are saved during the Date
-   * Because the field trans_date is type DATETIME
-   */
-  params.dateTo += ' 23:59:59';
-  params.reportType = parseInt(params.reportType, 10);
-
-  const type = params.reportType;
-  const typeMapping = {
-    1 : processingIncomeExpenseReport,
-    2 : processingIncomeReport,
-    3 : processingExpenseReport,
-  };
-
-  if (!typeMapping[type]) {
-    next(new BadRequest('The report type is missing and cannot work.'));
-    return;
-  }
-
-  // call the report processing function
-  let promise;
-  try {
-    promise = typeMapping[type](params);
-  } catch (e) {
-    next(e);
-    return;
-  }
-
-  // once the report is rendered, return to sender
-  promise
-    .then(result => res.status(200).json(result))
-    .catch(next);
-}
-
-/** processingIncomeExpenseReport */
-function processingIncomeExpenseReport(params) {
-  const glb = {};
-
-  if (!params.account_id) {
-    throw new BadRequest('Cashbox is missing.');
-  }
-
-  return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
-    .then((incomes) => {
-      glb.incomes = incomes;
-      return getExpenseReport(params.account_id, params.dateFrom, params.dateTo);
-    })
-    .then((expenses) => {
-      glb.expenses = expenses;
-      return glb;
-    });
-}
-
-
-/** processingIncomeReport */
-function processingIncomeReport(params) {
-  const glb = {};
-
-  if (!params.account_id) {
-    throw new BadRequest('The cashbox account ID is required.');
-  }
-
-  // get income report
-  return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
-    .then((incomes) => {
-      glb.incomes = incomes;
-      return glb;
-    });
-}
-
-/** processingExpenseReport */
-function processingExpenseReport(params) {
-  const glb = {};
-
-  if (!params.account_id) {
-    throw new BadRequest('The cashbox account id is required.');
-  }
-
-  // get income report
-  return getExpenseReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(expenses => {
-      glb.expenses = expenses;
-      return glb;
-    });
-}
-
-/**
- * @function getIncomeReport
- * @param {account} account id of cashbox
- * @param {date} dateFrom A starting date
- * @param {date} dateTo A stop date
- */
-function getIncomeReport(accountId, dateFrom, dateTo) {
-  const query = `
-    SELECT 
-      t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
-      t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-      BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, 
-      t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
-      t.user_id, u.username, a.number, tr.text AS transactionType, 
-      a.label
-    FROM
-    (
-      (
-      SELECT 
-        posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
-        posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
-        posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
-        posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id=? AND 
-        (posting_journal.trans_date >=? AND posting_journal.trans_date <=?)
-      ) UNION (
-      SELECT 
-        general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
-        general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
-        general_ledger.record_uuid, general_ledger.entity_uuid, general_ledger.reference_uuid,
-        general_ledger.currency_id, general_ledger.trans_id, general_ledger.description, 
-        general_ledger.comment, general_ledger.origin_id, general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id=? AND 
-        (general_ledger.trans_date >=? AND general_ledger.trans_date <=?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.debit > 0 GROUP BY t.trans_id;
-  `;
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-}
-
-
-/**
- * @function getExpenseReport
- * @param {account} account id of cashbox
- * @param {date} dateFrom A starting date
- * @param {date} dateTo A stop date
- */
-function getExpenseReport(accountId, dateFrom, dateTo) {
-  const query = `
-    SELECT 
-      t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, 
-      t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
-      BUID(t.entity_uuid) AS entity_uuid, BUID(t.reference_uuid) AS record_uuid, 
-      t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, 
-      t.user_id, u.username, a.number, tr.text AS transactionType, 
-      a.label
-    FROM
-    (
-      (
-      SELECT 
-        posting_journal.project_id, posting_journal.uuid, posting_journal.trans_date, 
-        posting_journal.debit_equiv, posting_journal.credit_equiv,
-        posting_journal.debit, posting_journal.credit, posting_journal.account_id, 
-        posting_journal.record_uuid, posting_journal.entity_uuid,  posting_journal.reference_uuid,
-        posting_journal.currency_id, posting_journal.trans_id, posting_journal.description, 
-        posting_journal.comment, posting_journal.origin_id, posting_journal.user_id
-      FROM posting_journal
-        WHERE posting_journal.account_id= ? AND 
-        (posting_journal.trans_date >= ? AND posting_journal.trans_date <= ?)
-      ) UNION (
-      SELECT 
-        general_ledger.project_id, general_ledger.uuid, general_ledger.trans_date, 
-        general_ledger.debit_equiv, general_ledger.credit_equiv,
-        general_ledger.debit, general_ledger.credit, general_ledger.account_id, 
-        general_ledger.record_uuid, general_ledger.entity_uuid, 
-        general_ledger.reference_uuid, general_ledger.currency_id, general_ledger.trans_id, 
-        general_ledger.description, general_ledger.comment, general_ledger.origin_id, 
-        general_ledger.user_id
-      FROM general_ledger
-        WHERE general_ledger.account_id= ? AND 
-        (general_ledger.trans_date >= ? AND general_ledger.trans_date <= ?)
-      )
-    ) AS t
-    JOIN user u ON t.user_id = u.id
-    JOIN account a ON t.account_id = a.id
-    LEFT JOIN transaction_type tr ON tr.id = t.origin_id
-    WHERE t.credit > 0 GROUP BY t.trans_id;`;
-
-  return db.exec(query, [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-}
-
-
-/**
- * @function document
- * @description process and render the incomeExpense report document
- */
 function document(req, res, next) {
-  const session = {};
-  const params = req.query;
+    let docReport;
+    const options = _.extend(req.query, {
+        filename: 'TREE.INCOME_EXPENSE',
+        csvKey: 'rows',
+        user: req.session.user,
+    });
 
-  let documentReport;
-  let sumIncome = 0;
-  let sumExpense = 0;
+    try {
+        docReport = new ReportManager(TEMPLATE, req.session, options);
+    } catch (e) {
+        next(e);
+        return;
+    }
 
-  session.dateFrom = params.dateFrom;
-  session.dateTo = params.dateTo;
-  session.reportType = params.reportType;
+    fiscalPeriod.getPeriodDiff(options.periodFrom, options.periodTo)
+        .then((ans) => {
 
-  _.defaults(params, { orientation : 'landscape', user : req.session.user });
+            if (ans.nb > 0) {
+                throw new BadRequest(`The period From should be before the period To`, 'FORM.ERRORS.PERIOD_ORDER');
+            }
 
-  try {
-    documentReport = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
-  }
+            return getDateRange(options.periodFrom, options.periodTo);
+        })
+        .then((range) => {
+            _.merge(options, { dateFrom: new Date(range.dateFrom), dateTo: new Date(range.dateTo) });
+            return fiscalPeriod.isInSameFiscalYear({ periods: [options.periodFrom, options.periodTo] })
+        })
+        .then((ans) => {
 
-  processingIncomeExpenseReport(params)
-    .then(incomeExpense => {
-      incomeExpense.reportIncome = false;
-      incomeExpense.reportExpense = false;
-      incomeExpense.dateFrom = session.dateFrom;
-      incomeExpense.dateTo = session.dateTo;
+            if (!ans) {
+                throw new BadRequest(`The two period selected must be in the same fiscal year`, 'FORM.ERRORS.PERIOD_DIFF_FISCAL');
+            }
+            return sumIncomeExpenseAccounts(options.fiscal, options.periodFrom, options.periodTo);
+        })
+        .then((reportContext) => {
+            const contents = reportContext.accounts.reduce((obj, item) => {
+                if (item.type_id === 4) {
+                    obj.incomes.push(item);
+                } else {
+                    obj.expenses.push(item);
+                }
+                return obj;
+            }, { incomes: [], expenses: [] });
 
-      // pick the cashbox account name
-      if (!incomeExpense.accountName && incomeExpense.incomes.length) {
-        incomeExpense.accountName = incomeExpense.incomes[0].label;
-      } else if (!incomeExpense.accountName && incomeExpense.expenses && incomeExpense.expenses.length) {
-        incomeExpense.accountName = incomeExpense.expenses[0].label;
-      } else {
-        incomeExpense.accountName = incomeExpense.accountName;
-      }
+            _.merge(reportContext, {
+                enterprise : req.session.enterprise,
+                isEmpty: reportContext.accounts.length === 0,
+                dateFrom: options.dateFrom,
+                dateTo: options.dateTo,
+                type_id: Number(options.type),
+                isLost : reportContext.overallBalance.debit > reportContext.overallBalance.credit,
+            });
+            _.merge(reportContext, contents);
+            delete reportContext.accounts;
+            return docReport.render(reportContext);
+        })
+        .then((result) => {
+            res.set(result.headers).send(result.report);
+        })
+        .catch(next)
+        .done();
+}
 
-      // pick the cashbox account Number
-      if (!incomeExpense.accountNumber && incomeExpense.incomes.length) {
-        incomeExpense.accountNumber = incomeExpense.incomes[0].number;
-      } else if (!incomeExpense.accountNumber && incomeExpense.expenses && incomeExpense.expenses.length) {
-        incomeExpense.accountNumber = incomeExpense.expenses[0].number;
-      } else {
-        incomeExpense.accountNumber = incomeExpense.accountNumber;
-      }
+function getQuery(fiscalYearId, periodFromId, periodToId, groupToken = '') {
+    // get all of the period IDs between the first periods number and the second periods number (within a fiscal year)
+    const periodCondition = `
+        SELECT id FROM period
+        WHERE fiscal_year_id = ${fiscalYearId}
+        AND number BETWEEN (SELECT number FROM period WHERE id = ${periodFromId}) AND (SELECT number FROM period WHERE id = ${periodToId})
+    `;
+    // Get the absolute value of the balance, if the value is negative a positive value will be returned    
+    const balanceQuery = `
+        SELECT 
+            account.type_id, account.number, account.label,
+            SUM(credit) as credit, SUM(debit) as debit, 
+            ABS(SUM(credit) - SUM(debit)) as balance
+        FROM 
+            period_total             
+        JOIN 
+            account ON period_total.account_id = account.id
+        JOIN 
+            period ON period.id = period_total.period_id
+        WHERE 
+            period.id IN (${periodCondition}) AND 
+            account.type_id IN (?)
+        ${groupToken}
+    `;
+    return balanceQuery;
+}
 
-      session.reportType = parseInt(session.reportType, 10);
+function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
+    let reportContext = {};
 
-      if (session.reportType === 1 || session.reportType === 2) {
-        incomeExpense.incomes.forEach((income) => {
-          sumIncome += income.debit;
+    // grouping by account_id gives us the individual account line items
+    return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY account_id'), [types])
+        .then((accountBalances) => {
+            reportContext.accounts = accountBalances;
+            // grouping by type_id gives us total income/ expense types balance
+            return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY type_id'), [types]);
+        })
+        .then((typeBalances) => {
+            reportContext.incomeBalance = typeBalances[0];
+            reportContext.expenseBalance = typeBalances[1];
+
+            // grouping by nothing gives us the overall balance of all types
+            return db.one(getQuery(fiscalYearId, periodFromId, periodToId), [types]);
+        })
+        .then((overallBalance) => {
+            reportContext.overallBalance = overallBalance;
+            return reportContext;
         });
+}
 
-        incomeExpense.reportIncome = true;
-        incomeExpense.sumIncome = sumIncome;
-      }
+function report(req, res, next) {
+    res.status(200).json([]);
+}
 
-      if (session.reportType === 1 || session.reportType === 3) {
-        incomeExpense.expenses.forEach((expense) => {
-          sumExpense += expense.credit;
-        });
+function getDateRange(periodIdFrom, periodIdTo) {
+    const sql =
+        `
+    SELECT 
+        MIN(start_date) AS dateFrom, MAX(end_date) AS dateTo
+    FROM 
+        period
+    WHERE 
+        period.id IN (${periodIdFrom}, ${periodIdTo})`;
 
-        incomeExpense.reportExpense = true;
-        incomeExpense.sumExpense = sumExpense;
-      }
-
-      return documentReport.render({ incomeExpense });
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    return db.one(sql);
 }

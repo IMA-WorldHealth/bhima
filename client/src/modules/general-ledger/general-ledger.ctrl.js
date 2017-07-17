@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 GeneralLedgerController.$inject = [
   'GeneralLedgerService', 'GridSortingService', 'GridGroupingService',
-  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
+  'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'TransactionService', 'uiGridConstants',
   'AppCache', 'LanguageService', 'ExportService',
 ];
@@ -24,7 +24,7 @@ GeneralLedgerController.$inject = [
  *
  */
 function GeneralLedgerController(GeneralLedger, Sorting, Grouping,
-  Filtering, Columns, Config, Session, Notify, Transactions,
+  Filtering, Columns, Session, Notify, Transactions,
   uiGridConstants, AppCache, Languages, Export) {
   var vm = this;
 

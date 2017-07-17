@@ -373,24 +373,28 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid']);
+  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'p' });
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false  });
   const sql = patientEntityQuery(options.detailed);
 
+  filters.equals('debtor_uuid');
   filters.fullText('display_name');
-  filters.dateFrom('dateRegistrationFrom', 'registration_date');
-  filters.dateTo('dateRegistrationTo', 'registration_date');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
 
   // default registration date
-  filters.period('defaultPeriod', 'registration_date');
+  filters.period('period', 'registration_date');
+  filters.dateFrom('custion_period_start', 'registration_date');
+  filters.dateTo('custom_period_end', 'registration_date');
 
   const patientGroupStatement =
     '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('sex');
+  filters.equals('hospital_no');
+  filters.equals('user_id');
 
   const referenceStatement =
     `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
@@ -402,6 +406,7 @@ function find(options) {
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 

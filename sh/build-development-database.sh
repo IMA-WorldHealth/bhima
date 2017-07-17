@@ -39,6 +39,9 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
 echo "[build] test data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/development-build.sql 1> /dev/null
 
+echo "[update] account type to account category"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/account_type.sql &> /dev/null
+
 echo "[build] recomputing mappings"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();" &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();" &> /dev/null

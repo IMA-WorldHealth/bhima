@@ -154,11 +154,9 @@ function listPayment(options) {
   `;
 
   filters.period('period', 'date');
-  filters.dateFrom('custion_period_start', 'date');
+  filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-
   filters.fullText('description');
-
   filters.equals('user_id');
   filters.equals('is_caution');
   filters.equals('cashbox_id');

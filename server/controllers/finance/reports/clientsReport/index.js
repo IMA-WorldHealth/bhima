@@ -25,7 +25,14 @@ function document(req, res, next) {
   let report;
 
 
-  _.defaults(session, { dateFrom : new Date(params.dateFrom), dateTo : new Date(params.dateTo), detailPrevious : params.detailPrevious, ignoredClients : params.ignoredClients, enterprise : req.session.enterprise });
+  _.defaults(session, {
+    dateFrom : new Date(params.dateFrom),
+    dateTo : new Date(params.dateTo),
+    detailPrevious : params.detailPrevious,
+    ignoredClients : params.ignoredClients,
+    enterprise : req.session.enterprise,
+  });
+
   _.defaults(params, { user : req.session.user });
 
   try {
@@ -43,7 +50,7 @@ function document(req, res, next) {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
- }
+}
 
 /**
  * @function fetchClientsData
@@ -146,12 +153,23 @@ function fetchClientsData(session) {
       data.forEach((dt) => {
         // if there is no info about the client for the previous year
         if (!clientsData.lines[dt.accountNumber]) {
-          _.merge(clientsData.lines[dt.accountNumber] = {}, { initDebit : 0, initCredit : 0, initBalance : 0, name : dt.name, accountNumber : dt.accountNumber });
+          _.merge(clientsData.lines[dt.accountNumber] = {}, {
+            initDebit : 0,
+            initCredit : 0,
+            initBalance : 0,
+            name : dt.name,
+            accountNumber : dt.accountNumber,
+          });
         }
 
         // adding effectively current info to the object
-        // and adding the final balance of the client, no way to get it from the database directly without altering the current requests
-        _.merge(clientsData.lines[dt.accountNumber], { debit : dt.debit, credit : dt.credit, finalBalance : clientsData.lines[dt.accountNumber].initBalance + dt.balance });
+        // and adding the final balance of the client,
+        // no way to get it from the database directly without altering the current requests
+        _.merge(clientsData.lines[dt.accountNumber], {
+          debit : dt.debit,
+          credit : dt.credit,
+          finalBalance : clientsData.lines[dt.accountNumber].initBalance + dt.balance,
+        });
       });
 
       const currentTotalSql =

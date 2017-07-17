@@ -70,15 +70,16 @@ function document(req, res, next) {
     .then((result) => {
       // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
       // @TODO these constants should be system shared variables
-      const incomeAccountId = 1;
-      const expenseAccountId = 2;
+      const incomeAccountId = 4;
+      const expenseAccountId = 5;
 
       const multipleFiscalYears = result.fiscalYearSpan > 1;
-      const incomeExpenseAccount = bundle.accountDetails.type_id === incomeAccountId || bundle.accountDetails.type_id === expenseAccountId;
+      const incomeExpenseAccount = (bundle.accountDetails.type_id === incomeAccountId) ||
+      (bundle.accountDetails.type_id === expenseAccountId);
 
       if (multipleFiscalYears && incomeExpenseAccount) {
         _.extend(bundle, {
-          warnMultipleFiscalYears : true
+          warnMultipleFiscalYears : true,
         });
       }
       return report.render(bundle);
@@ -91,16 +92,13 @@ function document(req, res, next) {
 }
 
 function getNumberOfFiscalYears(dateFrom, dateTo) {
-
   const sql = `
     SELECT COUNT(id) as fiscalYearSpan from fiscal_year
     WHERE
-      start_date <= DATE(?) AND end_date >= DATE(?)
-    OR
-      start_date <= DATE(?) AND end_date >= DATE(?)
+    start_date >= DATE(?) AND end_date <= DATE(?)
   `;
 
-  return db.one(sql, [dateFrom, dateFrom, dateTo, dateTo]);
+  return db.one(sql, [dateFrom, dateTo]);
 }
 
 /**
@@ -136,10 +134,14 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
   // @TODO define standards for displaying and rounding totals, unless numbers are rounded
   //       uniformly they may be displayed differently from what is recorded
   const sqlTotals = `
-    SELECT SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit, (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
-    FROM general_ledger
-    WHERE account_id = ?
-    ${dateCondition}
+    SELECT 
+      SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit,
+      (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
+    FROM 
+      general_ledger
+    WHERE 
+      account_id = ?
+      ${dateCondition}
   `;
 
   const bundle = {};
@@ -168,7 +170,7 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       return db.one(sqlTotals, [accountId, dateFrom, dateTo]);
     })
     .then((totals) => {
-      let period = {};
+      const period = {};
       period.debit = totals.debit;
       period.credit = totals.credit;
       period.balance = totals.balance;

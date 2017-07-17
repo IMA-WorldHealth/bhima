@@ -73,6 +73,10 @@ class SearchModal {
     FU.input('$ctrl.searchQueries.reference', reference, this.element);
   }
 
+  setDescription(description) {
+    FU.input('$ctrl.searchQueries.description', description, this.element);
+  }
+
   /*
    NOTE:
    Since these modules are shared between all search forms, please make sure you always use

@@ -162,11 +162,13 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] Reports
 -- Cashflow report:       (145,1),
 -- Chart of account:      (148, 1),
--- Income Expense report: (149,1),
+(180,1),
 -- Balance report:        (150, 1),
--- Report Customer Debts: (151,1),
 -- Clients report:        (159, 1),
 -- Aged Debts report:     (168, 1),
+
+-- [Folder] reports/aged_debtors: The Report Aged Debtors 
+(151,1),
 
 -- [Folder] reports/account_reports: The Report accounts
 (152,1),
@@ -187,7 +189,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1), (166, 1), (167, 1),
 
 -- Account statement
-(170, 1);
+(170, 1),
+
+(171, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

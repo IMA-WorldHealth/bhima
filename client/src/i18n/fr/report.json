@@ -2,8 +2,19 @@
   "REPORT":{
     "ACCOUNT":"Rapport du Compte",
     "AGED_CREDITORS":"Balance agée des Créances",
-    "AGED_DEBTORS":{"TITLE":"Balance agée des clients"},
+    "AGED_DEBTORS":{
+      "TITLE":"Balance agée des Conventionnés",
+      "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
+    },
     "BALANCE":"Rapport de la Balance",
+    "BALANCE_SHEET":{
+      "TITLE":"Bilan",
+      "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise",
+      "SHOW_EXPLOITATION":"Afficher les exploitations",
+      "DEBTOR_SOLD":"Debit",
+      "CREDITOR_SOLD":"Credit",
+      "EXPLOITATION_RESULT":"Resultat d'exploitation"
+    },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",
     "CASHFLOW":"Cashflow",
@@ -38,7 +49,12 @@
     "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours",
     "REPORT_ACCOUNTS" : {
       "TITLE":"Rapport de comptes",
-      "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée"
+      "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
+      "WARN_MULTIPLE":"N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
+    },
+    "INCOME_EXPENSE_REPORT" : {
+      "TITLE" : "Rapport des Comptes d'exploitation",
+      "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",

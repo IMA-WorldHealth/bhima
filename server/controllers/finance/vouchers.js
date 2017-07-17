@@ -108,7 +108,8 @@ function lookupVoucher(vUuid) {
 }
 
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'v' });
+  const filters = new FilterParser(options, { tableAlias : 'v', autoParseStatements : false });
+  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
 
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
@@ -123,11 +124,12 @@ function find(options) {
 
   delete options.detailed;
 
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
-  filters.period('defaultPeriod', 'date');
+  filters.period('period', 'date');
+  filters.dateFrom('custom_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
+  filters.equals('type_id');
 
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
   filters.fullText('description');

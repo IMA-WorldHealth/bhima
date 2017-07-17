@@ -57,6 +57,7 @@ const stockReports = require('../controllers/stock/reports');
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');
+const fiscalPeriod = require('../controllers/finance/fiscalPeriod');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
 const debtors = require('../controllers/finance/debtors');
@@ -167,7 +168,13 @@ scheduler.setScheduler();
   app.post('/accounts/types', accounts.types.create);
   app.put('/accounts/types/:id', accounts.types.update);
   app.delete('/accounts/types/:id', accounts.types.remove);
-  app.delete('/accounts/:id', accounts.remove);
+
+  // API for account categories routes CRUD
+  app.get('/accounts/categories', accounts.categories.list);
+  app.get('/accounts/categories/:id', accounts.categories.detail);
+  app.post('/accounts/categories', accounts.categories.create);
+  app.put('/accounts/categories/:id', accounts.categories.update);
+  app.delete('/accounts/categories/:id', accounts.categories.remove);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);
@@ -175,6 +182,7 @@ scheduler.setScheduler();
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
+  app.delete('/accounts/:id', accounts.remove);
 
   // API for service routes
   app.post('/services', services.create);
@@ -209,6 +217,7 @@ scheduler.setScheduler();
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
+
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
@@ -217,6 +226,10 @@ scheduler.setScheduler();
   app.put('/fiscal/:id/closing', fiscal.closing);
   app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);
+
+  // Period routes
+  app.get('/periods', fiscalPeriod.list);
+
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -326,7 +339,7 @@ scheduler.setScheduler();
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
-  //interface for employee report
+  // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
 
   // route for invoice Report
@@ -354,6 +367,7 @@ scheduler.setScheduler();
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
+  app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
   app.get('/reports/finance/posted_journal', financeReports.journal.postedReport);
@@ -494,9 +508,9 @@ scheduler.setScheduler();
   // employees
   app.get('/employees/search', employees.search);
   app.get('/employees', employees.list);
-  app.get('/employees/:id', employees.detail);  
-  app.post('/employees', employees.create); 
-  app.put('/employees/:id', employees.update);  
+  app.get('/employees/:id', employees.detail);
+  app.post('/employees', employees.create);
+  app.put('/employees/:id', employees.update);
 
   // billing services
   app.get('/billing_services', billingServices.list);
@@ -566,7 +580,7 @@ scheduler.setScheduler();
 
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
-  app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+  // app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);

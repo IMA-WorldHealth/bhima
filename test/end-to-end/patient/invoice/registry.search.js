@@ -1,5 +1,6 @@
 const Filters = require('../../shared/components/bhFilters');
 const SearchModal = require('../../shared/search.page');
+const components = require('../../shared/components');
 const InvoiceRegistryPage = require('./registry.page.js');
 
 function InvoiceRegistrySearch() {
@@ -66,9 +67,9 @@ function InvoiceRegistrySearch() {
   });
 
   it('filters by debtor group "First Test Debtor Group" to get three results', () => {
-    const NUM_MATCHING = 5;
+    const NUM_MATCHING = 3;
 
-    modal.setDebtorGroup('First Test Debtor Group');
+    components.debtorGroupSelect.set('First Test Debtor Group');
     modal.submit();
 
     page.expectNumberOfGridRows(NUM_MATCHING);

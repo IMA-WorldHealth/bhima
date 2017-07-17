@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
-  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
+  'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
@@ -31,7 +31,7 @@ JournalController.$inject = [
  * @todo Propose utility bar view design
  */
 function JournalController(Journal, Sorting, Grouping,
-  Filtering, Columns, Config, Session, Notify, Transactions, Editors,
+  Filtering, Columns, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
   $translate, GridExport, TransactionType, GridState) {
@@ -413,7 +413,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = Journal.filters.formatHTTP();
 
-    Config.openSearchModal(filtersSnapshot)
+    Journal.openSearchModal(filtersSnapshot)
       .then(function (changes) {
         Journal.filters.replaceFilters(changes);
 

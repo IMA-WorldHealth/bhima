@@ -7,60 +7,64 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-menu">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href data-method="configure" ng-click="VoucherCtrl.openColumnConfigModal()">
+                <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="VoucherCtrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="VoucherCtrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item">
         <button
-          type="button"
           ng-click="VoucherCtrl.search()"
           data-method="search"
           class="btn btn-default">
-          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
-
-      <div class="toolbar-item">
-        <bh-pdf-print
-          pdf-url="/reports/finance/vouchers"
-          options="VoucherCtrl.dateInterval"
-          disable-cache="true">
-        </bh-pdf-print>
-      </div>
-
-      <div class="toolbar-item">
-        <bh-renderer-dropdown
-          report-url="/reports/finance/vouchers"
-          report-options="VoucherCtrl.dateInterval">
-        </bh-renderer-dropdown>
-      </div>
-
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="VoucherCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : VoucherCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
+          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="flex-util bh-filter-bar" ng-show="VoucherCtrl.filtersFmt.length > 0">
-  <bh-filters-applied
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
     style="max-width:90%"
-    filters="VoucherCtrl.filtersFmt"
+    filters="VoucherCtrl.latestViewFilters"
     on-remove-filter="VoucherCtrl.onRemoveFilter(filter)">
-  </bh-filters-applied>
-
-  <a
-    href
-    ng-if="VoucherCtrl.filter.customFiltersApplied(VoucherCtrl.filters)"
-    ng-click="VoucherCtrl.clearFilters()"
-    class="text-danger"
-    data-method="clear">
-    <i class="fa fa-close text-danger"></i>
-    <span translate>FORM.INFO.CLEAR_FILTERS</span>
-  </a>
+  </bh-filters>
 </div>
 
 <div class="flex-content">
@@ -69,11 +73,12 @@
     <!-- vouchers list  -->
     <div
       id="voucher-grid"
-      class="grid-full-height"
-      ng-style="VoucherCtrl.filterBarHeight"
+      class="grid-full-height-with-filters"
       ui-grid="VoucherCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
+      ui-grid-save-state
+      ui-grid-move-columns
       ui-grid-grouping>
 
     <bh-grid-loading-indicator

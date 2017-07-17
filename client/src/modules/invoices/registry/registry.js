@@ -160,6 +160,14 @@ function InvoiceRegistryController(
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    if ($state.params.filters) {
+      // Fix me, generate change dynamically 
+      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+      
+      Invoices.filters.replaceFilters(change);
+      Invoices.cacheFilters();
+    }
+
     load(Invoices.filters.formatHTTP(true));
     vm.latestViewFilters = Invoices.filters.formatView();
   }

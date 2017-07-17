@@ -5,6 +5,9 @@ angular.module('bhima.routes')
     /* @const */
     var SUPPORTED_REPORTS = [
       'account_report',
+      'balance_sheet_report',
+      'income_expense',
+      'aged_debtors',
     ];
 
     $stateProvider
