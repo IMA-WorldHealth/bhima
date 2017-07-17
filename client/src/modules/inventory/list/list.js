@@ -6,7 +6,7 @@ InventoryListController.$inject = [
   '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants',
   'ModalService', '$state', '$rootScope', 'appcache',
   'SearchFilterService', 'GridColumnService', 'GridStateService',
-  'GridExportService',
+  'GridExportService', 'LanguageService',
 ];
 
 /**
@@ -15,7 +15,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   Modal, $state, $rootScope, AppCache,
-  SearchFilters, Columns, GridState, GridExport) {
+  SearchFilters, Columns, GridState, GridExport, Languages) {
   var vm = this;
   var cacheKey = 'InventoryGrid';
   var cache = new AppCache(cacheKey);
@@ -27,6 +27,7 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   var search = new SearchFilters(cacheKey);
 
   // global variables
+  vm.lang = Languages.key;
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
@@ -141,6 +142,7 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       search.assignFilters(params);
       vm.latestViewFilters = search.latestViewFilters();
       vm.hasCustomFilters = search.hasCustomFilters();
+      vm.parameters = JSON.stringify(params);
     }
 
     Inventory.read(null, params)
@@ -154,6 +156,8 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   function research() {
     Inventory.openSearchModal()
       .then(function (parameters) {
+        if (!parameters) { return; }
+
         runResearch(parameters);
       });
   }

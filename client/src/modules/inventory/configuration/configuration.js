@@ -8,7 +8,6 @@ function InventoryConfigurationController() {
   /** paths in the headercrumb */
   vm.bcPaths = [
     { label : 'TREE.INVENTORY' },
-    { label : 'TREE.INVENTORY_CONFIGURATION' }
+    { label : 'TREE.INVENTORY_CONFIGURATION' },
   ];
-
 }
