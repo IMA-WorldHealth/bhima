@@ -190,6 +190,8 @@
 "CASHBOX":"Cashbox",
 "CASHIER":"Cashier",
 "CASH_ACCOUNT":"Cash Account",
+"CASH_JOURNAL" : "Cash Journal",
+"CASH_SPLITED" : "Revenu depenses splited",
 "CASH_PAYMENTS": "Cash Payments",
 "CAUTION":"Caution",
 "CHARGE":"Charge",

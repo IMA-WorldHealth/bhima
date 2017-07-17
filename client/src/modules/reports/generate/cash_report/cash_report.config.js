@@ -18,6 +18,11 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
     { id: 3, label: 'FORM.LABELS.EXIT' },
   ];
 
+  vm.reportFormats = [
+    {id : 1, label : 'FORM.LABELS.CASH_JOURNAL'},
+    {id : 2, label : 'FORM.LABELS.CASH_SPLITED'}
+  ];
+
   checkCachedConfiguration();
 
   Cashbox.read(null, { detailed: 1 })
@@ -70,5 +75,7 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+    vm.reportDetails.type = 1;
+    vm.reportDetails.format = 1;
   }
 }

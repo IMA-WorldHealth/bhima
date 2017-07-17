@@ -186,6 +186,8 @@
 "BY_NAME":"Par nom",
 "CANCEL":"Annuler",
 "CANCELED":"Annulée",
+"CASH_JOURNAL" : "Journal Caisse",
+"CASH_SPLITED" : "Revenu depense separés",
 "CHARACTERISTICS":"Caractéristiques",
 "CASHBOX":"Caisse",
 "CASHIER":"Caissier",
