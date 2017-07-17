@@ -131,10 +131,6 @@ function getInventoryItems(req, res, next) {
 
   core.getItemsMetadata(params)
     .then((row) => {
-      if (!row.length) {
-        throw core.errors.NO_INVENTORY_ITEMS;
-      }
-
       res.status(200).json(row);
     })
     .catch((error) => {

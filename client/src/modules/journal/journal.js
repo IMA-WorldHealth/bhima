@@ -124,7 +124,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }
+  };
 
   /**
    * Column definitions; specify the configuration and behaviour for each column

@@ -6,49 +6,49 @@ angular.module('bhima.routes')
         views : {
           '' : {
             templateUrl : 'modules/inventory/configuration/configuration.html',
-            controller : 'InventoryConfigurationController as InventoryCtrl'
+            controller : 'InventoryConfigurationController as InventoryCtrl',
           },
           'groups@inventoryConfiguration' : {
             templateUrl : 'modules/inventory/configuration/groups/groups.html',
-            controller : 'InventoryGroupsController as GroupsCtrl'
+            controller : 'InventoryGroupsController as GroupsCtrl',
           },
           'types@inventoryConfiguration' : {
             templateUrl : 'modules/inventory/configuration/types/types.html',
-            controller : 'InventoryTypesController as TypesCtrl'
+            controller : 'InventoryTypesController as TypesCtrl',
           },
           'units@inventoryConfiguration' : {
             templateUrl : 'modules/inventory/configuration/units/units.html',
-            controller : 'InventoryUnitsController as UnitsCtrl'
-          }
-        }
-     })
+            controller : 'InventoryUnitsController as UnitsCtrl',
+          },
+        },
+      })
       .state('inventory', {
         abstract : true,
         url : '/inventory',
         controller : 'InventoryListController as InventoryCtrl',
-        templateUrl : 'modules/inventory/list/list.html'
+        templateUrl : 'modules/inventory/list/list.html',
       })
       .state('inventory.create', {
         url : '/create',
         params : {
-          creating : { value : true }
-        },        
-        onEnter :['$state', 'ModalService', onEnterFactory('create')],
-        onExit : ['$uibModalStack', closeModal]
+          creating : { value : true },
+        },
+        onEnter : ['$state', 'ModalService', onEnterFactory('create')],
+        onExit : ['$uibModalStack', closeModal],
       })
       .state('inventory.update', {
         url : '/:uuid/update',
-        onEnter :['$state', 'ModalService', onEnterFactory('update')],
-        onExit : ['$uibModalStack', closeModal]
+        onEnter : ['$state', 'ModalService', onEnterFactory('update')],
+        onExit : ['$uibModalStack', closeModal],
       })
       .state('inventory.list', {
-        url: '/:uuid',
+        url : '/:uuid',
         params : {
           uuid : { squash : true, value : null },
           created : false,  // default for transitioning from child states
           updated : false,  // default for transitioning from child states
-          filters : null
-        }
+          filters : null,
+        },
       });
       // @TODO IMPLEMENT THEM
       // .state('/inventory/types',  {
