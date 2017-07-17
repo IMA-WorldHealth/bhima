@@ -95,7 +95,7 @@ describe('Cash Flow Report', () => {
     'week2' : 1725.36,
     'week3' : 1655.36,
     'week4' : 1655.36,
-    'week5' : 1678.3 
+    'week5' : 1655.36 
   };
 
   var periodicOpenningBalanceWeek = { 
@@ -107,7 +107,7 @@ describe('Cash Flow Report', () => {
   };
 
   var totalIncomesWeek = { 
-    'week5': 22.94 
+    'week6': 22.94 
   };
   
   var totalExpensesWeek = { 
@@ -150,21 +150,21 @@ describe('Cash Flow Report', () => {
       .then((result) => {
         expect(result.body.openningBalance).to.equal(openningBalance);
 
-        expect(Number(result.body.periodicBalance['2015-04-27'])).to.equal(periodicBalanceWeek.week1);
-        expect(Number(result.body.periodicBalance['2015-05-04'])).to.equal(periodicBalanceWeek.week2);
-        expect(Number(result.body.periodicBalance['2015-05-11'])).to.equal(periodicBalanceWeek.week3);
-        expect(Number(result.body.periodicBalance['2015-05-18'])).to.equal(periodicBalanceWeek.week4);
-        expect(Number(result.body.periodicBalance['2015-05-25'])).to.equal(periodicBalanceWeek.week5);
+        expect(Number(result.body.periodicBalance['2015-04-26'])).to.equal(periodicBalanceWeek.week1);
+        expect(Number(result.body.periodicBalance['2015-05-03'])).to.equal(periodicBalanceWeek.week2);
+        expect(Number(result.body.periodicBalance['2015-05-10'])).to.equal(periodicBalanceWeek.week3);
+        expect(Number(result.body.periodicBalance['2015-05-17'])).to.equal(periodicBalanceWeek.week4);
+        expect(Number(result.body.periodicBalance['2015-05-24'])).to.equal(periodicBalanceWeek.week5);
 
-        expect(Number(result.body.periodicOpenningBalance['2015-04-27'])).to.equal(periodicOpenningBalanceWeek.week1);
-        expect(Number(result.body.periodicOpenningBalance['2015-05-04'])).to.equal(periodicOpenningBalanceWeek.week2);
-        expect(Number(result.body.periodicOpenningBalance['2015-05-11'])).to.equal(periodicOpenningBalanceWeek.week3);
-        expect(Number(result.body.periodicOpenningBalance['2015-05-18'])).to.equal(periodicOpenningBalanceWeek.week4);
-        expect(Number(result.body.periodicOpenningBalance['2015-05-25'])).to.equal(periodicOpenningBalanceWeek.week5);
+        expect(Number(result.body.periodicOpenningBalance['2015-04-26'])).to.equal(periodicOpenningBalanceWeek.week1);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-03'])).to.equal(periodicOpenningBalanceWeek.week2);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-10'])).to.equal(periodicOpenningBalanceWeek.week3);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-17'])).to.equal(periodicOpenningBalanceWeek.week4);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-24'])).to.equal(periodicOpenningBalanceWeek.week5);
 
-        expect(Number(result.body.totalIncomes['2015-05-25'])).to.equal(totalIncomesWeek.week5);
-        expect(Number(result.body.totalExpenses['2015-05-11'])).to.equal(totalExpensesWeek.week3);
-        expect(Number(result.body.totalExpenses['2015-05-11'])).to.not.equal(periodicBalanceWeek.week2);
+        expect(Number(result.body.totalIncomes['2015-05-31'])).to.equal(totalIncomesWeek.week6);
+        expect(Number(result.body.totalExpenses['2015-05-10'])).to.equal(totalExpensesWeek.week3);
+        expect(Number(result.body.totalExpenses['2015-05-10'])).to.not.equal(periodicBalanceWeek.week2);
       });
   });
 
