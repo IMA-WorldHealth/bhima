@@ -33,7 +33,7 @@ describe('Balance Sheet Report', () => {
         (SELECT f.id FROM fiscal_year f WHERE DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date) LIMIT 1)
       GROUP BY a.id
      */
-    const totalAssets = 486.43;
+    const totalAssets = 6.43;
     const totalLiabilities = 0;
     const totalEquity = -1270.11; // equity has a creditor sold (negative)
     const totalRevenue = -56.33;  // revenue has a creditor sold (negative)
@@ -57,7 +57,7 @@ describe('Balance Sheet Report', () => {
   });
 
   it('Returns expected aggregate results for the start of fiscal year 2017', () => {
-    const totalAssets = 486.43;
+    const totalAssets = -53.57;
     const totalLiabilities = 0;
     const totalRevenue = 0; // revenue has a creditor sold (negative)
     const totalExpense = 0; // expense has a debtor sold (positive)
