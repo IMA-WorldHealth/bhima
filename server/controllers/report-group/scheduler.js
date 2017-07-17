@@ -1,4 +1,3 @@
-
 var schedule = require('node-schedule');
 var request = require("request");
 
@@ -9,33 +8,34 @@ const mail = require('./mail');
 this function configurate the sending report by email event
 it specify the the Hour and minute that the event should be handled
 */
-function setScheduler() {
+
 /*exemple
 var frequency = 'Weekly';
-        mail.sendScheduledReport(frequency)
-            .then((result) => {
-                console.log('completed snding scheduled report');
-            })
-            .catch((error) => {
-                console.log('error seing report', error);
-            });
+mail.sendScheduledReport(frequency).then((result) => {
+  console.log('completed sending scheduled report');
+})
+.catch((error) => {
+  console.log('error sending report', error);
+});
 */
-    var rule = new schedule.RecurrenceRule();
-    rule.hour = 11;
-    rule.minute = 35;
 
-    var j = schedule.scheduleJob(rule, function() {
+function setScheduler() {
+ 
+  var rule = new schedule.RecurrenceRule();
+  rule.hour = 11;
+  rule.minute = 35;
 
-        console.log('Bhima should send reports by email now');
-        var frequency = 'Weekly';
+  var j = schedule.scheduleJob(rule, function() {
 
-        mail.sendScheduledReport(frequency)
-            .then((result) => {
-                console.log('completed snding scheduled report');
-            })
-            .catch((error) => {
-                console.log('error seing report', error);
-            });
+    //console.log('Bhima should send reports by email now');
+    var frequency = 'Weekly';
+
+    mail.sendScheduledReport(frequency).then((result) => {
+      console.log('completed sending scheduled report');
+    })
+    .catch((error) => {
+      console.log('error sending report', error);
+    });
         
     });
 }

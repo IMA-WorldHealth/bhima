@@ -23,13 +23,13 @@ function CategoriesPeopleService($http, util, Session, $uibModal,
         service.list = [
             {
                 table: 'employee',
-                table_display: 'Employees',
+                table_display: 'FORM.LABELS.EMPLOYEES',
                 Columns: ['display_name', 'email'],
                 Columns_dispay: ['Name', 'email']
             },
             {
                 table: 'user',
-                table_display: 'user',
+                table_display: 'FORM.LABELS.USERS',
                 Columns: ['username', 'email'],
                 Columns_dispay: ['Name', 'email']
             },

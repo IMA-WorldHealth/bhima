@@ -35,7 +35,6 @@ function onSelectProfileFactory(stateType) {
 
   var ctrl = 'CategoriesPeopleModalController as catPeopleModalListCtrl';
 
-
   return function onEnter($state, Modal, Notify) {
     Modal.open({
       templateUrl: 'modules/email-report/modal/liste-categories-people-modal.html',

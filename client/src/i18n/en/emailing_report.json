@@ -1,0 +1,30 @@
+{
+  "FORM":{
+    "LABELS":{
+      "FREQUENCY":"Frequency",
+      "REPORT_GROUP":"Report group",
+      "SELECT_PROFILE":"Select a profile",
+      "NEW_PROFILE":"New profile",
+      "EMALING_REPORT":"Emaling report",
+      "PROFILE_ORIGIN":"Profile origin",
+      "USERS":"Users",
+      "EMPLOYEES":"Employees",
+      "PROFILE_FROM":"Profile from ",
+      "NEW_REPORT_GROUP":"New report group" 
+    }
+  },
+  "REPORT":{
+    "LABELS":{
+      "WEEKLY_BHIMA_REPORT":"WEEKLY BHIMA REPORT",
+      "REGISTERED_PATIENTS":"REGISTERED PATIENTS",
+      "THIS_WEEK":"This week",
+      "LAST_WEEK":"Last week",
+      "INCOME_BY_SERVICE":"Income by service",
+      "NO_INCOME_FOUND_IN_SERVICES":"No income found in services",
+      "FIRST_AND_LAST_INVOICE_CREATED_PER_DAY":"FIRST AND LAST INVOICE CREATED PER DAY",
+      "FIRST":"FIRST",
+      "LAST":"LAST",
+      "THERE_WAS_NO_INVOICE_THIS_WEEK":"There was no invoice this week"
+    }
+  }
+}

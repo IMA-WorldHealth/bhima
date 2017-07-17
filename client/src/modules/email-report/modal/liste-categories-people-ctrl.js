@@ -6,7 +6,6 @@ CategoriesPeopleModalController.$inject = [
     'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
 ];
 
-
 /**
  * Report group Controller
  *
@@ -17,7 +16,7 @@ CategoriesPeopleModalController.$inject = [
 
 function CategoriesPeopleModalController(CategoriesPeople, Session, util, Notify, ScrollTo, bhConstants, uiGridConstants) {
 
-    var vm = this;
+  var vm = this;
     /*
      listCategoriesPeople is an array that contains
      the table names and columns in whitch we will get the person name and email.
@@ -25,7 +24,7 @@ function CategoriesPeopleModalController(CategoriesPeople, Session, util, Notify
      get the selected index and redirect to anther modal to display every person of this group
      */
 
-    vm.listCategoriesPeople = CategoriesPeople.list;
+  vm.listCategoriesPeople = CategoriesPeople.list;
 
-    return vm;
+  return vm;
 }

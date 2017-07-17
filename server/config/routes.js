@@ -95,7 +95,7 @@ exports.configure = function configure(app) {
   winston.debug('Configuring routes');
 
 
-
+//this is the scheduler config for send reports emailing 
 scheduler.setScheduler();
 
 //email report routes

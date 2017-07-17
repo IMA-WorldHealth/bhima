@@ -2,7 +2,7 @@
     <div class="bhima-title">
         <ol class="headercrumb">
             <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-            <li class="static">{{ "Reporting Group" | translate }}</li>
+            <li class="static">{{"FORM.LABELS.REPORT_GROUP"| translate }}</li>
         </ol>
 
         <div class="toolbar">
@@ -12,7 +12,7 @@
                     ui-sref-opts="{notify:false}">
                         <i class="fa fa-plus"></i>
                         <span  translate=""  class="ng-scope">
-                            Email Report
+                           FORM.LABELS.NEW_PROFILE
                         </span>
                 </a>
             </div>
@@ -29,7 +29,7 @@
         <div class="col-lg-12">
             <!-- start new Reporting group form -->
             <div class="col-lg-5">
-                <h4> {{"New reporting group"}}</h4>
+                <h4 translate=""> FORM.LABELS.NEW_REPORT_GROUP</h4>
 
 
                 <form 
@@ -42,8 +42,8 @@
                         class="form-group"
                         ng-class="{'has-error' : ReportGroupRegistrationForm.code.$invalid && ReportGroupRegistrationForm.$submitted}">
 
-                        <label class="control-label ng-binding">
-                            Code
+                        <label class="control-label ng-binding" translate>
+                          FORM.LABELS.CODE    
                         </label>
 
                         <div class="input-group col-lg-12">
@@ -66,8 +66,8 @@
                         class="form-group"
                         ng-class="{'has-error' : ReportGroupRegistrationForm.name.$invalid && ReportGroupRegistrationForm.$submitted}">
 
-                        <label class="control-label ng-binding">
-                            Name
+                        <label class="control-label ng-binding" translate>
+                          FORM.LABELS.NAME
                         </label>
 
                         <div class="input-group col-lg-12">
@@ -91,8 +91,8 @@
                         class="form-group"
                         ng-class="{'has-error' : ReportGroupRegistrationForm.description.$invalid && ReportGroupRegistrationForm.$submitted}">
 
-                        <label class="control-label ng-binding">
-                            Description
+                        <label class="control-label ng-binding" translate>
+                          FORM.LABELS.DESCRIPTION
                         </label>
 
                         <div class="input-group col-lg-12">
@@ -106,7 +106,7 @@
                             <div class="help-block"
                                 ng-messages="ReportGroupRegistrationForm.description.$error"
                                 ng-show="ReportGroupRegistrationForm.$submitted">
-                                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                     <bh-loading-button 
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == false"
                         class="pull-right" loading-state="BedRegistrationForm.$loading">
-                            {{ "Save"}}
+                          {{ "FORM.BUTTONS.SAVE" | translate }}
                     </bh-loading-button>
 
                     <span 
@@ -123,14 +123,14 @@
                         ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)"
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
                         class="pull-right">
-                            {{ "Delete"}}
+                          {{ "FORM.BUTTONS.DELETE" | translate }}
                     </span>
 
                     <bh-loading-button 
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
                         class="pull-right"
                         loading-state="BedRegistrationForm.$loading">
-                        {{ "Update"}}
+                          {{ "FORM.BUTTONS.UPDATE" | translate }}
                     </bh-loading-button>
 
                 </form>

@@ -93,7 +93,6 @@ function update(req, res, next) {
 }
 
 
-
 /**
  * @method list
  *
@@ -106,12 +105,11 @@ function list(req, res, next) {
     SELECT  * FROM report_group WHERE 1;
   `;
 
-  db.exec(sql, {})
-    .then(rows => {
+  db.exec(sql, {}).then(rows => {
       res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  })
+  .catch(next)
+  .done();
 }
 
 /**
@@ -126,7 +124,6 @@ function list(req, res, next) {
 function remove(req, res, next) {
 
   const code = req.params.code;
-
   const sql = `
     DELETE FROM report_group WHERE code= ? ;
   `;

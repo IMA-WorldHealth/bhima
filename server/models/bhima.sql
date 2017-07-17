@@ -70,8 +70,8 @@ INSERT INTO unit VALUES
  
   (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
-  (171, 'Report Group', 'Report Group', 'Report Group', '1', '/modules/report-group/', '/report-group/'),
-  (172, 'Email report', 'Email report', 'Email report', '1', '/modules/email-report/', '/email-report/');
+  (171, 'Report Group', 'FORM.LABELS.REPORT_GROUP', 'Report Group', '1', '/modules/report-group/', '/report-group/'),
+  (172, 'Email report', 'FORM.LABELS.EMALING_REPORT', 'Email report', '1', '/modules/email-report/', '/email-report/');
 
 
  -- Reserved system account type

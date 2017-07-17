@@ -34,25 +34,30 @@ let documentReport;
 
 function loadServicesIncome() {
 
-  var sql = `SELECT  
-                  SUM(invoice.cost) as sumCost, 
-                  service.name as serviceName, 
-                  CONCAT_WS('.', 'IV', project.abbr, invoice.reference) AS reference,
-                  invoice.reversed
-            FROM invoice
-                JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
-                JOIN service ON service.id = invoice.service_id 
-                JOIN project ON project.id = invoice.project_id
-            WHERE DATE(invoice.date) >= DATE(?) AND 
-                  DATE(invoice.date) <= DATE(?)  
-            GROUP BY service.id `;
+  var sql = `
+    SELECT  
+      SUM(invoice.cost) as sumCost, 
+      service.name as serviceName, 
+      CONCAT_WS('.', 'IV', project.abbr, invoice.reference) AS reference,
+      invoice.reversed
+
+    FROM invoice
+      JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+      JOIN service ON service.id = invoice.service_id 
+      JOIN project ON project.id = invoice.project_id
+
+    WHERE DATE(invoice.date) >= DATE(?) AND 
+      DATE(invoice.date) <= DATE(?)  
+
+    GROUP BY service.id
+  `;
 
 
   var period = new Period(new Date());
   var week = period.periods.week.limit;
 
-  var monday = '2016-01-01 00:00:00.000';// week.start();
-  var sunday = '2016-12-31 23:59:59.999';// week.end();
+  var monday =  week.start();//'2016-01-01 00:00:00.000';
+  var sunday =  week.end(); //'2016-12-31 23:59:59.999';
 
   var values = [monday, sunday];
 
@@ -60,39 +65,39 @@ function loadServicesIncome() {
 
 }
 
-function loadPatientData() {
+
+/*
+  This function returns the number of registered patients
+  for the current week and for the lasrt one
+*/
+function getRegisteredPatientsNumber() {
 
   var period = new Period(new Date());
-
 
   var week = period.periods.week.limit;
 
   var monday = week.start();
   var sunday = week.end();
 
-
   var Lastweek = period.periods.lastWeek.limit;
 
   var lastmonday = Lastweek.start();
   var lastsunday = Lastweek.end();
 
-
   //patients registered this week
-
-  var sql = `
-          SELECT subquery1.NumberOfpatientsThisWeek, subquery2.NumberOfpatientsLastWeek
-           FROM 
-          (
-            SELECT count(uuid) as NumberOfpatientsThisWeek
-            FROM patient
-            WHERE (registration_date BETWEEN ? AND ? )
-          ) as subquery1,
-          (
-            SELECT count(uuid) as NumberOfpatientsLastWeek
-            FROM patient
-            WHERE (registration_date BETWEEN ? AND ? )
-          ) as subquery2
-          `;
+  var sql = `SELECT 
+              subquery1.NumberOfpatientsThisWeek, subquery2.NumberOfpatientsLastWeek
+            FROM 
+              (
+                SELECT count(uuid) as NumberOfpatientsThisWeek
+                FROM patient
+                WHERE (registration_date BETWEEN ? AND ? )
+              ) as subquery1,
+              (
+                SELECT count(uuid) as NumberOfpatientsLastWeek
+                FROM patient
+                WHERE (registration_date BETWEEN ? AND ? )
+              ) as subquery2`;
 
   var values = [monday, sunday, lastmonday, lastsunday];
 
@@ -105,10 +110,12 @@ function loadPatientData() {
 //first and last invoice per day for a week
 function MaxMinInvoiceDate() {
 
-  var sql = `SELECT  MIN(i.date) as minDate, MAX(i.date) as maxDate
-             From invoice i
-             WHERE DATE(i.date) BETWEEN ? AND ?
-             GROUP BY DATE(i.date)`;
+  var sql = `
+    SELECT  MIN(i.date) as minDate, MAX(i.date) as maxDate
+    From invoice i
+    WHERE DATE(i.date) BETWEEN ? AND ?
+    GROUP BY DATE(i.date)
+  `;
 
   var period = new Period(new Date());
   var week = period.periods.week.limit;
@@ -130,7 +137,7 @@ function view1(req, res, next) {
   };
 
   //patient registered
-  loadPatientData().then(_patientsData => {
+  getRegisteredPatientsNumber().then(_patientsData => {
 
     //services incomes
     loadServicesIncome().then(_servicesIncome => {
@@ -153,16 +160,16 @@ function view1(req, res, next) {
           MaxMinInvoiceDate: _MaxMinInvoiceDate
         }
 
-        report.render(data)
-          .then((result) => {
-            res.set(result.headers).send(result.report);
-          });
+        report.render(data).then((result) => {
+          res.set(result.headers).send(result.report);
+        });
+
       });
     });
 
   })
-    .catch(next)
-    .done();
+  .catch(next)
+  .done();
 
 
 }
@@ -179,18 +186,15 @@ function weeklySummaryReport(currentSession) {
   };
 
   //patient registered
-  return loadPatientData().then(_patientsData => {
+  return getRegisteredPatientsNumber().then( (_patientsData) => {
 
     //services incomes
-    return loadServicesIncome().then(_servicesIncome => {
-
+    return loadServicesIncome().then((_servicesIncome) => {
 
       //max and min date of invoice each day for a week
       return MaxMinInvoiceDate().then(_MaxMinInvoiceDate => {
-
         //rendering the report
         var report = new ReportManager(TEMPLATE, currentSession, options);
-
 
         if (_patientsData.lenght === 0) {
           _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
@@ -203,6 +207,7 @@ function weeklySummaryReport(currentSession) {
           servicesIncome: _servicesIncome,
           MaxMinInvoiceDate: _MaxMinInvoiceDate
         }
+        //console.log(data);
         return report.render(data);
 
       });

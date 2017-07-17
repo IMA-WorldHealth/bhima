@@ -112,19 +112,19 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
     var columns = [
         {
             field: 'code',
-            displayName: 'Code',
+            displayName: 'FORM.LABELS.CODE',
             headerCellFilter: 'translate',
             aggregationType: uiGridConstants.aggregationTypes.count,
             width: 90,
         },
         {
             field: 'name',
-            displayName: 'Name',
+            displayName: 'FORM.LABELS.NAME',
             headerCellFilter: 'translate'
         },
         {
             field: 'description',
-            displayName: 'Description',
+            displayName: 'FORM.LABELS.DESCRIPTION',
             headerCellFilter: 'translate',
         },
         {
