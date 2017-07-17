@@ -16,4 +16,5 @@
 "LIST_GROUP":"Inventory Groups",
 "LIST_TYPE":"Inventory Types",
 "LIST_UNIT":"Inventory Unit form",
-"DEFAULT_QUANTITY_DEFINITION":"The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time."}}
+"DEFAULT_QUANTITY_DEFINITION":"The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time.",
+"REGISTRY": "Inventories Registry"}}

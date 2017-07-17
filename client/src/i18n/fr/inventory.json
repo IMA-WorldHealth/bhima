@@ -16,4 +16,5 @@
 "LIST_METADATA":"Inventaires",
 "LIST_GROUP":"Groupes d'inventaires",
 "LIST_TYPE":"Types d'inventaires",
-"LIST_UNIT":"Formes d'inventaires"}}
+"LIST_UNIT":"Formes d'inventaires",
+"REGISTRY": "Registre des inventaires"}}
