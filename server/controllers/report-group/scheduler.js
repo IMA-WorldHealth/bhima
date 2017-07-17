@@ -22,8 +22,8 @@ mail.sendScheduledReport(frequency).then((result) => {
 function setScheduler() {
  
   var rule = new schedule.RecurrenceRule();
-  rule.hour = 11;
-  rule.minute = 35;
+  rule.hour = 17;
+  rule.minute = 0;
 
   var j = schedule.scheduleJob(rule, function() {
 
