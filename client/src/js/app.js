@@ -92,8 +92,10 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
       next.name.indexOf('403') !== -1
     );
 
-    // pass through to error state
-    if (isErrorState) {
+    var isSettingsState = next.name.indexOf('settings') !== -1;
+
+    // pass through to error state or settings state
+    if (isErrorState || isSettingsState) {
       return;
     }
 
