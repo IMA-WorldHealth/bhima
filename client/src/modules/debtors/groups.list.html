@@ -58,7 +58,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <a ui-sref="patientRegistry({ filters : { debtor_group_uuid : debtorGroup.uuid }})"><span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> <span translate> DEBTOR_GROUP.DEBTOR.SUBSCRIBED </span></a>
+                    <a ui-sref="patientRegistry({ filters : { key : 'debtor_group_uuid', value : debtorGroup.uuid }})"><span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> <span translate> DEBTOR_GROUP.DEBTOR.SUBSCRIBED </span></a>
                   </div>
                 </div>
               </div>
