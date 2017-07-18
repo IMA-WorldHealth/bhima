@@ -69,11 +69,13 @@ function sendReport(req, res, next, frequency = 'Weekly') {
       //profiles found
       if (profiles.length > 0) {
 
-        //rendering the report
+         //rendering the report
         reportMap[item.code].function(req, res, next)
         .then((report_result) =>  {
         //every infomations are collectted for sending email
         //let use the mailgun api
+
+
           mailgun(profiles, report_result.report, reportMap[item.code].fileName); 
         }); 
       }
@@ -121,6 +123,8 @@ function sendScheduledReport(frequency) {
         return reportMap[reportGroup.code].fct(session).then((report_result) =>  {
       //every infomations are collectted for sending email
       //let use the mailgun api 
+
+          
           mailgun(profiles, report_result.report, reportMap[reportGroup.code].fileName); 
         }); 
       }
@@ -145,11 +149,10 @@ function sendScheduledReport(frequency) {
 function mailgun(profiles, file, fileName) {
 
   var api_key = process.env.MAILGUN_API_KEY; 
-  var domain = process.env.DOMAINE; 
+  var domain = process.env.MAILGUN_DOMAIN; 
   var sender=process.env.MAILGUN_SENDER;
   var default_recevoir=process.env.MAILGUN_DEFAULT_RECEVIOR;
 
-  
   var mailgun = require('mailgun-js')( {apiKey:api_key, domain:domain }); 
 
   var bcc_emails = ''; 
@@ -158,7 +161,7 @@ function mailgun(profiles, file, fileName) {
     bcc_emails += profile.name + '<' + profile.email + '>, '; 
   }); 
 
-  //formation the attach name it should include the date
+  //formation the attached file name, it should include the date
   var dat = moment().format('YYYY MM DD HH[h]'); 
 
   var attch = new mailgun.Attachment( {data:file, filename:dat + ' ' + fileName }); 
@@ -178,4 +181,3 @@ function mailgun(profiles, file, fileName) {
   }); 
 
 }
-
