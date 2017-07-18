@@ -43,6 +43,20 @@
 "NOVEMBER":"November",
 "DECEMBER":"December"
 },
+"DATE_MONTH_MIN":{
+"JANUARY":"Jan",
+"FEBRUARY":"Feb",
+"MARCH":"Mar",
+"APRIL":"Apr",
+"MAY":"May",
+"JUNE":"Jun",
+"JULY":"Jul",
+"AUGUST":"Aug",
+"SEPTEMBER":"Sep",
+"OCTOBER":"Oct",
+"NOVEMBER":"Nov",
+"DECEMBER":"Dec"
+},
 "DATE_REGISTERED":"Date Registered",
 "DEBIT":"Debit",
 "DEBIT_SOURCE":"Debit (Source)",
@@ -96,6 +110,7 @@
 "NO_PAYMENTS":"No payments made against this invoice.",
 "NUM":"Number",
 "OF":"of",
+"OPENING_BALANCE":"Balance d'ouverure",
 "PASSIVE":"Passive",
 "PATIENT":"Patient",
 "PATIENT_ID":"ID Patient",
