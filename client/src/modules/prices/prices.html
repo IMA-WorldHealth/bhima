@@ -38,7 +38,11 @@
             <tbody>
               <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
                 <td> {{ list.label }} </td>
-                <td colspan="2"><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="fa fa-pencil"></i></a></td>
+                <td colspan="2">
+                  <a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)">
+                    <i class="fa fa-pencil"></i> <span translate>FORM.BUTTONS.EDIT</span>
+                  </a>
+                </td>
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
                 <td colspan="3"><i translate> PRICE_LIST.NO_RECORDS </i></tr>
