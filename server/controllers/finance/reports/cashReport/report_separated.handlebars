@@ -19,8 +19,11 @@
       {{#if this.isEmpty}}
         <div class="text-center">
           {{translate 'FORM.INFO.NO_RECORDS_DATABASE'}}
-        </div>
+        </div>        
       {{else}}
+        <div style="width: 100%" class="text-right">
+          <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{currency this.openingBalance metadata.enterprise.curency_id}}</strong>
+        </div>
         {{#if (isIncomeViewable this.type_id)}}
           <h6 class="text-center text-uppercase">
             {{ translate 'REPORT.CASH_INCOME' }}
@@ -30,10 +33,10 @@
               <tr style="background-color:#ddd;">
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </th>              
-                <th style="width: 40%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
+                <th style="width: 50%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </th>
-                <th style="width: 20%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>              
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>              
               </tr>            
             </thead>
             <tbody>
@@ -41,7 +44,7 @@
                 <tr>
                   <td class="text-left">{{ trans_id }}</td>
                   <td class="text-left">{{ date trans_date }}</td>              
-                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;">
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 500px;">
                     {{ description }}
                   </td>
                   <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden;">
@@ -74,10 +77,10 @@
               <tr style="background-color:#ddd;">
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </th>              
-                <th style="width: 40%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
+                <th style="width: 50%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </th>
                 <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </th>                            
-                <th style="width: 20%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>
               </tr>            
             </thead>
             <tbody>
@@ -85,7 +88,7 @@
                 <tr>
                   <td class="text-left">{{ trans_id }}</td>
                   <td class="text-left">{{ date trans_date }}</td>              
-                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;">
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 500px;">
                     {{ description }}
                   </td>
                   <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden;">
@@ -111,7 +114,14 @@
               </tr>
               {{#if (isResultViewable this.type_id)}}
                 <tr style="background-color:#ddd;">
-                  <th class="text-right" colspan="6">{{translate 'TABLE.COLUMNS.BALANCE'}} : {{ currency this.finalTotal metadata.enterprise.currency_id}}</th>
+                  <th class="text-right" colspan="6">{{translate 'FORM.LABELS.INTERMEDIATE_BALANCE'}} : {{ currency this.intermediateTotal metadata.enterprise.currency_id}}</th>
+                </tr>
+
+                <tr>
+                  <th colspan="4"><br/></th>
+                </tr>
+                <tr style="background-color:#ddd;">
+                  <th class="text-right" colspan="6">{{translate 'FORM.LABELS.FINAL_BALANCE'}} : {{ currency this.finalTotal metadata.enterprise.currency_id}}</th>
                 </tr>
               {{/if}}
             </tfoot>

@@ -22,6 +22,26 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <!-- report format seletion -->
+            <div 
+                class="form-group"
+                ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.reportFormat.$invalid }">
+                <label 
+                  ng-repeat="reportFormat in ReportConfigCtrl.reportFormats"
+                  class="radio-inline">
+                  <input
+                    name="reportFormat"
+                    type="radio"
+                    ng-model="ReportConfigCtrl.reportDetails.format"
+                    ng-value="reportFormat.id"
+                    data-report-format-option="{{ reportFormat.id }}"
+                    required>
+                  <span translate>{{reportFormat.label}}</span>
+                </label>               
+                <div class="help-block" ng-messages="ConfigForm.reportFormat.$error" ng-show="ConfigForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+            </div>
             
             <!-- report type selection  -->
             <div 
@@ -35,6 +55,7 @@
                     name="type"
                     ng-model="ReportConfigCtrl.reportDetails.type"
                     ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
+                    ng-disabled="ReportConfigCtrl.reportDetails.format === 1"                    
                     required>
                     <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
                 </select>
@@ -60,27 +81,6 @@
                 </select>
                 <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-            </div>
-
-            <!-- report format seletion -->
-            <div 
-                class="form-group"
-                ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.reportFormat.$invalid }">
-                <label 
-                  ng-repeat="reportFormat in ReportConfigCtrl.reportFormats"
-                  class="radio-inline">
-                  <input
-                    name="reportFormat"
-                    type="radio"
-                    ng-model="ReportConfigCtrl.reportDetails.format"
-                    ng-value="reportFormat.id"
-                    data-report-format-option="{{ reportFormat.id }}"
-                    required>
-                  <span translate>{{reportFormat.label}}</span>
-                </label>               
-                <div class="help-block" ng-messages="ConfigForm.reportFormat.$error" ng-show="ConfigForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
             </div>
 
