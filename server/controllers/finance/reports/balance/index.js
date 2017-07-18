@@ -182,10 +182,6 @@ function balanceReporting(params) {
 
   return db.one(sqlFiscalYear, [query.date])
     .then((fiscalYear) => {
-      if (!fiscalYear.id) {
-        throw new NotFound(`Could not find a Fiscal Year for the date ${query.date}.`);
-      }
-
       fiscal = fiscalYear;
 
       sql = `

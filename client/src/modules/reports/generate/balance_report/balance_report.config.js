@@ -14,7 +14,8 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-  vm.date = new Date();
+  vm.timestamp = new Date();
+  vm.date = angular.copy(vm.timestamp);
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
@@ -44,7 +45,7 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function callBack(result) {
+      .then(function (result) {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -59,7 +60,7 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function callBack() {
+      .then(function () {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
