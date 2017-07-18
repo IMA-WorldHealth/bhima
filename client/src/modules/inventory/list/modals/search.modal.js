@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('InventoryServiceModalController', InventoryServiceModalController);
 
 InventoryServiceModalController.$inject = [
-  '$uibModalInstance', 'params', 'InventoryService'
+  '$uibModalInstance', 'params', 'InventoryService', 'AppCache',
 ];
 
 /**
@@ -13,8 +13,9 @@ InventoryServiceModalController.$inject = [
  * search functionality on the Inventory list.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function InventoryServiceModalController(ModalInstance, params, Inventory) {
+function InventoryServiceModalController(ModalInstance, params, Inventory, AppCache) {
   var vm = this;
+  var cache = new AppCache('InventorySearchCache');
 
   // bind filters if they have already been applied.  Otherwise, default to an
   // empty object.
@@ -25,6 +26,8 @@ function InventoryServiceModalController(ModalInstance, params, Inventory) {
   vm.cancel = cancel;
   vm.clear = clear;
 
+  loadCachedParameters();
+
   Inventory.Groups.read()
     .then(function (result) {
       vm.inventoryGroups = result;
@@ -32,9 +35,12 @@ function InventoryServiceModalController(ModalInstance, params, Inventory) {
 
   // returns the parameters to the parent controller
   function submit(form) {
-    if (form.$invalid) { return; }
+    var parameters;
 
-    var parameters = angular.copy(vm.params);
+    if (form.$invalid) { return 0; }
+
+    cache.params = vm.params;
+    parameters = angular.copy(cache.params);
 
     // make sure we don't have any undefined or empty parameters
     angular.forEach(parameters, function (value, key) {
@@ -55,5 +61,12 @@ function InventoryServiceModalController(ModalInstance, params, Inventory) {
   // dismiss the modal
   function cancel() {
     ModalInstance.close();
+  }
+
+  // load cached data
+  function loadCachedParameters() {
+    if (cache.params) {
+      vm.params = cache.params;
+    }
   }
 }

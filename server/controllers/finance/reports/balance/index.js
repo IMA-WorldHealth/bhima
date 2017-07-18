@@ -12,13 +12,13 @@
  */
 
 const _ = require('lodash');
+const moment = require('moment');
 const db = require('../../../../lib/db');
+const NotFound = require('../../../../lib/errors/NotFound');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
-
-const TITLE_ACCOUNT_TYPE = 4;
 
 // expose to the API
 exports.document = document;
@@ -34,10 +34,10 @@ function document(req, res, next) {
 
   // date option
   if (params.dateFrom && params.dateTo) {
-    session.dateFrom = new Date(params.dateFrom);
-    session.dateTo = new Date(params.dateTo);
+    session.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD');
+    session.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
   } else {
-    session.date = new Date(params.date);
+    session.date = moment(params.date).format('YYYY-MM-DD');
   }
 
   session.classe = params.classe;
@@ -76,7 +76,6 @@ function processAccounts(balances) {
   const accounts = balances.beginning.reduce((account, row) => {
     const id = row.number;
     const obj = {};
-    account[id] = obj;
     const sold = getSold(row);
     obj.label = row.label;
     obj.number = row.number;
@@ -86,6 +85,7 @@ function processAccounts(balances) {
     obj.middleCredit = 0;
     obj.is_charge = row.is_charge;
     obj.is_asset = row.is_asset;
+    account[id] = obj;
     return account;
   }, {});
 
@@ -95,6 +95,7 @@ function processAccounts(balances) {
     account.middleDebit = row.debit;
     account.middleCredit = row.credit;
     account.label = row.label;
+    account.number = row.number;
     account.is_charge = row.is_charge;
     account.is_asset = row.is_asset;
     accounts[row.number] = account;
@@ -172,76 +173,48 @@ function balanceReporting(params) {
   const query = params;
   const data = {};
 
-  const hasClasse = (query.classe !== '*');
-  const dateRange = (query.dateFrom && query.dateTo);
+  const sqlFiscalYear = `
+    SELECT id, number_of_months FROM fiscal_year WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
+  `;
 
-  // gets the amount up to the current period
-  let sql = `
-    SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-    JOIN period AS p ON pt.period_id = p.id
-    WHERE p.end_date <= DATE(?) AND pt.enterprise_id = ?
-    ${hasClasse ? 'AND a.classe = ? ' : ''}
-    GROUP BY a.id `;
+  let sql;
+  let fiscal;
 
-  if (dateRange) {
-    sql = `
-    SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-    JOIN period AS p ON pt.period_id = p.id
-    WHERE p.start_date >= DATE(?) AND start_date < DATE(?) AND pt.enterprise_id = ?
-     ${hasClasse ? 'AND a.classe = ? ' : ''}
-    GROUP BY a.id `;
-  }
+  return db.one(sqlFiscalYear, [query.date])
+    .then((fiscalYear) => {
+      fiscal = fiscalYear;
 
-  const queryParameters = (dateRange) ?
-    [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] :
-    [query.date, query.enterpriseId, query.classe];
+      sql = `
+        SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, 
+          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
+        FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+        JOIN period AS p ON pt.period_id = p.id
+        WHERE (p.end_date < DATE(?) OR p.number = 0) AND pt.enterprise_id = ? AND p.fiscal_year_id = ?
+        GROUP BY a.id HAVING balance <> 0;`;
 
-  return db.exec(sql, queryParameters)
-  .then((rows) => {
-    data.beginning = rows;
+      const queryParameters = [query.date, query.enterpriseId, fiscal.id];
+      return db.exec(sql, queryParameters);
+    })
+    .then((rows) => {
+      data.beginning = rows;
 
-    sql = `
-      SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset,
-        SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-      FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-      JOIN period AS p ON pt.period_id = p.id
-      WHERE DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?
-       ${hasClasse ? 'AND a.classe = ? ' : ''}
-      GROUP BY a.id;`;
+      sql = `
+        SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset,
+          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
+        FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
+        JOIN period AS p ON pt.period_id = p.id
+        WHERE (DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?)
+          OR (MONTH(?) = ? AND pt.enterprise_id = ? AND p.number = ? AND p.fiscal_year_id = ?)
+        GROUP BY a.id HAVING balance <> 0;`;
 
-    query.date = (dateRange) ? query.dateTo : query.date;
-
-    return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
-  })
-  .then((rows) => {
-    data.middle = rows;
-    return data;
-  })
-  .then(() => {
-    // Manual mixing
-
-    // fill with zero if all accounts
-    sql =
-      `SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, '0' AS credit, '0' AS debit
-       FROM account a WHERE a.type_id <> ${TITLE_ACCOUNT_TYPE} AND a.locked = 0;`;
-
-    return query.accountOption === 'all' ? db.exec(sql) : false;
-  })
-  .then((rows) => {
-    if (!rows) { return data; }
-
-    // Naive manipulation for filling with zero
-    const accounts = rows;
-    const touched = data.beginning.map(item => item.id);
-
-    accounts.forEach(item => {
-      if (touched.indexOf(item.id) === -1) {
-        data.beginning.push(item);
-      }
+      const period13 = fiscal.number_of_months + 1;
+      return db.exec(sql, [
+        query.date, query.enterpriseId,
+        query.date, fiscal.number_of_months, query.enterpriseId, period13, fiscal.id,
+      ]);
+    })
+    .then((rows) => {
+      data.middle = rows;
+      return data;
     });
-
-    return data;
-  });
 }

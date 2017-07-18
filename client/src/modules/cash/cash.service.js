@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
-  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer'
+  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer',
 ];
 
 /**

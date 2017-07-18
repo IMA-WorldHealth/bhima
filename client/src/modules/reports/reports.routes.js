@@ -9,6 +9,7 @@ angular.module('bhima.routes')
       'income_expense',
       'aged_debtors',
       'open_debtors',
+      'balance_report',
     ];
 
     $stateProvider

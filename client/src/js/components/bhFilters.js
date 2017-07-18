@@ -18,6 +18,8 @@ function bhFiltersController($filter) {
 
     var filters = changes.filters.currentValue;
 
+    if (!filters) { return; }
+
     filters.defaultFilters.forEach(mapDisplayValues);
     filters.customFilters.forEach(mapDisplayValues);
   };
@@ -30,5 +32,3 @@ function bhFiltersController($filter) {
     }
   }
 }
-
-

@@ -68,6 +68,10 @@
       "TITLE" : "Rapport des Comptes d'exploitation",
       "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
     },
+    "BALANCE_REPORT": {
+      "TITLE":"Rapport de la Balance des comptes",
+      "DESCRIPTION":"Ce rapport affiche la balance des comptes pour une période donnée"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
       "SAVE_AS":"Enregistrer sous",

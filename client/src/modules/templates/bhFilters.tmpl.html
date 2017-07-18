@@ -16,7 +16,7 @@
 </ul>
 
 <!-- Separator between filter types -->
-<div ng-if="$ctrl.filters.customFilters.length" style="display : inline-block; width : 1px; height: 25px; vertical-align : top; background-color : #ccc;"></div>
+<div ng-if="$ctrl.filters.defaultFilters.length && $ctrl.filters.customFilters.length" style="display : inline-block; width : 1px; height: 25px; vertical-align : top; background-color : #ccc;"></div>
 
 <ul ng-if="$ctrl.filters.customFilters.length" class="list-inline filter-list" data-bh-filter-bar-custom-filters>
 

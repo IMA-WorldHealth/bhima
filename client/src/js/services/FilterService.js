@@ -4,18 +4,16 @@ angular.module('bhima.services')
 FilterService.$inject = ['Store'];
 
 function FilterService(Store) {
-
   function FilterList() {
     // initialise internal state
     this._defaultFilters = [];
     this._customFilters = [];
-
     this._filterIndex = {};
   }
 
   FilterList.prototype.resetFilterState = function resetFilterState(key) {
     this._filterIndex[key].setValue(null, null);
-  }
+  };
 
   FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
     this._filterActiveFilters().forEach(function (filter) {
@@ -24,7 +22,7 @@ function FilterService(Store) {
         this.resetFilterState(filter._key);
       }
     }.bind(this));
-  }
+  };
 
   // @TODO registerDefaultFilter and registerCustomFilter could use the same underlying function
   //       with a toggle between the array to populate and the default value
@@ -84,9 +82,9 @@ function FilterService(Store) {
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) {  return filter._key });
+    var activeKeys = activeFilters.map(function (filter) {  return filter._key; });
 
-    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1 }
+    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1; }
 
     // parse into two lists
     return {

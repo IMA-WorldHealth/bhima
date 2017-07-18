@@ -11,9 +11,9 @@
  * @requires ReportManager
  */
 
-const db = require('../../../lib/db');
 const _ = require('lodash');
-
+const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 const ReportManager = require('../../../lib/ReportManager');
 
 module.exports = prices;
@@ -21,6 +21,11 @@ module.exports = prices;
 const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 
 function prices(req, res, next) {
+  const params = req.query.params ? JSON.parse(req.query.params) : {};
+
+  if (params && params.group_uuid) { params.group_uuid = db.bid(params.group_uuid); }
+
+  const filters = new FilterParser(params);
   const qs = _.extend(req.query, { csvKey : 'debtors' });
   const metadata = _.clone(req.session);
 
@@ -38,11 +43,17 @@ function prices(req, res, next) {
       inventory.price, inventory_group.name AS groupName, inventory_type.text AS typeName
     FROM inventory
       JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid
-      JOIN inventory_type ON inventory.type_id = inventory_type.id
-    ORDER BY inventory.text;
+      JOIN inventory_type ON inventory.type_id = inventory_type.id 
   `;
 
-  db.exec(sql)
+  filters.fullText('text', 'text', 'inventory');
+  filters.equals('group_uuid');
+  filters.setOrder('ORDER BY inventory.text');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then(items => {
       // group by inventory group
       let groups = _.groupBy(items, i => i.groupName);
