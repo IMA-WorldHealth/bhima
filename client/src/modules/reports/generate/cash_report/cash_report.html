@@ -74,8 +74,8 @@
                 <select
                     class="form-control"
                     name="cashbox"
-                    ng-model="ReportConfigCtrl.reportDetails.cashbox"
-                    ng-options="cash as cash.hrlabel for cash in ReportConfigCtrl.cashboxes track by cash.id"
+                    ng-model="ReportConfigCtrl.reportDetails.account_id"
+                    ng-options="cash.account_id as cash.hrlabel for cash in ReportConfigCtrl.cashboxes track by cash.id"
                     required>
                     <option value="" disabled>{{ "FORM.SELECT.CASHBOX" | translate }}</option>
                 </select>

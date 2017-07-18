@@ -259,11 +259,16 @@ function document(req, res, next) {
   }
 
   if (!params.account_id) {
-    throw new BadRequest('account of cash box not specified', 'ERRORS.BAD_REQUEST');
+    throw new BadRequest('Account of cash box not specified', 'ERRORS.BAD_REQUEST');
+  }
+
+  if (!params.format) {
+    throw new BadRequest('No report format provided', 'ERRORS.BAD_REQUEST');
   }
 
   params.user = req.session.user;
   params.format = Number(params.format);
+  params.account_id = Number(params.account_id);
 
   try {
     const TEMPLATE = params.format === 1 ? TEMPLATE_1 : TEMPLATE_2;

@@ -43,9 +43,6 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
 
-    vm.reportDetails.account_id = vm.reportDetails.cashbox.account_id;
-    delete vm.reportDetails.cashbox;
-    
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 

@@ -8,15 +8,17 @@ describe(`(${target}) cash Reports`, function () {
 
   const keys = [
      'cashCurrency', 'cashName', 'entries', 
-     'expenses', 'finalTotal', 'isEmpty', 'metadata', 'totalEntry', 
-     'totalExpense', 'type_id',
+     'expenses', 'isEmpty', 'metadata', 'totalEntry', 
+     'totalExpense', 'type_id', 'algebricBalance', 'arithmeticBalance',
+     'dateFrom', 'dateTo', 'intermediateTotal', 'openingBalance'
      ];
 
   const parameters = {
     dateFrom : '2016-01-01',
     dateTo : '2016-12-31',
     type : 1,
-    account_id : 3627
+    account_id : 3627,
+    format : 2
   };
 
   describe(`${target} Rendering`, RenderingTests(target, null, parameters));
