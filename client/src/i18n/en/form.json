@@ -490,6 +490,7 @@
 "PLACEHOLDERS":{"ACCOUNT":"Enter an account",
 "CASHBOX":"Enter the cashbox",
 "CODE":"Enter code",
+"COLUMN":"Specify ordering of columns",
 "COUNTRY":"Enter country",
 "CREDITOR":"Enter creditor",
 "DEBTOR":"Enter debtor",

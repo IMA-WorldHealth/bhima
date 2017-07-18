@@ -184,6 +184,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cash Payment Registry
 (147,1),
 
+-- Open Debtors Reports
+(157,1),
+
 -- Posted Journal
 (158,1),
 

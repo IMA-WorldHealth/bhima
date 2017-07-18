@@ -6,6 +6,8 @@
       "TITLE":"Balance agée des Conventionnés",
       "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
+    "BY_ASC":"Par ordre croissant",
+    "BY_DESC":"Par ordre décroissant",    
     "BALANCE":"Rapport de la Balance",
     "BALANCE_SHEET":{
       "TITLE":"Bilan",
@@ -30,8 +32,18 @@
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
-    "OPEN_DEBTORS":{"TITLE":"Debiteurs Avec Dettes", "TREE":"Debiteurs Avec Dettes"},
+    "OPEN_DEBTORS":{
+      "DESCRIPTION":"Ce rapport affiche les débiteurs endettés",
+      "TITLE":"Débiteurs endettés", 
+      "TREE":"Dettes des Débiteurs"
+    },
     "OPENING_BALANCE":"Balance d'ouverture",
+    "ORDER":{
+      "LAST_INVOICE":"Date de la dernière facture",
+      "LAST_PAYMENT":"Date du dernier paiement",
+      "PATIENT_NAME":"Nom du patient",
+      "TOTAL_DEBT":"Total des dettes"
+    },
     "OVER_NINETY_DAYS":"Plus de 90 jours",
     "PERIOD_START":"Debut",
     "PERIOD_STOP":"Fin",

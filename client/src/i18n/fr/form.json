@@ -489,6 +489,7 @@
 "PLACEHOLDERS":{"ACCOUNT":"Entrer le compte",
 "CASHBOX":"Entrer la caisse",
 "CODE":"Entrer le code",
+"COLUMN":"Préciser l'ordonnancement des colonnes",
 "COUNTRY":"Entrer le nom pays",
 "CREDITOR":"Entrer un crediteur",
 "DEBTOR":"Entrer un debiteur",
