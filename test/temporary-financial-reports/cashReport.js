@@ -12,7 +12,7 @@ describe('Cash Report Report', () => {
         dateTo: '2016-12-31',
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 1
     };
@@ -23,7 +23,7 @@ describe('Cash Report Report', () => {
         dateTo: '2016-12-31',
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 2,
         type : 1
@@ -35,7 +35,7 @@ describe('Cash Report Report', () => {
         dateTo: '2016-07-31',
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 1
     };
@@ -47,7 +47,7 @@ describe('Cash Report Report', () => {
         type: 1,
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 2
     };
@@ -58,7 +58,7 @@ describe('Cash Report Report', () => {
         type: 1,
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 2
     };
@@ -68,7 +68,7 @@ describe('Cash Report Report', () => {
         type: 1,
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0,
         format : 2
     };
@@ -78,7 +78,7 @@ describe('Cash Report Report', () => {
         type: 1,
         lang : 'en',
         renderer: 'json',
-        reportId: 11,
+        reportId: 12,
         saveReport: 0
     };
 
