@@ -28,12 +28,6 @@ describe('Check links', () => {
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));  
 
-  it('Check link betwen Inventory Group -> Inventory Registry', () => {
-    browser.get('#!/inventory/configuration');
-    element.all(by.css('[class="fa fa-link"]')).click();
-    GU.expectRowCount('inventoryListGrid', 4);
-  });
-
   it('Check link betwen Patient Groups -> Patient Registry', () => {
     browser.get('#!/patients/groups');
 
@@ -46,31 +40,6 @@ describe('Check links', () => {
 
     element.all(by.css('[class="fa fa-bars"]')).get(1).click();
     expectNumberOfGridRows(4);
-  });
-
-  it('Check link betwen Invoice Registry -> Patient Registry', () => {
-    browser.get('#!/invoices');
-
-    element.all(by.css('[data-method="action"]')).get(2).click();
-    element.all(by.css('[data-method="viewPatient"]')).get(2).click();
-    expectNumberOfGridRows(1);
-  });
-
-  it('Check link betwen Cash Registry -> Patient Registry', () => {
-    browser.get('#!/payments');
-
-    element.all(by.css('[data-method="action"]')).get(0).click();
-    element.all(by.css('[data-method="viewPatient"]')).get(0).click();
-    expectNumberOfGridRows(1);
-  });
-
-  it('Check link betwen Patient Registry -> Cash Registry', () => {
-    browser.get('#!/patients');
-    filters.resetFilters();
-
-    element.all(by.css('[data-method="action"]')).get(2).click();
-    element.all(by.css('[data-method="payment"]')).get(2).click();
-    GU.expectRowCount('payment-registry', 1);
   });
 
   it('Check link betwen Patient Registry -> Invoice Registry', () => {
