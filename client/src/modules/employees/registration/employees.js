@@ -8,7 +8,7 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, bhConstants, Receipts, Session,) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, bhConstants, Receipts, Session) {
   var vm = this;
   vm.enterprise = Session.enterprise;
 
