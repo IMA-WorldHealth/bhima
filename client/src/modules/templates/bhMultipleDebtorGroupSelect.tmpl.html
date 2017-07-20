@@ -1,4 +1,4 @@
-<div bh-multiple-debtor-group-select>
+<div ng-form="$ctrl.formName" bh-multiple-debtor-group-select>
   <div class="form-group">
     <label class="control-label" translate>{{$ctrl.label}}</label>
       <ui-select 
@@ -7,7 +7,6 @@
         ng-model="$ctrl.selectedDebtorGroups"
         on-select="$ctrl.onSelect($ctrl.selectedDebtorGroups)"
         on-remove="$ctrl.onRemove($ctrl.selectedDebtorGroups)"
-        theme="bootstrap"
         close-on-select="false">
           <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
             <span>{{$item.name}}</span>

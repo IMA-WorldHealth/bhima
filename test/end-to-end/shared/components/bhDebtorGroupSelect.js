@@ -8,6 +8,7 @@ module.exports = {
     const locator = (uuid) ? by.id(uuid) : by.css(this.selector);
     const target = element(locator);
 
+    // hack to make sure previous 'blur' event fires if we are using
     target.click();
 
     FU.uiSelect('$ctrl.debtorGroupUuid', debtorGroup, target);

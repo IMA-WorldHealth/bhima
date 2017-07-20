@@ -23,9 +23,9 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
              <!-- show a simple or complex report  -->
-            <div class="form-group">
+            <div class="checkbox">
               <label class="text-action">
-                <input type="checkbox" name="simple_preview" ng-model="ReportConfigCtrl.reportDetails.simplePreview" ng-true-value="true" ng-false-value="false">
+                <input type="checkbox" name="simple_preview" ng-model="ReportConfigCtrl.reportDetails.simplePreview">
                 <span translate>FORM.LABELS.SHOW_SIMPLE_PREVIEW</span>
               </label>
             </div>

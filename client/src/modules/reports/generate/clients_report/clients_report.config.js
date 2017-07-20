@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 ClientsReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData',
-  '$state', 'moment'
+  '$state', 'moment', 'bhConstants'
 ];
 
-function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment) {
+function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment, bhContants) {
   var vm = this;
   var cache = new AppCache('configure_clients_report');
   var reportUrl = 'reports/finance/clientsReport';
@@ -48,8 +48,6 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     var sendDetails = sanitiseDateStrings(vm.reportDetails);
-    sendDetails.dateTo = Moment(sendDetails.dateTo).format('YYYY-MM-DD');
-    sendDetails.dateFrom = Moment(sendDetails.dateFrom).format('YYYY-MM-DD');
 
     return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then(function (result) {        
@@ -62,8 +60,8 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   function sanitiseDateStrings(options) {
     var sanitisedOptions = angular.copy(options);
-    sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format('YYYY-MM-DD');
-    sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format('YYYY-MM-DD');
+    sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format(bhContants.dates.formatDB);
+    sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format(bhContants.dates.formatDB);
     return sanitisedOptions;
   }
 
@@ -71,7 +69,7 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
-    //FIX ME : We don't need the ignored clients list
+    //FIX ME : We don't need the ignored clients list from the cache
     vm.reportDetails.ignoredClients = [];
   }
 }

@@ -2,25 +2,23 @@ angular.module('bhima.components')
   .component('bhMultipleDebtorGroupSelect', {
     templateUrl : 'modules/templates/bhMultipleDebtorGroupSelect.tmpl.html',
     controller  : MultipleDebtorGroupSelectController,
-    transclude  : true,
     bindings    : { 
       label            : '@?',
       onSelectCallback : '&',
       onRemoveCallback : '&',
-      formName         : '@?',
-      required         : '<?'     
+      formName         : '@?'
     },
   });
 
 MultipleDebtorGroupSelectController.$inject = [
-  'DebtorGroupService'
+  'DebtorGroupService', 'NotifyService'
 ];
 
 /**
- * User selection component
+ * Multiple Debtor Group Selection Component
  *
  */
-function MultipleDebtorGroupSelectController(DebtorGroups) {
+function MultipleDebtorGroupSelectController(DebtorGroups, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -37,7 +35,8 @@ function MultipleDebtorGroupSelectController(DebtorGroups) {
     DebtorGroups.read()
       .then(function (dgs) {
         $ctrl.debtorGroups = dgs;
-      });
+      })
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

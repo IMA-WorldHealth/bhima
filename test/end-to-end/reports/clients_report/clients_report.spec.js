@@ -7,7 +7,6 @@ helpers.configure(chai);
 
 const ReportClientsPage = require('./clients_report.page');
 
-// @FIXME skip end to end tests until form validation and components are finalised
 describe('Clients report ::', () => {
   let Page;
   const key = 'clients_report';
