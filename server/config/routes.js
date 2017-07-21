@@ -172,9 +172,13 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
+  app.get('/journal/refenrece_transaction/:codeRef/:language', journal.refenreceTransaction);
+  
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
+
+  
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
