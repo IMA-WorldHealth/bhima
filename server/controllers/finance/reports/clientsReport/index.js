@@ -33,7 +33,7 @@ function document(req, res, next) {
     ignoredClients: params.ignoredClients,
     simplePreview: params.simplePreview,
     enterprise: req.session.enterprise,
-    periodZero : 0,    
+    periodZeroNumber : 0,    
   });
 
   _.defaults(params, { user: req.session.user });
@@ -48,17 +48,17 @@ function document(req, res, next) {
 
   // if there is some client to ignore
   if (session.ignoredClients) {
-    const ignoredClients = (Array.isArray(session.ignoredClients)) ? session.ignoredClients : [session.ignoredClients];
+    const ignoredClients = [].concat(session.ignoredClients);
     session.notInStatement = `dg.uuid NOT IN (${escapeItems(ignoredClients).join(',')})`;
   }
 
   // If the simple preview, the latest balance is needed
   const dateParam = session.simplePreview ? new Date() : session.dateFrom;
 
-  return getFiscalYear(dateParam, session.periodZero)
+  // Getting the fiscal year with his period zero ID
+  return getFiscalYearByDate(dateParam, session.periodZeroNumber)
     .then((row) => {
       _.merge(session, row);
-      // session.fy = row;
       session.openningBalanceDate = new Date(session.start_date);
 
       // just correcting the date value
@@ -83,12 +83,12 @@ function buildSimpleReport(opt) {
 
   // removing repriod_id to considere all period
   delete opt.period_id;
-  // getting client data without totals
-  return getClientsData(opt, true)
+
+  return getClientBalancesFromPeriodTotal(opt)
     .then((clientsRecords) => {
       data.lines = clientsRecords;
       // Getting totals
-      return getClientsTotal(opt, true);
+      return getClientTotalsFromPeriodTotal(opt);
     })
     .then((clientTotal) => {
       data.totalBalance = clientTotal.balance;
@@ -98,6 +98,7 @@ function buildSimpleReport(opt) {
 
 function buildComplexReport(opt) {
   let clientsData = {};
+
   // getting a boolean value from a string
   clientsData.detailPrevious = opt.detailPrevious === 'true';
   _.merge(clientsData, {
@@ -106,8 +107,7 @@ function buildComplexReport(opt) {
     openningBalanceDate : opt.openningBalanceDate,
   });
 
-
-  return getClientsData(opt, true, true)
+  return getClientBalancesFromPeriodTotal(opt, true)
   .then((data) => {
     // from previous fiscal year data, building the object containing all previous info to print
     clientsData.lines = data.reduce((obj, clientInfo) => {
@@ -117,12 +117,12 @@ function buildComplexReport(opt) {
     }, {});
 
     // get the totals of openning balance
-    return getClientsTotal(opt, true, true);
+    return getClientTotalsFromPeriodTotal(opt, true);
   })
   .then((previousTotal) => {
     _.merge(clientsData, previousTotal);
     // fetching data of the current fiscal year
-    return getClientsData(opt, false, false);
+    return getClientBalancesFromGeneralLedger(opt);
   })
   .then((data) => {
     if (!data.length) {
@@ -157,7 +157,7 @@ function buildComplexReport(opt) {
       });
     }
     // fetch totals for current period / fiscal year
-    return getClientsTotal(opt, false, false);
+    return getClientTotalsFromGeneralLedger(opt, false);
   })
   .then((currentTotal) => {
     _.merge(clientsData, currentTotal);
@@ -166,7 +166,7 @@ function buildComplexReport(opt) {
     delete opt.period_id;
 
     // fecth final balances
-    return getClientsData(opt, true, false);
+    return getClientBalancesFromPeriodTotal(opt, false);
   })
   .then((data) => {
     data.forEach((dt) => {
@@ -177,7 +177,7 @@ function buildComplexReport(opt) {
       }
     });
     // fetch the final total for each row of the period total table
-    return getClientsTotal(opt, true, false);
+    return getClientTotalsFromPeriodTotal(opt, false);
   })
   .then((data) => {
     _.merge(clientsData, data);
@@ -186,14 +186,13 @@ function buildComplexReport(opt) {
 }
 
 /**
- * @function getFiscalYear
+ * @function getFiscalYearByDate
  * @param {date} date The date in which we want to get the fiscal year
- * @param {integer} periodZeroNumber the period zero number
+ * @param {integer} periodZeroNumber the period zero number to use in order to get the period zero ID
  * @description
  * This function is responsible of returning a correct fiscal year and its period zero Id
- * according a date given
  */
-function getFiscalYear(date, periodZeroNumber) {
+function getFiscalYearByDate(date, periodZeroNumber) {
   var query =
     `
     SELECT 
@@ -223,70 +222,81 @@ function escapeItems(list) {
   }, []);
 }
 
-/**
- * @function getClientsData
- * @param {object} options The object for filtering data using filterParser lib
- * @param {boolean} isFromPeriodTotal is true if the data will be fetched from the period_total
- * @param {boolean} isIniial is true if the data will be considered as initial 
- * @description
- * This function is responsible of returning a list of debtor and their 
- * debit, credit, balance
- **/
-function getClientsData(options, isFromPeriodTotal, isIniial) {
-  let finalQuery;
-  let parameters;
+// computes the client balances using the period total's table
+function getClientBalancesFromPeriodTotal(options, isInitial) {
+  const filterParser = new FilterParser(options, { tableAlias: 'dg', autoParseStatements: false });
 
-  if (isFromPeriodTotal) {
-    const filterParser = new FilterParser(options, { tableAlias: 'dg', autoParseStatements: false });
+  const sql = `
+    SELECT
+      ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
+      SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+    FROM 
+      debtor_group dg 
+    JOIN 
+      account ac ON ac.id = dg.account_id 
+    LEFT JOIN period_total pt ON ac.id = pt.account_id`;
 
-    const sql = `
-      SELECT
-        ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
-        SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
-      FROM 
-        debtor_group dg 
-      JOIN 
-        account ac ON ac.id = dg.account_id 
-      LEFT JOIN period_total pt ON ac.id = pt.account_id`;
+  filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
+  filterParser.equals('period_id', 'period_id', 'pt');
+  filterParser.custom('ignoredClients', options.notInStatement);
+  filterParser.setGroup('GROUP BY ac.number');
 
-    filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
-    filterParser.equals('period_id', 'period_id', 'pt');
-    filterParser.custom('ignoredClients', options.notInStatement);
-    filterParser.setGroup('GROUP BY ac.number');
+  const query = filterParser.applyQuery(sql);
+  const parameters = filterParser.parameters();
 
-    const query = filterParser.applyQuery(sql);
-    parameters = filterParser.parameters();    
+  // columns to fetch
+  let cols;
 
-    // In the simple report preview only the accountNumber, name, and balance is needed
-    if (options.simplePreview) {
-      finalQuery =
-        `
-      SELECT 
-        t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance 
-      FROM 
-        (${query}) AS t`;
-    } else {
-      // this code wil be executed if the  complex report should be rendered
-      let cols;
-
-      // cols will be different as it initial data report or final
-      if(isIniial){
-        cols = `t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, 
-        IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance`;
-      }else{
-        cols = `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
-      }           
-
-      finalQuery =
-        `
-      SELECT 
-        ${cols}         
-      FROM 
-        (${query}) AS t`;
-    }
+  // In the simple report preview only the accountNumber, name, and balance is needed  
+  if(options.simplePreview){
+    cols = `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance`;
   } else {
-    const filterParser = new FilterParser(options, { tableAlias: 'gl', autoParseStatements: false });
-    const sql = `
+    cols = (isInitial) ? 
+    `t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance` :
+    `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
+  }
+
+  const finalQuery =
+      `
+    SELECT 
+      ${cols}         
+    FROM 
+      (${query}) AS t`;
+
+  // In the simple report preview only the accountNumber, name, and balance is needed
+  // if (options.simplePreview) {
+  //   finalQuery =
+  //     `
+  //   SELECT 
+  //     t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance 
+  //   FROM 
+  //     (${query}) AS t`;
+  // } else {
+  //   // this code wil be executed if the  complex report should be rendered
+  //   let cols;
+
+  //   // cols will be different as it initial data report or final
+  //   if(isInitial){
+  //     cols = `t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit, 
+  //     IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance`;
+  //   }else{
+  //     cols = `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
+  //   }           
+
+  //   finalQuery =
+  //     `
+  //   SELECT 
+  //     ${cols}         
+  //   FROM 
+  //     (${query}) AS t`;
+  // }
+  return db.exec(finalQuery, parameters);
+}
+
+// computes the client balances using the general ledger's table
+function getClientBalancesFromGeneralLedger(options){
+  const filterParser = new FilterParser(options, { tableAlias: 'gl', autoParseStatements: false });
+  const sql = `
     SELECT
       ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
       SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
@@ -297,75 +307,67 @@ function getClientsData(options, isFromPeriodTotal, isIniial) {
     LEFT JOIN 
       general_ledger gl ON ac.id = gl.account_id`;
 
-    filterParser.dateFrom('dateFrom', 'trans_date');
-    filterParser.dateTo('dateTo', 'trans_date');
-    filterParser.custom('ignoredClients', options.notInStatement);
-    filterParser.setGroup('GROUP BY ac.number');
+  filterParser.dateFrom('dateFrom', 'trans_date');
+  filterParser.dateTo('dateTo', 'trans_date');
+  filterParser.custom('ignoredClients', options.notInStatement);
+  filterParser.setGroup('GROUP BY ac.number');
 
-    const query = filterParser.applyQuery(sql);
-    parameters = filterParser.parameters();
+  const query = filterParser.applyQuery(sql);
+  const parameters = filterParser.parameters();
 
     // request to fetch the current fiscal year data of a client from the general ledger
-    finalQuery =
-      `
-        SELECT 
-          t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
-          IFNULL(t.balance, 0) AS balance
-        FROM 
-          (${query}) AS t`;
-  }
-
+  const finalQuery = `
+    SELECT 
+      t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
+      IFNULL(t.balance, 0) AS balance
+    FROM 
+      (${query}) AS t`;
   return db.exec(finalQuery, parameters);
 }
 
-function getClientsTotal(options, isFromPeriodTotal, isIniial) {
-  let finalQuery;
-  let parameters;
+// computes the client totals using the period total's table
+function getClientTotalsFromPeriodTotal (options, isInitial){
+  const filterParser = new FilterParser(options, { tableAlias: 'pt', autoParseStatements: false });
 
-  if (isFromPeriodTotal) {
-    const filterParser = new FilterParser(options, { tableAlias: 'pt', autoParseStatements: false });
+  const sql = `
+    SELECT
+      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
+    FROM 
+      period_total pt
+    JOIN 
+      debtor_group dg ON dg.account_id = pt.account_id`;
 
-    const sql = `
-      SELECT
-        SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
-      FROM 
-        period_total pt
-      JOIN 
-        debtor_group dg ON dg.account_id = pt.account_id`;
+  filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
+  filterParser.equals('period_id', 'period_id', 'pt');
+  filterParser.custom('ignoredClients', options.notInStatement);
 
-    filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
-    filterParser.equals('period_id', 'period_id', 'pt');
-    filterParser.custom('ignoredClients', options.notInStatement);
+  const query = filterParser.applyQuery(sql);
+  const parameters = filterParser.parameters();
 
-    const query = filterParser.applyQuery(sql);
-    parameters = filterParser.parameters();
+  let cols;
 
-    if (options.simplePreview) {
-      finalQuery =
-        `
-      SELECT 
-        IFNULL(t.balance, 0) AS balance 
-      FROM 
+  if(options.simplePreview){
+    cols = `IFNULL(t.balance, 0) AS balance`;
+  }else{
+    cols = (isInitial) ? 
+    `IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, IFNULL(balance, 0) AS totalInitBalance` :
+    `IFNULL(t.balance, 0) AS totalFinalBalance`;
+  }
+
+  const finalQuery =
+      `
+    SELECT 
+      ${cols}         
+    FROM 
       (${query}) AS t`;
-    } else {
-      let cols;
-      if(isIniial){
-        cols = `IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, 
-          IFNULL(balance, 0) AS totalInitBalance`;
-      }else{
-        cols = `IFNULL(t.balance, 0) AS totalFinalBalance`;
-      }
 
-      finalQuery =
-        `
-      SELECT 
-        ${cols}         
-      FROM 
-        (${query}) AS t`;
-    }
-  } else {
-    const filterParser = new FilterParser(options, { tableAlias: 'gl', autoParseStatements: false });
-    const sql =
+  return db.one(finalQuery, parameters);
+}
+
+// computes the client totals using the eneral ledger's table
+function getClientTotalsFromGeneralLedger (options){
+  const filterParser = new FilterParser(options, { tableAlias: 'gl', autoParseStatements: false });
+  const sql =
       `
     SELECT 
      SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
@@ -382,15 +384,14 @@ function getClientsTotal(options, isFromPeriodTotal, isIniial) {
     filterParser.custom('ignoredClients', options.notInStatement);
 
     const query = filterParser.applyQuery(sql);
-    parameters = filterParser.parameters();
+    const parameters = filterParser.parameters();
 
-    finalQuery =
+    const finalQuery =
       `SELECT 
         IFNULL(t.debit, 0) AS totalCurrentDebit, IFNULL(t.credit, 0) AS totalCurrentCredit, 
         IFNULL(t.balance, 0) AS totalCurrentBalance
       FROM 
         (${query}) AS t`;
-  }
 
   return db.one(finalQuery, parameters);
 }
