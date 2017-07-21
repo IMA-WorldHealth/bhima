@@ -26,7 +26,11 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
+//
 
+const identifiers = require('../../../config/identifiers');
+
+//
 // expose to the api
 exports.list = list;
 exports.getTransaction = getTransaction;
@@ -36,6 +40,64 @@ exports.journalEntryList = journalEntryList;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
+exports.refenreceTransaction=refenreceTransaction;
+
+
+
+
+
+//loading identifiers keyies, used for defining the table name
+const identifiersIndex = {};
+function indexIdentifiers() {
+  _.forEach(identifiers, (entity) => {
+    identifiersIndex[entity.key] = entity;
+  });
+}
+
+// API GET /journal/refenrece_transaction/:codeRef/:language'
+
+//This function render a report in the browser
+//It takes a transaction reference code as paramter and the language
+//The reference code is a combination of table_key.project_abbr.reference
+//The table name is variable, it can be :invoice, cash or voucher
+
+function refenreceTransaction(req,res,next){
+   
+  //loading identifiers keyies, used for defining the table name
+  indexIdentifiers();
+
+  //reports urls
+  var reportsTypes={
+    VO:'/reports/finance/vouchers/',
+    IV:'/reports/finance/invoices/',
+    CP:'/reports/finance/cash/'
+  };
+
+  var codeRef =  req.params.codeRef.split(".");
+  const language= req.params.language;
+
+  const code = codeRef[0];
+  const project_name=codeRef[1];
+  const refence=codeRef[2];
+  const documentDefinition = identifiersIndex[code];
+   
+   const query = `
+    SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}  tb, project p 
+    WHERE tb.project_id=p.id AND p.abbr="${project_name}" AND tb.reference="${refence}"
+  `;
+  
+  // search for full UUID
+  db.one(query)
+    .then(result =>
+      {
+        var uuid=result.uuid;
+        var url= reportsTypes[code]+uuid+"?lang="+language+"&posReceipt=0&renderer=pdf";
+        res.redirect(url);
+      }
+    ).catch((error)=>{
+      res.send({'message':'an error occured'});
+    });
+}
 
 /**
  * Looks up a transaction by record_uuid.
