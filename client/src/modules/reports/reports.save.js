@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
   .controller('SaveReportController', SaveReportController);
 
-SaveReportController.$inject = ['$uibModalInstance', 'NotifyService', 'BaseReportService', 'options'];
+SaveReportController.$inject = ['$uibModalInstance', 'NotifyService', 'BaseReportService', 'options', 'LanguageService'];
 
-function SaveReportController(ModalInstance, Notify, SavedReports, options) {
+function SaveReportController(ModalInstance, Notify, SavedReports, options, Languages) {
   var vm = this;
   vm.documentOptions = {};
   vm.report = options.report;
@@ -20,6 +20,7 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options) {
 
   vm.submit = function submit(SaveForm) {
     if (SaveForm.$invalid) { return; }
+    vm.documentOptions.lang = Languages.key;
 
     // @TODO this can directly be loaded from the form
     var reportOptions = angular.merge(vm.documentOptions, options.reportOptions);

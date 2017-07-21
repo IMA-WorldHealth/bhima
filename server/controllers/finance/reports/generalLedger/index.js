@@ -35,7 +35,6 @@ function renderReport(req, res, next) {
   });
   let report;
   let data;
-  const currentDate = new Date();
 
   try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, options);
@@ -43,12 +42,15 @@ function renderReport(req, res, next) {
     return next(e);
   }
 
-  return Fiscal.getPeriodCurrent(currentDate)
+  const fiscalYearId = options.fiscal_year_id;
+
+  return Fiscal.getPeriodByFiscal(fiscalYearId)
     .then((rows) => {
       return GeneralLedger.getlistAccounts(rows);
     })
     .then((rows) => {
       data = { rows };
+      data.fiscal_year_label = options.fiscal_year_label;
       return report.render(data);
     })
     .then((result) => {

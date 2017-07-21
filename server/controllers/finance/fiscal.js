@@ -11,6 +11,7 @@
 
 const q = require('q');
 const _ = require('lodash');
+const uuid = require('node-uuid');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
@@ -28,7 +29,7 @@ exports.create = create;
 exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
-exports.getPeriodCurrent = getPeriodCurrent;
+exports.getPeriodByFiscal = getPeriodByFiscal;
 
 /**
  * @method lookupFiscalYear
@@ -246,11 +247,13 @@ function lookupBalance(fiscalYearId, periodNumber) {
   const glb = {};
 
   const sql = `
-    SELECT t.period_id, a.id, a.label, t.debit, t.credit
-    FROM period_total t
-    JOIN account a ON a.id = t.account_id
-    JOIN period p ON p.id = t.period_id
-    WHERE t.fiscal_year_id = ? AND p.number = ?;
+    SELECT t.period_id, a.id, a.label,
+      SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
+    FROM period_total t 
+    JOIN account a ON a.id = t.account_id 
+    JOIN period p ON p.id = t.period_id 
+    WHERE t.fiscal_year_id = ? AND p.number <= ?  
+    GROUP BY a.id HAVING balance <> 0;
   `;
 
   const periodSql = `
@@ -381,7 +384,7 @@ function insertOpeningBalance(fiscalYear, accounts) {
       }
 
       const periodZeroId = rows[0].id;
-      const periodTotalData = notNullBalance(accounts)
+      const periodTotalData = notNullBalance(accounts, true)
         .map(item => formatPeriodTotal(item, fiscalYear, periodZeroId));
 
       const sql = `
@@ -429,8 +432,8 @@ function formatPeriodTotal(account, fiscalYear, periodId) {
  * @param {array} array An array of ojects with credit and debit property
  * @return {array} array
  */
-function notNullBalance(array) {
-  return array.filter(item => (item.debit !== 0 || item.credit !== 0));
+function notNullBalance(array, exception) {
+  return exception ? array : array.filter(item => (item.debit !== 0 || item.credit !== 0));
 }
 
 const sumCreditsMinusDebits = (aggregate, record) =>
@@ -452,6 +455,7 @@ function closing(req, res, next) {
   const result = {};
   let fiscal;
   let period;
+  let voucher;
   let sql;
 
   // query fiscal year
@@ -463,36 +467,38 @@ function closing(req, res, next) {
 
       // query period
       sql = 'SELECT p.id FROM period p WHERE p.fiscal_year_id = ? AND p.number = ?;';
-      return db.exec(sql, [id, fiscal.number_of_months]);
+      return db.exec(sql, [id, fiscal.number_of_months + 1]);
     })
     .then((rows) => {
       if (!rows) {
         throw new NotFound(
-          `Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months}.`
+          `Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months + 1}.`
         );
       }
       period = rows[0];
     })
     .then(() => {
       const sqlProfitAccounts = `
-        SELECT a.id, pt.credit, pt.debit
+        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit 
         FROM period_total AS pt
         JOIN account AS a ON pt.account_id = a.id
         JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ? AND pt.period_id = ?) AND at.type = 'income';
+        WHERE (pt.fiscal_year_id = ?) AND at.type = 'revenue'
+        GROUP BY a.id;
       `;
 
       const sqlChargeAccounts = `
-        SELECT a.id, pt.credit, pt.debit
+        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit 
         FROM period_total AS pt
         JOIN account AS a ON pt.account_id = a.id
         JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ? AND pt.period_id = ?) AND at.type = 'expense';
+        WHERE (pt.fiscal_year_id = ?) AND at.type = 'expense'
+        GROUP BY a.id;
       `;
 
       return q.all([
-        db.exec(sqlProfitAccounts, [id, period.id]),
-        db.exec(sqlChargeAccounts, [id, period.id]),
+        db.exec(sqlProfitAccounts, [id]),
+        db.exec(sqlChargeAccounts, [id]),
       ]);
     })
     .spread((profitAccounts, chargeAccounts) => {
@@ -509,15 +515,9 @@ function closing(req, res, next) {
       result.global = result.profit - result.charge;
     })
     .then(() => {
-      const sqlInsertJournal = `
-        INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
-          trans_id, trans_date, record_uuid, description, account_id, debit,
-          credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-          reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
-        SELECT
-          HUID(UUID()), ?, ?, ?, @transId, ?,
-          HUID(UUID()), ?, ?, ?, ?, ?, ?, ?,
-          NULL, NULL, NULL, NULL, ?, NULL, NULL
+      const sqlInsertVoucherItem = `
+        INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid) 
+        VALUES (?, ?, ?, ?, ?, ?);
       `;
 
       // util variables
@@ -526,9 +526,21 @@ function closing(req, res, next) {
       const userId = req.session.user.id;
       const transaction = db.transaction();
 
-      // generate the transaction id
-      const sqlTransId = 'SET @transId = GenerateTransactionId(?);';
-      transaction.addQuery(sqlTransId, projectId);
+      voucher = {
+        uuid : db.bid(uuid.v4()),
+        date : fiscal.end_date,
+        project_id : projectId,
+        currency_id : currencyId,
+        user_id : userId,
+        type_id : null,
+        description : 'closing fiscal year - Sold Exploitation Accounts',
+        amount : 0, // not necessary
+      };
+
+      const voucherDocumentUuid = db.bid(uuid.v4());
+
+      // insert voucher
+      transaction.addQuery('INSERT INTO voucher SET ?', voucher);
 
       // sold the profit exploitation
       exploitation.profit.forEach((item) => {
@@ -540,19 +552,15 @@ function closing(req, res, next) {
         const credit = value >= 0 ? 0 : Math.abs(value);
 
         const profitParams = [
-          projectId,                      // project_id
-          fiscal.id,                      // fiscal_year_id
-          fiscal.number_of_months + 1,    // period_id
-          fiscal.end_date,                // date : the last date of the fiscal year
-          'Ecriture de solde des profits pour la cloture',
-          item.id,                        // account_id
-          debit, credit,                  // debit and credit
-          debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
-          currencyId,                     // enterprise currency because data came from period total
-          userId,                          // user id
+          db.bid(uuid.v4()),
+          item.id,
+          debit,
+          credit,
+          voucher.uuid,
+          voucherDocumentUuid,
         ];
 
-        transaction.addQuery(sqlInsertJournal, profitParams);
+        transaction.addQuery(sqlInsertVoucherItem, profitParams);
       });
 
       // sold the charge exploitation
@@ -565,19 +573,15 @@ function closing(req, res, next) {
         const credit = value > 0 ? Math.abs(value) : 0;
 
         const chargeParams = [
-          projectId,                      // project_id
-          fiscal.id,                      // fiscal_year_id
-          fiscal.number_of_months + 1,    // period_id
-          fiscal.end_date,                // date : the last date of the fiscal year
-          'Ecriture de solde des charges pour la cloture',
-          item.id,                        // account_id
-          debit, credit,                  // debit and credit
-          debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
-          currencyId,                     // enterprise currency because data came from period total
-          userId,                         // user id
+          db.bid(uuid.v4()),
+          item.id,
+          debit,
+          credit,
+          voucher.uuid,
+          voucherDocumentUuid,
         ];
 
-        transaction.addQuery(sqlInsertJournal, chargeParams);
+        transaction.addQuery(sqlInsertVoucherItem, chargeParams);
       });
 
       // be sure to have accounts to sold, either profit or charge
@@ -590,23 +594,25 @@ function closing(req, res, next) {
         const credit = value >= 0 ? Math.abs(value) : 0;
 
         const resultParams = [
-          projectId,                      // project_id
-          fiscal.id,                      // fiscal_year_id
-          fiscal.number_of_months + 1,    // period_id
-          fiscal.end_date,                // date : the last date of the fiscal year
-          'Ecriture du result lors de la cloture',
+          db.bid(uuid.v4()),
           accountId,
-          debit, credit,                  // debit and credit
-          debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
-          currencyId,                     // enterprise currency because data came from period total
-          userId,                         // user id
+          debit,
+          credit,
+          voucher.uuid,
+          voucherDocumentUuid,
         ];
 
-        transaction.addQuery(sqlInsertJournal, resultParams);
+        transaction.addQuery(sqlInsertVoucherItem, resultParams);
       }
 
-      // lock the fiscal year
-      transaction.addQuery('UPDATE fiscal_year SET locked = 1 WHERE id = ?;', [id]);
+      // update the period to the period N+1 (13)
+      const sqlUpdateJournalPeriod = 'UPDATE posting_journal SET period_id = ? WHERE reference_uuid = ?';
+
+      // post voucher and close the fiscal year
+      transaction
+        .addQuery('CALL PostVoucher(?);', [voucher.uuid])                   // post voucher into the journal
+        .addQuery(sqlUpdateJournalPeriod, [period.id, voucherDocumentUuid])   // update the period to 13
+        .addQuery('UPDATE fiscal_year SET locked = 1 WHERE id = ?;', [id]); // lock the fiscal year
 
       return transaction.execute();
     })
@@ -622,24 +628,23 @@ function closing(req, res, next) {
 }
 
 /**
- * @method getPeriodCurrent
+ * @method getPeriodByFiscal
  *
  * @description
- * This function returns all period of current fiscal Year
- * the Date provided.  If no record is found, it throws a NotFound error.
+ * This function returns all Fiscal Year's periods
+ * the Fiscal Year provided.  If no record is found, it throws a NotFound error.
  *
- * @param {date} Date - The date determines the fiscal year in progress as well as the different periods
+ * @param {fiscal_year_id}  - Makes it possible to select the different periods of the fiscal year
  * @returns {Promise} - a promise resolving to the periods record
  *
  */
-function getPeriodCurrent(date) {
+function getPeriodByFiscal(fiscal_year_id) {
   const sql = `
     SELECT period.number, period.id
     FROM period 
     JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
-    WHERE period.number <> 13 
-    AND (DATE(fiscal_year.start_date) <= DATE(?) AND DATE(fiscal_year.end_date) >= DATE(?));
+    WHERE period.fiscal_year_id = ? AND period.number <> 13;
   `;
 
-  return db.exec(sql, [date, date]);
+  return db.exec(sql, [fiscal_year_id]);
 }

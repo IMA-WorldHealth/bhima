@@ -39,7 +39,8 @@ describe('Patient Registration', function () {
     components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
-    FU.uiSelect('PatientRegCtrl.finance.debtor_group_uuid', 'Second Test Debtor Group');
+    components.debtorGroupSelect.set('Second Test Debtor Group');
+
 
     // submit the patient registration form
     FU.buttons.submit();
@@ -63,7 +64,7 @@ describe('Patient Registration', function () {
 
       // the following fields should be required
       FU.validation.error('PatientRegCtrl.medical.display_name');
-      FU.validation.error('PatientRegCtrl.finance.debtor_group_uuid');
+      FU.validation.error('$ctrl.debtorGroupUuid');
       FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name and title are optional

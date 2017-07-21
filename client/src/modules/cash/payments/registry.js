@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService'
+  'GridColumnService', 'GridStateService',
 ];
 
 /**
@@ -25,7 +25,6 @@ function CashPaymentRegistryController(
   var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
   var regularBackgroundColor = { 'background-color' : 'none' };
   var cacheKey = 'payment-grid';
-  
 
   var gridColumns;
   var columnDefs;
@@ -185,6 +184,14 @@ function CashPaymentRegistryController(
   }
 
   function startup() {
+    if ($state.params.filters) {
+      // Fix me, generate change dynamically 
+      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+
+      Cash.filters.replaceFilters(change);
+      Cash.cacheFilters();
+    }
+
     load(Cash.filters.formatHTTP(true));
     vm.latestViewFilters = Cash.filters.formatView();
   }
@@ -193,7 +200,7 @@ function CashPaymentRegistryController(
   // the visibility of the cash registry's columns.
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
-  };
+  }
 
   startup();
 }

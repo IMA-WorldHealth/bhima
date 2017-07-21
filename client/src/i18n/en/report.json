@@ -2,8 +2,21 @@
   "REPORT":{
     "ACCOUNT":"Account Statement",
     "AGED_CREDITORS":"Aged Debts",
-    "AGED_DEBTORS":{"TITLE":"Aged Debtors"},
+    "AGED_DEBTORS":{
+      "TITLE":"Aged Debtors",
+      "DESCRIPTION":"This report show all the debts of the clients, while specifying the debts per period"
+    },
+    "BY_ASC":"By Ascending Order",
+    "BY_DESC":"By Descending Order",
     "BALANCE":"Balance Report",
+    "BALANCE_SHEET":{
+      "TITLE":"Balance Sheet",
+      "DESCRIPTION":"This report shows the balance sheet of the enterprise",
+      "SHOW_EXPLOITATION":"Show Exploitation",
+      "DEBTOR_SOLD":"Debit",
+      "CREDITOR_SOLD":"Credit",
+      "EXPLOITATION_RESULT":"Exploitation Result"
+    },
     "CASH_EXPENSE":"Expenses",
     "CASHFLOW_BY_SERVICE":"Cashflow By Service",
     "CASHFLOW":"Cashflow",
@@ -19,8 +32,18 @@
     "INCOME_EXPENSE": "Income Expense Report",
     "INCOME_REPORT":"Incomes Report",
     "MONTHLY_BALANCE":"Monthly Balance",
-    "OPEN_DEBTORS":{ "TITLE":"Debtors with Unpaid Debts", "TREE":"Open Debtors" },
+    "OPEN_DEBTORS":{ 
+      "DESCRIPTION":"This report shows indebted debtors",
+      "TITLE":"Debtors with Unpaid Debts", 
+      "TREE":"Open Debtors" 
+    },
     "OPENING_BALANCE":"Opening Balance",
+    "ORDER":{
+      "LAST_INVOICE":"Date of last invoice",
+      "LAST_PAYMENT":"Date of last payment",
+      "PATIENT_NAME":"Nom du patient",
+      "TOTAL_DEBT":"Total Debts"
+    },    
     "OVER_NINETY_DAYS":"Over 90 Days",
     "PERIOD_START":"Start",
     "PERIOD_STOP":"Stop",
@@ -44,6 +67,10 @@
     "INCOME_EXPENSE_REPORT" : {
       "TITLE" : "Income Expense Report",
       "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
+    },
+    "BALANCE_REPORT": {
+      "TITLE":"Balance Report",
+      "DESCRIPTION":"This report show the balance of accounts for a given period"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Cancel Preview",

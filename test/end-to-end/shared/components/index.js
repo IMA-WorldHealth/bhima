@@ -19,10 +19,12 @@ module.exports = {
   modalAction    : require('./bhModalAction'),
   notification   : require('./notify'),
   dateInterval   : require('./bhDateInterval'),
+  reportPeriodSelect  : require('./bhReportPeriodSelect'),
   accountSelect  : require('./bhAccountSelect'),
   depotDropdown  : require('./bhDepotDropdown'),
   datePicker     : require('./bhDatePicker'),
   userSelect     : require('./bhUserSelect'),
   reportSource   : require('./bhReportSource'),
   fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
+  debtorGroupSelect : require('./bhDebtorGroupSelect'),
 };

@@ -42,6 +42,20 @@
 "NOVEMBER":"Novembre",
 "DECEMBER":"Décembre"
 },
+"DATE_MONTH_MIN":{
+"JANUARY":"Jan",
+"FEBRUARY":"Fév",
+"MARCH":"Mar",
+"APRIL":"Avr",
+"MAY":"Mai",
+"JUNE":"Juin",
+"JULY":"Juil",
+"AUGUST":"Août",
+"SEPTEMBER":"Sept",
+"OCTOBER":"Oct",
+"NOVEMBER":"Nov",
+"DECEMBER":"Déc"
+},
 "DATE_REGISTERED":"Date d'enregistrement",
 "DATA_SOURCE":"Source de données",
 "DEBIT":"Débit",
@@ -96,6 +110,7 @@
 "NO_PAYMENTS":"Aucun paiement n'a été effectué sur cette facture.",
 "NUM":"Numéro",
 "OF":"sur",
+"OPENING_BALANCE":"Balance d'ouverure",
 "PASSIVE":"Passive",
 "PATIENT":"Patient",
 "PATIENT_ID":"Patient Id",

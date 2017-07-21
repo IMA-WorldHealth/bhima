@@ -147,7 +147,7 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the convention
-    FU.uiSelect('ToolCtrl.convention', detail.convention);
+    components.debtorGroupSelect.set(detail.convention);
 
     // select invoices
     GU.selectRow('invoiceGrid', detail.invoices[0]);

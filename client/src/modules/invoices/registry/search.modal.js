@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('InvoiceRegistrySearchModalController', InvoiceRegistrySearchModalController);
 
 InvoiceRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'ServiceService', 'filters', 'NotifyService', 'Store', 'PeriodService', 'util', 'DebtorGroupService'
+  '$uibModalInstance', 'ServiceService', 'filters', 'NotifyService', 'Store', 'PeriodService', 'util'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistrySearchModalController.$inject = [
  * This controller is responsible to collecting data from the search form and modifying
  * the underlying filters before passing them back to the parent controller.
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, Store, Periods, util, DebtorGroups) {
+function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, Store, Periods, util) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
@@ -23,6 +23,13 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
+
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
+  }    
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
@@ -41,11 +48,6 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
       vm.services = services;
     })
     .catch(Notify.handleError);
-
-  DebtorGroups.read()
-    .then(function (result) {
-      vm.debtorGroups = result;
-    });
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
@@ -75,7 +77,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
   };
 
   // returns the filters to the journal to be used to refresh the page
-  vm.submit = function submit(form) {
+  vm.submit = function submit() {
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {

@@ -4,26 +4,27 @@
   <main class="container">
     {{> header }}
 
-    <h3 class="text-center">
-      {{translate "REPORT.AGED_DEBTORS.TITLE"}}
+    <h3 class="text-center text-uppercase">
+      <strong>{{translate "REPORT.AGED_DEBTORS.TITLE"}}</strong>
     </h3>
 
-    <h4 class="text-center">
-      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date this.timestamp }}
-    </h4>
-
+    <h5 class="text-center">
+      <strong>
+        <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span> <span class="text-capitalize"> {{date dateUntil "MMMM YYYY"}} </span>
+      </strong>
+    </h5>
     <!-- margin is the cell size -->
     <section>
-      <table class="table table-condensed table-report">
+      <table class="table table-condensed table-report table-bordered">
         <thead>
-          <tr class="text-capitalize">
-            <th class="text-center">{{translate "TABLE.COLUMNS.NAME"}}</th>
-            <th class="text-center" style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
-            <th class="text-center">{{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}</th>
-            <th class="text-center">{{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}</th>
-            <th class="text-center">{{translate "REPORT.SIXTY_TO_NINETY_DAYS"}}</th>
-            <th class="text-center">{{translate "REPORT.OVER_NINETY_DAYS"}}</th>
-            <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
+            <th>{{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}</th>
+            <th>{{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}</th>
+            <th>{{translate "REPORT.SIXTY_TO_NINETY_DAYS"}}</th>
+            <th>{{translate "REPORT.OVER_NINETY_DAYS"}}</th>
+            <th>{{translate "TABLE.COLUMNS.TOTAL"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -31,7 +32,7 @@
           <!-- print a row for each debtor -->
           {{#each debtors}}
             <tr>
-              <th>{{this.name}}</th>
+              <td>{{this.name}}</td>
               <td class="text-left">{{this.number}}</td>
               <td class="text-right">
                 {{#if this.thirty}}
@@ -61,7 +62,7 @@
         </tbody>
         {{#if aggregates}}
           <tfoot>
-            <tr>
+            <tr style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
               <th class="text-right">{{currency aggregates.thirty metadata.enterprise.currency_id}}</th>
               <th class="text-right">{{currency aggregates.sixty metadata.enterprise.currency_id}}</th>

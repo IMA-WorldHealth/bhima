@@ -9,7 +9,7 @@ helpers.configure(chai);
 
 describe('Employees', () => {
   const path = '#!/employees/register';
-  const registrationPage =  new RegistrationPage();
+  const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
     display_name  : 'Sherlock Holmes Doyle',
@@ -22,16 +22,16 @@ describe('Employees', () => {
     bank_account  : '00-99-88-77',
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
-    hospital_no   : 'TP003', 
-   };
+    hospital_no   : 'TP003',
+  };
 
-  before(() => {return helpers.navigate(path)});
+  before(() => { return helpers.navigate(path); });
 
   it('blocks invalid form submission with relevant error classes', () => {
     // verify we are in the current path
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
-    registrationPage.createEmployee();   
+    registrationPage.createEmployee();
     registrationPage.requiredFIeldErrored();
     registrationPage.noRequiredFieldOk();
   });
@@ -47,41 +47,43 @@ describe('Employees', () => {
     registrationPage.setDebtorGroup('Second Test Debtor Group');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
-    registrationPage.setHiringDate(employee.date_embauche); 
+    registrationPage.setHiringDate(employee.date_embauche);
     registrationPage.setNumberSpouse(employee.nb_spouse);
-    registrationPage.setNumberChild(employee.nb_enfant);       
-    registrationPage.setService('Administration');    
+    registrationPage.setNumberChild(employee.nb_enfant);
+    registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
     registrationPage.setEmail(employee.email);
-    registrationPage.setAddress(employee.adresse);    
+    registrationPage.setAddress(employee.adresse);
     registrationPage.setBank(employee.bank);
-    registrationPage.setBankAccount(employee.bank_account);    
+    registrationPage.setBankAccount(employee.bank_account);
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);
-    browser.refresh();    
-  });  
-
-  it.skip('edits an employee', () => {
-    element(by.id(`employee-upd-${employeeId}`)).click();
-
-    // modify the employee display_name
-    FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
-    FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
-
-    element(by.id('bhima-employee-locked')).click();
-    element(by.id('change_employee')).click();
-
-    // make sure the success message appears
-    components.notification.hasSuccess();
+    browser.refresh();
   });
 
-  it.skip('unlocks an employee', () => {
-    element(by.id(`employee-upd-${employeeId}`)).click();
-    element(by.id('bhima-employee-locked')).click();
-    element(by.id('change_employee')).click();
+  // FIXME: skip throws an error
+  // it.skip('edits an employee', () => {
+  //   element(by.id(`employee-upd-${employeeId}`)).click();
 
-    // make sure the success message appears
-    components.notification.hasSuccess();
-  });
+  //   // modify the employee display_name
+  //   FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
+  //   FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
+
+  //   element(by.id('bhima-employee-locked')).click();
+  //   element(by.id('change_employee')).click();
+
+  //   // make sure the success message appears
+  //   components.notification.hasSuccess();
+  // });
+
+  // FIXME: skip throws an error
+  // it.skip('unlocks an employee', () => {
+  //   element(by.id(`employee-upd-${employeeId}`)).click();
+  //   element(by.id('bhima-employee-locked')).click();
+  //   element(by.id('change_employee')).click();
+
+  //   // make sure the success message appears
+  //   components.notification.hasSuccess();
+  // });
 });

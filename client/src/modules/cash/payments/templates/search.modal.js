@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 SearchCashPaymentModalController.$inject = [
-  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util', 'DebtorGroupService',
+  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util',
 ];
 
 /**
@@ -13,19 +13,20 @@ SearchCashPaymentModalController.$inject = [
  * POJO and are attached to the view.  They are modified here and returned to the parent controller
  * as a POJO.
  */
-function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util, DebtorGroups) {
+function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
-  vm.filters = filters;
-
-  vm.searchQueries = {};
-  vm.defaultQueries = {};
-
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = [
     'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed',
   ];
+
+
+  vm.filters = filters;
+
+  vm.searchQueries = {};
+  vm.defaultQueries = {};
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -37,17 +38,19 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
 
   vm.cancel = Instance.close;
 
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
+  }
+
   // cashboxes
   Cashboxes.read()
     .then(function (list) {
       vm.cashboxes = list;
     })
     .catch(Notify.handleError);
-
-  DebtorGroups.read()
-    .then(function (result) {
-      vm.debtorGroups = result;
-    });
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {

@@ -5,17 +5,22 @@ angular.module('bhima.controllers')
   .controller('AccountEditController', AccountEditController);
 
 AccountEditController.$inject = [
-  '$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService', 'appcache'
+  '$rootScope', '$state', 'AccountStoreService', 'AccountService',
+  'NotifyService', 'util', 'bhConstants', 'ModalService', 'appcache',
 ];
 
-function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants, ModalService, AppCache) {
-  var accountStore, typeStore;
+function AccountEditController($rootScope, $state, AccountStore, Accounts,
+  Notify, util, Constants, ModalService, AppCache) {
+  var accountStore;
+  var typeStore;
   var cache = AppCache('AccountEdit');
   var vm = this;
+  var id;
+  var parentId;
   vm.stateParams = {};
   vm.stateCurrent = {};
 
-  if($state.params.id || $state.current.name){
+  if ($state.params.id || $state.current.name) {
     vm.stateParams = cache.stateParams = $state.params;
     vm.stateCurrent = cache.stateCurrent = $state.current;
   } else {
@@ -23,8 +28,8 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     vm.stateCurrent = cache.stateCurrent;
   }
 
-  var id = vm.stateParams.id,
-    parentId = vm.stateParams.parentId;
+  id = vm.stateParams.id;
+  parentId = vm.stateParams.parentId;
 
   vm.Constants = Constants;
 
@@ -42,7 +47,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   // relevent components
   vm.states = {
     create : 'accounts.create',
-    edit : 'accounts.edit'
+    edit : 'accounts.edit',
   };
 
   vm.state = angular.copy(vm.stateCurrent.name);
@@ -57,14 +62,14 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     id : 0,
     number : 0,
     type_id : Constants.accounts.TITLE,
-    label : 'ROOT ACCOUNT'
+    label : 'ROOT ACCOUNT',
   };
   vm.rootAccount.hrlabel = Accounts.label(vm.rootAccount);
 
   /** @todo design how these are served for stores */
   vm.notFound = {
     status : 404,
-    code : 'ERRORS.NOT_FOUND'
+    code : 'ERRORS.NOT_FOUND',
   };
 
   settupPage()
@@ -78,7 +83,6 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
    * accounts.
    */
   function settupPage() {
-
     return AccountStore.accounts()
       .then(function (accounts) {
         accountStore = angular.copy(accounts);

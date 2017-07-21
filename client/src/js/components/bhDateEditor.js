@@ -3,13 +3,13 @@ angular.module('bhima.components')
   templateUrl : '/modules/templates/bhDateEditor.tmpl.html',
   controller  : dateEditorController,
   bindings    : {
-    dateValue         : '=',  // two-way binding
-    minDate           : '<',    // one-way binding
-    maxDate           : '<',    // one-way binding
+    dateValue         : '=', // two-way binding
+    minDate           : '<', // one-way binding
+    maxDate           : '<', // one-way binding
     validationTrigger : '<', // one-way binding
-    disabled          : '<',   // one-way binding
+    disabled          : '<', // one-way binding
     dateFormat        : '@', // bind text
-    label             : '@',       // bind text
+    label             : '@', // bind text
   },
 });
 

@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
-  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer'
+  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer',
 ];
 
 /**
@@ -143,7 +143,6 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'invoiceReference', label : 'FORM.LABELS.INVOICE' },
-    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' }]);
 
