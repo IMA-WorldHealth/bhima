@@ -30,7 +30,7 @@ function PatientInvoicePage() {
     // set a patient with id TPA1
     findPatient.findById('PA.TPA.1');
 
-    // set the date to the start of this year
+    // set the date to the start of this day
     dateEditor.set(new Date());
 
     // set a test description

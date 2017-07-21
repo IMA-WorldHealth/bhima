@@ -29,21 +29,21 @@ describe('Check links', () => {
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));  
 
   it('Check link betwen Patient Groups -> Patient Registry', () => {
-    browser.get('#!/patients/groups');
+    helpers.navigate('#!/patients/groups');
 
     element.all(by.css('[class="fa fa-list"]')).get(2).click();
     expectNumberOfGridRows(2);
   });
 
   it('Check link betwen Debtor Groups -> Patient Registry', () => {
-    browser.get('#!/debtors/groups');
+    helpers.navigate('#!/debtors/groups');
 
     element.all(by.css('[class="fa fa-bars"]')).get(1).click();
     expectNumberOfGridRows(4);
   });
 
   it('Check link betwen Patient Registry -> Invoice Registry', () => {
-    browser.get('#!/patients');
+    helpers.navigate('#!/patients');
     filters.resetFilters();
 
     element.all(by.css('[data-method="action"]')).get(3).click();
@@ -52,7 +52,7 @@ describe('Check links', () => {
   });
 
   it('Check link betwen Invoice Registry -> Cash Registry', () => {
-    browser.get('#!/invoices');
+    helpers.navigate('#!/invoices');
     element.all(by.css('[data-method="action"]')).get(2).click();
     element.all(by.css('[data-method="viewPayment"]')).get(2).click();
     GU.expectRowCount('payment-registry', 0);
