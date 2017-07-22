@@ -1,0 +1,44 @@
+{{> head title="REPORT.CLIENTS_REPORT.TITLE" }}
+
+<div class="container">
+
+  {{> header }}
+
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+          {{translate 'REPORT.CLIENTS_REPORT.TITLE'}}
+      </h2>
+      <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date today}}
+      </h5>
+      
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th rowspan="2" class="text-center">{{ translate 'TABLE.COLUMNS.ACCOUNT' }}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>            
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE' }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {{#each lines}}
+            <tr>
+              <td>{{this.accountNumber}}</td>
+              <td>{{this.name}}</td>
+              <td class='text-right'> {{currency this.balance ../enterprise.currency_id}} </td>
+            </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="background-color:#ddd;">
+            <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>           
+            <th class="text-right">{{currency totalBalance enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>    
+  </div>
+</div>

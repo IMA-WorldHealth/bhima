@@ -1,5 +1,6 @@
 {
   "REPORT":{
+    "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Rapport du Compte",
     "AGED_CREDITORS":"Balance agée des Créances",
     "AGED_DEBTORS":{
@@ -22,7 +23,6 @@
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
-    "CLIENTS_REPORT":{"TITLE":"Rapport Clients", "CURRENT_MVT":"Mouvement Courant", "PREVIOUS_MVT":"Mouvement Precedent"},
     "CLOSING_BALANCE":"Balance à la cloture",
     "CONFIGURATION":"Configuration rapport",
     "DELETE":"Supprimer un rapport",
@@ -71,6 +71,12 @@
     "BALANCE_REPORT": {
       "TITLE":"Rapport de la Balance des comptes",
       "DESCRIPTION":"Ce rapport affiche la balance des comptes pour une période donnée"
+    },
+    "CLIENTS_REPORT" : {
+      "TITLE" : "Rapport Clients",
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Du debut Au :",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",

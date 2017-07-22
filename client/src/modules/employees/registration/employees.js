@@ -28,9 +28,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.submit = submit;
 
   // Set up page elements data (debtor select data)
-  vm.onSelectDebtor = onSelectDebtor;
-
-  function onSelectDebtor(debtorGroup) {
+  vm.onSelectDebtor =  function onSelectDebtor(debtorGroup) {
     vm.employee.debtor_group_uuid = debtorGroup.uuid;
   }
 

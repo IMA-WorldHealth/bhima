@@ -10,6 +10,7 @@ angular.module('bhima.routes')
       'aged_debtors',
       'open_debtors',
       'balance_report',
+      'clients_report',
     ];
 
     $stateProvider
