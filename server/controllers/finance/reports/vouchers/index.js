@@ -86,7 +86,7 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
   const options = _.clone(req.query);
-  _.extend(options, { csvKey : 'rows', filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape' });
+  _.extend(options, { csvKey : 'rows', filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape', footerRight : '[page] / [toPage]', footerFontSize : '7'});
 
   let reportInstance;
 
