@@ -43,9 +43,8 @@ function PatientRegistrySearch() {
     ).to.eventually.equal(number);
   }
 
-  it('grid should have 2 visible rows', () => {
-    const DEFAULT_PATIENTS_FOR_TODAY = 2;
-
+  it('grid should have 4 visible rows', () => {
+    const DEFAULT_PATIENTS_FOR_TODAY = 4;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
@@ -64,7 +63,7 @@ function PatientRegistrySearch() {
   });
 
   it(`should find three patient with Debtor Group "Second Test Debtor Group"`, () => {
-    const NUM_MATCHING = 2;
+    const NUM_MATCHING = 3;
 
     components.debtorGroupSelect.set('Second Test Debtor Group');
     FU.modal.submit();
@@ -74,7 +73,7 @@ function PatientRegistrySearch() {
 
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
-    const NUM_MATCHING = 1;
+    const NUM_MATCHING = 2;
     FU.input('ModalCtrl.params.display_name', parameters.name1);
     element(by.id('male')).click();
     FU.modal.submit();
@@ -95,7 +94,7 @@ function PatientRegistrySearch() {
 
   // demonstrates that sex + time-delimited filtering works
   it('should find no female patients registered in the last year.', function () {
-    const NUM_MATCHING = 1; 
+    const NUM_MATCHING = 0; 
     element(by.id('female')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('lastYear');

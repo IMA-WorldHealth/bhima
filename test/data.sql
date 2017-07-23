@@ -252,19 +252,19 @@ INSERT INTO `patient_group` VALUES
 
 INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Patient/2/Patient'),
-  (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient'),
-  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debtor');
+  (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient');
 
 INSERT INTO `patient` VALUES
-  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test 2 Patient','1990-06-01 00:00:00', FALSE, NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2015-11-14 07:04:49',NULL,NULL,'110', '', 1,'2015-11-14 07:04:49'),
-  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test 1 Patient','1990-06-01 00:00:00', FALSE, NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2016-03-14 07:04:49',NULL,NULL,'100', '', 2,'2015-11-14 07:04:49');
+  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test 2 Patient','1990-06-01 00:00:00', FALSE, NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NOW(),NULL,NULL,'110', '', 1,'2015-11-14 07:04:49'),
+  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test 1 Patient','1990-06-01 00:00:00', FALSE, NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NOW(),NULL,NULL,'100', '', 2,'2015-11-14 07:04:49');
 
 INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`) VALUES
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1),
   (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1);
 
 INSERT INTO `assignation_patient` VALUES
-  (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'));
+  (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65')),
+  (HUID('e35b525e-923b-4fee-87f1-a069c7dc7234'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('274c51ae-efcc-4238-98c6-f402bfb39866'));
 
 -- Creditor group
 INSERT INTO `creditor_group` VALUES
