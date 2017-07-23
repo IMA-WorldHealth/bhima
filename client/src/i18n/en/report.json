@@ -21,7 +21,7 @@
     "CASH_EXPENSE": "Expenses",
     "CASHFLOW_BY_SERVICE": "Cashflow By Service",
     "CASHFLOW": "Cashflow",
-    "CASH_INCOME": "Incomes",
+    "CASH_INCOME": "Revenu",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",
@@ -77,6 +77,14 @@
     "BALANCE_REPORT": {
       "TITLE": "Balance Report",
       "DESCRIPTION": "This report show the balance of accounts for a given period"
+    },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Income Expense Report",
+      "DESCRIPTION": "This report show all income and expense occured in the enterprise"
+    },
+    "CASH_REPORT": {
+      "TITLE": "Cash Report",
+      "DESCRIPTION": "This report show all entries and exits of cash inside the enterprise"
     },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",

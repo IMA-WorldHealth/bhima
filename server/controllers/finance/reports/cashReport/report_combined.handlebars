@@ -1,0 +1,66 @@
+{{> head title="TREE.CASH_REPORT" }}
+
+
+<div class="container">
+  {{> header}}
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TREE.CASH_REPORT'}}</strong>
+      </h3>
+      <h5 class="text-center text-uppercase">
+        {{ this.cashName}} ({{ this.cashCurrency}})
+      </h5>
+      <h6 class="text-center text-uppercase">
+        {{date this.dateFrom }} - {{date this.dateTo }}
+      </h6>
+
+      {{#if this.isEmpty}}
+      <div class="text-center">
+        {{translate 'FORM.INFO.NO_RECORDS_DATABASE'}}
+      </div>
+      {{else}}
+      <div class="text-right">
+        <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{currency this.openingBalance metadata.enterprise.curency_id}}</strong>
+      </div>
+      <table class="table table-condensed table-report">
+        <thead>          
+          <tr style="background-color:#ddd;">
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE' }} </th>
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.NUM_PIECE' }} </th>
+            <th style="width: 40%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.ENTRY' }} </th>
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.EXIT' }} </th>
+            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BALANCE' }} </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each this.records}}
+          <tr>
+            <td class="text-left">{{ trans_id }}</td>
+            <td class="text-left">{{ date trans_date }}</td>
+            <td class="text-left">
+              {{#if cashReference}} {{ cashReference}} {{else}} {{voucherReference}} {{/if}}
+            </td>
+            <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;">
+              {{ description }}
+            </td>
+            <td class="text-right">
+              {{ currency debit ../metadata.enterprise.currency_id}}
+            </td>
+            <td class="text-right">
+              {{ currency credit ../metadata.enterprise.currency_id}}
+            </td>
+            <td class="text-right">
+              {{ currency cbalance ../metadata.enterprise.currency_id}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+    </div>
+  </div>
+</div>
