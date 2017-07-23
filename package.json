@@ -70,7 +70,9 @@
     "stream-to-promise": "^2.2.0",
     "use-strict": "^1.0.1",
     "winston": "^2.1.1",
-    "wkhtmltopdf": "^0.3.3"
+    "wkhtmltopdf": "^0.3.3",
+    "mailgun-js":"^0.5",
+    "node-schedule":"^1.2.3" 
   },
   "devDependencies": {
     "bower": "^1.7.7",

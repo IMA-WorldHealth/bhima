@@ -67,6 +67,17 @@ INSERT INTO unit VALUES
   (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/partials/stock/entry', '/stock/entry'),
   (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
+<<<<<<< HEAD
+ 
+  (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
+  (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
+  (171, 'Report Group', 'FORM.LABELS.REPORT_GROUP', 'Report Group', '1', '/modules/report-group/', '/report-group/'),
+  (172, 'Email report', 'FORM.LABELS.EMALING_REPORT', 'Email report', '1', '/modules/email-report/', '/email-report/');
+
+
+ -- Reserved system account type
+INSERT INTO `account_type` VALUES
+=======
   -- (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
   (171, 'Balance Sheet Statement', 'TREE.BALANCE_SHEET', 'Balance Sheet Module', 144, '/modules/reports/balance_sheet_report/', '/reports/balance_sheet_report'),
@@ -74,6 +85,7 @@ INSERT INTO unit VALUES
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
+>>>>>>> e46831f2d78e0c4f75b882244cccaf8523e8c03a
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
   (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),

@@ -32,5 +32,9 @@ test/artifacts/
 
 # ignore visual studio files
 .vscode/*
+<<<<<<< HEAD
+ 
+=======
 nbproject/*
 
+>>>>>>> e46831f2d78e0c4f75b882244cccaf8523e8c03a

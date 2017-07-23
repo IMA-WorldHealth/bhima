@@ -1914,3 +1914,34 @@ CREATE TABLE `integration` (
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+ 
+ --
+-- Structure de la table `report_group`
+--
+DROP TABLE IF EXISTS `report_group`;
+
+CREATE TABLE IF NOT EXISTS `report_group` (
+  `code` varchar(40) COLLATE utf8_unicode_ci NOT NULL PRIMARY KEY,
+  `name` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ 
+ 
+ --
+-- Structure de la table `email_report`
+--
+DROP TABLE IF EXISTS `email_report`;
+
+CREATE TABLE IF NOT EXISTS `email_report` (
+  `id` int(11)  PRIMARY KEY  AUTO_INCREMENT,
+  `name` varchar(50)  NOT NULL,
+  `email` varchar(40)  NOT NULL,
+  `frequency` varchar(30)  NOT NULL,
+  `code_report_group` varchar(40)  NOT NULL,
+  KEY `code_report_group` (`code_report_group`),    
+  FOREIGN KEY (`code_report_group`) REFERENCES `report_group` (`code`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

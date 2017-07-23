@@ -1,0 +1,40 @@
+<!-- billing service form -->
+<form
+    name="BillingServicesForm"
+    bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)"
+    novalidate>
+
+    <div class="modal-header">
+        <ol class="headercrumb">
+            <li class="static" translate>
+                FORM.LABELS.PROFILE_ORIGIN
+            </li>
+        </ol>
+    </div>
+    </div>
+
+    <div class="modal-body" style="height: 100px">
+      <div class="col-lg-12">
+            <ul>
+                <li ng-repeat="cat in catPeopleModalListCtrl.listCategoriesPeople">
+                    <a  data-method="category"
+                        ui-sref="emailreport.groupProileList({index_current_category:$index})"
+                        ui-sref-opts="{notify:true}">
+                            {{cat.table_display | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a  class="btn btn-default"
+            data-method="selectProfile"
+            ui-sref="emailreport"
+            data-method="back"
+            translate>
+                FORM.BUTTONS.BACK
+        </a>
+
+    </div>
+</form>

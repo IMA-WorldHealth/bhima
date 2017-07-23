@@ -1,0 +1,30 @@
+{
+  "FORM":{
+    "LABELS":{
+      "FREQUENCY":"Fréquence",
+      "REPORT_GROUP":"Type de rapport",
+      "SELECT_PROFILE":"Sélectionner un profile",
+      "NEW_PROFILE":"Nouveau profile",
+      "EMALING_REPORT":"Rapport par mail",
+      "PROFILE_ORIGIN":"Origine du profile",
+      "USERS":"Utilisateurs",
+      "EMPLOYEES":"Employés",
+      "PROFILE_FROM":"Profile provenant des ",
+      "NEW_REPORT_GROUP":"Nouveau type de rapport"          
+    }
+  },
+  "REPORT":{
+    "LABELS":{
+      "WEEKLY_BHIMA_REPORT":"RAPPORT HEBDOMADAIRE DE BHIMA",
+      "REGISTERED_PATIENTS":"Patients enregistrés",
+      "THIS_WEEK":"Cette semaine",
+      "LAST_WEEK":"La semaine passée",
+      "INCOME_BY_SERVICE":"Entrées par service",
+      "NO_INCOME_FOUND_IN_SERVICES":"Aucune entrées touvée dans les services.",
+      "FIRST_AND_LAST_INVOICE_CREATED_PER_DAY":"PREMIERE ET DERNIERE FACTURE CREEES PAR JOUR",
+      "FIRST":"Première",
+      "LAST":"Dernière",
+      "THERE_WAS_NO_INVOICE_THIS_WEEK":"Aucune facture créée cette semaine"
+    }
+  }
+}

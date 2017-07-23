@@ -1,0 +1,118 @@
+{{> head title="PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE" }}
+
+<body>
+    <style type="text/css">
+      .right { float: right;}
+      #exportButton {float: left;}
+
+      table {
+        box-shadow: 1px 2px 3px #aaa;
+        background: #aaa;
+        width: 100%;
+        min-width: 600px;
+      }
+
+      th,td {  background: #fff;}
+
+      th {
+        color: rgba(121, 164, 64, 1.0);
+        background: #ddd
+      }
+
+      .odd td {
+        background: #fafafa;
+      }
+    </style>
+
+    {{> header }}
+
+    <br/>
+    <br/>
+    <h3>{{translate "REPORT.LABELS.WEEKLY_BHIMA_REPORT"}}</h3>
+    <table class="table table-condensed table-bordered">
+        <tr>
+          <th colspan="2" class="text-center">
+            {{translate "REPORT.LABELS.REGISTERED_PATIENTS"}}
+          </th>
+        </tr>
+        <tr>
+          <td style="width: 50%">{{translate "REPORT.LABELS.THIS_WEEK"}}</td>
+          <td class="text-right">
+            {{patientsData.NumberOfpatientsThisWeek}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{translate "REPORT.LABELS.LAST_WEEK"}}
+          </td>
+          <td class="text-right">
+            {{patientsData.NumberOfpatientsLastWeek}}
+          </td>
+        </tr>
+    </table>
+
+
+
+    <table class="table table-condensed table-bordered">
+        <tr>
+          <th colspan="2" class="text-center">
+            {{translate "REPORT.LABELS.INCOME_BY_SERVICE"}}
+          </th>
+        </tr>
+        {{#each servicesIncome}}
+        <tr>
+          <td style="width: 50%">
+            {{this.serviceName}}
+          </td>
+          <td class="text-right">
+            {{this.sumCost}}
+          </td>
+
+        </tr>
+        {{/each}} 
+        {{#unless servicesIncome}}
+        <tr colspan='2'>
+            <td>
+              {{translate "REPORT.LABELS.NO_INCOME_FOUND_IN_SERVICES"}}
+            </td>
+        </tr>
+        {{/unless}}
+
+
+    </table>
+
+    <table class="table table-condensed table-bordered">
+        <tr>
+          <th colspan="2" class="text-center">
+            {{translate "REPORT.LABELS.FIRST_AND_LAST_INVOICE_CREATED_PER_DAY"}}
+          </th>
+        </tr>
+        <tr>
+          <td class="text-center">
+            {{translate "REPORT.LABELS.FIRST"}}
+          </td>
+          <td class="text-center">
+            {{translate "REPORT.LABELS.LAST"}}
+          </td>
+        </tr>
+        {{#each MaxMinInvoiceDate}}
+        <tr>
+          <td>
+            {{timestamp this.minDate}}
+          </td>
+          <td>
+            {{timestamp this.maxDate}}
+          </td>
+
+        </tr>
+        {{/each}}
+        {{#unless MaxMinInvoiceDate}}
+        <tr>
+          <td colspan="2">
+            {{translate "REPORT.LABELS.THERE_WAS_NO_INVOICE_THIS_WEEK"}}
+          </td>
+        </tr>
+        {{/unless}}
+    </table>
+
+</body>

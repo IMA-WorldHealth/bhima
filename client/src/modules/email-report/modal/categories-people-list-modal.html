@@ -1,0 +1,50 @@
+<!-- billing service form -->
+<form
+    name="BillingServicesForm"
+    bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)"
+    novalidate>
+
+    <div class="modal-header">
+        <ol class="headercrumb">
+            <li class="static">
+                {{"FORM.LABELS.PROFILE_FROM" | translate}} 
+                {{catPeopleListCtrl.selectedCategory.table_display | translate}}
+            </li>
+        </ol>
+    </div>
+
+    <div class="modal-body" style="height: 100%;border: none !important">
+
+        <div 
+            id="report-groups-grid"
+            ui-grid-selection
+            ui-grid="catPeopleListCtrl.gridOptions">
+
+            <bh-grid-loading-indicator
+                loading-state="catPeopleListCtrl.loading"
+                empty-state="catPeopleListCtrl.gridOptions.data.length === 0"
+                error-state="catPeopleListCtrl.hasError">
+            </bh-grid-loading-indicator>
+        </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn btn-default"
+            data-method="selectProfile"
+            ui-sref="emailreport"
+            data-method="back"
+            translate>
+            FORM.BUTTONS.CLOSE
+        </a>
+
+
+        <bh-loading-button
+            ng-click="catPeopleListCtrl.getSelectedRows()"
+            loading-state="BillingServicesForm.$loading">
+            <span translate>FORM.LABELS.SELECT</span>
+        </bh-loading-button>
+
+    </div>
+</form>
