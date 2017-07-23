@@ -414,6 +414,7 @@
             "SERVICE": "Service",
             "SET_DATE": "Changer la Date",
             "SEX": "Sexe",
+            "SHOW_SIMPLE_PREVIEW" : "Afficher Apercue Simple",
             "SIGNATURE": "Signature",
             "SIZE_BYTES": "Octets",
             "SIZE_KB": "Ko",

@@ -16,111 +16,105 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
+const accountExtrat = require('../../accounts/extra');
 
-const TEMPLATE_1 = './server/controllers/finance/reports/cashReport/report_combined.handlebars';
-const TEMPLATE_2 = './server/controllers/finance/reports/cashReport/report_separated.handlebars';
+const TEMPLATE_COMBINED = './server/controllers/finance/reports/cashReport/report_combined.handlebars';
+const TEMPLATE_SEPARATED = './server/controllers/finance/reports/cashReport/report_separated.handlebars';
 
 // expose to the API
 exports.document = document;
-
-function getOpeningBalance(accountId, maxDate) {
-  const sql = `
-  SELECT
-    IFNULL(SUM(g.debit_equiv - g.credit_equiv), 0) AS openingBalance
-  FROM 
- 	  general_ledger AS g
-  WHERE
-	  g.account_id = ? AND
-	  g.trans_date < DATE(?);`;
-
-  return db.one(sql, [accountId, maxDate]);
-}
-
 
 function getRecordQuery(token, format, openingBalance) {
   let query;
 
   if (format === 1) {
     query =
-      `
-    SET @cbal := ${openingBalance};
-    SELECT
-      t.trans_id, t.trans_date, t.debit_equiv AS debit, t.credit_equiv AS credit,
-      t.description, a.number, a.label, t.balance, (@cbal := @cbal + t.balance) AS cbalance,
-      c.reference AS cashReference, v.reference AS voucherReference, t.record_uuid
-    FROM
-      (
+      `	
+      SELECT
+        t.trans_id, t.trans_date, t.debit, t.credit, t.description, t.account_id, 
+        a.number, a.label, t.balance, t.cbalance, c.reference AS cashReference, 
+        v.reference AS voucherReference, t.record_uuid
+      FROM
         (
           SELECT
-            p.trans_date, p.debit_equiv, p.credit_equiv, p.trans_id, p.record_uuid,
-            p.description, p.account_id, (p.debit_equiv - p.credit_equiv) AS balance
+              trans_id, trans_date, debit_equiv AS debit, credit_equiv AS credit, account_id, 
+              description, balance, (@cbal := @cbal + balance) AS cbalance, record_uuid
           FROM
-            posting_journal AS p
-          WHERE 
-            p.account_id= ? AND 
-            (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
-        )
-        UNION ALL
-        (
-          SELECT
-            g.trans_date, g.debit_equiv, g.credit_equiv, g.trans_id, g.record_uuid,
-            g.description, g.account_id, (g.debit_equiv - g.credit_equiv) AS balance
-          FROM
-            general_ledger AS g 
-          WHERE 
-            g.account_id= ? AND 
-            (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
-        )
-      ) AS t
-    JOIN 
-      account a ON a.id = t.account_id
-    LEFT JOIN 
-      cash c ON c.uuid = t.record_uuid
-    LEFT JOIN
-      voucher v ON v.uuid = t.record_uuid
-    ORDER BY 
-      t.trans_date;`
-
+          
+            (
+              (
+                    SELECT
+                      p.trans_date, p.debit_equiv, p.credit_equiv, p.trans_id, p.record_uuid,
+                      p.description, p.account_id, (p.debit_equiv - p.credit_equiv) AS balance
+                    FROM
+                      posting_journal AS p
+                    WHERE 
+                      p.account_id= ? AND 
+                      (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
+                  )
+                  UNION ALL
+                  (
+                    SELECT
+                      g.trans_date, g.debit_equiv, g.credit_equiv, g.trans_id, g.record_uuid,
+                      g.description, g.account_id, (g.debit_equiv - g.credit_equiv) AS balance
+                    FROM
+                      general_ledger AS g 
+                    WHERE 
+                      g.account_id= ? AND 
+                      (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
+                  )
+              ) AS u, (SELECT @cbal := ${openingBalance}
+            ) AS z 
+          ORDER BY 
+            trans_date
+        ) AS t
+      JOIN 
+        account a ON a.id = t.account_id
+      LEFT JOIN 
+        cash c ON c.uuid = t.record_uuid
+      LEFT JOIN
+        voucher v ON v.uuid = t.record_uuid;
+		  `;
 
   } else {
     query =
       `
-    SELECT
-      t.trans_id, t.trans_date, t.debit_equiv AS debit, t.credit_equiv AS credit, t.description, 
-      t.origin_id, t.user_id, u.username, a.number, 
-      tr.text AS transactionType, a.label
-    FROM
-      (
+      SELECT
+        t.trans_id, t.trans_date, t.debit_equiv AS debit, t.credit_equiv AS credit, t.description, 
+        t.origin_id, t.user_id, u.username, a.number, 
+        tr.text AS transactionType, a.label
+      FROM
         (
-          SELECT
-            p.trans_date, p.debit_equiv, p.credit_equiv,
-            p.trans_id, p.description, p.origin_id, p.user_id, p.account_id
-          FROM
-            posting_journal AS p
-          WHERE 
-            p.account_id= ? AND (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
-        )
-        UNION ALL
-        (
-          SELECT
-            g.trans_date, g.debit_equiv, g.credit_equiv,
-            g.trans_id, g.description, g.origin_id, g.user_id, g.account_id
-          FROM
-            general_ledger AS g
-          WHERE 
-            g.account_id= ? AND (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
-        )
-      ) AS t
-    JOIN 
-      user u ON t.user_id = u.id
-    JOIN 
-      account a ON a.id = t.account_id
-    LEFT JOIN 
-      transaction_type tr ON tr.id = t.origin_id
-    WHERE 
-      ${token} 
-    GROUP BY 
-      t.trans_id;`;
+          (
+            SELECT
+              p.trans_date, p.debit_equiv, p.credit_equiv,
+              p.trans_id, p.description, p.origin_id, p.user_id, p.account_id
+            FROM
+              posting_journal AS p
+            WHERE 
+              p.account_id= ? AND (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
+          )
+          UNION ALL
+          (
+            SELECT
+              g.trans_date, g.debit_equiv, g.credit_equiv,
+              g.trans_id, g.description, g.origin_id, g.user_id, g.account_id
+            FROM
+              general_ledger AS g
+            WHERE 
+              g.account_id= ? AND (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
+          )
+        ) AS t
+      JOIN 
+        user u ON t.user_id = u.id
+      JOIN 
+        account a ON a.id = t.account_id
+      LEFT JOIN 
+        transaction_type tr ON tr.id = t.origin_id
+      WHERE 
+        ${token} 
+      GROUP BY 
+        t.trans_id;`;
   }
 
   return query;
@@ -130,25 +124,21 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
   let reportContext = {};
   let promise;
 
-  // promise = getOpeningBalance(accountId, dateFrom);
-
   if (format === 1) {
     promise = 
-    getOpeningBalance(accountId, dateFrom)
+    accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
       .then((openingBalance) => {
-        _.merge(reportContext, openingBalance);
-        return db.exec(getRecordQuery(null, format, openingBalance.openingBalance), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+        _.merge(reportContext, { openingBalance : openingBalance.balance } );
+        return db.exec(getRecordQuery(null, format, openingBalance.balance), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
       })
-      .then((rows) => {
-        // The result will be the last element
-        const records = rows.pop();
+      .then((records) => {
         return { records, isEmpty: records.length === 0 };
       });
   } else {
     promise =
-    getOpeningBalance(accountId, dateFrom)
+    accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
     .then((openingBalance) => {
-      _.merge(reportContext, openingBalance);
+      _.merge(reportContext, { openingBalance : openingBalance.balance });
      return db.exec(getRecordQuery('t.debit_equiv > 0', format), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo])
     })
     .then((entries) => {
@@ -182,9 +172,6 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
       reportContext.intermediateTotal = intermediateTotal.algebricBalance;
       // getting final balance of cash account
       return db.one(aggregateRecordQuery(1, reportContext.openingBalance), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-    })
-    .then((finalTotal) => {
-      return finalTotal;
     });
   }
 
@@ -202,7 +189,6 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
         currency AS cu ON cac.currency_id = cu.id
       WHERE cac.account_id = ?;`
       return db.one(sql, [accountId]);
-
     })
     .then((cashDetail) => {
       _.merge(reportContext, cashDetail);
@@ -271,7 +257,7 @@ function document(req, res, next) {
   params.account_id = Number(params.account_id);
 
   try {
-    const TEMPLATE = params.format === 1 ? TEMPLATE_1 : TEMPLATE_2;
+    const TEMPLATE = params.format === 1 ? TEMPLATE_COMBINED : TEMPLATE_SEPARATED;
     documentReport = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
     next(e);

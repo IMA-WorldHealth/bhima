@@ -7,10 +7,10 @@ const helpers = require('../../helpers');
 describe(`(${target}) cash Reports`, function () {
 
   const keys = [
-     'cashCurrency', 'cashName', 'entries', 
+     'cashCurrency', 'cashName', 'entries', 'finalTotal', 
      'expenses', 'isEmpty', 'metadata', 'totalEntry', 
-     'totalExpense', 'type_id', 'algebricBalance', 'arithmeticBalance',
-     'dateFrom', 'dateTo', 'intermediateTotal', 'openingBalance'
+     'totalExpense', 'type_id', 'dateFrom', 'dateTo',
+     'intermediateTotal', 'openingBalance'
      ];
 
   const parameters = {

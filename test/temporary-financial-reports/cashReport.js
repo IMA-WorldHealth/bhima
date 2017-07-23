@@ -84,7 +84,7 @@ describe('Cash Report Report', () => {
 
     it('Returns correct data for year 2016 Primary cash $ for cash journal (format 1)', () => {
         // see server/controllers/finance/reports/cashReport/index.js, getCashRecord method
-        const openingBalance = -800.28;
+        const openingBalance = 1199.72;
         const recordsLength = 35;
 
         return agent.get(reportURL)
@@ -98,7 +98,7 @@ describe('Cash Report Report', () => {
 
     it('Returns correct data for July month 2016 Primary cash $ for cash journal (format 1)', () => {
         // see server/controllers/finance/reports/cashReport/index.js, getCashRecord method
-        const openingBalance = -1213.57;
+        const openingBalance = 786.43;
         const recordsLength = 2;        
 
         return agent.get(reportURL)
@@ -113,11 +113,11 @@ describe('Cash Report Report', () => {
 
     it('Returns correct data for year 2016 Primary cash $ splited entry exit cash report (format 2)', () => {
         // see server/controllers/finance/reports/cashReport/index.js, getCashRecord method
-        const openingBalance = -800.28;
+        const openingBalance = 1199.72;
         const totalEntry = 69.1;
         const totalExpense = 840;
         const intermediateBalance = -770.9;
-        const balanceTotal = -1571.18;
+        const balanceTotal = 428.82;
 
         const entriesLength = 11;
         const expensesLength = 24;
@@ -140,11 +140,11 @@ describe('Cash Report Report', () => {
     it('Returns correct data for July month 2016 Primary cash $ splited entry exit cash report (format 2)', () => {
         // see server/controllers/finance/reports/cashReport/index.js, getCashRecord method
 
-        const openingBalance = -1213.57;
+        const openingBalance = 786.43;
         const totalEntry = 0;
         const totalExpense = 70;
         const intermediateBalance = -70;
-        const balanceTotal = -1283.57;
+        const balanceTotal = 716.43;
 
         const entriesLength = 0;
         const expensesLength = 2;

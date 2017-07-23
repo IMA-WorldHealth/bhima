@@ -87,7 +87,10 @@
             <!-- Date interval  -->
             <bh-date-interval
                 date-from="ReportConfigCtrl.reportDetails.dateFrom"
-                date-to="ReportConfigCtrl.reportDetails.dateTo">
+                date-to="ReportConfigCtrl.reportDetails.dateTo"
+                required
+                validation-trigger = 'ConfigForm.$submitted'
+                >
             </bh-date-interval>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
