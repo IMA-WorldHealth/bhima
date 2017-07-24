@@ -21,7 +21,7 @@ describe('BalanceSheets report ::', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportBalanceSheetPage(key);
-    browser.refresh();
+    browser.refresh();    
   });
 
   it('preview a new balanceSheet report', () => {

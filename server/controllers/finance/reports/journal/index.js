@@ -27,6 +27,8 @@ function postingJournalExport(req, res, next) {
     csvKey                   : 'rows',
     suppressDefaultFiltering : true,
     suppressDefaultFormating : false,
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
   });
 
   let report;

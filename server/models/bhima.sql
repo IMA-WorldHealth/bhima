@@ -48,7 +48,7 @@ INSERT INTO unit VALUES
   -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
-  -- (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
+  (149, 'Cash report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),  
   (150, 'Balance Report', 'TREE.BALANCE_REPORT', 'Balance report module', 144, '/modules/reports/balance_report', '/reports/balance_report'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/modules/reports/aged_debtors', '/reports/aged_debtors'),
   (152, 'Account report', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/modules/reports/account_report', '/reports/account_report'),
@@ -58,7 +58,7 @@ INSERT INTO unit VALUES
   (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
   (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/modules/finance/open_debtors', '/reports/open_debtors'),
   (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted'),
-  -- (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/partials/finance/clients_report', '/reports/clients_report'),
+  (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/modules/reports/clients_report', '/reports/clients_report'),
   (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/partials/stock', '/stock'),
   (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/partials/stock/lots', '/stock/lots'),
   (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/partials/stock/movements', '/stock/movements'),
@@ -98,9 +98,10 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE'),
   (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (9, 'clients_report','REPORT.CLIENTS_REPORT'),
+  (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
-  (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE');
+  (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
+  (12, 'cash_report', 'REPORT.CASH_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

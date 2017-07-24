@@ -44,7 +44,7 @@
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
                   </a>
-                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : { patient_group_uuid : group.uuid } })">
+                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : { key : 'patient_group_uuid', value : group.uuid }})">
                     <span class="fa fa-list"></span> <span translate> FORM.LABELS.PATIENT_LIST </span>
                   </a>
                 </td>

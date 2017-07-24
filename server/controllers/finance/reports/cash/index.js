@@ -136,7 +136,7 @@ function receipt(req, res, next) {
 function report(req, res, next) {
   let reportInstance;
   const query = _.clone(req.query);
-  _.extend(query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', csvKey : 'rows' });
+  _.extend(query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', csvKey : 'rows', footerRight : '[page] / [toPage]', footerFontSize : '7'});
 
   // set up the report with report manager
   try {

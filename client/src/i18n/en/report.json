@@ -1,88 +1,102 @@
 {
-  "REPORT":{
-    "ACCOUNT":"Account Statement",
-    "AGED_CREDITORS":"Aged Debts",
-    "AGED_DEBTORS":{
-      "TITLE":"Aged Debtors",
-      "DESCRIPTION":"This report show all the debts of the clients, while specifying the debts per period"
+  "REPORT": {
+    "CLIENTS" : "Rapport Clients",
+    "ACCOUNT": "Account Statement",
+    "AGED_CREDITORS": "Aged Debts",
+    "AGED_DEBTORS": {
+      "TITLE": "Aged Debtors",
+      "DESCRIPTION": "This report show all the debts of the clients, while specifying the debts per period"
     },
-    "BY_ASC":"By Ascending Order",
-    "BY_DESC":"By Descending Order",
-    "BALANCE":"Balance Report",
-    "BALANCE_SHEET":{
-      "TITLE":"Balance Sheet",
-      "DESCRIPTION":"This report shows the balance sheet of the enterprise",
-      "SHOW_EXPLOITATION":"Show Exploitation",
-      "DEBTOR_SOLD":"Debit",
-      "CREDITOR_SOLD":"Credit",
-      "EXPLOITATION_RESULT":"Exploitation Result"
+    "BY_ASC": "By Ascending Order",
+    "BY_DESC": "By Descending Order",
+    "BALANCE": "Balance Report",
+    "BALANCE_SHEET": {
+      "TITLE": "Balance Sheet",
+      "DESCRIPTION": "This report shows the balance sheet of the enterprise",
+      "SHOW_EXPLOITATION": "Show Exploitation",
+      "DEBTOR_SOLD": "Debit",
+      "CREDITOR_SOLD": "Credit",
+      "EXPLOITATION_RESULT": "Exploitation Result"
     },
-    "CASH_EXPENSE":"Expenses",
-    "CASHFLOW_BY_SERVICE":"Cashflow By Service",
-    "CASHFLOW":"Cashflow",
-    "CASH_INCOME":"Incomes",
-    "CHART_OF_ACCOUNTS":"Chart of Accounts",
-    "CLIENTS_REPORT":{"TITLE":"Clients Report", "CURRENT_MVT":"Current Movement", "PREVIOUS_MVT":"Previous Movement"},
-    "CLOSING_BALANCE":"Closing Balance",
-    "CONFIGURATION":"Report Configuration",
-    "DELETE":"Delete Report",
-    "DOWNLOAD":"Download",
-    "EXPENSE_REPORT":"Expenses Report",
-    "GENERATED":"Generated Report",
+    "CASH_EXPENSE": "Expenses",
+    "CASHFLOW_BY_SERVICE": "Cashflow By Service",
+    "CASHFLOW": "Cashflow",
+    "CASH_INCOME": "Revenu",
+    "CHART_OF_ACCOUNTS": "Chart of Accounts",
+    "CLIENTS_REPORT": {
+      "TITLE": "Clients Report",
+      "CURRENT_MVT": "Current Movement",
+      "PREVIOUS_MVT": "From Beginning To :",
+      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
+    },
+    "CLOSING_BALANCE": "Closing Balance",
+    "CONFIGURATION": "Report Configuration",
+    "DELETE": "Delete Report",
+    "DOWNLOAD": "Download",
+    "EXPENSE_REPORT": "Expenses Report",
+    "GENERATED": "Generated Report",
     "INCOME_EXPENSE": "Income Expense Report",
-    "INCOME_REPORT":"Incomes Report",
-    "MONTHLY_BALANCE":"Monthly Balance",
-    "OPEN_DEBTORS":{ 
-      "DESCRIPTION":"This report shows indebted debtors",
-      "TITLE":"Debtors with Unpaid Debts", 
-      "TREE":"Open Debtors" 
+    "INCOME_REPORT": "Incomes Report",
+    "MONTHLY_BALANCE": "Monthly Balance",
+    "OPEN_DEBTORS": {
+      "DESCRIPTION": "This report shows indebted debtors",
+      "TITLE": "Debtors with Unpaid Debts",
+      "TREE": "Open Debtors"
     },
-    "OPENING_BALANCE":"Opening Balance",
-    "ORDER":{
-      "LAST_INVOICE":"Date of last invoice",
-      "LAST_PAYMENT":"Date of last payment",
-      "PATIENT_NAME":"Nom du patient",
-      "TOTAL_DEBT":"Total Debts"
-    },    
-    "OVER_NINETY_DAYS":"Over 90 Days",
-    "PERIOD_START":"Start",
-    "PERIOD_STOP":"Stop",
-    "PRODUCED_BY":"Produced by",
-    "PRODUCED_DATE":"Production Date",
-    "PRODUCED_ON":"Produced on",
-    "SINCE":"Since",
-    "SIXTY_TO_NINETY_DAYS":"60 to 90 Days",
-    "THIRTY_TO_SIXTY_DAYS":"30 to 60 Days",
-    "VIEW_CREDIT_NOTE":"View Credit Note",
-    "VIEW_INVOICE":"View Invoices",
-    "VIEW_PATIENT":"View Patient",
-    "VIEW_PAYMENTS":"View Cash Payments",
-    "VIEW_RECEIPT":"View Receipt",
-    "ZERO_TO_THIRTY_DAYS":"Less Than 30 Days",
-    "REPORT_ACCOUNTS" : {
-      "TITLE":"Account Report",
-      "DESCRIPTION":"This report shows all transactions for an individual account given a set time period.",
-      "WARN_MULTIPLE":"N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the begining of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year."
+    "OPENING_BALANCE": "Opening Balance",
+    "ORDER": {
+      "LAST_INVOICE": "Date of last invoice",
+      "LAST_PAYMENT": "Date of last payment",
+      "PATIENT_NAME": "Nom du patient",
+      "TOTAL_DEBT": "Total Debts"
     },
-    "INCOME_EXPENSE_REPORT" : {
-      "TITLE" : "Income Expense Report",
-      "DESCRIPTION" : "Show the list of incomes and expenses accured inside the enterprise"
+    "OVER_NINETY_DAYS": "Over 90 Days",
+    "PERIOD_START": "Start",
+    "PERIOD_STOP": "Stop",
+    "PRODUCED_BY": "Produced by",
+    "PRODUCED_DATE": "Production Date",
+    "PRODUCED_ON": "Produced on",
+    "SINCE": "Since",
+    "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
+    "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "VIEW_CREDIT_NOTE": "View Credit Note",
+    "VIEW_INVOICE": "View Invoices",
+    "VIEW_PATIENT": "View Patient",
+    "VIEW_PAYMENTS": "View Cash Payments",
+    "VIEW_RECEIPT": "View Receipt",
+    "ZERO_TO_THIRTY_DAYS": "Less Than 30 Days",
+    "REPORT_ACCOUNTS": {
+      "TITLE": "Account Report",
+      "DESCRIPTION": "This report shows all transactions for an individual account given a set time period.",
+      "WARN_MULTIPLE": "N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the begining of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year."
+    },
+    "INCOME_EXPENSE_REPORT": {
+      "TITLE": "Income Expense Report",
+      "DESCRIPTION": "Show the list of incomes and expenses accured inside the enterprise"
     },
     "BALANCE_REPORT": {
-      "TITLE":"Balance Report",
-      "DESCRIPTION":"This report show the balance of accounts for a given period"
+      "TITLE": "Balance Report",
+      "DESCRIPTION": "This report show the balance of accounts for a given period"
     },
-    "UTIL":{
-      "CANCEL_PREVIEW":"Cancel Preview",
-      "SAVE_AS":"Save As",
-      "DOCUMENT_PREVIEW":"Document Preview",
-      "PDF":"PDF",
-      "CSV":"CSV",
-      "SAVE_SUCCESS":"Report successfully saved",
-      "BACK":"Back to the previous page",
-      "OPTIONS":"Options",
-      "PREVIEW":"Preview",
-      "VIEW_ARCHIVE":"Archives"
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Income Expense Report",
+      "DESCRIPTION": "This report show all income and expense occured in the enterprise"
+    },
+    "CASH_REPORT": {
+      "TITLE": "Cash Report",
+      "DESCRIPTION": "This report show all entries and exits of cash inside the enterprise"
+    },
+    "UTIL": {
+      "CANCEL_PREVIEW": "Cancel Preview",
+      "SAVE_AS": "Save As",
+      "DOCUMENT_PREVIEW": "Document Preview",
+      "PDF": "PDF",
+      "CSV": "CSV",
+      "SAVE_SUCCESS": "Report successfully saved",
+      "BACK": "Back to the previous page",
+      "OPTIONS": "Options",
+      "PREVIEW": "Preview",
+      "VIEW_ARCHIVE": "Archives"
     }
   }
 }

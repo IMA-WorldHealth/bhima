@@ -32,6 +32,8 @@ function renderReport(req, res, next) {
     filename : 'TREE.GENERAL_LEDGER',
     orientation : 'landscape',
     csvKey   : 'rows',
+    footerRight : '[page] / [toPage]', 
+    footerFontSize : '7', 
   });
   let report;
   let data;
@@ -70,6 +72,8 @@ function renderAccountSlip(req, res, next) {
   const options = _.extend(req.query, {
     filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
     csvKey   : 'transactions',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
   });
 
   let report;
