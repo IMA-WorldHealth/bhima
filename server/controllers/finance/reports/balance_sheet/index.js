@@ -212,14 +212,30 @@ function computeBalanceSheet(params) {
 
   // gets the amount up to the current period
   const sql = `
-    SELECT a.number, a.id, a.label, a.type_id,
-      SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance 
-    FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-    JOIN period AS p ON pt.period_id = p.id
-    WHERE pt.enterprise_id = ?  
-      AND (DATE(p.start_date) <= DATE(?) OR (p.start_date IS NULL OR p.end_date IS NULL))
-      AND pt.fiscal_year_id = (SELECT f.id FROM fiscal_year f WHERE DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date) LIMIT 1)
-    GROUP BY a.id `;
+    SELECT
+      a.number, a.id, a.label, a.type_id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit,
+      SUM(pt.debit - pt.credit) AS balance 
+    FROM
+      period_total AS pt
+    JOIN
+      account AS a ON pt.account_id = a.id
+    JOIN
+      period AS p ON pt.period_id = p.id
+    WHERE
+      pt.enterprise_id = ? AND
+      (DATE(p.start_date) <= DATE(?) OR (p.start_date IS NULL OR p.end_date IS NULL)) AND
+      pt.fiscal_year_id =
+        (
+          SELECT
+            f.id 
+          FROM
+            fiscal_year f
+          WHERE
+            DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date)
+          LIMIT 1
+        )
+    GROUP BY 
+      a.id`;
 
   const queryParameters = [query.enterpriseId, query.date, query.date];
 
