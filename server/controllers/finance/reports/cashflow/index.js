@@ -612,6 +612,9 @@ function reportByService(req, res, next) {
   }
 
   const data = {};
+  data.dateFrom = dateFrom;
+  data.dateTo = dateTo;
+
   let emptyCashValues = false;
 
   // get the cash flow data
@@ -713,9 +716,11 @@ function reportByService(req, res, next) {
       data.aggregates = aggregates;
 
       // the total of everything is just the last running balance amount
-      const lastRow = data.matrix[data.matrix.length - 1];
-      const lastRowTotalIdx = lastRow.length - 1;
-      aggregates.push({ totalCashIncome : lastRow[lastRowTotalIdx] });
+      if (data.matrix) {
+        const lastRow = data.matrix[data.matrix.length - 1];
+        const lastRowTotalIdx = lastRow.length - 1;
+        aggregates.push({ totalCashIncome : lastRow[lastRowTotalIdx] });
+      }
 
       return serviceReport.render(data);
     })

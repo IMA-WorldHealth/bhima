@@ -1,18 +1,28 @@
-{{> head title="CASHFLOW.BY_SERVICE" }}
+{{> head title="REPORT.CASHFLOW_BY_SERVICE.TITLE" }}
 
-<body>
+<div class="container-fluid">
+  <!-- heading  -->
+  <div class="row">
+    <div class="col-xs-4">
+      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
+      <p style="margin:2px;">
+        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
+        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
+        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
+        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
+      </p>
+    </div>
 
-  {{> header}}
+    <div class="col-xs-4">
+      <h3 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{translate 'REPORT.CASHFLOW_BY_SERVICE.TITLE'}}<br>
+        <small>{{date dateFrom }} - {{date dateTo }}</small>
+      </h3>
+    </div>
+  </div>
 
-  <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-capitalize">
-        {{translate 'REPORT.CASHFLOW_BY_SERVICE'}}
-      </h2>
-
       <table class="table table-bordered table-condensed"  style="font-size:0.75em;">
         <thead>
           <tr>
@@ -44,7 +54,7 @@
               {{/each}}
             </tr>
           {{else}}
-            {{> emptyTable columns=2}}
+            {{> emptyTable columns=3}}
           {{/each}}
         </tbody>
 
@@ -59,4 +69,4 @@
       </table>
     </div>
   </div>
-</body>
+</div>
