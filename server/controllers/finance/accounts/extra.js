@@ -71,7 +71,7 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
   const periodCondition = `
     (period.number = 0
     OR
-    DATE(period.end_date) <= DATE(?))
+    DATE(period.end_date) < DATE(?))
   `;
 
   const sql = `

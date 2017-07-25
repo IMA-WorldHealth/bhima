@@ -35,9 +35,9 @@ describe('Balance Sheet Report', () => {
      */
     const totalAssets = 6.43;
     const totalLiabilities = 0;
-    const totalEquity = -1270.11; // equity has a creditor sold (negative)
+    const totalEquity = -1030.11; // equity has a creditor sold (negative)
     const totalRevenue = -56.33;  // revenue has a creditor sold (negative)
-    const totalExpense = 840.01;  // expense has a debtor sold (positive)
+    const totalExpense = 1080.01;  // expense has a debtor sold (positive)
 
     result2016 = totalEquity + totalRevenue + totalExpense;
 
@@ -53,11 +53,16 @@ describe('Balance Sheet Report', () => {
         expect(Number((report.equity.totals.balance || 0).toFixed(2))).to.equal(totalEquity);
         expect(Number((report.revenue.totals.balance || 0).toFixed(2))).to.equal(totalRevenue);
         expect(Number((report.expense.totals.balance || 0).toFixed(2))).to.equal(totalExpense);
+
+        //Expect result2016
+        const expect2016 = Number(((report.equity.totals.balance + report.revenue.totals.balance + report.expense.totals.balance) || 0).toFixed(2));
+
+        expect(Number((expect2016 || 0).toFixed(2))).to.equal(Number((result2016 || 0).toFixed(2)));
       });
   });
 
   it('Returns expected aggregate results for the start of fiscal year 2017', () => {
-    const totalAssets = -53.57;
+    const totalAssets = 6.43;
     const totalLiabilities = 0;
     const totalRevenue = 0; // revenue has a creditor sold (negative)
     const totalExpense = 0; // expense has a debtor sold (positive)
