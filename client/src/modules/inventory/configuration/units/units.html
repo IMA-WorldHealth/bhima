@@ -2,14 +2,14 @@
   <div class="panel-heading" style="display: flex; justify-content: space-between;">
     <span>
       <i class="fa fa-list"></i>
-      {{ 'INVENTORY.LIST_UNIT' | translate }} ({{ UnitsCtrl.unitList.length }})
+      <span translate>INVENTORY.LIST_UNIT</span> ({{ UnitsCtrl.unitList.length }})
     </span>
 
     <button
       ng-click="UnitsCtrl.addInventoryUnit()"
       class="btn btn-default btn-sm"
       type="button"
-      data-create-unit><i class="fa fa-plus"></i>
+      data-create-unit><i class="fa fa-plus"></i> <span translate>FORM.BUTTONS.ADD</span>
     </button>
   </div>
 
@@ -18,7 +18,7 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>{{ 'FORM.LABELS.LABEL' | translate }}</th>
+          <th translate>FORM.LABELS.LABEL</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
@@ -29,12 +29,12 @@
           <td>{{ unit.text }}</td>
           <td>
             <a href ng-click="UnitsCtrl.editInventoryUnit(unit.id)" data-edit-unit="{{ unit.text }}">
-              <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+              <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
             </a>
           </td>
           <td>
             <a href ng-click="UnitsCtrl.deleteInventoryUnit(unit.id)" data-delete-unit="{{ unit.text }}" class="text-danger">
-              <i class="fa fa-remove"></i> {{ "FORM.BUTTONS.DELETE" | translate }}
+              <i class="fa fa-remove"></i> <span translate>FORM.BUTTONS.DELETE</span>
             </a>
           </td>
         </tr>

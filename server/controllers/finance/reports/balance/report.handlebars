@@ -2,6 +2,7 @@
 
 <body>
 
+<div class="container">
   {{> header}}
 
   <!-- body  -->
@@ -18,32 +19,31 @@
       </h4>
 
       <h4 class="text-center">
-        {{#if session.dateFrom}}{{date session.dateFrom}} - {{date session.dateTo}}{{/if}}
-        {{#if session.date}}<span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date session.date}}{{/if}}
+        {{#if session.date}}
+          <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span> 
+          <strong class="text-capitalize">{{date session.date "MMMM YYYY"}}</strong>
+        {{/if}}
       </h4>
 
       <!-- data  -->
-      <table class="table table-condensed table-bordered">
+      <table class="table table-condensed table-report">
         <thead>
-          <tr>
+          <tr style="background-color:#ddd;">
             <th rowspan="2" class="text-center">{{translate "FORM.LABELS.ACCOUNT"}}</th>
             <th colspan="2" class="text-center">
               {{translate "BALANCE.OLD_SOLD"}} <br>
               <small>{{#if session.date}} &lt; {{date session.date "MMMM"}}{{/if}}</small>
-              <small>{{#if session.dateTo}} &lt; {{date session.dateTo "MMMM"}}{{/if}}</small>
             </th>
             <th colspan="2" class="text-center">
               {{translate "BALANCE.MONTH_SOLD"}} <br>
-              <small>{{#if session.date}}{{date session.date "MMMM"}}{{/if}}</small>
-              <small>{{#if session.dateTo}}{{date session.dateTo "MMMM"}}{{/if}}</small>
+              <small>{{#if session.date}}{{date session.date "MMMM YYYY"}}{{/if}}</small>
             </th>
             <th colspan="2" class="text-center">
               {{translate "BALANCE.NEW_SOLD"}} <br>
-              <small>{{#if session.date}}{{date session.date}}{{/if}}</small>
-              <small>{{#if session.dateTo}}{{date session.dateTo}}{{/if}}</small>
+              <small>{{#if session.date}}{{date session.date "MMMM YYYY"}}{{/if}}</small>
             </th>
           </tr>
-          <tr>
+          <tr style="background-color:#ddd;">
             <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
             <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
             <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
@@ -79,4 +79,6 @@
       </table>
     </div>
   </div>
+
+</div>
 </body>

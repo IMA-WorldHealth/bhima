@@ -366,6 +366,7 @@ scheduler.setScheduler();
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
+  app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
@@ -580,7 +581,6 @@ scheduler.setScheduler();
 
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
-  // app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
 
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);

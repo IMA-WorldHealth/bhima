@@ -3,11 +3,15 @@ angular.module('bhima.routes')
     // a list of all supported reported and their respective keys, this allows
     // the ui-view to be populated with the correct report configuration form
     /* @const */
-    var SUPPORTED_REPORTS = [
+    var SUPPORTED_REPORTS = [      
+      'cash_report',
       'account_report',
       'balance_sheet_report',
       'income_expense',
       'aged_debtors',
+      'open_debtors',
+      'balance_report',
+      'clients_report',
     ];
 
     $stateProvider

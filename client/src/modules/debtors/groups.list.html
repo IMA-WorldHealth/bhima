@@ -40,8 +40,8 @@
             <div class="row">
               <div class="col-md-6">
                 <h4 style="margin-top : 0px;">
-                  <span ng-if="debtorGroup.locked" class="fa fa-lock text-danger"></span> <b>{{debtorGroup.name}}</b> 
-                  <i class="fa fa-circle" style="color: {{ debtorGroup.color }}"></i>
+                  <i class="fa fa-circle" style="color: {{ debtorGroup.color }}"></i> <b>{{debtorGroup.name}}</b> 
+                  <span ng-if="debtorGroup.locked" class="fa fa-lock text-danger"></span>
                 </h4>
                 <h5 style="margin-top : 0px;"></span><span translate> FORM.LABELS.ACCOUNT_NUMBER </span> : <b>{{debtorGroup.account_number}}</b></h5>
               </div>
@@ -58,7 +58,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <a ui-sref="patientRegistry({ filters : { debtor_group_uuid : debtorGroup.uuid }})"><span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> <span translate> DEBTOR_GROUP.DEBTOR.SUBSCRIBED </span></a>
+                    <a ui-sref="patientRegistry({ filters : { key : 'debtor_group_uuid', value : debtorGroup.uuid }})"><span class="fa fa-bars" aria-hidden="true"></span> <b>{{debtorGroup.total_debtors}}</b> <span translate> DEBTOR_GROUP.DEBTOR.SUBSCRIBED </span></a>
                   </div>
                 </div>
               </div>

@@ -8,7 +8,7 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, bhConstants, Receipts, Session,) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, bhConstants, Receipts, Session) {
   var vm = this;
   vm.enterprise = Session.enterprise;
 
@@ -28,9 +28,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.submit = submit;
 
   // Set up page elements data (debtor select data)
-  vm.onSelectDebtor = onSelectDebtor;
-
-  function onSelectDebtor(debtorGroup) {
+  vm.onSelectDebtor =  function onSelectDebtor(debtorGroup) {
     vm.employee.debtor_group_uuid = debtorGroup.uuid;
   }
 

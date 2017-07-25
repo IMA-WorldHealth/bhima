@@ -1,26 +1,28 @@
 {
   "REPORT":{
+    "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Rapport du Compte",
     "AGED_CREDITORS":"Balance agée des Créances",
     "AGED_DEBTORS":{
       "TITLE":"Balance agée des Conventionnés",
       "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
-    "BALANCE":"Rapport de la Balance",
-    "BALANCE_SHEET":{
-      "TITLE":"Bilan",
-      "DESCRIPTION":"Ce rapport affiche le bilan simplifié de l'entreprise",
-      "SHOW_EXPLOITATION":"Afficher les exploitations",
-      "DEBTOR_SOLD":"Debit",
-      "CREDITOR_SOLD":"Credit",
-      "EXPLOITATION_RESULT":"Resultat d'exploitation"
+    "BY_ASC": "Par ordre croissant",
+    "BY_DESC": "Par ordre décroissant",
+    "BALANCE": "Rapport de la Balance",
+    "BALANCE_SHEET": {
+      "TITLE": "Bilan",
+      "DESCRIPTION": "Ce rapport affiche le bilan simplifié de l'entreprise",
+      "SHOW_EXPLOITATION": "Afficher les exploitations",
+      "DEBTOR_SOLD": "Debit",
+      "CREDITOR_SOLD": "Credit",
+      "EXPLOITATION_RESULT": "Resultat d'exploitation"
     },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE":"Cashflow par Service",
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
-    "CLIENTS_REPORT":{"TITLE":"Rapport Clients", "CURRENT_MVT":"Mouvement Courant", "PREVIOUS_MVT":"Mouvement Precedent"},
     "CLOSING_BALANCE":"Balance à la cloture",
     "CONFIGURATION":"Configuration rapport",
     "DELETE":"Supprimer un rapport",
@@ -30,31 +32,55 @@
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
-    "OPEN_DEBTORS":{"TITLE":"Debiteurs Avec Dettes", "TREE":"Debiteurs Avec Dettes"},
-    "OPENING_BALANCE":"Balance d'ouverture",
-    "OVER_NINETY_DAYS":"Plus de 90 jours",
-    "PERIOD_START":"Debut",
-    "PERIOD_STOP":"Fin",
-    "PRODUCED_BY":"Produit par",
-    "PRODUCED_DATE":"Date de generation",
-    "PRODUCED_ON":"Produit le",
-    "SINCE":"Depuis",
-    "SIXTY_TO_NINETY_DAYS":"60 a 90 jours",
-    "THIRTY_TO_SIXTY_DAYS":"30 a 60 jours",
-    "VIEW_CREDIT_NOTE":"Voir la note de credit",
-    "VIEW_INVOICE":"Voir les factures",
-    "VIEW_PATIENT":"Voir le Patient",
-    "VIEW_PAYMENTS":"Voir les payments",
-    "VIEW_RECEIPT":"Voir le document",
-    "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours",
-    "REPORT_ACCOUNTS" : {
-      "TITLE":"Rapport de comptes",
-      "DESCRIPTION":"Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
-      "WARN_MULTIPLE":"N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
+    "OPEN_DEBTORS":{
+      "DESCRIPTION":"Ce rapport affiche les débiteurs endettés",
+      "TITLE":"Débiteurs endettés", 
+      "TREE":"Dettes des Débiteurs"
     },
-    "INCOME_EXPENSE_REPORT" : {
-      "TITLE" : "Rapport des Comptes d'exploitation",
-      "DESCRIPTION" : "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    "OPENING_BALANCE": "Balance d'ouverture",
+    "ORDER": {
+      "LAST_INVOICE": "Date de la dernière facture",
+      "LAST_PAYMENT": "Date du dernier paiement",
+      "PATIENT_NAME": "Nom du patient",
+      "TOTAL_DEBT": "Total des dettes"
+    },
+    "OVER_NINETY_DAYS": "Plus de 90 jours",
+    "PERIOD_START": "Debut",
+    "PERIOD_STOP": "Fin",
+    "PRODUCED_BY": "Produit par",
+    "PRODUCED_DATE": "Date de generation",
+    "PRODUCED_ON": "Produit le",
+    "SINCE": "Depuis",
+    "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
+    "THIRTY_TO_SIXTY_DAYS": "30 a 60 jours",
+    "VIEW_CREDIT_NOTE": "Voir la note de credit",
+    "VIEW_INVOICE": "Voir les factures",
+    "VIEW_PATIENT": "Voir le Patient",
+    "VIEW_PAYMENTS": "Voir les payments",
+    "VIEW_RECEIPT": "Voir le document",
+    "ZERO_TO_THIRTY_DAYS": "Moins de 30 jours",
+    "REPORT_ACCOUNTS": {
+      "TITLE": "Rapport de comptes",
+      "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
+      "WARN_MULTIPLE": "N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
+    },
+    "INCOME_EXPENSE_REPORT": {
+      "TITLE": "Rapport des Comptes d'exploitation",
+      "DESCRIPTION": "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    },
+    "BALANCE_REPORT": {
+      "TITLE": "Rapport de la Balance des comptes",
+      "DESCRIPTION": "Ce rapport affiche la balance des comptes pour une période donnée"
+    },
+    "CASH_REPORT": {
+      "TITLE": "Rapport de caisse",
+      "DESCRIPTION": "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
+    },
+    "CLIENTS_REPORT" : {
+      "TITLE" : "Rapport Clients",
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Du debut Au :",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",

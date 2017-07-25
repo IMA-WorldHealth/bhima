@@ -12,8 +12,8 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
   service.Groups = Groups;
   service.Units = Units;
   service.Types = Types;
-  service.openSearchModal = openSearchModal; 
-  service.formatFilterParameters = formatFilterParameters;  
+  service.openSearchModal = openSearchModal;
+  service.formatFilterParameters = formatFilterParameters;
 
   /**
    * @method openSearchModal
@@ -24,15 +24,15 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
    */
   function openSearchModal(params) {
     return $uibModal.open({
-      templateUrl: 'modules/inventory/list/modals/search.modal.html',
-      size: 'md',
-      keyboard: false,
-      animation: false,
-      backdrop: 'static',
-      controller: 'InventoryServiceModalController as ModalCtrl',
+      templateUrl : 'modules/inventory/list/modals/search.modal.html',
+      size : 'md',
+      keyboard : false,
+      animation : false,
+      backdrop : 'static',
+      controller : 'InventoryServiceModalController as ModalCtrl',
       resolve : {
         params : function paramsProvider() { return params; }
-      }
+      },
     }).result;
   }
 
@@ -43,21 +43,18 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
    */
   function formatFilterParameters(params) {
     var columns = [
-      { field: 'group_uuid', displayName: 'FORM.LABELS.GROUP' },
-      { field: 'text', displayName: 'FORM.LABELS.LABEL' }
+      { field : 'group_uuid', displayName : 'FORM.LABELS.GROUP' },
+      { field : 'text', displayName : 'FORM.LABELS.LABEL' },
     ];
     // returns columns from filters
     return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
       var value = params[column.field];
 
       if (angular.isDefined(value)) {
         column.value = value;
-        
         return true;
-      } else {
-        return false;
       }
+      return false;
     });
   }
 

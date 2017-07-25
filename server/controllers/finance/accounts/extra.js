@@ -92,7 +92,8 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
  * @description
  * Sums general ledger lines hitting an account during a period, up to (and including) the provided date.
  */
-function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
+function getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate) {
+  const dateOperator = includeMaxDate ? '<=' : '<';
   const sql = `
     SELECT 
       IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit,
@@ -101,7 +102,7 @@ function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
       general_ledger
     WHERE 
       account_id = ?
-      AND DATE(trans_date) <= DATE(?)
+      AND DATE(trans_date) ${dateOperator} DATE(?)
       AND period_id = ?;
   `;
 
@@ -121,7 +122,7 @@ function getComputedAccountBalanceUntilDate(accountId, date, periodId) {
  * @param {Date} date - the date that the opening balance should be computed through
  * @returns {Promise} - promise wrapping the balance of the account
  */
-function getOpeningBalanceForDate(accountId, date) {
+function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
   let balance = 0;
   let credit = 0;
   let debit = 0;
@@ -145,13 +146,13 @@ function getOpeningBalanceForDate(accountId, date) {
     // 3. calculate the sum of all general ledger transaction against this account
     //    for the current period up to the current date
     .then(periodId =>
-      getComputedAccountBalanceUntilDate(accountId, date, periodId)
+      getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate)
     )
     .then(runningPeriod => {
       return {
-        balance : (balance + runningPeriod.balance).toFixed(4),
-        credit : (credit + runningPeriod.credit).toFixed(4),
-        debit : (debit + runningPeriod.debit).toFixed(4),
+        balance: (balance + runningPeriod.balance).toFixed(4),
+        credit: (credit + runningPeriod.credit).toFixed(4),
+        debit: (debit + runningPeriod.debit).toFixed(4),
       };
     });
 }

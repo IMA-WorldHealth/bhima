@@ -39,19 +39,35 @@ function build(req, res, next) {
 
   switch (qs.order) {
   case 'payment-date-asc':
-    ordering = 'cash.date ASC';
+    ordering = 'lastPaymentDate ASC';
     break;
 
   case 'payment-date-desc':
-    ordering = 'cash.date DESC';
+    ordering = 'lastPaymentDate DESC';
     break;
 
   case 'invoice-date-asc':
-    ordering = 'invoice.date ASC';
+    ordering = 'lastInvoiceDate ASC';
     break;
 
   case 'invoice-date-desc':
-    ordering = 'invoice.date DESC';
+    ordering = 'lastInvoiceDate DESC';
+    break;
+
+  case 'debt-desc':
+    ordering = 'ledger.balance DESC';
+    break;
+
+  case 'debt-asc':
+    ordering = 'ledger.balance ASC';
+    break;
+
+  case 'patient-name-desc':
+    ordering = 'patient.display_name DESC';
+    break;
+
+  case 'patient-name-asc':
+    ordering = 'patient.display_name ASC';
     break;
 
   case 'debt-desc':
@@ -78,7 +94,7 @@ function build(req, res, next) {
       MAX(cash.date) AS lastPaymentDate, ledger.balance AS debt
     FROM patient JOIN entity_map ON patient.uuid = entity_map.uuid
       JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
-      JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
+      LEFT JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
       JOIN (
         SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
           SUM(c.debit_equiv - c.credit_equiv) AS balance
@@ -101,13 +117,21 @@ function build(req, res, next) {
    * Aggregate SQL for totalling all debts up to the present
    */
   const aggregateSql = `
-    SELECT COUNT(DISTINCT(c.entity_uuid)) AS numDebtors, SUM(c.debit_equiv) AS debit,
-     SUM(c.credit_equiv) AS credit, SUM(c.debit_equiv - c.credit_equiv) AS balance
-    FROM (
-      (SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
-      UNION (SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger)
-    ) AS c
-    WHERE entity_uuid IN (SELECT patient.debtor_uuid FROM patient);    
+    SELECT COUNT(a.entity_uuid) AS numDebtors, SUM(a.debit) AS debit, SUM(a.credit) AS credit, SUM(a.balance) AS balance
+    FROM(
+      SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
+        SUM(c.debit_equiv - c.credit_equiv) AS balance
+      FROM (
+        (
+          SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
+        UNION (
+          SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
+        )
+      ) AS c
+      WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
+      GROUP BY c.entity_uuid
+      HAVING balance > 0
+    ) AS a;
   `;
 
   const data = {};

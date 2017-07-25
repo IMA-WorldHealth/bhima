@@ -74,6 +74,9 @@ function ModalService(Modal) {
   // search purchase order
   service.openSearchPurchaseOrder = openSearchPurchaseOrder;
 
+  // search fiscal year
+  service.openSelectFiscalYear = openSelectFiscalYear;  
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -382,6 +385,23 @@ function ModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'modules/purchases/modals/search.tmpl.html',
         controller   : 'SearchPurchaseOrderModalController',
+        controllerAs : '$ctrl',
+        size         : 'md',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    function openSelectFiscalYear(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'modules/general-ledger/modals/search.tmpl.html',
+        controller   : 'SearchFiscalYearModalController',
         controllerAs : '$ctrl',
         size         : 'md',
         backdrop     : 'static',

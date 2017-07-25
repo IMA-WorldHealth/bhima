@@ -119,4 +119,10 @@ BEGIN
 
 END $$
 
+-- compute account class
+CREATE PROCEDURE ComputeAccountClass()
+BEGIN
+  UPDATE account SET classe = LEFT(number, 1);
+END $$
+
 DELIMITER ;

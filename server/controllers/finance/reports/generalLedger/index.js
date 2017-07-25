@@ -32,10 +32,11 @@ function renderReport(req, res, next) {
     filename : 'TREE.GENERAL_LEDGER',
     orientation : 'landscape',
     csvKey   : 'rows',
+    footerRight : '[page] / [toPage]', 
+    footerFontSize : '7', 
   });
   let report;
   let data;
-  const currentDate = new Date();
 
   try {
     report = new ReportManager(REPORT_TEMPLATE, req.session, options);
@@ -43,12 +44,15 @@ function renderReport(req, res, next) {
     return next(e);
   }
 
-  return Fiscal.getPeriodCurrent(currentDate)
+  const fiscalYearId = options.fiscal_year_id;
+
+  return Fiscal.getPeriodByFiscal(fiscalYearId)
     .then((rows) => {
       return GeneralLedger.getlistAccounts(rows);
     })
     .then((rows) => {
       data = { rows };
+      data.fiscal_year_label = options.fiscal_year_label;
       return report.render(data);
     })
     .then((result) => {
@@ -68,6 +72,8 @@ function renderAccountSlip(req, res, next) {
   const options = _.extend(req.query, {
     filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
     csvKey   : 'transactions',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
   });
 
   let report;
