@@ -66,13 +66,6 @@ function refenreceTransaction(req,res,next){
   //loading identifiers keyies, used for defining the table name
   indexIdentifiers();
 
-  //reports urls
-  var reportsTypes={
-    VO:'/reports/finance/vouchers/',
-    IV:'/reports/finance/invoices/',
-    CP:'/reports/finance/cash/'
-  };
-
   var codeRef =  req.params.codeRef.split(".");
   const language= req.params.language;
 
@@ -81,7 +74,7 @@ function refenreceTransaction(req,res,next){
   const refence=codeRef[2];
   const documentDefinition = identifiersIndex[code];
    
-   const query = `
+  const query = `
     SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}  tb, project p 
     WHERE tb.project_id=p.id AND p.abbr="${project_name}" AND tb.reference="${refence}"
   `;
@@ -91,7 +84,7 @@ function refenreceTransaction(req,res,next){
     .then(result =>
       {
         var uuid=result.uuid;
-        var url= reportsTypes[code]+uuid+"?lang="+language+"&posReceipt=0&renderer=pdf";
+        var url= documentDefinition.documentPath + uuid+"?lang="+language+"&posReceipt=0&renderer=pdf";
         res.redirect(url);
       }
     ).catch((error)=>{
