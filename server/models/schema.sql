@@ -1864,7 +1864,7 @@ CREATE TABLE `stock_movement` (
   `entity_uuid`     BINARY(16) NULL,
   `description`     TEXT NULL,
   `flux_id`         INT(11) NOT NULL,
-  `date`            DATE NOT NULL,
+  `date`            DATETIME NOT NULL,
   `quantity`        int(11) NOT NULL DEFAULT 0,
   `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,

@@ -1,0 +1,13 @@
+<fieldset>
+  <div class="form-group">
+    <label class="control-label" translate>FORM.SELECT.DEPOT</label>
+    <ui-select name="depot" ng-model="$ctrl.selection" ng-change="$ctrl.select($ctrl.selection)">
+      <ui-select-match>
+        <span>{{$select.selected.text}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
+        <span ng-bind-html="depot.text | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+</fieldset>

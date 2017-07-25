@@ -2,6 +2,7 @@
 
 <body>
 
+  <div class="container">
   {{> header}}
 
   <!-- body  -->
@@ -14,8 +15,13 @@
       </h2>
 
       <h4 class="text-center">
-        {{date}}
+        {{date dateTo}}
       </h4>
+
+      <div>
+        <i class="fa fa-clock-o"></i> <span>{{translate 'FORM.LABELS.DELAY'}}</span>: {{delay}} <span>{{translate 'FORM.LABELS.MONTH'}}</span><br>
+        <i class="fa fa-credit-card-alt"></i> <span>{{translate 'FORM.LABELS.PURCHASE_INTERVAL'}}</span>: {{purchaseInterval}} <span>{{translate 'FORM.LABELS.MONTH'}}</span>
+      </div>
 
       <!-- filters  -->
       {{#if hasFilter}}
@@ -132,5 +138,7 @@
         </tbody>
       </table>
     </fieldset>
+  </div>
+
   </div>
 </body>

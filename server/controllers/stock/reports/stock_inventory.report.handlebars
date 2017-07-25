@@ -1,0 +1,89 @@
+{{> head title="TREE.STOCK_INVENTORY" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.STOCK.INVENTORY_REPORT'}}
+      </h2>
+
+      <h3 class="text-center">
+        {{#if depot.text}}{{depot.text}}{{/if}}<br>
+        {{#if inventory.code}}<strong>{{inventory.code}} - {{inventory.text}}</strong>{{/if}}
+      </h3>
+
+      <h4 class="text-center">
+        {{date dateTo}}
+      </h4>
+
+      <br>
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th></th>
+            <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.ENTRIES'}}</th>
+            <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.EXITS'}}</th>
+            <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.STOCKS'}}</th>
+          </tr>
+          <tr style="background-color:#ddd;">
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.DATE'}}</th>
+
+            <th class="text-center">{{translate 'STOCK.QUANTITY'}}</th>
+            <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+
+            <th class="text-center">{{translate 'STOCK.QUANTITY'}}</th>
+            <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+
+            <th class="text-center">{{translate 'STOCK.QUANTITY'}}</th>
+            <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td style="border-right: 1px solid #000;">{{date date}}</td>
+              {{!-- entry --}}
+              <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td>
+              <td class="text-right">{{#if entry.unit_cost}}{{currency entry.unit_cost ../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
+
+              {{!-- exit --}}
+              <td class="text-right">{{#if exit.quantity}}{{exit.quantity}}{{/if}}</td>
+              <td class="text-right">{{#if exit.unit_cost}}{{currency exit.unit_cost ../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../metadata.enterprise.currency_id}}{{/if}}</td>
+
+              {{!-- stock --}}
+              <td class="text-right" style="background-color:#efefef;">{{stock.quantity}}</td>
+              <td class="text-right" style="background-color:#efefef;">{{currency stock.unit_cost ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right" style="background-color:#efefef;">{{currency stock.value ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
+            <th></th>
+            <th class="text-right">{{ totals.entry}}</th> <th></th> <th></th>
+            <th class="text-right">{{ totals.exit}}</th> <th></th> <th></th>
+            <th class="text-right">{{ result.stock.quantity}}</th>
+            <th class="text-right">{{currency result.stock.unit_cost ../metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency result.stock.value ../metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  </div>
+</body>
