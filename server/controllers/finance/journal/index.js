@@ -70,21 +70,21 @@ function refenreceTransaction(req,res,next){
   const language= req.params.language;
 
   const code = codeRef[0];
-  const project_name=codeRef[1];
+  const projectName=codeRef[1];
   const refence=codeRef[2];
   const documentDefinition = identifiersIndex[code];
    
   const query = `
     SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}  tb, project p 
-    WHERE tb.project_id=p.id AND p.abbr="${project_name}" AND tb.reference="${refence}"
+    WHERE tb.project_id=p.id AND p.abbr=? AND tb.reference=?
   `;
   
   // search for full UUID
-  db.one(query)
+  db.one(query,[projectName,refence])
     .then(result =>
       {
-        var uuid=result.uuid;
-        var url= documentDefinition.documentPath + uuid+"?lang="+language+"&posReceipt=0&renderer=pdf";
+        let uuid=result.uuid;
+        let url= documentDefinition.documentPath + uuid + "?lang="+language+"&posReceipt=0&renderer=pdf";
         res.redirect(url);
       }
     ).catch((error)=>{
