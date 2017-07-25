@@ -7,7 +7,7 @@ angular.module('bhima.components')
       depotUuid        : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',      
+      validateTrigger  : '<?',
     },
   });
 
@@ -21,13 +21,13 @@ DepotSelectController.$inject = [
 function DepotSelectController(Depots, Notify) {
   var $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // fired when a depot has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
     // load all Depots
     Depots.read()
-      .then(function (depots) {        
+      .then(function (depots) {
         $ctrl.depots = depots;
       })
       .catch(Notify.handleError);

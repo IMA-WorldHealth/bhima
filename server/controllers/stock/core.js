@@ -30,6 +30,7 @@ const flux = {
   FROM_INTEGRATION : 13,
 };
 
+const DATE_FORMAT = 'YYYY-MM-DD';
 const BASE_NUMBER_OF_MONTHS = 6;
 
 // exports
@@ -43,7 +44,8 @@ exports.stockManagementProcess = stockManagementProcess;
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
 exports.getStockConsumptionAverage = getStockConsumptionAverage;
-exports.GetInventoryQuantityAndConsumption = GetInventoryQuantityAndConsumption;
+exports.getInventoryQuantityAndConsumption = getInventoryQuantityAndConsumption;
+exports.getInventoryMovements = getInventoryMovements;
 
 /**
  * @function getLots
@@ -240,7 +242,7 @@ function getLotsOrigins(depotUuid, params) {
 /**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories) {
+function stockManagementProcess(inventories, inventoryDelay, purchaseInterval) {
   const current = moment();
   let CM;
   let Q;
@@ -249,9 +251,9 @@ function stockManagementProcess(inventories) {
   return inventories.map((inventory) => {
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
-    inventory.S_SEC = CM * inventory.delay; // stock de securite
+    inventory.S_SEC = CM * (inventoryDelay || inventory.delay); // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-    inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
+    inventory.S_MAX = (CM * (purchaseInterval || inventory.purchase_interval)) + inventory.S_MIN; // stock maximum
     inventory.S_MONTH = Math.floor(inventory.quantity / CM); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? inventory.S_Q : 0;
@@ -307,10 +309,14 @@ function getStockConsumption(periodIds) {
  *
  * @param {number} periodId - the base period
  *
+ * @param {number} periodDate - a date for finding the correspondant period
+ *
  * @param {number} numberOfMonths - the number of months for calculating the average
  */
-function getStockConsumptionAverage(periodId, numberOfMonths) {
+function getStockConsumptionAverage(periodId, periodDate, numberOfMonths) {
   const baseAvgNumberOfMonths = numberOfMonths || BASE_NUMBER_OF_MONTHS;
+
+  const baseDate = periodDate ? moment(periodDate).format(DATE_FORMAT) : moment().format(DATE_FORMAT);
 
   const queryPeriodRange = `
     SELECT id FROM period WHERE id BETWEEN ? AND ?;
@@ -318,7 +324,7 @@ function getStockConsumptionAverage(periodId, numberOfMonths) {
 
   const queryPeriodId = periodId ?
     'SELECT id FROM period WHERE id = ? LIMIT 1;' :
-    'SELECT id FROM period WHERE CURRENT_DATE() BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
+    'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
     SELECT ROUND(AVG(s.quantity)) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid, d.text AS depot_text
@@ -330,7 +336,7 @@ function getStockConsumptionAverage(periodId, numberOfMonths) {
     GROUP BY i.uuid, d.uuid
   `;
 
-  return db.one(queryPeriodId, [periodId])
+  return db.one(queryPeriodId, [periodId || baseDate])
     .then((period) => {
       const beginingPeriod = period.id - baseAvgNumberOfMonths;
       const paramPeriodRange = beginingPeriod > 0 ? [beginingPeriod + 1, period.id] : [1, period.id];
@@ -346,13 +352,25 @@ function getStockConsumptionAverage(periodId, numberOfMonths) {
 /**
  * Inventory Quantity and Consumptions
  */
-function GetInventoryQuantityAndConsumption(params) {
+function getInventoryQuantityAndConsumption(params) {
   const bundle = {};
   let status;
+  let delay;
+  let purchaseInterval;
 
   if (params.status) {
     status = params.status;
     delete params.status;
+  }
+
+  if (params.inventory_delay) {
+    delay = params.inventory_delay;
+    delete params.inventory_delay;
+  }
+
+  if (params.purchase_interval) {
+    purchaseInterval = params.purchase_interval;
+    delete params.purchase_interval;
   }
 
   const sql = `
@@ -375,7 +393,7 @@ function GetInventoryQuantityAndConsumption(params) {
   return getLots(sql, params, clause)
     .then((rows) => {
       bundle.inventories = rows;
-      return getStockConsumptionAverage();
+      return getStockConsumptionAverage(null, params.dateTo);
     })
     .then((rows) => {
       var sameInventory;
@@ -396,11 +414,98 @@ function GetInventoryQuantityAndConsumption(params) {
 
       return bundle.inventories;
     })
-    .then(stockManagementProcess)
+    .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
     .then((rows) => {
       if (status) {
         return rows.filter(row => row.status === status);
       }
       return rows;
+    });
+}
+
+/**
+ * Inventory Movement Report
+ */
+function getInventoryMovements(params) {
+  const bundle = {};
+
+  const sql = `
+    SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+        d.text AS depot_text, l.unit_cost, l.expiration_date,
+        m.quantity, m.is_exit, m.date,
+        BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+        l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+        i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type
+    FROM stock_movement m 
+    JOIN lot l ON l.uuid = m.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN depot d ON d.uuid = m.depot_uuid 
+  `;
+
+  return getLots(sql, params, ' ORDER BY m.date ASC ')
+    .then((rows) => {
+      bundle.movements = rows;
+
+      // build the inventory report
+      let stockQuantity = 0;
+      let stockUnitCost = 0;
+      let stockValue = 0;
+
+      // stock method CUMP : cout unitaire moyen pondere
+      const movements = bundle.movements.map((line) => {
+        const movement = {
+          date : line.date,
+          entry : { quantity : 0, unit_cost : 0, value : 0 },
+          exit : { quantity : 0, unit_cost : 0, value : 0 },
+          stock : { quantity : 0, unit_cost : 0, value : 0 },
+        };
+
+        if (line.is_exit) {
+          stockQuantity -= line.quantity;
+          stockValue = stockQuantity * stockUnitCost;
+
+          // exit
+          movement.exit.quantity = line.quantity;
+          movement.exit.unit_cost = stockUnitCost;
+          movement.exit.value = line.quantity * line.unit_cost;
+
+          // stock status
+          movement.stock.quantity = stockQuantity;
+          movement.stock.unit_cost = stockUnitCost;
+          movement.stock.value = stockValue;
+        } else {
+          const newQuantity = line.quantity + stockQuantity;
+          const newValue = (line.unit_cost * line.quantity) + stockValue;
+          const newCost = newValue / newQuantity;
+
+          stockQuantity = newQuantity;
+          stockUnitCost = newCost;
+          stockValue = newValue;
+
+          // entry
+          movement.entry.quantity = line.quantity;
+          movement.entry.unit_cost = line.unit_cost;
+          movement.entry.value = line.quantity * line.unit_cost;
+
+          // stock status
+          movement.stock.quantity = stockQuantity;
+          movement.stock.unit_cost = stockUnitCost;
+          movement.stock.value = stockValue;
+        }
+        return movement;
+      });
+
+      // totals of quantities
+      const totals = movements.reduce((total, line) => {
+        total.entry += line.entry.quantity;
+        total.exit += line.exit.quantity;
+        return total;
+      }, { entry : 0, exit : 0 });
+
+      // stock value
+      const result = movements.length ? movements[movements.length - 1] : {};
+
+      return { movements, totals, result };
     });
 }

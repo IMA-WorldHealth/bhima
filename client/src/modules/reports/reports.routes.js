@@ -13,6 +13,8 @@ angular.module('bhima.routes')
       'balance_report',
       'clients_report',
       'cashflowByService',
+      'inventory_report',
+      'inventory_file',
     ];
 
     $stateProvider

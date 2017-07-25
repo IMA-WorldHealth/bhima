@@ -1,0 +1,100 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.STOCK.TITLE</h3>
+      <p class="text-info" translate>REPORT.STOCK.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+
+        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+
+          <!-- depot options -->
+          <div class="form-group">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneDepot" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.STOCK.ONE_DEPOT</span>
+            </label>
+          </div>
+
+          <!-- select depot -->
+          <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
+            <bh-depot-select 
+              depot-value="ReportConfigCtrl.depot"
+              on-select="ReportConfigCtrl.setupDepot(depot)">
+            </bh-depot-select>
+          </div>
+
+          <!-- inventory options -->
+          <div class="form-group">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneInventory" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.STOCK.ONE_INVENTORY</span>
+            </label>
+          </div>
+
+          <!-- select inventory -->
+          <div ng-if="!!ReportConfigCtrl.chooseOneInventory">
+            <div class="form-group">
+              <label class="control-label" translate>STOCK.INVENTORY</label>
+
+              <ui-select name="inventory" ng-model="ReportConfigCtrl.inventory">
+                <ui-select-match>
+                  <span>{{$select.selected.label}}</span>
+                </ui-select-match>
+                <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in ReportConfigCtrl.inventories | filter:{ 'label': $select.search }">
+                  <span ng-bind-html="inventory.label | highlight:$select.search"></span>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+
+          <!-- delay -->
+          <div class="form-group col-xs-12 col-sm-6">
+            <label class="control-label" translate>FORM.LABELS.DELAY</label>
+              <div class="input-group">
+              <input class="form-control" type="number" step="1" name="delay" ng-model="ReportConfigCtrl.delay">
+              <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
+            </div>
+          </div>
+
+          <!-- purchase interval -->
+          <div class="form-group col-xs-12 col-sm-6">
+            <label class="control-label" translate>FORM.LABELS.PURCHASE_INTERVAL</label>
+            <div class="input-group">
+              <input class="form-control" type="number" step="1" name="purchase_interval" ng-model="ReportConfigCtrl.purchaseInterval">
+              <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
+            </div>
+          </div>
+
+          <!-- choose date until  -->
+          <bh-date-editor
+            label="FORM.LABELS.UNTIL_PERIOD"
+            date-value="ReportConfigCtrl.dateTo">
+          </bh-date-editor>
+
+          <!-- preview -->
+          <bh-loading-button loading-state="ConfigForm.$loading">
+            <span translate>REPORT.UTIL.PREVIEW</span>
+          </bh-loading-button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

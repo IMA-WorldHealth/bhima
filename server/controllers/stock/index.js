@@ -52,13 +52,13 @@ function createStock(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : moment(new Date(params.date)).format('YYYY-MM-DD HH:mm:ss').toString(),
     user : req.session.user.id,
   };
 
   params.lots.forEach((lot) => {
         // lot expiration date
-    date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD').toString();
+    date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD HH:mm:ss').toString();
 
         // lot prepare query
     createLotQuery = 'INSERT INTO lot SET ?';
@@ -113,7 +113,7 @@ function createMovement(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : moment(new Date(params.date)).format('YYYY-MM-DD HH:mm:ss').toString(),
     user : req.session.user.id,
   };
 
@@ -298,7 +298,7 @@ function listLotsDepot(req, res, next) {
 function listInventoryDepot(req, res, next) {
   const params = req.query;
 
-  core.GetInventoryQuantityAndConsumption(params)
+  core.getInventoryQuantityAndConsumption(params)
     .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();
