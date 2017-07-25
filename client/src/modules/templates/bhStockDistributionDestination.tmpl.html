@@ -1,0 +1,27 @@
+<div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="exitType in $ctrl.exitTypeList">
+    <button class="btn-block panel panel-default segment" type="button" ng-class="{'bg-ima-dark-blue': exitType.label === $ctrl.selectedExitType.label}"
+        ng-click="$ctrl.selectExitType(exitType)" name="btn-patient">
+        <div class="panel-body text-center text-ellipsis">
+            <div class="ui lg ima-blue statistic">
+                <div class="value" translate>
+                    {{exitType.labelKey}}
+                </div>
+                <div ng-if="$ctrl.selectedExitType && exitType.label ===  $ctrl.selectedExitType.label">
+                    <div class="uilabel">
+                        <span ng-hide="exitType.label === $ctrl.selectedExitType.label" translate>{{$ctrl.selectedExitType.descriptionKey}}</span>
+                        <span ng-show="exitType.label === $ctrl.selectedExitType.label && exitType.label !== 'loss'">
+                            {{ $ctrl.reference }} - {{ $ctrl.displayName }}
+                        </span>
+                        <span ng-show="$ctrl.exitType === 'loss'" translate>
+                            {{$ctrl.selectedExitType.descriptionKey}}
+                        </span>
+                        <div ng-show="$ctrl.exitType !== 'loss'" translate>
+                            STOCK.CHOOSE_AGAIN                    
+                        </div>
+                    </div>                    
+                </div>
+
+            </div>
+        </div>
+        </button>
+</div>

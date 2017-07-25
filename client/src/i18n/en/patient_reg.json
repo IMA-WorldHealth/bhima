@@ -1,5 +1,10 @@
-{"PATIENT_REG":{"PAGE_TITLE":"Patient Registration",
-"PATIENT_DETAILS":"Patient Details",
-"SUCCESS":"Patient Registered Successfully",
-"CARD":"Patient Card",
-"IDENTITY":"Patient Identity"}}
+{
+    "PATIENT_REG": {
+        "ENTITY" : "Patient",
+        "PAGE_TITLE": "Patient Registration",
+        "PATIENT_DETAILS": "Patient Details",
+        "SUCCESS": "Patient Registered Successfully",
+        "CARD": "Patient Card",
+        "IDENTITY": "Patient Identity"
+    }
+}
