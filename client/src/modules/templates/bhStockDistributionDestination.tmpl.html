@@ -6,18 +6,15 @@
                 <div class="value" translate>
                     {{exitType.labelKey}}
                 </div>
-                <div ng-if="$ctrl.selectedExitType && exitType.label ===  $ctrl.selectedExitType.label">
+                <div>
                     <div class="uilabel">
-                        <span ng-hide="exitType.label === $ctrl.selectedExitType.label" translate>{{$ctrl.selectedExitType.descriptionKey}}</span>
+                        <span ng-show="exitType.label !== $ctrl.selectedExitType.label" translate>{{exitType.descriptionKey}}</span>
                         <span ng-show="exitType.label === $ctrl.selectedExitType.label && exitType.label !== 'loss'">
                             {{ $ctrl.reference }} - {{ $ctrl.displayName }}
                         </span>
-                        <span ng-show="$ctrl.exitType === 'loss'" translate>
-                            {{$ctrl.selectedExitType.descriptionKey}}
+                        <span ng-show="exitType.label === 'loss'" translate>
+                            {{exitType.descriptionKey}}
                         </span>
-                        <div ng-show="$ctrl.exitType !== 'loss'" translate>
-                            STOCK.CHOOSE_AGAIN
-                        </div>
                     </div>
                 </div>
 
