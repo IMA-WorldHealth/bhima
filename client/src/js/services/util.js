@@ -80,6 +80,10 @@ function UtilService(moment) {
     return duration ? moment().diff(date, duration) : moment().diff(date);
   };
 
+  service.getTimeFromToday = function (date, duration){
+    return duration ? moment(date).diff(new Date(), duration) : moment(date).diff(new Date());
+  }
+
   /**
    * @function once
    *

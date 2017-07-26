@@ -65,6 +65,7 @@
             "ENTERPRISE_ID": "ID Enterprise",
             "EXCHANGE_RATE": "Exchange Rate",
             "EXPIRATION_DATE": "Expiration Date",
+            "EXPIRE_IN":"Expire In",
             "NUM_PIECE": "Num Doc",
             "ENTRY": "Entry",
             "EXIT": "Exit",

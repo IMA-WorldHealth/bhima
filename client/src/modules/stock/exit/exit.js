@@ -23,6 +23,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     loss: { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
   };
 
+  vm.util = util;
   vm.Stock = new StockForm('StockExit');
   vm.depot = {};
   vm.movement = {};
@@ -119,7 +120,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
       {
         field: 'expiration_date',
         width: 150,
-        displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
+        displayName: 'TABLE.COLUMNS.EXPIRE_IN',
         headerCellFilter: 'translate',
         cellTemplate: 'modules/stock/exit/templates/expiration.tmpl.html'
       },
@@ -175,7 +176,6 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     // get lots
     Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid, includeEmptyLot : false })
       .then(function (lots) {
-        console.log('les les retournes', lots);
         item.lots = lots;
       })
       .catch(Notify.handleError);
@@ -218,6 +218,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
           type: 'patient',
           instance: patient,
         };
+
         setSelectedEntity(patient);
       })
       .catch(Notify.handleError);
@@ -249,6 +250,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
           type: 'depot',
           instance: depot,
         };
+
         setSelectedEntity(depot);
       })
       .catch(Notify.handleError);
@@ -261,27 +263,17 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
       type: 'loss',
       instance: {},
     };
+
     setSelectedEntity();
   }
 
-  // setSelectedEntity function implementation
-  // change name, text and display_nam into displayName  
-  function setSelectedEntity(entity) {
-    if (!entity) {
-      vm.selectedEntity = {};
-      return;
-    }
-
-    var keys = ['name', 'text', 'display_name'];
-    keys.forEach(function (key) {
-      if (entity[key]) {
-        entity.displayName = entity[key];
-      }
-    });
-
-    vm.reference = entity.reference || '';
-    vm.displayName = entity.displayName;
+  function setSelectedEntity (entity){
+    var uniformEntity = Stock.uniformSelectedEntity(entity);
+    vm.reference = uniformEntity.reference;
+    vm.displayName = uniformEntity.displayName;
   }
+
+  
 
   // ================================ submit ================================
   function submit(form) {

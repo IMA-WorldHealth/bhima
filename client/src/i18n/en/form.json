@@ -232,6 +232,7 @@
             "DATE_FROM": "Start",
             "DATE_REGISTRATION": "Registration Date",
             "DATE_TO": "End",
+            "DAYS" : "Days",
             "DEACTIVATE": "Deactivate",
             "DEBIT": "Debit",
             "DEBTOR_GROUP": "Debtor Group",

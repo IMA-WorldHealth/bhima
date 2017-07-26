@@ -1,3 +1,4 @@
 <div ng-if="row.entity.lot.uuid" class="ui-grid-cell-contents">
-  {{ row.entity.lot.expiration_date | date }}
+  {{grid.appScope.util.getTimeFromToday(row.entity.lot.expiration_date, 'days')}}
+  <span translate>FORM.LABELS.DAYS</span>
 </div>
