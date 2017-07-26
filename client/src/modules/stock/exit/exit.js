@@ -14,10 +14,7 @@ StockExitController.$inject = [
  * @description This controller is responsible to handle stock exit module
  * @todo Implement caching data feature
  */
-function StockExitController(Depots, Inventory, Notify,
-  Session, util, bhConstants, ReceiptModal,
-  StockForm, Stock, StockModal,
-  uiGridGroupingConstants, $translate) {
+function StockExitController(Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock, StockModal, uiGridGroupingConstants, $translate) {
   var vm = this;
   var mapExit = {
     patient: { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
@@ -58,7 +55,7 @@ function StockExitController(Depots, Inventory, Notify,
       {
         field: 'code',
         width: 120,
-        displayName: 'TABLE.COLUMNS.CODE',
+        displayName: 'INVENTORY.CODE',
         headerCellFilter: 'translate',
         cellTemplate: 'modules/stock/exit/templates/code.tmpl.html'
       },
@@ -176,8 +173,9 @@ function StockExitController(Depots, Inventory, Notify,
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
+    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid, includeEmptyLot : false })
       .then(function (lots) {
+        console.log('les les retournes', lots);
         item.lots = lots;
       })
       .catch(Notify.handleError);
@@ -267,7 +265,7 @@ function StockExitController(Depots, Inventory, Notify,
   }
 
   // setSelectedEntity function implementation
-  // change name, text and display_nam into displayName
+  // change name, text and display_nam into displayName  
   function setSelectedEntity(entity) {
     if (!entity) {
       vm.selectedEntity = {};

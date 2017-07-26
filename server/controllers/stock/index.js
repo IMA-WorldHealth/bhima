@@ -7,10 +7,10 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
- *
- *
- * @requires lib/db
  * @requires lib/node-uuid
+ * @requires moment
+ * @requires lib/db
+ * @requires stock/core
  */
 
 const uuid = require('node-uuid');

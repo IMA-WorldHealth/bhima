@@ -13,7 +13,6 @@ DistributionDestinationController.$inject = [];
 
 /**
  * Stock Distribution Destination component
- *
  */
 function DistributionDestinationController() {
     var $ctrl = this;

@@ -4,6 +4,7 @@
  * @description
  * This module is responsible for handling all function utility for stock
  *
+ * @requires moment
  * @requires lib/db
  * @requires lib/filter
  * @requires config/identifiers
@@ -61,11 +62,9 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const params = parameters;  
   const sql = sqlQuery || `
         SELECT 
-          BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
-          l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-          i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
-          d.text AS depot_text, iu.text AS unit_type 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
+          i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type 
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
@@ -118,6 +117,8 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
  */
 function getLotsDepot(depotUuid, params, finalClause) {
   let status;
+  // token of query to add if only no empty lots should be returned
+  let exludeToken = '';
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -126,6 +127,11 @@ function getLotsDepot(depotUuid, params, finalClause) {
   if (params.status) {
     status = params.status;
     delete params.status;
+  }
+
+  if(params.includeEmptyLot === 'false'){
+    exludeToken = 'HAVING quantity > 0';
+    delete params.includeEmptyLot;
   }
 
   const sql = `
@@ -143,7 +149,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  const clause = finalClause || ' GROUP BY l.uuid, m.depot_uuid ';
+  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken}`;
 
   return getLots(sql, params, clause)
         .then(stockManagementProcess)
