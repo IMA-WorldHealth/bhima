@@ -21,8 +21,5 @@ module.exports = {
 
     opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodTo'));
     opts.element(getValue(periodTo_id)).click();
-
-    // click away to free the space
-    // element(by.id("logo")).click();
   },
 };

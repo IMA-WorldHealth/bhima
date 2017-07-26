@@ -25,7 +25,7 @@ function StockExitPage() {
    * @param {string} reference - the patient reference
    */
   page.setPatient = function setDepot(reference) {
-    element(by.css('[name="btn-patient"]')).click();
+    components.stockDistributionDestination.set('exit-type-patient');
     components.findPatient.findById(reference);
     FU.modal.submit();
   };
@@ -35,7 +35,7 @@ function StockExitPage() {
    * @param {string} service - the service name
    */
   page.setService = function setService(service) {
-    element(by.css('[name="btn-service"]')).click();
+    components.stockDistributionDestination.set('exit-type-service');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', service, modalContent);
     FU.modal.submit();
@@ -46,7 +46,7 @@ function StockExitPage() {
    * @param {string} depot - the depot name
    */
   page.setDestinationDepot = function setDestinationDepot(depot) {
-    element(by.css('[name="btn-depot"]')).click();
+    components.stockDistributionDestination.set('exit-type-depot');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', depot, modalContent);
     FU.modal.submit();
@@ -56,7 +56,7 @@ function StockExitPage() {
    * @method setLoss
    */
   page.setLoss = function setLoss() {
-    element(by.css('[name="btn-loss"]')).click();
+    components.stockDistributionDestination.set('exit-type-loss');
   };
 
   /**

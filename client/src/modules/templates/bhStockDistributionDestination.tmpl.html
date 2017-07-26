@@ -1,5 +1,5 @@
 <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="exitType in $ctrl.exitTypeList">
-    <button class="btn-block panel panel-default segment" type="button" ng-class="{'bg-ima-dark-blue': exitType.label === $ctrl.selectedExitType.label}"
+    <button id="exit-type-{{exitType.label}}" class="btn-block panel panel-default segment" type="button" ng-class="{'bg-ima-dark-blue': exitType.label === $ctrl.selectedExitType.label}"
         ng-click="$ctrl.selectExitType(exitType)" name="btn-patient">
         <div class="panel-body text-center text-ellipsis">
             <div class="ui lg ima-blue statistic">
