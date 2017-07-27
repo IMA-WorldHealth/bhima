@@ -84,6 +84,9 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
+//entity link report
+const entityLink = require('../lib/renderers/pdfReport');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
@@ -172,8 +175,7 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
-  app.get('/journal/reference_transaction/:codeRef/:language', journal.refenreceTransaction);
-  
+ 
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
@@ -314,6 +316,9 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
+  // interface for linking entities, it renders a report for a particular entity
+  app.get('/entityLink/:codeRef/:language', entityLink.refenreceTransaction);
+  
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
 
