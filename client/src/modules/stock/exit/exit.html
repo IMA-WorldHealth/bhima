@@ -23,12 +23,12 @@
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
       <!-- destination -->
       <div class="row">
-        <bh-distribution-destination 
-          on-exit-type-select-callback="StockCtrl.selectExitType(exitType)"
+        <bh-stock-entry-exit-type 
+          on-entry-exit-type-select-callback="StockCtrl.selectExitType(type)"
           reference="StockCtrl.reference"
           display-name="StockCtrl.displayName"
-          >
-        </bh-distribution-destination>
+          is-entry="false">
+        </bh-stock-entry-exit-type>
       </div>
 
       <!-- date and note -->

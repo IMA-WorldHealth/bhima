@@ -22,7 +22,8 @@ function StockEntryController(Depots, Inventory, Notify,
   var mapEntry = {
     purchase    : { find: findPurchase, submit: submitPurchase },
     donation    : { find: angular.noop, submit: angular.noop }, // donation is not yet implemented
-    integration : { find: angular.noop, submit: submitIntegration },
+    integration : { find: angular.noop, submit: submitIntegration},
+    transfer_reception : {find: angular.noop, submit : submitTransferReception},
   };
 
   vm.Stock = new StockForm('StockEntry');
@@ -94,8 +95,8 @@ function StockEntryController(Depots, Inventory, Notify,
 
   // entry type
   function selectEntryType(entryType) {
-    vm.movement.entry_type = entryType;
-    mapEntry[entryType].find();
+    vm.movement.entry_type = entryType.label;
+    mapEntry[entryType.label].find();
   }
 
   // configure depot
@@ -277,6 +278,12 @@ function StockEntryController(Depots, Inventory, Notify,
       ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
     })
     .catch(Notify.handleError);
+  }
+
+  //submit transfer reception
+  function submitTransferReception (){
+    return;
+
   }
 
   moduleInit();

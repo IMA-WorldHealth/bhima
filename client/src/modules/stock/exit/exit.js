@@ -271,9 +271,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     var uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
-  }
-
-  
+  }  
 
   // ================================ submit ================================
   function submit(form) {

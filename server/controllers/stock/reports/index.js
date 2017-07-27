@@ -514,7 +514,6 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * @param {string} documentUuid
  * @param {object} enterprise
  * @param {boolean} isExit 
- * @param {string} otherDepotUuid
  * @description return depot movement informations
  * @return {object} data
  */
