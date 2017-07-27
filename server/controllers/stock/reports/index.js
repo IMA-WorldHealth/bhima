@@ -323,7 +323,7 @@ function stockExitDepotReceipt(req, res, next) {
     return next(e);
   }
 
-  return getDepotMovement(documentUuid, req.session.enterprise)
+  return getDepotMovement(documentUuid, req.session.enterprise, true)
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
@@ -351,7 +351,7 @@ function stockEntryDepotReceipt(req, res, next) {
     return next(e);
   }
 
-  return getDepotMovement(documentUuid, req.session.enterprise)
+  return getDepotMovement(documentUuid, req.session.enterprise, false)
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
@@ -513,38 +513,50 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * getDepotMovement
  * @param {string} documentUuid
  * @param {object} enterprise
+ * @param {boolean} isExit 
+ * @param {string} otherDepotUuid
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise) {
+function getDepotMovement(documentUuid, enterprise, isExit) {
   const data = {};
+  const is_exit = isExit ? 1 : 0;
   const sql = `
-    SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
-      m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
-      u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
-    FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
-    WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
-  `;
+        SELECT 
+          i.code, i.text, BUID(m.document_uuid) AS document_uuid,
+          m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
+          u.display_name AS user_display_name,
+          CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+          l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
+        FROM 
+          stock_movement m
+        JOIN 
+          lot l ON l.uuid = m.lot_uuid
+        JOIN 
+          inventory i ON i.uuid = l.inventory_uuid
+        JOIN 
+          depot d ON d.uuid = m.depot_uuid
+        JOIN 
+          user u ON u.id = m.user_id
+        LEFT JOIN 
+          depot dd ON dd.uuid = entity_uuid
+        WHERE 
+          m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
-  return db.exec(sql, [1, Stock.flux.TO_OTHER_DEPOT, db.bid(documentUuid)])
+  return db.exec(sql, [is_exit, isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)])
     .then((rows) => {
-      // exit movement
       if (!rows.length) {
         throw new NotFound('document not found for exit');
-      }
+      }      
       const line = rows[0];
 
       data.enterprise = enterprise;
-      data.exit = {};
+      const key = isExit ? 'exit' : 'entry';
+      data[key] = {};
 
-      data.exit.details = {
+      data[key].details = {
         depot_name         : line.depot_name,
+        otherDepotName     : line.otherDepotName || '',
         user_display_name  : line.user_display_name,
         description        : line.description,
         date               : line.date,
@@ -553,27 +565,7 @@ function getDepotMovement(documentUuid, enterprise) {
       };
 
       data.rows = rows;
-      return db.exec(sql, [0, Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)]);
-    })
-    .then((rows) => {
-      // entry movement
-      if (!rows.length) {
-        throw new NotFound('document not found for entry');
-      }
-      const line = rows[0];
-
-      data.enterprise = enterprise;
-      data.entry = {};
-
-      data.entry.details = {
-        depot_name         : line.depot_name,
-        user_display_name  : line.user_display_name,
-        description        : line.description,
-        date               : line.date,
-        document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
-      };
-      return data;
+      return data ;
     });
 }
 

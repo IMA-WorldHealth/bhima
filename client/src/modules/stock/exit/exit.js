@@ -355,6 +355,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
       to_depot: vm.movement.entity.uuid,
       date: vm.movement.date,
       description: vm.movement.description,
+      isExit: true,
       user_id: Session.user.id,
     };
 
