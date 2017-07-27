@@ -84,8 +84,8 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
-//entity link report
-const entityLink = require('../lib/renderers/pdfReport');
+//looking up an entity by it reference
+const refenceLookup = require('../lib/refenceLookup');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -317,7 +317,7 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
   // interface for linking entities, it renders a report for a particular entity
-  app.get('/entityLink/:codeRef/:language', entityLink.refenreceTransaction);
+  app.get('/refenceLookup/:codeRef/:language', refenceLookup.getEntity);
   
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
