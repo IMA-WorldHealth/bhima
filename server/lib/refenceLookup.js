@@ -6,13 +6,13 @@ const _ = require('lodash');
 const uuid = require('node-uuid');
 
 // module dependencies
-const db = require('../../lib/db');
-const FilterParser = require('../../lib/filter');
-const NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
-const identifiers = require('../../config/identifiers');
+const db = require('../lib/db');
+const FilterParser = require('../lib/filter');
+const NotFound = require('../lib/errors/NotFound');
+const BadRequest = require('../lib/errors/BadRequest');
+const identifiers = require('../config/identifiers');
 
-exports.refenreceTransaction=refenreceTransaction;
+exports.getEntity=getEntity;
 //
 
 
@@ -26,11 +26,12 @@ function indexIdentifiers() {
  
 
 //This function render a report in the browser
-//It takes a transaction reference code as paramter and the language
+//It search a saved entity 
+//It requires a  reference code and language as paramters 
 //The reference code is a combination of table_key.project_abbr.reference
 //The table name is variable, it can be :invoice, cash or voucher
 
-function refenreceTransaction(req,res,next){
+function getEntity(req,res,next){
    
   //loading identifiers keyies, used for defining the table name
   indexIdentifiers();
@@ -56,7 +57,9 @@ function refenreceTransaction(req,res,next){
         let url= `${documentDefinition.documentPath}${uuid}?lang=${language}&renderer=pdf`;
         res.redirect(url);
       }
-    ).catch((error)=>{
+    )
+    .catch((error)=>{
       res.send({'message':'an error occured'});
-    }).done();
+    })
+    .done();
 }
