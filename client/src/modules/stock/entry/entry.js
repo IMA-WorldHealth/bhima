@@ -23,7 +23,7 @@ function StockEntryController(Depots, Inventory, Notify,
     purchase    : { find: findPurchase, submit: submitPurchase },
     donation    : { find: angular.noop, submit: angular.noop }, // donation is not yet implemented
     integration : { find: angular.noop, submit: submitIntegration},
-    transfer_reception : {find: angular.noop, submit : submitTransferReception},
+    transfer_reception : {find: findTransfer, submit : submitTransferReception},
   };
 
   vm.Stock = new StockForm('StockEntry');
@@ -158,6 +158,22 @@ function StockEntryController(Depots, Inventory, Notify,
     .catch(Notify.handleError);
   }
 
+    // find transfer
+  function findTransfer(params) {
+    StockModal.openFindTansfer({depot_uuid : vm.depot.uuid})
+    .then(function(transfers) {
+      if (!transfers) { return; }
+      vm.movement.entity = {
+        uuid     : transfers[0].uuid,
+        type     : 'transfer_reception',
+        instance : transfers[0],
+      };
+
+      populate(transfers);
+    })
+    .catch(Notify.handleError);
+  }
+
   // populate the grid
   function populate(items) {
     if (!items.length) { return; }
@@ -166,9 +182,12 @@ function StockEntryController(Depots, Inventory, Notify,
 
     vm.Stock.store.data.forEach(function (item, index) {
       item.inventory = inventoryStore.get(items[index].inventory_uuid);
-      item.unit_cost = items[index].unit_price;
-      item.quantity = items[index].balance;
+      item.unit_cost = items[index].unit_price || items[index].unit_cost;
+      item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
+      item.lot_uuid = items[index].uuid;
+      item.lot = items[index].label;
+      item.expiration_date = items[index].expiration_date;
       configureItem(item);
     });
   }
@@ -282,8 +301,33 @@ function StockEntryController(Depots, Inventory, Notify,
 
   //submit transfer reception
   function submitTransferReception (){
-    return;
+    var movement = {
+      from_depot: vm.movement.entity.instance.depot_uuid,
+      to_depot: vm.depot.uuid,
+      document_uuid : vm.movement.entity.instance.document_uuid,
+      date: vm.movement.entity.instance.date,
+      description: vm.movement.entity.instance.description,
+      isExit: false,
+      user_id: Session.user.id,
+    };
 
+    var lots = vm.Stock.store.data.map(function (row) {
+      return {
+        uuid: row.lot_uuid,
+        quantity: row.quantity,
+        unit_cost: row.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    return Stock.movements.create(movement)
+      .then(function (document) {
+        vm.Stock.store.clear();
+        vm.movement = {};
+        ReceiptModal.stockEntryDepotReceipt(document.uuid, bhConstants.flux.FROM_OTHER_DEPOT);
+      })
+      .catch(Notify.handleError);
   }
 
   moduleInit();

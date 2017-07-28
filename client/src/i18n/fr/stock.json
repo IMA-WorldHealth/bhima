@@ -74,7 +74,7 @@
       "EXIT_LOSS"      : "Sortie de Stock - Perte"
     },
     "RECEIVER"        : "Recepteur",
-    "RECEPTION_TRANSFER" : "Reception Transfert",
+    "RECEPTION_TRANSFER" : "Transfert",
     "RESPONSIBLE"     : "Gestionnaire du stock",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",

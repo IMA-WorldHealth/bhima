@@ -111,8 +111,8 @@ function createMovement(req, res, next) {
   const params = req.body;
 
   const document = {
-    uuid : uuid.v4(),
-    date : new Date(params.date),
+    uuid : params.document_uuid || uuid.v4(),
+    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
     user : req.session.user.id,
   };
 

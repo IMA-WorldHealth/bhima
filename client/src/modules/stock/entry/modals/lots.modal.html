@@ -14,7 +14,7 @@
     <div class="form-group">
       <label translate>FORM.LABELS.GLOBAL_QUANTITY</label>
       <input 
-        ng-disabled="$ctrl.entryType === 'purchase'" 
+        ng-disabled="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'" 
         class="form-control" 
         type="number" 
         ng-model="$ctrl.inventory.quantity" 
@@ -27,7 +27,7 @@
       <label translate>STOCK.UNIT_COST</label>
       <div class="input-group">
         <input 
-          ng-disabled="$ctrl.entryType === 'purchase'" 
+          ng-disabled="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'" 
           class="form-control" 
           type="number" 
           ng-model="$ctrl.inventory.unit_cost"
@@ -37,11 +37,13 @@
       </div>
     </div>
 
+    <!-- No need of defining lot label if it a transfer reception -->
     <div class="text-right" style="margin-bottom: 5px;"> 
       <button type="button"
         data-add-lot
         ng-click="$ctrl.addLot()"
-        class="btn btn-default">
+        class="btn btn-default"
+        ng-disabled="$ctrl.entryType === 'transfer_reception'">
         <span class="fa fa-plus-circle"></span> 
         <span translate>FORM.LABELS.ADD</span>
       </button>

@@ -14,6 +14,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.gridApi = {};
   vm.enterprise = Session.enterprise;
   vm.entryType = Data.entry_type;
+  
 
   /* ======================= Grid configurations ============================ */
   vm.gridOptions = {
@@ -90,9 +91,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       return;
     }
     vm.gridOptions.data.push({
-      is_valid        : false,
-      lot             : '',
-      expiration_date : new Date(),
+      is_valid        : vm.entryType === 'transfer_reception' ? true : false,
+      lot             : vm.inventory.lot || '',
+      expiration_date : new Date(vm.inventory.expiration_date) || new Date(),
       quantity        : vm.remainingQuantity,
     });
   }
@@ -114,7 +115,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     var sum = vm.gridOptions.data.reduce(sumQuantity, 0);
     var hasQuantity = (vm.inventory.quantity >= sum);
     var hasLotLabel = inventory.lot;
-    var hasExpiration = (new Date(inventory.expiration_date) > new Date());
+    var hasExpiration = (new Date(inventory.expiration_date) >= new Date());
     inventory.is_valid = (hasQuantity && hasLotLabel && hasExpiration);
 
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;

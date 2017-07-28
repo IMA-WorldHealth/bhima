@@ -173,16 +173,25 @@ function getLotsDepot(depotUuid, params, finalClause) {
  * @param {object} params - A request query object
  */
 function getLotsMovements(depotUuid, params) {
+  let finalClause;
+
   if (depotUuid) {
     params.depot_uuid = depotUuid;
   }
 
+  if(params.finalClauseParameter){
+    finalClause = 'GROUP BY document_uuid';
+    delete params.finalClauseParameter;
+  }
+
   const sql = `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, 
-          IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost, l.expiration_date, 
-          BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
-          l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date,
-          BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description, 
+          d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+          BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
+          BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
+          m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
           f.label AS flux_label, i.delay,
           iu.text AS unit_type
         FROM stock_movement m 
@@ -193,7 +202,7 @@ function getLotsMovements(depotUuid, params) {
         JOIN flux f ON f.id = m.flux_id  
     `;
 
-  return getLots(sql, params);
+  return getLots(sql, params, finalClause);
 }
 
 /**
