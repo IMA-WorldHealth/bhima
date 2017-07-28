@@ -357,6 +357,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
+  app.get('/reports/finance/purchases', financeReports.purchases.report);
 
   app.get('/reports/keys/:key', report.keys);
 

@@ -9,6 +9,7 @@
             "AGE": "Age",
             "AMOUNT": "Amount",
             "ASSET": "Asset",
+            "AUTHOR": "Author",
             "AVAILABLE": "Available",
             "BALANCE": "Balance",
             "BALANCE_SECTION": "Balance Sheet Section",
@@ -147,6 +148,8 @@
                 "TOTAL_ASC": "Largest"
             },
             "SOURCE": "Source",
+            "STATUS": "Status",
+            "SUPPLIER": "Supplier",
             "TEXT": "Text",
             "THIS_INVOICE_FULL": "This invoice is paid in full",
             "TITLE": "Title",

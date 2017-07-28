@@ -43,6 +43,7 @@ exports.stockStatus = purchaseStatus;
 // purchase balance
 exports.stockBalance = purchaseBalance;
 
+exports.find = find;
 
 /**
  * @function linkPurchaseItems
@@ -288,7 +289,20 @@ function search(req, res, next) {
  * filter the purchase orders.
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'p' });
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['supplier_uuid']);
+
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false  });
+
+  // default purchase date
+  filters.period('period', 'date');
+  filters.dateFrom('custion_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
+  filters.equals('is_confirmed');
+  filters.equals('is_received');
+  filters.equals('is_cancelled');
+  filters.equals('supplier_uuid', 'uuid', 's');
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid,
@@ -302,16 +316,12 @@ function find(options) {
       JOIN user AS u ON u.id = p.user_id
   `;
 
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
-
   const referenceStatement = `CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
-  filters.setOrder('ORDER BY p.date DESC');
-
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 
