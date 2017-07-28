@@ -54,7 +54,7 @@ describe('Income expense Report', () => {
     it('Returns correct data for a one period january 2016', () => {
         // see server/controllers/finance/reports/incomeExpense/index.js, sumIncomeExpenseAccounts method
         const incomeBalance = 3.3979;
-        const expenseBalance = 70;
+        const expenseBalance = 90;
 
         // see server/controllers/finance/reports/incomeExpense/index.js, sumIncomeExpenseAccounts method
         const incomesLength = 2;
@@ -76,7 +76,7 @@ describe('Income expense Report', () => {
     it('Returns correct data for all 2016 periods', () => {
         // see server/controllers/finance/periodTotal/index.js, getAccountsBalance method
         const incomeBalance = 56.3312;
-        const expenseBalance = 840.0052;
+        const expenseBalance = 1080.0052;
 
         // see server/controllers/finance/periodTotal/index.js, getAccountsBalances method
         const incomesLength = 3;
