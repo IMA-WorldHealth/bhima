@@ -22,11 +22,21 @@ function StockEntryPage() {
 
   /**
    * @method setPurchase
-   * @param {string} reference - the patient reference
+   * @param {string} rowNumber - the purchase line on the modal
    */
   page.setPurchase = function setPurchase(rowNumber) {
-    element(by.css('[name="btn-purchase"]')).click();
+    components.stockEntryExitType.set('entry-exit-type-purchase');
     GU.selectRow('PurchaseGrid', rowNumber);
+    FU.modal.submit();
+  };
+
+  /**
+   * @method setTransfer
+   * @param {string} rowNumber - movement line on the modal grid
+   */
+  page.setTransfer = function setTransfer(rowNumber) {
+    components.stockEntryExitType.set('entry-exit-type-transfer-reception');
+    GU.selectRow('TransferGrid', rowNumber);
     FU.modal.submit();
   };
 
@@ -34,7 +44,7 @@ function StockEntryPage() {
    * @method setIntegration
    */
   page.setIntegration = function setIntegration() {
-    element(by.css('[name="btn-integration"]')).click();
+    components.stockEntryExitType.set('entry-exit-type-integration');
   };
 
   /**
@@ -86,7 +96,7 @@ function StockEntryPage() {
    *  { label: '...', quantity: '...', expiration_date: '...' }
    * ]
    */
-  page.setLots = function setLots(inventoryRowNumber, lotsArray, inventoryQuantity, inventoryUnitCost) {
+  page.setLots = function setLots(inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost) {
     // lots column
     const launchLots = GU.getCell(gridId, inventoryRowNumber, 3);
 
@@ -107,20 +117,23 @@ function StockEntryPage() {
 
       $('[data-add-lot]').click();
     }
-
     lotsArray.forEach((lot, index) => {
       lotCell = GU.getCell(lotGridId, index, 1);
       quantityCell = GU.getCell(lotGridId, index, 2);
       expirationDateCell = GU.getCell(lotGridId, index, 3);
 
       // enter lot label
-      FU.input('row.entity.lot', lot.label, lotCell);
+      if(!isTransferReception){
+        FU.input('row.entity.lot', lot.label, lotCell);
+      }        
 
       // enter lot quantity
       FU.input('row.entity.quantity', lot.quantity, quantityCell);
-
+      
       // enter lot expiration date
-      components.datePicker.set(lot.expiration_date, expirationDateCell);
+      if(!isTransferReception){
+        components.datePicker.set(lot.expiration_date, expirationDateCell);
+      }        
 
       if (index < lotsArray.length - 1) {
         // Add another lot line

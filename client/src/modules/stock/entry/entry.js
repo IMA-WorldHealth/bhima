@@ -198,10 +198,10 @@ function StockEntryController(Depots, Inventory, Notify,
       inventory  : inventory,
       entry_type : vm.movement.entry_type,
     })
-    .then(function (rows) {
-      if (!rows) { return; }
-      inventory.lots = rows.lots;
-      inventory.givenQuantity = rows.quantity;
+    .then(function (row) {
+      if (!row) { return; }
+      inventory.lots = row.lots;
+      inventory.givenQuantity = row.quantity;
       vm.hasValidInput = hasValidInput();
     })
     .catch(Notify.handleError);
@@ -314,7 +314,7 @@ function StockEntryController(Depots, Inventory, Notify,
     var lots = vm.Stock.store.data.map(function (row) {
       return {
         uuid: row.lot_uuid,
-        quantity: row.quantity,
+        quantity: row.lots[0].quantity,
         unit_cost: row.unit_cost,
       };
     });

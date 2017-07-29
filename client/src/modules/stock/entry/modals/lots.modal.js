@@ -91,11 +91,17 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       return;
     }
     vm.gridOptions.data.push({
-      is_valid        : vm.entryType === 'transfer_reception' ? true : false,
+      is_valid        : false,
       lot             : vm.inventory.lot || '',
       expiration_date : new Date(vm.inventory.expiration_date) || new Date(),
       quantity        : vm.remainingQuantity,
     });
+
+    //  if it is a transfer reception, so force the validation on the single element
+    if(vm.entryType === 'transfer_reception') {
+      handleChange(vm.gridOptions.data[0]);
+    }
+
   }
 
   // remove lot

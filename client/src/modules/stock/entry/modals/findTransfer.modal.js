@@ -21,12 +21,6 @@ function StockFindTransferModalController(Instance, StockService, Notify,
 
   var columns = [
     {
-      field: 'reference',
-      displayName: 'TABLE.COLUMNS.REFERENCE',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/entry/modals/templates/transfer_reference.tmpl.html'
-    },
-    {
       field: 'date',
       cellFilter: 'date',
       filter: { condition: filtering.filterByDate },
@@ -39,6 +33,18 @@ function StockFindTransferModalController(Instance, StockService, Notify,
       displayName: 'FORM.LABELS.DEPOT',
       headerCellFilter: 'translate'
     },
+    {
+      field: 'description',
+      displayName: 'FORM.LABELS.DESCRIPTION',
+      headerCellFilter: 'translate'
+    },
+    {
+      field: 'action',
+      displayName: '',
+      enableFiltering: false,
+      enableSorting: false,
+      cellTemplate: 'modules/stock/entry/modals/templates/transfer_view.tmpl.html'
+    }
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -90,6 +96,7 @@ function StockFindTransferModalController(Instance, StockService, Notify,
 
     return StockService.movements.read(null, {
       document_uuid: vm.selectedRow.document_uuid,
+      is_exit: 1,
     })
       .then(function (transfers) {
         Instance.close(transfers);

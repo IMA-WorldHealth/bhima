@@ -24,8 +24,8 @@ function StockExitPage() {
    * @method setPatient
    * @param {string} reference - the patient reference
    */
-  page.setPatient = function setDepot(reference) {
-    components.stockDistributionDestination.set('exit-type-patient');
+  page.setPatient = function setPatient(reference) {
+    components.stockEntryExitType.set('entry-exit-type-patient');
     components.findPatient.findById(reference);
     FU.modal.submit();
   };
@@ -35,7 +35,7 @@ function StockExitPage() {
    * @param {string} service - the service name
    */
   page.setService = function setService(service) {
-    components.stockDistributionDestination.set('exit-type-service');
+    components.stockEntryExitType.set('entry-exit-type-service');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', service, modalContent);
     FU.modal.submit();
@@ -46,7 +46,7 @@ function StockExitPage() {
    * @param {string} depot - the depot name
    */
   page.setDestinationDepot = function setDestinationDepot(depot) {
-    components.stockDistributionDestination.set('exit-type-depot');
+    components.stockEntryExitType.set('entry-exit-type-depot');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', depot, modalContent);
     FU.modal.submit();
@@ -56,7 +56,7 @@ function StockExitPage() {
    * @method setLoss
    */
   page.setLoss = function setLoss() {
-    components.stockDistributionDestination.set('exit-type-loss');
+    components.stockEntryExitType.set('entry-exit-type-loss');
   };
 
   /**

@@ -32,7 +32,7 @@ function StockExiTests() {
       { label: 'LX-THREE', quantity: 200, expiration_date: '2018-09-15' },
     ];
 
-    page.setLots(0, lots);
+    page.setLots(0, lots, false);
 
     // submit
     page.submit();
@@ -62,6 +62,24 @@ function StockExiTests() {
     page.setItem(0, 'INV0');
 
     page.setLots(0, lots, 1500, 0.09);
+
+    // submit
+    page.submit();
+  });  
+
+  it('Should entry stock from a transfer reception', () => {
+    // select the movement
+    page.setTransfer(0);
+
+    page.setDate(new Date());
+
+    page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
+
+    const lots = [
+      { quantity: 75}
+    ];
+
+    page.setLots(0, lots, true);
 
     // submit
     page.submit();

@@ -33,5 +33,5 @@ module.exports = {
   transactionTypeSelect : require('./bhTransactionTypeSelect'),
   patientGroupSelect : require('./bhPatientGroupSelect'),
   supplierSelect : require('./bhSupplierSelect'),
-  stockDistributionDestination : require('./bhStockDistributionDestination'),
+  stockEntryExitType : require('./bhStockEntryExitType'),
 };
