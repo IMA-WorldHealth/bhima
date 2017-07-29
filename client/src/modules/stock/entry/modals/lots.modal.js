@@ -7,6 +7,7 @@ StockDefineLotsModalController.$inject = [
 ];
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
+  console.log('Data', Data);
   var vm = this;
 
   // globals
@@ -86,14 +87,14 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   // add lot
   function addLot() {
-    if (vm.remainingQuantity <= 0) {
+    if (vm.remainingQuantity <= 0 && vm.entryType !== 'integration') {
       vm.maxLotReached = true;
       return;
     }
     vm.gridOptions.data.push({
       is_valid        : false,
       lot             : vm.inventory.lot || '',
-      expiration_date : new Date(vm.inventory.expiration_date) || new Date(),
+      expiration_date : vm.inventory.expiration_date ? new Date(vm.inventory.expiration_date) : new Date(),
       quantity        : vm.remainingQuantity,
     });
 

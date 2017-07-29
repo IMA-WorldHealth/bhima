@@ -20,7 +20,7 @@ function StockInventoriesRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
@@ -72,7 +72,6 @@ function StockInventoriesRegistryTests() {
     FU.radio('$ctrl.bundle.status', 4);
     FU.modal.submit();
     GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
-
 
     // clear filters
     FU.buttons.clear();

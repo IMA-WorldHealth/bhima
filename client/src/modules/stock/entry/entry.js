@@ -194,6 +194,7 @@ function StockEntryController(Depots, Inventory, Notify,
 
   // ============================ lots management ===========================
   function setLots(inventory) {
+    console.log('inventaire', inventory);
     StockModal.openDefineLots({
       inventory  : inventory,
       entry_type : vm.movement.entry_type,

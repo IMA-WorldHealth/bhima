@@ -35,7 +35,7 @@ function StockEntryPage() {
    * @param {string} rowNumber - movement line on the modal grid
    */
   page.setTransfer = function setTransfer(rowNumber) {
-    components.stockEntryExitType.set('entry-exit-type-transfer-reception');
+    components.stockEntryExitType.set('entry-exit-type-transfer_reception');
     GU.selectRow('TransferGrid', rowNumber);
     FU.modal.submit();
   };
@@ -114,10 +114,9 @@ function StockEntryPage() {
 
     if (inventoryUnitCost) {
       FU.input('$ctrl.inventory.unit_cost', inventoryUnitCost);
-
-      $('[data-add-lot]').click();
     }
-    lotsArray.forEach((lot, index) => {
+
+    lotsArray.forEach((lot, index) => {      
       lotCell = GU.getCell(lotGridId, index, 1);
       quantityCell = GU.getCell(lotGridId, index, 2);
       expirationDateCell = GU.getCell(lotGridId, index, 3);
@@ -133,7 +132,7 @@ function StockEntryPage() {
       // enter lot expiration date
       if(!isTransferReception){
         components.datePicker.set(lot.expiration_date, expirationDateCell);
-      }        
+      }  
 
       if (index < lotsArray.length - 1) {
         // Add another lot line

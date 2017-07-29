@@ -61,11 +61,11 @@ function StockExiTests() {
 
     page.setItem(0, 'INV0');
 
-    page.setLots(0, lots, 1500, 0.09);
+    page.setLots(0, lots, false, 1500, 0.09);
 
     // submit
     page.submit();
-  });  
+  });
 
   it('Should entry stock from a transfer reception', () => {
     // select the movement
@@ -76,7 +76,7 @@ function StockExiTests() {
     page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
 
     const lots = [
-      { quantity: 75}
+      { quantity: 75},
     ];
 
     page.setLots(0, lots, true);
