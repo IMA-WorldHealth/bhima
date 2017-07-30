@@ -143,4 +143,34 @@ function build(req, res, next) {
     .done();
 }
 
+// @TODO If unverifiedSource will continue to be used the where conditions should be put on each indivudual select 
+//       MySQL is not able to optimise indexed columns from a generic SELECT
+function requestOpenDebtors() { 
+  const verifiedSource = 'posting_journal';
+  const unverifiedSource = `
+    (SELECT entity_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
+      UNION 
+     SELECT entity_uuid, trans_date, credit_equiv, debit_equiv from posting_journal) as source
+  `;
+
+  const source = verifiedSource;
+
+  // ONLY show transactions after a certain date (just show this week for example) 
+  const dateCondition = dateLimit ? `AND DATE(trans_date) > DATE(${dateCondition})` : '';
+
+  // ONLY select rows with an entity
+  // ONLY show debtors with a debt above 0
+  const simpleQuery = ` 
+    SELECT patient.display_name, entity_map.text as reference, SUM(debit_equiv - credit_equiv) as balance
+    FROM ${source} 
+    JOIN patient on entity_uuid = patient.debtor_uuid
+    LEFT JOIN entity_map on entity_map.uuid = entity_uuid
+    WHERE entity_uuid IS NOT NULL
+    ${dateCondition}
+    GROUP BY entity_uuid
+    HAVING SUM(debit_equiv - credit_equiv) > 0
+    ORDER by SUM(debit_equiv - credit_equiv)
+  `;
+}
+
 exports.report = build;
