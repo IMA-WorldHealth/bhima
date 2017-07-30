@@ -13,6 +13,12 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
 
+  // this function selectively applies the muted cell classes to
+  // disabled user entities
+  function muteDisabledCells(grid, row, col, rowRenderIndex, colRenderIndex) {
+    if (row.entity.deactivated) { return 'text-muted strike'; }
+  }
+
   // options for the UI grid
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -22,8 +28,8 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', enableFiltering  : true },
-      { field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellTemplate : '/modules/users/templates/user.name.cell.html', enableFiltering  : true },
+      { field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true },
+      { field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering  : true },
       { field : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false, enableFiltering  : false },
     ],
   };
