@@ -38,7 +38,7 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
     var options;
     var params;
 
-    if (form.$invalid || !vm.depot || !vm.inventory) { return 0; }
+    if (form.$invalid) { return 0; }
 
     params = {
       depot_uuid : vm.depot.uuid,

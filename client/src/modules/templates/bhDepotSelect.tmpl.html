@@ -1,7 +1,8 @@
 <fieldset>
-  <div class="form-group">
+  <div class="form-group"
+    ng-class="{ 'has-error' : $ctrl.formCtrl.$submitted && $ctrl.formCtrl.depot.$invalid }">
     <label class="control-label" translate>FORM.SELECT.DEPOT</label>
-    <ui-select name="depot" ng-model="$ctrl.selection" ng-change="$ctrl.select($ctrl.selection)">
+    <ui-select ng-required="$ctrl.required" name="depot" ng-model="$ctrl.selection" ng-change="$ctrl.select($ctrl.selection)">
       <ui-select-match>
         <span>{{$select.selected.text}}</span>
       </ui-select-match>
@@ -9,5 +10,9 @@
         <span ng-bind-html="depot.text | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
+
+    <div class="help-block" ng-messages="$ctrl.formCtrl.depot.$error" ng-show="$ctrl.formCtrl.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
   </div>
 </fieldset>

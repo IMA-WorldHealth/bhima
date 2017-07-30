@@ -27,17 +27,20 @@
           <!-- select depot -->
           <div>
             <bh-depot-select 
+              form-ctrl="ConfigForm"
               depot-value="ReportConfigCtrl.depot"
-              on-select="ReportConfigCtrl.setupDepot(depot)">
+              on-select="ReportConfigCtrl.setupDepot(depot)"
+              required="true">
             </bh-depot-select>
           </div>
 
           <!-- select inventory -->
           <div>
-            <div class="form-group">
+            <div class="form-group"
+              ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.inventory.$invalid }">
               <label class="control-label" translate>STOCK.INVENTORY</label>
 
-              <ui-select name="inventory" ng-model="ReportConfigCtrl.inventory">
+              <ui-select ng-required="true" name="inventory" ng-model="ReportConfigCtrl.inventory" required>
                 <ui-select-match>
                   <span>{{$select.selected.label}}</span>
                 </ui-select-match>
@@ -45,6 +48,10 @@
                   <span ng-bind-html="inventory.label | highlight:$select.search"></span>
                 </ui-select-choices>
               </ui-select>
+
+              <div class="help-block" ng-messages="ConfigForm.inventory.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
             </div>
           </div>
 

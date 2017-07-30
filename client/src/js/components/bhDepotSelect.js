@@ -2,10 +2,11 @@ angular.module('bhima.components')
   .component('bhDepotSelect', {
     bindings : {
       onSelect : '&',
+      formCtrl : '<',
+      required : '<',
     },
     templateUrl  : 'modules/templates/bhDepotSelect.tmpl.html',
     controller   : bhDepotSelectController,
-    controllerAs : '$ctrl',
   });
 
 bhDepotSelectController.$inject = ['DepotService', 'NotifyService'];
