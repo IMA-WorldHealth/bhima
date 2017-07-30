@@ -72,7 +72,7 @@ function build(req, res, next) {
   // set up the report with report manager
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
-     delete options.orientation;
+    delete options.orientation;
   } catch (e) {
     next(e);
     return;

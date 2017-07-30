@@ -14,7 +14,6 @@
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../../../lib/db');
-const NotFound = require('../../../../lib/errors/NotFound');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
