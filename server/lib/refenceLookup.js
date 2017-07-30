@@ -23,16 +23,16 @@ function indexIdentifiers() {
     identifiersIndex[entity.key] = entity;
   });
 }
- 
+
 
 //This function render a report in the browser
-//It search a saved entity 
-//It requires a  reference code and language as paramters 
+//It search a saved entity
+//It requires a  reference code and language as paramters
 //The reference code is a combination of table_key.project_abbr.reference
 //The table name is variable, it can be :invoice, cash or voucher
 
 function getEntity(req,res,next){
-   
+
   //loading identifiers keyies, used for defining the table name
   indexIdentifiers();
 
@@ -43,12 +43,12 @@ function getEntity(req,res,next){
   const projectName=codeRef[1];
   const refence=codeRef[2];
   const documentDefinition = identifiersIndex[code];
-   
+
   const query = `
-    SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}  tb, project p 
+    SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}  tb, project p
     WHERE tb.project_id=p.id AND p.abbr=? AND tb.reference=?
   `;
-  
+
   // search for full UUID
   db.one(query,[projectName,refence])
     .then(result =>
@@ -58,8 +58,6 @@ function getEntity(req,res,next){
         res.redirect(url);
       }
     )
-    .catch((error)=>{
-      res.send({'message':'an error occured'});
-    })
+    .catch(next)
     .done();
 }
