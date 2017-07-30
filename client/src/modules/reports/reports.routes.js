@@ -43,7 +43,7 @@ angular.module('bhima.routes')
         url : '/'.concat(key),
         controller : key.concat('Controller as ReportConfigCtrl'),
         templateUrl : '/modules/reports/generate/'.concat(key, '/', key, '.html'),
-        params : { key : key },
+        params : { key : key }
       });
     });
   }]);

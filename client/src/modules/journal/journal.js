@@ -60,6 +60,9 @@ function JournalController(Journal, Sorting, Grouping,
       Notify.handleError(error);
     });
 
+
+
+
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
@@ -69,6 +72,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.DATEPICKER_OPTIONS = { format: bhConstants.dates.format };
 
   vm.enterprise = Session.enterprise;
+  vm.languages = Languages;
   vm.gridApi = {};
 
   // gridOptions is bound to the UI Grid and used to configure many of the
@@ -108,7 +112,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.onRemoveFilter = onRemoveFilter;
 
   vm.cancelEdit = cancelEdit;
-
+   
   /**
    * @function toggleLoadingIndicator
    *
@@ -125,6 +129,8 @@ function JournalController(Journal, Sorting, Grouping,
     state.clearGridState();
     $state.reload();
   };
+ 
+  
 
   /**
    * Column definitions; specify the configuration and behaviour for each column
@@ -252,6 +258,7 @@ function JournalController(Journal, Sorting, Grouping,
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
+      cellTemplate     : '/modules/journal/templates/references.link.html',
       headerCellFilter : 'translate',
       visible          : true },
 

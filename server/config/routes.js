@@ -84,6 +84,9 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
+//looking up an entity by it reference
+const refenceLookup = require('../lib/refenceLookup');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   winston.debug('Configuring routes');
@@ -172,9 +175,12 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
+ 
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
+
+  
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
@@ -310,6 +316,9 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
+  // interface for linking entities, it renders a report for a particular entity
+  app.get('/refenceLookup/:codeRef/:language', refenceLookup.getEntity);
+  
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
 

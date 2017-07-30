@@ -150,9 +150,9 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
     )
     .then(runningPeriod => {
       return {
-        balance: (balance + runningPeriod.balance).toFixed(4),
-        credit: (credit + runningPeriod.credit).toFixed(4),
-        debit: (debit + runningPeriod.debit).toFixed(4),
+        balance : (balance + runningPeriod.balance).toFixed(4),
+        credit : (credit + runningPeriod.credit).toFixed(4),
+        debit : (debit + runningPeriod.debit).toFixed(4),
       };
     });
 }

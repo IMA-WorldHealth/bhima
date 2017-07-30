@@ -85,7 +85,9 @@
         name="parent"
         ng-model="AccountEditCtrl.account.parent"
         required>
-        <ui-select-match placeholder="{{ 'ACCOUNT.SELECT_PARENT' | translate }}"><strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span></ui-select-match>
+        <ui-select-match placeholder="{{ 'ACCOUNT.SELECT_PARENT' | translate }}">
+          <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
+        </ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="account in AccountEditCtrl.accounts | filter:{ 'hrlabel' : $select.search} | filter : { type_id : AccountEditCtrl.Constants.accounts.TITLE }">
           <span ng-bind-html="account.number | highlight:$select.search"></span>
           <small ng-bind-html="account.label | highlight:$select.search"></small>

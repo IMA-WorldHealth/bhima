@@ -5,20 +5,20 @@
       <li class="static" translate>TREE.ADMIN</li>
 
       <!-- debtor group list -->
-      <li 
-        class="title" 
-        ng-if="!GroupCtrl.isUpdateState()" 
+      <li
+        class="title"
+        ng-if="!GroupCtrl.isUpdateState()"
         translate>DEBTOR_GROUP.TITLE
       </li>
 
       <!-- debtor group list with link -->
       <li ng-if="GroupCtrl.isUpdateState()">
-        <a ui-sref="debtorGroups.list" translate>TREE.CREDITOR_GROUP</a>
+        <a ui-sref="debtorGroups.list" translate>TREE.DEBTOR_GROUP</a>
       </li>
 
       <!-- edit debtor group -->
       <li ng-if="GroupCtrl.isEditState()" class="title">
-        {{ GroupCtrl.state.params.label }} 
+        {{ GroupCtrl.state.params.label }}
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 

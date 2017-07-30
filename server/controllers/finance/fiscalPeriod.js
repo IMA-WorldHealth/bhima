@@ -4,14 +4,13 @@
  * @description
  * This controller is responsible for implementing all crud on the
  * fiscal year period trough the `/period` endpoint.
- * 
+ *
  * @requires moment
  * @requires db
  * @requires filter
  */
 
 
-const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 
@@ -57,7 +56,7 @@ function find(options) {
       MONTH(p.start_date) AS month_number, YEAR(p.start_date) AS year_number
     FROM period AS p `;
 
-  const filters = new FilterParser(options, { tableAlias: 'p', autoParseStatements: false });
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
   filters.equals('fiscal_year_id', 'fiscal_year_id', 'p');
   filters.equals('id', 'id', 'p');
   const exludePeriods = options.excludeExtremityPeriod === 'true';
@@ -89,13 +88,13 @@ function isInSameFiscalYear(opt) {
     p.fiscal_year_id`;
 
   return db.exec(sql)
-    .then(function (res) {      
+    .then((res) => {
       return res.length === 1;
     });
 }
 
 function getPeriodDiff(periodIdA, periodIdB) {
-  const sql = 
+  const sql =
   `
   SELECT 
   DATEDIFF(

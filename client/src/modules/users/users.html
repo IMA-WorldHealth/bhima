@@ -9,23 +9,24 @@
       <div class="toolbar-item">
         <button
           type="button"
-          ng-click="UsersCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : UsersCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>      
-      
-      <div class="toolbar-item">
-        <button
-          type="button"
           class="btn btn-default text-capitalize"
           ui-sref="users.create"
           data-method="create">
           <i class="fa fa-plus"></i> <span translate>USERS.ADD_USER</span>
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="UsersCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : UsersCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+
     </div>
   </div>
 </div>
