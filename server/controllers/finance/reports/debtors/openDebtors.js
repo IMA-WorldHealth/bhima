@@ -20,8 +20,6 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handl
 
 /**
  * Actually builds the open debtor report.
- *
- * @todo - allow limiting by date
  */
 function build(req, res, next) {
   const qs = _.extend(req.query, { csvKey : 'debtors' });
@@ -34,10 +32,97 @@ function build(req, res, next) {
   } catch (e) {
     return next(e);
   }
+   
+  // If any query values are not passed from the client, default values will be used
+  return requestOpenDebtors(req.query)
+    .then((openDebtorsContext) => { 
+      return report.render(openDebtorsContext);
+    })
+    .then((compiledReport) => { 
+      res.set(compiledReport.headers).send(compiledReport.report);
+    })
+    .catch(next)
+    .done();
+}
 
+// @TODO If unverifiedSource will continue to be used the where conditions should be put on each indivudual select 
+//       MySQL is not able to optimise indexed columns from a generic SELECT
+function requestOpenDebtors(params) { 
+  const verifiedSource = 'general_ledger';
+
+  const showDetailedView = params.showDetailedView || false;
+  const showUnverifiedTransactions = params.showUnverifiedTransactions || false;
+  const limitDate = params.limitDate || false;
+  const reportDateLimit = params.reportDateLimit;
+  const ordering = parseOrdering(params.order);
+
+  const unverifiedSource = `
+    (SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
+      UNION 
+     SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from posting_journal) as source
+  `;
+
+  const source = showUnverifiedTransactions ? unverfiedSource : verifiedSource;
+
+  // ONLY show transactions after a certain date (just show this week for example) 
+  const dateCondition = limitDate ? `AND DATE(trans_date) > DATE(${reportDateLimit})` : '';
+  
+  const debtorQuery = buildDebtQuery(showDetailedView, source, dateCondition);
+  
+  const aggregateQuery = `
+    SELECT COUNT(DISTINCT(entity_uuid)) as numDebtors, SUM(debit_equiv - credit_equiv) as balance
+    FROM ${source}
+    WHERE entity_uuid IS NOT NULL 
+    ${dateCondition}
+    AND (debit_equiv - credit_equiv) > 0  
+  `;
+  
+  const debtorReport = { 
+    details : {
+      showDetailedView, 
+      limitDate, 
+      reportDateLimit
+    }
+  };
+
+  return db.exec(debtorQuery)
+    .then((debtorsDebts) => { 
+      debtorReport.debtors = debtorsDebts;
+      return db.one(aggregateQuery);
+    })
+    .then((aggregateDebts) => { 
+      debtorReport.aggregates = aggregateDebts;
+      return debtorReport;
+    });
+}
+
+// ONLY select rows with an entity
+// ONLY show debtors with a debt above 0
+function buildDebtQuery(showDetailedView, source, dateCondition) { 
+    
+  // Include complex parameters depending on detailed view Boolean requirements
+  const complexParameters = showDetailedView ? ', MAX(invoice.date) as latestInvoiceDate, MAX(cash.date) as latestCashDate ' : '';
+  const complexJoin = showDetailedView ? 'LEFT JOIN invoice on reference_uuid = invoice.uuid LEFT JOIN cash on reference_uuid = cash.uuid ' : '';
+
+  // Include all balance and debtor information by default
+  const query = ` 
+    SELECT patient.display_name, entity_map.text as reference, SUM(debit_equiv - credit_equiv) as balance ${complexParameters}
+    FROM ${source} 
+    JOIN patient on entity_uuid = patient.debtor_uuid
+    LEFT JOIN entity_map on entity_map.uuid = entity_uuid
+    ${complexJoin}
+    WHERE entity_uuid IS NOT NULL
+    ${dateCondition}
+    GROUP BY entity_uuid
+    HAVING SUM(debit_equiv - credit_equiv) > 0
+    ORDER by SUM(debit_equiv - credit_equiv)
+  `;
+  return query;
+}
+
+function parseOrdering(orderParameter) { 
   let ordering;
-
-  switch (qs.order) {
+  switch (orderParameter) {
   case 'payment-date-asc':
     ordering = 'lastPaymentDate ASC';
     break;
@@ -74,103 +159,7 @@ function build(req, res, next) {
     ordering = 'cash.date ASC';
     break;
   }
-
-  /*
-   * The SQL query first looks for all entity_uuids in the combined Posting
-   * Journal and General Ledger to find unbalanced accounts, then links them
-   * with invoices and cash payments.
-   */
-
-  const debtorsSql = `
-    SELECT patient.display_name, entity_map.text AS reference, MAX(invoice.date) AS lastInvoiceDate,
-      MAX(cash.date) AS lastPaymentDate, ledger.balance AS debt
-    FROM patient JOIN entity_map ON patient.uuid = entity_map.uuid
-      JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
-      LEFT JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
-      JOIN (
-        SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
-          SUM(c.debit_equiv - c.credit_equiv) AS balance
-        FROM (
-          (
-            SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
-          UNION (
-            SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
-          )
-        ) AS c
-        WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-        GROUP BY c.entity_uuid
-        HAVING balance > 0
-      ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
-    GROUP BY patient.debtor_uuid
-    ORDER BY ${ordering};
-  `;
-
-  /*
-   * Aggregate SQL for totalling all debts up to the present
-   */
-  const aggregateSql = `
-    SELECT COUNT(a.entity_uuid) AS numDebtors, SUM(a.debit) AS debit, SUM(a.credit) AS credit, SUM(a.balance) AS balance
-    FROM(
-      SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
-        SUM(c.debit_equiv - c.credit_equiv) AS balance
-      FROM (
-        (
-          SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
-        UNION (
-          SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
-        )
-      ) AS c
-      WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-      GROUP BY c.entity_uuid
-      HAVING balance > 0
-    ) AS a;
-  `;
-
-  const data = {};
-
-  // execute the query and build the report
-  return db.exec(debtorsSql)
-    .then((debtors) => {
-      data.debtors = debtors;
-      return db.one(aggregateSql);
-    })
-    .then((aggregates) => {
-      data.aggregates = aggregates;
-      return report.render(data);
-    })
-    .then(result => res.set(result.headers).send(result.report))
-    .catch(next)
-    .done();
-}
-
-// @TODO If unverifiedSource will continue to be used the where conditions should be put on each indivudual select 
-//       MySQL is not able to optimise indexed columns from a generic SELECT
-function requestOpenDebtors() { 
-  const verifiedSource = 'posting_journal';
-  const unverifiedSource = `
-    (SELECT entity_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
-      UNION 
-     SELECT entity_uuid, trans_date, credit_equiv, debit_equiv from posting_journal) as source
-  `;
-
-  const source = verifiedSource;
-
-  // ONLY show transactions after a certain date (just show this week for example) 
-  const dateCondition = dateLimit ? `AND DATE(trans_date) > DATE(${dateCondition})` : '';
-
-  // ONLY select rows with an entity
-  // ONLY show debtors with a debt above 0
-  const simpleQuery = ` 
-    SELECT patient.display_name, entity_map.text as reference, SUM(debit_equiv - credit_equiv) as balance
-    FROM ${source} 
-    JOIN patient on entity_uuid = patient.debtor_uuid
-    LEFT JOIN entity_map on entity_map.uuid = entity_uuid
-    WHERE entity_uuid IS NOT NULL
-    ${dateCondition}
-    GROUP BY entity_uuid
-    HAVING SUM(debit_equiv - credit_equiv) > 0
-    ORDER by SUM(debit_equiv - credit_equiv)
-  `;
+  return ordering;
 }
 
 exports.report = build;
