@@ -22,7 +22,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock integration
   var integration = new Api('/stock/integration');
 
-<<<<<<< 6280b18be710c21778a5db39a872828191177374
   //Filter service
   var StockLotFilters = new Filters();
   var filterLotCache = new AppCache('stock-lot-filters');

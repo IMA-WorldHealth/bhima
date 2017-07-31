@@ -7,7 +7,6 @@ StockDefineLotsModalController.$inject = [
 ];
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
-  console.log('Data', Data);
   var vm = this;
 
   // globals

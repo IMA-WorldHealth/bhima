@@ -14,7 +14,7 @@
  */
 
 const uuid = require('node-uuid');
-
+const moment = require('moment');
 const db = require('../../lib/db');
 const core = require('./core');
 
@@ -107,9 +107,9 @@ function createStock(req, res, next) {
  * POST /stock/movement
  * Create a new stock movement
  */
-function createMovement(req, res, next) {
+function createMovement(req, res, next) {  
   const params = req.body;
-
+  
   const document = {
     uuid : params.document_uuid || uuid.v4(),
     date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),

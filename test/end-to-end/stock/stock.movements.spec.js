@@ -21,7 +21,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.radio('$ctrl.bundle.is_exit', 0);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 15 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 14 + (2 * depotGroupingRow));
 
     // exit movements
     FU.buttons.search();
@@ -38,7 +38,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 6 + depotGroupingRow);
+    GU.expectRowCount(gridId, 5 + depotGroupingRow);
 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
@@ -66,7 +66,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.input('$ctrl.bundle.label', 'VITAMINE-A');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -80,37 +80,37 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // to patient 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // to depot 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // from depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'En provenance d\'un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // positive adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Positif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // negative adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Negatif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 22 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
@@ -121,7 +121,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     components.dateInterval.range('02/02/2017', '02/02/2017');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
+    GU.expectRowCount(gridId, 6 + depotGroupingRow);
 
     FU.buttons.search();
     components.dateInterval.range('01/01/2015', '30/01/2015');
