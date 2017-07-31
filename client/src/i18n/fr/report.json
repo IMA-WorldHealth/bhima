@@ -72,6 +72,10 @@
       "TITLE": "Rapport de la Balance des comptes",
       "DESCRIPTION": "Ce rapport affiche la balance des comptes pour une période donnée"
     },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Rapport de recettes et depenses",
+      "DESCRIPTION": "Ce rapport affiche toutes les depenses et recettes de l'entreprise"
+    },
     "CASH_REPORT": {
       "TITLE": "Rapport de caisse",
       "DESCRIPTION": "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
