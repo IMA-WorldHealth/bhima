@@ -48,11 +48,11 @@ INSERT INTO unit VALUES
   -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
-  (149, 'Cash report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),  
+  (149, 'Cash report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),
   (150, 'Balance Report', 'TREE.BALANCE_REPORT', 'Balance report module', 144, '/modules/reports/balance_report', '/reports/balance_report'),
   (151, 'Customer Debts', 'TREE.CUSTOMER_DEBTS', 'Customer Debts', 144, '/modules/reports/aged_debtors', '/reports/aged_debtors'),
   (152, 'Account report', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/modules/reports/account_report', '/reports/account_report'),
-  -- (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
+  (153, 'Report Cashflow by Service', 'REPORT.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/finance/cashflow/services', '/reports/cashflowByService'),
   (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
   (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
   (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
@@ -67,15 +67,15 @@ INSERT INTO unit VALUES
   (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/partials/stock/entry', '/stock/entry'),
   (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
- 
   (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
-  (171, 'Report Group', 'FORM.LABELS.REPORT_GROUP', 'Report Group', '1', '/modules/report-group/', '/report-group/'),
-  (172, 'Email report', 'FORM.LABELS.EMALING_REPORT', 'Email report', '1', '/modules/email-report/', '/email-report/');
+  (171, 'Report Group', 'FORM.LABELS.REPORT_GROUP', 'Report Group', 1, '/modules/report-group/', '/report-group/'),
+  (172, 'Email report', 'FORM.LABELS.EMALING_REPORT', 'Email report', 1, '/modules/email-report/', '/email-report/'),
+  (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense');
 
 
  -- Reserved system account type
-INSERT INTO `account_type` VALUES
+INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
   (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
@@ -154,3 +154,7 @@ INSERT INTO `flux` VALUES
   (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
   (13, 'STOCK_FLUX.FROM_INTEGRATION');
 
+
+-- a default report
+INSERT INTO `report_group` (`code`, `name`, `description`)
+VALUES ('001', 'weekly bhima summary report', 'desc');

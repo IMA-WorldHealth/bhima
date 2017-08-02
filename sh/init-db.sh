@@ -26,7 +26,9 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql
 echo "Building test database"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql
+echo "Building icd10.sql finish"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql
+echo "Building bhima.sql finish "
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
 
 echo "[update] account type to account category"

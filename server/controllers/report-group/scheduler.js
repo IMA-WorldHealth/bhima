@@ -1,5 +1,5 @@
 var schedule = require('node-schedule');
-var request = require("request");
+const Period = require('../../lib/period');
 
 exports.setScheduler = setScheduler;
 const mail = require('./mail');
@@ -9,34 +9,46 @@ this function configurate the sending of the report by email event
 it specify the the Hour and minute that the event should be handled
 */
 
-/*exemple*/
-
-/**/
-
 function setScheduler() {
 
-var frequency = 'Weekly';
-mail.sendScheduledReport(frequency).then((result) => {
-  console.log('completed sending scheduled report');
-})
-.catch((error) => {
-  console.log('error sending report', error);
-});
 
   var rule = new schedule.RecurrenceRule();
-  rule.hour = 17;
-  rule.minute = 0;
+  rule.hour = 10;
+  rule.minute = 57;
   var j = schedule.scheduleJob(rule, function() {
 
-    //console.log('Bhima should send reports by email now');
-    var frequency = 'Weekly';
+  //console.log('Bhima should send reports by email now');
 
-    mail.sendScheduledReport(frequency).then((result) => {
-      console.log('completed sending scheduled report');
-    })
-    .catch((error) => {
-      console.log('error sending report', error);
-    });
-        
-    });
+  let period = new Period(new Date());
+  let week = period.periods.week.limit;
+  let  today=period.periods.today.limit;
+  let month=period.periods.month.limit;
+
+  //send all dayly reports
+  launch('Dayly');
+
+  //send all weekly reports
+  if( (week.start===today.start) && (week.end==today.end)){
+    launch('Weekly');
+  }
+
+  //send all monthly reports
+  if(month.end===today.start){
+    launch('Monthly');
+  }
+
+  });
 }
+
+//using mailgun api to send report
+function launch(frequency){
+
+  mail.sendScheduledReport(frequency).then((result) => {
+    console.log('completed sending '+frequency+ '  scheduled report');
+  })
+  .catch((error) => {
+    console.log('error while sending '+frequency+ ' report', error);
+  });
+
+}
+

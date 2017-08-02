@@ -32,15 +32,8 @@ test/artifacts/
 
 # ignore visual studio files
 .vscode/*
-<<<<<<< HEAD
- 
-=======
 nbproject/*
 
-<<<<<<< HEAD
->>>>>>> e46831f2d78e0c4f75b882244cccaf8523e8c03a
-=======
 # ignore netbeans files
 nbproject/
 
->>>>>>> bhimaserver/master

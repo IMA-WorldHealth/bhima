@@ -35,19 +35,19 @@ let documentReport;
 function loadServicesIncome() {
 
   var sql = `
-    SELECT  
-      SUM(invoice.cost) as sumCost, 
-      service.name as serviceName, 
+    SELECT
+      SUM(invoice.cost) as sumCost,
+      service.name as serviceName,
       CONCAT_WS('.', 'IV', project.abbr, invoice.reference) AS reference,
       invoice.reversed
 
     FROM invoice
       JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
-      JOIN service ON service.id = invoice.service_id 
+      JOIN service ON service.id = invoice.service_id
       JOIN project ON project.id = invoice.project_id
 
-    WHERE DATE(invoice.date) >= DATE(?) AND 
-      DATE(invoice.date) <= DATE(?)  
+    WHERE DATE(invoice.date) >= DATE(?) AND
+      DATE(invoice.date) <= DATE(?)
 
     GROUP BY service.id
   `;
@@ -56,8 +56,8 @@ function loadServicesIncome() {
   var period = new Period(new Date());
   var week = period.periods.week.limit;
 
-  var monday =  week.start();//'2016-01-01 00:00:00.000';
-  var sunday =  week.end(); //'2016-12-31 23:59:59.999';
+  var monday =  week.start();
+  var sunday =  week.end();
 
   var values = [monday, sunday];
 
@@ -85,9 +85,9 @@ function getRegisteredPatientsNumber() {
   var lastsunday = Lastweek.end();
 
   //patients registered this week
-  var sql = `SELECT 
+  var sql = `SELECT
               subquery1.NumberOfpatientsThisWeek, subquery2.NumberOfpatientsLastWeek
-            FROM 
+            FROM
               (
                 SELECT count(uuid) as NumberOfpatientsThisWeek
                 FROM patient
