@@ -67,7 +67,7 @@ function PurchaseOrderSearch() {
     modal.setPeriod('allTime');    
     FU.modal.submit();
 
-    element.all(by.css('[data-method="edit"]')).get(1).click();
+    element.all(by.css('[data-method="edit"]')).get(0).click();
     element.all(by.name('status')).get(0).click();
     FU.modal.submit();
 
@@ -76,8 +76,10 @@ function PurchaseOrderSearch() {
 
 
   it(`Change the status of a purchase order and should find two Purchases Orders status By "${parameters.status}"`, function () {
-    const NUM_MATCHING = 1;
+    const NUM_MATCHING = 2;
     element(by.name('is_confirmed')).click();
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');       
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
