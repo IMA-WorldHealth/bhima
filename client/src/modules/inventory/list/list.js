@@ -143,6 +143,7 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       vm.latestViewFilters = search.latestViewFilters();
       vm.hasCustomFilters = search.hasCustomFilters();
       vm.parameters = JSON.stringify(params);
+      console.log(vm.parameters);
     }
 
     Inventory.read(null, params)

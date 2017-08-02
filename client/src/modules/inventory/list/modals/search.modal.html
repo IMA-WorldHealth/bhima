@@ -43,6 +43,62 @@
         </div>
       </div>
 
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.code.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.CODE
+        </label>
+        <bh-clear on-clear="ModalCtrl.clear('code')"></bh-clear>
+
+        <input type="text" class="form-control" name="code" ng-model="ModalCtrl.params.code">
+        <div class="help-block" ng-messages="ModalForm.code.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.price.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.UNIT_PRICE
+        </label>
+        <bh-clear on-clear="ModalCtrl.clear('price')"></bh-clear>
+
+        <input type="number" class="form-control" name="price" ng-model="ModalCtrl.params.price">
+        <div class="help-block" ng-messages="ModalForm.price.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.type_id.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.TYPE</label>
+      <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
+      <select
+        class="form-control"
+        name="type_id"
+        ng-model="ModalCtrl.params.type_id"
+        ng-options="type.id as type.text for type in ModalCtrl.types"
+        >
+        <option value=""  translate>FORM.SELECT.INVENTORY_TYPE</option>
+      </select>
+      <div class="help-block" ng-messages="ModalForm.type_id.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.CONSUMABLE
+        </label>
+        <input type="checkbox"   name="consumable" ng-model="ModalCtrl.param.consumable">
+
+      </div>
+
+
+
     </fieldset>
 
   </div>
