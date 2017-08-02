@@ -117,7 +117,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }  
+  }
 
   // error handler
   function handler(error) {
@@ -195,7 +195,7 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   function startup() {
 
     if ($state.params.filters) {
-      // Fix me, generate change dynamically 
+      // Fix me, generate change dynamically
       var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
 
       Patients.filters.replaceFilters(change);
