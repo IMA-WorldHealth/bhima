@@ -8,7 +8,7 @@
     <ui-select name="period_id"
       ng-model="$ctrl.periodId"
       on-select="$ctrl.onSelect($item, $model)" required>
-      <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}">{{$select.selected.monthYear}}</span></ui-select-match>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}"><span>{{$select.selected.monthYear}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="period.id as period in ($ctrl.periodes | filter:$select.search) track by period.id">
         <span ng-bind-html="period.monthYear | highlight:$select.search"></span>
       </ui-select-choices>

@@ -9,7 +9,7 @@
     <ui-select name="debtor_group_uuid" 
       ng-model="$ctrl.debtorGroupUuid"
       on-select="$ctrl.onSelect($item)" required>
-      <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">{{$select.selected.name}}</span></ui-select-match>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in ($ctrl.debtorGroups | filter:$select.search | orderBy:'name') track by group.uuid">
         <span ng-bind-html="group.name | highlight:$select.search"></span>
       </ui-select-choices>

@@ -8,7 +8,7 @@
     <ui-select name="cashbox_id" 
       ng-model="$ctrl.cashboxId"
       on-select="$ctrl.onSelect($item, $model)" required>
-      <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}">{{$select.selected.hrlabel}}</span></ui-select-match>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}"><span>{{$select.selected.hrlabel}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter:$select.search) track by cashbox.id">
         <span ng-bind-html="cashbox.hrlabel | highlight:$select.search"></span>
       </ui-select-choices>

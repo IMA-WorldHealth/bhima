@@ -72,7 +72,7 @@ function processingCashflowReport(params) {
       return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date);
     })
     .then((balance) => {
-      if (!balance) { balance = { balance : 0, account_id : params.account_id }; }
+      if (!balance) { balance = { balance : 0}; }
       glb.openningBalance = balance;
 
       return queryIncomeExpense(params);
@@ -114,7 +114,7 @@ function queryIncomeExpense(params, dateFrom, dateTo) {
         gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
         gl.description, gl.comment, gl.origin_id, gl.user_id
       FROM general_ledger gl
-      WHERE gl.account_id IN (?) AND
+      WHERE gl.account_id = ? AND
         DATE(gl.trans_date) >= DATE(?) AND
         DATE(gl.trans_date) <= DATE(?) AND
         gl.origin_id <> 10 AND
@@ -149,6 +149,7 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
 
     grouping.push({ period : pf.period, incomes, expenses });
   });
+
   return grouping;
 }
 
@@ -215,6 +216,9 @@ function processingWeekCashflow(params) {
   if (!glb.periods.length) {
     throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
   }
+
+  // Using dateFrom as the beginning of all periods, To avoid using dates not included in fiscal years
+  glb.periods[0].start_date = params.dateFrom;
 
   return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date)
   .then((balance) => {
@@ -319,7 +323,6 @@ function document(req, res, next) {
   const params = req.query;
 
   let documentReport;
-
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
 
@@ -417,7 +420,7 @@ function document(req, res, next) {
     session.sum_expense[period] = 0;
 
     if (session.summationIncome[period]) {
-      session.summationIncome[period].forEach((transaction) => {
+      session.summationIncome[period].forEach((transaction) => {  
         // if only cashes values must be in only enterprise currency
         /** @todo: convert into enterprise currency */
         session.sum_incomes[period] += transaction.value;
@@ -532,9 +535,6 @@ function document(req, res, next) {
    * @description group incomes and expenses by origin_id for each period
    */
   function groupingResult(incomes, expenses, period) {
-    const tempIncome = {};
-    const tempExpense = {};
-
     session.summationIncome[period] = [];
     session.summationExpense[period] = [];
 
@@ -550,13 +550,7 @@ function document(req, res, next) {
     // income
     if (incomes) {
       incomes.forEach((item) => {
-        tempIncome[item.origin_id] = typeof tempIncome[item.origin_id] !== 'undefined';
-        // FIX ME
-        // typeof tempIncome[item.origin_id] !== 'undefined' It's TRUE
-        // But this affectation " tempIncome[item.origin_id] = typeof tempIncome[item.origin_id] !== 'undefined' " is FALSE ???
-        // if (tempIncome[item.origin_id] === true) {  >> Not tested TRUE
-
-        if (typeof tempIncome[item.origin_id] !== 'undefined') {
+        if(item.origin_id){
           const value = incomes.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
           }, 0);
@@ -565,17 +559,21 @@ function document(req, res, next) {
             transfer_type : item.transactionType,
             currency_id   : item.currency_id,
             value,
-          });
+          });          
         }
       });
     }
 
+    // Removing duplicates
+    let cacheIncome = {};
+    session.summationIncome[period] = session.summationIncome[period].filter(function(elem, index, array) {
+      return cacheIncome[elem.transfer_type] ? 0 : cacheIncome[elem.transfer_type] = 1;
+    });
+
     // Expense
     if (expenses) {
       expenses.forEach((item) => {
-        tempExpense[item.origin_id] = typeof tempExpense[item.origin_id] !== 'undefined';
-
-        if (tempExpense[item.origin_id] === true) {
+        if(item.origin_id){
           const value = expenses.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
@@ -588,6 +586,12 @@ function document(req, res, next) {
         }
       });
     }
+
+    // Removing duplicates
+    let cacheExpense = {};
+    session.summationExpense[period] = session.summationExpense[period].filter(function(elem, index, array) {
+      return cacheExpense[elem.transfer_type] ? 0 : cacheExpense[elem.transfer_type] = 1;
+    });
   }
 }
 
