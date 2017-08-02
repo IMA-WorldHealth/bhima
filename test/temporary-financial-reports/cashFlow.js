@@ -91,19 +91,19 @@ describe('Cash Flow Report', () => {
   };
 
   var periodicBalanceWeek = { 
-    'week1' : 1725.36,
-    'week2' : 1725.36,
-    'week3' : 1655.36,
-    'week4' : 1655.36,
-    'week5' : 1655.36 
+    'week1' : 1728.68,
+    'week2' : 1728.68,
+    'week3' : 1658.68,
+    'week4' : 1658.68,
+    'week5' : 1658.68, 
   };
 
   var periodicOpenningBalanceWeek = { 
-    'week1' : 1725.3600,
-    'week2' : 1725.36,
-    'week3' : 1725.36,
-    'week4' : 1655.36,
-    'week5' : 1655.36, 
+    'week1' : 1728.68,
+    'week2' : 1728.68,
+    'week3' : 1728.68,
+    'week4' : 1658.68,
+    'week5' : 1658.68, 
   };
 
   var totalIncomesWeek = { 
@@ -114,7 +114,7 @@ describe('Cash Flow Report', () => {
     'week3': 70 
   };
 
-  var openningBalance = '1725.3600';
+  var openningBalance = '1728.6800';
 
   // Cash Flow Report for the 'Hospital Primary Cashbox' with the currency Dollars in 2016
   it('Returns expected Cash Flow Report for the Hospital Primary Cashbox with the currency Dollars in 2016', () => {
@@ -150,13 +150,13 @@ describe('Cash Flow Report', () => {
       .then((result) => {
         expect(result.body.openningBalance).to.equal(openningBalance);
 
-        expect(Number(result.body.periodicBalance['2015-04-26'])).to.equal(periodicBalanceWeek.week1);
+        expect(Number(result.body.periodicBalance['2015-05-01'])).to.equal(periodicBalanceWeek.week1);
         expect(Number(result.body.periodicBalance['2015-05-03'])).to.equal(periodicBalanceWeek.week2);
         expect(Number(result.body.periodicBalance['2015-05-10'])).to.equal(periodicBalanceWeek.week3);
         expect(Number(result.body.periodicBalance['2015-05-17'])).to.equal(periodicBalanceWeek.week4);
         expect(Number(result.body.periodicBalance['2015-05-24'])).to.equal(periodicBalanceWeek.week5);
 
-        expect(Number(result.body.periodicOpenningBalance['2015-04-26'])).to.equal(periodicOpenningBalanceWeek.week1);
+        expect(Number(result.body.periodicOpenningBalance['2015-05-01'])).to.equal(periodicOpenningBalanceWeek.week1);
         expect(Number(result.body.periodicOpenningBalance['2015-05-03'])).to.equal(periodicOpenningBalanceWeek.week2);
         expect(Number(result.body.periodicOpenningBalance['2015-05-10'])).to.equal(periodicOpenningBalanceWeek.week3);
         expect(Number(result.body.periodicOpenningBalance['2015-05-17'])).to.equal(periodicOpenningBalanceWeek.week4);
