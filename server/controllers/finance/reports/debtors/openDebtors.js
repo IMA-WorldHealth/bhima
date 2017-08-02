@@ -58,20 +58,12 @@ function build(req, res, next) {
     ordering = 'ledger.balance DESC';
     break;
 
-  case 'debt-asc':
-    ordering = 'ledger.balance ASC';
-    break;
-
   case 'patient-name-desc':
     ordering = 'patient.display_name DESC';
     break;
 
   case 'patient-name-asc':
     ordering = 'patient.display_name ASC';
-    break;
-
-  case 'debt-desc':
-    ordering = 'ledger.balance DESC';
     break;
 
   case 'debt-asc':

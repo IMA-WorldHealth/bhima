@@ -79,7 +79,7 @@ function CashPaymentRegistryController(
     // @TODO(jniles): This is temporary, as it doesn't take into account USD payments
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    footerCellClass: 'text-right',
   }, {
     field : 'cashbox_label',
     displayName : 'TABLE.COLUMNS.CASHBOX',
@@ -109,7 +109,7 @@ function CashPaymentRegistryController(
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
-  
+
   // saves the grid's current configuration
   vm.saveGridState = state.saveGridState;
   function clearGridState() {
@@ -185,7 +185,7 @@ function CashPaymentRegistryController(
 
   function startup() {
     if ($state.params.filters) {
-      // Fix me, generate change dynamically 
+      // Fix me, generate change dynamically
       var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
 
       Cash.filters.replaceFilters(change);

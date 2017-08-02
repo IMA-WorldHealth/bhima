@@ -62,6 +62,7 @@ function InvoiceRegistryController(
     field : 'cost',
     displayName : 'TABLE.COLUMNS.COST',
     headerCellFilter : 'translate',
+    cellClass : 'text-right',
     cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
@@ -161,9 +162,9 @@ function InvoiceRegistryController(
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     if ($state.params.filters) {
-      // Fix me, generate change dynamically 
+      // Fix me, generate change dynamically
       var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-      
+
       Invoices.filters.replaceFilters(change);
       Invoices.cacheFilters();
     }

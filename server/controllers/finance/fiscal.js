@@ -634,11 +634,11 @@ function closing(req, res, next) {
  * This function returns all Fiscal Year's periods
  * the Fiscal Year provided.  If no record is found, it throws a NotFound error.
  *
- * @param {fiscal_year_id}  - Makes it possible to select the different periods of the fiscal year
+ * @param {fiscalYearId}  - Makes it possible to select the different periods of the fiscal year
  * @returns {Promise} - a promise resolving to the periods record
  *
  */
-function getPeriodByFiscal(fiscal_year_id) {
+function getPeriodByFiscal(fiscalYearId) {
   const sql = `
     SELECT period.number, period.id
     FROM period 
@@ -646,5 +646,5 @@ function getPeriodByFiscal(fiscal_year_id) {
     WHERE period.fiscal_year_id = ? AND period.number <> 13;
   `;
 
-  return db.exec(sql, [fiscal_year_id]);
+  return db.exec(sql, [fiscalYearId]);
 }

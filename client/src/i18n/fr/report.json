@@ -19,7 +19,7 @@
       "EXPLOITATION_RESULT": "Resultat d'exploitation"
     },
     "CASH_EXPENSE":"Depenses",
-    "CASHFLOW_BY_SERVICE":"Cashflow par Service",
+    "CASHFLOW_BY_SERVICE": {"TITLE":"Rapports de flux de trésorerie par Service", "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie"},
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
@@ -71,6 +71,10 @@
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",
       "DESCRIPTION": "Ce rapport affiche la balance des comptes pour une période donnée"
+    },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Rapport de recettes et depenses",
+      "DESCRIPTION": "Ce rapport affiche toutes les depenses et recettes de l'entreprise"
     },
     "CASH_REPORT": {
       "TITLE": "Rapport de caisse",

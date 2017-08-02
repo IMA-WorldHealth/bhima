@@ -29,7 +29,7 @@ function getRecordQuery(token, format, openingBalance) {
 
   if (format === 1) {
     query =
-      `	
+      `
       SELECT
         t.trans_id, t.trans_date, t.debit, t.credit, t.description, t.account_id, 
         a.number, a.label, t.balance, t.cbalance, c.reference AS cashReference, 
@@ -63,8 +63,7 @@ function getRecordQuery(token, format, openingBalance) {
                       g.account_id= ? AND 
                       (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
                   )
-              ) AS u, (SELECT @cbal := ${openingBalance}
-            ) AS z 
+              ) AS u, (SELECT @cbal := ${openingBalance}) AS z 
           ORDER BY 
             trans_date
         ) AS t
@@ -73,9 +72,7 @@ function getRecordQuery(token, format, openingBalance) {
       LEFT JOIN 
         cash c ON c.uuid = t.record_uuid
       LEFT JOIN
-        voucher v ON v.uuid = t.record_uuid;
-		  `;
-
+        voucher v ON v.uuid = t.record_uuid;`;
   } else {
     query =
       `
@@ -121,57 +118,82 @@ function getRecordQuery(token, format, openingBalance) {
 }
 
 function getCashRecord(accountId, dateFrom, dateTo, format, type) {
-  let reportContext = {};
+  const reportContext = {};
   let promise;
 
   if (format === 1) {
-    promise = 
+    promise =
     accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
       .then((openingBalance) => {
-        _.merge(reportContext, { openingBalance : openingBalance.balance } );
-        return db.exec(getRecordQuery(null, format, openingBalance.balance), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+        _.merge(reportContext, { openingBalance : openingBalance.balance });
+        return db.exec(getRecordQuery(null, format, openingBalance.balance), [
+          accountId,
+          dateFrom,
+          dateTo,
+          accountId,
+          dateFrom,
+          dateTo,
+        ]);
       })
       .then((records) => {
-        return { records, isEmpty: records.length === 0 };
+        return { records, isEmpty : records.length === 0 };
       });
   } else {
     promise =
     accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
     .then((openingBalance) => {
       _.merge(reportContext, { openingBalance : openingBalance.balance });
-     return db.exec(getRecordQuery('t.debit_equiv > 0', format), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo])
+      return db.exec(getRecordQuery('t.debit_equiv > 0', format), [
+        accountId,
+        dateFrom,
+        dateTo,
+        accountId,
+        dateFrom,
+        dateTo,
+      ]);
     })
     .then((entries) => {
       reportContext.entries = entries;
-
       // Getting expenses records
-      return db.exec(getRecordQuery('t.credit_equiv > 0', format), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+      return db.exec(getRecordQuery('t.credit_equiv > 0', format), [
+        accountId,
+        dateFrom,
+        dateTo,
+        accountId,
+        dateFrom,
+        dateTo,
+      ]);
     })
     .then((expenses) => {
       reportContext.expenses = expenses;
       _.merge(reportContext, {
-        type_id: Number(type),
-        isEmpty: reportContext.entries.length === 0 && reportContext.expenses.length === 0
+        type_id : Number(type),
+        isEmpty : reportContext.entries.length === 0 && reportContext.expenses.length === 0,
       });
-      // Getting sum entries 
+      // Getting sum entries
       return db.one(aggregateRecordQuery('t.debit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
     })
     .then((totalEntry) => {
       reportContext.totalEntry = totalEntry.arithmeticBalance;
-
-      // Getting sum expenses 
+      // Getting sum expenses
       return db.one(aggregateRecordQuery('t.credit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
     })
     .then((totalExpense) => {
       reportContext.totalExpense = totalExpense.arithmeticBalance;
-
-      // Getting intermediate balance of cash account 
+      // Getting intermediate balance of cash account
       return db.one(aggregateRecordQuery(), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
     })
     .then((intermediateTotal) => {
       reportContext.intermediateTotal = intermediateTotal.algebricBalance;
       // getting final balance of cash account
-      return db.one(aggregateRecordQuery(1, reportContext.openingBalance), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+      return db.one(aggregateRecordQuery(1, reportContext.openingBalance), [
+        accountId,
+        dateFrom,
+        dateTo,
+        accountId,
+        dateFrom,
+        dateTo,
+      ]);
     });
   }
 
@@ -179,15 +201,16 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
     .then((data) => {
       _.merge(reportContext, data);
       const sql =
-        `SELECT
-	      c.label AS cashName, cu.symbol AS cashCurrency
-      FROM 
+        `
+      SELECT
+        c.label AS cashName, cu.symbol AS cashCurrency
+      FROM
         cash_box AS c
       JOIN 
         cash_box_account_currency AS cac ON c.id = cac.cash_box_id
       JOIN 
         currency AS cu ON cac.currency_id = cu.id
-      WHERE cac.account_id = ?;`
+      WHERE cac.account_id = ?;`;
       return db.one(sql, [accountId]);
     })
     .then((cashDetail) => {
@@ -218,15 +241,15 @@ function aggregateRecordQuery(token = 1, openingBalance) {
         IFNULL(g.debit_equiv, 0) AS debit, IFNULL(g.credit_equiv, 0) AS credit
       FROM
         general_ledger AS g
-      WHERE 
-			  g.account_id= ? AND 
+      WHERE
+        g.account_id= ? AND 
         (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
       )
     ) AS t WHERE ${token}`;
 
-    if(openingBalance){
-      return `SELECT (${openingBalance} + tt.algebricBalance) AS finalTotal FROM (${query}) AS tt`;
-    }
+  if (openingBalance) {
+    return `SELECT (${openingBalance} + tt.algebricBalance) AS finalTotal FROM (${query}) AS tt`;
+  }
 
   return query;
 }

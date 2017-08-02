@@ -71,7 +71,7 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
   const periodCondition = `
     (period.number = 0
     OR
-    period.end_date < DATE(?))
+    DATE(period.end_date) < DATE(?))
   `;
 
   const sql = `
@@ -150,9 +150,9 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
     )
     .then(runningPeriod => {
       return {
-        balance: (balance + runningPeriod.balance).toFixed(4),
-        credit: (credit + runningPeriod.credit).toFixed(4),
-        debit: (debit + runningPeriod.debit).toFixed(4),
+        balance : (balance + runningPeriod.balance).toFixed(4),
+        credit : (credit + runningPeriod.credit).toFixed(4),
+        debit : (debit + runningPeriod.debit).toFixed(4),
       };
     });
 }

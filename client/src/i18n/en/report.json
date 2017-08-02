@@ -19,9 +19,9 @@
       "EXPLOITATION_RESULT": "Exploitation Result"
     },
     "CASH_EXPENSE": "Expenses",
-    "CASHFLOW_BY_SERVICE": "Cashflow By Service",
+    "CASHFLOW_BY_SERVICE": {"TITLE":"Cashflow By Service", "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"},
     "CASHFLOW": "Cashflow",
-    "CASH_INCOME": "Revenu",
+    "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",

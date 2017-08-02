@@ -12,6 +12,7 @@ module.exports = {
   VOUCHER : {
     key   : 'VO',
     table : 'voucher',
+    documentPath:'/reports/finance/vouchers/'
   },
   EMPLOYEE : {
     key   : 'EM',
@@ -20,10 +21,12 @@ module.exports = {
   INVOICE : {
     key   : 'IV',
     table : 'invoice',
+    documentPath:'/reports/finance/invoices/'
   },
   CASH_PAYMENT : {
     key   : 'CP',
     table : 'cash',
+    documentPath:'/reports/finance/cash/'
   },
   PATIENT : {
     key          : 'PA',
