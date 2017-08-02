@@ -6,7 +6,7 @@
    append-to-body="true"
    required>
    <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+      <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
    </ui-select-match>
    <ui-select-choices
      class="ui-grid-ui-select"

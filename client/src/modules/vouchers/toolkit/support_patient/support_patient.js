@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('SupportPatientKitController', SupportPatientKitController);
+  .controller('SupportPatientKitController', SupportPatientKitController);
 
 // DI definition
 SupportPatientKitController.$inject = [
@@ -11,13 +11,13 @@ SupportPatientKitController.$inject = [
 function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors, Invoices) {
   var vm = this;
 
+  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+
   // global variables
   vm.enterprise = Session.enterprise;
   vm.gridOptions = {};
   vm.tool = Data;
   vm.patientInvoice = false;
-
-  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // expose to the view
   vm.selectPatientInvoices = selectPatientInvoices;
@@ -28,15 +28,15 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
   // debtors from store
   Debtors.store()
-  .then(function (data) {
-    vm.patients = data;
-  })
-  .catch(Notify.handleError);
+    .then(function (data) {
+      vm.patients = data;
+    })
+    .catch(Notify.handleError);
 
   // get debtor group invoices
   function selectPatientInvoices(debtorId) {
     // load patient invoices
-    vm.debtorUuid =  debtorId;
+    vm.debtorUuid = debtorId;
 
     Debtors.invoices(debtorId, { balanced: 0 })
       .then(function (invoices) {
@@ -50,16 +50,16 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
-        
-        return Invoices.read(null, {debtor_uuid: debtorId});
+
+        return Invoices.read(null, { debtor_uuid: debtorId });
       })
       .then(function (data) {
         vm.invoices = data;
-      })      
+      })
       .catch(Notify.handleError);
   }
 
-  function loadInvoice(patient){
+  function loadInvoice(patient) {
     vm.patient = patient;
     selectPatientInvoices(patient.debtor_uuid);
   }
@@ -111,7 +111,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     return {
       label : entity.text,
       type  : 'D',
-      uuid  : entity.uuid
+      uuid  : entity.uuid,
     };
   }
 
@@ -135,24 +135,27 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
       debit          : 0,
       credit         : 0,
       reference_uuid : undefined,
-      entity_uuid    : undefined
+      entity_uuid    : undefined,
     };
   }
 
   /* ================ Invoice grid parameters ===================== */
   vm.gridOptions.appScopeProvider = vm;
-  vm.gridOptions.enableFiltering  = true;
-  vm.gridOptions.onRegisterApi    = onRegisterApi;
+  vm.gridOptions.enableFiltering = true;
+  vm.gridOptions.onRegisterApi = onRegisterApi;
   vm.gridOptions.fastWatch = true;
   vm.gridOptions.flatEntityAccess = true;
 
   vm.gridOptions.columnDefs = [
     { field: 'reference', displayName: 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
     { field: 'date', cellFilter: 'date', displayName: 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter: 'translate', enableFiltering: false },
-    { field            : 'balance', displayName      : 'TABLE.COLUMNS.BALANCE',
-      headerCellFilter : 'translate', enableFiltering  : false,
-      cellTemplate     : '/modules/templates/grid/balance.cell.html'
-    }
+    { field            : 'balance',
+      displayName      : 'TABLE.COLUMNS.BALANCE',
+      headerCellFilter : 'translate',
+      cellClass : 'text-right',
+      enableFiltering  : false,
+      cellTemplate     : '/modules/templates/grid/balance.cell.html',
+    },
   ];
 
   function onRegisterApi(gridApi) {
@@ -161,7 +164,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     vm.gridApi.selection.on.rowSelectionChangedBatch(null, rowSelectionCallback);
   }
 
-  function rowSelectionCallback(row) {
+  function rowSelectionCallback() {
     vm.selectedRows = vm.gridApi.selection.getSelectedRows();
     vm.totalSelected = vm.selectedRows.reduce(function (current, previous) {
       return current + previous.balance;
