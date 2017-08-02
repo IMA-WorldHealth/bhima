@@ -4,7 +4,7 @@
   data-modal="patient-search"
   novalidate>
 
-  <div class="modal-header" style="box-shadow : 0px 2px 4px -4px black; z-index:1000">
+  <div class="modal-header search-modal-header">
     <ol class="headercrumb">
       <li class="static" translate>FORM.INFO.PATIENTS</li>
       <li class="title" translate>FORM.INFO.SEARCH</li>
@@ -13,7 +13,7 @@
 
   <div class="modal-body search-modal">
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
             <label class="control-label" translate> FORM.LABELS.NAME </label>
@@ -94,7 +94,7 @@
             name="user_id"
             on-select-callback="ModalCtrl.onSelectUser(user)">
             <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-          </bh-user-select>        
+          </bh-user-select>
 
           <fieldset>
             <legend translate>FORM.LABELS.DOB</legend>
@@ -129,8 +129,7 @@
           </div>
         </div>
       </uib-tab>
-      
-    </uib-tabset>  
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">

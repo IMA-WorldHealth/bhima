@@ -11,15 +11,15 @@
           <a class="btn btn-default" uib-dropdown-toggle>
             <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
           </a>
-          
+
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
               <a href data-method="configure" ng-click="PatientRegistryCtrl.openColumnConfiguration()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
-            </li> 
+            </li>
 
-            <li role="separator" class="divider"></li>  
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a href data-method="save-state" ng-click="PatientRegistryCtrl.saveGridState()">
                 <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
@@ -44,18 +44,18 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
-                               
+
           </ul>
 
         </div>
       </div>
-        
+
       <div class="toolbar-item">
         <button
           ng-click="PatientRegistryCtrl.search()"
           data-method="search"
           class="btn btn-default">
-          <span class="fa fa-search"></span> <span translate>FORM.BUTTONS.SEARCH</span>
+          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
     </div>
@@ -79,8 +79,7 @@
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns
-      ui-grid-save-state
-      ui-grid-selection>
+      ui-grid-save-state>
 
       <bh-grid-loading-indicator
         loading-state="PatientRegistryCtrl.loading"
