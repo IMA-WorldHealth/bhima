@@ -33,6 +33,9 @@ function SearchFilterService(Filters, AppCache) {
       { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
       { key : 'group_uuid', label : 'FORM.LABELS.GROUP' },
       { key : 'text', label : 'FORM.LABELS.LABEL' },
+      { key : 'code', label : 'FORM.LABELS.CODE' },
+      { key : 'price', label : 'FORM.LABELS.UNIT_PRICE' },
+      { key : 'type_id', label : 'FORM.LABELS.TYPE' },
     ];
 
     this._filters.registerCustomFilters(this._availableFilters);

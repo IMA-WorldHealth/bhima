@@ -45,6 +45,7 @@ function InventoryService(Api, Groups, Units, Types, $uibModal) {
     var columns = [
       { field : 'group_uuid', displayName : 'FORM.LABELS.GROUP' },
       { field : 'text', displayName : 'FORM.LABELS.LABEL' },
+
     ];
     // returns columns from filters
     return columns.filter(function (column) {
