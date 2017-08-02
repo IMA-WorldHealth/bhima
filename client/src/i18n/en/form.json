@@ -614,7 +614,8 @@
             "EMPTY_SELECTION": "Empty Selection",
             "NOT_AUTHORISED": "The requested page is not authorised",
             "NOT_FOUND": "Not found",
-            "PAGE_NOT_FOUND": "The page you requested could not be found"
+            "PAGE_NOT_FOUND": "The page you requested could not be found",
+            "NO_CHANGES" : "You haven't changed any form values.  Nothing will be submitted to the server."
         }
     }
 }

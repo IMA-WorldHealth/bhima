@@ -2,22 +2,21 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService'
+  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
+  'ScrollService',
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal) {
+function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal, ScrollTo) {
   var vm = this;
 
   vm.enterprises = [];
   vm.enterprise = {};
   vm.maxLength = util.maxTextLength;
   vm.length50 = util.length50;
-  vm.length20 = util.length20;
   vm.length100 = util.length100;
-  vm.length30 = util.length30;
   vm.hasEnterprise = false;
 
   // bind methods
@@ -55,6 +54,10 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
     vm.enterprise.gain_account_id = account.id;
   }
 
+  vm.scrollToSubmission = function scrollToSubmission() {
+    ScrollTo('submission');
+  };
+
   function onSelectLossAccount(account) {
     vm.enterprise.loss_account_id = account.id;
   }
@@ -66,34 +69,25 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
       return;
     }
 
+    // make sure only fresh data is sent to the server.
+    if (form.$pristine) {
+      Notify.warn('FORM.WARNINGS.NO_CHANGES');
+      return;
+    }
+
     var promise;
     var creation = (vm.hasEnterprise === false);
-    var enterprise = cleanEnterpriseForm(vm.enterprise);
+    var changes = util.filterFormElements(form, true);
 
     promise = (creation) ?
-      Enterprises.create(enterprise) :
-      Enterprises.update(enterprise.id, enterprise);
+      Enterprises.create(changes) :
+      Enterprises.update(vm.enterprise.id, changes);
 
     return promise
       .then(function () {
         Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
-  }
-
-  function cleanEnterpriseForm(enterprise) {
-    return {
-      id              : enterprise.id,
-      name            : enterprise.name,
-      abbr            : enterprise.abbr,
-      phone           : enterprise.phone,
-      email           : enterprise.email,
-      location_id     : enterprise.location_id,
-      currency_id     : enterprise.currency_id,
-      po_box          : enterprise.po_box,
-      gain_account_id : enterprise.gain_account_id,
-      loss_account_id : enterprise.loss_account_id,
-    };
   }
 
   /* ================================ PROJECT ================================ */
