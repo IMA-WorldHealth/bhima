@@ -2,6 +2,86 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/IMA-WorldHealth/bhima-2.X/compare/v0.4.1...v0.5.0) (2017-08-02)
+
+
+### Bug Fixes
+
+* **account report:** add opening balance and enhancements ([637b08d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/637b08d))
+* **account statement:** broken i18n code ([038113b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/038113b))
+* **accounts:** rendering parent account select ([d875af7](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d875af7))
+* **balance report at the server side:** Fix the reduce value computed for the balance totals, and fi ([e438788](https://github.com/IMA-WorldHealth/bhima-2.X/commit/e438788))
+* **bhDebGroup:** fix conflict from params of components for the test E2E ([31eeb8c](https://github.com/IMA-WorldHealth/bhima-2.X/commit/31eeb8c))
+* **cash:** do not assign currency to aggregation ([d24e76a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d24e76a))
+* adding warning message if document is not found ([5269e3c](https://github.com/IMA-WorldHealth/bhima-2.X/commit/5269e3c))
+* **cash:** update FR i18n to say "Reçu" ([#1585](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1585)) ([7a7a5a9](https://github.com/IMA-WorldHealth/bhima-2.X/commit/7a7a5a9))
+* **db:** fix the triggers.sql, admin.sql, procedures.sql and correct the sql to load debtors and cre ([d1b7e30](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d1b7e30))
+* **debtor groups:** fix debtor group title label ([c876adf](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c876adf))
+* **deps:** downgrade ui-router ([#1591](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1591)) ([adb40c8](https://github.com/IMA-WorldHealth/bhima-2.X/commit/adb40c8)), closes [#1589](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1589)
+* **docs:** remove broken link in PR template ([6e72918](https://github.com/IMA-WorldHealth/bhima-2.X/commit/6e72918))
+* **filter:** handle the filter properly from the client to the server ([0431554](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0431554))
+* **filters:** Invoice filter custom period start ([c3da484](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c3da484))
+* **fiscal:** add missing i18n translations ([c86997b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c86997b))
+* **fiscal:** catch fiscal year errors ([b9d9182](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b9d9182)), closes [#1087](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1087)
+* **i18n:** Missing translation keys ([#1614](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1614)) ([7cf8682](https://github.com/IMA-WorldHealth/bhima-2.X/commit/7cf8682))
+* default value for $state.current on refresh ([#1698](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1698)) ([eafc0bd](https://github.com/IMA-WorldHealth/bhima-2.X/commit/eafc0bd))
+* **Fiscal Year List:** Fix fiscal Yeal translation Mode ([582da03](https://github.com/IMA-WorldHealth/bhima-2.X/commit/582da03))
+* **i18n:** translate patient group correctly ([#1583](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1583)) ([55ed68a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/55ed68a))
+* **invoices:** currency right-align ([19da4f7](https://github.com/IMA-WorldHealth/bhima-2.X/commit/19da4f7))
+* **journal:** display dates on personalized periods in journal search modal ([#1654](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1654)) ([1508a81](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1508a81))
+* **journal:** do not close search on external click ([93efa64](https://github.com/IMA-WorldHealth/bhima-2.X/commit/93efa64)), closes [#1617](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1617)
+* **journal:** expose sorting functions in transaction sort ([#1610](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1610)) ([71206e2](https://github.com/IMA-WorldHealth/bhima-2.X/commit/71206e2))
+* **journal:** only reload view after edit ([#1601](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1601)) ([4504703](https://github.com/IMA-WorldHealth/bhima-2.X/commit/4504703)), closes [#1600](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1600)
+* **journal:** order Trial Balance by account number ([#1602](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1602)) ([c309572](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c309572)), closes [#1599](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1599)
+* **journal:** trial balance errors show trans_id ([#1596](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1596)) ([22c70f3](https://github.com/IMA-WorldHealth/bhima-2.X/commit/22c70f3)), closes [#1594](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1594)
+* **journal:** update footer when data changes ([4df53c2](https://github.com/IMA-WorldHealth/bhima-2.X/commit/4df53c2))
+* **journal:** zero new transaction lines debit and credit fields ([#1577](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1577)) ([6a3cbe5](https://github.com/IMA-WorldHealth/bhima-2.X/commit/6a3cbe5))
+* **journal editing:** transaction period validation ([1f73467](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1f73467))
+* **links:** add next() error handlers ([8d6ef5b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/8d6ef5b))
+* **patientGroups:** fix typo in submit button ([1fb5db7](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1fb5db7))
+* **patients:** responsive search button ([d8d9a20](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d8d9a20))
+* **patients:** revert bugs in debtor_group search ([#1735](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1735)) ([63a0c20](https://github.com/IMA-WorldHealth/bhima-2.X/commit/63a0c20))
+* **patients:** search modal typo ([2bcb301](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2bcb301))
+* **prices:** visibility issues on ui-select ([3ff901f](https://github.com/IMA-WorldHealth/bhima-2.X/commit/3ff901f))
+* **reports:** Acc. Statement balance and dates ([b019609](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b019609))
+* **reports:** hack to refresh reportData ([5e7056b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/5e7056b)), closes [#1821](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1821)
+* **reports:** Period 0 is considered in balance ([4b85bcc](https://github.com/IMA-WorldHealth/bhima-2.X/commit/4b85bcc))
+* **reports:** right align account slip currencies ([#1619](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1619)) ([dfe66c0](https://github.com/IMA-WorldHealth/bhima-2.X/commit/dfe66c0)), closes [#1576](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1576)
+* **reports:** Use correct end period comparison ([acd6298](https://github.com/IMA-WorldHealth/bhima-2.X/commit/acd6298))
+* **stats:** template in all dates for dashboard ([0fd345e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0fd345e)), closes [#1675](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1675)
+* **trial_balance:** parse dates correctly ([#1587](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1587)) ([0cb5317](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0cb5317))
+* allow navigation to settings after 403 error ([2ba3466](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2ba3466)), closes [#1862](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1862)
+* resolve conflict in merging ([af968af](https://github.com/IMA-WorldHealth/bhima-2.X/commit/af968af))
+* **trialBalance:** align exporter/error buttons ([0cd471d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0cd471d)), closes [#1680](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1680)
+* **users:** enhance disabled user UI ([1cd7da2](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1cd7da2))
+
+
+### Features
+
+* **account:** report opening balances ([b25e889](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b25e889)), closes [#1611](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1611) [#1636](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1636)
+* **account statement:** implement basic user interface ([#1672](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1672)) ([43a989e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/43a989e))
+* **debtors:** List the account in the Debtor Group's list ([#1613](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1613)) ([72aa815](https://github.com/IMA-WorldHealth/bhima-2.X/commit/72aa815))
+* **grids:** export to csv with custom options ([#1554](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1554)) ([869599d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/869599d))
+* **grids:** manually saving and restoring state ([69eec2c](https://github.com/IMA-WorldHealth/bhima-2.X/commit/69eec2c))
+* **invoices:** add CSV and PDF download links ([cf2ff2e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/cf2ff2e))
+* implement searching on debtor groups for each registry ([#1740](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1740)) ([d2ac8ae](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d2ac8ae)), closes [#1702](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1702)
+* **invoices:** implement save-state w/ columns ([34e49cd](https://github.com/IMA-WorldHealth/bhima-2.X/commit/34e49cd)), closes [#1749](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1749)
+* **journal:** allow users to edit transaction type ([#1616](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1616)) ([6bc89ba](https://github.com/IMA-WorldHealth/bhima-2.X/commit/6bc89ba))
+* **journal:** propagate changes in shared properties to whole transaction ([89a3272](https://github.com/IMA-WorldHealth/bhima-2.X/commit/89a3272))
+* **patients:** accept any document upload ([f2f432b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/f2f432b))
+* **reports:** Warn on multiple fiscal year span ([2a21e19](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2a21e19))
+* **voucher:** create cash transfer, generic income and expense tools ([#1586](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1586)) ([1a8d00f](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1a8d00f))
+* **vouchers:** implement manual Prise En Charge form ([2ff9b91](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2ff9b91))
+
+
+### Performance Improvements
+
+* Refactoring the code ([090d999](https://github.com/IMA-WorldHealth/bhima-2.X/commit/090d999))
+* **cleanning:** cleanning code and removing es6 code form the client ([73649e6](https://github.com/IMA-WorldHealth/bhima-2.X/commit/73649e6))
+
+
+
 <a name="0.4.1"></a>
 ## [0.4.1](https://github.com/IMA-WorldHealth/bhima-2.X/compare/v0.4.0...v0.4.1) (2017-05-03)
 
