@@ -66,13 +66,13 @@
         </div>
         <div class="toolbar-item">
           <button 
-            ng-class="{ 'btn-success' : JournalCtrl.selected.transactions.length === 1 }" 
-            ng-disabled="JournalCtrl.selected.transactions.length === 0"
+            ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }" 
+            ng-disabled="JournalCtrl.selection.selected.groups.length === 0"
             ng-click="JournalCtrl.editTransactionModal()"
             class="btn btn-default" data-method="edit">
             <i class="fa fa-pencil-square-o"></i> 
-              <span ng-if="JournalCtrl.selected.transactions.length === 1">({{JournalCtrl.selected.transactions[0]}})</span>
-              <span ng-if="JournalCtrl.selected.transactions.length > 1">(...)</span>
+              <span ng-if="JournalCtrl.selection.selected.groups.length === 1">({{JournalCtrl.selection.selected.groups[0]}})</span>
+              <span ng-if="JournalCtrl.selection.selected.groups.length > 1">(...)</span>
           </button>
         </div>
         <div class="toolbar-item">
