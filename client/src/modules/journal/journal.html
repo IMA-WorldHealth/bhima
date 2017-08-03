@@ -61,12 +61,23 @@
 
         <div class="toolbar-item">
           <button data-method="search" class="btn btn-default" ng-click="JournalCtrl.openSearchModal()">
-            <i class="fa fa-search"></i> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
+            <i class="fa fa-search"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.SEARCH</span>
+          </button>
+        </div>
+        <div class="toolbar-item">
+          <button 
+            ng-class="{ 'btn-success' : JournalCtrl.selected.transactions.length === 1 }" 
+            ng-disabled="JournalCtrl.selected.transactions.length === 0"
+            ng-click="JournalCtrl.editTransactionModal()"
+            class="btn btn-default" data-method="edit">
+            <i class="fa fa-pencil-square-o"></i> 
+              <span ng-if="JournalCtrl.selected.transactions.length === 1">({{JournalCtrl.selected.transactions[0]}})</span>
+              <span ng-if="JournalCtrl.selected.transactions.length > 1">(...)</span>
           </button>
         </div>
         <div class="toolbar-item">
           <button ng-class="{ 'btn-info' : JournalCtrl.gridGroupedState() }" class="btn btn-default" data-method="grouping" ng-click="JournalCtrl.toggleTransactionGroup()">
-            <i class="fa fa-object-group"></i> <span class="hidden-xs" translate>FORM.LABELS.TRANSACTION</span>
+            <i class="fa fa-object-group"></i> <span class="visible-lg-inline" translate>FORM.LABELS.TRANSACTION</span>
           </button>
         </div>
         <div class="toolbar-item">
