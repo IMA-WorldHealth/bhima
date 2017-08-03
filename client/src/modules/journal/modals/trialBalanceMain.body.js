@@ -30,7 +30,6 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
 
   // expose to the view
   vm.viewErrorList = viewErrorList;
-  vm.viewDetailByAccount = viewDetailByAccount;
 
   function render(aggregation) {
     aggregation.rendered = $currency(aggregation.value, currencyId);
@@ -132,30 +131,6 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
         gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })
       .catch(errorHandler);
-  }
-
-  /**
-  * @function : viewDetailByAccount
-  *
-  * @param {Integer) accountId, the account ID
-  *
-  * @description :
-  * From the account view, this function help to see every transaction relative to one account,
-  * in order to understand the amounts listed.
-  *
-  * The state is switched from trialBalanceMain to trialBalanceDetail, three objects are encapsulated in the params
-  * object :
-  * lines : line for filling the detail grid
-  * feedBack : contains the result of transaction checking
-  * records : lines to fill the main grid when the state will be switched back
-  *
-  * The target view is not the main view, because you can not post to the general ledger from this view,
-  * you have to reset the view to the main view first, this view is just giving complementary information to the user.
-  */
-  function viewDetailByAccount(accountId) {
-    var lines = TrialBalance.getRelatedTransaction(accountId, vm.dataByTrans);
-    // FIX ME : what is the good way of keeping records? using appcache?
-    $state.go('trialBalanceDetail', { lines: lines, feedBack: vm.feedBack, records: records, errors: errorList }, { reload: false });
   }
 
   /**

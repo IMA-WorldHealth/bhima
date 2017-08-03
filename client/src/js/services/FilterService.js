@@ -73,10 +73,16 @@ function FilterService(Store) {
   };
 
   // alias for `assignFilters`, clears the currently active filters before
-  // calling the erferenced method
+  // calling the referenced method
   FilterList.prototype.replaceFilters = function replaceFilters(valueList) {
     this._resetCustomFilters();
     this.assignFilters(valueList);
+  };
+
+  // uses angular.copy() to break references to old values
+  FilterList.prototype.replaceFiltersFromState = function replaceFiltersFromState(stateFilterList) {
+    var changes = angular.copy(stateFilterList);
+    this.replaceFilters(changes);
   };
 
   // return filters for the view - this method will always be compatible with the bhFilter component
