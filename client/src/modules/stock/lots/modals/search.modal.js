@@ -4,12 +4,10 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchLotsModalController.$inject = [
   'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance'
+  'util', 'Store', '$uibModalInstance', 'PeriodService'
 ];
 
-function SearchLotsModalController(
-  data, Inventory, Notify,
-  util, Store, Instance) {
+function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods) {
 
   var vm = this;
   var changes = new Store({ identifier: 'key' });
@@ -22,6 +20,15 @@ function SearchLotsModalController(
     'depot_uuid', 'inventory_uuid', 'label', 'entry_date_from',
     'entry_date_to', 'expiration_date_from', 'expiration_date_to'
   ];
+
+  // default filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
+  };
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
