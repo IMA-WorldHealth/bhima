@@ -14,7 +14,9 @@ TrialBalanceErrorBodyController.$inject = [
  */
 function TrialBalanceErrorBodyController(trialBalanceService, Grouping, $stateParams) {
   var vm = this;
-  var cssClass = trialBalanceService.getCSSClass($stateParams.feedBack);
+
+  var hasErrorState = $stateParams.feedBack.hasError;
+  var cssClass = hasErrorState ? 'ui-grid-header-cell-error' : 'ui-grid-header-cell-primary';
 
   var columns = [{
     field            : 'code',

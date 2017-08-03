@@ -269,6 +269,20 @@ input[type=number] {-moz-appearance: textfield;}
   animation-duration: 2s;
 }
 
+/* These classes need to be "!important" because ui-grid's header cell template */
+/* prioritizes its own classes over ours, for some reason */
+.ui-grid-header-cell-error {
+  background-color: @btn-danger-bg !important;
+  border-color: @btn-danger-border !important;
+  color: white;
+}
+
+.ui-grid-header-cell-primary{
+  background-color: @btn-primary-bg !important;
+  border-color: @btn-primary-border !important;
+  color: white;
+}
+
 /* large button as menu */
 .bg-ima-dark-blue { background: @ima-dark-blue; }
 .bg-ima-dark-blue .value,
