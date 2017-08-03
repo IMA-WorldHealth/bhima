@@ -7,7 +7,6 @@
       class="btn btn-default"
       ng-class="{
         'btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
-        'btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
         'btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess
       }"
       ng-click="TrialBalanceMainBodyCtrl.viewErrorList()"
@@ -33,7 +32,6 @@
   id="main-grid"
   ui-grid="TrialBalanceMainBodyCtrl.gridOptions"
   ui-grid-auto-resize
-  ui-grid-grouping
   ui-grid-exporter>
   <bh-grid-loading-indicator
     loading-state="TrialBalanceMainBodyCtrl.loading"
