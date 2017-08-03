@@ -85,18 +85,6 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     var gridApi = this.gridApi;
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-
-    // determine that this selection is a header row
-    if (angular.isDefined(rowChanged.treeLevel) && rowChanged.treeLevel > -1) {
-
-      var children = gridApi.treeBase.getRowChildren(rowChanged);
-      children.forEach(function (child) {
-
-        // determine if we should we be selected or deselecting
-        var select = rowChanged.isSelected ? gridApi.selection.selectRow : gridApi.selection.unSelectRow;
-        select(child.entity);
-      });
-    }
   }
 
   function handleBatchSelection() {
