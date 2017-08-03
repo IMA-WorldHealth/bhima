@@ -24,7 +24,9 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
   var errorList = null;
   var records = $state.params.records;
 
+
   var gridApi;
+  var columns;
 
   // expose to the view
   vm.viewErrorList = viewErrorList;
@@ -34,7 +36,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     aggregation.rendered = $currency(aggregation.value, currencyId);
   }
 
-  var columns = [{
+  columns = [{
     field            : 'trans_id',
     displayName      : 'TABLE.COLUMNS.TRANSACTION',
     headerCellFilter : 'translate',
@@ -59,7 +61,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     displayName      : 'TABLE.COLUMNS.BEFORE',
     headerCellFilter : 'translate',
     cellClass        : 'text-right',
-    cellFilter       : 'currency:' + currencyId,
+    cellFilter       : 'currency:'.concat(currencyId),
   }, {
     field                            : 'debit_equiv',
     type                             : 'number',
@@ -67,7 +69,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     headerCellFilter                 : 'translate',
     footerCellClass                  : 'text-right text-danger',
     cellClass                        : 'text-right',
-    cellFilter                       : 'currency:' + currencyId,
+    cellFilter                       : 'currency:'.concat(currencyId),
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : render,
   }, {
@@ -76,7 +78,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     displayName                      : 'TABLE.COLUMNS.CREDIT',
     headerCellFilter                 : 'translate',
     footerCellClass                  : 'text-right text-danger',
-    cellFilter                       : 'currency:' + currencyId,
+    cellFilter                       : 'currency:'.concat(currencyId),
     cellClass                        : 'text-right',
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : render,
@@ -86,7 +88,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     displayName      : 'TABLE.COLUMNS.AFTER',
     headerCellFilter : 'translate',
     cellClass        : 'text-right',
-    cellFilter       : 'currency:' + currencyId,
+    cellFilter       : 'currency:'.concat(currencyId),
   }, {
     field            : 'actions',
     displayName      : '',
@@ -101,7 +103,7 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
 
   vm.gridOptions = {
     enableColumnMenus          : false,
-    showColumnFooter           : true,  // default to true so that grid knows how to draw
+    showColumnFooter           : true,
     treeRowHeaderAlwaysVisible : false,
     flatEntityAccess           : true,
     fastWatch                  : true,
@@ -110,15 +112,14 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
     onRegisterApi              : function (api) { gridApi = api; },
   };
 
-
   var exportation = new GridExport(vm.gridOptions, 'all', 'visible');
 
   /**
-   * @function : fetchDataByAccount
-   * @description :
-   * This function fetch data by account from the server
-   * through the trial balance service module
-   **/
+  * @function : fetchDataByAccount
+  * @description :
+  * This function fetch data by account from the server
+  * through the trial balance service module
+  */
   function fetchDataByAccount() {
     return TrialBalance.getDataByAccount(vm.dataByTrans)
       .then(function (data) {
@@ -133,58 +134,24 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
       .catch(errorHandler);
   }
 
-  function toggleLoadingIndicator() {
-    vm.loading = !vm.loading;
-  }
-
   /**
-   * @function : accountView
-   * @description :
-   * This function is responsible of felling the grid data by account
-   *
-   * - It begins by configuring column visibility
-   * - Fill the data through the fetchDataByAccount function
-   * - Removing grouping because data are aggregated from database server
-   *
-   * This view is one of the two mains views because from this view you can post to the general ledger
-   **/
-  function accountView() {
-    toggleLoadingIndicator();
-
-    vm.columns.setVisibleColumns({
-      balance_before : true,
-      balance_final  : true,
-      actions        : true,
-      debit_equiv    : true,
-      credit_equiv   : true,
-      account_number : true,
-      trans_id       : false,
-    });
-
-    fetchDataByAccount()
-      .finally(function () {
-        toggleLoadingIndicator();
-      });
-  }
-
-  /**
-   * @function : viewDetailByAccount
-   *
-   * @param {Integer) accountId, the account ID
-   *
-   * @description :
-   * From the account view, this function help to see every transaction relative to one account,
-   * in order to understand the amounts listed.
-   *
-   * The state is switched from trialBalanceMain to trialBalanceDetail, three objects are encapsulated in the params
-   * object :
-   * lines : line for filling the detail grid
-   * feedBack : contains the result of transaction checking
-   * records : lines to fill the main grid when the state will be switched back
-   *
-   * The target view is not the main view, because you can not post to the general ledger from this view,
-   * you have to reset the view to the main view first, this view is just giving complementary information to the user.
-   **/
+  * @function : viewDetailByAccount
+  *
+  * @param {Integer) accountId, the account ID
+  *
+  * @description :
+  * From the account view, this function help to see every transaction relative to one account,
+  * in order to understand the amounts listed.
+  *
+  * The state is switched from trialBalanceMain to trialBalanceDetail, three objects are encapsulated in the params
+  * object :
+  * lines : line for filling the detail grid
+  * feedBack : contains the result of transaction checking
+  * records : lines to fill the main grid when the state will be switched back
+  *
+  * The target view is not the main view, because you can not post to the general ledger from this view,
+  * you have to reset the view to the main view first, this view is just giving complementary information to the user.
+  */
   function viewDetailByAccount(accountId) {
     var lines = TrialBalance.getRelatedTransaction(accountId, vm.dataByTrans);
     // FIX ME : what is the good way of keeping records? using appcache?
@@ -192,20 +159,20 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
   }
 
   /**
-   * @function : viewErrorList
-   *
-   * @description :
-   * From whatever view, this function help to see every errors and warnings relative to a selected set of transaction
-   *
-   * The state is switched from trialBalanceMain to trialBalanceErrors, three objects are encapsulated in the params
-   * object :
-   * lines : line for filling the error grid
-   * feedBack : contains the result of transaction checking
-   * records : lines to fill the main grid when the state will be switched back
-   *
-   * The target view is not the main view, because you can not post to the general ledger from this view,
-   * you have to reset the view to the main view first, this view is just giving complementary information to the user.
-   **/
+  * @function : viewErrorList
+  *
+  * @description :
+  * From whatever view, this function help to see every errors and warnings relative to a selected set of transaction
+  *
+  * The state is switched from trialBalanceMain to trialBalanceErrors, three objects are encapsulated in the params
+  * object :
+  * lines : line for filling the error grid
+  * feedBack : contains the result of transaction checking
+  * records : lines to fill the main grid when the state will be switched back
+  *
+  * The target view is not the main view, because you can not post to the general ledger from this view,
+  * you have to reset the view to the main view first, this view is just giving complementary information to the user.
+  */
   function viewErrorList() {
     var lines = TrialBalance.parseErrorRecord(errorList);
     // FIX ME : what is the good way of keeping records? using appcache?
@@ -214,11 +181,11 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
 
 
   /**
-   *  @function errorHandler
+   * @function errorHandler
    * @description
    * This method handle correctly error by notifying the user through
    * the NotifyService and by setting to true the error flag
-   **/
+   */
   function errorHandler(error) {
     vm.hasError = true;
     Notify.handleError(error);
@@ -229,27 +196,24 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
 
     TrialBalance.checkTransactions(vm.dataByTrans)
       .then(function (error) {
-        var cssClass = null;
-
         errorList = error.data;
 
         vm.feedBack = TrialBalance.getFeedBack(errorList); // getting a feedback object to customize the grid
         vm.isInvalid = vm.feedBack.hasError || vm.feedBack.hasWarning;
+        vm.hasTrialBalanceErrors = vm.isInvalid;
 
-        cssClass = TrialBalance.getCSSClass(vm.feedBack);
-
-        $state.current.data.checkingData = { errors: errorList, feedBack: vm.feedBack, cssClass: cssClass };
+        $state.current.data.checkingData = { errors : errorList, feedBack: vm.feedBack };
         $state.current.data.checked = true;
-
-        // @todo - this should probably be done with the grid's header row template.
-        columns.forEach(function (col) {
-          col.headerCellClass = cssClass;
-        });
 
         // only show the footer if the amounts are invalid
         if (!vm.isInvalid) {
           vm.gridOptions.showColumnFooter = false;
         }
+
+        // make sure the cell classes are properly assigned.
+        angular.forEach(columns, function (col) {
+          col.headerCellClass = vm.isInvalid ? 'ui-grid-header-cell-error' : 'ui-grid-header-cell-primary';
+        });
 
         // make sure the column footer is processed + column css classes
         gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
@@ -257,7 +221,6 @@ function TrialBalanceMainBodyController(Session, TrialBalance, Notify,
       .catch(errorHandler)
       .finally(function () {
         vm.loading = false;
-        vm.showErrorButton = vm.isInvalid && !vm.loading;
       });
 
     fetchDataByAccount();

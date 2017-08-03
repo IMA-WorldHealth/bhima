@@ -11,7 +11,6 @@ function TrialBalanceService(util, $http, $translate) {
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
   service.getFeedBack = getFeedBack;
-  service.getCSSClass = getCSSClass;
   service.postToGeneralLedger = postToGeneralLedger;
   service.getRelatedTransaction = getRelatedTransaction;
   service.parseErrorRecord = parseErrorRecord;
@@ -26,10 +25,6 @@ function TrialBalanceService(util, $http, $translate) {
       record.code = $translate.instant(record.code);
       return record;
     });
-  }
-
-  function getCSSClass(feedBack) {
-    return feedBack.hasError ? 'grid-error' : 'grid-success';
   }
 
   function getFeedBack(errors) {
