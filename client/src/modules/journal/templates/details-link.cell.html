@@ -1,5 +1,9 @@
 <div class="ui-grid-cell-contents">
-  <a href data-method="detail" ng-click="grid.appScope.viewDetailByAccount(row.entity.account_id)" class="text-info">
-    <i class="fa fa-info-circle"></i> {{ "FORM.BUTTONS.VIEW_DETAILS" | translate }}
+  <a href
+    data-method="detail"
+    class="text-info"
+    ui-sref="journal({filters : [{ key : 'account_id', displayValue : row.entity.account, value: row.entity.account_id }]})"
+    ui-sref-opts="{ reload : false }">
+    <span translate>FORM.BUTTONS.VIEW_IN_JOURNAL</span>
   </a>
 </div>

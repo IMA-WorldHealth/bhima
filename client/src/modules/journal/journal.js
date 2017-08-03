@@ -7,7 +7,8 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService', 'GridSelectionService'
+  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService',
+  'GridSelectionService',
 ];
 
 /**
@@ -84,7 +85,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
-  
+
   sorting = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
@@ -98,14 +99,13 @@ function JournalController(Journal, Sorting, Grouping,
 
   // attaching the grouping object to the view
   vm.grouping = grouping;
-  
+
   vm.selection = selection;
 
   // Attaching the transaction to the view
   // vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
-   
   /**
    * @function toggleLoadingIndicator
    *
@@ -122,7 +122,7 @@ function JournalController(Journal, Sorting, Grouping,
     state.clearGridState();
     $state.reload();
   };
- 
+
   /**
    * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -172,7 +172,7 @@ function JournalController(Journal, Sorting, Grouping,
         aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
       },
       // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
-      sort : { 
+      sort : {
         priority : 0,
         direction : uiGridConstants.DESC
       },
@@ -195,8 +195,8 @@ function JournalController(Journal, Sorting, Grouping,
     { field                : 'account_number',
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
       cellTemplate         : '/modules/journal/templates/account.cell.html',
-      headerCellFilter     : 'translate' }, 
-      
+      headerCellFilter     : 'translate' },
+
     { field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter                 : 'translate',
@@ -233,13 +233,13 @@ function JournalController(Journal, Sorting, Grouping,
       headerCellFilter : 'translate',
       visible          : false,
       cellTemplate     : '/modules/journal/templates/credit.grid.html' },
-    
+
     { field                : 'hrEntity',
       displayName          : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter     : 'translate',
       cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
       visible              : true },
-    
+
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
@@ -249,14 +249,14 @@ function JournalController(Journal, Sorting, Grouping,
     { field                : 'origin_id',
       displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
       headerCellFilter     : 'translate',
-      // @FIXME(sfount) transaction types relied on data in the controller that is gone 
+      // @FIXME(sfount) transaction types relied on data in the controller that is gone
       // cellTemplate         : '/modules/journal/templates/transaction_type.html',
       visible              : false },
 
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
-      visible          : false }
+      visible          : false },
   ];
   vm.gridOptions.columnDefs = columns;
 
@@ -281,7 +281,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // format Export Parameters
   function formatExportParameters(type) {
-    // @TODO(sfount) this should not be requirement for exporting - filter on group like editing 
+    // @TODO(sfount) this should not be requirement for exporting - filter on group like editing
     // make sure a row is selected before running the trial balance
     if (grouping.selectedRowCount < 1) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
@@ -315,9 +315,9 @@ function JournalController(Journal, Sorting, Grouping,
     Notify.handleError(error);
   }
 
-  vm.reloadData = function reloadData() { 
+  vm.reloadData = function reloadData() {
     load(Journal.filters.formatHTTP(true));
-  }
+  };
 
   // loads data for the journal
   function load(options) {
@@ -335,7 +335,7 @@ function JournalController(Journal, Sorting, Grouping,
 
         // pre process data - this should be done in a more generic way in a service
         journalStore.setData(records.journal);
-        
+
         vm.gridOptions.data = journalStore.data;
 
         vm.gridOptions.showGridFooter = true;
@@ -397,52 +397,59 @@ function JournalController(Journal, Sorting, Grouping,
 
   // runs on startup
   function startup() {
+    var hasStateFilters = $state.params.filters.length > 0;
+
+    if (hasStateFilters) {
+      Journal.filters.replaceFiltersFromState($state.params.filters);
+      Journal.cacheFilters();
+    }
+
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }
 
   startup();
-  
+
   vm.editTransactionModal = editTransactionModal;
-  function editTransactionModal() { 
-    // block multiple simultaneous edit 
-    if (selection.selected.groups.length > 1) { 
+  function editTransactionModal() {
+    // block multiple simultaneous edit
+    if (selection.selected.groups.length > 1) {
       Notify.warn('You have multiple transactions selected. Multiple transaction editing is currently disabled');
       return;
     }
-    
+
     var selectedTransaction = selection.selected.groups[0];
-    var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction); 
-   
-    // Journal module rules for optimistic updating: 
-    // 1. If a row in the current dataset has been removed - remove this row 
-    // 2. If a row in the current dataset has been updated - update the values 
-    // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter 
+    var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction);
+
+    // Journal module rules for optimistic updating:
+    // 1. If a row in the current dataset has been removed - remove this row
+    // 2. If a row in the current dataset has been updated - update the values
+    // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter
     // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
     Journal.openTransactionEditModal(transactionUuid, false)
-      .then(function (editSessionResult) { 
+      .then(function (editSessionResult) {
         var updatedRows = editSessionResult.updatedTransaction;
         var changed = angular.isDefined(updatedRows);
-        
+
         vm.gridApi.selection.clearSelectedRows();
-        if (changed) { 
+        if (changed) {
           // update only rows that already existed and have been edited
-          editSessionResult.edited.forEach(function (uuid) { 
-            // update record that already exists 
+          editSessionResult.edited.forEach(function (uuid) {
+            // update record that already exists
             var currentRow = journalStore.get(uuid);
             var updatedRow = editSessionResult.updatedTransaction.get(uuid);
 
-            Object.keys(currentRow).forEach(function (key) { 
+            Object.keys(currentRow).forEach(function (key) {
               currentRow[key] = updatedRow[key];
             });
           });
-      
+
           // remove rows that existed before and have been removed
-          editSessionResult.removed.forEach(function (uuid) { 
+          editSessionResult.removed.forEach(function (uuid) {
             journalStore.remove(uuid);
           });
 
-          if (editSessionResult.added.length) { 
+          if (editSessionResult.added.length) {
             // rows have been added, we have no guarantees on filters so display a warning
             vm.unknownTransactionEditState = true;
           }
@@ -450,11 +457,11 @@ function JournalController(Journal, Sorting, Grouping,
         }
       });
   }
-  
-  // @FIXME(sfount) temporary method to get UUID from trans id - this should be replaced when rebased with journal 
+
+  // @FIXME(sfount) temporary method to get UUID from trans id - this should be replaced when rebased with journal
   //                tools PR
-  function hackIntermediateRecordUuidLookup(transID) { 
-    for(var i = 0; i < vm.gridOptions.data.length; i++) { 
+  function hackIntermediateRecordUuidLookup(transID) {
+    for(var i = 0; i < vm.gridOptions.data.length; i++) {
       var transaction = vm.gridOptions.data[i];
       if (transaction.trans_id === transID) {
         return transaction.record_uuid;

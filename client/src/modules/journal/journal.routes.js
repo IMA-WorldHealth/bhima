@@ -5,7 +5,8 @@ angular.module('bhima.routes')
       .state('journal', {
         url         : '/journal',
         controller  : 'JournalController as JournalCtrl',
-        templateUrl : 'modules/journal/journal.html'
+        templateUrl : 'modules/journal/journal.html',
+        params : { filters : [] },
       })
       .state('postedJournal', {
         url         : '/journal/posted',

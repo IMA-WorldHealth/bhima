@@ -61,7 +61,8 @@
             "UPDATE": "Mettre à jour",
             "VALIDATE": "Valider",
             "VIEW_ERRORS": "Voir Erreurs",
-            "VIEW_DETAILS": "Détails"
+            "VIEW_DETAILS": "Détails",
+            "VIEW_IN_JOURNAL": "Voir dans le Journal"
         },
         "DIALOGS": {
             "CONFIRM_ACTION": "Confirmez vous cette action ?",

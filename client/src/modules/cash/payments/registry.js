@@ -154,7 +154,8 @@ function CashPaymentRegistryController(
 
     var request = Cash.read(null, filters);
 
-    request.then(function (rows) {
+    request
+      .then(function (rows) {
         rows.forEach(function (row) {
           var hasCreditNote = row.reversed;
           row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
@@ -169,7 +170,7 @@ function CashPaymentRegistryController(
       });
   }
 
- // Function for Cancel Cash cancel all Invoice
+  // Function for Cancel Cash cancel all Invoice
   function cancelCash(invoice) {
     Cash.openCancelCashModal(invoice)
       .then(function (success) {
@@ -185,7 +186,7 @@ function CashPaymentRegistryController(
 
   function startup() {
     if ($state.params.filters) {
-      // Fix me, generate change dynamically
+      // fix me, generate change dynamically
       var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
 
       Cash.filters.replaceFilters(change);
