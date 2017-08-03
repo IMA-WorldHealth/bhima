@@ -16,7 +16,7 @@
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
           <!-- depot -->
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.depot.$invalid }">
+          <!--<div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.depot.$invalid }">
             <label class="control-label" translate>STOCK.DEPOT</label>
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
             <ui-select name="depot" ng-model="$ctrl.searchQueries.depot_uuid">
@@ -30,7 +30,14 @@
             <div class="help-block" ng-messages="ModalForm.depot.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>            
-          </div>
+          </div>-->
+
+          <bh-depot-select
+            depot-id="$ctrl.searchQueries.depot_uuid"
+            name="depot_id"
+            on-select-callback="$ctrl.onSelectDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
 
           <!-- inventory -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory.$invalid }">
