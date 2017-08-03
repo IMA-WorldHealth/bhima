@@ -11,58 +11,96 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- depot -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.depot.$invalid }">
+            <label class="control-label" translate>STOCK.DEPOT</label>
+            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+            <ui-select name="depot" ng-model="$ctrl.searchQueries.depot_uuid">
+              <ui-select-match>
+                <span>{{$select.selected.text}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
+                <span ng-bind-html="depot.text | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+            <div class="help-block" ng-messages="ModalForm.depot.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>            
+          </div>
 
-    <!-- depot -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.DEPOT</label>
+          <!-- inventory -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory.$invalid }">
+            <label class="control-label" translate>STOCK.INVENTORY</label>
+            <bh-clear on-clear="$ctrl.clear('iventory_uuid')"></bh-clear>
+            <ui-select name="inventory" ng-model="$ctrl.searchQueries.inventory_uuid">
+              <ui-select-match>
+                <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
+                <span ng-bind-html="inventory.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+            <div class="help-block" ng-messages="ModalForm.inventory.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
 
-      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.text}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
-          <span ng-bind-html="depot.text | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+          <!-- lot number  -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.LOT</label>
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
+            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
+            <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
 
-    <!-- inventory -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.INVENTORY</label>
+          <!--entry date -->
+          <fieldset>
+            <legend translate>STOCK.ENTRY_DATE</legend>
+            <bh-date-interval
+              date-id="entry-date"
+              date-from="$ctrl.searchQueries.entry_date_from"
+              date-to="$ctrl.searchQueries.entry_date_to"
+              mode="clean">
+            </bh-date-interval>
+          </fieldset>
+          
+          <!-- expiration date -->
+          <fieldset>
+            <legend translate>STOCK.EXPIRATION_DATE</legend>
+            <bh-date-interval
+              date-id="expiration-date"
+              date-from="$ctrl.searchQueries.expiration_date_from"
+              date-to="$ctrl.searchQueries.expiration_date_to"
+              mode="clean">
+            </bh-date-interval>
+          </fieldset>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input 
+              name="limit"
+              type="number"
+              bh-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
-          <span ng-bind-html="inventory.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-
-    <!-- lot number  -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.LOT</label>
-      <input type="text" class="form-control" name="label" ng-model="$ctrl.bundle.label">
-    </div>
-
-    <!--entry date -->
-    <fieldset>
-      <legend translate>STOCK.ENTRY_DATE</legend>
-      <bh-date-interval
-        date-id="entry-date" date-from="$ctrl.bundle.entry_date_from" date-to="$ctrl.bundle.entry_date_to" mode="clean">
-      </bh-date-interval>
-    </fieldset>
-    
-    <!-- expiration date -->
-    <fieldset>
-      <legend translate>STOCK.EXPIRATION_DATE</legend>
-      <bh-date-interval
-        date-id="expiration-date" date-from="$ctrl.bundle.expiration_date_from" date-to="$ctrl.bundle.expiration_date_to" mode="clean">
-      </bh-date-interval>
-    </fieldset>
-
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">

@@ -1,57 +1,78 @@
 angular.module('bhima.controllers')
-.controller('SearchLotsModalController', SearchLotsModalController);
+  .controller('SearchLotsModalController', SearchLotsModalController);
 
 // dependencies injections
 SearchLotsModalController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 'SearchFilterFormatService'
+  'data', 'DepotService', 'InventoryService', 'NotifyService',
+  'util', 'Store', '$uibModalInstance'
 ];
 
-function SearchLotsModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat) {
+function SearchLotsModalController(
+  data, Depots, Inventory, Notify,
+  util, Store, Instance) {
+
   var vm = this;
+  var changes = new Store({ identifier: 'key' });
 
-  // gloabal variables 
-  var noMissingDatePart;
+  vm.filters = data;
+  vm.searchQueries = {};
+  vm.defaultQueries = {};
 
-  // global methods
-  vm.validate = validate;
-  vm.cancel = Instance.close;
-  vm.submit = submit;
-
-  // init 
-  init();
+  var searchQueryOptions = [
+    'depot_uuid', 'inventory_uuid', 'label', 'entry_date_from',
+    'entry_date_to', 'expiration_date_from', 'expiration_date_to'
+  ];
 
   // load depots 
   Depots.read()
-  .then(function (depots) {
+    .then(function (depots) {
       vm.depots = depots;
-  })
-  .catch(Notify.handleError);
+    })
+    .catch(Notify.handleError);
 
   // load inventories 
   Inventory.read()
-  .then(function (inventories) {
+    .then(function (inventories) {
       vm.inventories = inventories;
-  })
-  .catch(Notify.handleError);
+    })
+    .catch(Notify.handleError);
 
-  function init() {
-    vm.bundle = { 
-      entry_date_from: new Date(), 
-      entry_date_to: new Date(),
-      expiration_date_from: new Date(),
-      expiration_date_to: new Date()
-    };
-    validate();
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
+
+  if (data.limit) {
+    vm.defaultQueries.limit = data.limit;
   }
 
-  function submit() {
-    var params = SearchFilterFormat.formatFilter(vm.bundle, true);
-    Instance.close(params);
-  }
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key: 'limit', value: value });
+    }
+  };
 
-  function validate() {
-    noMissingDatePart = (vm.bundle.entry_date_from && vm.bundle.entry_date_to) || (!vm.bundle.entry_date_from && !vm.bundle.entry_date_to);
-    vm.validDateRange = noMissingDatePart ? true : false;
-  }
+  // deletes a filter from the custom filter object, 
+  // this key will no longer be written to changes on exit
+  vm.clear = function clear(key) {
+    delete vm.searchQueries[key];
+  };
 
+  vm.cancel = function cancel() { Instance.close(); };
+
+  vm.submit = function submit(form) {
+    console.log(vm.searchQueries);
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      console.log('key :', key, 'value : ', value);
+      if (angular.isDefined(value)) {
+        changes.post({ key: key, value: value });
+      }
+    });
+
+    var loggedChanges = changes.getAll();
+
+    // return values to the voucher controller
+    return Instance.close(loggedChanges);
+  }
 }

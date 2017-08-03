@@ -61,7 +61,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  const filters = new FilterParser(params);
+  const filters = new FilterParser(params, {autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
@@ -69,7 +69,8 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('label', 'label', 'l');
 
   filters.period('defaultPeriod', 'date');
-
+  filters.period('period', 'date');
+  
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
 
@@ -78,8 +79,12 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
+  filters.setGroup(finalClause || '');
+  console.log('params', params);
 
-  const query = filters.applyQuery(sql).concat(finalClause || '');
+  let query = filters.applyQuery(sql);
+    console.log(query);
+  
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
 }
@@ -97,6 +102,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
  */
 function getLotsDepot(depotUuid, params, finalClause) {
   let status;
+    console.log('params depot : ',depotUuid, 'params : ', params, 'finalclause : ', finalClause);
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -133,7 +139,8 @@ function getLotsDepot(depotUuid, params, finalClause) {
             });
           }
           return rows;
-        });
+        })
+        .catch(function(err){console.log(err)});
 }
 
 /**

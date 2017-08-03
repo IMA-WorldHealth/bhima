@@ -25,6 +25,7 @@ function StockModalService(Modal) {
 
     /** search stock lots */
   function openSearchLots(request) {
+    console.log('this is the request', request);
     var params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
