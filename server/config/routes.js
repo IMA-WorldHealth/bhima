@@ -85,7 +85,7 @@ const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
 //looking up an entity by it reference
-const refenceLookup = require('../lib/refenceLookup');
+const refenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
