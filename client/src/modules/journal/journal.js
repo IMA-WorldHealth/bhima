@@ -7,7 +7,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService'
+  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService', 'GridSelectionService'
 ];
 
 /**
@@ -34,7 +34,7 @@ function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Session, Notify, Transactions, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
-  $translate, GridExport, TransactionType, GridState) {
+  $translate, GridExport, TransactionType, GridState, GridSelection) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -43,6 +43,7 @@ function JournalController(Journal, Sorting, Grouping,
   var transactions;
   var exportation;
   var state;
+  var selection;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -99,12 +100,15 @@ function JournalController(Journal, Sorting, Grouping,
   transactions = new Transactions(vm.gridOptions);
   exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
   state = new GridState(vm.gridOptions, cacheKey);
+  selection = new GridSelection(vm.gridOptions);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
 
   // attaching the grouping object to the view
   vm.grouping = grouping;
+  
+  vm.selection = selection;
 
   // Attaching the transaction to the view
   vm.transactions = transactions;
@@ -298,11 +302,6 @@ function JournalController(Journal, Sorting, Grouping,
         propagate(colDef.field, newValue);
       }
     });
-
-
-    /* @TODO(sfount) Move to selection service */
-    vm.gridApi.selection.on.rowSelectionChanged(null, hookSelectionState);
-    vm.gridApi.selection.on.rowSelectionChangedBatch(null, hookSelectionBatchState);
   }
 
   function updateSharedPropertyOnRow(rows, column, value) {
@@ -586,52 +585,11 @@ function JournalController(Journal, Sorting, Grouping,
   // ===================== end transaction type ======================
 
   startup();
-
-  var selected = {
-    transactions : []
-  };
-  vm.selected = selected;
-
-  /* @TODO(sfount) move into Selection service */
-  function hookSelectionState(row) { 
-    console.log('hookSelectionState', row);
-
-    var currentlySelected = vm.gridApi.selection.getSelectedRows();
-    console.log('currently selected', currentlySelected);
-
-    var currentTransactions = collapseRowsToTransactionIds(currentlySelected);
-    console.log('transactions', currentTransactions);
-
-    selected.transactions = currentTransactions;
-  }
-
-  // returns unique transactions given a set of rows
-  function collapseRowsToTransactionIds(rows) { 
-    var transactions = {};
-    
-    rows.forEach(function (row) { 
-      transactions[row.trans_id] = transactions[row.trans_id] || [];
-      transactions[row.trans_id].push(row);
-    });
-    return Object.keys(transactions);
-  }
-  
-  function hookSelectionBatchState(row) { 
-    console.log('batchState', row);
-    
-    var currentlySelected = vm.gridApi.selection.getSelectedRows();
-    console.log('currently selected', currentlySelected);
-    
-    var currentTransactions = collapseRowsToTransactionIds(currentlySelected);
-    console.log('transactions', currentTransactions);
-
-    selected.transactions = currentTransactions;
-  }
   
   vm.editTransactionModal = editTransactionModal;
   function editTransactionModal() { 
     // block multiple simultaneous edit 
-    if (selected.transactions.length > 1) { 
+    if (selection.selected.groups.length > 1) { 
       Notify.warn('You have multiple transactions selected. Multiple transaction editing is currently disabled');
       return;
     }
