@@ -137,20 +137,6 @@ function StockLotsController(Stock, Notify,
   function startup() {
     load(Stock.lotFilters.formatHTTP(true));
     vm.latestViewFilters = Stock.lotFilters.formatView();
-
-    // Stock.lots.read(null, params)
-    // .then(function (){
-
-    // });
-
-    // Vouchers.transactionType()
-    //   .then(function (store) {
-    //     vm.transactionTypes = store;
-    //   })
-    //   .catch(Notify.handleError);
-
-    // load(Vouchers.filters.formatHTTP(true));
-    // vm.latestViewFilters = Vouchers.filters.formatView();
   }
 
   /**
@@ -181,8 +167,6 @@ function StockLotsController(Stock, Notify,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    console.log('here are filters', filters);
-
     Stock.lots.read(null, filters)
     .then(function(lots){
       vm.gridOptions.data = lots;
@@ -191,65 +175,33 @@ function StockLotsController(Stock, Notify,
     .catch(errorHandler)
     .finally(function (){
       toggleLoadingIndicator();     
-    });   
-
-
-    // var today = { defaultPeriod: 'today' };
-    // var params = filters;
-
-    // var noFilter = (!filters);
-    // var noAttributes = (noFilter || (Object.keys(filters).length === 0));
-
-    // if (noAttributes) {
-    //   params = today;
-    //   vm.isToday = true;
-    //   vm.filters = { display: today, identifiers: today };
-    //   vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    // }
-
-    // vm.loading = true;
-
-    // Stock.lots.read(null, params).then(function (lots) {
-    //   vm.loading = false;
-
-    //   vm.gridOptions.data = lots;
-
-    //   vm.grouping.unfoldAllGroups();
-    // })
-    //   .catch(Notify.handleError);
+    });
   }
 
-  // search modal
-  // function search() {
-  //   Modal.openSearchLots()
-  //   .then(function (filters) {
-  //     if (!filters) { return; }
+  // remove a filter with from the filter object, save the filters and reload
+  vm.onRemoveFilter = function onRemoveFilter(key) {
+    Stock.removeLotFilter(key);
 
-  //     vm.isToday = false;
-  //     reload(filters);
-  //   })
-  //   .catch(Notify.handleError);
-  // }
+    Stock.cacheLotFilters();
+    vm.latestViewFilters = Stock.lotFilters.formatView();
+
+    return load(Stock.lotFilters.formatHTTP(true));
+  }
 
   function search() {
     var filtersSnapshot = Stock.lotFilters.formatHTTP();
 
     Modal.openSearchLots(filtersSnapshot)
       .then(function (changes) {
+            console.log(vm.changes);
+
         Stock.lotFilters.replaceFilters(changes);
-        Stock.cacheFilters();
+        Stock.cacheLotFilters();
         vm.latestViewFilters = Stock.lotFilters.formatView();
 
         return load(Stock.lotFilters.formatHTTP(true));
       })
       .catch(angular.noop);
-  }
-
-  // reload
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
-    load(filters.identifiers);
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -259,8 +211,6 @@ function StockLotsController(Stock, Notify,
     // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
   };
-
-  // load();
 
   startup();
 }

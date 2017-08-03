@@ -28,19 +28,10 @@ function SearchLotsModalController(
     vm.searchQueries.depot_uuid = depot.uuid;
   };
 
-  // load depots 
-  // Depots.read()
-  //   .then(function (depots) {
-  //     vm.depots = depots;
-  //   })
-  //   .catch(Notify.handleError);
-
-  // load inventories 
-  Inventory.read()
-    .then(function (inventories) {
-      vm.inventories = inventories;
-    })
-    .catch(Notify.handleError);
+  // custom filter inventory_uuid - assign the value to the params object
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    vm.searchQueries.inventory_uuid = inventory.uuid;
+  };
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
@@ -66,10 +57,8 @@ function SearchLotsModalController(
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit(form) {
-    console.log(vm.searchQueries);
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
-      console.log('key :', key, 'value : ', value);
       if (angular.isDefined(value)) {
         changes.post({ key: key, value: value });
       }

@@ -15,23 +15,7 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
-          <!-- depot -->
-          <!--<div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.depot.$invalid }">
-            <label class="control-label" translate>STOCK.DEPOT</label>
-            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
-            <ui-select name="depot" ng-model="$ctrl.searchQueries.depot_uuid">
-              <ui-select-match>
-                <span>{{$select.selected.text}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
-                <span ng-bind-html="depot.text | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-            <div class="help-block" ng-messages="ModalForm.depot.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>            
-          </div>-->
-
+          <!-- depot -->          
           <bh-depot-select
             depot-id="$ctrl.searchQueries.depot_uuid"
             name="depot_id"
@@ -39,22 +23,13 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
-          <!-- inventory -->
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory.$invalid }">
-            <label class="control-label" translate>STOCK.INVENTORY</label>
-            <bh-clear on-clear="$ctrl.clear('iventory_uuid')"></bh-clear>
-            <ui-select name="inventory" ng-model="$ctrl.searchQueries.inventory_uuid">
-              <ui-select-match>
-                <span>{{$select.selected.label}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
-                <span ng-bind-html="inventory.label | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-            <div class="help-block" ng-messages="ModalForm.inventory.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
+          <!-- Inventaire -->
+          <bh-inventory-select
+            inventory-id="$ctrl.searchQueries.inventory_uuid"
+            name="inventory_id"
+            on-select-callback="$ctrl.onSelectInventory(inventory)">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
 
           <!-- lot number  -->
           <div class="form-group">

@@ -36,7 +36,11 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer) {
   StockLotFilters.registerCustomFilters([
     { key: 'depot_uuid', label: 'STOCK.DEPOT' },
     { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' }
+    { key: 'label', label: 'STOCK.LOT' },
+    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter : 'date' },
+    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter : 'date' },
+    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter : 'date' },
+    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter : 'date' }
   ]);
 
   if(filterLotCache.filters){
