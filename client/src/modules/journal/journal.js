@@ -298,6 +298,11 @@ function JournalController(Journal, Sorting, Grouping,
         propagate(colDef.field, newValue);
       }
     });
+
+
+    /* @TODO(sfount) Move to selection service */
+    vm.gridApi.selection.on.rowSelectionChanged(null, hookSelectionState);
+    vm.gridApi.selection.on.rowSelectionChangedBatch(null, hookSelectionBatchState);
   }
 
   function updateSharedPropertyOnRow(rows, column, value) {
@@ -581,4 +586,54 @@ function JournalController(Journal, Sorting, Grouping,
   // ===================== end transaction type ======================
 
   startup();
+
+  var selected = {
+    transactions : []
+  };
+  vm.selected = selected;
+
+  /* @TODO(sfount) move into Selection service */
+  function hookSelectionState(row) { 
+    console.log('hookSelectionState', row);
+
+    var currentlySelected = vm.gridApi.selection.getSelectedRows();
+    console.log('currently selected', currentlySelected);
+
+    var currentTransactions = collapseRowsToTransactionIds(currentlySelected);
+    console.log('transactions', currentTransactions);
+
+    selected.transactions = currentTransactions;
+  }
+
+  // returns unique transactions given a set of rows
+  function collapseRowsToTransactionIds(rows) { 
+    var transactions = {};
+    
+    rows.forEach(function (row) { 
+      transactions[row.trans_id] = transactions[row.trans_id] || [];
+      transactions[row.trans_id].push(row);
+    });
+    return Object.keys(transactions);
+  }
+  
+  function hookSelectionBatchState(row) { 
+    console.log('batchState', row);
+    
+    var currentlySelected = vm.gridApi.selection.getSelectedRows();
+    console.log('currently selected', currentlySelected);
+    
+    var currentTransactions = collapseRowsToTransactionIds(currentlySelected);
+    console.log('transactions', currentTransactions);
+
+    selected.transactions = currentTransactions;
+  }
+  
+  vm.editTransactionModal = editTransactionModal;
+  function editTransactionModal() { 
+    // block multiple simultaneous edit 
+    if (selected.transactions.length > 1) { 
+      Notify.warn('You have multiple transactions selected. Multiple transaction editing is currently disabled');
+      return;
+    }
+  }
 }
