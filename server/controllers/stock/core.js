@@ -65,6 +65,8 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
+  filters.equals('depot_uuid', 'uuid', 'd');
+  filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
 
@@ -83,8 +85,6 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   console.log('params', params);
 
   let query = filters.applyQuery(sql);
-    console.log(query);
-  
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
 }

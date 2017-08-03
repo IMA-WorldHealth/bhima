@@ -164,6 +164,7 @@ function StockLotsController(Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
+    console.log('load method here is the filter', filters);
     vm.hasError = false;
     toggleLoadingIndicator();
 
@@ -193,7 +194,7 @@ function StockLotsController(Stock, Notify,
 
     Modal.openSearchLots(filtersSnapshot)
       .then(function (changes) {
-            console.log(vm.changes);
+            console.log('lot changes', changes);
 
         Stock.lotFilters.replaceFilters(changes);
         Stock.cacheLotFilters();
