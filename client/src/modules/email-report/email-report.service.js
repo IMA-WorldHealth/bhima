@@ -1,10 +1,7 @@
 angular.module('bhima.services')
   .service('EmailReportService', EmailReportService);
 
-EmailReportService.$inject = [
-  '$http', 'util', 'SessionService', '$uibModal',
-  'DocumentService', 'VisitService', 'DepricatedFilterService',
-];
+EmailReportService.$inject = [ '$http', 'util' ];
 
 /**
  * @module EmailReportService
@@ -12,21 +9,22 @@ EmailReportService.$inject = [
  * This service is responsible for providing an interface between angular
  * module controllers and the server /email-report/ API.
  */
-function EmailReportService($http, util, Session, $uibModal, Documents, Visits, Filters) {
+function EmailReportService($http, util) {
 
   var service = this;
+  service.frequencies = [
+    { key : 'Daily', label : 'FORM.LABELS.DAILY' },
+    { key : 'Weekly', label : 'FORM.LABELS.WEEKLY' },
+    { key : 'Monthly', label : 'FORM.LABELS.MONTHLY' },
+  ];
 
-  service.frequencies = ["Dayly", "Weekly", "Monthly"];
 
-  var baseUrl = '/email-report/';
-  var baseUrl_list_people = '/email-report/list-people';
-  var baseUrl = '/email-report/';
-
-  var filter = new Filters();
+  const baseUrl = '/email-report/';
+  const baseUrlListPeople = '/email-report/list-people';
 
   service.read = read;
   service.create = create;
-  service.read_people = read_people;
+  service.readPeople = readPeople;
   service.remove = remove;
   service.update = update;
 
@@ -38,9 +36,9 @@ function EmailReportService($http, util, Session, $uibModal, Documents, Visits, 
    * @param {Object} email_report   email for reporting information.
    * @returns {Object}          Promise object returning success/failure confirmation.
    */
-  function create(email_report) {
+  function create(_emailReport) {
     var formatBedRequest = {
-      emailReport: email_report
+      emailReport: _emailReport,
     };
 
     return $http.post(baseUrl, formatBedRequest)
@@ -56,30 +54,30 @@ function EmailReportService($http, util, Session, $uibModal, Documents, Visits, 
    * @param {Object} email_report   email for reporting information.
    * @returns {Object}          Promise object returning success/failure confirmation.
    */
-  function update(email_report) {
+  function update(_emailReport) {
     var formatBedRequest = {
-      emailReport: email_report
+      emailReport: _emailReport,
     };
 
-    return $http.put(baseUrl + email_report.id, formatBedRequest)
+    return $http.put(baseUrl + _emailReport.id, formatBedRequest)
       .then(util.unwrapHttpResponse);
   }
 
-  //reading data from the server
+  // reading data from the server
   function read() {
     return $http.get(baseUrl, {})
       .then(util.unwrapHttpResponse);
   }
 
   /*
-   reading data from the server, 
+   reading data from the server,
    here we load a groupe of people(users, patients,donators,..),
    the group is detected once the user select an item in the modal
-   , also the query if formed by the item's infomation 
+   , also the query if formed by the item's infomation
    Those items come from CategoriesPeopleService in the modal folder
    */
-  function read_people(query) {
-    return $http.post(baseUrl_list_people, { sql: query })
+  function readPeople(sqlParams) {
+    return $http.get(baseUrlListPeople + '/' + sqlParams.table + '/' + sqlParams.Columns[0] + '/' + sqlParams.Columns[1])
       .then(util.unwrapHttpResponse);
   }
 
@@ -87,7 +85,7 @@ function EmailReportService($http, util, Session, $uibModal, Documents, Visits, 
    delete an email report (a profile)
    */
   function remove(_id) {
-    return $http.delete(baseUrl + _id, {})
+    return $http.delete(baseUrl + _id)
       .then(util.unwrapHttpResponse);
   }
 

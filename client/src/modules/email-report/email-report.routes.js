@@ -19,7 +19,7 @@ angular.module('bhima.routes')
         url: '/groupProileList/:index_current_category',
         onEnter: ['$state', '$uibModal', 'NotifyService', onSelectProfileCategoryFactory('category')],
         onExit: ['$uibModalStack', closeModal],
-      })
+      });
 
   }]);
 

@@ -10,7 +10,10 @@
       "USERS":"Utilisateurs",
       "EMPLOYEES":"Employés",
       "PROFILE_FROM":"Profile provenant des ",
-      "NEW_REPORT_GROUP":"Nouveau type de rapport"          
+      "NEW_REPORT_GROUP":"Nouveau type de rapport",
+      "DAILY" : "Journalière",
+      "WEEKLY" : "Hebdomadaire",
+      "MONTHLY" : "Monsuelle"
     }
   },
   "REPORT":{

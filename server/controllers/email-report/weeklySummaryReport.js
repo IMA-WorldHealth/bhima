@@ -27,10 +27,11 @@ const TEMPLATE = './server/controllers/email-report/weeklySummaryReport.handleba
 
 exports.view1 = view1;
 exports.weeklySummaryReport = weeklySummaryReport;
-let documentReport;
+
+// let documentReport;
 
 
-//income by service
+// income by service
 
 function loadServicesIncome() {
 
@@ -56,8 +57,8 @@ function loadServicesIncome() {
   var period = new Period(new Date());
   var week = period.periods.week.limit;
 
-  var monday =  week.start();
-  var sunday =  week.end();
+  var monday = week.start();
+  var sunday = week.end();
 
   var values = [monday, sunday];
 
@@ -84,7 +85,7 @@ function getRegisteredPatientsNumber() {
   var lastmonday = Lastweek.start();
   var lastsunday = Lastweek.end();
 
-  //patients registered this week
+  // patients registered this week
   var sql = `SELECT
               subquery1.NumberOfpatientsThisWeek, subquery2.NumberOfpatientsLastWeek
             FROM
@@ -101,13 +102,11 @@ function getRegisteredPatientsNumber() {
 
   var values = [monday, sunday, lastmonday, lastsunday];
 
-  var thisWeekPatients = [];
-
   return db.exec(sql, values);
 
 }
 
-//first and last invoice per day for a week
+// first and last invoice per day for a week
 function MaxMinInvoiceDate() {
 
   var sql = `
@@ -136,29 +135,29 @@ function view1(req, res, next) {
     orientation: 'portrait',
   };
 
-  //patient registered
+  // patient registered
   getRegisteredPatientsNumber().then(_patientsData => {
 
-    //services incomes
+    // services incomes
     loadServicesIncome().then(_servicesIncome => {
 
-      //max and min date of invoice each day for a week
+      // max and min date of invoice each day for a week
       MaxMinInvoiceDate().then(_MaxMinInvoiceDate => {
 
-        //rendering the report
+        // rendering the report
         var report = new ReportManager(TEMPLATE, req.session, options);
 
-        if (_patientsData.lenght === 0) {
-          _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
+        if (_patientsData.length === 0) {
+          _patientsData = { NumberOfpatientsThisWeek: 0, NumberOfpatientsLastWeek: 0 };
         } else {
           _patientsData = _patientsData[0];
         }
 
-        var data = {
+        const data = {
           patientsData: _patientsData,
           servicesIncome: _servicesIncome,
-          MaxMinInvoiceDate: _MaxMinInvoiceDate
-        }
+          MaxMinInvoiceDate: _MaxMinInvoiceDate,
+        };
 
         report.render(data).then((result) => {
           res.set(result.headers).send(result.report);
@@ -175,7 +174,7 @@ function view1(req, res, next) {
 }
 
 
-//one of the reports that bhima send by email
+// one of the reports that bhima send by email
 function weeklySummaryReport(currentSession) {
 
   const options = {
@@ -185,29 +184,29 @@ function weeklySummaryReport(currentSession) {
     orientation: 'portrait',
   };
 
-  //patient registered
-  return getRegisteredPatientsNumber().then( (_patientsData) => {
+  // patient registered
+  return getRegisteredPatientsNumber().then((_patientsData) => {
 
-    //services incomes
+    // services incomes
     return loadServicesIncome().then((_servicesIncome) => {
 
-      //max and min date of invoice each day for a week
+      // max and min date of invoice each day for a week
       return MaxMinInvoiceDate().then(_MaxMinInvoiceDate => {
-        //rendering the report
+        // rendering the report
         var report = new ReportManager(TEMPLATE, currentSession, options);
 
         if (_patientsData.lenght === 0) {
-          _patientsData = { "NumberOfpatientsThisWeek": 0, "NumberOfpatientsLastWeek": 0 };
+          _patientsData = { NumberOfpatientsThisWeek: 0, NumberOfpatientsLastWeek: 0 };
         } else {
           _patientsData = _patientsData[0];
         }
 
-        var data = {
+        const data = {
           patientsData: _patientsData,
           servicesIncome: _servicesIncome,
-          MaxMinInvoiceDate: _MaxMinInvoiceDate
-        }
-        //console.log(data);
+          MaxMinInvoiceDate: _MaxMinInvoiceDate,
+        };
+        // console.log(data);
         return report.render(data);
 
       });

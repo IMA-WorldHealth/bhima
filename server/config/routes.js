@@ -96,10 +96,10 @@ exports.configure = function configure(app) {
   winston.debug('Configuring routes');
 
 
-//this is the scheduler config for send reports emailing 
-scheduler.setScheduler();
+  // this is the scheduler config for send reports emailing
+  scheduler.setScheduler();
 
-//email report routes
+  // email report routes
   app.post('/report-group', report_group.create);
   app.get('/report-group', report_group.list);
   app.delete('/report-group/:code', report_group.delete);
@@ -110,12 +110,9 @@ scheduler.setScheduler();
   app.delete('/email-report/:id', email_report.delete);
   app.put('/email-report/:id', email_report.update);
   app.get('/email-report', email_report.list);
-  app.post('/email-report/list-people', email_report.list_people);
+  app.get('/email-report/list-people/:table/:column1/:column2', email_report.listPeople);
 
   app.get('/email-report/weekly_summary_report_view1', weeklySummaryReport.view1);
-
-
- 
 
   // exposed to the outside without authentication
   app.get('/languages', languages.list);

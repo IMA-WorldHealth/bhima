@@ -11,25 +11,25 @@
  */
 
 
-const uuid = require('node-uuid');
+// const uuid = require('node-uuid');
 
 const db = require('../../lib/db');
-const Topic = require('../../lib/topic');
+// const Topic = require('../../lib/topic');
 
-const BadRequest = require('../../lib/errors/BadRequest');
+// const BadRequest = require('../../lib/errors/BadRequest');
 const NotFound = require('../../lib/errors/NotFound');
-const Period = require('../../lib/period');
+// const Period = require('../../lib/period');
 
 exports.create = create;
 exports.list = list;
-exports.list_people = list_people;
+exports.listPeople = listPeople;
 exports.delete = remove;
 exports.update = update;
 exports.getProfile = getProfile;
 
 
 /**
- * Serve side for managing profiles (email and name) 
+ * Serve side for managing profiles (email and name)
  * whitch should receive a report by mail
  */
 
@@ -37,7 +37,7 @@ exports.getProfile = getProfile;
  * @method create
  *
  * @description
- 
+
  * POST /email-report
  */
 function create(req, res, next) {
@@ -49,13 +49,13 @@ function create(req, res, next) {
     emailReport.name,
     emailReport.email,
     emailReport.frequency,
-    emailReport.code_report_group
+    emailReport.code_report_group,
   ];
 
   db.exec(sql, values)
     .then((row) => {
       res.status(201).json(
-        { "id": row.insertId }
+        { id: row.insertId }
       );
     })
     .catch(next)
@@ -67,7 +67,7 @@ function create(req, res, next) {
  * @method update
  *
  * @description
- 
+
  * POST /email-report/:id
  */
 function update(req, res, next) {
@@ -88,7 +88,7 @@ function update(req, res, next) {
     .then((row) => {
 
       res.status(200).json(
-        { "id": emailReport.id }
+        { id: emailReport.id }
       );
     })
     .catch(next)
@@ -107,7 +107,7 @@ function list(req, res, next) {
 
   const sql = `
     SELECT  er.* , rp.name as 'report_group'
-    FROM email_report er, report_group rp 
+    FROM email_report er, report_group rp
     WHERE er.code_report_group=rp.code; `;
 
   db.exec(sql, {})
@@ -118,17 +118,16 @@ function list(req, res, next) {
     .done();
 }
 
-
-
 /**
  * @method list_people
  *
  * @description
  * API /email-report/list-people
  */
-function list_people(req, res, next) {
+function listPeople(req, res, next) {
 
-  const sql = req.body.sql;
+  const sqlParams = req.params;
+  const sql = `SELECT ${sqlParams.column1} , ${sqlParams.column2} FROM ${sqlParams.table}`;
 
   db.exec(sql, {})
     .then(rows => {
@@ -138,27 +137,22 @@ function list_people(req, res, next) {
     .done();
 }
 
-
-
-//finding profile by the report group code and the frequency
-function getProfile(code_groupe, frequency) {
+// finding profile by the report group code and the frequency
+function getProfile(codeGroupe, frequency) {
 
   const sql = `
     SELECT  name, email
-    FROM email_report 
+    FROM email_report
     WHERE code_report_group=? AND
           frequency=?;
   `;
 
-  return db.exec(sql, [code_groupe, frequency])
+  return db.exec(sql, [codeGroupe, frequency])
     .then(rows => {
       return rows;
     });
 
 }
-
-
-
 
 /**
  * @method delete

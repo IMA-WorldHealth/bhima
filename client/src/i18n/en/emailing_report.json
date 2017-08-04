@@ -10,7 +10,10 @@
       "USERS":"Users",
       "EMPLOYEES":"Employees",
       "PROFILE_FROM":"Profile from ",
-      "NEW_REPORT_GROUP":"New report group" 
+      "NEW_REPORT_GROUP":"New report group",
+      "DAILY" : "DAILY",
+      "WEEKLY" : "Weekly",
+      "MONTHLY" : "Monthly"
     }
   },
   "REPORT":{

@@ -1,23 +1,23 @@
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="static">{{ "FORM.LABELS.EMALING_REPORT" | translate }}</li>
+      <li class="static" translate> TREE.ADMIN</li>
+      <li class="static" translate> FORM.LABELS.EMALING_REPORT</li>
     </ol>
 
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <a class="btn btn-default pull-right" 
+        <a class="btn btn-default pull-right"
           ui-sref="reportGroup"
           ui-sref-opts="{notify:false}">
             <i class="fa fa-plus"></i>
-            <span translate="" class="ng-scope">FORM.LABELS.REPORT_GROUP</span>
+            <span translate>FORM.LABELS.REPORT_GROUP</span>
         </a>
       </div>
     </div>
   </div>
-  
+
 </div>
 
 
@@ -25,9 +25,9 @@
 <div class="flex-content">
   <div class="container-fluid" id="anchor">
 
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <!-- start new Reporting group form -->
-      <div class="col-lg-5">
+      <div class="col-md-5">
         <h4 translate>FORM.LABELS.NEW_PROFILE</h4>
 
         <form
@@ -48,14 +48,14 @@
 
 
             <!-- name -->
-            <div class="form-group" 
+            <div class="form-group"
               ng-class="{'has-error':EmailReportRegistrationForm.name.$invalid && EmailReportRegistrationForm.$submitted}">
 
-              <label class="control-label ng-binding" translate>
+              <label class="control-label" translate>
                 FORM.LABELS.NAME
               </label>
 
-              <div class="input-group col-lg-12">
+              <div class="input-group col-md-12">
                 <input class="form-control"
                   name="name"
                   ng-model="EmailReportCtrl.emailReport.name"
@@ -73,11 +73,11 @@
             <div class="form-group"
               ng-class="{'has-error' : EmailReportRegistrationForm.email.$invalid && EmailReportRegistrationForm.$submitted}">
 
-              <label class="control-label ng-binding" translate>
+              <label class="control-label" translate>
                 FORM.LABELS.EMAIL
               </label>
 
-              <div class="input-group col-lg-12">
+              <div class="input-group col-md-12">
                 <input
                   class="form-control"
                   name="email"
@@ -99,22 +99,22 @@
               class="form-group"
               ng-class="{'has-error' : EmailReportRegistrationForm.frequency.$invalid && EmailReportRegistrationForm.$submitted}">
 
-              <label class="control-label ng-binding" translate>
+              <label class="control-label" translate>
                 FORM.LABELS.FREQUENCY
               </label>
 
-              <div class="input-group col-lg-12">
+              <div class="input-group col-md-12">
 
                 <select
                   required=""
                   name="frequency"
                   ng-model="EmailReportCtrl.emailReport.frequency"
+                  ng-options="item.key as (item.label | translate) for item in EmailReportCtrl.frequencies"
                   class="form-control">
-                    <option  
-                      ng-repeat="item in EmailReportCtrl.frequencies"
-                      value="{{item}}">
-                        {{item}}
+                    <option>
+                      Select a frequency
                     </option>
+
                 </select>
                  <div class="help-block"
                   ng-messages="EmailReportRegistrationForm.frequency.$error"
@@ -133,18 +133,18 @@
               class="form-group"
               ng-class="{'has-error' : EmailReportRegistrationForm.code_report_group.$invalid && EmailReportRegistrationForm.$submitted}">
 
-              <label class="control-label ng-binding" translate>
+              <label class="control-label" translate>
                 FORM.LABELS.REPORT_GROUP
               </label>
 
-              <div class="input-group col-lg-12">
-                <select 
+              <div class="input-group col-md-12">
+                <select
                 name='code_report_group'
                   required=""
                   ng-model="EmailReportCtrl.emailReport.code_report_group"
                   class="form-control">
-                    <option 
-                      ng-repeat="item in EmailReportCtrl.report_groups"  
+                    <option
+                      ng-repeat="item in EmailReportCtrl.report_groups"
                       value="{{item.code}}">
                         {{item.name}}
                     </option>
@@ -160,26 +160,27 @@
 
 
 
-            <bh-loading-button 
-             ng-show="EmailReportCtrl.selectedEmailReport.selected==false"
-             class="pull-right" loading-state="BedRegistrationForm.$loading">
-              {{ "FORM.BUTTONS.SAVE" | translate }}
-            </bh-loading-button>
-
-            <span class="btn btn-danger" 
-              ng-click="EmailReportCtrl.remove(EmailReportRegistrationForm)"
-              ng-show="EmailReportCtrl.selectedEmailReport.selected==true"
-              class="pull-right">
-                {{ "FORM.BUTTONS.DELETE" | translate }}
-            </span>
-
-            <bh-loading-button
-              ng-show="EmailReportCtrl.selectedEmailReport.selected==true"
-              class="pull-right"
+            <div class="pull-right">
+              <bh-loading-button
+              ng-show="EmailReportCtrl.selectedEmailReport.selected==false"
               loading-state="BedRegistrationForm.$loading">
-                {{ "FORM.BUTTONS.UPDATE" | translate }}
-            </bh-loading-button>
+                {{ "FORM.BUTTONS.SAVE" | translate }}
+              </bh-loading-button>
 
+              <span class="btn btn-danger"
+                ng-click="EmailReportCtrl.remove(EmailReportRegistrationForm)"
+                ng-show="EmailReportCtrl.selectedEmailReport.selected"
+                translate
+                >
+                FORM.BUTTONS.DELETE
+              </span>
+
+              <bh-loading-button
+                ng-show="EmailReportCtrl.selectedEmailReport.selected"
+                loading-state="BedRegistrationForm.$loading">
+                  {{ "FORM.BUTTONS.UPDATE" | translate }}
+              </bh-loading-button>
+            </div>
         </form>
 
       </div>
@@ -187,21 +188,15 @@
 
       <!-- start grid of emails -->
 
-      <div class="col-lg-7">
+      <div class="col-md-7">
 
         <!--the grid -->
-        <div 
+        <div
           id="report-groups-grid"
-          ui-grid-auto-resize
-          ui-grid-resize-columns
-          ui-grid-move-columns
-          ui-grid-cellNav
-          ui-grid-grouping
-          ui-grid-exporter
-          ui-grid-save-state
+
           ui-grid="EmailReportCtrl.gridOptions"
           class="grid-full-height">
-          <bh-grid-loading-indicator 
+          <bh-grid-loading-indicator
             loading-state="EmailReportCtrl.loading"
             empty-state="EmailReportCtrl.gridOptions.data.length === 0"
             error-state="EmailReportCtrl.hasError">

@@ -1,10 +1,7 @@
 angular.module('bhima.services')
     .service('CategoriesPeopleService', CategoriesPeopleService);
 
-CategoriesPeopleService.$inject = [
-    '$http', 'util', 'SessionService', '$uibModal',
-    'DocumentService', 'VisitService', 'DepricatedFilterService',
-];
+CategoriesPeopleService.$inject = [];
 
 /**
  * @module EmailReportService
@@ -12,30 +9,25 @@ CategoriesPeopleService.$inject = [
  * This service is responsible for providing an interface between angular
  * module controllers and the server /tools/bed/ API.
  */
-function CategoriesPeopleService($http, util, Session, $uibModal,
-    Documents, Visits, Filters) {
+function CategoriesPeopleService() {
 
-    var service = this;
-    service.list = [];
+  const service = this;
 
-    init();
-    function init() {
-        service.list = [
-            {
-                table: 'employee',
-                table_display: 'FORM.LABELS.EMPLOYEES',
-                Columns: ['display_name', 'email'],
-                Columns_dispay: ['Name', 'email']
-            },
-            {
-                table: 'user',
-                table_display: 'FORM.LABELS.USERS',
-                Columns: ['username', 'email'],
-                Columns_dispay: ['Name', 'email']
-            },
-        ]
-    }
+  service.list = [
+    {
+      table : 'employee',
+      table_display : 'FORM.LABELS.EMPLOYEES',
+      Columns : ['display_name', 'email'],
+      Columns_dispay : ['Name', 'email'],
+    },
+    {
+      table : 'user',
+      table_display : 'FORM.LABELS.USERS',
+      Columns : ['username', 'email'],
+      Columns_dispay : ['Name', 'email'],
+    },
+  ];
 
+  return this;
 
-    return service;
 }

@@ -26,28 +26,28 @@
 <div class="flex-content">
     <div class="container-fluid" id="anchor">
 
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <!-- start new Reporting group form -->
-            <div class="col-lg-5">
+            <div class="col-md-5">
                 <h4 translate=""> FORM.LABELS.NEW_REPORT_GROUP</h4>
 
 
-                <form 
+                <form
                     name="ReportGroupRegistrationForm"
                     bh-submit="ReportGroupCtrl.save(ReportGroupRegistrationForm)"
                     bh-form-defaults
                     novalidate>
                     <!-- code -->
-                    <div 
+                    <div
                         class="form-group"
                         ng-class="{'has-error' : ReportGroupRegistrationForm.code.$invalid && ReportGroupRegistrationForm.$submitted}">
 
                         <label class="control-label ng-binding" translate>
-                          FORM.LABELS.CODE    
+                          FORM.LABELS.CODE
                         </label>
 
-                        <div class="input-group col-lg-12">
-                            <input 
+                        <div class="input-group col-md-12">
+                            <input
                                 class="form-control"
                                 name="code"
                                 ng-model="ReportGroupCtrl.reportGroup.code"
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <!-- name -->
-                    <div 
+                    <div
                         class="form-group"
                         ng-class="{'has-error' : ReportGroupRegistrationForm.name.$invalid && ReportGroupRegistrationForm.$submitted}">
 
@@ -70,7 +70,7 @@
                           FORM.LABELS.NAME
                         </label>
 
-                        <div class="input-group col-lg-12">
+                        <div class="input-group col-md-12">
                             <input class="form-control"
                                 type="text"
                                 name="name"
@@ -80,7 +80,7 @@
                             <div class="help-block"
                                 ng-messages="ReportGroupRegistrationForm.name.$error"
                                 ng-show="ReportGroupRegistrationForm.$submitted">
-                                
+
                                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                             </div>
                         </div>
@@ -95,8 +95,8 @@
                           FORM.LABELS.DESCRIPTION
                         </label>
 
-                        <div class="input-group col-lg-12">
-                            <textarea 
+                        <div class="input-group col-md-12">
+                            <textarea
                                 class="form-control"
                                 name="description"
                                 ng-model="ReportGroupCtrl.reportGroup.description"
@@ -112,13 +112,13 @@
                     </div>
 
 
-                    <bh-loading-button 
+                    <bh-loading-button
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == false"
                         class="pull-right" loading-state="BedRegistrationForm.$loading">
                           {{ "FORM.BUTTONS.SAVE" | translate }}
                     </bh-loading-button>
 
-                    <span 
+                    <span
                         class="btn btn-danger"
                         ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)"
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
@@ -126,7 +126,7 @@
                           {{ "FORM.BUTTONS.DELETE" | translate }}
                     </span>
 
-                    <bh-loading-button 
+                    <bh-loading-button
                         ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
                         class="pull-right"
                         loading-state="BedRegistrationForm.$loading">
@@ -140,18 +140,10 @@
 
             <!-- start grid of Reports group -->
 
-            <div class="col-lg-7">
+            <div class="col-md-7">
                 <!--the grid -->
-
-                <div 
+                <div
                     id="report-groups-grid"
-                    ui-grid-auto-resize
-                    ui-grid-resize-columns
-                    ui-grid-move-columns
-                    ui-grid-cellNav
-                    ui-grid-grouping
-                    ui-grid-exporter
-                    ui-grid-save-state
                     ui-grid="ReportGroupCtrl.gridOptions"
                     class="grid-full-height">
                         <bh-grid-loading-indicator

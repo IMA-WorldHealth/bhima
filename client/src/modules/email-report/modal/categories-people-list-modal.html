@@ -7,15 +7,16 @@
     <div class="modal-header">
         <ol class="headercrumb">
             <li class="static">
-                {{"FORM.LABELS.PROFILE_FROM" | translate}} 
-                {{catPeopleListCtrl.selectedCategory.table_display | translate}}
+                <span translate>FORM.LABELS.PROFILE_FROM</span>
+                <span translate>{{catPeopleListCtrl.selectedCategory.table_display}}</span>
+
             </li>
         </ol>
     </div>
 
-    <div class="modal-body" style="height: 100%;border: none !important">
+    <div class="modal-body">
 
-        <div 
+        <div
             id="report-groups-grid"
             ui-grid-selection
             ui-grid="catPeopleListCtrl.gridOptions">
@@ -34,17 +35,18 @@
         <a class="btn btn-default"
             data-method="selectProfile"
             ui-sref="emailreport"
-            data-method="back"
+            data-method="cancel"
             translate>
             FORM.BUTTONS.CLOSE
         </a>
 
 
-        <bh-loading-button
+        <button
+            class="btn btn-primary"
             ng-click="catPeopleListCtrl.getSelectedRows()"
             loading-state="BillingServicesForm.$loading">
             <span translate>FORM.LABELS.SELECT</span>
-        </bh-loading-button>
+        </button>
 
     </div>
 </form>
