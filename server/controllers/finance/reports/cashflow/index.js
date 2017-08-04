@@ -69,7 +69,7 @@ function processingCashflowReport(params) {
         throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
       }
       glb.periods = periods;
-      return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date);
+      return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date, false);
     })
     .then((balance) => {
       if (!balance) { balance = { balance : 0}; }

@@ -45,7 +45,7 @@ function document(req, res, next) {
 
   const dateFrom = (params.dateFrom) ? new Date(params.dateFrom) : new Date();
 
-  return AccountsExtra.getOpeningBalanceForDate(params.account_id, dateFrom)
+  return AccountsExtra.getOpeningBalanceForDate(params.account_id, dateFrom, false)
     .then((balance) => {
       const openingBalance = {
         date            : dateFrom,
@@ -155,7 +155,7 @@ function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
       _.extend(bundle, { transactions });
 
       // get the balance at the final date
-      return AccountsExtra.getOpeningBalanceForDate(accountId, dateTo);
+      return AccountsExtra.getOpeningBalanceForDate(accountId, dateTo, true);
     })
     .then((sum) => {
       // if the sum come back as zero (because there were no lines), set the default sum to the
