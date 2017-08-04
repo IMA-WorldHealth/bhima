@@ -6,57 +6,6 @@
     </ol>
 
     <div class="toolbar">
-      <!--<div class="toolbar-item">
-        <button
-          ng-click="StockLotsCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
-      <div class="toolbar-item">
-        <bh-pdf-print
-          pdf-url="/reports/stock/lots"
-          options="StockLotsCtrl.filters"
-          disable-cache="true">
-        </bh-pdf-print>
-      </div>
-
-      <div class="toolbar-item">
-        <div class="btn-group" uib-dropdown>
-          <a class="btn btn-default" 
-            ng-class="{ 'btn-info' : StockLotsCtrl.grouped }" 
-            ng-click="StockLotsCtrl.toggleGroup(StockLotsCtrl.selectedGroup.value)">
-            <span>
-              <i class="fa fa-object-group"></i>
-              <span ng-hide="StockLotsCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
-              <span 
-                ng-show="StockLotsCtrl.selectedGroup.label" 
-                translate>
-                {{ StockLotsCtrl.selectedGroup.label }}
-              </span>
-            </span>
-          </a>
-          <a class="btn btn-default" uib-dropdown-toggle>
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-            <li ng-repeat="option in StockLotsCtrl.groupingBox">
-              <a href ng-click="StockLotsCtrl.selectGroup(option)">
-                <span translate>{{ option.label }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="toolbar-item">
-        <bh-renderer-dropdown
-          report-url="/reports/stock/lots"
-          report-options="StockLotsCtrl.filters">
-        </bh-renderer-dropdown>
-      </div>-->
-
       <div class="toolbar-item">
         <div uib-dropdown dropdown-append-to-body data-action="open-menu">
           <a class="btn btn-default" uib-dropdown-toggle>
@@ -86,12 +35,12 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/finance/vouchers/?{{ VoucherCtrl.download('csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
@@ -106,6 +55,34 @@
           class="btn btn-default">
           <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
+      </div>
+
+      <div class="toolbar-item">
+        <div class="btn-group" uib-dropdown>
+          <a class="btn btn-default" 
+            ng-class="{ 'btn-info' : StockLotsCtrl.grouped }" 
+            ng-click="StockLotsCtrl.toggleGroup(StockLotsCtrl.selectedGroup.value)">
+            <span>
+              <i class="fa fa-object-group"></i>
+              <span ng-hide="StockLotsCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span 
+                ng-show="StockLotsCtrl.selectedGroup.label" 
+                translate>
+                {{ StockLotsCtrl.selectedGroup.label }}
+              </span>
+            </span>
+          </a>
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li ng-repeat="option in StockLotsCtrl.groupingBox">
+              <a href ng-click="StockLotsCtrl.selectGroup(option)">
+                <span translate>{{ option.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -122,13 +99,13 @@
 <!--the grid -->
 <div class="flex-content">
   <div class="container-fluid">
-
     <div
       id="stock-lots-grid"
       ui-grid="StockLotsCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-resize-columns
       ui-grid-auto-resize
+      ui-grid-save-state
       ui-grid-grouping>
       <bh-grid-loading-indicator
         loading-state="StockLotsCtrl.loading"
@@ -136,6 +113,5 @@
         error-state="StockLotsCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
-
   </div>
 </div>

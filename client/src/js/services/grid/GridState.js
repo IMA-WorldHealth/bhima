@@ -14,6 +14,7 @@ function GridStateService(util, AppCache, Notify) {
   var stateCacheKey = 'gridState';
 
   function StateInstance(gridOptions, moduleCacheKey) {
+    console.log('gridoptions', gridOptions, 'cacke key : ', moduleCacheKey);
     this._cacheKey = moduleCacheKey.concat(stateCacheKey);
     this._cache = new AppCache(this._cacheKey);
 

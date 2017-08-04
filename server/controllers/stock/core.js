@@ -50,10 +50,12 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
   const params = parameters;
   const sql = sqlQuery || `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-            l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
-            iu.text AS unit_type 
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+          l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+          i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
+          d.text AS depot_text, iu.text AS unit_type 
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
@@ -82,7 +84,6 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
   filters.setGroup(finalClause || '');
-  console.log('params', params);
 
   let query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
@@ -102,7 +103,6 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
  */
 function getLotsDepot(depotUuid, params, finalClause) {
   let status;
-    console.log('params depot : ',depotUuid, 'params : ', params, 'finalclause : ', finalClause);
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -139,8 +139,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
             });
           }
           return rows;
-        })
-        .catch(function(err){console.log(err)});
+        });
 }
 
 /**

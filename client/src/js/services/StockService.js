@@ -3,9 +3,9 @@ angular.module('bhima.services')
 
 StockService.$inject = [
   'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer'];
+  '$httpParamSerializer', 'LanguageService'];
 
-function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer) {
+function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages) {
 
   // API for stock lots
   var stocks = new Api('/stock/lots');

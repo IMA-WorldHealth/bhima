@@ -6,7 +6,7 @@ StockLotsController.$inject = [
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService',
-  'bhConstants',
+  'bhConstants', '$state'
 ];
 
 /**
@@ -16,7 +16,7 @@ StockLotsController.$inject = [
 function StockLotsController(Stock, Notify,
   uiGridConstants, $translate, Modal,
   SearchFilterFormat, Languages, Grouping,
-  GridState, Columns, bhConstants) {
+  GridState, Columns, bhConstants, $state) {
   var vm = this;
 
   var cacheKey = 'lot-grid';
@@ -29,9 +29,12 @@ function StockLotsController(Stock, Notify,
     { label: 'STOCK.INVENTORY', value: 'text' },
   ];
 
-  // global variables
+  vm.download = Stock.download;
+  vm.clearGridState = clearGridState;
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
+  vm.gridApi = {};
+  vm.gridOptions = {};
 
   // grid columns
   var columns = [
@@ -164,7 +167,6 @@ function StockLotsController(Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    console.log('load method here is the filter', filters);
     vm.hasError = false;
     toggleLoadingIndicator();
 
@@ -194,8 +196,6 @@ function StockLotsController(Stock, Notify,
 
     Modal.openSearchLots(filtersSnapshot)
       .then(function (changes) {
-            console.log('lot changes', changes);
-
         Stock.lotFilters.replaceFilters(changes);
         Stock.cacheLotFilters();
         vm.latestViewFilters = Stock.lotFilters.formatView();
@@ -211,6 +211,13 @@ function StockLotsController(Stock, Notify,
     // column configuration has direct access to the grid API to alter the current
     // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
+  };
+
+  vm.saveGridState = state.saveGridState;
+  // saves the grid's current configuration
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
   };
 
   startup();

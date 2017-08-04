@@ -72,8 +72,6 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     });
 
     var loggedChanges = changes.getAll();
-    console.log('voici toutes schnagement', loggedChanges);
-
     // return values to the voucher controller
     return Instance.close(loggedChanges);
   }
