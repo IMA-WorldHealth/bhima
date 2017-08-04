@@ -14,6 +14,7 @@ function BalanceSheetReportConfigController($sce, Notify, SavedReports, AppCache
 
   vm.previewGenerated = false;
 
+  // FIXME(@jniles) - why is this needed?
   $timeout(function run() {
     vm.reportDetails = { date : new Date() };
   }, 0);
@@ -41,6 +42,8 @@ function BalanceSheetReportConfigController($sce, Notify, SavedReports, AppCache
   };
 
   vm.preview = function preview(form) {
+    if (form.$invalid) { return; }
+
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 

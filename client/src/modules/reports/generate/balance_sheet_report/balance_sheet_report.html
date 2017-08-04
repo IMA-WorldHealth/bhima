@@ -22,16 +22,16 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
-            
+
             <!-- choose date until  -->
             <bh-date-editor
               date-value="ReportConfigCtrl.reportDetails.date">
             </bh-date-editor>
 
             <!--display also revenue and expense-->
-            <div class="form-group">
+            <div class="checkbox">
               <label>
-                <input type="checkbox" 
+                <input type="checkbox"
                   ng-model="ReportConfigCtrl.reportDetails.showExploitation"
                   ng-true-value="1" ng-false-value="0">
                 <span translate>REPORT.BALANCE_SHEET.SHOW_EXPLOITATION</span>
