@@ -132,6 +132,7 @@
             "NO_SUPPLIER": "Un ordre d'achat doit avoir un fournisseur avant de préciser les éléments.",
             "NUM_TRANSACTION": "Nombres des transactions",
             "OPERATION_SUCCESS": "Opération effectuée avec succès",
+            "OF": "de",
             "OTHER_ACTIONS": "Autres actions",
             "PATIENTS": "Patients",
             "PATIENT_FOUND": "Patient Trouvé",
