@@ -24,31 +24,30 @@
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <bh-fiscal-period-select
               validation-trigger="ConfigForm.$submitted"
-              formName="ConfigForm"
               on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
               on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
 
             <!-- report type selection  -->
-            <div 
-                class="form-group"
+            <div class="form-group"
                 ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
-                <label class="control-label">
-                    <i class="fa fa-briefcase"></i> {{ "FORM.SELECT.REPORT_TYPE" | translate }}
-                </label>
-                <select
-                    class="form-control"
-                    name="type"
-                    ng-model="ReportConfigCtrl.reportDetails.type"
-                    ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
-                    required>
-                    <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
-                </select>
-                <div class="help-block" ng-messages="ConfigForm.type.$error" ng-show="ConfigForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-            </div>           
+              <label class="control-label">
+                <i class="fa fa-briefcase"></i> <span translate>FORM.SELECT.REPORT_TYPE</span>
+              </label>
+              <select
+                class="form-control"
+                name="type"
+                ng-model="ReportConfigCtrl.reportDetails.type"
+                ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
+                required>
+                <option value="" disabled translate>FORM.SELECT.REPORT_TYPE<option>
+              </select>
+              <div class="help-block" ng-messages="ConfigForm.type.$error" ng-show="ConfigForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
