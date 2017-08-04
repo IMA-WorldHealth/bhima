@@ -72,7 +72,7 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     });
 
     var loggedChanges = changes.getAll();
-    // return values to the voucher controller
+    
     return Instance.close(loggedChanges);
   }
 }

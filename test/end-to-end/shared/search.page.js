@@ -1,6 +1,9 @@
 const FU = require('../shared/FormUtils');
 const bhUserSelect = require('../shared/components/bhUserSelect');
 const bhPeriodSelect = require('../shared/components/bhPeriodSelect');
+const bhDepotSelect = require('../shared/components/bhDepotSelect');
+const bhInventorySelect = require('../shared/components/bhInventorySelect');
+const bhDateInterval = require('../shared/components/bhDateInterval');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -84,7 +87,6 @@ class SearchModal {
    registry under test.  Use the other setXXXReference() when you need to filter by references
    _not_ contained in the registry under test.
   */
-
   setPatientReference(reference) {
     FU.input('$ctrl.searchQueries.patientReference', reference, this.element);
   }
@@ -104,6 +106,22 @@ class SearchModal {
   /* eslint class-methods-use-this: "off" */
   setUser(user) {
     bhUserSelect.set(user);
+  }
+
+  setDepot (depot){
+    bhDepotSelect.set(depot);
+  }
+
+  setInventory (inventory){
+    bhInventorySelect.set(inventory);
+  }
+
+  setLotLabel(label) {
+    FU.input('$ctrl.searchQueries.label', label, this.element);
+  }
+
+  setdateInterval (dateFrom, dateTo, id) {
+    bhDateInterval.range(dateFrom, dateTo, id);
   }
 
   setPeriod(period) {

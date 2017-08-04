@@ -23,7 +23,7 @@ function InventorySelectController(Inventory) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
-    // fired when an user has been selected
+    // fired when an inventory has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
     // default for form name

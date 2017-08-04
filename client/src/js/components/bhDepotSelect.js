@@ -23,7 +23,7 @@ function DepotSelectController(Depots) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
-    // fired when an user has been selected
+    // fired when a depot has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
     // default for form name

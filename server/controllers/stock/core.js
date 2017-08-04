@@ -48,7 +48,7 @@ exports.getLotsOrigins = getLotsOrigins;
  */
 function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
-  const params = parameters;
+  const params = parameters;  
   const sql = sqlQuery || `
         SELECT 
           BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
@@ -62,19 +62,20 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
-
-  const filters = new FilterParser(params, {autoParseStatements : false });
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid']);
+  const filters = new FilterParser(params, { autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
-  filters.equals('depot_uuid', 'uuid', 'd');
+  filters.equals('depot_uuid', 'depot_uuid', 'm');
+  filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
 
-  filters.period('defaultPeriod', 'date');
-  filters.period('period', 'date');
+  filters.period('defaultPeriod', 'entry_date');
+  filters.period('period', 'entry_date');
   
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
