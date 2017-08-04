@@ -71,6 +71,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('is_exit', 'is_exit', 'm');
 
   filters.period('defaultPeriod', 'date');
   filters.period('period', 'date');
