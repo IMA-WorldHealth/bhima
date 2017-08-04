@@ -42,6 +42,16 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
     vm.defaultQueries.limit = filters.limit;
   }
 
+  vm.onSelectTransactionType = function onSelectTransactionType (transactionTypes){
+    console.log('selecting, here is the : ', transactionTypes);
+    vm.searchQueries.type_id = 1;
+  }
+
+  vm.onRemoveTransactionType = function onRemoveTransactionType (transactionTypes){
+    console.log('removing, here is the : ', transactionTypes);
+    vm.searchQueries.type_id = 1;
+  }
+
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;

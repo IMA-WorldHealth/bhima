@@ -10,8 +10,10 @@
         on-select="$ctrl.onSelect($ctrl.selectedTransactionTypes)"
         on-remove="$ctrl.onRemove($ctrl.selectedTransactionTypes)"
         close-on-select="false">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">{{$select.selected.name}}</span></ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.transactionTypes | filter:$select.search)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
+          <span>{{$item.plainText}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.transactionTypes | filter:{plainText : $select.search} | orderBy:'plainText')">
         <span ng-bind-html="type.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
