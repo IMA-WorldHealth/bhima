@@ -7,6 +7,7 @@ TransactionService.$inject = [
 
 /**
  * Transactions Service
+ * @TODO(sfount) Remove all editing logic - only specific transaction displaying/ processling logic should remain
  *
  * This service is responsible for fetching transactions from a datasource
  * and providing a number of utility methods for manipulating and framing this
