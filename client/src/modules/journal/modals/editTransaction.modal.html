@@ -1,0 +1,92 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>{{ ModalCtrl.options.title || 'TREE.POSTING_JOURNAL' }}</li>
+    <li class="title" translate>
+      POSTING_JOURNAL.EDIT_TRANSACTION
+    </li>
+    <span class="badge badge-success">{{ModalCtrl.transactionDetails.trans_id}}</span>
+  </ol>
+
+</div>
+
+<div class="modal-body">
+  <!-- Record information -->
+  <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
+    <!-- Record ID -->
+    <!-- Project ID -->
+    <!-- Transaction ID -->
+    <!-- Transaction Type -->
+    <!-- Responsible -->
+    <!-- ? Editable date ? -->
+    <div class="row">
+      <form class="form-horizontal">
+      <div class="col-md-6">
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Record ID</label>
+          <div class="col-sm-9">
+            <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
+          </div>
+        </div>
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Project</label>
+          <div class="col-sm-9">
+            <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
+          </div>
+        </div>
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Transaction</label>
+          <div class="col-sm-9">
+            <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Type</label>
+          <div class="col-sm-9">
+            <select class="form-control"></select>
+          </div>
+        </div>
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Responsible</label>
+          <div class="col-sm-9">
+            <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
+          </div>
+        </div>
+        <div class="form-group-sm">
+          <label class="col-sm-3 control-label">Date</label>
+          <div class="col-sm-9 input-group">
+            <input 
+              uib-datepicker-popup="dd/MM/yyyy"
+              ng-model="ModalCtrl.shared.trans_date" 
+              is-open="ModalCtrl.dateEditorOpen"
+              type="text" 
+              class="form-control"></input>
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+  <div id="edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-selection ui-grid-resize-columns ui-grid-auto-resize>
+    <bh-grid-loading-indicator 
+      loading-state="ModalCtrl.loading"
+      empty-state="ModalCtrl.gridOptions.data.length === 0"
+      error-state="ModalCtrl.hasError">
+    </bh-grid-loading-indicator>
+  </div>
+  <!-- Description -->
+  <!-- Account -->
+  <!-- Debit -->
+  <!-- Credit --> 
+  <!-- Recipient --> 
+  <!-- Reference -->
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
+  <button class="btn btn-primary" translate>POSTING_JOURNAL.SAVE_TRANSACTION</button>
+</div>

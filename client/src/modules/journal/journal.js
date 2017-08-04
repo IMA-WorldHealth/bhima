@@ -134,8 +134,6 @@ function JournalController(Journal, Sorting, Grouping,
     $state.reload();
   };
  
-  
-
   /**
    * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -592,6 +590,23 @@ function JournalController(Journal, Sorting, Grouping,
     if (selection.selected.groups.length > 1) { 
       Notify.warn('You have multiple transactions selected. Multiple transaction editing is currently disabled');
       return;
+    }
+    
+    
+    var selectedTransaction = selection.selected.groups[0];
+    var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction); 
+    
+    Journal.openTransactionEditModal(transactionUuid);
+  }
+  
+  // @FIXME(sfount) temporary method to get UUID from trans id - this should be replaced when rebased with journal 
+  //                tools PR
+  function hackIntermediateRecordUuidLookup(transID) { 
+    for(var i = 0; i < vm.gridOptions.data.length; i++) { 
+      var transaction = vm.gridOptions.data[i];
+      if (transaction.trans_id === transID) {
+        return transaction.record_uuid;
+      }
     }
   }
 }

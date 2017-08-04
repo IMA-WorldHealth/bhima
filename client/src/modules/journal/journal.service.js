@@ -15,6 +15,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   service.grid = grid;
   service.saveChanges = saveChanges;
   service.openSearchModal = openSearchModal;
+  service.openTransactionEditModal = openTransactionEditModal;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -129,7 +130,21 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       resolve : {
         filters : function () { return filters; },
         options : function () { return options || {}; },
-      },
+      }
+    }).result;
+  }
+
+  function openTransactionEditModal(transactionUuid) { 
+
+    console.log('open modal');
+    return Modal.open({
+      templateUrl : 'modules/journal/modals/editTransaction.modal.html',
+      controller : 'JournalEditTransactionController as ModalCtrl',
+      backdrop : 'static', 
+      size : 'lg',
+      resolve : { 
+        transactionUuid : function () { return transactionUuid; }
+      }
     }).result;
   }
 
