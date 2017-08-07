@@ -27,7 +27,6 @@ function InventoryServiceModalController(ModalInstance, Notify, params, Inventor
   vm.clear = clear;
   vm.types = {};
 
-
   loadCachedParameters();
 
   Inventory.Groups.read()

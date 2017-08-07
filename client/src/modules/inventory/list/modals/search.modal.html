@@ -93,14 +93,12 @@
         <label class="control-label" translate>
           FORM.LABELS.CONSUMABLE
         </label>
-        <input type="checkbox"   name="consumable" ng-model="ModalCtrl.param.consumable">
+         <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
 
+         <input type="checkbox" ng-true-value='1' ng-false-value='0' name="consumable" ng-model="ModalCtrl.params.consumable"/>
       </div>
 
-
-
     </fieldset>
-
   </div>
 
   <div class="modal-footer">

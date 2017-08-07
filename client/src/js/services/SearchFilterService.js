@@ -36,6 +36,7 @@ function SearchFilterService(Filters, AppCache) {
       { key : 'code', label : 'FORM.LABELS.CODE' },
       { key : 'price', label : 'FORM.LABELS.UNIT_PRICE' },
       { key : 'type_id', label : 'FORM.LABELS.TYPE' },
+      { key : 'consumable', label : 'FORM.LABELS.CONSUMABLE' },
     ];
 
     this._filters.registerCustomFilters(this._availableFilters);
