@@ -26,30 +26,23 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
     'reference', 'description', 'user_id', 'type_id',
   ];
 
-  TransactionTypes.read()
-      .then(function (transactionTypes) {
-        transactionTypes.forEach(function(item){
-          item.plainText = $translate.instant(item.text);
-        });
-        vm.transactionTypes = transactionTypes;
-      })
-      .catch(Notify.handleError);
-
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+  
+  if(vm.searchQueries.type_id){
+    vm.type_ids = [vm.searchQueries.type_id];
+  }
 
   if(filters.limit){
     vm.defaultQueries.limit = filters.limit;
   }
 
   vm.onSelectTransactionType = function onSelectTransactionType (transactionTypes){
-    console.log('selecting, here is the : ', transactionTypes);
-    vm.searchQueries.type_id = 1;
+    vm.searchQueries.type_id = transactionTypes[transactionTypes.length - 1];
   }
 
   vm.onRemoveTransactionType = function onRemoveTransactionType (transactionTypes){
-    console.log('removing, here is the : ', transactionTypes);
-    vm.searchQueries.type_id = 1;
+    vm.searchQueries.type_id = null;
   }
 
   // custom filter user_id - assign the value to the params object

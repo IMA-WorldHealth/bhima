@@ -1,15 +1,19 @@
-<div ng-form="TransactionTypeForm" bh-transaction-type-select ng-model-options="{ updateOn: 'default' }">
-  <div class="form-group">
+<div ng-form="$ctrl.formName" bh-transaction-type-select ng-model-options="{ updateOn: 'default' }">
+  <div 
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.formName.transactionType.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
+
     <ui-select 
         multiple
         name="transactionType" 
         ng-model="$ctrl.selectedTransactionTypes"
         on-select="$ctrl.onSelect($ctrl.selectedTransactionTypes)"
         on-remove="$ctrl.onRemove($ctrl.selectedTransactionTypes)"
-        close-on-select="false">
+        close-on-select="false"
+        ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
           <span>{{$item.plainText}}</span>
       </ui-select-match>
@@ -17,5 +21,9 @@
         <span ng-bind-html="type.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
+
+    <div class="help-block" ng-messages="$ctrl.formName.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
   </div>
 </div>

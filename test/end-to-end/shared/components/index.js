@@ -30,4 +30,5 @@ module.exports = {
   multipleDebtorGroupSelect : require('./bhMultipleDebtorGroupSelect'),
   depotSelect    : require('./bhDepotSelect'),
   inventorySelect : require('./bhInventorySelect'),
+  transactionTypeSelect : require('./bhTransactionTypeSelect'),
 };

@@ -22,6 +22,8 @@ function VoucherRegistrySearch() {
   const NUM_VOUCHERS = 13;
   const NUM_USER_RECORDS = 13;
   const NUM_DESCRIPTION_RECORDS = 2;
+  const NUM_TRANSACTION_TYPE_RECORD = 1;
+  const transactionTypes = ['Autres Depenses']
 
   let modal;
   let filters;
@@ -59,6 +61,12 @@ function VoucherRegistrySearch() {
     modal.setUser('Super User');
     modal.submit();
     expectNumberOfGridRows(NUM_VOUCHERS);
+  });
+
+  it(`filters by <select> transaction type should return ${NUM_TRANSACTION_TYPE_RECORD} results`, () => {
+    modal.setTransactionType(transactionTypes);
+    modal.submit();
+    expectNumberOfGridRows(NUM_TRANSACTION_TYPE_RECORD);
   });
 
   it(`filtering by description should return ${NUM_DESCRIPTION_RECORDS} results`, () => {

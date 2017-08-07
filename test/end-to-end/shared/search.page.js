@@ -4,6 +4,7 @@ const bhPeriodSelect = require('../shared/components/bhPeriodSelect');
 const bhDepotSelect = require('../shared/components/bhDepotSelect');
 const bhInventorySelect = require('../shared/components/bhInventorySelect');
 const bhDateInterval = require('../shared/components/bhDateInterval');
+const bhTransactionTypeSelect = require('../shared/components/bhTransactionTypeSelect');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -122,6 +123,10 @@ class SearchModal {
 
   setdateInterval (dateFrom, dateTo, id) {
     bhDateInterval.range(dateFrom, dateTo, id);
+  }
+
+  setTransactionType(transactionTypes) {
+    bhTransactionTypeSelect.set(transactionTypes);
   }
 
   setPeriod(period) {

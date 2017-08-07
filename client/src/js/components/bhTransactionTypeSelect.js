@@ -3,10 +3,12 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhTransactionTypeSelect.tmpl.html',
     controller  : transactionTypeSelectController,
     bindings    : { 
+      transactionTypes : '<?',
       label            : '@?',
       onSelectCallback : '&',
       onRemoveCallback : '&',
       formName         : '@?',
+      required         : '<?',
     },
   });
 
@@ -30,6 +32,9 @@ function transactionTypeSelectController(TransactionTypes, Notify, $translate) {
 
     // default for form name
     $ctrl.formName = $ctrl.formName || 'TransactionTypeForm';
+
+    // init the model
+    $ctrl.selectedTransactionTypes = $ctrl.transactionTypes;
 
     // load all Transaction types
     TransactionTypes.read()
