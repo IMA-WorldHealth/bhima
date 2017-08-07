@@ -3,18 +3,18 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchPurchaseOrderModalController.$inject = [
-  '$uibModalInstance', 'params', 'SupplierService', 'bhConstants', 'moment', 'Store', 'util', 'PeriodService', 'NotifyService'
+  '$uibModalInstance', 'params', 'SupplierService', 'Store', 'util', 'PeriodService', 'NotifyService'
 ];
 
 /**
- * @class PatientRegistryModalController
+ * @class SearchPurchaseOrderModalController
  *
  * @description
- * This controller is responsible for setting up the filters for the patient
- * search functionality on the patient registry page.  Filters that are already
+ * This controller is responsible for setting up the filters for the Purchase Order
+ * search functionality on the Purchase Order registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, bhConstants, moment, Store, util, Periods, Notify) {
+function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, Store, util, Periods, Notify) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = params;
@@ -43,13 +43,6 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, bh
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
-
-  // Set up page elements data (debtor select data)
-  vm.onSelectDebtor = onSelectDebtor;
-
-  function onSelectDebtor(debtorGroup) {
-    vm.params.debtor_group_uuid = debtorGroup.uuid;
-  }
 
   // load suppliers
   Suppliers.read()
@@ -83,6 +76,10 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, bh
 
   // returns the parameters to the parent controller
   function submit(form) {
+    vm.params.is_confirmed = vm.setState === 'is_confirmed' ? 1 : 0;
+    vm.params.is_received = vm.setState === 'is_received' ? 1 : 0;
+    vm.params.is_cancelled = vm.setState === 'is_cancelled' ? 1 : 0;
+
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.params, function (value, key) {
       if (angular.isDefined(value)) {
@@ -92,7 +89,7 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, bh
 
     var loggedChanges = changes.getAll();
 
-    // return values to the Patient Registry Controller
+    // return values to the Purchase Order Registry Controller
     return ModalInstance.close(loggedChanges);
   }
 

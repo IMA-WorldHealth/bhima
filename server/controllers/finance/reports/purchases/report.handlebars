@@ -47,24 +47,20 @@
               <td class="text-right">{{currency cost currency_id}}</td>
               <td>
                 <strong>
-                  {{#if is_confirmed}}
-                    {{#unless is_cancelled}}
-                      {{#if is_received}}
-                        {{#if is_partially_received}}
-                          {{translate 'PURCHASES.STATUS.PARTIALLY_RECEIVED'}}
-                        {{else}}
-                          {{translate 'PURCHASES.STATUS.RECEIVED'}}
-                        {{/if}}
-                      {{else}}
-                        {{#unless is_partially_received}}
-                          {{translate 'PURCHASES.STATUS.CONFIRMED'}}
-                        {{/unless}}
-                      {{/if}}
-                    {{/unless}}
-                  {{else}}
-                    {{#unless is_cancelled}}
-                      {{translate 'PURCHASES.STATUS.WAITING_CONFIRMATION'}}
-                    {{/unless}}
+                  {{#if isPartiallyRecieved}}
+                    {{translate 'PURCHASES.STATUS.PARTIALLY_RECEIVED'}}
+                  {{/if}}
+
+                  {{#if isReceived}}
+                    {{translate 'PURCHASES.STATUS.RECEIVED'}}
+                  {{/if}}
+
+                  {{#if isConfirmed}}
+                    {{translate 'PURCHASES.STATUS.CONFIRMED'}}
+                  {{/if}}
+
+                  {{#if isWaitingConfirmation}}
+                    {{translate 'PURCHASES.STATUS.WAITING_CONFIRMATION'}}
                   {{/if}}
 
                   {{#if is_cancelled}}

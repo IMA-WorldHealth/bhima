@@ -318,6 +318,7 @@ function find(options) {
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) = ?`;
   filters.custom('reference', referenceStatement);
+  filters.setOrder('ORDER BY p.date DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();

@@ -6,7 +6,7 @@ const PurchaseOrderSearch = require('./registry.search');
 describe('Purchase Order Registry', function () {
   'use strict';
 
-  before(() => helpers.navigate('#/purchases/list'));
+  before(() => helpers.navigate('#/purchases'));
 
   // Purchase Order search modal queries
   describe('Search', PurchaseOrderSearch);

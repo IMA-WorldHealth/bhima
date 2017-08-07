@@ -78,8 +78,14 @@ function report(req, res, next) {
 
   Purchases.find(query)
     .then(rows => {
-      data.rows = rows;
+      rows.forEach((row) => {
+        row.isPartiallyRecieved = (row.is_received && row.is_partially_received && !row.is_cancelled);
+        row.isReceived = (row.is_confirmed && !row.is_partially_received && row.is_received && !row.is_cancelled);
+        row.isConfirmed = (row.is_confirmed && !row.is_partially_received && !row.is_received && !row.is_cancelled);
+        row.isWaitingConfirmation = (!row.is_confirmed && !row.is_cancelled);
+      });
 
+      data.rows = rows;
       return reportInstance.render(data);
     })
     .then(result => {
