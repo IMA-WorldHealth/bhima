@@ -9,7 +9,9 @@
     <bh-account-select
       name="account_id"
       account-id="ToolCtrl.account_id"
-      on-select-callback="ToolCtrl.onSelectAccount(account)">
+      on-select-callback="ToolCtrl.onSelectAccount(account)"
+      validation-trigger="ToolForm.$submitted"
+      exclude-title-accounts="true">
     </bh-account-select>
 
     <bh-find-patient
