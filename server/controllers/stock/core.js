@@ -85,9 +85,11 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
+
+  // If finalClause is an empty string, filterParser will not group, it will be an empty string
   filters.setGroup(finalClause || '');
 
-  let query = filters.applyQuery(sql);
+  const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
 }

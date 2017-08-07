@@ -10,6 +10,6 @@ module.exports = {
 
     target.click();
 
-    FU.uiSelect('$ctrl.inventoryId', inventory, target);
+    FU.uiSelect('$ctrl.inventoryUuid', inventory, target);
   },
 };

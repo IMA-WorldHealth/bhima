@@ -22,7 +22,6 @@ function StockLotsController(Stock, Notify,
   var cacheKey = 'lot-grid';
   var gridColumns;
   var state;
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
 
   // grouping box
   vm.groupingBox = [
@@ -33,8 +32,6 @@ function StockLotsController(Stock, Notify,
   vm.clearGridState = clearGridState;
   vm.filters = { lang: Languages.key };
   vm.formatedFilters = [];
-  vm.gridApi = {};
-  vm.gridOptions = {};
 
   // grid columns
   var columns = [

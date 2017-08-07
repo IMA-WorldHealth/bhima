@@ -4,38 +4,32 @@ angular.module('bhima.components')
     controller  : DepotSelectController,
     transclude  : true,
     bindings    : {
-      depotId           : '<',
-      disable          : '<?',
+      depotUuid        : '<',
       onSelectCallback : '&',
-      name             : '@?',
       required         : '<?',      
     },
   });
 
 DepotSelectController.$inject = [
-  'DepotService'
+  'DepotService', 'NotifyService'
 ];
 
 /**
  * Depot selection component
  */
-function DepotSelectController(Depots) {
+function DepotSelectController(Depots, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
     // fired when a depot has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
-    // default for form name
-    $ctrl.name = $ctrl.name || 'DepotForm';
-
     // load all Depots
     Depots.read()
       .then(function (depots) {        
         $ctrl.depots = depots;
-      });
-
-    $ctrl.valid = true;
+      })
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

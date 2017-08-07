@@ -17,17 +17,17 @@
         <div class="tab-body">
           <!-- depot -->          
           <bh-depot-select
-            depot-id="$ctrl.searchQueries.depot_uuid"
-            name="depot_id"
+            depot-uuid="$ctrl.searchQueries.depot_uuid"
+            required="false"
             on-select-callback="$ctrl.onSelectDepot(depot)">
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
           <!-- Inventaire -->
           <bh-inventory-select
-            inventory-id="$ctrl.searchQueries.inventory_uuid"
-            name="inventory_id"
-            on-select-callback="$ctrl.onSelectInventory(inventory)">
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
             <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 

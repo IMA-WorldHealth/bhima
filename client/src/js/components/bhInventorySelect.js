@@ -4,38 +4,32 @@ angular.module('bhima.components')
     controller  : InventorySelectController,
     transclude  : true,
     bindings    : {
-      inventoryId      : '<',
-      disable          : '<?',
+      inventoryUuid    : '<',
       onSelectCallback : '&',
-      name             : '@?',
       required         : '<?',      
     },
   });
 
 InventorySelectController.$inject = [
-  'InventoryService'
+  'InventoryService', 'NotifyService'
 ];
 
 /**
  * Inventory selection component
  */
-function InventorySelectController(Inventory) {
+function InventorySelectController(Inventory, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
     // fired when an inventory has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
-    // default for form name
-    $ctrl.name = $ctrl.name || 'InventoryForm';
-
     // load all inventories
     Inventory.read()
       .then(function (inventories) { 
         $ctrl.inventories = inventories;
-      });
-
-    $ctrl.valid = true;
+      })
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

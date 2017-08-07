@@ -1,23 +1,26 @@
-<div ng-form="{{ $ctrl.name }}" bh-inventory-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="InventoryForm" bh-inventory-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : InventoryForm.$$parent.$submitted && InventoryForm.inventory_id.$invalid }">
+    ng-class="{ 'has-error' : InventoryForm.$$parent.$submitted && InventoryForm.inventory_uuid.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.INVENTORY
     </label>
     
     <ng-transclude></ng-transclude>
-    <ui-select name="inventory_id" 
-      ng-model="$ctrl.inventoryId"
+    <ui-select 
+      name="inventory_uuid" 
+      ng-model="$ctrl.inventoryUuid"
       on-select="$ctrl.onSelect($item, $model)">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">{{$select.selected.label}}</span></ui-select-match>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="inventory.uuid as inventory in $ctrl.inventories | filter: { 'label': $select.search }">
         <span ng-bind-html="inventory.label | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="InventoryForm.inventory_id.$error" ng-show="InventoryForm.$$parent.$submitted">
+    <div class="help-block" ng-messages="InventoryForm.inventory_uuid.$error" ng-show="InventoryForm.$$parent.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

@@ -10,6 +10,6 @@ module.exports = {
 
     target.click();
 
-    FU.uiSelect('$ctrl.depotId', depot, target);
+    FU.uiSelect('$ctrl.depotUuid', depot, target);
   },
 };

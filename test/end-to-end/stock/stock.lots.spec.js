@@ -25,32 +25,33 @@ function StockLotsRegistryTests() {
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
+  const LOT_FOR_ALLTIME = 16;
+  const LOT_FOR_TODAY = 10;
+  const LOT_FOR_LAST_YEAR = 16;
+  
 
-  it('finds ten lot for today', () => {
-    const LOT_FOR_TODAY = 10;
+  it(`finds ${LOT_FOR_TODAY} lot for today`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
     GU.expectRowCount(gridId, LOT_FOR_TODAY);
   });
 
-  it('finds ten lot for this last year', () => {
-    const LOT_FOR_LAST_YEAR = 16;
+  it(`finds ${LOT_FOR_LAST_YEAR} lot for this last year`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('year');
     modal.submit();
     GU.expectRowCount(gridId, LOT_FOR_LAST_YEAR);
   });
 
-  it('finds ten lot for all time', () => {
-    const LOT_FOR_ALLTIME = 16;
+  it(`finds ${LOT_FOR_ALLTIME} lot for all time`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
     GU.expectRowCount(gridId, LOT_FOR_ALLTIME);
   });
 
-  it('find lots by in depot principal', () => {
+  it('find lots in depot principal', () => {
     modal.setDepot('Depot Principal');
     modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);

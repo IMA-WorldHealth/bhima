@@ -80,7 +80,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     // to patient 
     FU.buttons.search();
