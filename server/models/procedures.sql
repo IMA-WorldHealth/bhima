@@ -1228,17 +1228,42 @@ END $$
 
 -- this writes transactions to a temporary table
 CREATE PROCEDURE StageTrialBalanceTransaction(
-  IN trans_id TEXT
+  IN record_uuid BINARY(16)
 )
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_transaction (record_uuid BINARY(16));
-
-  INSERT INTO stage_trial_balance_transaction
-    SELECT record_uuid FROM posting_journal WHERE posting_journal.trans_id = trans_id COLLATE utf8_general_ci;
+  INSERT INTO stage_trial_balance_transaction SET stage_trial_balance_transaction.record_uuid = record_uuid;
 END $$
 
--- run the Trial Balance
-CREATE PROCEDURE TrialBalance()
+/*
+TrialBalanceErrors()
+
+DESCRIPTION
+This stored procedure validates records that are used in the Trial Balance before they are posted
+to the General Ledger.  The records are run through a series of SQL queries to validate their
+correctness.  The follow assertions are made:
+ 1. The transaction dates are within the identified period
+ 2. Every line has some sort of description (best practice)
+ 3. All affected periods are unlocked.
+ 4. All affected accounts are unlocked.
+ 5. All transactions are balanced.
+ 6. All transactions have at least two lines (required for double-entry accounting)
+
+Please be sure to stage all transactions for use via the StageTrialBalanceTransaction()
+call.
+
+SAMPLE OUTPUT
+Running this query will return NULL if no errors have occurred.  If errors exist in the transaction,
+the following table will be emitted.
++--------------------------------------+----------+------------------------------------------------+
+| record_uuid                          | trans_id | code                                           |
++--------------------------------------+----------+------------------------------------------------+
+| 666bfbbe-48d4-435e-997b-238a48760a1a | HEV39508 | POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS |
++--------------------------------------+----------+------------------------------------------------+
+
+USAGE: CALL TrialBalanceErrors()
+*/
+CREATE PROCEDURE TrialBalanceErrors()
 BEGIN
 
   -- this will hold our error cases
@@ -1259,15 +1284,6 @@ BEGIN
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     WHERE pj.description IS NULL
-    GROUP BY pj.record_uuid;
-
-  -- check that all dates are in the correct period_ids
-  INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD' AS code
-    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
-      ON pj.record_uuid = temp.record_uuid
-    JOIN period p ON pj.period_id = p.id
-    WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
     GROUP BY pj.record_uuid;
 
   -- check that all periods are unlocked
@@ -1296,7 +1312,7 @@ BEGIN
 
   -- check that all transactions have two or more lines
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSATION' AS code
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     GROUP BY pj.record_uuid
@@ -1335,7 +1351,7 @@ END $$
 
 -- stock movement document reference
 -- This procedure calculate the reference of a movement based on the document_uuid
--- Insert this reference calculated into the document_map table as the movement reference 
+-- Insert this reference calculated into the document_map table as the movement reference
 CREATE PROCEDURE ComputeMovementReference (
   IN documentUuid BINARY(16)
 )
@@ -1344,7 +1360,7 @@ BEGIN
 
   SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
 
-  INSERT INTO `document_map` (uuid, text) 
+  INSERT INTO `document_map` (uuid, text)
   VALUES (documentUuid, CONCAT('MVT.', reference))
   ON DUPLICATE KEY UPDATE uuid = uuid;
 END $$
@@ -1464,7 +1480,7 @@ BEGIN
   GROUP BY i.uuid;
 END $$
 
--- This processus inserts records relative to the stock movement integration in the posting journal
+-- This procedure inserts records relative to the stock movement integration in the posting journal
 CREATE PROCEDURE PostIntegration (
   IN document_uuid BINARY(16),
   IN date DATETIME,
@@ -1500,78 +1516,140 @@ BEGIN
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, 1, date);
 
  -- Check that all every inventory has a stock account and a variation account - if they do not the transaction will be Unbalanced
-  SELECT 
+  SELECT
     COUNT(l.uuid) INTO verify_invalid_accounts
-  FROM 
+  FROM
     lot AS l
-  JOIN 
+  JOIN
   	stock_movement sm ON sm.lot_uuid = l.uuid
-  JOIN 
+  JOIN
   	inventory i ON i.uuid = l.inventory_uuid
-  JOIN 
+  JOIN
   	inventory_group ig ON ig.uuid = i.group_uuid
-  WHERE 
-  	ig.stock_account IS NULL AND 
+  WHERE
+  	ig.stock_account IS NULL AND
     ig.cogs_account IS NULL AND
     sm.document_uuid = document_uuid;
-  
+
   IF verify_invalid_accounts > 0 THEN
     SIGNAL InvalidInventoryAccounts
     SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
 
-  
+
   -- getting the transaction number
   SET transaction_id = GenerateTransactionId(project_id);
 
   -- Debiting stock account, by inserting a record to the posting journal table
-  INSERT INTO posting_journal 
+  INSERT INTO posting_journal
   (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, origin_id, user_id
-  ) 
+  )
   SELECT
-    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id,
     date, i.uuid, sm.description, ig.stock_account, l.quantity * l.unit_cost, 0, l.quantity * l.unit_cost, 0, currency_id,
     STOCK_INTEGRATION_TRANSACTION_TYPE, user_id
   FROM
     stock_movement As sm
-  JOIN 
+  JOIN
     lot l ON l.uuid = sm.lot_uuid
   JOIN
-    integration i ON i.uuid = l.origin_uuid  	 
-  JOIN 
+    integration i ON i.uuid = l.origin_uuid
+  JOIN
     inventory inv ON inv.uuid = l.inventory_uuid
-  JOIN 
-    inventory_group ig ON ig.uuid = inv.group_uuid    
+  JOIN
+    inventory_group ig ON ig.uuid = inv.group_uuid
   WHERE
     sm.document_uuid = document_uuid
   GROUP BY inv.uuid;
 
 -- Crediting cost of good sale account, by inserting a record to the posting journal table
-  INSERT INTO posting_journal 
+  INSERT INTO posting_journal
   (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, origin_id, user_id
-  ) 
+  )
   SELECT
-    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id,
     date, i.uuid, sm.description, ig.cogs_account, 0, l.quantity * l.unit_cost, 0, l.quantity * l.unit_cost, currency_id,
     STOCK_INTEGRATION_TRANSACTION_TYPE, user_id
   FROM
     stock_movement As sm
-  JOIN 
+  JOIN
     lot l ON l.uuid = sm.lot_uuid
   JOIN
-    integration i ON i.uuid = l.origin_uuid  	 
-  JOIN 
+    integration i ON i.uuid = l.origin_uuid
+  JOIN
     inventory inv ON inv.uuid = l.inventory_uuid
-  JOIN 
-    inventory_group ig ON ig.uuid = inv.group_uuid    
+  JOIN
+    inventory_group ig ON ig.uuid = inv.group_uuid
   WHERE
     sm.document_uuid = document_uuid
   GROUP BY inv.uuid;
 END $$
 DELIMITER ;
+
+
+/*
+TrialBalanceSummary()
+
+DESCRIPTION
+This stored procedure produces the traditional Trial Balance table showing the account balances for any affected accounts
+prior to the balance (`balance_before`), the debits to the accounts (`debit_equiv`), the credits to the accounts
+(`credit_equiv`), and the proposed balances at the end of the operation (`balance_final`).  It should be used before
+posting to the General Ledger to ensure that all transactions are correctly processed.
+
+To use this method, a Trial Balance must first be _staged_.  The application expects that the record_uuids of all
+transactions are already placed in the stage_trial_balance_transaction table via a call to
+StageTrialBalanceTransaction().
+
+SAMPLE OUTPUT
+Running this a table with the following type:
++------------+--------+----------------------+----------------+-------------+--------------+----------------+
+| account_id | number | label                | balance_before | debit_equiv | credit_equiv | balance_final  |
++------------+--------+----------------------+----------------+-------------+--------------+----------------+
+|       3880 | 411900 | Patients Payant Cash | -22554880.0000 |  12250.0000 |   29100.0000 | -22571730.0000 |
+|       3734 | 570001 | Petite Caisse (FC)   |   3331350.0000 |  29100.0000 |       0.0000 |   3360450.0000 |
+|       3704 | 700100 | Pharmacie d’usage    |  -2516075.0000 |  17250.0000 |       0.0000 |  -2498825.0000 |
+|       3886 | 700102 | Medicaments          | -23284054.9000 |      0.0000 |   29000.0000 | -23313054.9000 |
+|       3887 | 700201 | Fiches               |   -497600.0000 |      0.0000 |     500.0000 |   -498100.0000 |
++------------+--------+----------------------+----------------+-------------+--------------+----------------+
+
+
+USAGE: CALL TrialBalanceSummary()
+*/
+--
+CREATE PROCEDURE TrialBalanceSummary()
+BEGIN
+  -- this assumes lines have been staged using CALL StageTrialBalanceTransaction()
+
+  -- gather the staged accounts
+  CREATE TEMPORARY TABLE IF NOT EXISTS staged_accounts AS
+    SELECT DISTINCT account_id FROM posting_journal JOIN stage_trial_balance_transaction
+    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid;
+
+  -- gather the beginning period_totals
+  CREATE TEMPORARY TABLE before_totals AS
+    SELECT u.account_id, IFNULL(SUM(debit - credit), 0) AS balance_before
+    FROM staged_accounts as u
+    LEFT JOIN period_total ON u.account_id = period_total.account_id
+    GROUP BY u.account_id;
+
+  SELECT account_id, account.number AS number, account.label AS label,
+    balance_before, debit_equiv, credit_equiv,
+    balance_before + debit_equiv - credit_equiv AS balance_final
+  FROM (
+    SELECT posting_journal.account_id, totals.balance_before, SUM(debit_equiv) AS debit_equiv,
+      SUM(credit_equiv) AS credit_equiv
+    FROM posting_journal JOIN before_totals as totals
+    ON posting_journal.account_id = totals.account_id
+    WHERE posting_journal.record_uuid IN (
+      SELECT record_uuid FROM stage_trial_balance_transaction
+    ) GROUP BY posting_journal.account_id
+  ) AS combined
+  JOIN account ON account.id = combined.account_id
+  ORDER BY account.number;
+END $$
