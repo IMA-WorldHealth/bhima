@@ -76,8 +76,8 @@ function PurchaseOrderSearch() {
 
 
   it(`Change the status of a purchase order and should find two Purchases Orders status By "${parameters.status}"`, function () {
-    const NUM_MATCHING = 2;
-    element(by.name('is_confirmed')).click();
+    const NUM_MATCHING = 1;
+    element(by.id('is_confirmed')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');       
     FU.modal.submit();
