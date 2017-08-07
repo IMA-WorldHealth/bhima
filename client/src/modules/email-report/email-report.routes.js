@@ -30,8 +30,7 @@ angular.module('bhima.routes')
  * @description
  * This configures the update versus create states.
  */
-function onSelectProfileFactory(stateType) {
-  var isCreateState = (stateType === 'selectProfile');
+function onSelectProfileFactory() {
 
   var ctrl = 'CategoriesPeopleModalController as catPeopleModalListCtrl';
 
@@ -42,8 +41,8 @@ function onSelectProfileFactory(stateType) {
       backdrop: 'static',
       keyboard: false,
     }).result
-      .then(function (id) {
-        Notify.success(message);
+      .then(function () {
+        // Notify.success(message);
       })
       .catch(function (error) {
         if (error) {
@@ -54,8 +53,7 @@ function onSelectProfileFactory(stateType) {
 }
 
 
-function onSelectProfileCategoryFactory(stateType) {
-  var isCreateState = (stateType === 'category');
+function onSelectProfileCategoryFactory() {
 
   var ctrl = 'CategoriesPeopleListController as catPeopleListCtrl';
 
@@ -66,8 +64,8 @@ function onSelectProfileCategoryFactory(stateType) {
       backdrop: 'static',
       keyboard: true,
     }).result
-      .then(function (id) {
-        Notify.success(message);
+      .then(function () {
+        // Notify.success(message);
       })
       .catch(function (error) {
         if (error) {

@@ -11,20 +11,20 @@
  */
 
 
-const uuid = require('node-uuid'); 
-const db = require('../../lib/db'); 
-const Topic = require('../../lib/topic'); 
-const moment = require('moment'); 
-const BadRequest = require('../../lib/errors/BadRequest'); 
-const NotFound = require('../../lib/errors/NotFound'); 
-const Period = require('../../lib/period'); 
+const uuid = require('node-uuid');
+const db = require('../../lib/db');
+const Topic = require('../../lib/topic');
+const moment = require('moment');
+const BadRequest = require('../../lib/errors/BadRequest');
+const NotFound = require('../../lib/errors/NotFound');
+const Period = require('../../lib/period');
 
-//my report function are definied in the below file
-const reports_def = require('../email-report/weeklySummaryReport'); 
-const email_report = require('../email-report/index'); 
+// my report function are definied in the below file
+const reports_def = require('../email-report/weeklySummaryReport');
+const email_report = require('../email-report/index');
 
-exports.sendReport = sendReport; 
-exports.sendScheduledReport = sendScheduledReport; 
+exports.sendReport = sendReport;
+exports.sendScheduledReport = sendScheduledReport;
 
 
 /**
@@ -39,102 +39,100 @@ exports.sendScheduledReport = sendScheduledReport;
   Each reportMap index is the report_group code in the database
  */
 
-//frequency = "Dayly" or "Weekly" or  "Monthly";
+// frequency = "Dayly" or "Weekly" or  "Monthly";
 
 function sendReport(req, res, next, frequency = 'Weekly') {
 
-  const sql = 'SELECT  * FROM report_group'; 
+  const sql = 'SELECT  * FROM report_group';
 
-  //linking report groups data in the database to pdf report generable from bhima
-  const reportMap =  {
+  // linking report groups data in the database to pdf report generable from bhima
+  const reportMap = {
     '001': {
-      function:reports_def.weeklySummaryReport, 
-      fileName:'weeklySummaryReport.pdf'
-    }, 
+      function:reports_def.weeklySummaryReport,
+      fileName:'weeklySummaryReport.pdf',
+    },
    /* '002': {
-      function:reports_def.anotherReport, 
+      function:reports_def.anotherReport,
       fileName:'anotherReport.pdf'
     }, */
-  }; 
+  };
 
   // getting all report_group
   db.exec(sql,  {}).then(rows =>  {
 
-    //forEach report_group we should get profiles(name + email) and then email them
+    // forEach report_group we should get profiles(name + email) and then email them
     rows.forEach((item) =>  {
 
-      //getting profiles
+      // getting profiles
       email_report.getProfile(item.code, frequency).then((profiles) =>  {
 
-      //profiles found
-      if (profiles.length > 0) {
+      // profiles found
+        if (profiles.length > 0) {
 
-         //rendering the report
-        reportMap[item.code].function(req, res, next)
-        .then((report_result) =>  {
-        //every infomations are collectted for sending email
-        //let use the mailgun api
+         // rendering the report
+          reportMap[item.code].function(req, res, next)
+          .then((report_result) =>  {
+          // every infomations are collectted for sending email
+          // let use the mailgun api
 
 
-          mailgun(profiles, report_result.report, reportMap[item.code].fileName); 
-        }); 
-      }
-      })
+            mailgun(profiles, report_result.report, reportMap[item.code].fileName);
+          });
+        }
+      });
 
-    }); 
+    });
 
-    res.status(200).json( {'result':'ok'}); 
+    res.status(200).json({ result :'ok' });
   })
   .catch(next)
-  .done(); 
+  .done();
 }
-
-
 
 
 function sendScheduledReport(frequency) {
 
-  const sql = 'SELECT  * FROM report_group'; 
+  const sql = 'SELECT  * FROM report_group';
 
-//linking report groups data in the database to pdf report generable from bhima
-  const reportMap =  {
+  // linking report groups data in the database to pdf report generable from bhima
+  const reportMap = {
     '001': {
-      fct:reports_def.weeklySummaryReport, 
-      fileName:'weeklySummaryReport.pdf'
-    }
-  }; 
+      fct:reports_def.weeklySummaryReport,
+      fileName : 'weeklySummaryReport.pdf'
+    },
+  };
 
 // getting all report_group
-  return db.exec(sql,  {}).then((rows) =>  {
- 
-  //forEach report_group we should get profiles(name + email) and then email them
-  const groupsPromiseExecution = rows.map((reportGroup) =>  {
+  return db.exec(sql, {}).then((rows) => {
 
-  //getting profiles
-    return email_report.getProfile(reportGroup.code, frequency).then((profiles) =>  {
+    // forEach report_group we should get profiles(name + email) and then email them
+    const groupsPromiseExecution = rows.map((reportGroup) => {
 
-    //profiles found
-      if (profiles.length > 0) {
+  // getting profiles
+      return email_report.getProfile(reportGroup.code, frequency).then((profiles) => {
 
-        //console.log('profiles nomber :' + profiles.length); 
+    // profiles found
+        if (profiles.length > 0) {
 
-      //rendering the report
-        var session =  {}; 
-        return reportMap[reportGroup.code].fct(session).then((report_result) =>  {
-      //every infomations are collectted for sending email
-      //let use the mailgun api 
+        // console.log('profiles nomber :' + profiles.length);
 
-          
-          mailgun(profiles, report_result.report, reportMap[reportGroup.code].fileName); 
-        }); 
-      }
-    })
-  }); 
+        // rendering the report
+          const session =  {};
+          return reportMap[reportGroup.code].fct(session).then((reportResult_) =>  {
+      // every infomations are collectted for sending email
+      // let use the mailgun api
 
-  return Promise.all(groupsPromiseExecution); 
-  }); 
+
+            mailgun(profiles, reportResult_.report, reportMap[reportGroup.code].fileName);
+          });
+        }
+      });
+    });
+
+    return Promise.all(groupsPromiseExecution);
+  });
 }
-//sending email using mailgun API
+// sending email using mailgun API
 
 
 /*
@@ -148,36 +146,36 @@ function sendScheduledReport(frequency) {
 */
 function mailgun(profiles, file, fileName) {
 
-  var api_key = process.env.MAILGUN_API_KEY; 
-  var domain = process.env.MAILGUN_DOMAIN; 
-  var sender=process.env.MAILGUN_SENDER;
-  var default_recevoir=process.env.MAILGUN_DEFAULT_RECEVIOR;
+  var apiKey_ = process.env.MAILGUN_API_KEY;
+  var domain_ = process.env.MAILGUN_DOMAIN;
+  var sender = process.env.MAILGUN_SENDER;
+  var defaultRecevoir = process.env.MAILGUN_DEFAULT_RECEVIOR;
 
-  var mailgun = require('mailgun-js')( {apiKey:api_key, domain:domain }); 
+  var mailgunApi = require('mailgun-js')({ apiKey:apiKey_, domain : domain_ });
 
-  var bcc_emails = ''; 
-  //formatting bcc emails
-  profiles.forEach((profile) =>  {
-    bcc_emails += profile.name + '<' + profile.email + '>, '; 
-  }); 
+  var bccEmails = '';
+  // formatting bcc emails
+  profiles.forEach((profile) => {
+    bccEmails += profile.name + '<' + profile.email + '>, ';
+  });
 
-  //formation the attached file name, it should include the date
-  var dat = moment().format('YYYY MM DD HH[h]'); 
+  // formation the attached file name, it should include the date
+  const dat = moment().format('YYYY MM DD HH[h]');
 
-  var attch = new mailgun.Attachment( {data:file, filename:dat + ' ' + fileName }); 
+  const attch = new mailgun.Attachment({ data : file, filename : dat + ' ' + fileName });
   // structuring all infomations about an email  when using mailgun API
-  var data =  {
-    from:sender, 
-    to:default_recevoir, 
-    bcc:bcc_emails, 
-    subject:'BHIMA reports / Rapport de BHIMA', 
-    text:'The report is attached (Vous trouverez en attache le rapport qui vous a été envoyé)', 
-    attachment:attch
-  }; 
+  const data = {
+    from:sender,
+    to:defaultRecevoir,
+    bcc:bccEmails,
+    subject:'BHIMA reports / Rapport de BHIMA',
+    text : 'The report is attached (Vous trouverez en attache le rapport qui vous a été envoyé)',
+    attachment : attch,
+  };
 
-  mailgun.messages().send(data, function (error, body) {
-    console.log(body); 
-    console.log(error); 
-  }); 
+  mailgunApi.messages().send(data, function (error, body) {
+    console.log(body);
+    console.log(error);
+  });
 
 }

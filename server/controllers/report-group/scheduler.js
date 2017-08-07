@@ -15,39 +15,39 @@ function setScheduler() {
   var rule = new schedule.RecurrenceRule();
   rule.hour = 10;
   rule.minute = 57;
-  var j = schedule.scheduleJob(rule, function() {
+  let j = schedule.scheduleJob(rule, function () {
 
-  //console.log('Bhima should send reports by email now');
+  // console.log('Bhima should send reports by email now');
 
-  let period = new Period(new Date());
-  let week = period.periods.week.limit;
-  let  today=period.periods.today.limit;
-  let month=period.periods.month.limit;
+    const period = new Period(new Date());
+    const week = period.periods.week.limit;
+    const today = period.periods.today.limit;
+    const month = period.periods.month.limit;
 
-  //send all dayly reports
-  launch('Dayly');
+  // send all dayly reports
+    launch('Dayly');
 
-  //send all weekly reports
-  if( (week.start===today.start) && (week.end==today.end)){
-    launch('Weekly');
-  }
+  // send all weekly reports
+    if ((week.start === today.start) && (week.end === today.end)) {
+      launch('Weekly');
+    }
 
-  //send all monthly reports
-  if(month.end===today.start){
-    launch('Monthly');
-  }
+    // send all monthly reports
+    if (month.end === today.start){
+      launch('Monthly');
+    }
 
   });
 }
 
-//using mailgun api to send report
-function launch(frequency){
+// using mailgun api to send report
+function launch(frequency) {
 
   mail.sendScheduledReport(frequency).then((result) => {
-    console.log('completed sending '+frequency+ '  scheduled report');
+    console.log('completed sending ' + frequency + '  scheduled report');
   })
   .catch((error) => {
-    console.log('error while sending '+frequency+ ' report', error);
+    console.log('error while sending ' + frequency + ' report', error);
   });
 
 }

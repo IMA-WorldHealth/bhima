@@ -20,7 +20,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const NotFound = require('../../lib/errors/NotFound');
 const Period = require('../../lib/period');
 
-//my report function are definied in the below file
+// my report function are definied in the below file
 const reports_def = require('../email-report/weeklySummaryReport');
 const email_report = require('../email-report/index');
 
@@ -28,13 +28,13 @@ const email_report = require('../email-report/index');
 exports.create = create;
 exports.update = update;
 exports.list = list;
-exports.delete = remove; 
+exports.delete = remove;
 
 /**
  * @method create
  *
  * @description
- 
+
  * POST /email-report API
  */
 function create(req, res, next) {
@@ -53,7 +53,7 @@ function create(req, res, next) {
   db.exec(sql, values)
     .then((row) => {
       res.status(201).json(
-        { "code": reportGroup.code }
+        { code : reportGroup.code }
       );
     })
     .catch(next)
@@ -65,7 +65,7 @@ function create(req, res, next) {
  * @method create
  *
  * @description
- 
+
  * POST /email-report API
  */
 function update(req, res, next) {
@@ -85,7 +85,7 @@ function update(req, res, next) {
   db.exec(sql, values)
     .then((row) => {
       res.status(200).json(
-        { "code": reportGroup.code }
+        { code: reportGroup.code }
       );
     })
     .catch(next)
@@ -106,7 +106,7 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, {}).then(rows => {
-      res.status(200).json(rows);
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -142,4 +142,3 @@ function remove(req, res, next) {
     .done();
 }
 
- 

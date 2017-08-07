@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
     .controller('CategoriesPeopleModalController', CategoriesPeopleModalController);
 
 CategoriesPeopleModalController.$inject = [
-  'CategoriesPeopleService', 'SessionService', 'util',
-  'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
+  'CategoriesPeopleService',
 ];
 
 /**
