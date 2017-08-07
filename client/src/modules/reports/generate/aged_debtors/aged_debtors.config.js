@@ -48,7 +48,7 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
       .catch(Notify.handleError);
   };
 
-  vm.onSelectPeriod =  function onSelectPeriod(period){
+  vm.onSelectPeriod = function onSelectPeriod(period) {
     vm.reportDetails.date = period.end_date;
   };
 

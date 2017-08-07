@@ -23,34 +23,28 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
 
-
-
-            <!-- account selection  -->
-
-              <bh-account-select 
-                  id="account-id"
-                  account-id="ReportConfigCtrl.account"
-                  label="FORM.SELECT.ACCOUNT"
-                  name="account"
-                  on-select-callback="ReportConfigCtrl.selectAccount(account)"
-                  required='true'
-                  validation-trigger = 'ConfigForm.$submitted'
-                  >
-                </bh-account-select> 
-
+            <bh-account-select
+              id="account-id"
+              account-id="ReportConfigCtrl.account"
+              label="FORM.SELECT.ACCOUNT"
+              name="account"
+              on-select-callback="ReportConfigCtrl.selectAccount(account)"
+              exclude-title-accounts="true"
+              required="true"
+              validation-trigger="ConfigForm.$submitted">
+            </bh-account-select>
 
             <!-- included Date interval  -->
-            
+
             <!-- Date interval  -->
-            <!-- @TODO this should use a component that callsback with well defined dates -->
+            <!-- @TODO this should use a component that callback with well defined dates -->
             <bh-date-interval
-                    date-from="ReportConfigCtrl.reportDetails.dateFrom"
-                    date-to="ReportConfigCtrl.reportDetails.dateTo"
-                    required
-                    validation-trigger = 'ConfigForm.$submitted'
-                    >
-                  </bh-date-interval>
-               
+            date-from="ReportConfigCtrl.reportDetails.dateFrom"
+            date-to="ReportConfigCtrl.reportDetails.dateTo"
+            required="true"
+            validation-trigger="ConfigForm.$submitted">
+          </bh-date-interval>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
