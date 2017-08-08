@@ -2,28 +2,26 @@ angular.module('bhima.controllers')
   .controller('PurchaseListController', PurchaseListController);
 
 PurchaseListController.$inject = [
-  '$state', 'PurchaseOrderService', 'NotifyService', 'AppCache',
-  'ReceiptModal', 'uiGridConstants',
-  'GridColumnService', 'GridSortingService', 'bhConstants',
-  'DepricatedFilterService', 'GridStateService', 'SessionService', 'ModalService'];
+  '$state', 'PurchaseOrderService', 'NotifyService', 'ReceiptModal',
+  'uiGridConstants', 'GridColumnService', 'DepricatedFilterService',
+  'GridStateService', 'SessionService', 'ModalService',
+];
 
 /**
  * Purchase Order Registry Controller
  *
  * This module is responsible for the management of Purchase Order Registry.
  */
-function PurchaseListController($state, PurchaseOrder, Notify, AppCache,
-  Receipts, uiGridConstants,
-  Columns, Sorting, bhConstants, Filters, GridState, Session, Modal) {
+function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridConstants,
+  Columns, Filters, GridState, Session, Modal) {
   var vm = this;
 
+  var cacheKey = 'PurchaseRegistry';
+  var state;
+  var columnDefs;
   var filter = new Filters();
   vm.filter = filter;
 
-  var cacheKey = 'PurchaseRegistry';
-  var cache = AppCache(cacheKey);
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
-  var state;
 
   vm.search = search;
   vm.filterBarHeight = {};
@@ -33,12 +31,12 @@ function PurchaseListController($state, PurchaseOrder, Notify, AppCache,
   vm.download = PurchaseOrder.download;
 
   vm.getDocument = getDocument;
-  vm.editStatus = editStatus;  
+  vm.editStatus = editStatus;
 
   // track if module is making a HTTP request for purchase order
   vm.loading = false;
 
-  var columnDefs = [{
+  columnDefs = [{
     field                : 'reference',
     displayName          : 'FORM.LABELS.REFERENCE',
     headerCellFilter     : 'translate',
@@ -109,16 +107,12 @@ function PurchaseListController($state, PurchaseOrder, Notify, AppCache,
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }  
+  };
 
   // error handler
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
-  }
-
-  function isEmpty(object) {
-    return Object.keys(object).length === 0;
   }
 
   // get document
@@ -129,18 +123,22 @@ function PurchaseListController($state, PurchaseOrder, Notify, AppCache,
   // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
-    .then(load)
-    .catch(Notify.handleError);
+      .then(function () {
+        return load(PurchaseOrder.filters.formatHTTP(true));
+      })
+      .catch(handler);
   }
 
   /** load purchase orders */
   function load(filters) {
+    toggleLoadingIndicator();
 
     PurchaseOrder.search(filters)
       .then(function (purchases) {
         vm.uiGridOptions.data = purchases;
       })
-      .catch(Notify.handleError);
+      .catch(handler)
+      .finally(toggleLoadingIndicator);
   }
 
   function search() {
@@ -176,7 +174,7 @@ function PurchaseListController($state, PurchaseOrder, Notify, AppCache,
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     if ($state.params.filters) {
-      // Fix me, generate change dynamically 
+      // Fix me, generate change dynamically
       var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
 
       PurchaseOrder.filters.replaceFilters(change);
