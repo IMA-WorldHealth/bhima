@@ -1,42 +1,42 @@
 angular.module('bhima.controllers')
-.controller('PurchaseListController', PurchaseListController);
+  .controller('PurchaseListController', PurchaseListController);
 
-// dependencies injection
 PurchaseListController.$inject = [
-  '$translate', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants', 'uiGridGroupingConstants',
-  'ModalService', '$state', 'ReceiptModal', 'SessionService', 'LanguageService',
-  'SearchFilterFormatService',
+  '$state', 'PurchaseOrderService', 'NotifyService', 'ReceiptModal',
+  'uiGridConstants', 'GridColumnService', 'DepricatedFilterService',
+  'GridStateService', 'SessionService', 'ModalService',
 ];
 
 /**
- * Purchase Order List Controllers
- * This controller is responsible of the purchase list module
+ * Purchase Order Registry Controller
+ *
+ * This module is responsible for the management of Purchase Order Registry.
  */
-function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConstants, uiGridGroupingConstants, Modal, $state, Receipts, Session, Languages, SearchFilterFormat) {
+function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridConstants,
+  Columns, Filters, GridState, Session, Modal) {
   var vm = this;
 
-  /** global variables */
-  vm.filters         = { lang: Languages.key };
-  vm.formatedFilters = [];
-  vm.filterEnabled   = false;
-  vm.loading         = false;
-  vm.gridApi         = {};
-  vm.gridOptions     = {};
+  var cacheKey = 'PurchaseRegistry';
+  var state;
+  var columnDefs;
+  var filter = new Filters();
+  vm.filter = filter;
 
-  /** paths in the headercrumb */
-  vm.bcPaths = [
-    { label: 'TREE.PURCHASE' },
-    { label: 'TREE.PURCHASE_REGISTRY' },
-  ];
 
-  /** buttons in the headercrumb */
-  vm.bcButtons = [ {
-    icon       : 'fa fa-search', label      : $translate.instant('FORM.BUTTONS.SEARCH'),
-    action     : search, color  : 'btn-default',
-    dataMethod : 'search',
-  }];
+  vm.search = search;
+  vm.filterBarHeight = {};
+  vm.openColumnConfiguration = openColumnConfiguration;
+  vm.gridApi = {};
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.download = PurchaseOrder.download;
 
-  var columnDefs = [{
+  vm.getDocument = getDocument;
+  vm.editStatus = editStatus;
+
+  // track if module is making a HTTP request for purchase order
+  vm.loading = false;
+
+  columnDefs = [{
     field                : 'reference',
     displayName          : 'FORM.LABELS.REFERENCE',
     headerCellFilter     : 'translate',
@@ -89,37 +89,30 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
     enableSorting    : false,
   }];
 
-  vm.gridOptions = {
+  /** TODO manage column : last_transaction */
+  vm.uiGridOptions = {
     appScopeProvider  : vm,
-    enableFiltering   : vm.filterEnabled,
     showColumnFooter  : true,
-    fastWatch         : true,
-    flatEntityAccess  : true,
-    columnDefs        : columnDefs,
+    enableSorting     : true,
     enableColumnMenus : false,
-    onRegisterApi     : onRegisterApi,
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    columnDefs        : columnDefs,
   };
 
-  // API register function
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
+  var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
 
-  /** expose to the view */
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.getDocument = getDocument;
-  vm.editStatus = editStatus;
-  vm.search = search;
-  vm.clearFilters = clearFilters;
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
-  // search
-  function search() {
-    Modal.openSearchPurchaseOrder()
-      .then(function (filters) {
-        if (!filters) { return; }
-        reload(filters);
-      })
-      .catch(Notify.handleError);
+  // error handler
+  function handler(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
   }
 
   // get document
@@ -130,35 +123,68 @@ function PurchaseListController ($translate, PurchaseOrder, Notify, uiGridConsta
   // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
-    .then(load)
-    .catch(Notify.handleError);
-  }
-
-   // on remove one filter
-  function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
-  }
-
-  // clear all filters
-  function clearFilters() {
-    SearchFilterFormat.clearFilters(reload);
-  }
-
-  // reload purchases with filters
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
-    load(filters.identifiers);
+      .then(function () {
+        return load(PurchaseOrder.filters.formatHTTP(true));
+      })
+      .catch(handler);
   }
 
   /** load purchase orders */
   function load(filters) {
+    toggleLoadingIndicator();
+
     PurchaseOrder.search(filters)
       .then(function (purchases) {
-        vm.gridOptions.data = purchases;
+        vm.uiGridOptions.data = purchases;
       })
-      .catch(Notify.handleError);
+      .catch(handler)
+      .finally(toggleLoadingIndicator);
   }
 
-  load();
+  function search() {
+    var filtersSnapshot = PurchaseOrder.filters.formatHTTP();
+
+    PurchaseOrder.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
+        PurchaseOrder.filters.replaceFilters(changes);
+
+        PurchaseOrder.cacheFilters();
+        vm.latestViewFilters = PurchaseOrder.filters.formatView();
+        return load(PurchaseOrder.filters.formatHTTP(true));
+      });
+  }
+
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+    PurchaseOrder.removeFilter(key);
+    PurchaseOrder.cacheFilters();
+    vm.latestViewFilters = PurchaseOrder.filters.formatView();
+    return load(PurchaseOrder.filters.formatHTTP(true));
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
+  }
+
+  // toggles the loading indicator on or off
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
+  // startup function. Checks for cached filters and loads them.  This behavior could be changed.
+  function startup() {
+    if ($state.params.filters) {
+      // Fix me, generate change dynamically
+      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+
+      PurchaseOrder.filters.replaceFilters(change);
+      PurchaseOrder.cacheFilters();
+    }
+
+    load(PurchaseOrder.filters.formatHTTP(true));
+    vm.latestViewFilters = PurchaseOrder.filters.formatView();
+  }
+
+  // fire up the module
+  startup();
 }

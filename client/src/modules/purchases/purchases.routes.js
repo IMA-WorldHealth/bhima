@@ -10,7 +10,7 @@ angular.module('bhima.routes')
 
         // purchases/list
         .state('purchasesList', {
-          url         : '/purchases/list',
+          url         : '/purchases',
           controller  : 'PurchaseListController as PurchaseListCtrl',
           templateUrl : 'modules/purchases/list/list.html',
         });

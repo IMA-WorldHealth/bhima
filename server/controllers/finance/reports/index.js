@@ -23,3 +23,4 @@ exports.creditors = require('./creditors');
 exports.accountStatement = require('./account_statement');
 exports.balanceSheet = require('./balance_sheet');
 exports.cashReport = require('./cashReport');
+exports.purchases = require('./purchases');

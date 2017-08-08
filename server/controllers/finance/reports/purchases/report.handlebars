@@ -1,0 +1,79 @@
+{{> head title="TREE.PURCHASE_REGISTRY"}}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TREE.PURCHASE_REGISTRY'}}</strong>
+      </h3>
+
+      {{#each filters}}
+        <h4 class="text-center">
+          <strong>
+          <span class="text-capitalize">
+            {{translate this.displayName}} 
+            {{#if this.comparitor}} {{this.comparitor}} {{else}}: {{/if}}
+            {{#if this.isDate}} {{date this.value}} {{else}} {{this.value}} {{/if}}
+          </span>
+          </strong>
+        </h4>
+      {{/each}}
+
+      <!-- invoices listed  -->
+      <table class="table table-condensed table-report table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #ddd;">
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.SUPPLIER'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.STATUS'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{reference}}</td>
+              <td class="text-right">{{date date}}</td>
+              <td>{{author}}</td>
+              <td>{{note}}</td>
+              <td class="text-right">{{currency cost currency_id}}</td>
+              <td>
+                <strong>
+                  {{#if isPartiallyRecieved}}
+                    {{translate 'PURCHASES.STATUS.PARTIALLY_RECEIVED'}}
+                  {{/if}}
+
+                  {{#if isReceived}}
+                    {{translate 'PURCHASES.STATUS.RECEIVED'}}
+                  {{/if}}
+
+                  {{#if isConfirmed}}
+                    {{translate 'PURCHASES.STATUS.CONFIRMED'}}
+                  {{/if}}
+
+                  {{#if isWaitingConfirmation}}
+                    {{translate 'PURCHASES.STATUS.WAITING_CONFIRMATION'}}
+                  {{/if}}
+
+                  {{#if is_cancelled}}
+                    {{translate 'PURCHASES.STATUS.CANCELLED'}}
+                  {{/if}}
+                </strong>
+              </td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

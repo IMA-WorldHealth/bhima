@@ -55,7 +55,7 @@ INSERT INTO unit VALUES
   (153, 'Report Cashflow by Service', 'TREE.CASHFLOW_BY_SERVICE', 'CashflowByService', 144, '/partials/reports/cashflowByService', '/reports/cashflowByService'),
   (154, 'Purchase Order', 'TREE.PURCHASE_ORDER', 'Purchase order folder', 0, '/partials/purchase_order', '/purchases/'),
   (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/partials/purchase_order/purchase', '/purchases/create'),
-  (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases/list'),
+  (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/partials/purchase_order/registry', '/purchases'),
   (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/modules/finance/open_debtors', '/reports/open_debtors'),
   (158, 'Posted Journal', 'TREE.POSTED_JOURNAL', 'Posted Journal', 5, '/partials/finance/general_ledger/', '/journal/posted'),
   (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/modules/reports/clients_report', '/reports/clients_report'),
