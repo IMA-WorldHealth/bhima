@@ -45,6 +45,7 @@ function formatFilters(qs) {
   ];
 
   return columns.filter(column => {
+
     const value = qs[column.field];
 
     if (!_.isUndefined(value)) {
