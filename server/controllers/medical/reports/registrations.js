@@ -41,7 +41,7 @@ function formatFilters(qs) {
     { field : 'patient_group_uuid', displayName : 'PATIENT_GROUP.PATIENT_GROUP' },
     { field : 'user_id', displayName : 'FORM.LABELS.USER' },
     { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
-    { field : 'period', displayName : 'FORM.LABELS.PERIODES', isPeriod : true },
+    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
   ];
 
   return columns.filter(column => {
