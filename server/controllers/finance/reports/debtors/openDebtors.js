@@ -83,7 +83,7 @@ function requestOpenDebtors(params) {
   const showDetailedView = convertToBoolean(params.showDetailedView);
   const showUnverifiedTransactions = convertToBoolean(params.showUnverifiedTransactions);
   const limitDate = convertToBoolean(params.limitDate);
-  const reportDateLimit = params.reportDateLimit;
+  const reportDateLimit = new Date(params.reportDateLimit);
 
   // TODO(@jniles) respect the ordering in the open debtors field.
   const ordering = parseOrdering(params.order);
@@ -97,7 +97,7 @@ function requestOpenDebtors(params) {
   const source = showUnverifiedTransactions ? unverifiedSource : verifiedSource;
 
   // ONLY show transactions after a certain date (just show this week for example)
-  const dateCondition = limitDate ? `AND DATE(trans_date) > DATE(${reportDateLimit})` : '';
+  const dateCondition = limitDate ? `AND DATE(trans_date) >= DATE(${db.escape(reportDateLimit)})` : '';
 
   const debtorQuery = buildDebtQuery(showDetailedView, source, dateCondition);
 

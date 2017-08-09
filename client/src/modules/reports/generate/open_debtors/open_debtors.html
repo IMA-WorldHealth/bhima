@@ -23,7 +23,6 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
 
-
             <div class="form-group" ng-class="{'has-error' : ConfigForm.order.$invalid && ConfigForm.$submitted}">
               <label class="control-label" translate>
                 FORM.LABELS.ORDER_BY
@@ -57,12 +56,37 @@
             <div class="checkbox"
               ng-class="{'has-error' : ConfigForm.limitDate.$invalid && ConfigForm.$submitted}">
               <label class="control-label">
-                <input type="checkbox" name="limitDate" ng-model="ReportConfigCtrl.limitDate" ng-true-value="1" ng-false-value="0">
+                <input type="checkbox" name="limitDate" ng-model="ReportConfigCtrl.reportDetails.limitDate" ng-true-value="1" ng-false-value="0">
                 <span translate>REPORT.OPEN_DEBTORS.SHOW_DATE_LIMIT</span>
               </label>
             </div>
 
-            <!-- TODO - put the date picker limit here -->
+            <div ng-if="ReportConfigCtrl.reportDetails.limitDate">
+              <div class="form-group" ng-class="{'has-error' : ConfigForm.reportDateLimit.$invalid && ConfigForm.$submitted}">
+                <label class="control-label" translate>
+                  FORM.LABELS.DATE
+                </label>
+
+                <input
+                  name="reportDateLimit"
+                  type="text"
+                  class="form-control"
+                  placeholder="{{ 'FORM.PLACEHOLDERS.DATE' | translate }}"
+                  uib-datepicker-popup="{{ ::ReportConfigCtrl.DATE_FORMAT }}"
+                  ng-model="ReportConfigCtrl.reportDetails.reportDateLimit"
+                  is-open="focus"
+                  ng-focus="focus=true"
+                  datepicker-options="ReportConfigCtrl.dateOptions"
+                  show-button-bar="false"
+                  required>
+
+                <!-- validation/error messages for date input -->
+                <div class="help-block" ng-messages="ConfigForm.reportDateLimit.$error" ng-show="ConfigForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+              <p class="help-block" translate>REPORT.OPEN_DEBTORS.DATE_LIMIT_HELP</p>
+            </div>
 
             <div class="checkbox"
               ng-class="{'has-error' : ConfigForm.showDetailedView.$invalid && ConfigForm.$submitted}">
@@ -75,10 +99,9 @@
               <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
-
-              <!-- shows the help text to let users know what is going on -->
-              <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_DETAILED_VIEW_HELP</p>
             </div>
+
+            <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_DETAILED_VIEW_HELP</p>
 
             <div class="checkbox"
               ng-class="{'has-error' : ConfigForm.showUnverifiedTransactions.$invalid && ConfigForm.$submitted}">
@@ -91,10 +114,9 @@
               <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
-
-              <!-- shows the help text to let users know what is going on -->
-              <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_UNVERIFIED_TRANSACTIONS_HELP</p>
             </div>
+
+            <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_UNVERIFIED_TRANSACTIONS_HELP</p>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

@@ -3,14 +3,22 @@ angular.module('bhima.controllers')
 
 OpenDebtorsConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'OpenDebtorsReportService',
+  'bhConstants',
 ];
 
-function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports) {
+function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports,
+  bhConstants) {
   var vm = this;
   var cache = new AppCache('configure_open_debtors');
   var reportUrl = 'reports/finance/debtors/open';
 
+  vm.DATE_FORMAT = bhConstants.dates.format;
+
   vm.previewGenerated = false;
+
+  vm.dateOptions = {
+    maxDate : new Date(),
+  };
 
   // default values for the report
   vm.reportDetails = {
@@ -49,7 +57,7 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
@@ -58,12 +66,12 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
       .then(function (result) {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
+
+        // reset form validation
+        form.$setPristine();
+        form.$setUntouched();
       })
       .catch(Notify.handleError);
-  };
-
-  vm.onSelectPeriod =  function onSelectPeriod(period){
-    vm.reportDetails.date = period.end_date;
   };
 
   function checkCachedConfiguration() {
