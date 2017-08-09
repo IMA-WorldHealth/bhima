@@ -110,9 +110,15 @@ function lookupVoucher(vUuid) {
 function find(options) {
   const filters = new FilterParser(options, { tableAlias : 'v', autoParseStatements : false });
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
+  let typeIds = [];
+
+  if(options.type_ids) {
+    typeIds = typeIds.concat(options.type_ids);
+  }
 
   const sql = `
-    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+    SELECT 
+      BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
       BUID(v.reference_uuid) AS reference_uuid
@@ -128,11 +134,12 @@ function find(options) {
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
-  filters.equals('type_id');
 
   filters.custom('reference', referenceStatement);
 
   filters.fullText('description');
+
+  filters.custom('type_ids', 'v.type_id IN (?)',  typeIds);
 
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');

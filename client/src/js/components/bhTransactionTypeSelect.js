@@ -3,12 +3,11 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhTransactionTypeSelect.tmpl.html',
     controller  : transactionTypeSelectController,
     bindings    : { 
-      transactionTypes : '<?',
+      transactionTypeIds : '<?',
       label            : '@?',
-      onSelectCallback : '&',
-      onRemoveCallback : '&',
-      formName         : '@?',
+      onChange         : '&',
       required         : '<?',
+      validationTrigger : '<',
     },
   });
 
@@ -27,14 +26,11 @@ function transactionTypeSelectController(TransactionTypes, Notify, $translate) {
     //label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.TRANSACTION_TYPE';
 
-    // fired when a transaction type has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
-    // default for form name
-    $ctrl.formName = $ctrl.formName || 'TransactionTypeForm';
+    // fired when a transaction type has been selected or removed from the list
+    $ctrl.onChange = $ctrl.onChange || angular.noop;
 
     // init the model
-    $ctrl.selectedTransactionTypes = $ctrl.transactionTypes;
+    $ctrl.selectedTransactionTypes = $ctrl.transactionTypeIds;
 
     // load all Transaction types
     TransactionTypes.read()
@@ -48,11 +44,7 @@ function transactionTypeSelectController(TransactionTypes, Notify, $translate) {
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.onSelect = function (models) {
-    $ctrl.onSelectCallback({ transactionTypes : models });
-  };
-
-  $ctrl.onRemove = function (models) {
-    $ctrl.onRemoveCallback({ transactionTypes : models });
+  $ctrl.handleChange = function (models) {
+    $ctrl.onChange({ transactionTypes : models });
   };
 }
