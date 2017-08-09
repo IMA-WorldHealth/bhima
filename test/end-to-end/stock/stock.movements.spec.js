@@ -80,37 +80,37 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // to patient 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // to depot 
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // from depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'En provenance d\'un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // positive adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Positif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // negative adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Negatif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 23 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();
