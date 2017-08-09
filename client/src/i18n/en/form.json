@@ -212,6 +212,7 @@
             "COST": "Cost",
             "COST_CENTER": "Cost Center",
             "CONSUMABLE": "Consumable",
+            "UNCONSUMABLE": "Unconsommable",
             "CONVENTION": "Convention",
             "COUNTRY": "Country",
             "CREATE": "Create",

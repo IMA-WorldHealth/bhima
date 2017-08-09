@@ -90,13 +90,24 @@
 
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
-        <label class="control-label" translate>
-          FORM.LABELS.CONSUMABLE
-        </label>
          <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
 
-         <input type="checkbox" ng-true-value='1' ng-false-value='0' name="consumable" ng-model="ModalCtrl.params.consumable"/>
-      </div>
+         <input type="radio" value='1' name="consumable" ng-model="ModalCtrl.params.consumable"/>
+
+         <label class="control-label" translate>
+          FORM.LABELS.CONSUMABLE
+        </label>
+
+        <br/>
+
+        <input type="radio" value='0' name="consumable" ng-model="ModalCtrl.params.consumable"/>
+
+        <label class="control-label" translate>
+          FORM.LABELS.UNCONSUMABLE
+        </label>
+
+
+        </div>
 
     </fieldset>
   </div>
