@@ -2,16 +2,30 @@ angular.module('bhima.controllers')
   .controller('open_debtorsController', OpenDebtorsConfigController);
 
 OpenDebtorsConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', '$translate',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'OpenDebtorsReportService',
 ];
 
-function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, $translate) {
+function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports) {
   var vm = this;
   var cache = new AppCache('configure_open_debtors');
   var reportUrl = 'reports/finance/debtors/open';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+
+  // default values for the report
+  vm.reportDetails = {
+    showDetailedView : 0,
+    showUnverifiedTransactions : 0,
+    limitDate : 0,
+  };
+
+  // bind service variables for rendering the dropdown
+  vm.orders = OpenDebtorsReports.orders;
+  vm.ASC = OpenDebtorsReports.ASC;
+  vm.DESC = OpenDebtorsReports.DESC;
+
+  // the date input is hidden by default
+  vm.showDateLimit = false;
 
   checkCachedConfiguration();
 
@@ -19,25 +33,6 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
-
-  vm.columnOrder = [
-    {
-      label : $translate.instant('REPORT.ORDER.LAST_PAYMENT'),
-      value : 'payment-date',
-    },
-    {
-      label : $translate.instant('REPORT.ORDER.LAST_INVOICE'),
-      value : 'invoice-date',
-    },
-    {
-      label : $translate.instant('REPORT.ORDER.PATIENT_NAME'),
-      value : 'patient-name',
-    },
-    {
-      label : $translate.instant('REPORT.ORDER.TOTAL_DEBT'),
-      value : 'debt',
-    },    
-  ];
 
   vm.requestSaveAs = function requestSaveAs() {
     var options = {
@@ -55,9 +50,6 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
-    
-    var orderBy = vm.reportDetails.orderBy? '-asc' : '-desc';
-    vm.reportDetails.order += orderBy; 
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);

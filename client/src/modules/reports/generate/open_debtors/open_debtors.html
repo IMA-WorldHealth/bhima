@@ -7,7 +7,7 @@
 
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
       <h3 class="text-capitalize" translate>REPORT.OPEN_DEBTORS.TITLE</h3>
       <p class="text-info" translate>REPORT.OPEN_DEBTORS.DESCRIPTION</p>
     </div>
@@ -24,33 +24,76 @@
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
 
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-error' : ConfigForm.order.$invalid && ConfigForm.$submitted}">
               <label class="control-label" translate>
-                FORM.PLACEHOLDERS.COLUMN
+                FORM.LABELS.ORDER_BY
               </label>
 
               <ui-select
-                name="column"
+                name="order"
                 ng-model="ReportConfigCtrl.reportDetails.order">
-                <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.COLUMN' | translate }}"><span>{{$select.selected.label}}</span></ui-select-match>
-                <ui-select-choices ui-select-focus-patch repeat="column.value as column in (ReportConfigCtrl.columnOrder | filter:$select.search ) track by column.value">
-                  <span ng-bind-html="column.label | highlight:$select.search"></span>
+                <ui-select-match placeholder="{{ 'FORM.LABELS.ORDER_BY' | translate }}">
+                  <span>
+                    <i class="fa" ng-class="{
+                      'fa-caret-down': $select.selected.direction === ReportConfigCtrl.DESC,
+                      'fa-caret-up' : $select.selected.direction === ReportConfigCtrl.ASC
+                      }" aria-hidden="true"></i>
+                    <strong translate class="text-capitalize">{{$select.selected.label}}</strong>
+                  </span>
+                </ui-select-match>
+                <ui-select-choices ui-select-focus-patch repeat="column.value as column in (ReportConfigCtrl.orders | filter:$select.search)">
+                  <i class="fa" ng-class="{
+                    'fa-caret-down': column.direction === ReportConfigCtrl.DESC,
+                    'fa-caret-up' : column.direction === ReportConfigCtrl.ASC
+                  }" aria-hidden="true"></i>
+                  <span ng-bind-html="column.label | translate | highlight:$select.search" class="text-capitalize"></span>
                 </ui-select-choices>
               </ui-select>
+              <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <div class="radio">
-                <label class="radio-inline">
-                  <input type="radio" name="orderBy" id="asc" ng-model="ReportConfigCtrl.reportDetails.orderBy" ng-value="true">
-                  <span translate>REPORT.BY_ASC</span>
-                </label>
+            <div class="checkbox"
+              ng-class="{'has-error' : ConfigForm.limitDate.$invalid && ConfigForm.$submitted}">
+              <label class="control-label">
+                <input type="checkbox" name="limitDate" ng-model="ReportConfigCtrl.limitDate" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.OPEN_DEBTORS.SHOW_DATE_LIMIT</span>
+              </label>
+            </div>
 
-                <label class="radio-inline">
-                  <input type="radio" name="orderBy" id="desc" ng-model="ReportConfigCtrl.reportDetails.orderBy" ng-value="false">
-                  <span translate>REPORT.BY_DESC</span>
-                </label>
+            <!-- TODO - put the date picker limit here -->
+
+            <div class="checkbox"
+              ng-class="{'has-error' : ConfigForm.showDetailedView.$invalid && ConfigForm.$submitted}">
+              <label class="control-label">
+                <input type="checkbox" name="showDetailedView" ng-model="ReportConfigCtrl.reportDetails.showDetailedView" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.OPEN_DEBTORS.SHOW_DETAILED_VIEW</span>
+              </label>
+
+              <!-- error handling text -->
+              <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
+
+              <!-- shows the help text to let users know what is going on -->
+              <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_DETAILED_VIEW_HELP</p>
+            </div>
+
+            <div class="checkbox"
+              ng-class="{'has-error' : ConfigForm.showUnverifiedTransactions.$invalid && ConfigForm.$submitted}">
+              <label class="control-label">
+                <input type="checkbox" name="showUnverifiedTransactions" ng-model="ReportConfigCtrl.reportDetails.showUnverifiedTransactions" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.OPEN_DEBTORS.SHOW_UNVERIFIED_TRANSACTIONS</span>
+              </label>
+
+              <!-- error handling text -->
+              <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+
+              <!-- shows the help text to let users know what is going on -->
+              <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_UNVERIFIED_TRANSACTIONS_HELP</p>
             </div>
 
             <bh-loading-button loading-state="ConfigForm.$loading">

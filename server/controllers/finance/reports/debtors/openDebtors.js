@@ -37,6 +37,16 @@ const db = require('../../../../lib/db');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
 
+// converts '0' to false and '1' to true.
+// defaults to false
+function convertToBoolean(numberString) {
+  if (numberString) {
+    return Boolean(Number(numberString));
+  }
+
+  return false;
+}
+
 /**
  * Actually builds the open debtor report.
  */
@@ -69,9 +79,10 @@ function build(req, res, next) {
 function requestOpenDebtors(params) {
   const verifiedSource = 'general_ledger';
 
-  const showDetailedView = params.showDetailedView || false;
-  const showUnverifiedTransactions = params.showUnverifiedTransactions || false;
-  const limitDate = params.limitDate || false;
+  // parameter parsing
+  const showDetailedView = convertToBoolean(params.showDetailedView);
+  const showUnverifiedTransactions = convertToBoolean(params.showUnverifiedTransactions);
+  const limitDate = convertToBoolean(params.limitDate);
   const reportDateLimit = params.reportDateLimit;
 
   // TODO(@jniles) respect the ordering in the open debtors field.
@@ -142,6 +153,7 @@ function buildDebtQuery(showDetailedView, source, dateCondition) {
     HAVING SUM(debit_equiv - credit_equiv) > 0
     ORDER by SUM(debit_equiv - credit_equiv)
   `;
+
   return query;
 }
 
