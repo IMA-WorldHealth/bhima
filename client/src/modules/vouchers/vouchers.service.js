@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
+  'PrototypeApiService', '$http', 'TransactionTypeStoreService', '$uibModal',
   'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer', 'appcache',
 ];
 
@@ -14,7 +14,7 @@ VoucherService.$inject = [
  * This service manages posting data to the database via the /vouchers/ URL.  It also
  * includes some utilities that are useful for voucher pages.
  */
-function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
+function VoucherService(Api, $http, TransactionTypeStore, Modal,
   Filters, Periods, Languages, $httpParamSerializer, AppCache) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
@@ -146,7 +146,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    */
   function reverse(creditNote) {
     return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
-      .then(util.unwrapHttpResponse);
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**

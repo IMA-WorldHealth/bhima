@@ -57,7 +57,6 @@ class FilterParser {
     this._group = '';
   }
 
-
   /**
    * @method text
    *

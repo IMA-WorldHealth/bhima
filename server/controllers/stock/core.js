@@ -48,28 +48,35 @@ exports.getLotsOrigins = getLotsOrigins;
  */
 function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
-  const params = parameters;
+  const params = parameters;  
   const sql = sqlQuery || `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-            l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-            i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
-            iu.text AS unit_type 
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+          l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+          i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
+          d.text AS depot_text, iu.text AS unit_type 
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
-
-  const filters = new FilterParser(params);
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid']);
+  const filters = new FilterParser(params, { autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
+  filters.equals('depot_uuid', 'depot_uuid', 'm');
+  filters.equals('lot_uuid', 'lot_uuid', 'm');
+  filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('is_exit', 'is_exit', 'm');
 
-  filters.period('defaultPeriod', 'date');
-
+  filters.period('defaultPeriod', 'entry_date');
+  filters.period('period', 'entry_date');
+  
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
 
@@ -79,7 +86,10 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
 
-  const query = filters.applyQuery(sql).concat(finalClause || '');
+  // If finalClause is an empty string, filterParser will not group, it will be an empty string
+  filters.setGroup(finalClause || '');
+
+  const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
 }

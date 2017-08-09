@@ -28,4 +28,6 @@ module.exports = {
   fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
   debtorGroupSelect : require('./bhDebtorGroupSelect'),
   multipleDebtorGroupSelect : require('./bhMultipleDebtorGroupSelect'),
+  depotSelect    : require('./bhDepotSelect'),
+  inventorySelect : require('./bhInventorySelect'),
 };
