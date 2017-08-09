@@ -18,6 +18,7 @@ const moment = require('moment');
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 
+const PeriodService = require('../../../lib/period');
 const Patients = require('../patients');
 
 const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars';
@@ -39,13 +40,22 @@ function formatFilters(qs) {
     { field : 'debtor_group_uuid', displayName : 'FORM.LABELS.DEBTOR_GROUP' },
     { field : 'patient_group_uuid', displayName : 'PATIENT_GROUP.PATIENT_GROUP' },
     { field : 'user_id', displayName : 'FORM.LABELS.USER' },
+    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
+    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
   ];
 
   return columns.filter(column => {
+
     const value = qs[column.field];
 
     if (!_.isUndefined(value)) {
-      column.value = value;
+
+      if (column.isPeriod) {
+        const service = new PeriodService(new Date());
+        column.value = service.periods[value].translateKey;
+      } else {
+        column.value = value;
+      }
       return true;
     }
     return false;
@@ -79,7 +89,6 @@ function build(req, res, next) {
   }
 
   const filters = formatFilters(options);
-
   // enforce detailed columns
   options.detailed = 1;
 
@@ -103,7 +112,9 @@ function build(req, res, next) {
         patient.age = moment().diff(patient.dob, 'years');
       });
 
+
       data.patients = patients;
+
 
       // if no patients matched the previous query, set the promise value to false
       // and skip rendering aggregates in the handlbars view
