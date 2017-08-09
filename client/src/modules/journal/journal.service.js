@@ -141,6 +141,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       templateUrl : 'modules/journal/modals/editTransaction.modal.html',
       controller : 'JournalEditTransactionController as ModalCtrl',
       backdrop : 'static', 
+      keyboard : false,
       size : 'lg',
       resolve : { 
         transactionUuid : function () { return transactionUuid; }
