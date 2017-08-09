@@ -37,17 +37,11 @@
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transactionType.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
-            <bh-clear on-clear="$ctrl.clear('type_id')"></bh-clear>
-            <select
-              class="form-control"
-              name="transactionType"
-              ng-model="$ctrl.searchQueries.type_id"
-              ng-options="t.id as t.plainText for t in $ctrl.transactionTypes | orderBy:'plainText'">
-              <option value="" disabled translate>FORM.SELECT.TRANSACTION_TYPE</option>
-            </select>
-          </div>
+          <bh-transaction-type-select
+            on-change="$ctrl.onTransactionTypesChange(transactionTypes)"
+            transaction-type-ids="$ctrl.searchQueries.type_ids"
+            required="false">
+          </bh-transaction-type-select>
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>

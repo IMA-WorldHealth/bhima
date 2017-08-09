@@ -48,7 +48,7 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
       { key: 'dateTo', label: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
       { key: 'reversed', label: 'FORM.INFO.ANNULLED' },
       { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
-      { key: 'type_id', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
+      { key: 'type_ids', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
   if(filterCache.filters){
     voucherFilters.loadCache(filterCache.filters);

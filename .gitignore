@@ -37,3 +37,5 @@ nbproject/*
 # ignore netbeans files
 nbproject/
 
+# ignore istanbul generated folders
+.nyc_output/

@@ -23,23 +23,18 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
   vm.defaultQueries = {};
 
   var searchQueryOptions = [
-    'reference', 'description', 'user_id', 'type_id',
+    'reference', 'description', 'user_id', 'type_ids',
   ];
-
-  TransactionTypes.read()
-      .then(function (transactionTypes) {
-        transactionTypes.forEach(function(item){
-          item.plainText = $translate.instant(item.text);
-        });
-        vm.transactionTypes = transactionTypes;
-      })
-      .catch(Notify.handleError);
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
   if(filters.limit){
     vm.defaultQueries.limit = filters.limit;
+  }
+
+  vm.onTransactionTypesChange = function onTransactionTypesChange (transactionTypes){
+    vm.searchQueries.type_ids = transactionTypes;
   }
 
   // custom filter user_id - assign the value to the params object
@@ -73,6 +68,11 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
+
+    // delete type_ids if there is no transaction type sent
+    if(vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0){
+      vm.clear('type_ids');
+    }
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
