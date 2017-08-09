@@ -22,9 +22,8 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc
   var vm = this;
   /*
    emailReport is the object
-   that contains : name,email, frequence and report-group code
-   in UI form
-   */
+   that contains : name,email, frequence and report-group code in UI form
+  */
   vm.emailReport = {};
   vm.selectedEmailReport = { selected : false };
   vm.save = save;
