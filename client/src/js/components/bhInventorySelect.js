@@ -6,7 +6,8 @@ angular.module('bhima.components')
     bindings    : {
       inventoryUuid    : '<',
       onSelectCallback : '&',
-      required         : '<?',      
+      required         : '<?',
+      validateTrigger  : '<?',      
     },
   });
 
