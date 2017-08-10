@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 InventoryFileConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService', 'InventoryService', '$timeout', 'moment',
+  'LanguageService', 'InventoryService', 'moment',
 ];
 
 function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, reportData, $state,
-  Languages, Inventory, $timeout, moment) {
+  Languages, Inventory, moment) {
   var vm = this;
   var cache = new AppCache('configure_inventory_file_report');
   var reportUrl = 'reports/stock/inventory';
@@ -38,7 +38,7 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
     var options;
     var params;
 
-    if (form.$invalid || !vm.depot || !vm.inventory) { return 0; }
+    if (form.$invalid) { return 0; }
 
     params = {
       depot_uuid : vm.depot.uuid,

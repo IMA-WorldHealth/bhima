@@ -12,9 +12,9 @@ angular.module('bhima.routes')
       'open_debtors',
       'balance_report',
       'clients_report',
-      'cashflowByService',
       'inventory_report',
       'inventory_file',
+      'cashflowByService',
     ];
 
     $stateProvider

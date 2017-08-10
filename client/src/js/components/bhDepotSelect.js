@@ -34,7 +34,7 @@ function DepotSelectController(Depots, Notify) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = function ($item) {
     $ctrl.onSelectCallback({ depot : $item });
   };
 }
