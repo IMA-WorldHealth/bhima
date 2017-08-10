@@ -27,29 +27,20 @@
           </div>
 
           <!-- supplier -->
-          <div class="form-group">
-            <label class="control-label" translate>FORM.LABELS.SUPPLIER</label>
-            
+          <bh-supplier-select
+            supplier-uuid="$ctrl.searchQueries.supplier_uuid"
+            on-select-callback="$ctrl.onSelectSupplier(supplier)"
+            required="false">
             <bh-clear on-clear="$ctrl.clear('supplier_uuid')"></bh-clear>
-
-            <ui-select name="supplier" ng-model="$ctrl.searchQueries.supplier_uuid">
-              <ui-select-match>
-                <span>{{$select.selected.display_name}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="supplier.uuid as supplier in $ctrl.suppliers | filter:$select.search">
-                <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-          </div>
-
+          </bh-supplier-select>
+    
           <!-- user -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
             name="user_id"
             on-select-callback="$ctrl.onSelectUser(user)">
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
-          </bh-user-select> 
-
+          </bh-user-select>
 
           <!-- status -->
           <div class="form-group">
@@ -57,21 +48,20 @@
               <strong translate>FORM.LABELS.STATUS</strong>
             </p>
 
-            <label class="radio-inline">
-              <input type="radio" id="is_confirmed" name="state" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="is_confirmed" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.CONFIRMED</span>
             </label>
 
-            <label class="radio-inline">
-              <input type="radio" id="is_received" name="state" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="is_received" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.RECEIVED</span>
             </label>
 
-            <label class="radio-inline">
-              <input type="radio" id="is_cancelled" name="state" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="is_cancelled" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.CANCELLED</span>
             </label>
-
           </div>
         </div>
       </uib-tab>
@@ -79,12 +69,10 @@
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
           <!-- period selection -->
-          <!-- start period selection component -->
           <bh-period-select
             default-period="{{$ctrl.filters.period}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
-          <!-- end period selection component -->
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>

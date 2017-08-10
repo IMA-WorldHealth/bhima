@@ -12,6 +12,6 @@ module.exports = {
     // ngModelOptions updateOn 'blur' for every input
     target.click();
 
-    FU.uiSelect('$ctrl.supplierId', supplier, target);
+    FU.uiSelect('$ctrl.supplierUuid', supplier, target);
   },
 };

@@ -19,12 +19,8 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
   var cacheKey = 'PurchaseRegistry';
   var state;
   var columnDefs;
-  var filter = new Filters();
-  vm.filter = filter;
-
 
   vm.search = search;
-  // vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
@@ -131,9 +127,11 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
 
   /** load purchase orders */
   function load(filters) {
+    // flush error and loading states    
+    vm.hasError = false;
     toggleLoadingIndicator();
 
-    PurchaseOrder.search(filters)
+    PurchaseOrder.read(null, filters)
       .then(function (purchases) {
         vm.uiGridOptions.data = purchases;
       })
@@ -147,11 +145,10 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
     PurchaseOrder.openSearchModal(filtersSnapshot)
       .then(function (changes) {
         PurchaseOrder.filters.replaceFilters(changes);
-
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();
         return load(PurchaseOrder.filters.formatHTTP(true));
-      });
+      }).catch(angular.noop);
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -173,16 +170,21 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    if ($state.params.filters) {
-      // Fix me, generate change dynamically
-      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-
-      PurchaseOrder.filters.replaceFilters(change);
-      PurchaseOrder.cacheFilters();
-    }
-
     load(PurchaseOrder.filters.formatHTTP(true));
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
+
+
+
+    // if ($state.params.filters) {
+    //   // Fix me, generate change dynamically
+    //   var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+
+    //   PurchaseOrder.filters.replaceFilters(change);
+    //   PurchaseOrder.cacheFilters();
+    // }
+
+    // load(PurchaseOrder.filters.formatHTTP(true));
+    // vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }
 
   // fire up the module

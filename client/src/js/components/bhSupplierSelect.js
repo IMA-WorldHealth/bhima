@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : SupplierSelectController,
     transclude  : true,
     bindings    : {
-      supplierId       : '<',
+      supplierUuid     : '<',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
