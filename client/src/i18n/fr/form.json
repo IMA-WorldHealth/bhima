@@ -214,6 +214,7 @@
             "CONVENTION": "Convention",
             "COUNTRY": "Pays",
             "CONSUMABLE": "Consommable",
+            "UNCONSUMABLE": "Non consommable",
             "CREATE": "CRÉATION",
             "CREATE_CREDIT_NOTE": "Emettre Note de Credit",
             "CREATED": "Crée",

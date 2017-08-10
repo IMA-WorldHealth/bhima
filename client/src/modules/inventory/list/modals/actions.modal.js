@@ -9,7 +9,7 @@ InventoryListActionsModalController.$inject = [
 function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util, AppCache) {
   var vm = this;
   var cache = AppCache('InventoryList');
-  
+
   // this is the model
   vm.item = {};
   vm.stateParams = {};
