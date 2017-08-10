@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchPurchaseOrderModalController.$inject = [
-  '$uibModalInstance', 'params', 'SupplierService', 'Store', 'util', 'PeriodService', 'NotifyService'
+  '$uibModalInstance', 'params', 'SupplierService', 'Store', 
+  'util', 'PeriodService', 'NotifyService'
 ];
 
 /**
@@ -18,17 +19,10 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = params;
-
-  vm.today = new Date();
-
-  // bind filters if they have already been applied.  Otherwise, default to an
-  // empty object.
+  vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // assign default limit filter
-  if (params.limit) {
-    vm.defaultQueries.limit = params.limit;
-  }
+  vm.today = new Date();
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
@@ -37,23 +31,21 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
   ];
 
   // assign already defined custom params to searchQueries object
-  vm.params = util.maskObjectFromKeys(params, searchQueryOptions);
+  vm.searchQueries = util.maskObjectFromKeys(params, searchQueryOptions);
+
+  // assign default limit filter
+  if (params.limit) {
+    vm.defaultQueries.limit = params.limit;
+  }
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
 
-  // load suppliers
-  Suppliers.read()
-    .then(function (suppliers) {
-      vm.suppliers = suppliers;
-    })
-    .catch(Notify.handleError);
-
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.params.user_id = user.id;
+    vm.searchQueries.user_id = user.id;
   };
 
   // default filter limit - directly write to changes list
@@ -73,12 +65,21 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
     });
   };
 
+  // load suppliers
+  Suppliers.read()
+    .then(function (suppliers) {
+      vm.suppliers = suppliers;
+    })
+    .catch(Notify.handleError);
+
+
+
 
   // returns the parameters to the parent controller
   function submit(form) {
-    vm.params.is_confirmed = vm.setState === 'is_confirmed' ? 1 : 0;
-    vm.params.is_received = vm.setState === 'is_received' ? 1 : 0;
-    vm.params.is_cancelled = vm.setState === 'is_cancelled' ? 1 : 0;
+    // vm.params.is_confirmed = vm.setState === 'is_confirmed' ? 1 : 0;
+    // vm.params.is_received = vm.setState === 'is_received' ? 1 : 0;
+    // vm.params.is_cancelled = vm.setState === 'is_cancelled' ? 1 : 0;
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.params, function (value, key) {
