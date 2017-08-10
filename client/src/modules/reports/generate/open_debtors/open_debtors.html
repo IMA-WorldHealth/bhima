@@ -32,20 +32,20 @@
                 name="order"
                 ng-model="ReportConfigCtrl.reportDetails.order">
                 <ui-select-match placeholder="{{ 'FORM.LABELS.ORDER_BY' | translate }}">
-                  <span>
+                  <span class="text-capitalize">
                     <i class="fa" ng-class="{
                       'fa-caret-down': $select.selected.direction === ReportConfigCtrl.DESC,
                       'fa-caret-up' : $select.selected.direction === ReportConfigCtrl.ASC
                       }" aria-hidden="true"></i>
-                    <strong translate class="text-capitalize">{{$select.selected.label}}</strong>
+                    {{$select.selected.hrLabel}}
                   </span>
                 </ui-select-match>
-                <ui-select-choices ui-select-focus-patch repeat="column.value as column in (ReportConfigCtrl.orders | filter:$select.search)">
+                <ui-select-choices ui-select-focus-patch repeat="column.value as column in ReportConfigCtrl.orders | filter: { 'hrLabel' : $select.search }">
                   <i class="fa" ng-class="{
                     'fa-caret-down': column.direction === ReportConfigCtrl.DESC,
                     'fa-caret-up' : column.direction === ReportConfigCtrl.ASC
                   }" aria-hidden="true"></i>
-                  <span ng-bind-html="column.label | translate | highlight:$select.search" class="text-capitalize"></span>
+                  <span ng-bind-html="column.hrLabel | highlight:$select.search" class="text-capitalize"></span>
                 </ui-select-choices>
               </ui-select>
               <div class="help-block" ng-messages="ConfigForm.order.$error" ng-show="ConfigForm.$submitted">

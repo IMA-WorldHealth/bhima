@@ -1,6 +1,8 @@
 angular.module('bhima.services')
   .service('OpenDebtorsReportService', OpenDebtorsReportService);
 
+OpenDebtorsReportService.$inject = ['$translate'];
+
 /**
  * @class OpenDebtorsReportService
  *
@@ -8,7 +10,7 @@ angular.module('bhima.services')
  * An object that contains keys/properties relevant to rendering the Open
  * Debtors Report.
  */
-function OpenDebtorsReportService() {
+function OpenDebtorsReportService($translate) {
   var service = this;
 
   var ASC = 1;
@@ -42,6 +44,11 @@ function OpenDebtorsReportService() {
     value : 'debt-desc',
     direction : DESC,
   }];
+
+  // ensure a human readable label
+  service.orders.forEach(function (order) {
+    order.hrLabel = $translate.instant(order.label);
+  });
 
   return service;
 }

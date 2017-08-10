@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global browser */
 
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
@@ -7,15 +7,14 @@ helpers.configure(chai);
 
 const ReportOpenDebtorsPage = require('./open_debtors.page');
 
-describe('Open Debtors Report ::', () => {
+describe('Open Debtors Report', () => {
   let Page;
   const key = 'open_debtors';
 
   const dataset = {
-    order : 'Total des dettes',
-    orderBy : 'desc',
-    report_name : 'Open Debtors Report, Order by Debts Desc',
-    renderer : 'PDF',    
+    order : 'Total',
+    report_name : 'Open Debtors Report, Order by Debts',
+    renderer : 'PDF',
   };
 
   before(() => {
@@ -24,8 +23,8 @@ describe('Open Debtors Report ::', () => {
     browser.refresh();
   });
 
-  it('preview a new Open Debtor Report: Order by balance Desc', () => {
-    Page.showOpenDebtorsReportPreview(dataset.order, dataset.orderBy);
+  it(`preview a new Open Debtors report - order by ${dataset.order}`, () => {
+    Page.showOpenDebtorsReportPreview(dataset.order);
   });
 
   it('close the previewed report', () => {
@@ -33,7 +32,7 @@ describe('Open Debtors Report ::', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveOpenDebtorsReport(dataset.order, dataset.orderBy, dataset.report_name, dataset.renderer);
+    Page.saveOpenDebtorsReport(dataset.order, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -41,6 +40,6 @@ describe('Open Debtors Report ::', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printOpenDebtorsReport(dataset.order, dataset.orderBy);
+    Page.printOpenDebtorsReport(dataset.order);
   });
 });
