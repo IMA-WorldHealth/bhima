@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 InventoryFileConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService', 'InventoryService', 'moment',
+  'LanguageService', 'moment',
 ];
 
 function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, reportData, $state,
-  Languages, Inventory, moment) {
+  Languages, moment) {
   var vm = this;
   var cache = new AppCache('configure_inventory_file_report');
   var reportUrl = 'reports/stock/inventory';
@@ -19,14 +19,16 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   // chech cached configuration
   checkCachedConfiguration();
 
-  Inventory.read()
-  .then(function (rows) {
-    vm.inventories = rows;
-  })
-  .catch(Notify.handleError);
-
   vm.setupDepot = function setupDepot(depot) {
     vm.depot = depot;
+  };
+
+  vm.setupInventory = function setupInventory(inventory) {
+    vm.inventory = inventory;
+  };
+
+  vm.clear = function clear(key) {
+    delete vm[key];
   };
 
   vm.clearPreview = function clearPreview() {
@@ -82,6 +84,6 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   function checkCachedConfiguration() {
-    vm.reportDetails = cache.reportDetails ? angular.copy(cache.reportDetails) : {};
+    vm.reportDetails = angular.copy(cache.reportDetails || {});
   }
 }

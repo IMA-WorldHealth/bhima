@@ -59,8 +59,8 @@
           <!-- select depot -->
           <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
             <bh-depot-select 
-              depot-value="ReportConfigCtrl.depot"
-              on-select="ReportConfigCtrl.setupDepot(depot)">
+              depot-uuid="ReportConfigCtrl.depot.uuid"
+              on-select-callback="ReportConfigCtrl.setupDepot(depot)">
             </bh-depot-select>
           </div>
 
@@ -74,20 +74,12 @@
 
           <!-- select inventory -->
           <div ng-if="!!ReportConfigCtrl.chooseOneInventory">
-            <div class="form-group">
-              <label class="control-label" translate>STOCK.INVENTORY</label>
-
-              <ui-select name="inventory" ng-model="ReportConfigCtrl.inventory">
-                <ui-select-match>
-                  <span>{{$select.selected.label}}</span>
-                </ui-select-match>
-                <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in ReportConfigCtrl.inventories | filter:{ 'label': $select.search }">
-                  <span ng-bind-html="inventory.label | highlight:$select.search"></span>
-                </ui-select-choices>
-              </ui-select>
-            </div>
+            <!-- select inventory -->
+            <bh-inventory-select
+              inventory-uuid="ReportConfigCtrl.inventory.uuid"
+              on-select-callback="ReportConfigCtrl.setupInventory(inventory)">
+            </bh-inventory-select>
           </div>
-
 
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">

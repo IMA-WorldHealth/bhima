@@ -76,11 +76,15 @@
     },
     "BALANCE_REPORT": {
       "TITLE": "Balance Report",
-      "DESCRIPTION": "This report show the balance of accounts for a given period"
+      "DESCRIPTION": "This report shows the balance of accounts for a given period"
+    },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Income Expense Report",
+      "DESCRIPTION": "This report shows all incomes and expenses of the enterprise"
     },
     "CASH_REPORT": {
       "TITLE": "Cash Report",
-      "DESCRIPTION": "This report show all entries and exits of cash inside the enterprise"
+      "DESCRIPTION": "This report shows all entries and exits of cash inside the enterprise"
     },
     "STOCK":{
       "TITLE":"Stock Report",
