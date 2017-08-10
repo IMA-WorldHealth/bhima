@@ -99,7 +99,7 @@ function requestOpenDebtors(params) {
   // ONLY show transactions after a certain date (just show this week for example)
   const dateCondition = limitDate ? `AND DATE(trans_date) >= DATE(${db.escape(reportDateLimit)})` : '';
 
-  const debtorQuery = buildDebtQuery(showDetailedView, source, dateCondition);
+  const debtorQuery = buildDebtQuery(showDetailedView, source, dateCondition, ordering);
 
   const aggregateQuery = `
     SELECT COUNT(DISTINCT(entity_uuid)) as numDebtors, SUM(debit_equiv - credit_equiv) as balance
@@ -130,7 +130,7 @@ function requestOpenDebtors(params) {
 
 // ONLY select rows with an entity
 // ONLY show debtors with a debt above 0
-function buildDebtQuery(showDetailedView, source, dateCondition) {
+function buildDebtQuery(showDetailedView, source, dateCondition, ordering) {
   // Include complex parameters depending on detailed view Boolean requirements
   const complexParameters = showDetailedView ?
     ', MAX(invoice.date) as latestInvoiceDate, MAX(cash.date) as latestCashDate ' :
@@ -151,52 +151,25 @@ function buildDebtQuery(showDetailedView, source, dateCondition) {
     ${dateCondition}
     GROUP BY entity_uuid
     HAVING SUM(debit_equiv - credit_equiv) > 0
-    ORDER by SUM(debit_equiv - credit_equiv)
+    ORDER BY ${ordering}
   `;
 
   return query;
 }
 
+const orderMap = {
+  'transaction-date-asc' : 'trans_date ASC',
+  'transaction-date-desc' : 'trans_date DESC',
+  'debt-desc' : 'balance DESC, trans_date DESC',
+  'debt-asc' : 'balance ASC, trans_date DESC',
+  'patient-name-desc' : 'patient.display_name DESC',
+  'patient-name-asc' : 'patient.display_name ASC',
+};
+
+const DEFAULT_ORDER = 'debt-desc';
+
 function parseOrdering(orderParameter) {
-  let ordering;
-  switch (orderParameter) {
-  case 'payment-date-asc':
-    ordering = 'lastPaymentDate ASC';
-    break;
-
-  case 'payment-date-desc':
-    ordering = 'lastPaymentDate DESC';
-    break;
-
-  case 'invoice-date-asc':
-    ordering = 'lastInvoiceDate ASC';
-    break;
-
-  case 'invoice-date-desc':
-    ordering = 'lastInvoiceDate DESC';
-    break;
-
-  case 'debt-desc':
-    ordering = 'ledger.balance DESC';
-    break;
-
-  case 'patient-name-desc':
-    ordering = 'patient.display_name DESC';
-    break;
-
-  case 'patient-name-asc':
-    ordering = 'patient.display_name ASC';
-    break;
-
-  case 'debt-asc':
-    ordering = 'ledger.balance ASC';
-    break;
-
-  default:
-    ordering = 'cash.date ASC';
-    break;
-  }
-  return ordering;
+  return orderMap[orderParameter] || orderMap[DEFAULT_ORDER];
 }
 
 exports.report = build;

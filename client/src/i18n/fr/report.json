@@ -34,17 +34,16 @@
     "MONTHLY_BALANCE":"Balance mensuelle",
     "OPEN_DEBTORS":{
       "DESCRIPTION":"Ce rapport affiche les débiteurs endettés",
-      "TITLE":"Débiteurs endettés", 
+      "TITLE":"Débiteurs endettés",
       "TREE":"Dettes des Débiteurs"
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
-      "LAST_INVOICE": "Date de la dernière facture",
-      "LAST_PAYMENT": "Date du dernier paiement",
-      "PATIENT_NAME": "Nom du patient",
-      "TOTAL_DEBT": "Total des dettes"
+      "LAST_TRANSACTION": "Date de la Dernière Transaction",
+      "PATIENT_NAME": "Nom du Patient",
+      "TOTAL_DEBT": "Total des Dettes"
     },
-    "OVER_NINETY_DAYS": "Plus de 90 jours",
+    "OVER_NINETY_DAYS": "Plus de 90 Jours",
     "PERIOD_START": "Debut",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",

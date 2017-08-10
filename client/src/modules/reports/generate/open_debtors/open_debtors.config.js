@@ -6,6 +6,14 @@ OpenDebtorsConfigController.$inject = [
   'bhConstants',
 ];
 
+
+/**
+ * @class OpenDebtorsConfigController
+ *
+ * @description
+ * This controller powers the Open Debtors report.  The Open Debtors report allows a user
+ * to see debtors with unpaid debts.
+ */
 function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports,
   bhConstants) {
   var vm = this;

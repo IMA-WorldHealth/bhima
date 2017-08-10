@@ -51,10 +51,9 @@
     },
     "OPENING_BALANCE": "Opening Balance",
     "ORDER": {
-      "LAST_INVOICE": "Date of last invoice",
-      "LAST_PAYMENT": "Date of last payment",
-      "PATIENT_NAME": "Nom du patient",
-      "TOTAL_DEBT": "Total Debts"
+      "LAST_TRANSACTION": "Date of Last Transaction",
+      "PATIENT_NAME": "Patient Name",
+      "TOTAL_DEBT": "Total Debt"
     },
     "OVER_NINETY_DAYS": "Over 90 Days",
     "PERIOD_START": "Start",

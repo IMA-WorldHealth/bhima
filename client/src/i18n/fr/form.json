@@ -520,6 +520,7 @@
             "DEBTOR": "Entrer un debiteur",
             "DEBTOR_GROUP": "Entrer un groupe debiteur",
             "PATIENT_GROUP": "Entrer un groupe de patients",
+            "DATE": "Entrer la Date",
             "DESCRIPTION": "Entrer une description",
             "DOCUMENT_NAME": "Entrer le nom du document",
             "EMAIL": "Entrer l'adresse e-mail",

@@ -18,20 +18,12 @@ function OpenDebtorsReportService() {
   service.DESC = DESC;
 
   service.orders = [{
-    label : 'REPORT.ORDER.LAST_PAYMENT',
-    value : 'payment-date-asc',
+    label : 'REPORT.ORDER.LAST_TRANSACTION',
+    value : 'transaction-date-asc',
     direction : ASC,
   }, {
-    label : 'REPORT.ORDER.LAST_PAYMENT',
-    value : 'payment-date-desc',
-    direction : DESC,
-  }, {
-    label : 'REPORT.ORDER.LAST_INVOICE',
-    value : 'invoice-date-asc',
-    direction : ASC,
-  }, {
-    label : 'REPORT.ORDER.LAST_INVOICE',
-    value : 'invoice-date-desc',
+    label : 'REPORT.ORDER.LAST_TRANSACTION',
+    value : 'transaction-date-desc',
     direction : DESC,
   }, {
     label : 'REPORT.ORDER.PATIENT_NAME',
