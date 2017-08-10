@@ -1,104 +1,114 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static" translate>{{ ModalCtrl.options.title || 'TREE.POSTING_JOURNAL' }}</li>
-    <li class="title" translate>
-      POSTING_JOURNAL.EDIT_TRANSACTION
-    </li>
-    <span class="badge badge-success">{{ModalCtrl.transactionDetails.trans_id}}</span>
+    <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
+    <li class="title" translate>{{ModalCtrl.transactionDetails.trans_id}}</li>
+    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> Viewing</span>
+    <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> Editing</span>
   </ol>
 
 </div>
 
-<div class="modal-body">
-  <!-- Record information -->
-  <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
-    <!-- Record ID -->
-    <!-- Project ID -->
-    <!-- Transaction ID -->
-    <!-- Transaction Type -->
-    <!-- Responsible -->
-    <!-- ? Editable date ? -->
-    <div class="row">
-      <form class="form-horizontal">
-      <div class="col-md-6">
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Record ID</label>
-          <div class="col-sm-9">
-            <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
+<div class="modal-body" style="padding : 0px;">
+  <!-- <div style="border-bottom : 1px solid #e5e5e5; padding : 10px;"> -->
+    <!-- <i class="fa fa-eye-open"></i> <b>Viewing</b> posted transaction <b>HEV2300</b> as of <b>dd/mm/yyyy</b> -->
+  <!-- </div> -->
+  <div style="padding : 10px">
+    <!-- Record information -->
+    <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
+      <!-- Record ID -->
+      <!-- Project ID -->
+      <!-- Transaction ID -->
+      <!-- Transaction Type -->
+      <!-- Responsible -->
+      <!-- ? Editable date ? -->
+      <div class="row">
+        <form class="form-horizontal">
+        <div class="col-md-6">
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Record ID</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
+            </div>
           </div>
-        </div>
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Project</label>
-          <div class="col-sm-9">
-            <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Project</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
+            </div>
           </div>
-        </div>
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Transaction</label>
-          <div class="col-sm-9">
-            <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Type</label>
-          <div class="col-sm-9">
-            <select 
-              ng-model="ModalCtrl.shared.origin_id" 
-              ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
-              ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes" 
-              class="form-control">
-            </select>
-          </div>
-        </div>
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Responsible</label>
-          <div class="col-sm-9">
-            <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
-          </div>
-        </div>
-        <div class="form-group-sm">
-          <label class="col-sm-3 control-label">Date</label>
-          <div class="col-sm-9">
-            <div class="input-group">
-            <input 
-              uib-datepicker-popup="dd/MM/yyyy"
-              ng-model="ModalCtrl.shared.trans_date" 
-              ng-change="ModalCtrl.handleTransactionDateChange(ModalCtrl.shared.trans_date)"
-              is-open="ModalCtrl.dateEditorOpen"
-              type="text" 
-              class="form-control"></input>
-            <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
-            </span>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Transaction</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
             </div>
           </div>
         </div>
+        <div class="col-md-6">
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Type</label>
+            <div class="col-sm-9">
+              <select 
+                ng-model="ModalCtrl.shared.origin_id" 
+                ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
+                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes" 
+                class="form-control">
+                <option disabled value="">POSTING_JOURNAL.NO_TRANSACTION_TYPE</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Responsible</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label">Date</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+              <input 
+                uib-datepicker-popup="dd/MM/yyyy"
+                ng-model="ModalCtrl.shared.trans_date" 
+                ng-change="ModalCtrl.handleTransactionDateChange(ModalCtrl.shared.trans_date)"
+                is-open="ModalCtrl.dateEditorOpen"
+                type="text" 
+                class="form-control"></input>
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
+              </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
       </div>
-    </form>
     </div>
+    
+    <div class="alert alert-danger" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
+    <!-- <div class="alert alert-danger"> -->
+    <i class="fa fa-exclamation-circle"></i> {{ModalCtrl.validation.message}}
+    </div>
+
+    <!-- Transaction row edit utilities -->
+    <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
+    <!-- <div> -->
+      <button class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
+      <button class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
+    </div>
+    <div id="edit-grid" style="height : 230px" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
+      <bh-grid-loading-indicator 
+        loading-state="ModalCtrl.loading"
+        empty-state="ModalCtrl.gridOptions.data.length === 0"
+        error-state="ModalCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+    <!-- Description -->
+    <!-- Account -->
+    <!-- Debit -->
+    <!-- Credit --> 
+    <!-- Recipient --> 
+    <!-- Reference -->
   </div>
-  
-  <!-- Transaction row edit utilities -->
-  <div style="margin-bottom : 5px" class="text-right">
-  <!-- <div> -->
-    <button class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
-    <button class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
-  </div>
-  <div id="edit-grid" style="height : 230px" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
-    <bh-grid-loading-indicator 
-      loading-state="ModalCtrl.loading"
-      empty-state="ModalCtrl.gridOptions.data.length === 0"
-      error-state="ModalCtrl.hasError">
-    </bh-grid-loading-indicator>
-  </div>
-  <!-- Description -->
-  <!-- Account -->
-  <!-- Debit -->
-  <!-- Credit --> 
-  <!-- Recipient --> 
-  <!-- Reference -->
 </div>
 
 <div class="modal-footer">

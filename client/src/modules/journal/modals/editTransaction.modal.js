@@ -1,13 +1,12 @@
 angular.module('bhima.controllers')
   .controller('JournalEditTransactionController', JournalEditTransactionController);
 
-JournalEditTransactionController.$inject = ['JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance', 'transactionUuid', 'uiGridConstants', 'uuid'];
+JournalEditTransactionController.$inject = ['JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance', 'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid'];
 
-function JournalEditTransactionController(Journal, Store, TransactionType, Modal, transactionUuid, uiGridConstants, uuid) { 
-  // try { 
+function JournalEditTransactionController(Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) { 
   var gridApi = {};
   var vm = this;
-  console.log('got here'); 
+  
   // @TODO(sfount) column definitions currently duplicated across journal and here
   var editColumns = [ 
     { field              : 'description',
@@ -61,7 +60,14 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     }
   };
 
+  vm.validation = { 
+    errored : false
+  };
+
   vm.close = Modal.close;
+
+  // @TODO(sfount) apply read only logic to save buttons and grid editing logic
+  vm.readOnly = readOnly || false;
   
   // @TODO(sfount) move to component
   vm.dateEditorOpen = false;
@@ -173,8 +179,9 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     return array.indexOf(value) !== -1;
   }
 
-  // } catch(e) { 
-    // console.error(e);
-  // }
-
+  // @TODO(sfount)
+  function invalidate(message) { 
+    vm.validation.errored = true;
+    vm.validation.message = message;
+  }
 }

@@ -134,7 +134,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     }).result;
   }
 
-  function openTransactionEditModal(transactionUuid) { 
+  function openTransactionEditModal(transactionUuid, readOnly) { 
 
     console.log('open modal');
     return Modal.open({
@@ -144,7 +144,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       keyboard : false,
       size : 'lg',
       resolve : { 
-        transactionUuid : function () { return transactionUuid; }
+        transactionUuid : function () { return transactionUuid; },
+        readOnly : function () { return readOnly; }
       }
     }).result;
   }
