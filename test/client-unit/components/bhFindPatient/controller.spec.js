@@ -62,7 +62,7 @@ function ControllerTests() {
     const response = [patient];
     const id = 'TPA1';
 
-    $httpBackend.expect('GET', `/patients/?limit=1&reference=${id}`)
+    $httpBackend.expect('GET', `/patients/?detailed=1&limit=1&reference=${id}`)
       .respond(200, response);
 
     $controller.selected = $controller.options.findById;
