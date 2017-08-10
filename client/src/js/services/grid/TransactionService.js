@@ -692,11 +692,15 @@ function TransactionService($timeout, util, uiGridConstants, bhConstants, Notify
    * This function saves all transactions by
    */
   Transactions.prototype.save = function save() {
-    var clientErrors = validateTransaction(this._entity);
+    // var clientErrors = validateTransaction(this._entity);
 
-    if (clientErrors) {
-      return $q.reject(clientErrors);
-    }
+    // if (clientErrors) {
+      // return $q.reject(clientErrors);
+    // }
+  
+    console.log('submitting saveChanges(entity, changes)');
+    console.log('entity', this._entity);
+    console.log('changes', this._changes);
 
     return Journal.saveChanges(this._entity, this._changes)
       .then(function (results) {
