@@ -122,6 +122,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
 
     options = {
       reference : isValidNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
+      detailed : 1,
       limit     : 1
     };
 
