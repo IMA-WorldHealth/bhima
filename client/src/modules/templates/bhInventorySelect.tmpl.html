@@ -1,7 +1,7 @@
 <div ng-form="InventoryForm" bh-inventory-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : InventoryForm.$$parent.$submitted && InventoryForm.inventory_uuid.$invalid }">
+    ng-class="{ 'has-error' : $ctrl.validateTrigger && InventoryForm.inventory_uuid.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.INVENTORY
@@ -11,7 +11,8 @@
     <ui-select 
       name="inventory_uuid" 
       ng-model="$ctrl.inventoryUuid"
-      on-select="$ctrl.onSelect($item, $model)">
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>
@@ -20,7 +21,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="InventoryForm.inventory_uuid.$error" ng-show="InventoryForm.$$parent.$submitted">
+    <div class="help-block" ng-messages="InventoryForm.inventory_uuid.$error" ng-show="$ctrl.validateTrigger">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>
