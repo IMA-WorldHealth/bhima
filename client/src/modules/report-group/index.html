@@ -111,30 +111,28 @@
                         </div>
                     </div>
 
+                    <div class="pull-right">
+                        <bh-loading-button
+                            ng-show="ReportGroupCtrl.selectedReportGroup.selected == false"
+                            class="pull-right" loading-state="BedRegistrationForm.$loading">
+                                <span translate>FORM.BUTTONS.SAVE</span>
+                        </bh-loading-button>
 
-                    <bh-loading-button
-                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == false"
-                        class="pull-right" loading-state="BedRegistrationForm.$loading">
-                          {{ "FORM.BUTTONS.SAVE" | translate }}
-                    </bh-loading-button>
+                        <span
+                            class="btn btn-danger"
+                            ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)"
+                            ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
+                            translate>
+                               FORM.BUTTONS.DELETE
+                        </span>
 
-                    <span
-                        class="btn btn-danger"
-                        ng-click="ReportGroupCtrl.remove(ReportGroupRegistrationForm)"
-                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
-                        class="pull-right">
-                          {{ "FORM.BUTTONS.DELETE" | translate }}
-                    </span>
-
-                    <bh-loading-button
-                        ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
-                        class="pull-right"
-                        loading-state="BedRegistrationForm.$loading">
-                          {{ "FORM.BUTTONS.UPDATE" | translate }}
-                    </bh-loading-button>
-
+                        <bh-loading-button
+                            ng-show="ReportGroupCtrl.selectedReportGroup.selected == true"
+                            loading-state="BedRegistrationForm.$loading">
+                            <span translate>FORM.BUTTONS.UPDATE</span>
+                        </bh-loading-button>
+                    </div>
                 </form>
-
             </div>
             <!-- end new Reporting group form -->
 

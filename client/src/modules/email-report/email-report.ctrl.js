@@ -5,6 +5,7 @@ EmailReportController.$inject = [
   '$state', 'EmailReportService',
   'ReportGroupService', 'SessionService', 'util',
   'NotifyService', 'ScrollService', 'bhConstants', 'uiGridConstants',
+  'ModalService',
 ];
 
 /**
@@ -17,7 +18,7 @@ EmailReportController.$inject = [
  */
 
 function EmailReportController($state, EmailReportSvc, ReportGroupSvc
-  , Session, util, Notify, ScrollTo, bhConstants, uiGridConstants) {
+  , Session, util, Notify, ScrollTo, bhConstants, uiGridConstants, ModalService) {
 
   var vm = this;
   /*
@@ -50,29 +51,27 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc
     /* loading frequencies*/
     vm.frequencies = EmailReportSvc.frequencies;
 
-    /* If the user has selected a profile, fill name and email field */
     try {
+      /* If the user has selected a profile, fill name and email field */
       if ($state.params.data.email) {
         vm.emailReport.email = $state.params.data.email;
         vm.emailReport.name = $state.params.data.name;
       }
     } catch (ex) {
-        // exception
+      // exception
     }
+
 
     // IF the user want to edit an email report, action->edit
     try {
-
       if ($state.params.data.selectedEmailReport.id) {
         vm.emailReport = $state.params.data.selectedEmailReport;
         vm.selectedEmailReport = vm.emailReport;
         vm.selectedEmailReport.selected = true;
       }
     } catch (ex) {
-      // execption
+      // exception
     }
-
-
     // loading report groups
     ReportGroupSvc.read().then(function (reportGroups) {
       vm.report_groups = reportGroups;
@@ -92,9 +91,7 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc
   }
 
 
-  function confirmDeleteProfile() {
 
-  }
   // reset the form state
   function resetForm(RegistrationForm) {
 
@@ -119,22 +116,26 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc
     const isCreateReport = vm.selectedEmailReport.selected === false;
 
     let operation;
-
+    let msg;
     if (isCreateReport) {
       operation = EmailReportSvc.create(vm.emailReport);
+      msg = 'SAVE_SUCCESS';
     } else {
       operation = EmailReportSvc.update(vm.emailReport);
+      msg = 'UPDATE_SUCCESS';
     }
 
     operation.then(function (confirmation) {
 
       if (confirmation) {
-        alert('operation successeded');
+        // msg = $translate.instant(msg);
+        resetForm(RegistrationForm);
+        load();
+        return Notify.success(msg);
+      } else {
+        return Notify.handleError;
       }
-      // fill the ui grid
-      load();
-            // reset the form state
-      resetForm(RegistrationForm);
+
     })
      .catch(Notify.handleError);
 
@@ -145,21 +146,27 @@ function EmailReportController($state, EmailReportSvc, ReportGroupSvc
   // delete a record
   function remove(RegistrationForm) {
 
-
-    // calling the EmailReportService remove method
-    return EmailReportSvc.remove(vm.selectedEmailReport.id).then(function (confirmation) {
-      if (confirmation) {
-        alert('deleted successfully');
+    ModalService.confirm('FORM.INFO.CONFIRM_DELETE_PROFILE').then(
+      function (yes) {
+        if (yes) {
+          // calling the EmailReportService remove method
+          EmailReportSvc.remove(vm.selectedEmailReport.id).then(
+            function (confirmation) {
+              if (confirmation) {
+                alert('deleted successfully');
+              }
+              // fill the ui grid
+              load();
+              // reset the form state
+              resetForm(RegistrationForm);
+            })
+          .catch(Notify.handleError);
+        }
       }
-      // fille the ui grid
-      load();
-      // reset the form state
-      resetForm(RegistrationForm);
-
-    })
-    .catch(Notify.handleError);
-
+      ).catch(Notify.handleError);
+    return true;
   }
+
   // the ui grid
 
   vm.loading = false;

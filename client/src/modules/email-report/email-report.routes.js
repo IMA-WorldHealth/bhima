@@ -7,7 +7,7 @@ angular.module('bhima.routes')
         controller: 'EmailReportController as EmailReportCtrl',
         templateUrl: 'modules/email-report/index.html',
         params: {
-          data: null,
+          data: {},
         },
       })
       .state('emailreport.selectProfile', {
@@ -41,9 +41,6 @@ function onSelectProfileFactory() {
       backdrop: 'static',
       keyboard: false,
     }).result
-      .then(function () {
-        // Notify.success(message);
-      })
       .catch(function (error) {
         if (error) {
           Notify.handleError(error);
@@ -64,9 +61,6 @@ function onSelectProfileCategoryFactory() {
       backdrop: 'static',
       keyboard: true,
     }).result
-      .then(function () {
-        // Notify.success(message);
-      })
       .catch(function (error) {
         if (error) {
           Notify.handleError(error);

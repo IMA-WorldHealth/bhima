@@ -14,6 +14,10 @@
       "DAILY" : "Journalière",
       "WEEKLY" : "Hebdomadaire",
       "MONTHLY" : "Monsuelle"
+    },
+    "INFO":{
+      "CONFIRM_DELETE_PROFILE" : "Voulez-vous supprimer ce profile?",
+      "CONFIRM_DELETE_REPORT_GROUP" : "Voulez-vous supprimer ce type de rapport?"
     }
   },
   "REPORT":{

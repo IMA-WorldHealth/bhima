@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 ReportGroupController.$inject = [
   '$state', 'ReportGroupService', 'SessionService', 'util', 'NotifyService', 'ScrollService',
-  'bhConstants', 'uiGridConstants',
+  'bhConstants', 'uiGridConstants', 'ModalService',
 ];
 
 /**
@@ -14,7 +14,7 @@ ReportGroupController.$inject = [
  * Every report that the system should send by email must be registered
  */
 
-function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, ScrollTo, bhConstants, uiGridConstants) {
+function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, ScrollTo, bhConstants, uiGridConstants, ModalService) {
   var vm = this;
   /*
      reportGroup is the object
@@ -51,53 +51,57 @@ function ReportGroupController($state, ReportGroupSvc, Session, util, Notify, Sc
       return Notify.danger('FORM.ERRORS.INVALID');
     }
 
-    if (vm.selectedReportGroup.selected == true) { //should update
+    const isReportGroup = vm.selectedReportGroup.selected === false;
+    let operation;
+    let msg;
 
-      return ReportGroupSvc.update(vm.reportGroup)
-        .then(function (confirmation) {
-          alert('updated successfully');
-
-                    // reset form state
-          vm.reportGroup = {};
-          RegistrationForm.$setPristine();
-          RegistrationForm.$setUntouched();
-
-          vm.selectedReportGroup.selected = false;
-          ScrollTo('anchor');
-          load();
-        })
-        .catch(Notify.handleError);
-
-    } else {
-            // calling the ReportGroupService create method
-      return ReportGroupSvc.create(vm.reportGroup)
-                .then(function (confirmation) {
-                  alert('saved successfully');
-                  load();
-                    // reset form state
-                  vm.reportGroup = {};
-                  RegistrationForm.$setPristine();
-                  RegistrationForm.$setUntouched();
-                  ScrollTo('anchor');
-                })
-                .catch(Notify.handleError);
+    if (isReportGroup) { // should create
+      operation = ReportGroupSvc.create(vm.reportGroup);
+      msg = 'SAVE_SUCCESS';
+    } else { // should update
+      operation = ReportGroupSvc.update(vm.reportGroup);
+      msg = 'UPDATE_SUCCESS';
     }
 
+    operation.then(function (confirmation) {
+      if (confirmation) {
+        // msg = $translate.instant(msg);
+        vm.reportGroup = {};
+        RegistrationForm.$setPristine();
+        RegistrationForm.$setUntouched();
+        vm.selectedReportGroup.selected = false;
+        ScrollTo('anchor');
+        load();
+        return Notify.success(msg);
+      } else {
+        return Notify.handleError;
+      }
+    })
+    .catch(Notify.handleError);
+    return true;
   }
 
-  function remove(RegistrationForm) {
 
-    return ReportGroupSvc.remove(vm.reportGroup.code)
-            .then(function () {
-              alert('deleted successfully');
+  function remove(RegistrationForm) {
+    ModalService.confirm('FORM.INFO.CONFIRM_DELETE_REPORT_GROUP').then(
+      function (yes) {
+        if (yes) {
+          return ReportGroupSvc.remove(vm.reportGroup.code).then(
+            function () {
+
+              Notify.success('DELETE_SUCCESS');
               load();
-                // reset form state
+                  // reset form state
               vm.reportGroup = {};
               RegistrationForm.$setPristine();
               RegistrationForm.$setUntouched();
               ScrollTo('anchor');
-            })
-            .catch(Notify.handleError);
+            }
+          )
+          .catch(Notify.handleError);
+          }
+      }
+    );
   }
 
   // the ui grid
