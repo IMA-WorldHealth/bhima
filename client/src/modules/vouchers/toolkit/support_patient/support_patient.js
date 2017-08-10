@@ -4,11 +4,11 @@ angular.module('bhima.controllers')
 // DI definition
 SupportPatientKitController.$inject = [
   '$uibModalInstance', 'NotifyService', 'SessionService', 'data', 'bhConstants',
-  'DebtorService', 'PatientInvoiceService',
+  'DebtorService'
 ];
 
 // Import transaction rows for a Support Patient
-function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors, Invoices) {
+function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
@@ -25,14 +25,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   vm.import = submit;
   vm.loadInvoice = loadInvoice;
   vm.onSelectAccount = onSelectAccount;
-
-  // debtors from store
-  Debtors.store()
-    .then(function (data) {
-      vm.patients = data;
-    })
-    .catch(Notify.handleError);
-
+  
   // get debtor group invoices
   function selectPatientInvoices(debtorId) {
     // load patient invoices
@@ -50,10 +43,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
-
-        return Invoices.read(null, { debtor_uuid: debtorId });
-      })
-      .then(function (data) {
+        
         vm.invoices = data;
       })
       .catch(Notify.handleError);
@@ -93,10 +83,12 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
       row.credit = invoice.balance;
 
       // this is needed for a nice display in the grid
-      row.entity = formatEntity(invoice.entity_uuid);
+      row.entity = formatEntity(result.patient);
 
-      // this is need to display references in the grid nicely
-      row.document = getInvoiceReference(invoice.uuid);
+      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from 
+      // the database or ommitted
+      invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
+      row.document = invoice;
 
       // add the row in to the
       rows.push(row);
@@ -106,26 +98,12 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   }
 
   // format entity
-  function formatEntity(uuid) {
-    var entity = vm.patients.get(uuid);
+  function formatEntity(patient) {
     return {
-      label : entity.text,
+      label : patient.text,
       type  : 'D',
-      uuid  : entity.uuid,
+      uuid  : patient.debtor_uuid,
     };
-  }
-
-  // get invoice reference
-  function getInvoiceReference(uuid) {
-    var invoice = vm.invoices.filter(function (item) {
-      return item.uuid === uuid;
-    })[0];
-
-    if (invoice) {
-      invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
-    }
-
-    return invoice;
   }
 
   // generate row element
