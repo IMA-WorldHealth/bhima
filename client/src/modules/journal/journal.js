@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService',
-  'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
+  'SessionService', 'NotifyService', 'GridEditorService',
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
   '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService', 'GridSelectionService'
@@ -31,7 +31,7 @@ JournalController.$inject = [
  * @todo Propose utility bar view design
  */
 function JournalController(Journal, Sorting, Grouping,
-  Filtering, Columns, Session, Notify, Transactions, Editors,
+  Filtering, Columns, Session, Notify, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
   $translate, GridExport, TransactionType, GridState, GridSelection) {
@@ -40,7 +40,7 @@ function JournalController(Journal, Sorting, Grouping,
   var grouping;
   var filtering;
   var columnConfig;
-  var transactions;
+  // var transactions;
   var exportation;
   var state;
   var selection;
@@ -64,17 +64,6 @@ function JournalController(Journal, Sorting, Grouping,
       Notify.handleError(error);
     });
 
-
-
-
-  /** @constants */
-  vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
-  vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
-  vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
-
-  // @todo - this doesn't work with the ui-grid-datepicker-edit library yet.
-  vm.DATEPICKER_OPTIONS = { format: bhConstants.dates.format };
-
   vm.enterprise = Session.enterprise;
   vm.languages = Languages;
   vm.gridApi = {};
@@ -88,8 +77,7 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    rowTemplate                : '/modules/templates/grid/transaction.row.html',
-    onRegisterApi              : onRegisterApi,
+    onRegisterApi : function (api) { vm.gridApi = api; }
   };
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
@@ -101,7 +89,6 @@ function JournalController(Journal, Sorting, Grouping,
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
-  transactions = new Transactions(vm.gridOptions);
   exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
   state = new GridState(vm.gridOptions, cacheKey);
   selection = new GridSelection(vm.gridOptions);
@@ -115,11 +102,9 @@ function JournalController(Journal, Sorting, Grouping,
   vm.selection = selection;
 
   // Attaching the transaction to the view
-  vm.transactions = transactions;
+  // vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
-
-  vm.cancelEdit = cancelEdit;
    
   /**
    * @function toggleLoadingIndicator
@@ -156,8 +141,7 @@ function JournalController(Journal, Sorting, Grouping,
     { field            : 'uuid',
       displayName      : 'TABLE.COLUMNS.ID',
       headerCellFilter : 'translate',
-      visible          : false,
-      enableCellEdit   : false },
+      visible          : false },
 
     { field            : 'project_name',
       displayName      : 'TABLE.COLUMNS.PROJECT',
@@ -169,14 +153,12 @@ function JournalController(Journal, Sorting, Grouping,
       displayName      : 'TABLE.COLUMNS.PERIOD',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
-      visible          : false,
-      enableCellEdit   : false },
+      visible          : false },
 
     { field            : 'trans_id',
       displayName      : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter : 'translate',
       sortingAlgorithm : sorting.transactionIds,
-      enableCellEdit   : false,
       width            : 110,
       cellTemplate     : 'modules/journal/templates/hide-groups-label.cell.html' },
 
@@ -185,16 +167,14 @@ function JournalController(Journal, Sorting, Grouping,
       headerCellFilter                 : 'translate',
       cellFilter                       : 'date:"' + bhConstants.dates.format + '"',
       filter                           : { condition: filtering.filterByDate },
-      editableCellTemplate             : 'modules/journal/templates/date.edit.html',
       treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
       },
-      sort : { 
-        priority : 0,
-        direction : uiGridConstants.DESC
-      },
-      enableCellEdit     : true,
+      // sort : { 
+        // priority : 0,
+        // direction : uiGridConstants.DESC
+      // },
       footerCellTemplate : '<i></i>' },
 
     { field                : 'hrRecord',
@@ -204,27 +184,19 @@ function JournalController(Journal, Sorting, Grouping,
       cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" /></div>',
       treeAggregationType  : uiGridGroupingConstants.aggregation.MIN,
       treeAggregationLabel : '',
-      enableCellEdit       : false,
       footerCellTemplate   : '<i></i>' },
 
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
-      sort : { 
-        priority : 0,
-        direction : uiGridConstants.ASC,
-      },
-
       footerCellTemplate : '<i></i>' },
 
     { field                : 'account_number',
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
-      editableCellTemplate : '<div><form name="inputForm"><div ui-grid-edit-account></div></form></div>',
-      enableCellEdit       : true,
       cellTemplate         : '/modules/journal/templates/account.cell.html',
-      headerCellFilter     : 'translate',
-    }, {
-      field                            : 'debit_equiv',
+      headerCellFilter     : 'translate' }, 
+      
+    { field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter                 : 'translate',
       treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
@@ -232,8 +204,7 @@ function JournalController(Journal, Sorting, Grouping,
         aggregation.rendered = aggregation.value;
       },
       enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
-    },
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' },
 
     { field                            : 'credit_equiv',
       displayName                      : 'TABLE.COLUMNS.CREDIT',
@@ -243,36 +214,31 @@ function JournalController(Journal, Sorting, Grouping,
         aggregation.rendered = aggregation.value;
       },
       enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
-    },
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' },
 
     { field            : 'currencyName',
       displayName      : 'TABLE.COLUMNS.CURRENCY',
       headerCellFilter : 'translate',
-      visible          : false,
-      enableCellEdit   : false },
+      visible          : false },
 
     { field            : 'debit',
       displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
-      cellTemplate     : '/modules/journal/templates/debit.grid.html',
-      enableCellEdit   : false },
+      cellTemplate     : '/modules/journal/templates/debit.grid.html' },
 
     { field            : 'credit',
       displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
-      cellTemplate     : '/modules/journal/templates/credit.grid.html',
-      enableCellEdit   : false },
-
+      cellTemplate     : '/modules/journal/templates/credit.grid.html' },
+    
     { field                : 'hrEntity',
       displayName          : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter     : 'translate',
       cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
-      editableCellTemplate : '/modules/journal/templates/entity.edit.html',
       visible              : true },
-
+    
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
@@ -283,61 +249,15 @@ function JournalController(Journal, Sorting, Grouping,
       displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
       headerCellFilter     : 'translate',
       cellTemplate         : '/modules/journal/templates/transaction_type.html',
-      editableCellTemplate : '/modules/journal/templates/transaction_type.edit.html',
       visible              : false },
 
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
-      visible          : false,
-      enableCellEdit   : false },
-
-    { field            : 'actions',
-      displayName      : '',
-      headerCellFilter : 'translate',
-      visible          : true,
-      enableCellEdit   : false,
-      cellTemplate     : '/modules/journal/templates/actions.cell.html',
-      allowCellFocus   : false,
-      enableFiltering  : false,
-    },
+      visible          : false }
   ];
   vm.gridOptions.columnDefs = columns;
 
-  console.log(vm.gridOptions.columnDefs);
-
-  // API register function
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-
-    vm.gridApi.edit.on.afterCellEdit(null, function (rowEntity, colDef, newValue, oldValue) {
-      if (newValue != oldValue) {
-        propagate(colDef.field, newValue);
-      }
-    });
-  }
-
-  function updateSharedPropertyOnRow(rows, column, value) {
-    rows.forEach(function (row) {
-      transactions.editCell(row, column, value, row[column]);
-      row[column] = (column === 'trans_date') ? new Date(value) : value;
-    });
-  }
-
-  function propagate(column, value){
-    var propagateColumn = ['trans_date', 'entity_uuid', 'origin_id'];
-
-    // Check if the column updated must be propragated in all transaction
-    var hasSharedProperty = propagateColumn.indexOf(column) !== -1;
-
-    if (hasSharedProperty) {
-      // pass updates on to both the original rows and the new (pending) rows
-      updateSharedPropertyOnRow(vm.transactions._entity.data.data, column, value);
-      updateSharedPropertyOnRow(vm.transactions._entity.newRows.data, column, value);
-    }
-  }
-
-  // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
     // column configuration has direct access to the grid API to alter the current
     // state of the columns - this will be saved if the user saves the grid configuration
@@ -359,6 +279,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // format Export Parameters
   function formatExportParameters(type) {
+    // @TODO(sfount) this should not be requirement for exporting - filter on group like editing 
     // make sure a row is selected before running the trial balance
     if (grouping.selectedRowCount < 1) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
@@ -392,10 +313,15 @@ function JournalController(Journal, Sorting, Grouping,
     Notify.handleError(error);
   }
 
+  vm.reloadData = function reloadData() { 
+    load(Journal.filters.formatHTTP(true));
+  }
+
   // loads data for the journal
   function load(options) {
     vm.loading = true;
     vm.hasError = false;
+    vm.unknownTransactionEditState = false;
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
 
@@ -407,36 +333,17 @@ function JournalController(Journal, Sorting, Grouping,
 
         // pre process data - this should be done in a more generic way in a service
         journalStore.setData(records.journal);
-
-        // vm.gridOptions.data = transactions.preprocessJournalData(records);
+        
         vm.gridOptions.data = journalStore.data;
 
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
 
-        transactions.applyEdits();
-
-        // @TODO investigate why footer totals aren't updated automatically on data change
+        // @TODO(sfount) investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
-  }
-
-  // this method can eventually ensure we have a flat direct binding to all
-  // cells in UI grid. This should drastically improve performance
-  // @todo move this method into a service
-  function preprocessJournalData(data) {
-    var aggregateStore = new Store({ identifier: 'record_uuid' });
-    aggregateStore.setData(data.aggregate);
-
-    data.journal.forEach(function (row) {
-
-      // give each row a reference to its transaction aggregate data
-      row.transaction = aggregateStore.get(row.record_uuid);
-    });
-
-    return data.journal;
   }
 
   // open search modal
@@ -466,37 +373,7 @@ function JournalController(Journal, Sorting, Grouping,
     return load(Journal.filters.formatHTTP(true));
   }
 
-  vm.editTransaction = editTransaction;
-  function editTransaction(row) {
-    vm.filterBarHeight = bhConstants.utilBar.journalHeightStyle;
-
-    // expand the row
-    vm.grouping.unfoldGroup(row);
-
-    transactions.edit(row);
-
-    // disable inline filtering when editing
-    filtering.disableInlineFiltering();
-  }
-
-  vm.saveTransaction = saveTransaction;
-  function saveTransaction() {
-    vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
-    transactions.save()
-      .then(function (results) {
-        Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
-        // ensure that all of the data now respects the current filter
-        load(Journal.filters.formatHTTP(true));
-      })
-      .catch(function (error) {
-        if (!error.status) {
-          Notify.warn(error);
-        } else {
-          Notify.handleError(error);
-        }
-      });
-  }
-
+  // @FIXME(sfount) should this not be done in the grouping service?
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
     var transactionColumnKey = 'trans_id';
 
@@ -516,90 +393,11 @@ function JournalController(Journal, Sorting, Grouping,
   //       updated to keep track of the current grid grouped state
   vm.gridGroupedState = vm.grouping.getCurrentGroupingColumn;
 
-  vm.saveAccountEdit = function saveAccountEdit(row, account) {
-    row.account_id = account.id;
-    row.account_name = account.hrlabel;
-    $rootScope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
-  };
-
-  function cancelEdit() {
-    vm.filterBarHeight = bhConstants.utilBar.collapsedHeightStyle;
-
-    // @TODO this should return a promise in a uniform standard with `saveTransaction`
-    transactions.cancel();
-
-    // ensure data that has been changed is up to date from the server
-    // remove any additional or temporary rows
-    load(Journal.filters.formatHTTP(true));
-  }
-
   // runs on startup
   function startup() {
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
-    loadTransactionType();
   }
-
-  // ===================== edit entity ===============================
-
-  // expose to the view
-  vm.openEntityModal = openEntityModal;
-  vm.removeEntity = removeEntity;
-
-  // open find entity modal
-  function openEntityModal(row) {
-    FindEntity.openModal()
-      .then(function (entity) {
-        if (!entity) { return; }
-
-        row.hrEntity = entity.hrEntity;
-        transactions.editCell(row, 'entity_uuid', entity.uuid);
-      });
-  }
-
-  // remove the entity
-  function removeEntity(row) {
-    if (!row.hrEntity) { return; }
-
-    transactions.editCell(row, 'entity_uuid', null);
-    delete row.entity_uuid;
-    delete row.hrEntity;
-  }
-  // ===================== end edit entity ===========================
-
-  // ===================== transaction type ==========================
-  vm.editTransactionType = editTransactionType;
-  vm.removeTransactionType = removeTransactionType;
-
-  // edit transaction type
-  function editTransactionType(row) {
-    var id = row.origin_id;
-    transactions.editCell(row, 'origin_id', id);
-
-    // Propagate the change in all origin Id for transaction
-    propagate('origin_id', id);
-  }
-
-  // remove transaction type
-  function removeTransactionType(row) {
-    transactions.editCell(row, 'origin_id', null);
-  }
-
-  // load transaction types
-  function loadTransactionType() {
-    TransactionType.read()
-    .then(function (list) {
-      vm.mapOrigins = {};
-
-      vm.typeList = list.map(function (item) {
-        item.hrText = $translate.instant(item.text);
-        vm.mapOrigins[item.id] = item.hrText;
-        return item;
-      });
-    })
-    .catch(Notify.handleError);
-  }
-  // ===================== end transaction type ======================
 
   startup();
   
@@ -611,32 +409,40 @@ function JournalController(Journal, Sorting, Grouping,
       return;
     }
     
-    
     var selectedTransaction = selection.selected.groups[0];
     var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction); 
-    
+   
+    // Journal module rules for optimistic updating: 
+    // 1. If a row in the current dataset has been removed - remove this row 
+    // 2. If a row in the current dataset has been updated - update the values 
+    // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter 
+    // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
     Journal.openTransactionEditModal(transactionUuid)
-      .then(function (updatedTransactionResult) { 
-        const changed = angular.isDefined(updatedTransactionResult);
-
+      .then(function (editSessionResult) { 
+        var updatedRows = editSessionResult.updatedTransaction;
+        var changed = angular.isDefined(updatedRows);
+        
+        vm.gridApi.selection.clearSelectedRows();
         if (changed) { 
-          // update local data set 
-          console.log('changes detected - removing rows');
-          // remove all previous rows
-          //
-          try { 
-          hackGetTransactionRows(transactionUuid).forEach(function (row) { 
-            console.log('removing', row.uuid);
-            journalStore.remove(row.uuid);
+          // update only rows that already existed and have been edited
+          editSessionResult.edited.forEach(function (uuid) { 
+            // update record that already exists 
+            var currentRow = journalStore.get(uuid);
+            var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+
+            Object.keys(currentRow).forEach(function (key) { 
+              currentRow[key] = updatedRow[key];
+            });
           });
       
-          // insert guaranteed updated rows
-          updatedTransactionResult.forEach(function (row) { 
-            console.log('adding', row);
-            journalStore.post(row);
+          // remove rows that existed before and have been removed
+          editSessionResult.removed.forEach(function (uuid) { 
+            journalStore.remove(uuid);
           });
-          } catch (e) { 
-            console.log(e);
+
+          if (editSessionResult.added.length) { 
+            // rows have been added, we have no guarantees on filters so display a warning
+            vm.unknownTransactionEditState = true;
           }
           vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
         }
@@ -653,12 +459,4 @@ function JournalController(Journal, Sorting, Grouping,
       }
     }
   }
-  
-  // @FIXME(sfount) this should be done with an index that is kept up to date - this is an expensive call on a large dataset
-  function hackGetTransactionRows(recordUuid) { 
-    return journalStore.data.filter(function (row) { 
-      return row.record_uuid === recordUuid;
-    });
-  }
-
 }
