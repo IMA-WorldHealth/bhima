@@ -311,6 +311,7 @@ function editTransaction(req, res, next) {
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?';
 
   const transaction = db.transaction();
+  const recordUuid = req.params.record_uuid;
 
   const rowsChanged = req.body.changed;
   const rowsAdded = req.body.added;
@@ -337,7 +338,13 @@ function editTransaction(req, res, next) {
       return transaction.execute();
     })
     .then((result) => {
-      res.status(200).json(result);
+
+      // transaction chagnes written successfully - return latest version of transaction
+      return lookupTransaction(recordUuid);
+    })
+    .then((updatedTransaction) => { 
+      const updatedRows = updatedTransaction.journal;
+      res.status(200).json(updatedRows);
     })
     .catch(next);
 
