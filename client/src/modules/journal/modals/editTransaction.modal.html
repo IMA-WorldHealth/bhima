@@ -11,12 +11,6 @@
 <div class="modal-body">
     <!-- Record information -->
     <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
-      <!-- Record ID -->
-      <!-- Project ID -->
-      <!-- Transaction ID -->
-      <!-- Transaction Type -->
-      <!-- Responsible -->
-      <!-- ? Editable date ? -->
 
       <div class="row" ng-if="ModalCtrl.loadingTransaction">
         <div class="col-xs-12 text-center">
@@ -87,13 +81,11 @@
     </div>
     
     <div class="alert alert-danger" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
-    <!-- <div class="alert alert-danger"> -->
     <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
     </div>
 
     <!-- Transaction row edit utilities -->
     <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
-    <!-- <div> -->
       <button ng-disabled="!ModalCtrl.settupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
       <button ng-disabled="!ModalCtrl.settupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
     </div>
@@ -104,12 +96,6 @@
         error-state="ModalCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
-    <!-- Description -->
-    <!-- Account -->
-    <!-- Debit -->
-    <!-- Credit --> 
-    <!-- Recipient --> 
-    <!-- Reference -->
 </div>
 
 <div class="modal-footer">
