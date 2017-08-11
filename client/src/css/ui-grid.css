@@ -53,10 +53,16 @@
   width:  100%;
   height : calc(100vh - 106px);
 }
+          
 
 .grid-journal {
   width : 100%;
   height : calc(100vh - 108px);
+}
+
+.grid-journal-alert { 
+  width : 100%;
+  height : calc(100vh - 150px);
 }
 
 .grid-util-journal {

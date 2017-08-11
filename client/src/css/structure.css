@@ -908,6 +908,9 @@ a[disabled] {
 
 .filter-list {
   display : inline-block;
+
+  /* Remove large bottom margin offsetting filter bars */
+  margin-bottom : 5px;
 }
 
 .filter-list > li {
