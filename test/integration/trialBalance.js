@@ -1,65 +1,80 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
 
 /*
  * The /trial_balance API endpoint
  */
-describe('(/trial) API endpoint', () => {
-
-  const GOOD_TXNS = ['TRANS1', 'TRANS2'];
-  const UNKNOWN_TXNS = ['TS1', 'TS2'];
+describe('(/journal/trialbalance) API endpoint', () => {
+  const GOOD_TXNS = ['957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', 'c44619e0-3a88-4754-a750-a414fc9567bf']; // TRANS1, TRANS2
   const EMPTY_TXNS = [];
-  const ERROR_TXNS = ['TRANS5'];
-  const POSTING_TXNS = ['TRANS1'];
+  const ERROR_TXNS = ['3688e9ce-85ea-4b5c-9144-688177edcb63']; // TRANS5
+  const POSTING_TXNS = ['957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'];
 
-  const formatParams = array => ({ transactions: array });
+  const formatParams = transactions => ({ transactions });
 
-  const NUM_ROWS_GOOD_TRANSACTION = 2;
-  const NUM_ROWS_UNKNOWN_TRANSACTIONS = 0;
-
-  it('GET /trial_balance/data_per_account returns data grouped by account ', () => {
-    return agent.post('/trial_balance/data_per_account')
-      .send(formatParams(GOOD_TXNS))
-      .then((res) => {
-        helpers.api.listed(res, NUM_ROWS_GOOD_TRANSACTION);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /trial_balance/data_per_account returns an empty array when there is no transaction matching ', () => {
-    return agent.post('/trial_balance/data_per_account')
-      .send(formatParams(UNKNOWN_TXNS))
-      .then((res) => {
-        helpers.api.listed(res, NUM_ROWS_UNKNOWN_TRANSACTIONS);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /trial_balance/data_per_account returns an error message and 400 code if the request parameter is null or undefined ', () => {
-    return agent.post('/trial_balance/data_per_account')
+  it('POST /journal/trialbalance handles empty select with a 400 error', () => {
+    return agent.post('/journal/trialbalance')
       .send(formatParams(EMPTY_TXNS))
       .then((res) => {
-        helpers.api.errored(res, 400);
+        helpers.api.errored(res, 400, 'POSTING_JOURNAL.ERRORS.MISSING_TRANSACTIONS');
       })
       .catch(helpers.handler);
   });
 
-  it('POST /trial_balance/checks returns an array of object containing one or more error object', () => {
-    return agent.post('/trial_balance/checks')
+  it('POST /journal/trialbalance returns an object with errors and summary information', () => {
+    return agent.post('/journal/trialbalance')
       .send(formatParams(ERROR_TXNS))
       .then((res) => {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length.at.least(1);
+
+        // assert that the returned object has errors and summary properties
+        expect(res.body).to.have.keys(['errors', 'summary']);
+
+        // make sure that TRANS5 sends back an incorrect date error
+        const err = res.body.errors[0];
+        expect(err.code).to.equal('POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD');
       })
       .catch(helpers.handler);
   });
 
-  it('POST /trial_balance/post_transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
-    return agent.post('/trial_balance/post_transactions')
+
+  it('POST /journal/trialbalance returns summary information grouped by account', () => {
+    return agent.post('/journal/trialbalance')
+      .send(formatParams(GOOD_TXNS))
+      .then((res) => {
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+
+        // assert that the returned object has errors and summary properties
+        expect(res.body).to.have.keys(['errors', 'summary']);
+
+        // the errors property should be empty
+        expect(res.body.errors).to.have.length(0);
+
+        // The transactions TRANS1, TRANS2 hit 2 accounts and should have the following profiles
+        const summary = res.body.summary;
+        expect(summary).to.have.length(2);
+
+        // all accounts have 0 balance before
+        expect(summary[0].balance_before).to.equal(0);
+        expect(summary[1].balance_before).to.equal(0);
+
+        expect(summary[0].debit_equiv).to.equal(100);
+        expect(summary[1].debit_equiv).to.equal(0);
+
+        expect(summary[0].credit_equiv).to.equal(0);
+        expect(summary[1].credit_equiv).to.equal(100);
+
+        expect(summary[0].balance_final).to.equal(100);
+        expect(summary[1].balance_final).to.equal(-100);
+      })
+      .catch(helpers.handler);
+  });
+
+  it.skip('POST /journal/transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
+    return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
         expect(res).to.have.status(201);
