@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'params', 'PatientGroupService',
+  '$uibModalInstance', 'filters',
   'bhConstants', 'moment', 'Store', 'util', 'PeriodService'
 ];
 
@@ -12,54 +12,48 @@ PatientRegistryModalController.$inject = [
  * @description
  * This controller is responsible for setting up the filters for the patient
  * search functionality on the patient registry page.  Filters that are already
- * applied to the grid can be passed in via the params inject.
+ * applied to the grid can be passed in via the filters inject.
  */
-function PatientRegistryModalController(ModalInstance, params, PatientGroupsService, bhConstants, moment, Store, util, Periods) {
+function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
-  vm.filters = params;
+  vm.filters = filters;
+
 
   vm.today = new Date();
-
-  // bind filters if they have already been applied.  Otherwise, default to an
-  // empty object.
   vm.defaultQueries = {};
+  vm.searchQueries = {};
 
   // assign default limit filter
-  if (params.limit) {
-    vm.defaultQueries.limit = params.limit;
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
   }
 
-  // @TODO ideally these should be passed in when the modal is initialised
-  //       these are known when the filter service is defined
+  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
   var searchQueryOptions = [
     'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo', 'dateRegistrationFrom', 'dateRegistrationTo',
     'debtor_group_uuid', 'patient_group_uuid', 'user_id', 'defaultPeriod'
   ];
 
-  // assign already defined custom params to searchQueries object
-  vm.params = util.maskObjectFromKeys(params, searchQueryOptions);
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
 
-  // Set up page elements data (debtor select data)
-  vm.onSelectDebtor = onSelectDebtor;
-
-  function onSelectDebtor(debtorGroup) {
-    vm.params.debtor_group_uuid = debtorGroup.uuid;
+  vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
+    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   }
 
-  PatientGroupsService.read()
-    .then(function (result) {
-      vm.patientGroups = result;
-    });
+  vm.onSelectPatientGroup = function onSelectPatientGroup(patientGroup) {
+    vm.searchQueries.patient_group_uuid = patientGroup.uuid;
+  }
 
-  // custom filter user_id - assign the value to the params object
+  // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.params.user_id = user.id;
+    vm.searchQueries.user_id = user.id;
   };
 
   // default filter limit - directly write to changes list
@@ -83,7 +77,7 @@ function PatientRegistryModalController(ModalInstance, params, PatientGroupsServ
   // returns the parameters to the parent controller
   function submit(form) {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.params, function (value, key) {
+    angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         changes.post({ key : key, value : value });
       }
@@ -95,10 +89,8 @@ function PatientRegistryModalController(ModalInstance, params, PatientGroupsServ
     return ModalInstance.close(loggedChanges);
   }
 
-  // clears search parameters.  Custom logic if a date is used so that we can
-  // clear two properties.
   function clear(value) {
-    delete vm.params[value];
+    delete vm.searchQueries[value];
   }
 
   // dismiss the modal
