@@ -54,6 +54,10 @@ function InvoiceRegistryController(
     displayName : 'TABLE.COLUMNS.BILLING_DATE',
     headerCellFilter : 'translate',
     type : 'date',
+    sort : { 
+      direction : uiGridConstants.ASC, 
+      priority : 0
+    }
   }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.PATIENT',

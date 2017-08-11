@@ -6,17 +6,19 @@ JournalEditTransactionController.$inject = ['JournalService', 'Store', 'Transact
 function JournalEditTransactionController(Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) { 
   var gridApi = {};
   var vm = this;
+
+  vm.loadingTransaction = false;
+  vm.settupComplete = false;
   
   // @TODO(sfount) column definitions currently duplicated across journal and here
   var editColumns = [ 
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
-      footerCellTemplate : '<i></i>' },
-
+    },
     { field                : 'account_number',
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
-      editableCellTemplate : '<div><form name="inputForm"><div ui-grid-edit-account></div></form></div>',
+      editableCellTemplate : '<div><div ui-grid-edit-account></div></div>',
       enableCellEdit       : true,
       cellTemplate         : '/modules/journal/templates/account.cell.html',
       headerCellFilter     : 'translate',
@@ -80,11 +82,12 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
       vm.transactionTypes = typeResults;
     });
 
-  TransactionType.read
+  vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
     .then(function (transaction) { 
       vm.transactionDetails = transaction.aggregate[0];
       
+      vm.settupComplete = true;
       vm.rows = new Store({ identifier : 'uuid' });
       vm.rows.setData(transaction.journal);
 
@@ -96,7 +99,12 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
       vm.gridOptions.data = vm.rows.data;
       console.log('got info on transaction', transaction);
     })
-    .catch(console.error);
+    .catch(function (error) { 
+      vm.hasError = true;  
+    })
+    .finally(function () { 
+      vm.loadingTransaction = false; 
+    });
   
   // takes a transaction row and returns all parameters that are shared among the transaction
   // @TODO(sfount) rewrite method given current transaction service code
@@ -160,6 +168,10 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     vm.validation.errored = false;
     vm.validation.message = null;
     vm.saving = true;
+
+    // @TODO(sfount) run local validation to sanity check basic rules - this should 
+    // be applied in a ValidationService that can be shared between modules dealing
+    // with transaciton rows
   
     // building object to conform to legacy API 
     // @TODO(sfount) update journal service API for human readable interface
@@ -170,10 +182,10 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     };
 
     Journal.saveChanges(transactionRequest, changes)
-      .then(function (saveResult) { 
-        console.log('got save result', saveResult);
+      .then(function (resultUpdatedTransaction) { 
+        console.log('got save result', resultUpdatedTransaction);
 
-        Modal.close();
+        Modal.close(resultUpdatedTransaction);
       })
       .catch(function (error) { 
         // initial errors are handled internally by the modal
