@@ -21,12 +21,16 @@ function InventoryReportConfigController($sce, Notify, SavedReports, AppCache, r
   // chech cached configuration
   checkCachedConfiguration();
 
-  vm.setupDepot = function setupDepot(depot) {
+  vm.onSelectDepot = function onSelectDepot(depot) {
     vm.depot = depot;
   };
 
-  vm.setupInventory = function setupInventory(inventory) {
+  vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.inventory = inventory;
+  };
+
+  vm.clear = function clear(key) {
+    delete vm[key];
   };
 
   vm.clearPreview = function clearPreview() {

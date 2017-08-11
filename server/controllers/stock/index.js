@@ -14,7 +14,6 @@
  */
 
 const uuid = require('node-uuid');
-const moment = require('moment');
 
 const db = require('../../lib/db');
 const core = require('./core');
@@ -52,13 +51,13 @@ function createStock(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD HH:mm:ss').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 
   params.lots.forEach((lot) => {
         // lot expiration date
-    date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD HH:mm:ss').toString();
+    date = new Date(lot.expiration_date);
 
         // lot prepare query
     createLotQuery = 'INSERT INTO lot SET ?';
@@ -113,7 +112,7 @@ function createMovement(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD HH:mm:ss').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 

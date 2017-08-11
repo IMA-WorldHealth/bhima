@@ -19,11 +19,11 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   // chech cached configuration
   checkCachedConfiguration();
 
-  vm.setupDepot = function setupDepot(depot) {
+  vm.onSelectDepot = function onSelectDepot(depot) {
     vm.depot = depot;
   };
 
-  vm.setupInventory = function setupInventory(inventory) {
+  vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.inventory = inventory;
   };
 

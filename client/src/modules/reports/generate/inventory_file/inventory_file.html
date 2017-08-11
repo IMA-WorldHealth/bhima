@@ -27,7 +27,7 @@
           <!-- select depot -->
           <bh-depot-select
             depot-uuid="ReportConfigCtrl.depot.uuid"
-            on-select-callback="ReportConfigCtrl.setupDepot(depot)"
+            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
             required="true"
             validate-trigger="ConfigForm.$submitted">
             <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
@@ -36,7 +36,7 @@
           <!-- select inventory -->
           <bh-inventory-select
             inventory-uuid="ReportConfigCtrl.inventory.uuid"
-            on-select-callback="ReportConfigCtrl.setupInventory(inventory)"
+            on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
             required="true"
             validate-trigger="ConfigForm.$submitted">
             <bh-clear on-clear="ReportConfigCtrl.clear('inventory')"></bh-clear>
@@ -44,7 +44,7 @@
 
           <!-- choose date until  -->
           <bh-date-editor
-            label="FORM.LABELS.UNTIL_PERIOD"
+            label="FORM.LABELS.UNTIL_DATE"
             date-value="ReportConfigCtrl.dateTo">
           </bh-date-editor>
 
