@@ -16,6 +16,7 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
         '    typeahead-min-length="0" ' +
         '    ng-required="true"' +
         '    typeahead-editable ="false" ' +
+        '    typeahead-append-to-body="true" ' +
         '    typeahead-on-select="setAccountOnRow(row.entity, $item)" />' +
         '</div>';
 

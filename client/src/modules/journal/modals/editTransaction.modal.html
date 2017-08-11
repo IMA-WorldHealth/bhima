@@ -86,7 +86,7 @@
     
     <div class="alert alert-danger" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
     <!-- <div class="alert alert-danger"> -->
-    <i class="fa fa-exclamation-circle"></i> {{ModalCtrl.validation.message}}
+    <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
     </div>
 
     <!-- Transaction row edit utilities -->
@@ -113,5 +113,7 @@
 
 <div class="modal-footer">
   <button class="btn btn-default" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
-  <button class="btn btn-primary" translate>POSTING_JOURNAL.SAVE_TRANSACTION</button>
+  <bh-loading-button loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
+    <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
+  </bh-loading-button>
 </div>

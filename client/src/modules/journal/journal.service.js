@@ -26,6 +26,11 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     return this.read(id, gridOptions);
   }
 
+  // @TODO(sfount) change this API to (change pending to not break current functionality):
+  //                - transaction uuid
+  //                - changes (object)
+  //                - new rows (array)
+  //                - removed rows (array)
   function saveChanges(entity, changes) {
     var added = angular.copy(entity.newRows);
 
@@ -36,19 +41,25 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       removed : entity.removedRows,
     };
 
+    console.log('sending save request', saveRequest);
+
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpRequest);
   }
 
   function sanitiseNewRows(rows) {
     rows.data.forEach(function (row) {
+
+      
       // delete view data required by journal grid
       delete row.transaction;
       delete row.hrRecord;
       delete row.currencyName;
       delete row.project_name;
+      delete row.display_name;
     });
-
+    
+    console.log('sanitised rows', rows.data);
     return rows.data;
   }
 
