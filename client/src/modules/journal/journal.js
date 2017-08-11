@@ -8,7 +8,7 @@ JournalController.$inject = [
   'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
   '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService',
-  'GridSelectionService',
+  'GridSelectionService', 'TrialBalanceService',
 ];
 
 /**
@@ -35,7 +35,7 @@ function JournalController(Journal, Sorting, Grouping,
   Filtering, Columns, Session, Notify, Editors,
   bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
   uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
-  $translate, GridExport, TransactionType, GridState, GridSelection) {
+  $translate, GridExport, TransactionType, GridState, GridSelection, TrialBalance) {
   // Journal utilities
   var sorting;
   var grouping;
@@ -48,12 +48,13 @@ function JournalController(Journal, Sorting, Grouping,
 
   // store journal data
   var journalStore = new Store({ identifier : 'uuid' });
+  var transactionIdToRecordUuidMap;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
 
   // top level cache
-  var cache = AppCache(cacheKey + '-module');
+  var cache = AppCache(cacheKey.concat('-module'));
   var vm = this;
 
   // number of all of the transactions in the system
@@ -61,9 +62,7 @@ function JournalController(Journal, Sorting, Grouping,
     .then(function (data) {
       vm.numberTotalSystemTransactions = data[0].number_transactions;
     })
-    .catch(function (error) {
-      Notify.handleError(error);
-    });
+    .catch(Notify.handleError);
 
   vm.enterprise = Session.enterprise;
   vm.languages = Languages;
@@ -195,9 +194,10 @@ function JournalController(Journal, Sorting, Grouping,
     { field                : 'account_number',
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
       cellTemplate         : '/modules/journal/templates/account.cell.html',
-      headerCellFilter     : 'translate' },
-
-    { field                            : 'debit_equiv',
+      headerCellFilter     : 'translate',
+    }, {
+      field                            : 'debit_equiv',
+      type                             : 'number',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter                 : 'translate',
       treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
@@ -208,6 +208,7 @@ function JournalController(Journal, Sorting, Grouping,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' },
 
     { field                            : 'credit_equiv',
+      type                             : 'number',
       displayName                      : 'TABLE.COLUMNS.CREDIT',
       headerCellFilter                 : 'translate',
       treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
@@ -223,12 +224,14 @@ function JournalController(Journal, Sorting, Grouping,
       visible          : false },
 
     { field            : 'debit',
+      type             : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
       cellTemplate     : '/modules/journal/templates/debit.grid.html' },
 
     { field            : 'credit',
+      type             : 'number',
       displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
@@ -268,15 +271,22 @@ function JournalController(Journal, Sorting, Grouping,
 
   // This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal() {
-    var numberSelectedGroup = vm.grouping.getSelectedGroups().length;
+    // gather the selected transactions together
+    var selectedTransactionIds = selection.selected.groups;
 
     // make sure a row is selected before running the trial balance
-    if (numberSelectedGroup === 0) {
+    if (selectedTransactionIds.length === 0) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
       return;
     }
 
-    $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
+    var selectedRecordUuids = selectedTransactionIds.map(function (transId) {
+      return transactionIdToRecordUuidMap[transId];
+    });
+
+    TrialBalance.initialise(selectedRecordUuids);
+
+    $state.go('TrialBalance');
   };
 
   // format Export Parameters
@@ -310,6 +320,7 @@ function JournalController(Journal, Sorting, Grouping,
     exportation.run();
   };
 
+
   function errorHandler(error) {
     vm.hasError = true;
     Notify.handleError(error);
@@ -341,8 +352,19 @@ function JournalController(Journal, Sorting, Grouping,
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
 
-        // @TODO(sfount) investigate why footer totals aren't updated automatically on data change
+        // map record_uuid -> trans_id
+        transactionIdToRecordUuidMap = Journal.mapTransactionIdsToRecordUuids(vm.gridOptions.data);
+
+        // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+        // scrollToRecordUuid() will scroll to a record uuid on initial load...
+        // TODO(@jniles) - this is kind of hacky.  We shouldn't have to check the $params on every
+        // load(), only on the initial load.  Redesign?
+        if ($state.params.scrollTo) {
+          transactions.scrollIntoView($state.params.scrollTo);
+          delete $state.params.scrollTo;
+        }
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
