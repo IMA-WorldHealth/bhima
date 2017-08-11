@@ -84,7 +84,7 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
-//looking up an entity by it reference
+// looking up an entity by it reference
 const refenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
@@ -175,12 +175,10 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
- 
+
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
-
-  
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
@@ -188,9 +186,8 @@ exports.configure = function configure(app) {
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   // API for trial balance
-  app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
-  app.post('/trial_balance/checks', trialBalance.checkTransactions);
-  app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
+  app.post('/journal/trialbalance', trialBalance.runTrialBalance);
+  app.post('/journal/transactions', trialBalance.postToGeneralLedger);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
@@ -207,7 +204,6 @@ exports.configure = function configure(app) {
   // Period routes
   app.get('/periods', fiscalPeriod.list);
 
-
   /* load a user's tree */
   app.get('/tree', tree.generate);
 
@@ -215,7 +211,6 @@ exports.configure = function configure(app) {
   app.get('/snis/healthZones', snis.healthZones);
 
   // Employee management
-  app.get('/employee_list/', employees.list);
   app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
@@ -318,7 +313,7 @@ exports.configure = function configure(app) {
 
   // interface for linking entities, it renders a report for a particular entity
   app.get('/refenceLookup/:codeRef/:language', refenceLookup.getEntity);
-  
+
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
 
