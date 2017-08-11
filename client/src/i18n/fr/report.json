@@ -86,6 +86,22 @@
       "PREVIOUS_MVT" : "Du debut Au :",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },
+    "STOCK":{
+      "TITLE":"Rapport de stock",
+      "DESCRIPTION":"Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et etat",
+      "ALL_DEPOTS":"Tous les depots",
+      "ONE_DEPOT":"Un depot en particulier",
+      "ALL_INVENTORIES":"Tous les articles",
+      "ONE_INVENTORY":"Un article en particulier",
+      "INVENTORY_REPORT":"Fiche de stock",
+      "INVENTORY_REPORT_DESCRIPTION":"Ce rapport affiche montre les mouvements d'un article ainsi que son etat et sa valeur dans le stock",
+      "QUANTITY":"Quantité",
+      "UNIT_COST":"Cout Unitaire",
+      "VALUE":"Valeur",
+      "ENTRIES":"Entrées",
+      "EXITS":"Sorties",
+      "STOCKS":"Stocks"
+    },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
       "SAVE_AS":"Enregistrer sous",

@@ -42,6 +42,9 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql &> /dev/null
 echo "[update] account type to account category"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/account_type.sql &> /dev/null
 
+echo "[update] service uuid identifiers"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/service_uuid.sql &> /dev/null
+
 echo "[build] compute account class"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call ComputeAccountClass();" &> /dev/null
 

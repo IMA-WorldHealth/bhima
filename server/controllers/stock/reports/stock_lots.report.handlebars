@@ -13,11 +13,13 @@
         {{translate 'TREE.STOCK_LOTS'}}
       </h2>
 
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
       <!-- filters  -->
       {{#if hasFilter}}
-      <br />
         <div>
-          <i class="fa fa-filter"></i>
           {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
           {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
           {{#if display.label}}{{translate 'STOCK.LOT'}}: {{look display 'label'}} /{{/if}}
@@ -26,11 +28,10 @@
           {{#if display.entry_date_from}} {{translate 'STOCK.ENTRY_DATE'}}> {{date (look display 'entry_date_from')}} /{{/if}}
           {{#if display.entry_date_to}} {{translate 'STOCK.ENTRY_DATE'}}< {{date (look display 'entry_date_to')}} /{{/if}}
         </div>
-        <br />
       {{/if}}
 
       <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
             <th>{{translate 'STOCK.CODE'}}</th>
@@ -40,23 +41,44 @@
             <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
             <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
             <th>{{translate 'STOCK.EXPIRATION'}}</th>
-            <th>{{translate 'STOCK.DEPOT'}}</th>
           </tr>
         </thead>
         <tbody>
-          {{#each rows}}
-            <tr>
-              <td>{{code}}</td>
-              <td>{{text}}</td>
-              <td>{{label}}</td>
-              <td class="text-right">{{quantity}}</td>
-              <td class="text-right">{{date entry_date}}</td>
-              <td class="text-right">{{date expiration_date}}</td>
-              <td class="text-right">{{delay_expiration}}</td>
-              <td>{{depot_text}}</td>
+          <!-- for each depots which contains lots -->
+          {{#each depots as | items name |}}
+
+            <!-- this is the depot group header -->
+            <tr style="border:none">
+              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+                {{ name }}
+              </th>
+
+              <th colspan="6" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+              </th>
             </tr>
-          {{else}}
-            {{> emptyTable columns=7}}
+
+            <!-- these are the items for each group -->
+            {{#each items as | item | }}
+              <tr>
+                <td>{{code}}</td>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{date entry_date}}</td>
+                <td class="text-right">{{date expiration_date}}</td>
+                <td class="text-right">{{delay_expiration}}</td>
+              </tr>
+            {{/each}}
+
+            <!-- blank row  -->
+            {{#unless @last }}
+              <!-- blank line -->
+              <tr style="border:none;">
+                <th style="border:none;"></th>
+              </tr>
+            {{/unless}}
+
           {{/each}}
         </tbody>
       </table>

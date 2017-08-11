@@ -13,30 +13,25 @@
         {{translate 'TREE.STOCK_MOVEMENTS'}}
       </h2>
 
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
       <!-- filters  -->
       {{#if hasFilter}}
-      <br />
         <div>
-          <i class="fa fa-filter"></i>
-          {{#if display.is_exit}}
-            {{translate 'STOCK.OUTPUT'}}/
-          {{else}}
-            {{translate 'STOCK.INPUT'}}/
-          {{/if}}
           {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
           {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
           {{#if display.label}}{{translate 'STOCK.LOT'}}: {{look display 'label'}} /{{/if}}
           {{#if display.dateFrom}} {{translate 'FORM.LABELS.DATE'}}> {{date (look display 'dateFrom')}} /{{/if}}
           {{#if display.dateTo}} {{translate 'FORM.LABELS.DATE'}}< {{date (look display 'dateTo')}} /{{/if}}
         </div>
-        <br />
       {{/if}}
 
       <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
-            <th>{{translate 'STOCK.DEPOT'}}</th>
             <th>{{translate 'STOCK.IO'}}</th>
             <th>{{translate 'STOCK.INVENTORY'}}</th>
             <th>{{translate 'STOCK.LOT'}}</th>
@@ -48,38 +43,61 @@
           </tr>
         </thead>
         <tbody>
-          {{#each rows}}
-            {{#if is_exit}}
-              <tr class="text-danger">
-                <td>{{depot_text}}</td>
-                <td>
-                  <span>{{translate 'STOCK.OUTPUT'}}</span>
-                </td>
-                <td>{{text}}</td>
-                <td>{{label}}</td>
-                <td class="text-right">{{quantity}}</td>
-                <td class="text-right">{{unit_cost}}</td>
-                <td class="text-right">{{multiply quantity unit_cost}}</td>
-                <td>{{date date}}</td>
-                <td>{{translate flux_label}}</td>
+          {{!-- for each depots which contains inventories --}}
+          {{#each depots as | items name |}}
+
+            <!-- this is the depot group header -->
+            <tr style="border:none">
+              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+                {{ name }}
+              </th>
+
+              <th colspan="7" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+              </th>
+            </tr>
+
+            <!-- these are the items for each group -->
+            {{#each items as | item | }}
+              {{#if is_exit}}
+                <tr class="text-danger">
+                  <td>
+                    <span>{{translate 'STOCK.OUTPUT'}}</span>
+                  </td>
+                  <td>{{text}}</td>
+                  <td>{{label}}</td>
+                  <td class="text-right">{{quantity}}</td>
+                  <td class="text-right">{{unit_cost}}</td>
+                  <td class="text-right">{{multiply quantity unit_cost}}</td>
+                  <td>{{date date}}</td>
+                  <td>{{translate flux_label}}</td>
+                </tr>
+              {{else}}
+                <tr>
+                  <td>
+                    <span>{{translate 'STOCK.INPUT'}}</span>
+                  </td>
+                  <td>{{text}}</td>
+                  <td>{{label}}</td>
+                  <td class="text-right">{{quantity}}</td>
+                  <td class="text-right">{{unit_cost}}</td>
+                  <td class="text-right">{{multiply quantity unit_cost}}</td>
+                  <td>{{date date}}</td>
+                  <td>{{translate flux_label}}</td>
+                </tr>
+              {{/if}}
+            {{/each}}
+
+            <!-- blank row  -->
+            {{#unless @last }}
+              <!-- blank line -->
+              <tr style="border:none;">
+                <th style="border:none;"></th>
               </tr>
-            {{else}}
-              <tr>
-                <td>{{depot_text}}</td>
-                <td>
-                  <span>{{translate 'STOCK.INPUT'}}</span>
-                </td>
-                <td>{{text}}</td>
-                <td>{{label}}</td>
-                <td class="text-right">{{quantity}}</td>
-                <td class="text-right">{{unit_cost}}</td>
-                <td class="text-right">{{multiply quantity unit_cost}}</td>
-                <td>{{date date}}</td>
-                <td>{{translate flux_label}}</td>
-              </tr>
-            {{/if}}
+            {{/unless}}
+
           {{else}}
-            {{> emptyTable columns=9}}
+            {{> emptyTable columns=7}}
           {{/each}}
         </tbody>
         <tfoot>

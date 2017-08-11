@@ -76,15 +76,31 @@
     },
     "BALANCE_REPORT": {
       "TITLE": "Balance Report",
-      "DESCRIPTION": "This report show the balance of accounts for a given period"
+      "DESCRIPTION": "This report shows the balance of accounts for a given period"
     },
     "REPORT_INCOME_EXPENSE": {
       "TITLE": "Income Expense Report",
-      "DESCRIPTION": "This report show all income and expense occured in the enterprise"
+      "DESCRIPTION": "This report shows all incomes and expenses of the enterprise"
     },
     "CASH_REPORT": {
       "TITLE": "Cash Report",
-      "DESCRIPTION": "This report show all entries and exits of cash inside the enterprise"
+      "DESCRIPTION": "This report shows all entries and exits of cash inside the enterprise"
+    },
+    "STOCK":{
+      "TITLE":"Stock Report",
+      "DESCRIPTION":"This report shows the stock of products, their average consumption and their status.",
+      "ALL_DEPOTS":"All Depots",
+      "ONE_DEPOT":"One Specific Depot",
+      "ALL_INVENTORIES":"All Inventories",
+      "ONE_INVENTORY":"One Specific Inventory",
+      "INVENTORY_REPORT":"Inventory Report",
+      "INVENTORY_REPORT_DESCRIPTION":"This report shows all movements of a product and its stock status and value.",
+      "QUANTITY":"Quantity",
+      "UNIT_COST":"Unit Cost",
+      "VALUE":"Value",
+      "ENTRIES":"Entries",
+      "EXITS":"Exits",
+      "STOCKS":"Stocks"
     },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",

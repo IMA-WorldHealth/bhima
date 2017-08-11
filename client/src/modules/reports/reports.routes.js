@@ -12,6 +12,8 @@ angular.module('bhima.routes')
       'open_debtors',
       'balance_report',
       'clients_report',
+      'inventory_report',
+      'inventory_file',
       'cashflowByService',
     ];
 

@@ -65,13 +65,13 @@ function StockInventoriesRegistryTests() {
     FU.buttons.search();
     FU.radio('$ctrl.bundle.status', 3);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 1 + (depotGroupingRow));
 
     // over maximum
     FU.buttons.search();
     FU.radio('$ctrl.bundle.status', 4);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
 
 
     // clear filters

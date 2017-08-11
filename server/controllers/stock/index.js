@@ -14,7 +14,6 @@
  */
 
 const uuid = require('node-uuid');
-const moment = require('moment');
 
 const db = require('../../lib/db');
 const core = require('./core');
@@ -29,6 +28,10 @@ exports.listLotsMovements = listLotsMovements;
 exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
+
+// stock consumption
+exports.getStockConsumption = getStockConsumption;
+exports.getStockConsumptionAverage = getStockConsumptionAverage;
 
 
 /**
@@ -48,13 +51,13 @@ function createStock(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 
   params.lots.forEach((lot) => {
         // lot expiration date
-    date = moment(new Date(lot.expiration_date)).format('YYYY-MM-DD').toString();
+    date = new Date(lot.expiration_date);
 
         // lot prepare query
     createLotQuery = 'INSERT INTO lot SET ?';
@@ -109,7 +112,7 @@ function createMovement(req, res, next) {
 
   const document = {
     uuid : uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 
@@ -130,6 +133,7 @@ function createMovement(req, res, next) {
 function normalMovement(document, params) {
   let createMovementQuery;
   let createMovementObject;
+  let isDistributable;
 
   const transaction = db.transaction();
   const parameters = params;
@@ -153,8 +157,18 @@ function normalMovement(document, params) {
       user_id       : document.user,
     };
 
-        // transaction - add movement
+    // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
+
+    isDistributable = !!(parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE);
+
+    // track distribution to patient
+    if (parameters.is_exit && isDistributable) {
+      const consumptionParams = [
+        db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
+      ];
+      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+    }
   });
 
   return transaction.execute();
@@ -167,6 +181,7 @@ function normalMovement(document, params) {
 function depotMovement(document, params) {
   let paramIn;
   let paramOut;
+  let isWarehouse;
 
   const transaction = db.transaction();
   const parameters = params;
@@ -208,6 +223,16 @@ function depotMovement(document, params) {
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [paramOut]);
     transaction.addQuery('INSERT INTO stock_movement SET ?', [paramIn]);
+
+    isWarehouse = !!(parameters.from_depot_is_warehouse);
+
+    // track distribution to patient
+    if (paramOut.is_exit && isWarehouse) {
+      const consumptionParams = [
+        db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
+      ];
+      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+    }
   });
 
   return transaction.execute();
@@ -250,6 +275,11 @@ function listLotsMovements(req, res, next) {
 function listLotsDepot(req, res, next) {
   const params = req.query;
 
+  if (params.defaultPeriod) {
+    params.defaultPeriodEntry = params.defaultPeriod;
+    delete params.defaultPeriod;
+  }
+
   core.getLotsDepot(null, params)
     .then((rows) => {
       res.status(200).json(rows);
@@ -260,17 +290,15 @@ function listLotsDepot(req, res, next) {
 
 /**
  * GET /stock/inventory/depots/
- * returns list of each inventory in a given depot with their quantities
+ * returns list of each inventory in a given depot with their quantities and CMM
  * @todo process stock alert, rupture of stock
  * @todo prevision for purchase
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
 
-  core.getLotsDepot(null, params, ' GROUP BY l.inventory_uuid, m.depot_uuid ')
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
+  core.getInventoryQuantityAndConsumption(params)
+    .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();
 }
@@ -320,6 +348,31 @@ function listStockFlux(req, res, next) {
   db.exec('SELECT id, label FROM flux;')
     .then((rows) => {
       res.status(200).json(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * GET /stock/consumptions/:periodId
+ */
+function getStockConsumption(req, res, next) {
+  const params = req.params;
+  core.getStockConsumption(params.periodId)
+    .then((rows) => {
+      res.status(200).send(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * GET /stock/consumptions/average/:periodId?number_of_months=...
+ */
+function getStockConsumptionAverage(req, res, next) {
+  const query = req.query;
+  const params = req.params;
+  core.getStockConsumptionAverage(params.periodId, query.number_of_months)
+    .then((rows) => {
+      res.status(200).send(rows);
     })
     .catch(next);
 }

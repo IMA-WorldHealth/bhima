@@ -91,6 +91,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Supplier Management
 (19,1),
 
+-- Depot Management
+(20,1),
+
 -- Price list Management
 (21, 1),
 
@@ -198,12 +201,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Purchase order folder 
 (154, 1), (155, 1), (156, 1),
 
--- Stock 
-(160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1), (166, 1), (167, 1),
+-- Stock
+(160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1), (166, 1), (167, 1), (181, 1), (182, 1),
 
 -- Account statement
 (170, 1),
-
 (171, 1),
 (180, 1);
 

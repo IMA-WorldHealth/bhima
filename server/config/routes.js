@@ -583,6 +583,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
+  app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
 
   // stock receipts API
   app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
@@ -595,6 +596,10 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/entry_integration/:document_uuid', stockReports.stockEntryIntegrationReceipt);
 
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
+
+  // stock consumption API
+  app.get('/stock/consumptions/average/:periodId', stock.getStockConsumptionAverage);
+  app.get('/stock/consumptions/:periodId', stock.getStockConsumption);
 
   app.get('/diagnoses', diagnoses.list);
 };

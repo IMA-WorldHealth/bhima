@@ -24,6 +24,7 @@ INSERT INTO unit VALUES
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/modules/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/modules/cash/','/cash'),
   (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/modules/suppliers/','/suppliers'),
+  (20,  'Depot Management','TREE.DEPOTS','',1,'/modules/depots/','/depots'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/modules/prices/','/prices'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/modules/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/modules/patients/groups/','/patients/groups'),
@@ -70,7 +71,9 @@ INSERT INTO unit VALUES
   -- (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
   (171, 'Balance Sheet Statement', 'TREE.BALANCE_SHEET', 'Balance Sheet Module', 144, '/modules/reports/balance_sheet_report/', '/reports/balance_sheet_report'),
-  (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense');
+  (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
+  (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
+  (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -101,7 +104,9 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
-  (12, 'cash_report', 'REPORT.CASH_REPORT');
+  (12, 'cash_report', 'REPORT.CASH_REPORT'),
+  (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
+  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

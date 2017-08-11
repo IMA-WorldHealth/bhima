@@ -32,6 +32,7 @@ const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handleb
 const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
+const STOCK_INVENTORY_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventory.report.handlebars`;
 
 // ===================================== receipts ========================================
 
@@ -594,7 +595,12 @@ function stockLotsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_LOTS', orientation : 'landscape' });
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_LOTS',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -609,6 +615,11 @@ function stockLotsReport(req, res, next) {
     return next(e);
   }
 
+  if (options.defaultPeriod) {
+    options.defaultPeriodEntry = options.defaultPeriod;
+    delete options.defaultPeriod;
+  }
+
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       data.rows = rows;
@@ -616,6 +627,16 @@ function stockLotsReport(req, res, next) {
       data.csv = rows;
       data.display = display;
 
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {
@@ -641,7 +662,12 @@ function stockMovementsReport(req, res, next) {
 
   const data = {};
   let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_MOVEMENTS', orientation : 'landscape' });
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_MOVEMENTS',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -663,6 +689,16 @@ function stockMovementsReport(req, res, next) {
       data.csv = rows;
       data.display = display;
 
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {
@@ -676,7 +712,7 @@ function stockMovementsReport(req, res, next) {
  * @method stockInventoriesReport
  *
  * @description
- * This method builds the stock inventory report as either a JSON, PDF, or HTML
+ * This method builds the stock report as either a JSON, PDF, or HTML
  * file to be sent to the client.
  *
  * GET /reports/stock/inventories
@@ -685,10 +721,17 @@ function stockInventoriesReport(req, res, next) {
   let options = {};
   let display = {};
   let hasFilter = false;
+  let report;
 
   const data = {};
-  let report;
-  const optionReport = _.extend(req.query, { filename : 'TREE.STOCK_INVENTORY', orientation : 'landscape' });
+  const bundle = {};
+
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_INVENTORY',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   // set up the report with report manager
   try {
@@ -696,6 +739,10 @@ function stockInventoriesReport(req, res, next) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
       hasFilter = Object.keys(display).length > 0;
+    } else if (req.query.params) {
+      options = JSON.parse(req.query.params);
+      bundle.delay = options.inventory_delay;
+      bundle.purchaseInterval = options.purchase_interval;
     }
 
     report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
@@ -703,13 +750,27 @@ function stockInventoriesReport(req, res, next) {
     return next(e);
   }
 
-  return Stock.getLotsDepot(null, options, ' GROUP BY l.inventory_uuid ')
+  return Stock.getInventoryQuantityAndConsumption(options)
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
       data.csv = rows;
       data.display = display;
 
+      data.dateTo = options.dateTo;
+      data.delay = bundle.delay || 1;
+      data.purchaseInterval = bundle.purchaseInterval || 1;
+
+      // group by depot
+      let depots = _.groupBy(rows, d => d.depot_text);
+
+      // make sure that they keys are sorted in alphabetical order
+      depots = _.mapValues(depots, lines => {
+        _.sortBy(lines, 'depot_text');
+        return lines;
+      });
+
+      data.depots = depots;
       return report.render(data);
     })
     .then((result) => {
@@ -719,10 +780,67 @@ function stockInventoriesReport(req, res, next) {
     .done();
 }
 
+/**
+ * @method stockInventoryReport
+ *
+ * @description
+ * This method builds the stock inventory report as either a JSON, PDF, or HTML
+ * file to be sent to the client.
+ *
+ * GET /reports/stock/inventory
+ */
+function stockInventoryReport(req, res, next) {
+  const data = {};
+  let options;
+  let report;
+
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_INVENTORY_REPORT',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
+
+  // set up the report with report manager
+  try {
+    options = req.query.params ? JSON.parse(req.query.params) : {};
+    report = new ReportManager(STOCK_INVENTORY_REPORT_TEMPLATE, req.session, optionReport);
+  } catch (e) {
+    return next(e);
+  }
+
+  return db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)])
+  .then((inventory) => {
+    data.inventory = inventory;
+
+    return db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]);
+  })
+  .then((depot) => {
+    data.depot = depot;
+
+    return Stock.getInventoryMovements(options);
+  })
+  .then((rows) => {
+    data.rows = rows.movements;
+    data.totals = rows.totals;
+    data.result = rows.result;
+    data.csv = rows.movements;
+    data.dateTo = options.dateTo;
+
+    return report.render(data);
+  })
+  .then((result) => {
+    res.set(result.headers).send(result.report);
+  })
+  .catch(next)
+  .done();
+}
+
 // expose to the api
 exports.stockLotsReport = stockLotsReport;
 exports.stockMovementsReport = stockMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;
+exports.stockInventoryReport = stockInventoryReport;
 exports.stockExitPatientReceipt = stockExitPatientReceipt;
 exports.stockExitDepotReceipt = stockExitDepotReceipt;
 exports.stockEntryDepotReceipt = stockEntryDepotReceipt;
