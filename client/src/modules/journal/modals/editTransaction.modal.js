@@ -101,7 +101,7 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
   // takes a transaction row and returns all parameters that are shared among the transaction
   // @TODO(sfount) rewrite method given current transaction service code
   function sharedDetails(row) { 
-    var columns = ['hrRecord', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date'];
+    var columns = ['hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date', 'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'period_id'];
     var shared = {};
   
     columns.forEach(function (column) { 
@@ -142,11 +142,76 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     vm.rows.post(row);
   };
 
+  vm.saveTransaction = function saveTransaction() { 
+    console.log('saving');
+    console.log('shared info', vm.shared);
+    console.log('added', addedRows);
+    console.log('removed', removedRows);
+    console.log('edits', changes);
+
+    var noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
+
+    if (noChanges) { 
+      Modal.close();
+      return;
+    }
+
+    // reset error validation 
+    vm.validation.errored = false;
+    vm.validation.message = null;
+    vm.saving = true;
+  
+    // building object to conform to legacy API 
+    // @TODO(sfount) update journal service API for human readable interface
+    var transactionRequest = { 
+      uuid : vm.shared.record_uuid, 
+      newRows : { data : filterRowsByUuid(vm.rows.data, addedRows) },
+      removedRows : removedRows.map(function (uuid) { return { uuid : uuid }; })
+    };
+
+    Journal.saveChanges(transactionRequest, changes)
+      .then(function (saveResult) { 
+        console.log('got save result', saveResult);
+
+        Modal.close();
+      })
+      .catch(function (error) { 
+        // initial errors are handled internally by the modal
+        console.log('server error', error);
+
+        vm.validation.errored = true;
+        vm.validation.message = error.data.code;
+      })
+      .finally(function () { 
+        vm.saving = false; 
+      });
+  };
+  
+  // rows - array of rows 
+  // uuids - array of uuids
+  function filterRowsByUuid(rows, uuids) { 
+    var result = rows.filter(function (row) { 
+      return contains(uuids, row.uuid);
+    });
+    console.log('filter rows result', result);
+    return result;
+  }
+
   vm.removeRows = function removeRows() { 
     var selectedRows = gridApi.selection.getSelectedRows();
 
     selectedRows.forEach(function (row) { 
-      removedRows.push(row.uuid);
+      var isOriginalRow = !contains(addedRows, row.uuid);
+
+      if (isOriginalRow) { 
+        // remove any changes tracked against this record
+        delete changes[row.uuid];
+        removedRows.push(row.uuid);
+      } else {
+        // remove new row request from list tracking additional rows
+        addedRows.splice(addedRows.indexOf(row.uuid), 1);
+      }
+
       vm.rows.remove(row.uuid) 
     }); 
   }
@@ -171,6 +236,7 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
   // Edit utilities 
   function applyAttributeToRows(key, value) { 
     vm.rows.data.forEach(function (row) { 
+      handleCellEdit({ uuid : row.uuid }, { field : key}, value, row[key]);
       row[key] = value;
     });
   }
