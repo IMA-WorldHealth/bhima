@@ -20,7 +20,8 @@
     },
     "CASH_EXPENSE":"Depenses",
     "CASHFLOW_BY_SERVICE": {
-      "TITLE":"Rapports de flux de trésorerie par Service", "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie"
+      "TITLE" : "Rapports de flux de trésorerie par Service",
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
     },
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
@@ -37,17 +38,17 @@
     "OPEN_DEBTORS": {
       "TITLE":"Débiteurs endettés",
       "TREE":"Dettes des Débiteurs",
-      "DESCRIPTION": "Ce rapport montre les débiteurs qui ont une dette avec l'institution et donne un certain contrôle sur l'ordre de tri. Pour une analyse avancée, le rapport peut ajouter la dernière date de facturation et la dernière date de paiement, ainsi que limiter la portée de la recherche par une date.",
+      "DESCRIPTION": "Ce rapport liste les débiteurs et leurs dettes envers l'institution. Permet de trier les données à lister ainsi que de voir la dernière date de facturation et de paiement pour une analyse assez poussée. Les donnees peuvent être filtrées par date aussi.",
       "SHOW_DATE_LIMIT" : "Limité par Date",
       "DATE_LIMIT_HELP" : "La limite de la date ne fera que numériser les enregistrements de cette date au présent.",
       "SHOW_DETAILED_VIEW" : "Inclure les colonnes pour les dernières dates de facturation et de paiement",
       "SHOW_DETAILED_VIEW_HELP" : "L'activation de cette option comprendra la dernière date à laquelle le débiteur a payé et la dernière date où ils ont été facturés. Ceci est utile pour comprendre quand ils étaient à l'établissement. Cependant, cela rendra la requête plus lent.",
       "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
-      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option comprend les enregistrements du Journal de Saisie qui n'ont pas été vérifiés par le comptable ainsi que les enregistrements du Grand Livre que le comptable a vérifié. Cette vue doit être traitée comme une projection jusqu'à ce que le comptable ait approuvé les transactions du journal et les a posté vers le Grand Livre."
+      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
-      "LAST_TRANSACTION": "Date de la Dernière Transaction",
+      "LAST_TRANSACTION": "Date Dernière Transaction",
       "PATIENT_NAME": "Nom du Patient",
       "TOTAL_DEBT": "Total des Dettes"
     },

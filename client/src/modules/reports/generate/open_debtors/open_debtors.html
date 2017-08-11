@@ -30,7 +30,8 @@
 
               <ui-select
                 name="order"
-                ng-model="ReportConfigCtrl.reportDetails.order">
+                ng-model="ReportConfigCtrl.reportDetails.order"
+                search-enabled="false">
                 <ui-select-match placeholder="{{ 'FORM.LABELS.ORDER_BY' | translate }}">
                   <span class="text-capitalize">
                     <i class="fa" ng-class="{

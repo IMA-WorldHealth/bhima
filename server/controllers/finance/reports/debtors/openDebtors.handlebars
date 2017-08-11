@@ -30,8 +30,8 @@
             <tr>
               <td>{{debtor.reference}}</td>
               <td>{{debtor.display_name }}</td>
-              {{#if ../details.showDetailedView}}<td>{{date debtor.lastInvoiceDate}}</td>{{/if}}
-              {{#if ../details.showDetailedView}}<td>{{date debtor.lastPaymentDate}}</td>{{/if}}
+              {{#if ../details.showDetailedView}}<td>{{date debtor.latestInvoiceDate}}</td>{{/if}}
+              {{#if ../details.showDetailedView}}<td>{{date debtor.latestCashDate}}</td>{{/if}}
               <td class="text-right">{{currency debtor.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}
