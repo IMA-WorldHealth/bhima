@@ -17,17 +17,12 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   Columns, Sorting, bhConstants, GridState, Languages, Export) {
   var vm = this;
 
-  // var filter = new Filters();
-  // vm.filter = filter;
-
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
-  // var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
   var state;
 
   vm.search = search;
   vm.patientCard = patientCard;
-  // vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
@@ -190,15 +185,6 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-
-    // if ($state.params.filters) {
-    //   // Fix me, generate change dynamically
-    //   var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-
-    //   Patients.filters.replaceFilters(change);
-    //   Patients.cacheFilters();
-    // }
-
     load(Patients.filters.formatHTTP(true));
     vm.latestViewFilters = Patients.filters.formatView();
   }

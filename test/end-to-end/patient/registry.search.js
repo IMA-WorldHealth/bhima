@@ -13,6 +13,7 @@ function PatientRegistrySearch() {
   let filters;
 
   const parameters = {
+    patientGroup : 'Test Patient Group 2',
     name: 'Mock',
     name1: 'Patient',
     dateRegistrationFrom: '01/01/2015',
@@ -56,7 +57,7 @@ function PatientRegistrySearch() {
   // demonstrates that filtering works
   it(`should find one patient with name "${parameters.name}"`, () => {
     const NUM_MATCHING = 1;
-    FU.input('ModalCtrl.params.display_name', parameters.name);
+    FU.input('$ctrl.searchQueries.display_name', parameters.name);
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
@@ -74,7 +75,7 @@ function PatientRegistrySearch() {
   // demonstrates additive filters
   it(`should find two "male" patients with name "${parameters.name1}"`, function () {
     const NUM_MATCHING = 2;
-    FU.input('ModalCtrl.params.display_name', parameters.name1);
+    FU.input('$ctrl.searchQueries.display_name', parameters.name1);
     element(by.id('male')).click();
     FU.modal.submit();
 
@@ -84,9 +85,19 @@ function PatientRegistrySearch() {
   // demonstrates that additive + time-delimited filtering works
   it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
     const NUM_MATCHING = 0;
-    FU.input('ModalCtrl.params.display_name', parameters.name1);
+    FU.input('$ctrl.searchQueries.display_name', parameters.name1);
     modal.switchToDefaultFilterTab();
     modal.setPeriod('lastWeek');
+    FU.modal.submit();
+
+    expectNumberOfGridRows(NUM_MATCHING);
+  });
+
+  it(`should find two patient with patient group "${parameters.patientGroup}" registered in allTime`, function () {
+    const NUM_MATCHING = 2;
+    components.patientGroupSelect.set(parameters.patientGroup);
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
@@ -129,7 +140,7 @@ function PatientRegistrySearch() {
   it('should remember the cached filters', () => {
     const NUM_MATCHING = 0;
     element(by.id('male')).click();
-    FU.input('ModalCtrl.params.display_name', 'Some Non-Existant Patient');
+    FU.input('$ctrl.searchQueries.display_name', 'Some Non-Existant Patient');
     modal.switchToDefaultFilterTab();
     modal.setPeriod('year');
     FU.modal.submit();

@@ -32,7 +32,7 @@ describe('Check links', () => {
     helpers.navigate('#!/patients/groups');
 
     element.all(by.css('[class="fa fa-list"]')).get(2).click();
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(4);
   });
 
   it('Check link betwen Debtor Groups -> Patient Registry', () => {
