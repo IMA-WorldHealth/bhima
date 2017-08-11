@@ -45,6 +45,9 @@ function JournalController(Journal, Sorting, Grouping,
   var state;
   var selection;
 
+  // store journal data
+  var journalStore = new Store({ identifier : 'uuid' });
+
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
 
@@ -93,6 +96,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
+  
   sorting = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
@@ -186,6 +190,10 @@ function JournalController(Journal, Sorting, Grouping,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
       },
+      sort : { 
+        priority : 0,
+        direction : uiGridConstants.DESC
+      },
       enableCellEdit     : true,
       footerCellTemplate : '<i></i>' },
 
@@ -202,6 +210,11 @@ function JournalController(Journal, Sorting, Grouping,
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
+      sort : { 
+        priority : 0,
+        direction : uiGridConstants.ASC,
+      },
+
       footerCellTemplate : '<i></i>' },
 
     { field                : 'account_number',
@@ -290,6 +303,8 @@ function JournalController(Journal, Sorting, Grouping,
     },
   ];
   vm.gridOptions.columnDefs = columns;
+
+  console.log(vm.gridOptions.columnDefs);
 
   // API register function
   function onRegisterApi(gridApi) {
@@ -391,7 +406,11 @@ function JournalController(Journal, Sorting, Grouping,
         vm.numberCurrentGridTransactions = records.aggregate.length;
 
         // pre process data - this should be done in a more generic way in a service
-        vm.gridOptions.data = transactions.preprocessJournalData(records);
+        journalStore.setData(records.journal);
+
+        // vm.gridOptions.data = transactions.preprocessJournalData(records);
+        vm.gridOptions.data = journalStore.data;
+
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
 
@@ -596,7 +615,32 @@ function JournalController(Journal, Sorting, Grouping,
     var selectedTransaction = selection.selected.groups[0];
     var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction); 
     
-    Journal.openTransactionEditModal(transactionUuid);
+    Journal.openTransactionEditModal(transactionUuid)
+      .then(function (updatedTransactionResult) { 
+        const changed = angular.isDefined(updatedTransactionResult);
+
+        if (changed) { 
+          // update local data set 
+          console.log('changes detected - removing rows');
+          // remove all previous rows
+          //
+          try { 
+          hackGetTransactionRows(transactionUuid).forEach(function (row) { 
+            console.log('removing', row.uuid);
+            journalStore.remove(row.uuid);
+          });
+      
+          // insert guaranteed updated rows
+          updatedTransactionResult.forEach(function (row) { 
+            console.log('adding', row);
+            journalStore.post(row);
+          });
+          } catch (e) { 
+            console.log(e);
+          }
+          vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+        }
+      });
   }
   
   // @FIXME(sfount) temporary method to get UUID from trans id - this should be replaced when rebased with journal 
@@ -609,4 +653,12 @@ function JournalController(Journal, Sorting, Grouping,
       }
     }
   }
+  
+  // @FIXME(sfount) this should be done with an index that is kept up to date - this is an expensive call on a large dataset
+  function hackGetTransactionRows(recordUuid) { 
+    return journalStore.data.filter(function (row) { 
+      return row.record_uuid === recordUuid;
+    });
+  }
+
 }

@@ -44,7 +44,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     console.log('sending save request', saveRequest);
 
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
-      .then(service.util.unwrapHttpRequest);
+      .then(service.util.unwrapHttpResponse);
   }
 
   function sanitiseNewRows(rows) {
