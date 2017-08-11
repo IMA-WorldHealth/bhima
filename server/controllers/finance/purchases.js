@@ -198,41 +198,6 @@ function list(req, res, next) {
   .then(rows => res.status(200).json(rows))
   .catch(next)
   .done();
-
-
-
-  
-  // let sql;
-
-  // sql = `
-  //   SELECT BUID(p.uuid) AS uuid,
-  //     CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
-  //     p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid
-  //   FROM purchase AS p
-  //   JOIN supplier AS s ON s.uuid = p.supplier_uuid
-  //   JOIN project AS pr ON p.project_id = pr.id;
-  // `;
-
-  // if (req.query.detailed === '1') {
-  //   sql = `
-  //     SELECT BUID(p.uuid) AS uuid,
-  //       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
-  //       p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
-  //       BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-  //       p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
-  //     FROM purchase AS p
-  //     JOIN supplier AS s ON s.uuid = p.supplier_uuid
-  //     JOIN project AS pr ON p.project_id = pr.id
-  //     JOIN user AS u ON u.id = p.user_id;
-  //   `;
-  // }
-
-  // db.exec(sql)
-  //   .then((rows) => {
-  //     res.status(200).json(rows);
-  //   })
-  //   .catch(next)
-  //   .done();
 }
 
 /**

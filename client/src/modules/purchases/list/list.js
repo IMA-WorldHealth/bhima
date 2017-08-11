@@ -33,67 +33,62 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
   vm.loading = false;
 
   columnDefs = [{
-    field                : 'reference',
-    displayName          : 'FORM.LABELS.REFERENCE',
-    headerCellFilter     : 'translate',
-    aggregationType      : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
+    field: 'reference',
+    displayName: 'FORM.LABELS.REFERENCE',
+    headerCellFilter: 'translate',
+    cellTemplate: 'modules/purchases/templates/uuid.tmpl.html',
+    aggregationType: uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel: true,
   }, {
-    field            : 'date',
-    displayName      : 'FORM.LABELS.DATE',
-    headerCellFilter : 'translate',
-    cellFilter       : 'date',
+    field: 'date',
+    displayName: 'FORM.LABELS.DATE',
+    headerCellFilter: 'translate',
+    cellFilter: 'date',
   }, {
-    field            : 'supplier',
-    displayName      : 'FORM.LABELS.SUPPLIER',
-    headerCellFilter : 'translate',
+    field: 'supplier',
+    displayName: 'FORM.LABELS.SUPPLIER',
+    headerCellFilter: 'translate',
   }, {
-    field            : 'note',
-    displayName      : 'FORM.LABELS.DESCRIPTION',
-    headerCellFilter : 'translate',
+    field: 'note',
+    displayName: 'FORM.LABELS.DESCRIPTION',
+    headerCellFilter: 'translate',
   }, {
-    cellTemplate         : '/modules/purchases/templates/cellCost.tmpl.html',
-    field                : 'cost',
-    displayName          : 'FORM.LABELS.COST',
-    headerCellFilter     : 'translate',
-    footerCellFilter     : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType      : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
+    cellTemplate: '/modules/purchases/templates/cellCost.tmpl.html',
+    field: 'cost',
+    displayName: 'FORM.LABELS.COST',
+    headerCellFilter: 'translate',
+    footerCellFilter: 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType: uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel: true,
   }, {
-    field            : 'author',
-    displayName      : 'FORM.LABELS.AUTHOR',
-    headerCellFilter : 'translate',
+    field: 'author',
+    displayName: 'FORM.LABELS.AUTHOR',
+    headerCellFilter: 'translate',
   }, {
-    cellTemplate     : '/modules/purchases/templates/cellStatus.tmpl.html',
-    field            : 'status',
-    displayName      : 'FORM.LABELS.STATUS',
-    headerCellFilter : 'translate',
-    enableFiltering  : false,
-    enableSorting    : false,
+    cellTemplate: '/modules/purchases/templates/cellStatus.tmpl.html',
+    field: 'status',
+    displayName: 'FORM.LABELS.STATUS',
+    headerCellFilter: 'translate',
+    enableFiltering: false,
+    enableSorting: false,
   }, {
-    field           : 'action',
-    displayName     : '',
-    cellTemplate    : '/modules/purchases/templates/cellEdit.tmpl.html',
-    enableFiltering : false,
-    enableSorting   : false,
-  }, {
-    field            : 'uuid',
-    cellTemplate     : '/modules/purchases/templates/cellDocument.tmpl.html',
-    displayName      : 'FORM.LABELS.DOCUMENT',
-    headerCellFilter : 'translate',
-    enableFiltering  : false,
-    enableSorting    : false,
+    field: 'action',
+    displayName: '...',
+    enableFiltering: false,
+    enableColumnMenu: false,
+    enableSorting: false,
+    cellTemplate: 'modules/purchases/templates/action.cell.html',
   }];
 
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
-    appScopeProvider  : vm,
-    showColumnFooter  : true,
-    enableSorting     : true,
-    enableColumnMenus : false,
-    flatEntityAccess  : true,
-    fastWatch         : true,
-    columnDefs        : columnDefs,
+    appScopeProvider: vm,
+    showColumnFooter: true,
+    enableSorting: true,
+    enableColumnMenus: false,
+    flatEntityAccess: true,
+    fastWatch: true,
+    columnDefs: columnDefs,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -172,19 +167,6 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
   function startup() {
     load(PurchaseOrder.filters.formatHTTP(true));
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
-
-
-
-    // if ($state.params.filters) {
-    //   // Fix me, generate change dynamically
-    //   var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-
-    //   PurchaseOrder.filters.replaceFilters(change);
-    //   PurchaseOrder.cacheFilters();
-    // }
-
-    // load(PurchaseOrder.filters.formatHTTP(true));
-    // vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }
 
   // fire up the module
