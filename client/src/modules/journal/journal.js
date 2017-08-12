@@ -258,7 +258,7 @@ function JournalController(Journal, Sorting, Grouping,
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
-      cellTemplate     : '/modules/journal/templates/references.link.html',
+      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
       headerCellFilter : 'translate',
       visible          : true },
 
