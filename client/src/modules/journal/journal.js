@@ -171,10 +171,11 @@ function JournalController(Journal, Sorting, Grouping,
       customTreeAggregationFinalizerFn : function (aggregation) {
         aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
       },
-      // sort : { 
-        // priority : 0,
-        // direction : uiGridConstants.DESC
-      // },
+      // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
+      sort : { 
+        priority : 0,
+        direction : uiGridConstants.DESC
+      },
       footerCellTemplate : '<i></i>' },
 
     { field                : 'hrRecord',
@@ -248,7 +249,8 @@ function JournalController(Journal, Sorting, Grouping,
     { field                : 'origin_id',
       displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
       headerCellFilter     : 'translate',
-      cellTemplate         : '/modules/journal/templates/transaction_type.html',
+      // @FIXME(sfount) transaction types relied on data in the controller that is gone 
+      // cellTemplate         : '/modules/journal/templates/transaction_type.html',
       visible              : false },
 
     { field            : 'display_name',
@@ -417,7 +419,7 @@ function JournalController(Journal, Sorting, Grouping,
     // 2. If a row in the current dataset has been updated - update the values 
     // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter 
     // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
-    Journal.openTransactionEditModal(transactionUuid)
+    Journal.openTransactionEditModal(transactionUuid, false)
       .then(function (editSessionResult) { 
         var updatedRows = editSessionResult.updatedTransaction;
         var changed = angular.isDefined(updatedRows);
