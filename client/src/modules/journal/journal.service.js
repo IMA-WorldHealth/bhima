@@ -41,8 +41,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       removed : entity.removedRows,
     };
 
-    console.log('sending save request', saveRequest);
-
     return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpResponse);
   }
@@ -50,7 +48,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   function sanitiseNewRows(rows) {
     rows.data.forEach(function (row) {
 
-      
       // delete view data required by journal grid
       delete row.transaction;
       delete row.hrRecord;
@@ -58,8 +55,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       delete row.project_name;
       delete row.display_name;
     });
-    
-    console.log('sanitised rows', rows.data);
     return rows.data;
   }
 
@@ -145,9 +140,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     }).result;
   }
 
+  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
   function openTransactionEditModal(transactionUuid, readOnly) { 
-
-    console.log('open modal');
     return Modal.open({
       templateUrl : 'modules/journal/modals/editTransaction.modal.html',
       controller : 'JournalEditTransactionController as ModalCtrl',

@@ -32,7 +32,6 @@ function GridSelectionService(util) {
     var groups = {};
     
     rows.forEach(function (row) { 
-      console.log('for each', this);
       groups[row[this._uniqueKey]] = groups[row[this._uniqueKey]] || [];
       groups[row[this._uniqueKey]].push(row);
     }.bind(this));

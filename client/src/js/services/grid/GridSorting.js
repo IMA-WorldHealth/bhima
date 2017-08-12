@@ -57,14 +57,14 @@ function GridSortingService(util) {
    */
   function GridSorting(gridOptions) {
     // global sorting configuration
-    gridOptions.enableSorting = true;
+    // gridOptions.enableSorting = true;
 
       this.transactionIds = transactionIds;
       this.sortByReference = sortByReference;
     // register for the grid API
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
-      this.gridApi = api;
-    }.bind(this));
+    // util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+      // this.gridApi = api;
+    // }.bind(this));
   }
 
   /**
