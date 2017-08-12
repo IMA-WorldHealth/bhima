@@ -97,7 +97,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     gridRows.forEach(function (row) {
       var parentRow = row.treeNode.parentRow;
 
-      if (isUnusedParentRow(parentRow)) {
+      if (parentRow && isUnusedParentRow(parentRow)) {
         parentRow.isSelected = true;
         parents[parentRow.uid] = parentRow;
         selectedGroupHeaders = parents;
@@ -112,7 +112,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     }
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-
+  
+    // @FIXME(sfount) why is the data change notify ever called?
     gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
 
     // this function identifies parent rows that we haven't seen yet

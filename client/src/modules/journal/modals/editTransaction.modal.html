@@ -2,8 +2,8 @@
   <ol class="headercrumb">
     <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
     <li class="title" translate>{{ModalCtrl.transactionDetails.trans_id}}</li>
-    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> Viewing</span>
-    <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> Editing</span>
+    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
+    <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
   </ol>
 
 </div>
@@ -19,48 +19,54 @@
       </div>
       <div class="row" ng-if="ModalCtrl.settupComplete">
         <form class="form-horizontal">
-        <div class="col-md-6">
+        <div class="col-xs-6">
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Record ID</label>
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RECORD</label>
             <div class="col-sm-9">
               <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
             </div>
           </div>
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Project</label>
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.PROJECT</label>
             <div class="col-sm-9">
               <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
             </div>
           </div>
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Transaction</label>
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TRANSACTION_ID</label>
             <div class="col-sm-9">
               <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xs-6">
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Type</label>
-            <div class="col-sm-9">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TYPE</label>
+            <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
+              <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.origin_id).text || '-'}}</p>
+            </div>
+            <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
               <select 
                 ng-model="ModalCtrl.shared.origin_id" 
                 ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
-                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes" 
+                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data" 
                 class="form-control">
-                <option disabled value="">POSTING_JOURNAL.NO_TRANSACTION_TYPE</option>
+                <option disabled value="">--<span translate>POSTING_JOURNAL.NO_TRANSACTION_TYPE</span>--</option>
               </select>
             </div>
           </div>
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Responsible</label>
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RESPONSIBLE</label>
             <div class="col-sm-9">
               <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
             </div>
           </div>
           <div class="form-group-sm">
-            <label class="col-sm-3 control-label">Date</label>
-            <div class="col-sm-9">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.DATE</label>
+            <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.trans_date | date}}</p>
+            </div>
+            <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
               <div class="input-group">
               <input 
                 uib-datepicker-popup="dd/MM/yyyy"
@@ -100,7 +106,7 @@
 
 <div class="modal-footer">
   <button class="btn btn-default" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
-  <bh-loading-button disabled="!ModalCtrl.settupComplete" loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
+  <bh-loading-button ng-if="!ModalCtrl.readOnly" disabled="!ModalCtrl.settupComplete" loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
     <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
   </bh-loading-button>
 </div>

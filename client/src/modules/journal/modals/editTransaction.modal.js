@@ -1,32 +1,43 @@
 angular.module('bhima.controllers')
   .controller('JournalEditTransactionController', JournalEditTransactionController);
 
-JournalEditTransactionController.$inject = ['JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance', 'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid'];
+JournalEditTransactionController.$inject = ['JournalService', 'LanguageService', 'Store', 'TransactionTypeService', '$uibModalInstance', 'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid'];
 
-function JournalEditTransactionController(Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) { 
+function JournalEditTransactionController(Journal, Languages, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) { 
   var gridApi = {};
   var vm = this;
 
+  // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
+  vm.languages = Languages;
   vm.loadingTransaction = false;
   vm.settupComplete = false;
   
+  // @TODO(sfount) apply read only logic to save buttons and grid editing logic
+  vm.readOnly = readOnly || false;
+ 
   // @TODO(sfount) column definitions currently duplicated across journal and here
   var editColumns = [ 
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
+      allowCellFocus : !vm.readOnly,
+      enableCellEdit : !vm.readOnly
     },
 
     { field                : 'account_number',
       displayName          : 'TABLE.COLUMNS.ACCOUNT',
       editableCellTemplate : '<div><div ui-grid-edit-account></div></div>',
       cellTemplate         : '/modules/journal/templates/account.cell.html',
+      enableCellEdit : !vm.readOnly,
+      allowCellFocus : !vm.readOnly,
       headerCellFilter     : 'translate' }, 
     
     { field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter                 : 'translate',
       aggregationHideLabel : true,
+      enableCellEdit : !vm.readOnly,
+      allowCellFocus : !vm.readOnly,
       aggregationType : uiGridConstants.aggregationTypes.sum },
 
     { field                            : 'credit_equiv',
@@ -34,17 +45,23 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
       headerCellFilter                 : 'translate',
       enableFiltering : true,
       aggregationHideLabel : true,
+      enableCellEdit : !vm.readOnly,
+      allowCellFocus : !vm.readOnly,
       aggregationType : uiGridConstants.aggregationTypes.sum
     },
     { field                : 'hrEntity',
       displayName          : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter     : 'translate',
+      enableCellEdit : !vm.readOnly,
+      allowCellFocus : !vm.readOnly,
       visible              : true },
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       cellTemplate     : '/modules/journal/templates/references.link.html',
       headerCellFilter : 'translate',
+      enableCellEdit : !vm.readOnly,
+      allowCellFocus : !vm.readOnly,
       visible          : true }
   ];
 
@@ -52,6 +69,7 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
     columnDefs : editColumns, 
     showColumnFooter : true,
     showGridFooter : true,
+    appScopeProvider : vm,
     gridFooterTemplate : '<div class="ui-grid-cell-contents"><span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span></div>', 
     onRegisterApi : function (api) { 
       gridApi = api; 
@@ -62,10 +80,7 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
   vm.validation = { errored : false };
 
   vm.close = Modal.dismiss;
-
-  // @TODO(sfount) apply read only logic to save buttons and grid editing logic
-  vm.readOnly = readOnly || false;
-  
+    
   // @TODO(sfount) move to component
   vm.dateEditorOpen = false;
   vm.openDateEditor = function () { vm.dateEditorOpen = !vm.dateEditorOpen; }
@@ -73,7 +88,8 @@ function JournalEditTransactionController(Journal, Store, TransactionType, Modal
   // module dependencies 
   TransactionType.read()
     .then(function (typeResults) { 
-      vm.transactionTypes = typeResults;
+      vm.transactionTypes = new Store({ identifier : 'id' });
+      vm.transactionTypes.setData(typeResults);
     });
 
   vm.loadingTransaction = true;
