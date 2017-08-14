@@ -345,7 +345,10 @@ function JournalController(Journal, Sorting, Grouping,
     Journal.grid(null, options)
       .then(function (records) {
         // number of transactions downloaded and shown in the current journal
-        vm.numberCurrentGridTransactions = records.aggregate.length;
+        
+        // @FIXME(sfount) just get the length of the transaction ID index
+        // vm.numberCurrentGridTransactions = records.aggregate.length;
+        vm.numberCurrentGridTransactions = 'N/A';
 
         // pre process data - this should be done in a more generic way in a service
         journalStore.setData(records.journal);
