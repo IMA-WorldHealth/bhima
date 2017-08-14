@@ -3,8 +3,7 @@ angular.module('bhima.controllers')
 
 StockLotsController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService',
-  'SearchFilterFormatService', 'LanguageService',
+  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService',
   'bhConstants', '$state'
 ];
@@ -14,8 +13,7 @@ StockLotsController.$inject = [
  * This module is a registry page for stock lots
  */
 function StockLotsController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Grouping,
+  uiGridConstants, $translate, Modal, Languages, Grouping,
   GridState, Columns, bhConstants, $state) {
   var vm = this;
 
@@ -30,8 +28,6 @@ function StockLotsController(Stock, Notify,
 
   vm.download = Stock.download;
   vm.clearGridState = clearGridState;
-  vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
 
   // grid columns
   var columns = [
@@ -97,7 +93,6 @@ function StockLotsController(Stock, Notify,
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
   vm.selectGroup = selectGroup;
   vm.toggleGroup = toggleGroup;
   vm.loading = false;
@@ -107,7 +102,11 @@ function StockLotsController(Stock, Notify,
 
   // on remove one filter
   function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
+    Stock.removeLotFilter(key);
+    Stock.cacheLotFilters();
+    vm.latestViewFilters = Stock.lotFilters.formatView();
+    
+     return load(Stock.lotFilters.formatHTTP(true));
   }
 
   // select group
@@ -127,11 +126,6 @@ function StockLotsController(Stock, Notify,
       vm.grouped = true;
     }
   }
-
-  // clear all filters
-  function clearFilters() {
-    SearchFilterFormat.clearFilters(reload);
-  }  
 
   // initialize module
   function startup() {
