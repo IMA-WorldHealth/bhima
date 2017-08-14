@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchFiscalYearModalController.$inject = [
-  'NotifyService', '$uibModalInstance', 'SearchFilterFormatService', 'FiscalService',
+  'NotifyService', '$uibModalInstance', 'FiscalService',
 ];
 
-function SearchFiscalYearModalController(Notify, Instance, SearchFilterFormat, Fiscal) {
+function SearchFiscalYearModalController(Notify, Instance, Fiscal) {
   var vm = this;
   vm.cancel = Instance.close;
   vm.submit = submit;
