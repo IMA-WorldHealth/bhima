@@ -38,7 +38,6 @@ exports.editTransaction = editTransaction;
 exports.count = count;
 
 
-
 /**
  * Looks up a transaction by record_uuid.
  *
@@ -46,30 +45,12 @@ exports.count = count;
  * @returns {Promise} object - a promise resolving to the part of transaction object.
  */
 function lookupTransaction(recordUuid) {
-  const sql = `
-      SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-        p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-        dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-        p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-        BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-        BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-        pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-      FROM posting_journal p
-        JOIN project pro ON pro.id = p.project_id
-        JOIN period per ON per.id = p.period_id
-        JOIN account a ON a.id = p.account_id
-        JOIN user u ON u.id = p.user_id
-        JOIN currency c ON c.id = p.currency_id
-        LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-        LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-        LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-      WHERE p.record_uuid = ?
-      ORDER BY p.trans_date DESC
-    `;
+  const options = {
+    record_uuid : recordUuid,
+    includeNonPosted : true
+  };
 
-  return db.exec(sql, [db.bid(recordUuid)])
+  return find(options)
     .then(rows => addAggregateData(rows))
     .then((result) => {
       // if no records matching, throw a 404
@@ -81,27 +62,37 @@ function lookupTransaction(recordUuid) {
     });
 }
 
-/**
- * @function find
- *
- * @description
- * This function filters the posting journal by query parameters passed in via
- * the options object.  If no query parameters are provided, the method will
- * return all items in the posting journal
- */
-function find(options, source) {
-  // make sure hex -> binary parameters are converted properly
-  db.convert(options, ['uuid', 'record_uuid']);
+// @TODO(sfount) find a more effecient way of combining multiple table sets than a union all on the final results
+//               - new method should be proven as more effecient on large data sets before being accepted
+//
+// Current merge logic : subset 1 UNION ALL subset 2 ORDER
+// 1. select all from the posting journal including all joins, conditions etc.
+// 2. select all from the general ledger including all joins, conditions etc.
+// 3. UNION ALL between both complete sets of data
+// 4. Apply date order
+function naiveTransactionSearch(options, includeNonPosted) {
+  if (!includeNonPosted) {
+    const query = buildTransactionQuery(options, false);
+    return db.exec(`{query.sql} ORDER BY trans_date DESC`, query.parameters);
+  }
 
+  const posted = buildTransactionQuery(options, true);
+  const nonPosted = buildTransactionQuery(options, false);
+
+  const combinedParameters = posted.parameters.concat(nonPosted.parameters);
+
+  return db.exec(`(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC`, combinedParameters);
+}
+
+// if posted ONLY return posted transactions
+// if not posted ONLY return non-posted transactions
+function buildTransactionQuery(options, posted) {
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
-  // @FIXME selected the source between the posting journal and general ledger should be carefully designed
-  // as it will be used in many places, allowing a calling method
-  // to arbitrarily define the table should be replaced
-  const origin = source || 'posting_journal';
+  const table = posted ? 'general_ledger' : 'posting_journal';
 
   const sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+    SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
@@ -110,7 +101,7 @@ function find(options, source) {
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-    FROM ${origin} p
+    FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
@@ -120,6 +111,8 @@ function find(options, source) {
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
   `;
+
+  db.convert(options, ['record_uuid']);
 
   filters.period('period', 'trans_date');
   filters.dateFrom('custom_period_start', 'trans_date');
@@ -133,17 +126,36 @@ function find(options, source) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('origin_id');
+  filters.equals('record_uuid');
 
   filters.equals('record_uuid');
 
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
-  filters.setOrder('ORDER BY p.trans_date DESC');
+  return {
+    sql : filters.applyQuery(sql),
+    parameters : filters.parameters()
+  };
+}
 
-  const query = filters.applyQuery(sql);
+/**
+ * @function find
+ *
+ * @description
+ * This function filters the posting journal by query parameters passed in via
+ * the options object.  If no query parameters are provided, the method will
+ * return all items in the posting journal
+ *
+ * includeNonPosted
+ * includeAggregates
+ */
+function find(options) {
+  if (options.includeNonPosted) {
+    delete options.includeNonPosted;
+    return naiveTransactionSearch(options, true);
+  }
 
-  const parameters = filters.parameters();
-  return db.exec(query, parameters);
+  return naiveTransactionSearch(options, true);
 }
 
 /**
@@ -191,109 +203,12 @@ function journalEntryList(options, source) {
  *   transactions involved in the request; total credits, debits and row counts.
  */
 function list(req, res, next) {
-  let promise;
-
-  const includeAggregates = Number(req.query.aggregates);
-  delete req.query.aggregates;
-
-  // TODO - clean this up a bit.  We should only use a single column definition
-  // for both this and find()
-  if (_.isEmpty(req.query)) {
-    const sql = `
-      SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-        p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-        dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-        p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-        BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-        BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-        pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-      FROM posting_journal p
-        JOIN project pro ON pro.id = p.project_id
-        JOIN period per ON per.id = p.period_id
-        JOIN account a ON a.id = p.account_id
-        JOIN user u ON u.id = p.user_id
-        JOIN currency c ON c.id = p.currency_id
-        LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-        LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-        LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-      ORDER BY p.trans_date DESC
-    `;
-
-    promise = db.exec(sql);
-  } else {
-    promise = find(req.query);
-  }
-
-  promise
+  find(req.query)
     .then((journalResults) => {
-      // aggregate information requested - return promise getting this info
-      if (includeAggregates) {
-        return addAggregateData(journalResults);
-      }
-
-      // no aggregates required - directly return results
-      return journalResults;
-    })
-    .then((rows) => {
-      res.status(200).json(rows);
+      return res.status(200).send(journalResults);
     })
     .catch(next)
     .done();
-}
-
-/**
- * Wrapper method for requesting and formatting journal rows and aggregate
- * information
- *
- * - returns a correctly formatted object with aggregates and journal rows
- */
-function addAggregateData(journalRows) {
-  return queryTransactionAggregates(journalRows)
-    .then((aggregateResults) => {
-      // format object according to API specification
-      return {
-        journal   : journalRows,
-        aggregate : aggregateResults,
-      };
-    });
-}
-
-/**
- * Add additional transaction aggregate information based on the transactions/
- * rows in journal queries
- *
- * - Expects an array of journal voucher rows
- *
- * - This one flag returns an object containing both journal rows and aggregate
- *   information , this is described in the API
- */
-function queryTransactionAggregates(journalRows) {
-  const transactionIds = journalRows
-    .map(row => row.record_uuid)
-
-    // only keep elements that are unique
-    .filter((transactionId, index, allTransactionIds) => allTransactionIds.indexOf(transactionId) === index)
-
-    .map(transactionId => db.bid(transactionId));
-
-  const emptyTransactions = transactionIds.length === 0;
-  const aggregateQuery = `
-    SELECT
-      trans_id, SUM(credit_equiv) as credit_equiv, BUID(record_uuid) as record_uuid,
-      SUM(debit_equiv) as debit_equiv, COUNT(uuid) as totalRows
-    FROM posting_journal
-    WHERE record_uuid in (?)
-    GROUP BY record_uuid;
-  `;
-
-  // if there are no record uuids to search on we can optimise by not running the query
-  if (emptyTransactions) {
-    return Promise.resolve([]);
-  }
-
-  return db.exec(aggregateQuery, [transactionIds]);
 }
 
 /**
