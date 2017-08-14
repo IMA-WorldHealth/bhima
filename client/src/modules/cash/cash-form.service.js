@@ -58,7 +58,6 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * cash form.  It also stores the selection in AppCache.
    */
   CashForm.prototype.setCautionType = function setCautionType(isCaution) {
-
     // change the form value
     this.details.is_caution = isCaution;
 
@@ -71,6 +70,16 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
     }
   };
 
+  /**
+   * @method setDate
+   *
+   * @description
+   * This method takes in the date from the bhDateEdit component and sets it on the
+   * form.
+   */
+  CashForm.prototype.setDate = function setDate(date) {
+    this.details.date = date;
+  };
 
   /**
    * @method isCaution
@@ -115,7 +124,6 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * object passed into the form.
    */
   CashForm.prototype.configure = function configure(config) {
-
     if (config.patient) {
       this.setPatient(config.invoices);
     }

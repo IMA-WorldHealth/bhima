@@ -100,7 +100,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
       invoices: vm.Payment.details.invoices
         .map(function (invoice) {
           return invoice.uuid;
-        })
+        }),
     });
   }
 

@@ -266,6 +266,19 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     this.prices.setData(priceList.items);
   };
 
+
+  /**
+   * @method setDate
+   *
+   * @description
+   * This method sets the date in the details object.
+   *
+   * @param {Object} date - the date for the invoice
+   */
+  PatientInvoiceForm.prototype.setDate = function setDate(date) {
+    this.details.date = date;
+  };
+
   /**
    * @method setService
    *

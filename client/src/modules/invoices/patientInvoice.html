@@ -50,7 +50,7 @@
                   -->
                   <bh-date-editor
                     date-value="PatientInvoiceCtrl.Invoice.details.date"
-                    validation-trigger="InvoiceForm.$submitted"
+                    on-change="PatientInvoiceCtrl.Invoice.setDate(date)"
                     min-date="PatientInvoiceCtrl.minimumDate"
                     max-date="PatientInvoiceCtrl.timestamp">
                   </bh-date-editor>
