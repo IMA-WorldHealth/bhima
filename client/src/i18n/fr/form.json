@@ -617,7 +617,8 @@
             "EMPTY_SELECTION": "Sélection vide",
             "NOT_AUTHORISED": "La page demandée n'est pas autorisée",
             "NOT_FOUND": "Non trouvee",
-            "PAGE_NOT_FOUND": "La page demandée n'a pas été trouvée"
+            "PAGE_NOT_FOUND": "La page demandée n'a pas été trouvée",
+            "NO_CHANGES" : "Vous n'avez pas changé les données dans le formulaire.  Rien a été submis au server."
         }
     }
 }
