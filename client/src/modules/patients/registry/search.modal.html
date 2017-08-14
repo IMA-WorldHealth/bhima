@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="ModalCtrl.submit(ModalForm)"
+  ng-submit="$ctrl.submit(ModalForm)"
   data-modal="patient-search"
   novalidate>
 
@@ -15,94 +15,90 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
+          <!--patient name-->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
             <label class="control-label" translate> FORM.LABELS.NAME </label>
-            <bh-clear on-clear="ModalCtrl.clear('display_name')"></bh-clear>
-            <input type="text" class="form-control" name="display_name" ng-model="ModalCtrl.params.display_name">
+            <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
+            <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
             <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
+          <!-- patient reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate> FORM.LABELS.REFERENCE </label>
-            <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
 
-            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
             <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
+          <!-- patient hospital number-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
             <label class="control-label" translate>
                 FORM.LABELS.HOSPITAL_FILE_NR
             </label>
-            <bh-clear on-clear="ModalCtrl.clear('hospital_no')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('hospital_no')"></bh-clear>
 
-            <input type="text" class="form-control" name="hospital_no" ng-model="ModalCtrl.params.hospital_no">
+            <input type="text" class="form-control" name="hospital_no" ng-model="$ctrl.searchQueries.hospital_no">
             <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
+          <!-- patient gender-->
           <div class="radio">
             <p class="control-label">
               <strong translate>FORM.LABELS.GENDER</strong>
-              <bh-clear on-clear="ModalCtrl.clear('sex')"></bh-clear>
+              <bh-clear on-clear="$ctrl.clear('sex')"></bh-clear>
             </p>
 
             <label>
-              <input type="radio" name="sex" id="male" value="M" ng-model="ModalCtrl.params.sex">
+              <input type="radio" name="sex" id="male" value="M" ng-model="$ctrl.searchQueries.sex">
               <span translate>FORM.LABELS.MALE</span>
             </label>
           </div>
 
           <div class="radio">
             <label>
-              <input type="radio" name="sex" id="female" value="F" ng-model="ModalCtrl.params.sex">
+              <input type="radio" name="sex" id="female" value="F" ng-model="$ctrl.searchQueries.sex">
               <span translate>FORM.LABELS.FEMALE</span>
             </label>
           </div>
 
+          <!-- patient debtor group -->
           <bh-debtor-group-select
-            debtor-group-uuid = "ModalCtrl.params.debtor_group_uuid"
-            on-select-callback = "ModalCtrl.onSelectDebtor(debtorGroup)">
-            <bh-clear on-clear="ModalCtrl.clear('debtor_group_uuid')"></bh-clear>
+            debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
+            on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
+            <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
           </bh-debtor-group-select>
 
-          <div class="form-group">
-            <label class="control-label" translate>
-              PATIENT_GROUP.PATIENT_GROUP
-            </label>
+          <!-- patient patient group -->
+          <bh-patient-group-select
+            patient-group-uuid = "$ctrl.searchQueries.patient_group_uuid"
+            on-select-callback = "$ctrl.onSelectPatientGroup(patientGroup)">
+            <bh-clear on-clear="$ctrl.clear('patient_group_uuid')"></bh-clear>
+          </bh-patient-group-select>
 
-            <bh-clear on-clear="ModalCtrl.clear('patient_group_uuid')"></bh-clear>
-
-            <!-- @todo make data driven selects components to handle loading and error states -->
-            <ui-select
-              name="patientGroup"
-              ng-model="ModalCtrl.params.patient_group_uuid">
-              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PATIENT_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.patientGroups | filter:$select.search | orderBy:'name') track by group.uuid">
-                <span ng-bind-html="group.name | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-          </div>
-
+          <!-- patient user selection -->
           <bh-user-select
-            user-id="ModalCtrl.params.user_id"
+            user-id="$ctrl.searchQueries.user_id"
             name="user_id"
-            on-select-callback="ModalCtrl.onSelectUser(user)">
-            <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
+          <!-- patient date interval components -->
           <fieldset>
             <legend translate>FORM.LABELS.DOB</legend>
             <bh-date-interval
               date-id="dob-date"
               validation-trigger="ModalForm.$submitted"
-              date-from="ModalCtrl.params.dateBirthFrom"
-              date-to="ModalCtrl.params.dateBirthTo"
+              date-from="$ctrl.searchQueries.dateBirthFrom"
+              date-to="$ctrl.searchQueries.dateBirthTo"
               mode="clean">
             </bh-date-interval>
           </fieldset>
@@ -112,16 +108,14 @@
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
           <!-- period selection -->
-          <!-- start period selection component -->
           <bh-period-select
-            default-period="{{ModalCtrl.filters.period}}"
-            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
-          <!-- end period selection component -->
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -133,7 +127,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
     <button type="submit" class="btn btn-primary" data-method="submit" translate>

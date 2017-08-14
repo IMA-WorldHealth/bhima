@@ -1,4 +1,4 @@
-<div class="flex-header static">
+<div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.HOSPITAL</li>
@@ -64,6 +64,7 @@
 
 <div class="flex-util bh-filter-bar">
   <bh-filters
+    style="max-width:90%"
     filters="PatientRegistryCtrl.latestViewFilters"
     on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)">
   </bh-filters>
@@ -74,7 +75,6 @@
     <div
       id="patient-registry"
       class="grid-full-height-with-filters"
-      ng-style="PatientRegistryCtrl.filterBarHeight"
       ui-grid="PatientRegistryCtrl.uiGridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns

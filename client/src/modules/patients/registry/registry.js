@@ -5,7 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', '$translate',
   'GridColumnService', 'GridSortingService', 'bhConstants',
-  'DepricatedFilterService', 'GridStateService', 'LanguageService', 'ExportService'];
+  'GridStateService', 'LanguageService', 'ExportService'];
 
 /**
  * Patient Registry Controller
@@ -14,20 +14,15 @@ PatientRegistryController.$inject = [
  */
 function PatientRegistryController($state, Patients, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
-  Columns, Sorting, bhConstants, Filters, GridState, Languages, Export) {
+  Columns, Sorting, bhConstants, GridState, Languages, Export) {
   var vm = this;
-
-  var filter = new Filters();
-  vm.filter = filter;
 
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
   var state;
 
   vm.search = search;
   vm.patientCard = patientCard;
-  vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
@@ -129,17 +124,14 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     return Object.keys(object).length === 0;
   }
 
-  // this function loads patients from the database with search parameters
-  // if passed in.
-  function load(parameters) {
+  // this function loads patients from the database with search filters, if passed in.
+  function load(filters) {
 
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // if we have search parameters, use search.  Otherwise, just read all
-    // patients.
-    var request = Patients.read(null, parameters);
+    var request = Patients.read(null, filters);
 
     // hook the returned patients up to the grid.
     request.then(function (patients) {
@@ -194,11 +186,9 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
 
-    if ($state.params.filters) {
-      // Fix me, generate change dynamically
-      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-
-      Patients.filters.replaceFilters(change);
+    if($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      Patients.filters.replaceFilters(changes);		
       Patients.cacheFilters();
     }
 
