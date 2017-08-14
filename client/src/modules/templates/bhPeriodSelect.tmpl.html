@@ -61,14 +61,12 @@
   </div>
   <div ng-show="$ctrl.customExpanded">
     <div class="row">
-      <div class="col-md-6">
-        <label translate>PERIODS.CUSTOM_FROM</label>
-        <input class="form-control" ng-model="$ctrl.customSelection.from" type="date">
-      </div>
-      <div class="col-md-6">
-        <label translate>PERIODS.CUSTOM_TO</label>
-        <input class="form-control" ng-model="$ctrl.customSelection.to" type="date">
-      </div>
+
+       <bh-date-interval
+        date-id="date" date-from="$ctrl.customSelection.from" date-to="$ctrl.customSelection.to" mode="clean">
+      </bh-date-interval>
+
+
     </div>
 
     <div class="row" style="margin-top : 5px">
