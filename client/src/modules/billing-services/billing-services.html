@@ -6,15 +6,24 @@
     </ol>
 
     <div class="toolbar">
-
       <div class="toolbar-item">
-        <a
-          class="btn btn-default text-capitalize"
+        <a class="btn btn-default text-capitalize"
           data-method="create"
           ui-sref="billingServices.create"
           ui-sref-opts="{notify:false}">
           <span class="fa fa-plus"></span> <span translate>BILLING_SERVICES.BTN.CREATE</span>
         </a>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="BillingServicesCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : BillingServicesCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
       </div>
     </div>
   </div>

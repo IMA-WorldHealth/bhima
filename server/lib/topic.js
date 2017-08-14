@@ -86,7 +86,7 @@ function databaseLogger(data) {
   // template strings
   winston.verbose(
     `[${record.channel}] ${data.user || record.user_id} ${record.type}ed a ${record.entity}.`
- );
+  );
 
   /*
    * @todo - in a week of operation on a small scale ~600 events were
@@ -155,7 +155,6 @@ function deserialize(data) {
  * Topic.unsubscribe(Topic.channels.ALL);
  */
 class Topic {
-
   /**
    * @constructor
    *
