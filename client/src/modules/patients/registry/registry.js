@@ -185,6 +185,13 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+
+    if($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      Patients.filters.replaceFilters(changes);		
+      Patients.cacheFilters();
+    }
+
     load(Patients.filters.formatHTTP(true));
     vm.latestViewFilters = Patients.filters.formatView();
   }

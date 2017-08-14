@@ -13,20 +13,17 @@ angular.module('bhima.components')
   });
 
 PatientGroupSelectController.$inject = [
-  'PatientGroupService'
+  'PatientGroupService', 'NotifyService'
 ];
 
 /**
  * Patient Group selection component
  *
  */
-function PatientGroupSelectController(PatientGroups) {
+function PatientGroupSelectController(PatientGroups, Notify) {
   var $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
-    // fired when a patient group has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
+  $ctrl.$onInit = function onInit() {  
     // default for label
     $ctrl.label = $ctrl.label || 'PATIENT_GROUP.PATIENT_GROUP';
 
@@ -34,7 +31,8 @@ function PatientGroupSelectController(PatientGroups) {
     PatientGroups.read()
       .then(function (pgs) {        
         $ctrl.patientGroups = pgs;
-      });
+      })
+      .catch(Notify.handleError);
   };
 
   $ctrl.onSelect = function ($item, $model) {
