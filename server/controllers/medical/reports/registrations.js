@@ -118,7 +118,7 @@ function build(req, res, next) {
 
       // if no patients matched the previous query, set the promise value to false
       // and skip rendering aggregates in the handlbars view
-      if (!patients) { return false; }
+      if (patients.length === 0) { return false; }
 
       // gather the uuids for the aggregate queries
       const uuids = patients.map(p => db.bid(p.uuid));
