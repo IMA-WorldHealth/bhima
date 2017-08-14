@@ -1,3 +1,4 @@
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -14,7 +15,10 @@ class OpenDebtorsReportPage {
 
   // preview a OpenDebtors report
   showOpenDebtorsReportPreview(order) {
-    FU.uiSelect('ReportConfigCtrl.reportDetails.order', order);
+    const select = element(by.model('ReportConfigCtrl.reportDetails.order'));
+    select.click();
+    const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', order));
+    option.click();
 
     const showUnverifiedTransactions = $('[name="showUnverifiedTransactions"]');
     const showDetailedView = $('[name="showDetailedView"]');

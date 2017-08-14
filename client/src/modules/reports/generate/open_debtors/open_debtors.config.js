@@ -20,6 +20,8 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   var cache = new AppCache('configure_open_debtors');
   var reportUrl = 'reports/finance/debtors/open';
 
+  var DEFAULT_ORDERING = 'debt-desc';
+
   vm.DATE_FORMAT = bhConstants.dates.format;
 
   vm.previewGenerated = false;
@@ -33,6 +35,7 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
     showDetailedView : 0,
     showUnverifiedTransactions : 0,
     limitDate : 0,
+    order : DEFAULT_ORDERING,
   };
 
   // bind service variables for rendering the dropdown
