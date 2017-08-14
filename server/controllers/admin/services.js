@@ -58,27 +58,41 @@ function list(req, res, next) {
  * Create a service in the database
  */
 function create(req, res, next) {
-  const record = req.body;
-  const sql = `INSERT INTO service SET ?`;
+  const serviceRecord = req.body;
+  const transaction = db.transaction();
 
   // add contextual information
-  record.enterprise_id = req.session.enterprise.id;
-
-  delete record.id;
+  serviceRecord.enterprise_id = req.session.enterprise.id;
 
   // service unique uuid as entity uuid
-  record.uuid = db.bid(uuid.v4());
+  serviceRecord.uuid = db.bid(uuid.v4());
 
-  db.exec(sql, [record])
+  // remove id if it exists
+  delete serviceRecord.id;
+
+  // depot parameters
+  const depotRecord = {
+    uuid : db.bid(uuid.v4()),
+    text : serviceRecord.name,
+    enterprise_id : serviceRecord.enterprise_id,
+    service_uuid : serviceRecord.uuid,
+  };
+
+  const insertService = `INSERT INTO service SET ?`;
+  const insertDepot = `INSERT INTO depot SET ?`;
+
+  transaction.addQuery(insertService, [serviceRecord]);
+  transaction.addQuery(insertDepot, [depotRecord]);
+
+  transaction.execute()
     .then((result) => {
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.CREATE,
         entity : Topic.entities.SERVICE,
         user_id : req.session.user.id,
-        id : result.insertId,
+        id : result[0].insertId,
       });
-
-      res.status(201).json({ id : result.insertId });
+      res.status(201).json({ id : result[0].insertId });
     })
     .catch(next)
     .done();

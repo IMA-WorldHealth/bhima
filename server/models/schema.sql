@@ -576,8 +576,10 @@ CREATE TABLE `depot` (
   `text` VARCHAR(50) NOT NULL,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `service_uuid` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `depot_1` (`text`)
+  UNIQUE KEY `depot_1` (`text`),
+  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
