@@ -9,6 +9,7 @@
     </h3>
 
     <h4 class="text-center text-uppercase">
+      {{#if details.limitDate}}{{date details.reportDateLimit}} - {{/if}}
       {{date this.timestamp }}
     </h4>    
 
@@ -19,19 +20,19 @@
           <tr class="text-capitalize text-center" style="background-color: #ddd;">
             <th>{{translate "FORM.LABELS.REFERENCE"}}</th>
             <th>{{translate "FORM.LABELS.PATIENT"}}</th>
-            <th>{{translate "TABLE.COLUMNS.LAST_INVOICE"}}</th>
-            <th>{{translate "TABLE.COLUMNS.LAST_PAYMENT"}}</th>
+            {{#if details.showDetailedView}}<th>{{translate "TABLE.COLUMNS.LAST_INVOICE"}}</th>{{/if}}
+            {{#if details.showDetailedView}}<th>{{translate "TABLE.COLUMNS.LAST_PAYMENT"}}</th>{{/if}}
             <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL_DEBT"}}</th>
           </tr>
         </thead>
         <tbody>
           {{#each debtors as | debtor |}}
             <tr>
-              <th>{{debtor.reference }}</th>
+              <td>{{debtor.reference}}</td>
               <td>{{debtor.display_name }}</td>
-              <td>{{date debtor.lastInvoiceDate}}</td>
-              <td>{{date debtor.lastPaymentDate}}</td>
-              <td class="text-right">{{currency debtor.debt ../metadata.enterprise.currency_id}}</td>
+              {{#if ../details.showDetailedView}}<td>{{date debtor.latestInvoiceDate}}</td>{{/if}}
+              {{#if ../details.showDetailedView}}<td>{{date debtor.latestCashDate}}</td>{{/if}}
+              <td class="text-right">{{currency debtor.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=5}}
@@ -40,7 +41,8 @@
         {{#if aggregates}}
           <tfoot>
             <tr style="background-color: #ddd;">
-              <th colspan="4">{{translate "TABLE.COLUMNS.TOTAL"}} {{aggregates.numDebtors}} {{translate "TABLE.AGGREGATES.RECORDS"}}</th>
+              <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}} {{aggregates.numDebtors}} {{translate "TABLE.AGGREGATES.RECORDS"}}</th>
+              {{#if details.showDetailedView}}<th colspan="2"></th>{{/if}}
               <th class="text-right">{{currency aggregates.balance metadata.enterprise.currency_id}}</th>
             </tr>
           </tfoot>

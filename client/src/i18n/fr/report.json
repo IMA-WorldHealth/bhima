@@ -19,7 +19,10 @@
       "EXPLOITATION_RESULT": "Resultat d'exploitation"
     },
     "CASH_EXPENSE":"Depenses",
-    "CASHFLOW_BY_SERVICE": {"TITLE":"Rapports de flux de trésorerie par Service", "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie"},
+    "CASHFLOW_BY_SERVICE": {
+      "TITLE" : "Rapports de flux de trésorerie par Service",
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
+    },
     "CASHFLOW":"Cashflow",
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
@@ -32,19 +35,24 @@
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
-    "OPEN_DEBTORS":{
-      "DESCRIPTION":"Ce rapport affiche les débiteurs endettés",
-      "TITLE":"Débiteurs endettés", 
-      "TREE":"Dettes des Débiteurs"
+    "OPEN_DEBTORS": {
+      "TITLE":"Débiteurs endettés",
+      "TREE":"Dettes des Débiteurs",
+      "DESCRIPTION": "Ce rapport liste les débiteurs et leurs dettes envers l'institution. Permet de trier les données à lister ainsi que de voir la dernière date de facturation et de paiement pour une analyse assez poussée. Les donnees peuvent être filtrées par date aussi.",
+      "SHOW_DATE_LIMIT" : "Limité par Date",
+      "DATE_LIMIT_HELP" : "La limite de la date ne fera que numériser les enregistrements de cette date au présent.",
+      "SHOW_DETAILED_VIEW" : "Inclure les colonnes pour les dernières dates de facturation et de paiement",
+      "SHOW_DETAILED_VIEW_HELP" : "L'activation de cette option comprendra la dernière date à laquelle le débiteur a payé et la dernière date où ils ont été facturés. Ceci est utile pour comprendre quand ils étaient à l'établissement. Cependant, cela rendra la requête plus lent.",
+      "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
+      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
-      "LAST_INVOICE": "Date de la dernière facture",
-      "LAST_PAYMENT": "Date du dernier paiement",
-      "PATIENT_NAME": "Nom du patient",
-      "TOTAL_DEBT": "Total des dettes"
+      "LAST_TRANSACTION": "Date Dernière Transaction",
+      "PATIENT_NAME": "Nom du Patient",
+      "TOTAL_DEBT": "Total des Dettes"
     },
-    "OVER_NINETY_DAYS": "Plus de 90 jours",
+    "OVER_NINETY_DAYS": "Plus de 90 Jours",
     "PERIOD_START": "Debut",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",

@@ -39,16 +39,21 @@
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
-      "DESCRIPTION": "This report shows indebted debtors",
+      "DESCRIPTION": "This report shows the debtors that have a standing debt with the institution, and gives some control over the sort order.  For advanced analysis, the report can add in the last invoice date and last payment date, as well as limit the scope of the search by a date.",
       "TITLE": "Debtors with Unpaid Debts",
-      "TREE": "Open Debtors"
+      "TREE": "Open Debtors",
+      "SHOW_DATE_LIMIT" : "Enable Date Limit",
+      "DATE_LIMIT_HELP" : "The date limit will only scan records from this date to the present.",
+      "SHOW_DETAILED_VIEW" : "Include Columns for Last Dates of Invoicing and Payment",
+      "SHOW_DETAILED_VIEW_HELP" : "Enabling this option will include the last date the debtor paid and the last date they were invoiced.  This is useful for understanding when they were at the institution.  However, it will make the query take slightly longer.",
+      "SHOW_UNVERIFIED_TRANSACTIONS" : "Include Unverified Transactions",
+      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "Enabling this option includes records from the Posting Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Posting Journal transactions and moved them to the General Ledger."
     },
     "OPENING_BALANCE": "Opening Balance",
     "ORDER": {
-      "LAST_INVOICE": "Date of last invoice",
-      "LAST_PAYMENT": "Date of last payment",
-      "PATIENT_NAME": "Nom du patient",
-      "TOTAL_DEBT": "Total Debts"
+      "LAST_TRANSACTION": "Date of Last Transaction",
+      "PATIENT_NAME": "Patient Name",
+      "TOTAL_DEBT": "Total Debt"
     },
     "OVER_NINETY_DAYS": "Over 90 Days",
     "PERIOD_START": "Start",

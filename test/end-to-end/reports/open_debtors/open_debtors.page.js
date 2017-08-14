@@ -1,5 +1,4 @@
-/* global browser, element, by */
-
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -15,17 +14,25 @@ class OpenDebtorsReportPage {
   }
 
   // preview a OpenDebtors report
-  showOpenDebtorsReportPreview(column, orderBy) {
-    FU.uiSelect('ReportConfigCtrl.reportDetails.order', column);
+  showOpenDebtorsReportPreview(order) {
+    const select = element(by.model('ReportConfigCtrl.reportDetails.order'));
+    select.click();
+    const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', order));
+    option.click();
 
-    element(by.id(orderBy)).click();
+    const showUnverifiedTransactions = $('[name="showUnverifiedTransactions"]');
+    const showDetailedView = $('[name="showDetailedView"]');
+
+    // enable the checkboxes
+    showUnverifiedTransactions.click();
+    showDetailedView.click();
 
     this.page.preview();
   }
 
   // save a OpenDebtors report
-  saveOpenDebtorsReport(column, orderBy, reportName, reportFormat) {
-    this.showOpenDebtorsReportPreview(column, orderBy);
+  saveOpenDebtorsReport(order, reportName, reportFormat) {
+    this.showOpenDebtorsReportPreview(order);
 
     // save report as PDF
     this.page.saveAs();
@@ -39,8 +46,8 @@ class OpenDebtorsReportPage {
   }
 
   // print a debtors report
-  printOpenDebtorsReport(column, orderBy, weekly, cashbox) {
-    this.showOpenDebtorsReportPreview(column, orderBy);
+  printOpenDebtorsReport(order) {
+    this.showOpenDebtorsReportPreview(order);
     this.page.printPreview();
   }
 

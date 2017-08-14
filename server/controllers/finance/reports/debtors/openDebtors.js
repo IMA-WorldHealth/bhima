@@ -2,9 +2,28 @@
  * @overview finance/reports/debtors/open.js
  *
  * @description
- * This report concerns the debtors that have open balances
- * The typical age categories are 0-30 days, 30-60 days, 60-90 days, and > 90
- * days.
+ * This report concerns the debtors that have open balances with the enterprise.
+ *
+ * Available options:
+ *
+ * LIMIT DATE
+ * A user is allowed to specify a limitDate that will only consider debt accrued since that date.
+ *
+ * ORDER
+ * The order parameter instructs the query how to sort the data from the server.  Available configurations
+ * are:
+ *  1) Invoice Date
+ *  2) Amount of Debt
+ *  3) Patient Name
+ *
+ * SHOW DETAILED VIEW
+ * The report is available in a simple (faster, less detailed) view or a complex view (slower, more
+ * detailed).  The complex view includes columns such as last invoice date and last payment date, which
+ * may be useful in determining when the patient was present at the hospital.
+ *
+ * SHOW UNVERIFIED TRANSACTIONS
+ * Includes unposted records from the Posting Journal.  In general, this option should be left unticked, as
+ * it could provide misleading results.
  *
  * As usual, the reports are created with a handlebars template and shipped to
  * the client as either JSON, HTML, or PDF, depending on the renderer specified
@@ -18,10 +37,18 @@ const db = require('../../../../lib/db');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
 
+// converts '0' to false and '1' to true.
+// defaults to false
+function convertToBoolean(numberString) {
+  if (numberString) {
+    return Boolean(Number(numberString));
+  }
+
+  return false;
+}
+
 /**
  * Actually builds the open debtor report.
- *
- * @todo - allow limiting by date
  */
 function build(req, res, next) {
   const qs = _.extend(req.query, { csvKey : 'debtors' });
@@ -35,112 +62,114 @@ function build(req, res, next) {
     return next(e);
   }
 
-  let ordering;
-
-  switch (qs.order) {
-  case 'payment-date-asc':
-    ordering = 'lastPaymentDate ASC';
-    break;
-
-  case 'payment-date-desc':
-    ordering = 'lastPaymentDate DESC';
-    break;
-
-  case 'invoice-date-asc':
-    ordering = 'lastInvoiceDate ASC';
-    break;
-
-  case 'invoice-date-desc':
-    ordering = 'lastInvoiceDate DESC';
-    break;
-
-  case 'debt-desc':
-    ordering = 'ledger.balance DESC';
-    break;
-
-  case 'patient-name-desc':
-    ordering = 'patient.display_name DESC';
-    break;
-
-  case 'patient-name-asc':
-    ordering = 'patient.display_name ASC';
-    break;
-
-  case 'debt-asc':
-    ordering = 'ledger.balance ASC';
-    break;
-
-  default:
-    ordering = 'cash.date ASC';
-    break;
-  }
-
-  /*
-   * The SQL query first looks for all entity_uuids in the combined Posting
-   * Journal and General Ledger to find unbalanced accounts, then links them
-   * with invoices and cash payments.
-   */
-
-  const debtorsSql = `
-    SELECT patient.display_name, entity_map.text AS reference, MAX(invoice.date) AS lastInvoiceDate,
-      MAX(cash.date) AS lastPaymentDate, ledger.balance AS debt
-    FROM patient JOIN entity_map ON patient.uuid = entity_map.uuid
-      JOIN invoice ON patient.debtor_uuid = invoice.debtor_uuid
-      LEFT JOIN cash ON patient.debtor_uuid = cash.debtor_uuid
-      JOIN (
-        SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
-          SUM(c.debit_equiv - c.credit_equiv) AS balance
-        FROM (
-          (
-            SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
-          UNION (
-            SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
-          )
-        ) AS c
-        WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-        GROUP BY c.entity_uuid
-        HAVING balance > 0
-      ) AS ledger ON ledger.entity_uuid = patient.debtor_uuid
-    GROUP BY patient.debtor_uuid
-    ORDER BY ${ordering};
-  `;
-
-  /*
-   * Aggregate SQL for totalling all debts up to the present
-   */
-  const aggregateSql = `
-    SELECT COUNT(a.entity_uuid) AS numDebtors, SUM(a.debit) AS debit, SUM(a.credit) AS credit, SUM(a.balance) AS balance
-    FROM(
-      SELECT c.entity_uuid, SUM(c.debit_equiv) AS debit, SUM(c.credit_equiv) AS credit,
-        SUM(c.debit_equiv - c.credit_equiv) AS balance
-      FROM (
-        (
-          SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal)
-        UNION (
-          SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
-        )
-      ) AS c
-      WHERE c.entity_uuid IN (SELECT patient.debtor_uuid FROM patient)
-      GROUP BY c.entity_uuid
-      HAVING balance > 0
-    ) AS a;
-  `;
-
-  const data = {};
-
-  // execute the query and build the report
-  return db.exec(debtorsSql)
-    .then((debtors) => {
-      data.debtors = debtors;
-      return db.one(aggregateSql);
+  // If any query values are not passed from the client, default values will be used
+  return requestOpenDebtors(req.query)
+    .then((openDebtorsContext) => {
+      return report.render(openDebtorsContext);
     })
-    .then((aggregates) => {
-      data.aggregates = aggregates;
-      return report.render(data);
+    .then((compiledReport) => {
+      res.set(compiledReport.headers).send(compiledReport.report);
     })
-    .then(result => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
+}
+
+// @TODO If unverifiedSource will continue to be used the where conditions should be put on each individual select
+//       MySQL is not able to optimise indexed columns from a generic SELECT
+function requestOpenDebtors(params) {
+  const verifiedSource = 'general_ledger';
+
+  // parameter parsing
+  const showDetailedView = convertToBoolean(params.showDetailedView);
+  const showUnverifiedTransactions = convertToBoolean(params.showUnverifiedTransactions);
+  const limitDate = convertToBoolean(params.limitDate);
+  const reportDateLimit = new Date(params.reportDateLimit);
+
+  // TODO(@jniles) respect the ordering in the open debtors field.
+  const ordering = parseOrdering(params.order);
+
+  const unverifiedSource = `
+    (SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
+      UNION ALL
+     SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from posting_journal) as source
+  `;
+
+  const source = showUnverifiedTransactions ? unverifiedSource : verifiedSource;
+
+  // ONLY show transactions after a certain date (just show this week for example)
+  const dateCondition = limitDate ? `AND DATE(trans_date) >= DATE(${db.escape(reportDateLimit)})` : '';
+
+  const debtorQuery = buildDebtQuery(showDetailedView, source, dateCondition, ordering);
+
+  const aggregateQuery = `
+    SELECT COUNT(DISTINCT(entity_uuid)) as numDebtors, SUM(debit_equiv - credit_equiv) as balance
+    FROM ${source}
+    WHERE entity_uuid IS NOT NULL
+    ${dateCondition}
+    AND (debit_equiv - credit_equiv) > 0
+  `;
+
+  const debtorReport = {
+    details : {
+      showDetailedView,
+      limitDate,
+      reportDateLimit,
+    },
+  };
+
+  return db.exec(debtorQuery)
+    .then((debtorsDebts) => {
+      debtorReport.debtors = debtorsDebts;
+      return db.one(aggregateQuery);
+    })
+    .then((aggregateDebts) => {
+      debtorReport.aggregates = aggregateDebts;
+      return debtorReport;
+    });
+}
+
+// ONLY select rows with an entity
+// ONLY show debtors with a debt above 0
+function buildDebtQuery(showDetailedView, source, dateCondition, ordering) {
+  // Include complex parameters depending on detailed view Boolean requirements
+  const complexParameters = showDetailedView ?
+    ', MAX(invoice.date) as latestInvoiceDate, MAX(cash.date) as latestCashDate ' :
+    '';
+  const complexJoin = showDetailedView ?
+    'LEFT JOIN invoice on reference_uuid = invoice.uuid LEFT JOIN cash on reference_uuid = cash.uuid ' :
+    '';
+
+  // Include all balance and debtor information by default
+  const query = `
+    SELECT patient.display_name, entity_map.text as reference,
+      SUM(debit_equiv - credit_equiv) as balance ${complexParameters}
+    FROM ${source}
+    JOIN patient on entity_uuid = patient.debtor_uuid
+    LEFT JOIN entity_map on entity_map.uuid = entity_uuid
+    ${complexJoin}
+    WHERE entity_uuid IS NOT NULL
+    ${dateCondition}
+    GROUP BY entity_uuid
+    HAVING SUM(debit_equiv - credit_equiv) > 0
+    ORDER BY ${ordering}
+  `;
+
+  return query;
+}
+
+const orderMap = {
+  'transaction-date-asc' : 'trans_date ASC',
+  'transaction-date-desc' : 'trans_date DESC',
+  'debt-desc' : 'balance DESC, trans_date DESC',
+  'debt-asc' : 'balance ASC, trans_date DESC',
+  'patient-name-desc' : 'patient.display_name DESC',
+  'patient-name-asc' : 'patient.display_name ASC',
+};
+
+const DEFAULT_ORDER = 'debt-desc';
+
+function parseOrdering(orderParameter) {
+  return orderMap[orderParameter] || orderMap[DEFAULT_ORDER];
 }
 
 exports.report = build;
