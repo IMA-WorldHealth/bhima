@@ -273,6 +273,7 @@ function JournalController(Journal, Sorting, Grouping,
   vm.openTrialBalanceModal = function openTrialBalanceModal() {
     // gather the selected transactions together
     var selectedTransactionIds = selection.selected.groups;
+    var selectedRecordUuids;
 
     // make sure a row is selected before running the trial balance
     if (selectedTransactionIds.length === 0) {
@@ -280,9 +281,7 @@ function JournalController(Journal, Sorting, Grouping,
       return;
     }
 
-    var selectedRecordUuids = selectedTransactionIds.map(function (transId) {
-      return transactionIdToRecordUuidMap[transId];
-    });
+    selectedRecordUuids = selectedTransactionIds.map(lookupIntermediateRecordUuid);
 
     TrialBalance.initialise(selectedRecordUuids);
 
@@ -441,7 +440,7 @@ function JournalController(Journal, Sorting, Grouping,
     }
 
     var selectedTransaction = selection.selected.groups[0];
-    var transactionUuid = hackIntermediateRecordUuidLookup(selectedTransaction);
+    var transactionUuid = lookupIntermediateRecordUuid(selectedTransaction);
 
     // Journal module rules for optimistic updating:
     // 1. If a row in the current dataset has been removed - remove this row
@@ -480,14 +479,9 @@ function JournalController(Journal, Sorting, Grouping,
       });
   }
 
-  // @FIXME(sfount) temporary method to get UUID from trans id - this should be replaced when rebased with journal
-  //                tools PR
-  function hackIntermediateRecordUuidLookup(transID) {
-    for(var i = 0; i < vm.gridOptions.data.length; i++) {
-      var transaction = vm.gridOptions.data[i];
-      if (transaction.trans_id === transID) {
-        return transaction.record_uuid;
-      }
-    }
+  // TODO(@jniles) rename this method and migrate all code to it
+  // looks up the Record UUID from a Transaction ID
+  function lookupIntermediateRecordUuid(transID) {
+    return transactionIdToRecordUuidMap[transID];
   }
 }

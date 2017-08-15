@@ -16,6 +16,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   service.saveChanges = saveChanges;
   service.openSearchModal = openSearchModal;
   service.openTransactionEditModal = openTransactionEditModal;
+  service.mapTransactionIdsToRecordUuids = mapTransactionIdsToRecordUuids;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -24,6 +25,28 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   function grid(id, parameters) {
     var gridOptions = angular.extend({ aggregates : 1 }, parameters);
     return this.read(id, gridOptions);
+  }
+
+  /**
+   * @function mapTransactionIdsToRecordUuids
+   *
+   * @description
+   * Helper method to map transaction ids to record uuids.
+   */
+  function mapTransactionIdsToRecordUuids(data) {
+    return data.reduce(_mapTransactionIdsToRecordUuids, {});
+  }
+
+  /**
+   * @function _mapTransactionIdsToRecordUuids
+   *
+   * @description
+   * Internal method that is passed to the reduce() function.  It is separated for
+   * performance reasons.
+   */
+  function _mapTransactionIdsToRecordUuids(mapping, row) {
+    mapping[row.trans_id] = row.record_uuid;
+    return mapping;
   }
 
   // @TODO(sfount) change this API to (change pending to not break current functionality):
@@ -41,7 +64,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       removed : entity.removedRows,
     };
 
-    return service.$http.post('/journal/'.concat(entity.uuid, '/edit'), saveRequest)
+    return service.$http.post(URL.concat(entity.uuid, '/edit'), saveRequest)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -66,22 +89,22 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
 
   // default filtes will always be applied
   journalFilters.registerDefaultFilters([
-      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-      { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
-      { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
-      // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+    // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
-      { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
-      { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-      { key : 'user_id', label : 'FORM.LABELS.USER' },
-      { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
-      { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
-      { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
-      { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-      { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
+    { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+    { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 
   if (filterCache.filters) {
@@ -136,22 +159,23 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       resolve : {
         filters : function () { return filters; },
         options : function () { return options || {}; },
-      }
+      },
     }).result;
   }
 
-  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
-  function openTransactionEditModal(transactionUuid, readOnly) { 
+  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions
+  // details
+  function openTransactionEditModal(transactionUuid, readOnly) {
     return Modal.open({
       templateUrl : 'modules/journal/modals/editTransaction.modal.html',
       controller : 'JournalEditTransactionController as ModalCtrl',
-      backdrop : 'static', 
+      backdrop : 'static',
       keyboard : false,
       size : 'lg',
-      resolve : { 
+      resolve : {
         transactionUuid : function () { return transactionUuid; },
-        readOnly : function () { return readOnly; }
-      }
+        readOnly : function () { return readOnly; },
+      },
     }).result;
   }
 
