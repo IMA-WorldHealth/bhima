@@ -2,53 +2,23 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'DepotService', '$translate',
-  'SessionService', 'ModalService', 'util',
-  'NotifyService', 'uiGridConstants', '$state',
+  'ServiceService', 'DepotService', 'SessionService',
+  'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
-function ServicesController(Services, Depots, $translate,
-  SessionService, ModalService, util,
-  Notify, uiGridConstants, $state) {
+function ServicesController(Services, Depots, SessionService,
+  ModalService, Notify, uiGridConstants, $state) {
   var vm = this;
-
-  vm.projectId = SessionService.project.id;
-  vm.maxLength = util.maxTextLength;
 
   // bind methods
   vm.deleteService = deleteService;
   vm.editService = editService;
   vm.createService = createService;
+  vm.toggleFilter = toggleFilter;
 
-  // switch to delete warning mode
-  function deleteService(service) {
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
-
-      Services.delete(service.id)
-      .then(function () {
-        Notify.success('SERVICE.DELETED');
-        loadServices();
-      })
-      .catch(Notify.handleError);
-    });
-  }
-
-  // update an existing service
-  function editService(serviceObject) {
-    $state.go('services.edit', { service : serviceObject });
-  }
-
-  // create a new service
-  function createService() {
-    $state.go('services.create');
-  }
-
-  // expose to the view
+  // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
-  vm.toggleFilter = toggleFilter;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -91,6 +61,31 @@ function ServicesController(Services, Depots, $translate,
     .finally(function () {
       vm.loading = false;
     });
+  }
+
+  // switch to delete warning mode
+  function deleteService(service) {
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool) {
+      if (!bool) { return; }
+
+      Services.delete(service.id)
+      .then(function () {
+        Notify.success('SERVICE.DELETED');
+        loadServices();
+      })
+      .catch(Notify.handleError);
+    });
+  }
+
+  // update an existing service
+  function editService(serviceObject) {
+    $state.go('services.edit', { service : serviceObject });
+  }
+
+  // create a new service
+  function createService() {
+    $state.go('services.create');
   }
 
   loadServices();

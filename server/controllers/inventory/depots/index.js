@@ -44,6 +44,9 @@ function create(req, res, next) {
   // prevent missing uuid by generating a new one
   req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
+  // enterprise for the depot
+  req.body.enterprise_id = req.session.enterprise.id;
+
   db.exec(query, [req.body])
   .then(() => {
     res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
@@ -80,6 +83,10 @@ function update(req, res, next) {
   var query = 'UPDATE depot SET ? WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
+  if (req.body.service_uuid) {
+    req.body.service_uuid = db.bid(req.body.service_uuid);
+  }
+
   // prevent updating the uuid by accident
   if (req.body.uuid) { delete req.body.uuid; }
 
@@ -108,9 +115,11 @@ function update(req, res, next) {
 */
 function list(req, res, next) {
   var sql =
-    `SELECT BUID(uuid) as uuid, text, is_warehouse
-    FROM depot
-    WHERE enterprise_id = ?;`;
+    `SELECT BUID(d.uuid) as uuid, d.text, d.is_warehouse, 
+      s.name as serviceName, BUID(s.uuid) as serviceUuid, s.id as serviceId
+    FROM depot d 
+    LEFT JOIN service s ON s.uuid = d.service_uuid
+    WHERE d.enterprise_id = ?;`;
 
   db.exec(sql, [req.session.enterprise.id])
   .then((rows) => {
