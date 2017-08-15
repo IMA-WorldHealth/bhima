@@ -345,7 +345,7 @@ function StockEntryController(Depots, Inventory, Notify,
       .then(function (document) {
         vm.Stock.store.clear();
         vm.movement = {};
-        ReceiptModal.stockEntryDepotReceipt(document.uuid, bhConstants.flux.FROM_OTHER_DEPOT);
+        ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
   }

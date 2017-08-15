@@ -25,9 +25,9 @@ function StockLotsRegistryTests() {
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
-  const LOT_FOR_ALLTIME = 15;
+  const LOT_FOR_ALLTIME = 16;
   const LOT_FOR_TODAY = 10;
-  const LOT_FOR_LAST_YEAR = 15;
+  const LOT_FOR_LAST_YEAR = 16;
   
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, () => {
@@ -67,13 +67,13 @@ function StockLotsRegistryTests() {
   it('find lot by name', () => {
     modal.setLotLabel('VITAMINE-A');
     modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
   });
 
   it('find lots by entry date', () => {
     modal.setdateInterval('02/02/2017', '02/02/2017', 'entry-date');
     modal.submit();
-    GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 6 + (2 * depotGroupingRow));
   });
 
   it('find lots by expiration date', () => {

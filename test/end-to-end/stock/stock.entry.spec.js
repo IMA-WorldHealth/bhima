@@ -69,7 +69,7 @@ function StockExiTests() {
 
   it('Should entry stock from a transfer reception', () => {
     // select the movement
-    page.setTransfer(0);
+    page.setTransfer(1);
 
     page.setDate(new Date());
 

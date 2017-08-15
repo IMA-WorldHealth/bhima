@@ -71,12 +71,13 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
-  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid']);
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid']);
   const filters = new FilterParser(params, { autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
   filters.equals('depot_uuid', 'depot_uuid', 'm');
+  filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
