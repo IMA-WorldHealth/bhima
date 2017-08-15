@@ -1,5 +1,5 @@
 {
-  "POSTING_JOURNAL" : {
+  "POSTING_JOURNAL":{
     "ABOLISH_GROUPS":"Abolishing Group",
     "ACCOUNT":"Account",
     "ADD_ROW":"Add Row",
@@ -56,9 +56,10 @@
       "LOCKED_ACCOUNT":"An accountant has locked one or more accounts used in a transaction.  To correct this error, update the transaction or unlock the periods.",
       "TRANSACTION_DIFF_DATES" : "A transaction must have identical dates, yet some transaction contains different dates.  Correct this by updating the dates of the affected transactions.",
       "UNBALANCED_TRANSACTIONS":"Unbalanced Transaction(s)",
+      "MISSING_TRANSACTIONS" : "No transactions have been submitted.",
       "MISSING_ACCOUNTS":"Accounts omitted",
       "MISSING_DATES":"Missing Dates",
-      "DEB_CRED_NOT_NULL" : "Debit and Credit should not be Zero",
+      "DEB_CRED_NOT_NULL" : "The debits and credits should not be zero",
       "CREDITED_DEBITED" : "On the same transaction line an account can not be debited and credited at the same time",
       "MISSING_DOCUMENT_ID":"Records without document ID",
       "MISSING_ENTITY":"Record without entity ID",
