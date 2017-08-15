@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchPurchaseOrderModalController.$inject = [
-  '$uibModalInstance', 'params', 'SupplierService', 'Store', 'util', 'PeriodService', 'NotifyService'
+  '$uibModalInstance', 'params', 'Store', 
+  'util', 'PeriodService', 'NotifyService'
 ];
 
 /**
@@ -14,21 +15,14 @@ SearchPurchaseOrderModalController.$inject = [
  * search functionality on the Purchase Order registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, Store, util, Periods, Notify) {
+function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, Periods, Notify) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = params;
-
-  vm.today = new Date();
-
-  // bind filters if they have already been applied.  Otherwise, default to an
-  // empty object.
+  vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // assign default limit filter
-  if (params.limit) {
-    vm.defaultQueries.limit = params.limit;
-  }
+  vm.today = new Date();
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
@@ -37,23 +31,26 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
   ];
 
   // assign already defined custom params to searchQueries object
-  vm.params = util.maskObjectFromKeys(params, searchQueryOptions);
+  vm.searchQueries = util.maskObjectFromKeys(params, searchQueryOptions);
+
+  // assign default limit filter
+  if (params.limit) {
+    vm.defaultQueries.limit = params.limit;
+  }
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
 
-  // load suppliers
-  Suppliers.read()
-    .then(function (suppliers) {
-      vm.suppliers = suppliers;
-    })
-    .catch(Notify.handleError);
-
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.params.user_id = user.id;
+    vm.searchQueries.user_id = user.id;
+  };
+
+  // custom filter supplier_uuid - assign the value to the params object
+  vm.onSelectSupplier = function onSelectSupplier(supplier) {
+    vm.searchQueries.supplier_uuid = supplier.uuid;
   };
 
   // default filter limit - directly write to changes list
@@ -73,15 +70,11 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
     });
   };
 
-
   // returns the parameters to the parent controller
   function submit(form) {
-    vm.params.is_confirmed = vm.setState === 'is_confirmed' ? 1 : 0;
-    vm.params.is_received = vm.setState === 'is_received' ? 1 : 0;
-    vm.params.is_cancelled = vm.setState === 'is_cancelled' ? 1 : 0;
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.params, function (value, key) {
+    angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         changes.post({ key : key, value : value });
       }
@@ -93,10 +86,9 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Suppliers, St
     return ModalInstance.close(loggedChanges);
   }
 
-  // clears search parameters.  Custom logic if a date is used so that we can
-  // clear two properties.
+  // clears search parameters.  Custom logic if a date is used so that we can clear two properties
   function clear(value) {
-    delete vm.params[value];
+    delete vm.searchQueries[value];
   }
 
   // dismiss the modal

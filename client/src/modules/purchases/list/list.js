@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'ReceiptModal',
-  'uiGridConstants', 'GridColumnService', 'DepricatedFilterService',
+  'uiGridConstants', 'GridColumnService',
   'GridStateService', 'SessionService', 'ModalService',
 ];
 
@@ -13,18 +13,14 @@ PurchaseListController.$inject = [
  * This module is responsible for the management of Purchase Order Registry.
  */
 function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridConstants,
-  Columns, Filters, GridState, Session, Modal) {
+  Columns, GridState, Session, Modal) {
   var vm = this;
 
   var cacheKey = 'PurchaseRegistry';
   var state;
   var columnDefs;
-  var filter = new Filters();
-  vm.filter = filter;
-
 
   vm.search = search;
-  vm.filterBarHeight = {};
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
@@ -37,67 +33,62 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
   vm.loading = false;
 
   columnDefs = [{
-    field                : 'reference',
-    displayName          : 'FORM.LABELS.REFERENCE',
-    headerCellFilter     : 'translate',
-    aggregationType      : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
+    field: 'reference',
+    displayName: 'FORM.LABELS.REFERENCE',
+    headerCellFilter: 'translate',
+    cellTemplate: 'modules/purchases/templates/uuid.tmpl.html',
+    aggregationType: uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel: true,
   }, {
-    field            : 'date',
-    displayName      : 'FORM.LABELS.DATE',
-    headerCellFilter : 'translate',
-    cellFilter       : 'date',
+    field: 'date',
+    displayName: 'FORM.LABELS.DATE',
+    headerCellFilter: 'translate',
+    cellFilter: 'date',
   }, {
-    field            : 'supplier',
-    displayName      : 'FORM.LABELS.SUPPLIER',
-    headerCellFilter : 'translate',
+    field: 'supplier',
+    displayName: 'FORM.LABELS.SUPPLIER',
+    headerCellFilter: 'translate',
   }, {
-    field            : 'note',
-    displayName      : 'FORM.LABELS.DESCRIPTION',
-    headerCellFilter : 'translate',
+    field: 'note',
+    displayName: 'FORM.LABELS.DESCRIPTION',
+    headerCellFilter: 'translate',
   }, {
-    cellTemplate         : '/modules/purchases/templates/cellCost.tmpl.html',
-    field                : 'cost',
-    displayName          : 'FORM.LABELS.COST',
-    headerCellFilter     : 'translate',
-    footerCellFilter     : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType      : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
+    cellTemplate: '/modules/purchases/templates/cellCost.tmpl.html',
+    field: 'cost',
+    displayName: 'FORM.LABELS.COST',
+    headerCellFilter: 'translate',
+    footerCellFilter: 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType: uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel: true,
   }, {
-    field            : 'author',
-    displayName      : 'FORM.LABELS.AUTHOR',
-    headerCellFilter : 'translate',
+    field: 'author',
+    displayName: 'FORM.LABELS.AUTHOR',
+    headerCellFilter: 'translate',
   }, {
-    cellTemplate     : '/modules/purchases/templates/cellStatus.tmpl.html',
-    field            : 'status',
-    displayName      : 'FORM.LABELS.STATUS',
-    headerCellFilter : 'translate',
-    enableFiltering  : false,
-    enableSorting    : false,
+    cellTemplate: '/modules/purchases/templates/cellStatus.tmpl.html',
+    field: 'status',
+    displayName: 'FORM.LABELS.STATUS',
+    headerCellFilter: 'translate',
+    enableFiltering: false,
+    enableSorting: false,
   }, {
-    field           : 'action',
-    displayName     : '',
-    cellTemplate    : '/modules/purchases/templates/cellEdit.tmpl.html',
-    enableFiltering : false,
-    enableSorting   : false,
-  }, {
-    field            : 'uuid',
-    cellTemplate     : '/modules/purchases/templates/cellDocument.tmpl.html',
-    displayName      : 'FORM.LABELS.DOCUMENT',
-    headerCellFilter : 'translate',
-    enableFiltering  : false,
-    enableSorting    : false,
+    field: 'action',
+    displayName: '...',
+    enableFiltering: false,
+    enableColumnMenu: false,
+    enableSorting: false,
+    cellTemplate: 'modules/purchases/templates/action.cell.html',
   }];
 
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
-    appScopeProvider  : vm,
-    showColumnFooter  : true,
-    enableSorting     : true,
-    enableColumnMenus : false,
-    flatEntityAccess  : true,
-    fastWatch         : true,
-    columnDefs        : columnDefs,
+    appScopeProvider: vm,
+    showColumnFooter: true,
+    enableSorting: true,
+    enableColumnMenus: false,
+    flatEntityAccess: true,
+    fastWatch: true,
+    columnDefs: columnDefs,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -131,9 +122,11 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
 
   /** load purchase orders */
   function load(filters) {
+    // flush error and loading states    
+    vm.hasError = false;
     toggleLoadingIndicator();
 
-    PurchaseOrder.search(filters)
+    PurchaseOrder.read(null, filters)
       .then(function (purchases) {
         vm.uiGridOptions.data = purchases;
       })
@@ -147,7 +140,6 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
     PurchaseOrder.openSearchModal(filtersSnapshot)
       .then(function (changes) {
         PurchaseOrder.filters.replaceFilters(changes);
-
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();
         return load(PurchaseOrder.filters.formatHTTP(true));
@@ -173,14 +165,6 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    if ($state.params.filters) {
-      // Fix me, generate change dynamically
-      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
-
-      PurchaseOrder.filters.replaceFilters(change);
-      PurchaseOrder.cacheFilters();
-    }
-
     load(PurchaseOrder.filters.formatHTTP(true));
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }

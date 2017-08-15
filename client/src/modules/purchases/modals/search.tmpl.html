@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="ModalCtrl.submit(ModalForm)"
+  ng-submit="$ctrl.submit(ModalForm)"
   data-modal="purchase-search"
   novalidate>
 
@@ -15,40 +15,32 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
+          <!-- Reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate> FORM.LABELS.REFERENCE </label>
-            <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
 
-            <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
             <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
           <!-- supplier -->
-          <div class="form-group">
-            <label class="control-label" translate>FORM.LABELS.SUPPLIER</label>
-            
-            <bh-clear on-clear="ModalCtrl.clear('supplier_uuid')"></bh-clear>
-
-            <ui-select name="supplier" ng-model="ModalCtrl.params.supplier_uuid">
-              <ui-select-match>
-                <span>{{$select.selected.display_name}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="supplier.uuid as supplier in ModalCtrl.suppliers | filter:$select.search">
-                <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-          </div>
-
+          <bh-supplier-select
+            supplier-uuid="$ctrl.searchQueries.supplier_uuid"
+            on-select-callback="$ctrl.onSelectSupplier(supplier)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('supplier_uuid')"></bh-clear>
+          </bh-supplier-select>
+    
           <!-- user -->
           <bh-user-select
-            user-id="ModalCtrl.bundle.user_id"
+            user-id="$ctrl.searchQueries.user_id"
             name="user_id"
-            on-select-callback="ModalCtrl.onSelectUser(user)">
-            <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
-          </bh-user-select> 
-
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
 
           <!-- status -->
           <div class="form-group">
@@ -57,52 +49,46 @@
             </p>
 
             <label class="radio-inline">
-              <input type="radio" id="is_confirmed" name="state" ng-model="ModalCtrl.setState" value="is_confirmed">
+              <input type="radio" id="is_confirmed" name="state" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.CONFIRMED</span>
             </label>
 
             <label class="radio-inline">
-              <input type="radio" id="is_received" name="state" ng-model="ModalCtrl.setState" value="is_received">
+              <input type="radio" id="is_received" name="state" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.RECEIVED</span>
             </label>
 
             <label class="radio-inline">
-              <input type="radio" id="is_cancelled" name="state" ng-model="ModalCtrl.setState" value="is_cancelled">
+              <input type="radio" id="is_cancelled" name="state" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
               <span translate>PURCHASES.STATUS.CANCELLED</span>
             </label>
-
           </div>
-
-
         </div>
       </uib-tab>
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
           <!-- period selection -->
-          <!-- start period selection component -->
           <bh-period-select
-            default-period="{{ModalCtrl.filters.period}}"
-            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
-          <!-- end period selection component -->
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
         </div>
-      </uib-tab>
-      
+      </uib-tab>      
     </uib-tabset>  
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
     <button type="submit" class="btn btn-primary" data-method="submit" translate>

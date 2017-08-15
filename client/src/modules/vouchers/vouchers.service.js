@@ -50,6 +50,7 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
       { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
       { key: 'type_ids', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
+  
   if(filterCache.filters){
     voucherFilters.loadCache(filterCache.filters);
   }

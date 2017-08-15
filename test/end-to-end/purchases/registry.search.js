@@ -16,7 +16,8 @@ function PurchaseOrderSearch() {
     reference: 'PO.TPA.2',
     name1: 'Patient',
     author: 'Super User',
-    status: 'Confirmed'
+    status: 'Confirmed',
+    supplier : 'Test Supplier',
   };
 
   const grid = element(by.id('purchase-registry'));
@@ -40,18 +41,19 @@ function PurchaseOrderSearch() {
   }
 
   it('grid should have 0 visible rows', () => {
-    const DEFAULT_PATIENTS_FOR_TODAY = 0;
+    const DEFAULT_PURCHASES_FOR_TODAY = 0;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
 
-    expectNumberOfGridRows(DEFAULT_PATIENTS_FOR_TODAY);
+    expectNumberOfGridRows(DEFAULT_PURCHASES_FOR_TODAY);
   });
 
   // demonstrates that filtering works
-  it(`should find one Purchase Order with Reference "${parameters.reference}"`, () => {
+  it(`should find one Purchase Order with Reference "${parameters.reference}" for the current year`, () => {
     const NUM_MATCHING = 1;
-    FU.input('ModalCtrl.params.reference', parameters.reference);
+    modal.setReference(parameters.reference);
+
     modal.switchToDefaultFilterTab();
     modal.setPeriod('year');
     FU.modal.submit();
@@ -59,24 +61,31 @@ function PurchaseOrderSearch() {
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find two Purchases Orders authored By "${parameters.author}"`, () => {
+  it(`should find four Purchases Orders authored By "${parameters.author}" for all time`, () => {
     const NUM_MATCHING = 4;
-    modal.setUser('Super User');
+    modal.setUser(parameters.author);
     
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');    
     FU.modal.submit();
 
-    element.all(by.css('[data-method="edit"]')).get(0).click();
-    element.all(by.name('status')).get(0).click();
+    expectNumberOfGridRows(NUM_MATCHING);
+  });
+
+  it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, () => {
+    const NUM_MATCHING = 4;
+    modal.setSupplier(parameters.supplier);
+    
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');    
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
 
-  it(`Change the status of a purchase order and should find two Purchases Orders status By "${parameters.status}"`, function () {
-    const NUM_MATCHING = 1;
+  it(`Choose the status confirmed and should find two Purchases Orders status By "${parameters.status}" for all time`, function () {
+    const NUM_MATCHING = 4;
     element(by.id('is_confirmed')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');       

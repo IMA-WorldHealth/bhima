@@ -1,4 +1,4 @@
-<div class="flex-header static">
+<div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.PURCHASE</li>
@@ -55,7 +55,7 @@
           ng-click="PurchaseListCtrl.search()"
           data-method="search"
           class="btn btn-default">
-          <span class="hidden-xs"></span> <span translate>FORM.BUTTONS.SEARCH</span>
+          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
     </div>
@@ -74,7 +74,6 @@
     <div
       id="purchase-registry"
       class="grid-full-height-with-filters"
-      ng-style="PurchaseListCtrl.filterBarHeight"
       ui-grid="PurchaseListCtrl.uiGridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
