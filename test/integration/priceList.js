@@ -77,13 +77,11 @@ describe('(/prices ) Price List', function () {
     ],
   };
 
-
   const somePriceListWithFloatValues = {
     label : 'Test Price List w/ Floats',
     description : 'A price list with float values',
     items : floatPriceListItems,
   };
-
 
   const duplicatesPriceList = {
     uuid : uuid.v4(),
