@@ -31,7 +31,7 @@ describe('(/prices ) Price List', function () {
       inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       label : 'float item value',
       is_percentage : false,
-      value : 10.3,
+      value : 3.14,
     },
   ];
 
@@ -79,28 +79,11 @@ describe('(/prices ) Price List', function () {
 
 
   const somePriceListWithFloatValues = {
-    label : 'Test Price List w/ Two Items',
-    description : 'A price list with two items attached.',
+    label : 'Test Price List w/ Floats',
+    description : 'A price list with float values',
     items : floatPriceListItems,
   };
 
-
-  it('POST /price will register a float as a price list item', () => {
-    return agent.post('/prices')
-    .send({ list : somePriceListWithFloatValues })
-    .then(res => {
-      // assert that the records was successfully created
-      helpers.api.created(res);
-
-      // look up the record to make sure the price list's value is actually a float
-      return agent.get('/prices/'.concat(res.body.uuid));
-    })
-    .then(res => {
-       // ... do some checks ...
-      expect(res.body.items[0].value).to.equal(3.14);
-    })
-    .catch(helpers.handler);
-  });
 
   const duplicatesPriceList = {
     uuid : uuid.v4(),
@@ -236,6 +219,25 @@ describe('(/prices ) Price List', function () {
       })
       .catch(helpers.handler);
   });
+
+
+  it('POST /price will register a float as a price list item', () => {
+    return agent.post('/prices')
+    .send({ list : somePriceListWithFloatValues })
+    .then(res => {
+      // assert that the records was successfully created
+      helpers.api.created(res);
+
+      // look up the record to make sure the price list's value is actually a float
+      return agent.get('/prices/'.concat(res.body.uuid));
+    })
+    .then(res => {
+       // ... do some checks ...
+      expect(res.body.items[0].value).to.equal(3.14);
+    })
+    .catch(helpers.handler);
+  });
+
 
   it('DELETE /prices/unknownid should return a 404 error.', function () {
     return agent.delete('/prices/unknownid')
