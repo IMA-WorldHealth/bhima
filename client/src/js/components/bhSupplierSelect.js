@@ -13,14 +13,14 @@ angular.module('bhima.components')
   });
 
 SupplierSelectController.$inject = [
-  'SupplierService'
+  'SupplierService', 'NotifyService'
 ];
 
 /**
  * Supplier selection component
  *
  */
-function SupplierSelectController(Suppliers) {
+function SupplierSelectController(Suppliers, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
@@ -34,7 +34,8 @@ function SupplierSelectController(Suppliers) {
     Suppliers.read()
       .then(function (suppliers) {        
         $ctrl.suppliers = suppliers;
-      });
+      })
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

@@ -85,7 +85,7 @@ function PurchaseOrderSearch() {
 
 
   it(`Choose the status confirmed and should find two Purchases Orders status By "${parameters.status}" for all time`, function () {
-    const NUM_MATCHING = 1;
+    const NUM_MATCHING = 4;
     element(by.id('is_confirmed')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');       

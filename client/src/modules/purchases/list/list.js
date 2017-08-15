@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'ReceiptModal',
-  'uiGridConstants', 'GridColumnService', 'SearchFilterFormatService',
+  'uiGridConstants', 'GridColumnService',
   'GridStateService', 'SessionService', 'ModalService',
 ];
 
@@ -13,7 +13,7 @@ PurchaseListController.$inject = [
  * This module is responsible for the management of Purchase Order Registry.
  */
 function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridConstants,
-  Columns, SearchFilterFormat, GridState, Session, Modal) {
+  Columns, GridState, Session, Modal) {
   var vm = this;
 
   var cacheKey = 'PurchaseRegistry';
@@ -143,7 +143,7 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();
         return load(PurchaseOrder.filters.formatHTTP(true));
-      }).catch(angular.noop);
+      });
   }
 
   // remove a filter with from the filter object, save the filters and reload
