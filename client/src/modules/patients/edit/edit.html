@@ -92,8 +92,8 @@
 
         <form name="patientDetails" bh-submit="PatientEditCtrl.updatePatient(patientDetails)" novalidate>
           <div class="panel panel-default">
-            <div class="panel-heading">
-              {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+            <div class="panel-heading" translate>
+              FORM.LABELS.PATIENT_DETAILS
             </div>
             <div class="panel-body">
 
@@ -102,7 +102,7 @@
               <div class="form-horizontal">
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">{{ "PATIENT_EDIT.REGISTERED" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>PATIENT_EDIT.REGISTERED</label>
                   <div class="col-md-9">
                     <p class="form-control-static"><span am-time-ago="PatientEditCtrl.medical.registration_date"></span></p>
                   </div>
@@ -113,7 +113,7 @@
                   class="form-group has-feedback"
                   ng-class="{'has-error' : patientDetails.display_name.$invalid && patientDetails.$submitted}">
 
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }} </label>
+                  <label class="col-md-3 control-label" translate> FORM.LABELS.SECOND_NAME </label>
                   <div class="col-md-9">
                     <input class="form-control" ng-maxlength="PatientEditCtrl.length150" name="display_name" autocomplete="off" ng-model="PatientEditCtrl.medical.display_name" required>
                     <div class="help-block" ng-messages="patientDetails.display_name.$error" ng-show="patientDetails.$submitted">
@@ -127,7 +127,7 @@
                   class="form-group has-feedback"
                   ng-class="{'has-error' : patientDetails.hospital_no.$invalid && patientDetails.$submitted || patientDetails.$error.hospitalNumber}">
 
-                  <label for="new-hospital-number" class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
+                  <label for="new-hospital-number" class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR </label>
                   <div class="col-md-9">
 
                     <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
@@ -148,7 +148,8 @@
                     <span ng-if="patientDetails.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                     <!-- <p ng-if="patientDetails.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
 
-                    <p id="hospitalNumber-alert" ng-if="patientDetails.$error.hospitalNumber" class="help-block">{{ "FORM.LABELS.PATIENT_EXIST" | translate }}</p>
+                    <p id="hospitalNumber-alert" ng-if="patientDetails.$error.hospitalNumber" class="help-block" translate>
+                      FORM.LABELS.PATIENT_EXIST</p>
                   </div>
                 </div>
 
@@ -156,7 +157,7 @@
                 <div class="form-group has-feedback"
                   ng-class="{'has-error' : patientDetails.dob.$invalid && patientDetails.$submitted}">
 
-                  <label for="patient-dob" class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
+                  <label for="patient-dob" class="col-md-3 control-label" translate> FORM.LABELS.DOB</label>
                   <div class="col-md-9">
                   <div class="input-group">
                     <input
@@ -184,7 +185,7 @@
                 <!-- Gender -->
                 <div id="gender" class="form-group has-feedback"
                   ng-class="{'has-error' : patientDetails.sex.$invalid && patientDetails.$submitted}">
-                  <label for="male" class="col-md-3 control-label">{{ "FORM.LABELS.GENDER" | translate}}</label>
+                  <label for="male" class="col-md-3 control-label" translate> FORM.LABELS.GENDER </label>
                   <div class="col-md-9">
 
                     <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
@@ -197,7 +198,7 @@
                         ng-model="PatientEditCtrl.medical.sex"
                         ng-click="patientDetails.sex.$setDirty()"
                         required>
-                      {{ "FORM.LABELS.MALE" | translate }}
+                       <span translate> FORM.LABELS.MALE </span>
                     </label>
 
                     <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
@@ -209,8 +210,9 @@
                         value="F"
                         ng-model="PatientEditCtrl.medical.sex"
                         ng-click="patientDetails.sex.$setDirty()"
-                        required>
-                      {{ "FORM.LABELS.FEMALE" | translate }}
+                        required
+                        >
+                      <span translate>FORM.LABELS.FEMALE</span>
                     </label>
                   </div>
                 </div>
@@ -246,20 +248,20 @@
             <!-- Submission -->
             <div class="panel-footer text-right" id="submission">
               <bh-loading-button loading-state="patientDetails.$loading">
-                {{ "FORM.BUTTONS.SUBMIT_CHANGES" | translate }}
+                <span translate> FORM.BUTTONS.SUBMIT_CHANGES</span>
               </bh-loading-button>
             </div>
           </div>
 
           <div class="panel panel-default">
-            <div class="panel-heading">
-              {{ "FORM.LABELS.OPTIONAL_INFO" | translate }}
+            <div class="panel-heading" translate>
+              FORM.LABELS.OPTIONAL_INFO
             </div>
             <div class="panel-body">
               <div class="form-horizontal">
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.title.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.TITLE" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.TITLE</label>
                   <div class="col-md-9">
                     <input type="text" name="title" autocomplete="off" ng-maxlength="PatientEditCtrl.length30" class="form-control" ng-model="PatientEditCtrl.medical.title">
                     <div class="help-block" ng-messages="patientDetails.title.$error" ng-show="patientDetails.$submitted">
@@ -269,7 +271,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.phone.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.PHONE_NO</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length12" autocomplete="off" name="phone" ng-model="PatientEditCtrl.medical.phone">
                     <div class="help-block" ng-messages="patientDetails.phone.$error" ng-show="patientDetails.$submitted">
@@ -279,7 +281,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.email.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.EMAIL</label>
                   <div class="col-md-9">
                     <input type="email" class="form-control" name="email" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.email">
                     <div class="help-block" ng-messages="patientDetails.email.$error" ng-show="patientDetails.$submitted">
@@ -289,7 +291,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.address_1.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS1" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.ADDRESS1</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control"  name="address_1" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.address_1">
                     <div class="help-block" ng-messages="patientDetails.address_1.$error" ng-show="patientDetails.$submitted">
@@ -299,7 +301,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.address_2.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS2" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.ADDRESS2</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="address_2" autocomplete="off" ng-maxlength="PatientEditCtrl.length40" ng-model="PatientEditCtrl.medical.address_2">
                     <div class="help-block" ng-messages="patientDetails.address_2.$error" ng-show="patientDetails.$submitted">
@@ -309,7 +311,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.father_name.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.FATHER_NAME" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.FATHER_NAME</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="father_name" autocomplete="off" ng-maxlength="PatientEditCtrl.length150" ng-model="PatientEditCtrl.medical.father_name">
                     <div class="help-block" ng-messages="patientDetails.father_name.$error" ng-show="patientDetails.$submitted">
@@ -319,7 +321,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.mother_name.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.MOTHER_NAME" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.MOTHER_NAME</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="mother_name" autocomplete="off" ng-model="PatientEditCtrl.medical.mother_name">
                     <div class="help-block" ng-messages="patientDetails.mother_name.$error" ng-show="patientDetails.$submitted">
@@ -329,7 +331,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.religion.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.RELIGION" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.RELIGION</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length50" name="religion" autocomplete="off" ng-model="PatientEditCtrl.medical.religion">
                     <div class="help-block" ng-messages="patientDetails.religion.$error" ng-show="patientDetails.$submitted">
@@ -339,7 +341,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.marital.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.MARITAL_STATUS" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.MARITAL_STATUS</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length50" name="marital_status" autocomplete="off" ng-model="PatientEditCtrl.medical.marital_status">
                     <div class="help-block" ng-messages="patientDetails.marital.$error" ng-show="patientDetails.$submitted">
@@ -349,7 +351,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.profession.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.PROFESSION" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control"  ng-maxlength="PatientEditCtrl.length150" name="profession" autocomplete="off" ng-model="PatientEditCtrl.medical.profession">
                     <div class="help-block" ng-messages="patientDetails.profession.$error" ng-show="patientDetails.$submitted">
@@ -359,7 +361,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.employer.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.EMPLOYER" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.EMPLOYER</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="employer" autocomplete="off" ng-model="PatientEditCtrl.medical.employer">
                     <div class="help-block" ng-messages="patientDetails.employer.$error" ng-show="patientDetails.$submitted">
@@ -369,7 +371,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.spouse.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.SPOUSE</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse">
                     <div class="help-block" ng-messages="patientDetails.spouse.$error" ng-show="patientDetails.$submitted">
@@ -379,7 +381,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.spouse_profession.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_PROFESSION" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.SPOUSE_PROFESSION</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse_profession" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse_profession">
                     <div class="help-block" ng-messages="patientDetails.spouse_profession.$error" ng-show="patientDetails.$submitted">
@@ -389,7 +391,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.spouse_employer.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_EMPLOYER" | translate }}</label>
+                  <label class="col-md-3 control-label" translate>FORM.LABELS.SPOUSE_EMPLOYER</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" ng-maxlength="PatientEditCtrl.length150" name="spouse_employer" autocomplete="off" ng-model="PatientEditCtrl.medical.spouse_employer">
                     <div class="help-block" ng-messages="patientDetails.spouse_employer.$error" ng-show="patientDetails.$submitted">
@@ -399,7 +401,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{'has-error' : patientDetails.notes.$invalid && patientDetails.$submitted}">
-                  <label class="col-md-3 control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                  <label class="col-md-3 control-label" translate> FORM.LABELS.NOTES</label>
                   <div class="col-md-9">
                     <textarea class="form-control" name="notes" ng-maxlength="PatientEditCtrl.maxLength" ng-model="PatientEditCtrl.medical.notes" rows="4"></textarea>
                     <div class="help-block" ng-messages="patientDetails.notes.$error" ng-show="patientDetails.$submitted">

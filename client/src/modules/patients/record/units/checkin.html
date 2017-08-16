@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 
   <div class="panel-heading clearfix">
-    {{ "PATIENT_RECORDS.CHECK_IN.TITLE" | translate }}
+     <span translate>PATIENT_RECORDS.CHECK_IN.TITLE</span>
 
     <span class="pull-right">
       <bh-pdf-link
@@ -17,7 +17,7 @@
       ng-if="CheckInCtrl.outdatedVisit"
       class="text-info">
       <i class="fa fa-info-circle"></i>
-      {{ "PATIENT_RECORDS.CHECK_IN.NOT_RECENT" | translate }}
+       <span translate>PATIENT_RECORDS.CHECK_IN.NOT_RECENT</span>
     </p>
 
     <bh-loading-button
@@ -26,22 +26,25 @@
       button-class="btn-default btn-block"
       ng-click="CheckInCtrl.checkin()">
       <i class="fa fa-sign-in"></i>
-      {{ "PATIENT_RECORDS.CHECK_IN.SUBMIT" | translate }}
+       <span translate>PATIENT_RECORDS.CHECK_IN.SUBMIT</span>
     </bh-loading-button>
 
     <br />
-    <p><b>{{ "PATIENT_RECORDS.CHECK_IN.RECENT" | translate }}</b></p>
+    <p><b translate>PATIENT_RECORDS.CHECK_IN.RECENT </b></p>
 
     <p
       ng-if="CheckInCtrl.loaded && CheckInCtrl.visits.length===0"
       class="text-warning">
       <span class="fa fa-warning"></span>
-      {{ "PATIENT_RECORDS.CHECK_IN.ORIGINAL" | translate }}
+       <span translate>PATIENT_RECORDS.CHECK_IN.ORIGINAL</span>
     </p>
 
     <ul class="list-unstyled">
       <li data-check-entry ng-repeat="visit in CheckInCtrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
-        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> {{ "PATIENT_RECORDS.CHECK_IN.BY" | translate }} {{ visit.username }}
+        <i class="fa fa-check-square-o"></i>
+         <span translate>PATIENT_RECORDS.CHECK_IN.ITEM</span>
+         <b><span am-time-ago="visit.start_date"></span></b>
+         <span translate>PATIENT_RECORDS.CHECK_IN.BY</span> {{ visit.username }}
         <br />
         <span class="icon-spacer text-muted"><i>{{visit.start_date | date : 'medium'}}</i></span>
       </li>

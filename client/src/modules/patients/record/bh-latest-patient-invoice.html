@@ -3,7 +3,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <span class="glyphicon glyphicon-file"></span>
-    <strong>{{ "FORM.LABELS.FINANCIAL_STATUS" | translate }} </strong>
+    <strong translate> FORM.LABELS.FINANCIAL_STATUS</strong>
     <span class="pull-right">
       <bh-pdf-link
         pdf-url="/reports/finance/financialPatient/{{ $ctrl.debtorUuid }}"
@@ -21,21 +21,22 @@
 
         <!-- caution info  -->
         <div class="form-group">
-          <strong>{{ 'CASH.CAUTION_REMAINING' | translate }}:</strong>
+          <strong><span translate>CASH.CAUTION_REMAINING</span> :</strong>
             <span ng-show="$ctrl.patientBalance < 0">{{ $ctrl.patientBalance * -1 | currency:$ctrl.enterprise.currency_id }}</span>
             <span ng-hide="$ctrl.patientBalance < 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
         </div>
 
         <!-- debts info  -->
         <div class="form-group">
-          <strong>{{ 'FORM.LABELS.TOTAL_DEBT' | translate }}:</strong>
+          <strong> <span translate>FORM.LABELS.TOTAL_DEBT</span></strong>
             <span ng-show="$ctrl.patientBalance > 0">{{ $ctrl.patientBalance | currency:$ctrl.enterprise.currency_id }}</span>
             <span ng-hide="$ctrl.patientBalance > 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
         </div>
 
         <!-- total invoices  -->
         <div class="form-group">
-          <strong>{{ 'FORM.LABELS.TOTAL_BILLED' | translate }}:</strong> {{ $ctrl.patientInvoice.invoicesLength || 0 }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
+          <strong><span translate>FORM.LABELS.TOTAL_BILLED</span>:</strong> {{ $ctrl.patientInvoice.invoicesLength || 0 }}
+          <span translate>TABLE.COLUMNS.INVOICES</span>
         </div>
 
       </div>
@@ -45,17 +46,17 @@
 
         <div class="form-group">
           <!-- invoice reference  -->
-          <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }}: {{ $ctrl.patientInvoice.reference }}</strong>
+          <strong><span translate>TABLE.COLUMNS.LAST_BILL</span>: {{ $ctrl.patientInvoice.reference }}</strong>
 
           <!-- invoice details  -->
           <ul style="list-style: none; padding: 0px;">
-            <li><strong>{{ "TABLE.COLUMNS.DATE" | translate }}</strong>: {{ $ctrl.patientInvoice.date | date }}</li>
-            <li><strong>{{ "TABLE.COLUMNS.TOTAL_COST" | translate }}</strong>: {{ $ctrl.patientInvoice.cost | currency:$ctrl.enterprise.currency_id }}</li>
-            <li><strong>{{ "TABLE.COLUMNS.REMAINING_BALANCE" | translate }}</strong>:
+            <li><strong><span translate>TABLE.COLUMNS.DATE</span></strong>: {{ $ctrl.patientInvoice.date | date }}</li>
+            <li><strong><span translate>TABLE.COLUMNS.TOTAL_COST</span></strong>: {{ $ctrl.patientInvoice.cost | currency:$ctrl.enterprise.currency_id }}</li>
+            <li><strong><span translate>TABLE.COLUMNS.REMAINING_BALANCE</span></strong>:
               <span ng-show="$ctrl.patientBalance < 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
               <span ng-hide="$ctrl.patientBalance < 0">{{ $ctrl.patientInvoice.balance | currency:$ctrl.enterprise.currency_id }}</span>
             </li>
-            <li><strong>{{ "TABLE.COLUMNS.BILLED_BY" | translate }}</strong>: {{ $ctrl.patientInvoice.display_name }}</li>
+            <li><strong><span translate>TABLE.COLUMNS.BILLED_BY</span></strong>: {{ $ctrl.patientInvoice.display_name }}</li>
           </ul>
 
         </div>
@@ -67,29 +68,29 @@
 
         <!-- invoice covered by caution  -->
         <div ng-show="$ctrl.patientBalance < 0">
-          <i class="fa fa-info-circle text-primary"></i> {{ "CASH.CAUTION_COVER" | translate }}
+          <i class="fa fa-info-circle text-primary"></i> <span translate>CASH.CAUTION_COVER</span>
         </div>
 
         <!-- invoice relatives payments  -->
         <div ng-hide="$ctrl.patientBalance < 0">
           <span ng-if="$ctrl.patientInvoice.credit === 0">
-            <i class="fa fa-info-circle text-primary"></i> {{ "TABLE.COLUMNS.NO_PAYMENTS" | translate }}
+            <i class="fa fa-info-circle text-primary"></i> <span translate>TABLE.COLUMNS.NO_PAYMENTS </span>
           </span>
 
           <span ng-if="$ctrl.patientInvoice.numberPayment > 0">
-            <i class="fa fa-info-circle text-primary"></i> {{ $ctrl.patientInvoice.numberPayment }} {{ "TABLE.COLUMNS.PAYMENT_INVOICE" | translate }}
+            <i class="fa fa-info-circle text-primary"></i> {{ $ctrl.patientInvoice.numberPayment }} <span translate> TABLE.COLUMNS.PAYMENT_INVOICE</span>
           </span>
         </div>
 
         <!-- invoice paid status  -->
         <div ng-hide="$ctrl.patientBalance < 0">
           <span ng-if="$ctrl.patientInvoice.balance !== 0">
-            <i class="fa fa-warning text-danger"></i> {{ "TABLE.COLUMNS.UNPAID_INVOICE_1" | translate }}
-            <strong>{{ $ctrl.patientInvoice.durationDays }}</strong> {{ "TABLE.COLUMNS.UNPAID_INVOICE_2" | translate }}
+            <i class="fa fa-warning text-danger"></i> <span translate>TABLE.COLUMNS.UNPAID_INVOICE_1</span>
+            <strong>{{ $ctrl.patientInvoice.durationDays }}</strong> <span translate> TABLE.COLUMNS.UNPAID_INVOICE_2</span>
           </span>
 
           <span ng-if="$ctrl.patientInvoice.balance === 0">
-            <i  class="fa fa-check-circle text-success"></i> {{ "TABLE.COLUMNS.THIS_INVOICE_FULL" | translate }}
+            <i  class="fa fa-check-circle text-success"></i> <span translate>TABLE.COLUMNS.THIS_INVOICE_FULL</span>
           </span>
         </div>
 

@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
-      <li class="title">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
+      <li class="static" translate>TREE.HOSPITAL</li>
+      <li class="title" translate> PATIENT_REG.PAGE_TITLE</li>
     </ol>
   </div>
 </div>
@@ -22,7 +22,7 @@
         <div class="form-horizontal" ng-form="DetailForm">
           <div class="col-md-7">
             <div class="panel panel-primary">
-              <div class="panel-heading">{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
+              <div class="panel-heading" translate>PATIENT_REG.PATIENT_DETAILS</div>
                 <div class="panel-body">
 
                   <!-- Last Name -->
@@ -30,7 +30,7 @@
                     class="form-group"
                     ng-class="{'has-error' : DetailForm.display_name.$invalid && PatientRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.PATIENT_NAME" | translate }}</label>
+                    <label class="col-md-3 control-label" translate> FORM.LABELS.PATIENT_NAME</label>
                     <div class="col-md-9">
                       <input
                         class="form-control"
@@ -50,7 +50,7 @@
                     class="form-group has-feedback"
                     ng-class="{'has-error' : DetailForm.hospitalNumber.$invalid && PatientRegistrationForm.$submitted || DetailForm.hospitalNumber.$error.unique}">
 
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
+                    <label class="col-md-3 control-label" translate> FORM.LABELS.HOSPITAL_FILE_NR</label>
                     <div class="col-md-9">
                       <input
                         name="hospitalNumber"
@@ -73,7 +73,10 @@
                   <!-- Date of birth -->
                   <div class="form-group"
                     ng-class="{'has-error' : DetailForm.dob.$invalid && PatientRegistrationForm.$submitted}">
-                    <label class="col-md-3 control-label">{{ PatientRegCtrl.fullDateEnabled ? "FORM.LABELS.DOB" : "FORM.LABELS.YOB" | translate }}</label>
+                    <label class="col-md-3 control-label" translate>
+                      {{PatientRegCtrl.dateComponentLabel}}
+
+                    </label>
                     <div class="col-md-9">
                       <div class="input-group">
                         <input
@@ -96,7 +99,12 @@
                       </div>
 
                       <div class="help-block text-right">
-                        <p><a ng-click="PatientRegCtrl.toggleFullDate()" href><i class="fa fa-calendar-o"></i> {{ PatientRegCtrl.fullDateEnabled ? "FORM.LABELS.ENTER_BIRTH_YEAR" : "FORM.LABELS.ENTER_BIRTH_DAY" | translate }}</a></p>
+                        <p>
+                          <a ng-click="PatientRegCtrl.toggleFullDate()" href>
+                            <i class="fa fa-calendar-o"></i>
+                            <span translate>{{PatientRegCtrl.dateIndicatorLabel}}</span>
+                          </a>
+                        </p>
                       </div>
 
                       <div class="help-block" ng-messages="DetailForm.dob.$error" data-date-error ng-if="PatientRegistrationForm.$submitted && DetailForm.dob.$invalid">
@@ -108,16 +116,16 @@
                   <!-- Gender -->
                   <div id="gender" class="form-group"
                     ng-class="{'has-error' : DetailForm.genderOptions.$invalid && PatientRegistrationForm.$submitted}">
-                    <label class="col-md-3 control-label"> {{ "FORM.LABELS.GENDER" | translate }} </label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.GENDER</label>
                     <div class="col-md-9">
                       <label class="radio-inline">
                         <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientRegCtrl.medical.sex" required>
-                        {{ "FORM.LABELS.MALE" | translate }}
+                        <span translate>FORM.LABELS.MALE</span>
                       </label>
 
                       <label class="radio-inline">
                         <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
-                        {{ "FORM.LABELS.FEMALE" | translate }}
+                        <span translate>FORM.LABELS.FEMALE</span>
                       </label>
 
                       <div class="help-block" ng-messages="DetailForm.genderOptions.$error" ng-show="PatientRegistrationForm.$submitted">
@@ -132,7 +140,7 @@
                   <!-- Location -->
                   <div class="row">
                     <div class="col-md-5 col-md-offset-1">
-                      <h4>{{ "FORM.LABELS.ORIGIN_LOCATION" | translate }}</h4>
+                      <h4 translate>FORM.LABELS.ORIGIN_LOCATION</h4>
                       <bh-location-select
                         id="origin-location-id"
                         validation-trigger="PatientRegistrationForm.$submitted"
@@ -144,7 +152,7 @@
                     <div class="visible-sm-block visible-xs-block"><hr></div>
 
                     <div class="col-md-5 col-md-offset-1">
-                      <h4>{{ "FORM.LABELS.CURRENT_LOCATION" | translate }}</h4>
+                      <h4 translate>FORM.LABELS.CURRENT_LOCATION</h4>
                       <bh-location-select
                         id="current-location-id"
                         validation-trigger="PatientRegistrationForm.$submitted"
@@ -170,7 +178,7 @@
 
               <div class="panel-footer text-right">
                 <bh-loading-button loading-state="PatientRegistrationForm.$loading">
-                  {{ "FORM.BUTTONS.REGISTER_PATIENT" | translate }}
+                  <sapn translate>FORM.BUTTONS.REGISTER_PATIENT</sapn>
                 </bh-loading-button>
               </div>
             </div>
@@ -180,12 +188,12 @@
       <!-- Optional Information Form -->
       <div class="col-md-5">
         <div class="panel panel-default">
-          <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
+          <div class="panel-heading" translate> FORM.LABELS.OPTIONAL_INFO</div>
           <div class="panel-body">
 
             <div class="form-horizontal" ng-form="OptionalForm">
               <div class="form-group" ng-class="{'has-error' : OptionalForm.title.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.TITLE" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.TITLE </label>
                 <input type="text" class="form-control" name="title" ng-model="PatientRegCtrl.medical.title">
                 <div class="help-block" ng-messages="OptionalForm.title.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -193,7 +201,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.phone.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.PHONE_NO </label>
                 <input type="tel" class="form-control" name="phone" ng-model="PatientRegCtrl.medical.phone">
                 <div class="help-block" ng-messages="OptionalForm.phone.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -202,7 +210,7 @@
 
               <div class="form-group"
                   ng-class="{'has-error' : OptionalForm.email.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.EMAIL</label>
                 <input type="email" class="form-control" name="email" ng-model="PatientRegCtrl.medical.email">
                 <div class="help-block" ng-messages="OptionalForm.email.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -210,7 +218,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.address1.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.ADDRESS1" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.ADDRESS1 </label>
                 <input type="text" class="form-control" name="address1" ng-model="PatientRegCtrl.medical.address_1">
                 <div class="help-block" ng-messages="OptionalForm.address1.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -218,7 +226,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.address2.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.ADDRESS2" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.ADDRESS2 </label>
                 <input type="text" class="form-control" name="address2" ng-model="PatientRegCtrl.medical.address_2">
                 <div class="help-block" ng-messages="OptionalForm.address2.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -226,7 +234,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.father_name.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.FATHER_NAME" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.FATHER_NAME </label>
                 <input type="text" class="form-control" name="father_name" ng-model="PatientRegCtrl.medical.father_name">
                 <div class="help-block" ng-messages="OptionalForm.father_name.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -234,7 +242,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.mother_name.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.MOTHER_NAME" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.MOTHER_NAME </label>
                 <input type="text" class="form-control" name="mother_name" ng-model="PatientRegCtrl.medical.mother_name">
                 <div class="help-block" ng-messages="OptionalForm.mother_name.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -242,7 +250,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.religion.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.RELIGION" | translate }}</label>
+                <label class="control-label" translate> FORM.LABELS.RELIGION</label>
                 <input type="text" name="religion" class="form-control" ng-model="PatientRegCtrl.medical.religion">
                 <div class="help-block" ng-messages="OptionalForm.religion.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -250,7 +258,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.marital.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.MARITAL_STATUS" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.MARITAL_STATUS</label>
                 <input type="text" class="form-control" name="marital" ng-model="PatientRegCtrl.medical.marital_status">
                 <div class="help-block" ng-messages="OptionalForm.marital.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -258,7 +266,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.profession.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.PROFESSION" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.PROFESSION</label>
                 <input type="text" name="profession" class="form-control" ng-model="PatientRegCtrl.medical.profession">
                 <div class="help-block" ng-messages="OptionalForm.profession.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -266,7 +274,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.employer.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.EMPLOYER" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.EMPLOYER</label>
                 <input type="text" class="form-control" name="employer" ng-model="PatientRegCtrl.medical.employer">
                 <div class="help-block" ng-messages="OptionalForm.employer.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -274,7 +282,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.spouse.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.SPOUSE" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.SPOUSE</label>
                 <input type="text" class="form-control" name="spouse" ng-model="PatientRegCtrl.medical.spouse">
                 <div class="help-block" ng-messages="OptionalForm.spouse.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -282,7 +290,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.spouse_profession.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.SPOUSE_PROFESSION" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.SPOUSE_PROFESSION</label>
                 <input type="text" class="form-control" name="spouse_profession" ng-model="PatientRegCtrl.medical.spouse_profession">
                 <div class="help-block" ng-messages="OptionalForm.spouse_profession.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -290,7 +298,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.spouse_employer.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.SPOUSE_EMPLOYER" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.SPOUSE_EMPLOYER</label>
                 <input type="text" class="form-control" name="spouse_employer" ng-model="PatientRegCtrl.medical.spouse_employer">
                 <div class="help-block" ng-messages="OptionalForm.spouse_employer.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -298,7 +306,7 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.notes.$invalid && PatientRegistrationForm.$submitted}">
-                <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+                <label class="control-label" translate>FORM.LABELS.NOTES</label>
                 <textarea
                   class="form-control"
                   name="notes"

@@ -23,6 +23,9 @@ function PatientRegistrationController(Patients, Session, util, Notify, Receipts
   vm.submit = submit;
   vm.toggleFullDate = toggleFullDate;
   vm.calculateYOB = calculateYOB;
+  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_DAY';
+  vm.dateComponentLabel = 'FORM.LABELS.DOB';
+
 
   vm.maxLength = bhConstants.lengths.maxTextLength;
 
@@ -31,7 +34,7 @@ function PatientRegistrationController(Patients, Session, util, Notify, Receipts
 
   function onSelectDebtor(debtorGroup) {
     vm.finance.debtor_group_uuid = debtorGroup.uuid;
-  }  
+  }
 
   // define limits for DOB
   vm.datepickerOptions = {
@@ -90,6 +93,8 @@ function PatientRegistrationController(Patients, Session, util, Notify, Receipts
    */
   function toggleFullDate() {
     vm.fullDateEnabled = !vm.fullDateEnabled;
+    vm.dateIndicatorLabel = vm.fullDateEnabled ? 'FORM.LABELS.ENTER_BIRTH_YEAR' : 'FORM.LABELS.ENTER_BIRTH_DAY';
+    vm.dateComponentLabel = vm.fullDateEnabled ? 'FORM.LABELS.DOB' : 'FORM.LABELS.YOB';
     setDateComponent();
   }
 

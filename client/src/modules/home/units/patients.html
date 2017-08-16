@@ -1,17 +1,18 @@
 <div class="panel panel-default segment">
-    <div class="panel-heading">
-        {{ "PATIENT_RECORDS.TITLE" | translate }} 
-        <label style="padding-left: 5px; padding-right: 5px;" class="bg-ima-blue text-uppercase pull-right">{{ PatientCtrl.stats.date | date: 'MMMM' }}</label>
+    <div class="panel-heading" >
+        <span translate>PATIENT_RECORDS.TITLE</span>
+        <label style="padding-left: 5px; padding-right: 5px;" class="bg-ima-blue text-uppercase pull-right">
+            {{ PatientCtrl.stats.date | date: 'MMMM' }}</label>
     </div>
 
     <div class="ui two statistics panel-body text-center">
         <div class="ui ima-blue statistic">
             <div class="value"> {{ PatientCtrl.stats.total }}</div>
-            <div class="uilabel">{{ 'PATIENT_RECORDS.STAT_TOTAL_NEW' | translate }}</div>
+            <div class="uilabel" translate>PATIENT_RECORDS.STAT_TOTAL_NEW</div>
         </div>
         <div class="ui ima-blue statistic">
             <div class="value">{{ PatientCtrl.stats.total_visit }}</div>
-            <div class="uilabel">{{ 'PATIENT_RECORDS.STAT_TOTAL_VISIT' | translate }}</div>
+            <div class="uilabel" translate>PATIENT_RECORDS.STAT_TOTAL_VISIT</div>
         </div>
     </div>
 </div>
