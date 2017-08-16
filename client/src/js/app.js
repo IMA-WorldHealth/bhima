@@ -6,7 +6,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
-  'angularMoment', 'ngMessages',
+  'ui.grid.expandable', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
   'ui.router.state.events',
 ]);
@@ -176,8 +176,8 @@ function compileConfig($compileProvider) {
 /**
  * Configure global properties about ui-select
  */
-function uiSelectConfig(uiSelectConfig) {
-  uiSelectConfig.theme = 'bootstrap';
+function uiSelectConfig(config) {
+  config.theme = 'bootstrap';
 }
 
 // TODO - remove this
