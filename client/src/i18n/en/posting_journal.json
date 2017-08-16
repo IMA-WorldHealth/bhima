@@ -74,10 +74,16 @@
       "MISSING_ENTITY":"Record without entity type and entity ID",
       "NO_TRANSACTIONS_SELECTED":"No transactions selected. You must be in Transaction view to use this tool."
     },
-    "MAIN":"Main",
-    "DETAIL":"Detail",
-    "ERROR_LIST":"Error List"
-  },
-  "TITLE":"Posting Journal",
-  "EDIT_MODE":"Edit Mode"
+    "TRIAL_BALANCE" : {
+      "TITLE" : "Trial Balance",
+      "OVERVIEW" : "Overview",
+      "HAS_ERRORS" : "Attention! {{ numErrors }} Errors Detected.",
+      "EXPORT" : "Export the Trial Balance",
+      "SHOW_ERRORS" : "Switch to Error View",
+      "RETURN_TO_OVERVIEW" : "Return to Summary View",
+      "IS_BALANCED" : "Balanced"
+    },
+    "TITLE":"Posting Journal",
+    "EDIT_MODE":"Edit Mode"
+  }
 }

@@ -1,6 +1,5 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
-
     $stateProvider
       .state('journal', {
         url         : '/journal',
@@ -21,7 +20,8 @@ angular.module('bhima.routes')
         onEnter : ['$state', '$uibModal', function ($state, Modal) {
           Modal.open({
             size        : 'lg',
-            templateUrl : 'modules/journal/modals/trialBalanceStructure.html',
+            controller  : 'TrialBalanceController as TrialBalanceCtrl',
+            templateUrl : 'modules/journal/trial-balance/structure.html',
             keyboard    : false,
             backdrop    : 'static',
           });
@@ -30,21 +30,12 @@ angular.module('bhima.routes')
           ModalStack.dismissAll();
         }],
       })
-      .state('TrialBalance', {
+      .state('TrialBalanceOverview', {
         parent : 'TrialBalanceModal',
         views : {
           'modal-body@' : {
-            controller : 'TrialBalanceController as TrialBalanceCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceMain.body.html',
-          },
-        },
-      })
-      .state('TrialBalanceDetail', {
-        parent : 'TrialBalanceModal',
-        views : {
-          'modal-body@' : {
-            controller : 'TrialBalanceDetailBodyController as TrialBalanceDetailBodyCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceDetail.body.html',
+            controller : 'TrialBalanceOverviewController as OverviewCtrl',
+            templateUrl : 'modules/journal/trial-balance/overview.html',
           },
         },
       })
@@ -52,8 +43,8 @@ angular.module('bhima.routes')
         parent : 'TrialBalanceModal',
         views : {
           'modal-body@' : {
-            controller : 'TrialBalanceErrorBodyController as TrialBalanceErrorBodyCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceError.body.html',
+            controller : 'TrialBalanceErrorsController as ErrorsCtrl',
+            templateUrl : 'modules/journal/trial-balance/errors.html',
           },
         },
       });

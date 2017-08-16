@@ -283,9 +283,13 @@ function JournalController(Journal, Sorting, Grouping,
 
     selectedRecordUuids = selectedTransactionIds.map(lookupIntermediateRecordUuid);
 
+    // initialize the data request to the server
     TrialBalance.initialise(selectedRecordUuids);
 
-    $state.go('TrialBalance');
+    // transition to the overview state.  Available states:
+    //  1) Overview
+    //  2) Errors
+    $state.go('TrialBalanceOverview');
   };
 
   // format Export Parameters
