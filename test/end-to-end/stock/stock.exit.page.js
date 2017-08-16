@@ -34,10 +34,10 @@ function StockExitPage() {
    * @method setService
    * @param {string} service - the service name
    */
-  page.setService = function setService(service) {
+  page.setService = function setService(depot) {
     element(by.css('[name="btn-service"]')).click();
-    const modalContent = element(by.css('[class="modal-content"]'));
-    FU.uiSelect('$ctrl.selected', service, modalContent);
+    element(by.css('[class="modal-content"]'));
+    components.depotSelect.set(depot);
     FU.modal.submit();
   };
 
@@ -47,8 +47,8 @@ function StockExitPage() {
    */
   page.setDestinationDepot = function setDestinationDepot(depot) {
     element(by.css('[name="btn-depot"]')).click();
-    const modalContent = element(by.css('[class="modal-content"]'));
-    FU.uiSelect('$ctrl.selected', depot, modalContent);
+    element(by.css('[class="modal-content"]'));
+    components.depotSelect.set(depot);
     FU.modal.submit();
   };
 

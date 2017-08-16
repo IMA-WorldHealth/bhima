@@ -434,8 +434,8 @@ INSERT INTO `purchase_item` VALUES
 SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
 SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");
 INSERT INTO `depot` VALUES 
-  (@depot_uuid, 'Depot Principal', 1, 1),
-  (@second_depot_uuid, 'Depot Secondaire', 1, 0);
+  (@depot_uuid, 'Depot Principal', 1, 1, NULL),
+  (@second_depot_uuid, 'Depot Secondaire', 1, 0, NULL);
 
 -- stock lots 
 INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`) VALUES 

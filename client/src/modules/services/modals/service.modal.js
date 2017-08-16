@@ -9,8 +9,9 @@ ServiceModalController.$inject = [
 function ServiceModalController($state, Services, Depots, $translate,
   SessionService, ModalService, util, Notify) {
   var vm = this;
+  var paramService = $state.params.service || {};
 
-  vm.service = $state.params.service;
+  vm.service = { id : paramService.id, name : paramService.name };
   vm.isCreating = !!($state.params.creating);
 
   // exposed methods

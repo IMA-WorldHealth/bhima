@@ -58,7 +58,7 @@ exports.getInventoryMovements = getInventoryMovements;
  */
 function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
-  const params = parameters;  
+  const params = parameters;
   const sql = sqlQuery || `
         SELECT 
           BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
@@ -83,6 +83,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
+  filters.equals('flux_id', 'flux_id', 'm');
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');

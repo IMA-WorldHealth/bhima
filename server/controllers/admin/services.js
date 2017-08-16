@@ -150,11 +150,22 @@ function update(req, res, next) {
  * Remove a service in the database.
  */
 function remove(req, res, next) {
-  const sql = 'DELETE FROM service WHERE id = ?;';
+  const transaction = db.transaction();
 
-  db.exec(sql, [req.params.id])
+  const queryService = 'SELECT uuid FROM service WHERE id = ?;';
+
+  const removeDepot = 'DELETE FROM depot WHERE service_uuid = ?;';
+
+  const removeService = 'DELETE FROM service WHERE uuid = ?;';
+
+  db.one(queryService, [req.params.id])
+    .then((service) => {
+      transaction.addQuery(removeDepot, [service.uuid]);
+      transaction.addQuery(removeService, [service.uuid]);
+      return transaction.execute();
+    })
     .then((result) => {
-      if (!result.affectedRows) {
+      if (!result[1].affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
 

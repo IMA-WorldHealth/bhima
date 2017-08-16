@@ -21,7 +21,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.radio('$ctrl.bundle.is_exit', 0);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 15 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 17 + (3 * depotGroupingRow));
 
     // exit movements
     FU.buttons.search();
@@ -54,7 +54,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 14 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 15 + (3 * depotGroupingRow));
 
     // clear filters
     FU.buttons.clear();
@@ -76,19 +76,19 @@ function StockMovementsRegistryTests() {
     // FIXME: reasons must not depend on translations
     //        selection with `id` works but it is not completed
 
-    // from purchase  
+    // from purchase
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 24 + (3 * depotGroupingRow));
 
-    // to patient 
+    // to patient
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 23 + depotGroupingRow);
+    GU.expectRowCount(gridId, 24 + (3 * depotGroupingRow));
 
-    // to depot 
+    // to depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
     FU.modal.submit();
