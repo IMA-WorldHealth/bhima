@@ -114,12 +114,24 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  var sql =
+  const noServices = req.query.noServices;
+  const onlyServices = req.query.onlyServices;
+  let condition;
+
+  if (noServices && !onlyServices) {
+    condition = ' AND d.service_uuid IS NULL; ';
+  } else if (!noServices && onlyServices) {
+    condition = ' AND d.service_uuid IS NOT NULL; ';
+  } else {
+    condition = ';';
+  }
+
+  const sql =
     `SELECT BUID(d.uuid) as uuid, d.text, d.is_warehouse, 
       s.name as serviceName, BUID(s.uuid) as serviceUuid, s.id as serviceId
     FROM depot d 
     LEFT JOIN service s ON s.uuid = d.service_uuid
-    WHERE d.enterprise_id = ?;`;
+    WHERE d.enterprise_id = ? ${condition} `;
 
   db.exec(sql, [req.session.enterprise.id])
   .then((rows) => {

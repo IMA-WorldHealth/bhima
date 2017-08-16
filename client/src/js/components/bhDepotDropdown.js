@@ -2,6 +2,8 @@ angular.module('bhima.components')
   .component('bhDepotDropdown', {
     bindings : {
       onSelect : '&',
+      noServices : '<',
+      onlyServices : '<',
     },
     templateUrl  : 'modules/templates/bhDepotDropdown.tmpl.html',
     controller   : bhDepotController,
@@ -18,7 +20,10 @@ function bhDepotController(Depot, AppCache, Notify) {
   $ctrl.$onInit = function $onInit() {
     $ctrl.loading = true;
 
-    Depot.read()
+    Depot.read(null, {
+      noServices : $ctrl.noServices,
+      onlyServices : $ctrl.onlyServices,
+    })
     .then(function (rows) {
       if (!rows.length) { return; }
       $ctrl.depots = rows;

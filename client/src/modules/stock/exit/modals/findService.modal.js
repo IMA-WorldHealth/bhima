@@ -2,27 +2,30 @@ angular.module('bhima.controllers')
   .controller('StockFindServiceModalController', StockFindServiceModalController);
 
 StockFindServiceModalController.$inject = [
-  '$uibModalInstance', 'ServiceService', 'NotifyService',
+  '$uibModalInstance', 'ServiceService', 'data',
 ];
 
-function StockFindServiceModalController(Instance, Service, Notify) {
+function StockFindServiceModalController(Instance, Service, Data) {
   var vm = this;
 
   // global
   vm.selected = {};
 
   // bind methods
+  vm.Data = Data;
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.onSelectDepot = onSelectDepot;
 
-  Service.read(null, { full : 1 })
-  .then(function (services) {
-    vm.services = services;
-  })
-  .catch(Notify.handleError);
+  // on select depot as service
+  function onSelectDepot(depot) {
+    vm.selected = depot;
+  }
 
   // submit
-  function submit() {
+  function submit(form) {
+    if (form.$invalid) { return; }
+
     Instance.close(vm.selected);
   }
 

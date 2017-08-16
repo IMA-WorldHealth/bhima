@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body>
+<div ng-if="!row.entity.serviceUuid" class="ui-grid-cell-contents text-center" uib-dropdown dropdown-append-to-body>
   <a uib-dropdown-toggle href>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
@@ -19,4 +19,14 @@
       </a>
     </li>
   </ul>
+</div>
+
+<div ng-if="row.entity.serviceUuid" class="ui-grid-cell-contents text-center">
+  <a href 
+    uib-popover="{{ 'DEPOT.NOT_ALLOWED_ACTIONS' | translate }}"  
+    popover-placement="left" 
+    popover-trigger="mouseenter" 
+    popover-append-to-body="true"> 
+    <i class="fa fa-info-circle"></i>  
+  </a>
 </div>

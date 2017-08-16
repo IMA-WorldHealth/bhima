@@ -21,7 +21,7 @@ function StockExitController(Depots, Inventory, Notify,
   var vm = this;
   var mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
-    service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitService },
+    service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitDepot }, // service as depot
     depot   : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
     loss    : { description : 'STOCK.EXIT_LOSS', find : configureLoss, submit : submitLoss },
   };
@@ -206,7 +206,7 @@ function StockExitController(Depots, Inventory, Notify,
 
   // find service
   function findService() {
-    StockModal.openFindService()
+    StockModal.openFindService({ depot : vm.depot })
     .then(function (service) {
       if (!service) { return; }
       vm.movement.entity = {
@@ -282,43 +282,12 @@ function StockExitController(Depots, Inventory, Notify,
     .catch(Notify.handleError);
   }
 
-  // submit service
-  function submitService() {
-    var movement = {
-      depot_uuid  : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
-      date        : vm.movement.date,
-      description : vm.movement.description,
-      is_exit     : 1,
-      flux_id     : bhConstants.flux.TO_SERVICE,
-      user_id     : Session.user.id,
-      service_depot_uuid : vm.movement.entity.instance.service_depot_uuid,
-    };
-
-    var lots = vm.Stock.store.data.map(function (row) {
-      return {
-        inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
-        uuid      : row.lot.uuid,
-        quantity  : row.quantity,
-        unit_cost : row.lot.unit_cost,
-      };
-    });
-
-    movement.lots = lots;
-
-    return Stock.movements.create(movement)
-    .then(function (document) {
-      vm.Stock.store.clear();
-      ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
-    })
-    .catch(Notify.handleError);
-  }
-
   // submit depot
   function submitDepot() {
     var movement = {
       from_depot  : vm.depot.uuid,
       from_depot_is_warehouse : vm.depot.is_warehouse,
+      from_depot_service : vm.depot.serviceUuid,
       to_depot    : vm.movement.entity.uuid,
       date        : vm.movement.date,
       description : vm.movement.description,

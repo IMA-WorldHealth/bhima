@@ -75,7 +75,7 @@ function create(req, res, next) {
   // depot parameters
   const depotRecord = {
     uuid : db.bid(uuid.v4()),
-    text : serviceRecord.name,
+    text : 'Service - '.concat(serviceRecord.name),
     enterprise_id : serviceRecord.enterprise_id,
     service_uuid : serviceRecord.uuid,
   };

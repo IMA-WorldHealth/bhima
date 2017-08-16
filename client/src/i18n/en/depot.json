@@ -11,4 +11,5 @@
 "DELETE":"Delete",
 "MAIN":{"TITLE":"Depot Management"},
 "NO_DEPOT":"No Depot",
+"NOT_ALLOWED_ACTIONS":"Protected Depot, you cannot perform modification on this depot",
 "TITLE":"Depot Management"}}
