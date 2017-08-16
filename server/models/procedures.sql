@@ -486,31 +486,26 @@ BEGIN
 END
 $$
 
-CREATE PROCEDURE PostToGeneralLedger(
-  IN transactions TEXT
-) BEGIN
+/*
+PostToGeneralLedger()
 
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_journal_transaction (record_uuid BINARY(16));
+This procedure uses the same staging code as the Trial Balance to stage and then post transactions
+from the posting_journal table to the General Ledger table.
 
-  SET @sql = CONCAT(
-   "INSERT INTO stage_journal_transaction SELECT DISTINCT record_uuid FROM posting_journal WHERE trans_id IN (", transactions, ");"
-  );
-
-  PREPARE stmt FROM @sql;
-  EXECUTE stmt;
-
-  DEALLOCATE PREPARE stmt;
-
+*/
+CREATE PROCEDURE PostToGeneralLedger()
+BEGIN
   -- write into the posting journal
   INSERT INTO general_ledger (
-    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, origin_id, user_id,
+    cc_id, pc_id
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, posting_journal.record_uuid,
     description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
     entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-  FROM posting_journal
-  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+  FROM posting_journal JOIN stage_trial_balance_transaction AS staged
+    ON posting_journal.record_uuid = staged.record_uuid;
 
   -- write into period_total
   INSERT INTO period_total (
@@ -518,14 +513,14 @@ CREATE PROCEDURE PostToGeneralLedger(
   )
   SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
     fiscal_year_id, project.enterprise_id, period_id
-  FROM posting_journal JOIN project
-    ON posting_journal.project_id = project.id
-  WHERE posting_journal.record_uuid IN (SELECT record_uuid FROM stage_journal_transaction)
+  FROM posting_journal JOIN stage_trial_balance_transaction JOIN project
+    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
+    AND project_id = project.id
   GROUP BY period_id, account_id
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
   -- remove from posting journal
-  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_journal_transaction);
+  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
 END $$
 
 -- Handles the Cash Table's Rounding

@@ -81,7 +81,8 @@
       "EXPORT" : "Export the Trial Balance",
       "SHOW_ERRORS" : "Switch to Error View",
       "RETURN_TO_OVERVIEW" : "Return to Summary View",
-      "IS_BALANCED" : "Balanced"
+      "IS_BALANCED" : "Balanced",
+      "POSTED_TRANSACTIONS" : "Success!  Posted {{ numRecords }} Transactions to the General Ledger."
     },
     "TITLE":"Posting Journal",
     "EDIT_MODE":"Edit Mode"
