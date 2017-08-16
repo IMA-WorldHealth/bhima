@@ -24,14 +24,26 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   //Filter service
   var StockLotFilters = new Filters();
+  var StockMovementFilters = new Filters();
+  var filterMovementCache = new AppCache('stock-movement-filters');
   var filterLotCache = new AppCache('stock-lot-filters');
 
+  // FIX ME : see issue #1988 on github
   StockLotFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
     { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
     { key : 'limit', label : 'FORM.LABELS.LIMIT' }
   ]);
+
+  // FIX ME : see issue #1988 on github
+  StockMovementFilters.registerDefaultFilters([
+    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
+    { key : 'limit', label : 'FORM.LABELS.LIMIT' }
+  ]);
+
 
   StockLotFilters.registerCustomFilters([
     { key: 'depot_uuid', label: 'STOCK.DEPOT' },
@@ -43,12 +55,28 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter : 'date' }
   ]);
 
+  StockMovementFilters.registerCustomFilters([
+    { key : 'is_exit', label : 'STOCK.OUTPUT'},    
+    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
+    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key: 'label', label: 'STOCK.LOT' },
+    { key: 'flux_id', label: 'STOCK.FLUX'},
+    { key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor: '>', valueFilter : 'date' },
+    { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' }
+  ]);
+
+
   if(filterLotCache.filters){
     StockLotFilters.loadCache(filterLotCache.filters);
   }
 
+  if(filterMovementCache.filters){
+    StockMovementFilters.loadCache(filterMovementCache.filters);
+  }
+
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignLotDefaultFilters();
+  assignMovementDefaultFilters();
 
   function assignLotDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
@@ -65,6 +93,24 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
       StockLotFilters.assignFilter('limit', 100);
+    }
+  }
+
+  function assignMovementDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      movements.util.arrayIncludes(assignedKeys, ['period']);
+
+    if (!periodDefined) {
+      StockMovementFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      StockMovementFilters.assignFilter('limit', 100);
     }
   }
 
