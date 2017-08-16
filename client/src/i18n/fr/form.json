@@ -524,6 +524,7 @@
             "DESCRIPTION": "Entrer une description",
             "DOCUMENT_NAME": "Entrer le nom du document",
             "EMAIL": "Entrer l'adresse e-mail",
+            "LOT":"Entrer le lot",
             "MAX_CREDIT": "Entrer le crédit maximale",
             "NAME": "Entrer le nom",
             "NOTES": "Entrer les notes",

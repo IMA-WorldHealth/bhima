@@ -292,6 +292,7 @@ function StockExitController(Depots, Inventory, Notify,
       is_exit     : 1,
       flux_id     : bhConstants.flux.TO_SERVICE,
       user_id     : Session.user.id,
+      service_depot_uuid : vm.movement.entity.instance.service_depot_uuid,
     };
 
     var lots = vm.Stock.store.data.map(function (row) {

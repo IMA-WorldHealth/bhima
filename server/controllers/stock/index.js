@@ -162,6 +162,25 @@ function normalMovement(document, params) {
 
     isDistributable = !!(parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE);
 
+    // service depot entry
+    if (parameters.service_depot_uuid && parameters.flux_id === core.flux.TO_SERVICE) {
+      const createMovementDepotService = {
+        uuid          : db.bid(uuid.v4()),
+        lot_uuid      : db.bid(lot.uuid),
+        depot_uuid    : db.bid(parameters.service_depot_uuid),
+        document_uuid : db.bid(document.uuid),
+        quantity      : lot.quantity,
+        unit_cost     : lot.unit_cost,
+        date          : document.date,
+        entity_uuid   : parameters.entity_uuid,
+        is_exit       : 0,
+        flux_id       : core.flux.FROM_OTHER_DEPOT,
+        description   : parameters.description,
+        user_id       : document.user,
+      };
+      transaction.addQuery(createMovementQuery, [createMovementDepotService]);
+    }
+
     // track distribution to patient
     if (parameters.is_exit && isDistributable) {
       const consumptionParams = [

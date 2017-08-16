@@ -15,7 +15,7 @@ function StockFindServiceModalController(Instance, Service, Notify) {
   vm.submit = submit;
   vm.cancel = cancel;
 
-  Service.read()
+  Service.read(null, { full : 1 })
   .then(function (services) {
     vm.services = services;
   })

@@ -34,9 +34,11 @@ function list(req, res, next) {
     sql = `
       SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid, 
         s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name,
+        d.text as depot_name, BUID(d.uuid) as service_depot_uuid
       FROM service AS s
-      JOIN enterprise AS e ON s.enterprise_id = e.id
+      JOIN enterprise AS e ON s.enterprise_id = e.id 
+      LEFT JOIN depot d ON d.service_uuid = s.uuid
       LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
       LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
   }

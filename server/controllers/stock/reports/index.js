@@ -513,10 +513,11 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * getDepotMovement
  * @param {string} documentUuid
  * @param {object} enterprise
+ * @param {object} fluxes - { entry : FLUX_OF_ENTRY, exit : FLUX_OF_EXIT }
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise) {
+function getDepotMovement(documentUuid, enterprise, fluxes) {
   const data = {};
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -532,7 +533,12 @@ function getDepotMovement(documentUuid, enterprise) {
     WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [1, Stock.flux.TO_OTHER_DEPOT, db.bid(documentUuid)])
+  const movementFlux = fluxes || {
+    entry : Stock.flux.FROM_OTHER_DEPOT,
+    exit : Stock.flux.TO_OTHER_DEPOT,
+  };
+
+  return db.exec(sql, [1, movementFlux.exit, db.bid(documentUuid)])
     .then((rows) => {
       // exit movement
       if (!rows.length) {
@@ -553,7 +559,7 @@ function getDepotMovement(documentUuid, enterprise) {
       };
 
       data.rows = rows;
-      return db.exec(sql, [0, Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)]);
+      return db.exec(sql, [0, movementFlux.entry, db.bid(documentUuid)]);
     })
     .then((rows) => {
       // entry movement
