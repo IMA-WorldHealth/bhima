@@ -3,9 +3,9 @@ angular.module('bhima.services')
 
 StockService.$inject = [
   'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService'];
+  '$httpParamSerializer', 'LanguageService', 'bhConstants'];
 
-function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages) {
+function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
 
   // API for stock lots
   var stocks = new Api('/stock/lots');
@@ -26,24 +26,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
   var filterMovementCache = new AppCache('stock-movement-filters');
-  var filterLotCache = new AppCache('stock-lot-filters');
+  var filterLotCache = new AppCache('stock-lot-filters'); 
 
-  // FIX ME : see issue #1988 on github
-  StockLotFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }
-  ]);
-
-  // FIX ME : see issue #1988 on github
-  StockMovementFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }
-  ]);
-
+  StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
+  StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
     { key: 'depot_uuid', label: 'STOCK.DEPOT' },
@@ -77,6 +63,19 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignLotDefaultFilters();
   assignMovementDefaultFilters();
+
+  // creating an an object of filter to avoid method duplication
+  var stockFilter = {
+    lot : StockLotFilters,
+    movement : StockMovementFilters    
+  }
+
+  // creating an object of filter object to avoid method duplication
+  var filterCache = {
+    lot : filterLotCache,
+    movement : filterMovementCache
+  }
+  
 
   function assignLotDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
@@ -114,22 +113,22 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     }
   }
 
-  function removeLotFilter(key) {
-    StockLotFilters.resetFilterState(key);
+  function removeFilter(filterKey, valueKey) {
+   stockFilter[filterKey].resetFilterState(valueKey);
   };
 
   // load filters from cache
-  function cacheLotFilters() {
-    filterLotCache.filters = StockLotFilters.formatCache();
+  function cacheFilters(filterKey) {
+    filterCache[filterKey].filters = stockFilter[filterKey].formatCache();
   };
 
-  function loadCachedLotFilters() {
-    StockLotFilters.loadCache(filterLotCache.filters || {});
+  function loadCachedFilters(filterKey) {
+   stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
   };
 
   // downloads a type of report based on the
-  function download(type) {
-    var filterOpts = StockLotFilters.formatHTTP();
+  function download(filterKey, type) {
+    var filterOpts = stockFilter[filterKey].formatHTTP();
     var defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
@@ -162,10 +161,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     movements    : movements,
     inventories  : inventories,
     integration  : integration,
-    lotFilters   : StockLotFilters,
-    cacheLotFilters : cacheLotFilters,
-    removeLotFilter : removeLotFilter,
-    loadCachedLotFilters : loadCachedLotFilters,
+    filter       : stockFilter,
+    cacheFilters : cacheFilters,
+    removeFilter : removeFilter,
+    loadCachedFilters : loadCachedFilters,
     download     : download,
     uniformSelectedEntity : uniformSelectedEntity
   };

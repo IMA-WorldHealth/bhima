@@ -18,6 +18,7 @@ function StockLotsController(Stock, Notify,
   var vm = this;
 
   var cacheKey = 'lot-grid';
+  var filterKey = 'lot';
   var gridColumns;
   var state;
 
@@ -92,22 +93,12 @@ function StockLotsController(Stock, Notify,
   // expose to the view
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;
-  vm.onRemoveFilter = onRemoveFilter;
   vm.selectGroup = selectGroup;
   vm.toggleGroup = toggleGroup;
   vm.loading = false;
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
-
-  // on remove one filter
-  function onRemoveFilter(key) {
-    Stock.removeLotFilter(key);
-    Stock.cacheLotFilters();
-    vm.latestViewFilters = Stock.lotFilters.formatView();
-    
-     return load(Stock.lotFilters.formatHTTP(true));
-  }
 
   // select group
   function selectGroup(group) {
@@ -129,8 +120,8 @@ function StockLotsController(Stock, Notify,
 
   // initialize module
   function startup() {
-    load(Stock.lotFilters.formatHTTP(true));
-    vm.latestViewFilters = Stock.lotFilters.formatView();
+    load(Stock.filter[filterKey].formatHTTP(true));
+    vm.latestViewFilters = Stock.filter[filterKey].formatView();
   }
 
   /**
@@ -174,24 +165,24 @@ function StockLotsController(Stock, Notify,
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {
-    Stock.removeLotFilter(key);
+    Stock.removeFilter(filterKey, key);
 
-    Stock.cacheLotFilters();
-    vm.latestViewFilters = Stock.lotFilters.formatView();
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = Stock.filter[filterKey].formatView();
 
-    return load(Stock.lotFilters.formatHTTP(true));
+    return load(Stock.filter[filterKey].formatHTTP(true));
   }
 
   function search() {
-    var filtersSnapshot = Stock.lotFilters.formatHTTP();
+    var filtersSnapshot = Stock.filter[filterKey].formatHTTP();
 
     Modal.openSearchLots(filtersSnapshot)
       .then(function (changes) {
-        Stock.lotFilters.replaceFilters(changes);
-        Stock.cacheLotFilters();
-        vm.latestViewFilters = Stock.lotFilters.formatView();
+        Stock.filter[filterKey].replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = Stock.filter[filterKey].formatView();
 
-        return load(Stock.lotFilters.formatHTTP(true));
+        return load(Stock.filter[filterKey].formatHTTP(true));
       })
       .catch(angular.noop);
   }
