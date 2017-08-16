@@ -3,11 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchMovementsModalController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 
-  'SearchFilterFormatService', 'FluxService', '$translate'
+  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 'FluxService', '$translate'
 ];
 
-function SearchMovementsModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat, Flux, $translate) {
+function SearchMovementsModalController(Depots, Inventory, Notify, Instance, Flux, $translate) {
   var vm = this;
 
   // gloabal variables 
