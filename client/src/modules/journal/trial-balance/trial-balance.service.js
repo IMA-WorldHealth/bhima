@@ -36,6 +36,11 @@ function TrialBalanceService(util, $http, Accounts) {
   service.summary = summary;
   service.errors = errors;
 
+  function uninitialise() {
+    initialised = false;
+    transactions = [];
+  }
+
   /**
    * @method initialise
    *
@@ -95,16 +100,17 @@ function TrialBalanceService(util, $http, Accounts) {
 
   /**
    * @function postToGeneralLedger
-   * @description
-   * This function takes a parsed record list (grid rows processed by the parseSelectedGridRecord function)
-   * and extract their transaction IDS uniquely through the getTransactionList method
-   * and post these transaction to the server
    *
-   * This function is called only when every test are passed without a fatal error
+   * @description
+   * This function attempts to post to the General Ledger by
    */
-  function postToGeneralLedger(records) {
-    return $http.post(url.concat('/transactions'), { transactions : records })
-      .then(util.unwrapHttpResponse);
+  function postToGeneralLedger() {
+    return $http.post(url.concat('/transactions'), { transactions : transactions })
+      .then(util.unwrapHttpResponse)
+      .then(function (data) {
+        uninitialise();
+        return data;
+      });
   }
 
   /**
@@ -133,6 +139,8 @@ function TrialBalanceService(util, $http, Accounts) {
    *
    * @description
    * This function fetches the records associated with the account.
+   *
+   * @TODO
    */
   function fetchSubGridRecords(account) {
     $http.post(url.concat('/trialbalance/subgrid'));
@@ -144,10 +152,10 @@ function TrialBalanceService(util, $http, Accounts) {
    * @description
    * Returns the transactions that were used to initialize the trial balance.
    */
-  function transactions() {
+  this.transactions = function txns() {
     ensureTrialBalanceInitialised('transactions()');
     return transactions;
-  }
+  };
 
   return service;
 }

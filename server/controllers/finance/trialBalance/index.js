@@ -21,15 +21,23 @@ function stageTrialBalanceTransactions(txn, transactions) {
   });
 }
 
-exports.runTrialBalance = function runTrialBalance(req, res, next) {
-  const transactions = req.body.transactions;
+function validateTransactions(transactions) {
   const hasInvalidTransactions = !(transactions && Array.isArray(transactions) && transactions.length);
-
   if (hasInvalidTransactions) {
-    return next(new BadRequest(
+    throw new BadRequest(
       'No transactions were submitted.  Please ensure that some are selected.',
       'POSTING_JOURNAL.ERRORS.MISSING_TRANSACTIONS'
-    ));
+    );
+  }
+}
+
+exports.runTrialBalance = function runTrialBalance(req, res, next) {
+  const transactions = req.body.transactions;
+
+  try {
+    validateTransactions(transactions);
+  } catch (e) {
+    return next(e);
   }
 
   const txn = db.transaction();
@@ -42,9 +50,6 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
 
   // compute the trial balance summary
   txn.addQuery('CALL TrialBalanceSummary()');
-
-  // compute the aggregate results for the trial balance
-  // txn.addQuery('CALL TrialBalanceAggregates()');
 
   return txn.execute()
     .then((results) => {
@@ -66,6 +71,7 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
 
 /**
  * @function postToGeneralLedger
+ *
  * @description
  * This function can be called only when there is no fatal error
  * It posts data to the general ledger.
@@ -73,14 +79,21 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
 exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
   const transactions = req.body.transactions;
 
-  if (!transactions || !Array.isArray(transactions)) {
-    return next(new BadRequest('The transaction list is null or undefined otherwise The query is bad formatted'));
+  try {
+    validateTransactions(transactions);
+  } catch (e) {
+    return next(e);
   }
 
-  // Just a workaround because mysql does not have a type for array
-  const transactionString = transactions.map(transId => `"${transId}"`).join(',');
+  const txn = db.transaction();
 
-  return db.exec('CALL PostToGeneralLedger(?)', [transactionString])
-    .then(() => res.status(201).json({}))
-    .catch(next);
+  // stage all trial balance transactions
+  stageTrialBalanceTransactions(txn, transactions);
+
+  txn.addQuery('CALL PostToGeneralLedger();');
+
+  return txn.execute()
+    .then(() => res.sendStatus(201))
+    .catch(next)
+    .done();
 };
