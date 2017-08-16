@@ -98,6 +98,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
     { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
+    { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
