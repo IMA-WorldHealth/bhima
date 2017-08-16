@@ -29,7 +29,9 @@ function TrialBalanceController(TrialBalance) {
   }
 
   // attach the grid exporter as needed
-  vm.export = TrialBalance.exportGrid;
+  vm.export = function exporter() {
+    TrialBalance.exportGrid();
+  };
 
   startup();
 }

@@ -87,7 +87,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     vm.gridApi = api;
 
     // TODO - should we really cache the trial balance transactions?
-    api.expandable.on.rowExpandedStateChanged(null, loadSubGridRecords);
+    // api.expandable.on.rowExpandedStateChanged(null, loadSubGridRecords);
   }
 
   function loadSubGridRecords(row) {
