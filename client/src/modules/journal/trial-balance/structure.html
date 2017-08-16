@@ -10,14 +10,16 @@
     </li>
 
     <span class="badge badge-danger" ng-show="TrialBalanceCtrl.showErrorMessage">
-      <strong translate translate-values="{ numErrors : TrialBalanceCtrl.numErrors }">
-        POSTING_JOURNAL.TRIAL_BALANCE.HAS_ERRORS
+      <strong>
+        <i class="fa fa-times-circle-o"></i>
+        <span translate translate-values="{ numErrors : TrialBalanceCtrl.numErrors }">POSTING_JOURNAL.TRIAL_BALANCE.HAS_ERRORS</span>
       </strong>
     </span>
 
     <span class="badge badge-success" ng-show="TrialBalanceCtrl.showSuccessMessage">
-      <strong translate>
-        POSTING_JOURNAL.TRIAL_BALANCE.IS_BALANCED
+      <strong>
+        <i class="fa fa-check-circle-o"></i>
+        <span translate>POSTING_JOURNAL.TRIAL_BALANCE.IS_BALANCED</span>
       </strong>
     </span>
 
