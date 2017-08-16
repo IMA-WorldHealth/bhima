@@ -88,6 +88,9 @@ function lookupTransaction(recordUuid) {
  * return all items in the posting journal
  */
 function find(options, source) {
+  // make sure hex -> binary parameters are converted properly
+  db.convert(options, ['uuid', 'record_uuid']);
+
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   // @FIXME selected the source between the posting journal and general ledger should be carefully designed
@@ -128,6 +131,8 @@ function find(options, source) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('origin_id');
+
+  filters.equals('record_uuid');
 
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
@@ -339,7 +344,7 @@ function editTransaction(req, res, next) {
       // transaction chagnes written successfully - return latest version of transaction
       return lookupTransaction(recordUuid);
     })
-    .then((updatedTransaction) => { 
+    .then((updatedTransaction) => {
       const updatedRows = updatedTransaction.journal;
       res.status(200).json(updatedRows);
     })
