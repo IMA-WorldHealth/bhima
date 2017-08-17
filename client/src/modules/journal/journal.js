@@ -357,7 +357,6 @@ function JournalController(Journal, Sorting, Grouping,
         vm.gridOptions.data = journalStore.data;
 
         vm.rowsDetails = sumTransactionAggregates(journalStore.data);
-        console.log(vm.rowsDetails);
 
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
