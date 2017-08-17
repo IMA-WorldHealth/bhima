@@ -722,6 +722,7 @@ function stockInventoriesReport(req, res, next) {
   let display = {};
   let hasFilter = false;
   let report;
+  let filters = [];
 
   const data = {};
   const bundle = {};
@@ -739,6 +740,11 @@ function stockInventoriesReport(req, res, next) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
       hasFilter = Object.keys(display).length > 0;
+      // let convert display to array
+      filters = Object.keys(display).map(function (key) {
+        return { displayName : key, value : display[key] };
+      }, display);
+
     } else if (req.query.params) {
       options = JSON.parse(req.query.params);
       bundle.delay = options.inventory_delay;
@@ -754,6 +760,7 @@ function stockInventoriesReport(req, res, next) {
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
+      data.filters = filters;
       data.csv = rows;
       data.display = display;
 
