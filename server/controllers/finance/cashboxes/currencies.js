@@ -115,33 +115,33 @@ function update(req, res, next) {
     WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [data, req.params.id, req.params.currencyId])
-  .then(() => {
+    .then(() => {
     // send the changed object to the client
-    sql =
+      sql =
       `SELECT id, account_id, transfer_account_id
       FROM cash_box_account_currency
       WHERE cash_box_id = ? AND currency_id = ?;`;
 
-    return db.exec(sql, [req.params.id, req.params.currencyId]);
-  })
-  .then((rows) => {
+      return db.exec(sql, [req.params.id, req.params.currencyId]);
+    })
+    .then((rows) => {
     // in case an unknown id is sent to the server
     /** @todo - review this decision */
-    if (!rows.length) {
-      res.status(200).json({});
-      return;
-    }
+      if (!rows.length) {
+        res.status(200).json({});
+        return;
+      }
 
-    // currency account changes are still a cashbox update
-    Topic.publish(Topic.channels.FINANCE, {
-      event : Topic.events.UPDATE,
-      entity : Topic.entities.CASHBOX,
-      user_id : req.session.user.id,
-      id : req.params.id,
-    });
+      // currency account changes are still a cashbox update
+      Topic.publish(Topic.channels.FINANCE, {
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.CASHBOX,
+        user_id : req.session.user.id,
+        id : req.params.id,
+      });
 
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 }

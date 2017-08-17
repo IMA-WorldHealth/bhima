@@ -145,7 +145,7 @@ function invoices(req, res, next) {
 /**
  * This function sends back a list of invoices uuids
  * which belong to a particular debtor
- **/
+ * */
 
 function getDebtorInvoices(debtorUuid) {
   const debtorUid = db.bid(debtorUuid);

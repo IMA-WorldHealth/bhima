@@ -76,7 +76,7 @@ exports.getDataPerAccount = function getDataPerAccount(req, res, next) {
  *     transactions : ['HBB1'],   // affected transaction ids list
  *     affectedRows : 12          // number of affectedRows in the transaction
  *   }]
- **/
+ * */
 exports.checkTransactions = function runTrialBalance(req, res, next) {
   const transactions = req.body.transactions;
 
@@ -109,7 +109,7 @@ exports.checkTransactions = function runTrialBalance(req, res, next) {
  * @description
  * This function can be called only when there is no fatal error
  * It posts data to the general ledger.
- **/
+ * */
 exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
   const transactions = req.body.transactions;
 

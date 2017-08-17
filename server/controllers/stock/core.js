@@ -7,7 +7,7 @@
  * @requires lib/db
  * @requires lib/filter
  * @requires config/identifiers
- **/
+ * */
 
 const moment = require('moment');
 const db = require('../../lib/db');
@@ -58,7 +58,7 @@ exports.getInventoryMovements = getInventoryMovements;
  */
 function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
-  const params = parameters;  
+  const params = parameters;
   const sql = sqlQuery || `
         SELECT 
           BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
@@ -146,15 +146,15 @@ function getLotsDepot(depotUuid, params, finalClause) {
   const clause = finalClause || ' GROUP BY l.uuid, m.depot_uuid ';
 
   return getLots(sql, params, clause)
-        .then(stockManagementProcess)
-        .then((rows) => {
-          if (status) {
-            return rows.filter((row) => {
-              return row.status === status;
-            });
-          }
-          return rows;
+    .then(stockManagementProcess)
+    .then((rows) => {
+      if (status) {
+        return rows.filter((row) => {
+          return row.status === status;
         });
+      }
+      return rows;
+    });
 }
 
 /**

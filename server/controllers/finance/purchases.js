@@ -195,9 +195,9 @@ function create(req, res, next) {
  */
 function list(req, res, next) {
   find(req.query)
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -264,7 +264,7 @@ function search(req, res, next) {
 function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['supplier_uuid']);
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false  });
+  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   // default purchase date
   filters.period('period', 'date');
@@ -318,29 +318,29 @@ function purchaseStatus(req, res, next) {
   `;
 
   db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
-  .then((row) => {
-    let query = '';
-    status.cost = row.cost;
-    status.movement_cost = row.movement_cost;
+    .then((row) => {
+      let query = '';
+      status.cost = row.cost;
+      status.movement_cost = row.movement_cost;
 
-    if (row.movement_cost === row.cost) {
+      if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
-      status.status = 'full_entry';
-      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 1 WHERE uuid = ?';
-    } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
+        status.status = 'full_entry';
+        query = 'UPDATE purchase SET is_partially_received = 0, is_received = 1 WHERE uuid = ?';
+      } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
       // the purchase is partially delivered
-      status.status = 'partial_entry';
-      query = 'UPDATE purchase SET is_partially_received = 1, is_received = 0 WHERE uuid = ?';
-    } else if (row.movement_cost === 0) {
+        status.status = 'partial_entry';
+        query = 'UPDATE purchase SET is_partially_received = 1, is_received = 0 WHERE uuid = ?';
+      } else if (row.movement_cost === 0) {
       // the purchase is not yet delivered
-      status.status = 'no_entry';
-      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 0 WHERE uuid = ?';
-    }
-    return db.exec(query, [purchaseUuid]);
-  })
-  .then(() => res.status(200).send(status))
-  .catch(next)
-  .done();
+        status.status = 'no_entry';
+        query = 'UPDATE purchase SET is_partially_received = 0, is_received = 0 WHERE uuid = ?';
+      }
+      return db.exec(query, [purchaseUuid]);
+    })
+    .then(() => res.status(200).send(status))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -378,7 +378,7 @@ function purchaseBalance(req, res, next) {
   `;
 
   db.exec(sql, [FROM_PURCHASE_ID, purchaseUuid, purchaseUuid])
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }

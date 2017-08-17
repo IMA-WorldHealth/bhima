@@ -80,11 +80,11 @@ exports.create = function create(req, res, next) {
     VALUES (?);`;
 
   db.exec(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]])
-  .then((row) => {
-    res.status(201).json({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -101,8 +101,8 @@ exports.update = function update(req, res, next) {
   }
 
   db.exec(sql, [req.body, req.params.id])
-  .then(() => {
-    sql =
+    .then(() => {
+      sql =
       `SELECT
         exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
         exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS enterprise_currency_id
@@ -110,16 +110,16 @@ exports.update = function update(req, res, next) {
       JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
       WHERE exchange_rate.id = ?;`;
 
-    return db.exec(sql, [req.params.id]);
-  })
-  .then((rows) => {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
-    }
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      return db.exec(sql, [req.params.id]);
+    })
+    .then((rows) => {
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
+      }
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 };
 
 // DELETE /exchange/:id
@@ -128,13 +128,13 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM exchange_rate WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-  .then((row) => {
+    .then((row) => {
     // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
-    }
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
+      }
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 };

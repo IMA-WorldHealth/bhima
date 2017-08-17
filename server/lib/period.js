@@ -4,7 +4,6 @@
 const Moment = require('moment');
 
 class PeriodService {
-
   constructor(clientTimestamp) {
     var self = this;
     this.timestamp = new Moment(clientTimestamp);

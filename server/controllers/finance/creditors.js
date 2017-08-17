@@ -32,11 +32,11 @@ function list(req, res, next) {
   `;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -53,15 +53,15 @@ function detail(req, res, next) {
   `;
 
   db.exec(sql, [db.bid(req.params.uuid)])
-  .then((rows) => {
-    if (!rows.length) {
-      throw new NotFound(
-        `Could not find creditor with uuid ${req.params.uuid}.`
-      );
-    }
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound(
+          `Could not find creditor with uuid ${req.params.uuid}.`
+        );
+      }
 
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 }

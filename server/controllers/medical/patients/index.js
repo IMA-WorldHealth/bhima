@@ -461,18 +461,18 @@ function patientEntityQuery(detailed) {
  */
 function read(req, res, next) {
   find(req.query)
-  .then((rows) => {
+    .then((rows) => {
     // publish a SEARCH event on the medical channel
-    topic.publish(topic.channels.MEDICAL, {
-      event   : topic.events.SEARCH,
-      entity  : topic.entities.PATIENT,
-      user_id : req.session.user.id,
-    });
+      topic.publish(topic.channels.MEDICAL, {
+        event   : topic.events.SEARCH,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+      });
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 

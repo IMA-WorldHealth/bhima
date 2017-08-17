@@ -231,11 +231,11 @@ function getBalance(req, res, next) {
   const period = req.params.period_number;
 
   lookupBalance(id, period)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -262,41 +262,41 @@ function lookupBalance(fiscalYearId, periodNumber) {
   `;
 
   return db.exec(periodSql, [fiscalYearId, periodNumber])
-  .then((rows) => {
-    if (!rows.length) {
-      throw new NotFound(`Could not find the period ${periodNumber} for the fiscal year with id ${fiscalYearId}.`);
-    }
-    glb.period = rows[0];
-    return db.exec(sql, [fiscalYearId, periodNumber]);
-  })
-  .then((rows) => {
-    glb.existTotalAccount = rows;
-
-    // for to have an updated data in any time
-    return AccountService.lookupAccount();
-  })
-  .then((rows) => {
-    let inlineAccount;
-    const allAccounts = rows;
-
-    glb.totalAccount = allAccounts.map((item) => {
-      inlineAccount = _.find(glb.existTotalAccount, { id : item.id });
-
-      if (inlineAccount) {
-        item.period_id = inlineAccount.period_id;
-        item.debit = inlineAccount.debit;
-        item.credit = inlineAccount.credit;
-      } else {
-        item.period_id = glb.period.id;
-        item.debit = 0;
-        item.credit = 0;
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound(`Could not find the period ${periodNumber} for the fiscal year with id ${fiscalYearId}.`);
       }
+      glb.period = rows[0];
+      return db.exec(sql, [fiscalYearId, periodNumber]);
+    })
+    .then((rows) => {
+      glb.existTotalAccount = rows;
 
-      return item;
+      // for to have an updated data in any time
+      return AccountService.lookupAccount();
+    })
+    .then((rows) => {
+      let inlineAccount;
+      const allAccounts = rows;
+
+      glb.totalAccount = allAccounts.map((item) => {
+        inlineAccount = _.find(glb.existTotalAccount, { id : item.id });
+
+        if (inlineAccount) {
+          item.period_id = inlineAccount.period_id;
+          item.debit = inlineAccount.debit;
+          item.credit = inlineAccount.credit;
+        } else {
+          item.period_id = glb.period.id;
+          item.debit = 0;
+          item.credit = 0;
+        }
+
+        return item;
+      });
+
+      return glb.totalAccount;
     });
-
-    return glb.totalAccount;
-  });
 }
 
 /**
@@ -610,8 +610,8 @@ function closing(req, res, next) {
 
       // post voucher and close the fiscal year
       transaction
-        .addQuery('CALL PostVoucher(?);', [voucher.uuid])                   // post voucher into the journal
-        .addQuery(sqlUpdateJournalPeriod, [period.id, voucherDocumentUuid])   // update the period to 13
+        .addQuery('CALL PostVoucher(?);', [voucher.uuid]) // post voucher into the journal
+        .addQuery(sqlUpdateJournalPeriod, [period.id, voucherDocumentUuid]) // update the period to 13
         .addQuery('UPDATE fiscal_year SET locked = 1 WHERE id = ?;', [id]); // lock the fiscal year
 
       return transaction.execute();

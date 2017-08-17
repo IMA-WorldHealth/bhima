@@ -72,13 +72,13 @@ function events(req, res, next) {
   `;
 
   db.exec(sql)
-  .then(rows => {
+    .then(rows => {
       // events are stored as TEXT, that need to be parsed into JSON data.
-    const eventString = rows.map(row => row.data);
-    res.status(200).json(eventString);
-  })
-  .catch(next)
-  .done();
+      const eventString = rows.map(row => row.data);
+      res.status(200).json(eventString);
+    })
+    .catch(next)
+    .done();
 }
 
 // send operating system information
@@ -90,8 +90,8 @@ function info(req, res) {
   const data = {
     platform : platformString,
     numCPUs : os.cpus().length,
-    machineUptime : os.uptime() * 1000,       // change to milliseconds
-    processUptime : process.uptime() * 1000,  // change to milliseconds
+    machineUptime : os.uptime() * 1000, // change to milliseconds
+    processUptime : process.uptime() * 1000, // change to milliseconds
     memoryUsage : (1 - (os.freemem() / os.totalmem())) * 100,
     version : pkg.version,
   };

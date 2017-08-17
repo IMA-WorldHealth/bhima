@@ -282,15 +282,15 @@ exports.delete = function del(req, res, next) {
 
   // ensure that the price list exists
   lookupPriceList(uid)
-  .then(() => {
-    return db.exec(sql, [uid]);
-  })
-  .then(() => {
+    .then(() => {
+      return db.exec(sql, [uid]);
+    })
+    .then(() => {
     // respond with 204 'NO CONTENT'
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 };
 
 function isEmptyObject(object) {

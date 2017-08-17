@@ -52,5 +52,5 @@ function indexIdentifiers() {
   _.forEach(identifiers, (entity) => {
     identifiersIndex[entity.key] = entity;
   });
-} 
+}
 

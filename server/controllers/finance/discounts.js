@@ -27,15 +27,15 @@ function lookupDiscount(id) {
     WHERE d.id = ?;`;
 
   return db.exec(sql, [id])
-  .then((rows) => {
+    .then((rows) => {
     // if no matches in the database, throw a 404
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a discount with id ${id}`);
-    }
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find a discount with id ${id}`);
+      }
 
-    // return a single record
-    return rows[0];
-  });
+      // return a single record
+      return rows[0];
+    });
 }
 
 /**
@@ -64,11 +64,11 @@ exports.list = function list(req, res, next) {
     'SELECT d.id, d.label, d.value FROM discount AS d;';
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**

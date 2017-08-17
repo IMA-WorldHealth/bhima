@@ -56,11 +56,11 @@ function create(req, res, next) {
   }
 
   db.exec(createSubsidyQuery, [record])
-  .then((result) => {
-    res.status(201).json({ id : result.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((result) => {
+      res.status(201).json({ id : result.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 function update(req, res, next) {
@@ -78,17 +78,17 @@ function update(req, res, next) {
   }
 
   lookupSubsidy(subsidyId)
-  .then(() => {
-    return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
-  })
-  .then(() => {
-    return lookupSubsidy(subsidyId);
-  })
-  .then((subsidy) => {
-    res.status(200).json(subsidy);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
+    })
+    .then(() => {
+      return lookupSubsidy(subsidyId);
+    })
+    .then((subsidy) => {
+      res.status(200).json(subsidy);
+    })
+    .catch(next)
+    .done();
 }
 
 function remove(req, res, next) {

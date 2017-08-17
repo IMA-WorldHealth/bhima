@@ -19,11 +19,11 @@ exports.availablePaymentPeriod = function availablePaymentPeriod(req, res, next)
   `;
 
   db.exec(sql)
-  .then((result) => {
-    res.send(result);
-  })
-  .catch((err) => { next(err); })
-  .done();
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => { next(err); })
+    .done();
 };
 
 exports.setTaxPayment = function setTaxPayment(req, res, next) {
@@ -34,9 +34,9 @@ exports.setTaxPayment = function setTaxPayment(req, res, next) {
   `;
 
   db.exec(sql)
-  .then((result) => {
-    res.send(result);
-  })
-  .catch((err) => { next(err); })
-  .done();
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => { next(err); })
+    .done();
 };

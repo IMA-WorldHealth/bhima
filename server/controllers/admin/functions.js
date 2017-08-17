@@ -22,11 +22,11 @@ function list(req, res, next) {
   const sql = `SELECT id, fonction_txt FROM fonction;`;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -38,11 +38,11 @@ function detail(req, res, next) {
   var id = req.params.id;
 
   lookupFunction(id)
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -52,11 +52,11 @@ function create(req, res, next) {
   const data = req.body;
 
   db.exec(sql, [data])
-  .then((row) => {
-    res.status(201).json({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -65,15 +65,15 @@ function update(req, res, next) {
   const sql = `UPDATE fonction SET ? WHERE id = ?;`;
 
   db.exec(sql, [req.body, req.params.id])
-  .then(() => {
-    return lookupFunction(req.params.id);
-  })
-  .then((record) => {
+    .then(() => {
+      return lookupFunction(req.params.id);
+    })
+    .then((record) => {
     // all updates completed successfull, return full object to client
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 // DELETE /function/:id
@@ -81,16 +81,16 @@ function del(req, res, next) {
   const sql = `DELETE FROM fonction WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
-  .then((row) => {
+    .then((row) => {
     // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find a function with id ${req.params.id}`);
-    }
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find a function with id ${req.params.id}`);
+      }
 
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 }
 
 // get list of function
