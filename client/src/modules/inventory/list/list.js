@@ -155,15 +155,18 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       .then(function (rows) {
         vm.gridOptions.data = rows;
       })
-      .catch(Error);
+      .catch(function (exception) {
+        vm.hasError = true;
+        Notify.handleError(exception);
+      })
+      .finally(function () {
+        vm.loading = false; // this will execute after the data is downloaded.
+      });
 
     vm.loading = false;
   }
 
-  function Error() {
-    vm.hasError = true;
-    Notify.handleError();
-  }
+
   // research and filter data in Inventory List
   function research() {
     Inventory.openSearchModal()
