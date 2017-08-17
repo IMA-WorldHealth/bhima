@@ -1,0 +1,7 @@
+<!-- Ensure that values are only shown in the group header if grouped by transaction -->
+<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">
+  <!-- @FIXME(sfount) this does NOT work for grouped headers -->
+  <span style="color : #5cb85c" class="fa fa-circle" ng-if="row.entity.posted"></span>
+  <span style="color : #d9534f" class="fa fa-circle" ng-if="!row.entity.posted"></span>
+  {{COL_FIELD CUSTOM_FILTERS}}
+</div>

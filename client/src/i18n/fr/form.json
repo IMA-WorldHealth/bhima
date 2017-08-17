@@ -148,7 +148,6 @@
             "SHOWING": "Aperçue",
             "TRANSACTION_REVER_SUCCESS": "Cette transaction a été Annulée avec succès",
             "UNAUTHORIZED": "Non autorisée",
-            "UNPOSTED_TRANSACTION": "Transactions non postées",
             "UPDATE_SUCCESS": "Mise à jour avec succès",
             "UPLOAD_PICTURE_FAILED": "Le fichier selectionné n'est pas une image",
             "VIEW_BEGINNING_BALANCE": "Aperçue de la balance d'ouverture",

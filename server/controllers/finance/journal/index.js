@@ -50,10 +50,9 @@ function lookupTransaction(recordUuid) {
   };
 
   return find(options)
-    .then(rows => addAggregateData(rows))
     .then((result) => {
       // if no records matching, throw a 404
-      if (result.journal.length === 0) {
+      if (result.length === 0) {
         throw new NotFound(`Could not find a transaction with record_uuid: ${recordUuid}.`);
       }
 
@@ -71,12 +70,13 @@ function lookupTransaction(recordUuid) {
 // 4. Apply date order
 function naiveTransactionSearch(options, includeNonPosted) {
   if (!includeNonPosted) {
-    const query = buildTransactionQuery(options, false);
+    const query = buildTransactionQuery(_.cloneDeep(options), false);
     return db.exec(`{query.sql} ORDER BY trans_date DESC`, query.parameters);
   }
 
-  const posted = buildTransactionQuery(options, true);
-  const nonPosted = buildTransactionQuery(options, false);
+  // clone options as filter parsing process mutates object
+  const posted = buildTransactionQuery(_.cloneDeep(options), true);
+  const nonPosted = buildTransactionQuery(_.cloneDeep(options), false);
 
   const combinedParameters = posted.parameters.concat(nonPosted.parameters);
 
@@ -86,6 +86,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
+  db.convert(options, ['uuid', 'record_uuid']) ;
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   const table = posted ? 'general_ledger' : 'posting_journal';
@@ -110,8 +111,6 @@ function buildTransactionQuery(options, posted) {
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
   `;
-
-  db.convert(options, ['record_uuid']);
 
   filters.period('period', 'trans_date');
   filters.dateFrom('custom_period_start', 'trans_date');
