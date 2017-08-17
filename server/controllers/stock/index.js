@@ -200,9 +200,9 @@ function depotMovement(document, params) {
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       date          : document.date,
-      entity_uuid   : null,
+      entity_uuid   : db.bid(parameters.to_depot),
       is_exit       : 1,
-      flux_id       : core.flux.TO_OTHER_DEPOT,
+      flux_id       : parameters.to_depot_service ? core.flux.TO_SERVICE : core.flux.TO_OTHER_DEPOT,
       description   : parameters.description,
       user_id       : document.user,
     };
@@ -216,9 +216,9 @@ function depotMovement(document, params) {
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       date          : document.date,
-      entity_uuid   : null,
+      entity_uuid   : db.bid(parameters.from_depot),
       is_exit       : 0,
-      flux_id       : core.flux.FROM_OTHER_DEPOT,
+      flux_id       : parameters.from_depot_service ? core.flux.FROM_SERVICE : core.flux.FROM_OTHER_DEPOT,
       description   : parameters.description,
       user_id       : document.user,
     };

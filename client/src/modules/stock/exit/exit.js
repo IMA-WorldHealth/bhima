@@ -289,6 +289,7 @@ function StockExitController(Depots, Inventory, Notify,
       from_depot_is_warehouse : vm.depot.is_warehouse,
       from_depot_service : vm.depot.serviceUuid,
       to_depot    : vm.movement.entity.uuid,
+      to_depot_service : vm.movement.entity.instance.serviceUuid,
       date        : vm.movement.date,
       description : vm.movement.description,
       user_id     : Session.user.id,
@@ -308,7 +309,11 @@ function StockExitController(Depots, Inventory, Notify,
     return Stock.movements.create(movement)
     .then(function (document) {
       vm.Stock.store.clear();
-      ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+      if (movement.to_depot_service) {
+        ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
+      } else {
+        ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+      }
     })
     .catch(Notify.handleError);
   }

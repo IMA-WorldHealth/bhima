@@ -203,7 +203,7 @@ function stockExitServiceReceipt(req, res, next) {
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN service s ON s.uuid = m.entity_uuid
+    JOIN service s ON s.uuid = (SELECT service_uuid from depot where uuid = m.entity_uuid limit 1) 
     JOIN user u ON u.id = m.user_id
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
@@ -323,7 +323,8 @@ function stockExitDepotReceipt(req, res, next) {
     return next(e);
   }
 
-  return getDepotMovement(documentUuid, req.session.enterprise)
+  return getMovementFluxes(documentUuid)
+    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, fluxes))
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
@@ -351,11 +352,30 @@ function stockEntryDepotReceipt(req, res, next) {
     return next(e);
   }
 
-  return getDepotMovement(documentUuid, req.session.enterprise)
+  return getMovementFluxes(documentUuid)
+    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, fluxes))
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
+}
+
+/**
+ * @function getMovementFluxes
+ *
+ * @param {string} documentUuid
+ * @returns {object}
+ */
+function getMovementFluxes(documentUuid) {
+  const findMovements = `SELECT m.flux_id, m.is_exit FROM stock_movement m WHERE document_uuid = ?;`;
+  return db.exec(findMovements, [db.bid(documentUuid)])
+    .then((res) => {
+      var fluxes = {};
+      res.forEach((line) => {
+        fluxes[line.is_exit ? 'exit' : 'entry'] = line.flux_id;
+      });
+      return fluxes;
+    });
 }
 
 /**
@@ -533,9 +553,9 @@ function getDepotMovement(documentUuid, enterprise, fluxes) {
     WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
   `;
 
-  const movementFlux = fluxes || {
-    entry : Stock.flux.FROM_OTHER_DEPOT,
-    exit : Stock.flux.TO_OTHER_DEPOT,
+  const movementFlux = {
+    entry : fluxes.entry || Stock.flux.FROM_OTHER_DEPOT,
+    exit : fluxes.exit || Stock.flux.TO_OTHER_DEPOT,
   };
 
   return db.exec(sql, [1, movementFlux.exit, db.bid(documentUuid)])
