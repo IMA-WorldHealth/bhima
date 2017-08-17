@@ -14,7 +14,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   
   // @TODO(sfount) apply read only logic to save buttons and grid editing logic
   vm.readOnly = readOnly || false;
- 
+  
   // @TODO(sfount) column definitions currently duplicated across journal and here
   var editColumns = [ 
     { field              : 'description',
@@ -58,7 +58,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
-      cellTemplate     : '/modules/journal/templates/references.link.html',
+      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
       headerCellFilter : 'translate',
       enableCellEdit : !vm.readOnly,
       allowCellFocus : !vm.readOnly,
@@ -81,8 +81,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
 
   vm.close = Modal.dismiss;
     
-  // @TODO(sfount) move to component
-  vm.dateEditorOpen = false;
+  // @TODO(sfount) move to component vm.dateEditorOpen = false;
   vm.openDateEditor = function () { vm.dateEditorOpen = !vm.dateEditorOpen; }
  
   // module dependencies 
@@ -95,11 +94,10 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
     .then(function (transaction) { 
-      vm.transactionDetails = transaction.aggregate[0];
-      
       vm.settupComplete = true;
+
       vm.rows = new Store({ identifier : 'uuid' });
-      vm.rows.setData(transaction.journal);
+      vm.rows.setData(transaction);
 
       // @FIXME(sfount) date ng-model hack 
       vm.rows.data.forEach(function (row) { row.trans_date = new Date(row.trans_date); });
@@ -107,6 +105,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
       vm.gridOptions.data = vm.rows.data;
     })
     .catch(function (error) { 
+      console.error(error);
       vm.hasError = true;  
     })
     .finally(function () { 
@@ -241,7 +240,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   // takes a transaction row and returns all parameters that are shared among the transaction
   // @TODO(sfount) rewrite method given current transaction service code
   function sharedDetails(row) { 
-    var columns = ['hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date', 'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'period_id'];
+    var columns = ['hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date', 'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id'];
     var shared = {};
   
     columns.forEach(function (column) { 

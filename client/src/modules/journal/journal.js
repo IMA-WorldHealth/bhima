@@ -105,6 +105,7 @@ function JournalController(Journal, Sorting, Grouping,
   // vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
+
   /**
    * @function toggleLoadingIndicator
    *
@@ -159,7 +160,7 @@ function JournalController(Journal, Sorting, Grouping,
       headerCellFilter : 'translate',
       sortingAlgorithm : sorting.transactionIds,
       width            : 110,
-      cellTemplate     : 'modules/journal/templates/hide-groups-label.cell.html' },
+      cellTemplate     : 'modules/journal/templates/transaction-id.cell.html' },
 
     { field                            : 'trans_date',
       displayName                      : 'TABLE.COLUMNS.DATE',
@@ -345,15 +346,18 @@ function JournalController(Journal, Sorting, Grouping,
     Journal.grid(null, options)
       .then(function (records) {
         // number of transactions downloaded and shown in the current journal
-        
+
         // @FIXME(sfount) just get the length of the transaction ID index
         // vm.numberCurrentGridTransactions = records.aggregate.length;
         vm.numberCurrentGridTransactions = 'N/A';
 
         // pre process data - this should be done in a more generic way in a service
-        journalStore.setData(records.journal);
+        journalStore.setData(records);
 
         vm.gridOptions.data = journalStore.data;
+
+        vm.rowsDetails = sumTransactionAggregates(journalStore.data);
+        console.log(vm.rowsDetails);
 
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/journal/templates/grid.footer.html';
@@ -392,6 +396,30 @@ function JournalController(Journal, Sorting, Grouping,
       })
       .catch(angular.noop);
   };
+
+  // calculates the total number of transactions and lines respecting
+  function sumTransactionAggregates(journalRows) {
+    var uniqueTransactions = {};
+    var totalRows = journalRows.length;
+    var totalPosted = journalRows.reduce(function (sum, row) {
+      if (angular.isUndefined(uniqueTransactions[row.record_uuid])) {
+        uniqueTransactions[row.record_uuid] = 1;
+        return sum + Number(row.posted);
+      }
+      uniqueTransactions[row.record_uuid] += 1;
+      return sum;
+    }, 0);
+
+    var totalNonPosted = Object.keys(uniqueTransactions).length - totalPosted;
+    var remainingSystemTransactions = vm.numberTotalSystemTransactions - totalNonPosted;
+
+    return {
+      totalRows : totalRows,
+      totalPosted : totalPosted,
+      totalNonPosted : totalNonPosted,
+      remainingSystemTransactions : remainingSystemTransactions
+    };
+  }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
