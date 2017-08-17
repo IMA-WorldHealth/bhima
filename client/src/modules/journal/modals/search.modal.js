@@ -22,10 +22,12 @@ function JournalSearchModalController(Instance, Projects, Notify,
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
-  var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id'];
+  var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  window.search = vm.searchQueries;
 
   /**
    * hasDefaultAccount is used to set a default account selection behavior

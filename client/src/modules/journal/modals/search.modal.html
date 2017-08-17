@@ -18,6 +18,16 @@
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
+        <div class="form-group">
+          <label class="control-label" translate>TRANSACTIONS.VERIFIED_TRANSACTIONS</label>
+          <bh-clear on-clear="ModalCtrl.clear('includeNonPosted')"></bh-clear>
+          <div class="checkbox">
+            <label>
+              <input ng-model="ModalCtrl.searchQueries.includeNonPosted" ng-true-value="1" ng-false-value="0" type="checkbox"> <span translate>TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_DETAIL</span>
+            </label>
+          </div>
+        </div>
+
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
           <label class="control-label" translate>
             FORM.LABELS.TRANSACTION
