@@ -174,7 +174,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid, includeEmptyLot : false })
+    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid, includeEmptyLot : 0 })
       .then(function (lots) {
         item.lots = lots;
       })

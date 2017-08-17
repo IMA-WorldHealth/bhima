@@ -9,16 +9,10 @@ StockFindTransferModalController.$inject = [
 function StockFindTransferModalController(Instance, StockService, Notify,
   uiGridConstants, Filtering, Receipts, data) {
   var vm = this;
-
-  // global
-  vm.selectedRow = {};
-
-  /* ======================= Grid configurations ============================ */
   vm.filterEnabled = false;
   vm.gridOptions = { appScopeProvider: vm };
 
   var filtering = new Filtering(vm.gridOptions);
-
   var columns = [
     {
       field: 'date',
@@ -51,12 +45,18 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   vm.gridOptions.multiSelect = false;
   vm.gridOptions.enableFiltering = vm.filterEnabled;
   vm.gridOptions.onRegisterApi = onRegisterApi;
+  vm.gridOptions.enableColumnMenus = false;
+  vm.gridOptions.fastWatch = true;
+  vm.gridOptions.flatEntityAccess = true;
   vm.toggleFilter = toggleFilter;
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.showReceipt = showReceipt;
+
+  vm.hasError = false;
+  vm.lo
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -71,7 +71,7 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
   }
 
   /** get transfer document */
@@ -79,34 +79,44 @@ function StockFindTransferModalController(Instance, StockService, Notify,
     Receipts.stockExitDepotReceipt(uuid, true);
   }
 
-  /* ======================= End Grid ======================================== */
-  StockService.movements.read(null, {
-    entity_uuid: data.depot_uuid,
-    is_exit: 1,
-    finalClauseParameter: 'GROUP BY document_uuid',
-  })
+  function load (){
+    vm.loading = true;
+
+    StockService.movements.read(null, {
+      entity_uuid: data.depot_uuid,
+      is_exit: 1,
+      groupByDocument : 1,
+    })
     .then(function (transfers) {
       vm.gridOptions.data = transfers;
     })
-    .catch(Notify.errorHandler);
+    .catch(function (err){
+      vm.hasError = true;
+      Notify.errorHandler(err);
+    })
+    .finally(function (){
+      vm.loading = false;
+    });
+  }
 
   // submit
   function submit() {
-    if (!vm.selectedRow) { return; }
-
+    if(!vm.selectedRow) {return;}
     return StockService.movements.read(null, {
       document_uuid: vm.selectedRow.document_uuid,
       is_exit: 1,
     })
-      .then(function (transfers) {
-        Instance.close(transfers);
-      })
-      .catch(Notify.errorHandler);
+    .then(function (transfers) {
+      Instance.close(transfers);
+    })
+    .catch(Notify.errorHandler);    
   }
 
   // cancel
   function cancel() {
     Instance.dismiss();
   }
+
+  load();
 
 }

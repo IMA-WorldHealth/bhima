@@ -25,7 +25,7 @@ function StockEntryPage() {
    * @param {string} rowNumber - the purchase line on the modal
    */
   page.setPurchase = function setPurchase(rowNumber) {
-    components.stockEntryExitType.set('entry-exit-type-purchase');
+    components.stockEntryExitType.set('purchase');
     GU.selectRow('PurchaseGrid', rowNumber);
     FU.modal.submit();
   };
@@ -35,7 +35,7 @@ function StockEntryPage() {
    * @param {string} rowNumber - movement line on the modal grid
    */
   page.setTransfer = function setTransfer(rowNumber) {
-    components.stockEntryExitType.set('entry-exit-type-transfer_reception');
+    components.stockEntryExitType.set('transfer_reception');
     GU.selectRow('TransferGrid', rowNumber);
     FU.modal.submit();
   };
@@ -44,7 +44,7 @@ function StockEntryPage() {
    * @method setIntegration
    */
   page.setIntegration = function setIntegration() {
-    components.stockEntryExitType.set('entry-exit-type-integration');
+    components.stockEntryExitType.set('integration');
   };
 
   /**

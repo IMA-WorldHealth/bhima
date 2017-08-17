@@ -130,7 +130,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
     delete params.status;
   }
 
-  if(params.includeEmptyLot === 'false'){
+  if(Number(params.includeEmptyLot) === 0){
     exludeToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
   }
@@ -180,9 +180,9 @@ function getLotsMovements(depotUuid, params) {
     params.depot_uuid = depotUuid;
   }
 
-  if(params.finalClauseParameter){
+  if(params.groupByDocument === 1){
     finalClause = 'GROUP BY document_uuid';
-    delete params.finalClauseParameter;
+    delete params.groupByDocument;
   }
 
   const sql = `

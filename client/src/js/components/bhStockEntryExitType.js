@@ -3,10 +3,10 @@ angular.module('bhima.components')
         templateUrl: 'modules/templates/bhStockEntryExitType.tmpl.html',
         controller: StockEntryExitTypeController,
         bindings: {
-            onEntryExitTypeSelectCallback: '&?',
+            onEntryExitTypeSelectCallback: '&',
             reference: '<?',
             displayName: '<?',
-            isEntry: '<'
+            isEntry: '@'
         },
     });
 
@@ -17,9 +17,12 @@ StockEntryExitTypeController.$inject = [];
  */
 function StockEntryExitTypeController() {
     var $ctrl = this;
-    $ctrl.selectedEntryExitType = null;
 
-    $ctrl.entryExitTypeList = [
+    $ctrl.$onInit = function onInit () {
+      $ctrl.selectedEntryExitType = null;
+      $ctrl.isEntry = $ctrl.isEntry === 'true';
+
+      $ctrl.entryExitTypeList = [
         { label: 'patient', labelKey: 'PATIENT_REG.ENTITY', descriptionKey: 'STOCK.PATIENT_DISTRIBUTION', isEntry: false },
         { label: 'service', labelKey: 'SERVICE.ENTITY', descriptionKey: 'STOCK.SERVICE_DISTRIBUTION', isEntry: false },
         { label: 'depot', labelKey: 'DEPOT.ENTITY', descriptionKey: 'STOCK.DEPOT_DISTRIBUTION', isEntry: false },
@@ -28,25 +31,24 @@ function StockEntryExitTypeController() {
         { label: 'integration', labelKey: 'STOCK.INTEGRATION', descriptionKey: 'STOCK_FLUX.FROM_INTEGRATION', isEntry: true },
         { label: 'donation', labelKey: 'STOCK.DONATION', descriptionKey: 'STOCK_FLUX.FROM_DONATION', isEntry: true },
         { label: 'transfer_reception', labelKey: 'STOCK.RECEPTION_TRANSFER', descriptionKey: 'STOCK_FLUX.FROM_TRANSFER', isEntry: true }
-    ];
+      ];
+    };
 
     $ctrl.display = function () {
         if ($ctrl.isEntry) {
             return $ctrl.reference || '';
-        } else {
-            var list = [];
-
-            if ($ctrl.reference) {
-                list.push($ctrl.reference);
-            }
-
-            if ($ctrl.displayName) {
-                list.push($ctrl.displayName);
-
-            }
-
-            return list.join(' - ');
         }
+        var list = [];
+
+        if ($ctrl.reference) {
+            list.push($ctrl.reference);
+        }
+
+        if ($ctrl.displayName) {
+            list.push($ctrl.displayName);
+        }
+
+        return list.join(' - ');
     }
 
     $ctrl.selectEntryExitType = function (type) {
