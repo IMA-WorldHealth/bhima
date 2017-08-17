@@ -65,6 +65,7 @@
             "ERROR_TYPE": "Type d'erreur",
             "EXCHANGE_RATE": "Taux de change",
             "EXPIRATION_DATE": "Date d'expiration",
+            "EXPIRE_IN" : "Expire Dans",
             "NUM_PIECE": "N° Piece",
             "ENTRY": "Entrée",
             "EXIT": "Sortie",

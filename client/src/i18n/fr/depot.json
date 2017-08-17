@@ -1,8 +1,15 @@
-{"DEPOT":{"ADD_DEPOT":"Ajouter un dépôt",
-"ALL_DEPOTS":"Tous les dépôts",
-"DEPOTS_LIST":"Liste des dépôts",
-"DESCRIPTION":"Ce module vous permet de Lister, Creer, Modifier et Supprimer un dépôt",
-"EDIT_DEPOT":"Editer les informations d'un dépôt",
-"MAIN":{"TITLE":"Gestion des dépôts"},
-"NO_DEPOT":"Aucun dépôt",
-"TITLE":"Gestion des dépôts"}}
+{
+    "DEPOT": {
+        "ADD_DEPOT": "Ajouter un dépôt",
+        "ALL_DEPOTS": "Tous les dépôts",
+        "DEPOTS_LIST": "Liste des dépôts",
+        "DESCRIPTION": "Ce module vous permet de Lister, Creer, Modifier et Supprimer un dépôt",
+        "EDIT_DEPOT": "Editer les informations d'un dépôt",
+        "ENTITY" : "Depot",
+        "MAIN": {
+            "TITLE": "Gestion des dépôts"
+        },
+        "NO_DEPOT": "Aucun dépôt",
+        "TITLE": "Gestion des dépôts"
+    }
+}

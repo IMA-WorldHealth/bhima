@@ -93,6 +93,23 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     return $httpParamSerializer(options);
   };
 
+  // uniformSelectedEntity function implementation
+  // change name, text and display_nam into displayName  
+  function uniformSelectedEntity(entity) {
+    if (!entity) {
+      return {};
+    }
+
+    var keys = ['name', 'text', 'display_name'];
+    keys.forEach(function (key) {
+      if (entity[key]) {
+        entity.displayName = entity[key];
+      }
+    });
+
+    return {reference : entity.reference || '', displayName : entity.displayName || ''};
+  }
+
   var service = {
     stocks       : stocks,
     lots         : lots,
@@ -104,6 +121,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     removeLotFilter : removeLotFilter,
     loadCachedLotFilters : loadCachedLotFilters,
     download     : download,
+    uniformSelectedEntity : uniformSelectedEntity
   };
 
   return service;

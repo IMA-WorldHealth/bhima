@@ -60,14 +60,14 @@ function StockLotsRegistryTests() {
   it('find lots by inventory', () => {
     modal.setInventory('First Test Inventory Item');
     modal.submit();
-    GU.expectRowCount(gridId, 9 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 8 + (2 * depotGroupingRow));
   });
 
 
   it('find lot by name', () => {
     modal.setLotLabel('VITAMINE-A');
     modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
   });
 
   it('find lots by entry date', () => {

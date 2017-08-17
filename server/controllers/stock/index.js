@@ -7,14 +7,14 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
- *
- *
- * @requires lib/db
  * @requires lib/node-uuid
+ * @requires moment
+ * @requires lib/db
+ * @requires stock/core
  */
 
 const uuid = require('node-uuid');
-
+const moment = require('moment');
 const db = require('../../lib/db');
 const core = require('./core');
 
@@ -107,12 +107,12 @@ function createStock(req, res, next) {
  * POST /stock/movement
  * Create a new stock movement
  */
-function createMovement(req, res, next) {
+function createMovement(req, res, next) {  
   const params = req.body;
-
+  
   const document = {
-    uuid : uuid.v4(),
-    date : new Date(params.date),
+    uuid : params.document_uuid || uuid.v4(),
+    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
     user : req.session.user.id,
   };
 
@@ -176,58 +176,48 @@ function normalMovement(document, params) {
 
 /**
  * @function depotMovement
- * @description movement between depots, there are two lines for IN and OUT
+ * @description movement between depots
  */
 function depotMovement(document, params) {
   let paramIn;
   let paramOut;
   let isWarehouse;
-
   const transaction = db.transaction();
   const parameters = params;
+  const isExit = parameters.isExit;
 
-  parameters.enity_uuid = parameters.enity_uuid ? db.bid(parameters.enity_uuid) : null;
+  let record;
+  
+  parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
+
+  const depot_uuid = isExit ? db.bid(parameters.from_depot) : db.bid(parameters.to_depot);
+  const entity_uuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
+  const is_exit = isExit ? 1 : 0;
+  const flux_id = isExit ? core.flux.TO_OTHER_DEPOT : core.flux.FROM_OTHER_DEPOT;
 
   parameters.lots.forEach((lot) => {
-        // OUT:
-    paramOut = {
+
+    record = {
+      depot_uuid,
+      entity_uuid,
+      is_exit,
+      flux_id,
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : db.bid(lot.uuid),
-      depot_uuid    : db.bid(parameters.from_depot),
       document_uuid : db.bid(document.uuid),
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       date          : document.date,
-      entity_uuid   : null,
-      is_exit       : 1,
-      flux_id       : core.flux.TO_OTHER_DEPOT,
       description   : parameters.description,
       user_id       : document.user,
     };
 
-        // IN:
-    paramIn = {
-      uuid          : db.bid(uuid.v4()),
-      lot_uuid      : db.bid(lot.uuid),
-      depot_uuid    : db.bid(parameters.to_depot),
-      document_uuid : db.bid(document.uuid),
-      quantity      : lot.quantity,
-      unit_cost     : lot.unit_cost,
-      date          : document.date,
-      entity_uuid   : null,
-      is_exit       : 0,
-      flux_id       : core.flux.FROM_OTHER_DEPOT,
-      description   : parameters.description,
-      user_id       : document.user,
-    };
-
-    transaction.addQuery('INSERT INTO stock_movement SET ?', [paramOut]);
-    transaction.addQuery('INSERT INTO stock_movement SET ?', [paramIn]);
-
+    transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
+    
     isWarehouse = !!(parameters.from_depot_is_warehouse);
 
     // track distribution to patient
-    if (paramOut.is_exit && isWarehouse) {
+    if (record.is_exit && isWarehouse) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
       ];

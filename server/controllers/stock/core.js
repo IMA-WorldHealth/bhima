@@ -4,6 +4,7 @@
  * @description
  * This module is responsible for handling all function utility for stock
  *
+ * @requires moment
  * @requires lib/db
  * @requires lib/filter
  * @requires config/identifiers
@@ -61,23 +62,22 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const params = parameters;  
   const sql = sqlQuery || `
         SELECT 
-          BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
-          l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-          i.delay, l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, 
-          d.text AS depot_text, iu.text AS unit_type 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
+          i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type 
         FROM lot l 
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
-  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid']);
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid']);
   const filters = new FilterParser(params, { autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
   filters.equals('depot_uuid', 'depot_uuid', 'm');
+  filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
@@ -118,6 +118,8 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
  */
 function getLotsDepot(depotUuid, params, finalClause) {
   let status;
+  // token of query to add if only no empty lots should be returned
+  let exludeToken = '';
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -126,6 +128,11 @@ function getLotsDepot(depotUuid, params, finalClause) {
   if (params.status) {
     status = params.status;
     delete params.status;
+  }
+
+  if(Number(params.includeEmptyLot) === 0){
+    exludeToken = 'HAVING quantity > 0';
+    delete params.includeEmptyLot;
   }
 
   const sql = `
@@ -143,7 +150,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
 
-  const clause = finalClause || ' GROUP BY l.uuid, m.depot_uuid ';
+  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken}`;
 
   return getLots(sql, params, clause)
         .then(stockManagementProcess)
@@ -167,16 +174,25 @@ function getLotsDepot(depotUuid, params, finalClause) {
  * @param {object} params - A request query object
  */
 function getLotsMovements(depotUuid, params) {
+  let finalClause;
+
   if (depotUuid) {
     params.depot_uuid = depotUuid;
   }
 
+  if(params.groupByDocument === 1){
+    finalClause = 'GROUP BY document_uuid';
+    delete params.groupByDocument;
+  }
+
   const sql = `
-        SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, d.text AS depot_text, 
-          IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost, l.expiration_date, 
-          BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
-          l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date,
-          BUID(m.document_uuid) AS document_uuid, m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description, 
+          d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+          BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
+          BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
+          m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
           f.label AS flux_label, i.delay,
           iu.text AS unit_type
         FROM stock_movement m 
@@ -187,7 +203,7 @@ function getLotsMovements(depotUuid, params) {
         JOIN flux f ON f.id = m.flux_id  
     `;
 
-  return getLots(sql, params);
+  return getLots(sql, params, finalClause);
 }
 
 /**

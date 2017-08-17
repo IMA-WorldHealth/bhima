@@ -36,15 +36,15 @@
       </div>
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.TO'}}</h4>
-        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{entry.details.depot_name}}</strong> <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{entry.details.document_reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.otherDepotName}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{exit.details.document_reference}}</strong> <br>
       </div>
     </div>
 
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;"> 
       <div class="col-xs-6">
-        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date entry.details.date}} <br>
-        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{entry.details.user_display_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date exit.details.date}} <br>
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{exit.details.user_display_name}} <br>
       </div>
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'STOCK.INVENTORY'}}</span>: <strong>{{rows.length}} {{translate 'STOCK.ITEMS'}}</strong> <br>

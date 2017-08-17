@@ -21,70 +21,12 @@
 
     <!-- Activator -->
     <div class="row">
-
-      <!-- stock from purchase -->
-      <div class="col-md-4 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'purchase'}" 
-          ng-click="StockCtrl.selectEntryType('purchase')" name="btn-purchase">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui ima-blue statistic">
-              <div class="value" translate>
-                STOCK.ENTRY_PURCHASE
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'purchase'" translate>STOCK_FLUX.FROM_PURCHASE</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'purchase'">
-                  {{ StockCtrl.movement.entity.instance.reference }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!-- stock from donation -->
-      <div class="col-md-4 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'donation'}" 
-          ng-click="StockCtrl.selectEntryType('donation')" name="btn-donation" ng-disabled="true">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui ima-blue statistic">
-              <div class="value" translate>
-                STOCK.DONATION
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'donation'" translate>STOCK_FLUX.FROM_DONATION</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'donation'">
-                  {{ StockCtrl.movement.entity.instance.reference }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!-- stock from integration -->
-      <div class="col-md-4 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.entry_type === 'integration'}" 
-          ng-click="StockCtrl.selectEntryType('integration')" name="btn-integration">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui ima-blue statistic">
-              <div class="value" translate>
-                STOCK.INTEGRATION
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'integration'" translate>STOCK_FLUX.FROM_INTEGRATION</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'integration'">
-                  {{ StockCtrl.movement.entity.instance.reference }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
+      <bh-stock-entry-exit-type 
+          on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)"
+          reference="StockCtrl.reference"
+          display-name="StockCtrl.displayName"
+          is-entry="true">
+        </bh-stock-entry-exit-type>
     </div>
 
     <!-- date and note -->

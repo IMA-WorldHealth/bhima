@@ -1,5 +1,6 @@
 <div class="ui-grid-cell-contents">
   <input type="text"
+    ng-disabled="grid.appScope.entryType === 'transfer_reception'"
     class="form-control"
     ng-model="row.entity.lot"
     ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"

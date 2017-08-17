@@ -14,6 +14,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.gridApi = {};
   vm.enterprise = Session.enterprise;
   vm.entryType = Data.entry_type;
+  
 
   /* ======================= Grid configurations ============================ */
   vm.gridOptions = {
@@ -85,16 +86,22 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   // add lot
   function addLot() {
-    if (vm.remainingQuantity <= 0) {
+    if (vm.remainingQuantity <= 0 && vm.entryType !== 'integration') {
       vm.maxLotReached = true;
       return;
     }
     vm.gridOptions.data.push({
       is_valid        : false,
-      lot             : '',
-      expiration_date : new Date(),
+      lot             : vm.inventory.lot || '',
+      expiration_date : vm.inventory.expiration_date ? new Date(vm.inventory.expiration_date) : new Date(),
       quantity        : vm.remainingQuantity,
     });
+
+    //  if it is a transfer reception, so force the validation on the single element
+    if(vm.entryType === 'transfer_reception') {
+      handleChange(vm.gridOptions.data[0]);
+    }
+
   }
 
   // remove lot
@@ -114,7 +121,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     var sum = vm.gridOptions.data.reduce(sumQuantity, 0);
     var hasQuantity = (vm.inventory.quantity >= sum);
     var hasLotLabel = inventory.lot;
-    var hasExpiration = (new Date(inventory.expiration_date) > new Date());
+    var hasExpiration = (new Date(inventory.expiration_date) >= new Date());
     inventory.is_valid = (hasQuantity && hasLotLabel && hasExpiration);
 
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;

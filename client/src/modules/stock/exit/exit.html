@@ -2,7 +2,10 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title"><span translate>STOCK.EXIT</span> <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.exit_type}}</span></li>
+      <li class="title">
+        <span translate>STOCK.EXIT</span> 
+        <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.exit_type}}</span>
+      </li>
     </ol>
 
     <div class="toolbar">
@@ -18,196 +21,117 @@
   <div class="container-fluid">
 
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
-
-    <!-- destination -->
-    <div class="row">
-      <!--patient -->
-      <div class="col-md-3 col-sm-6 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'patient'}" 
-          ng-click="StockCtrl.selectExitType('patient')" name="btn-patient">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                PATIENT
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'patient'" translate>STOCK.EXIT_PATIENT</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'patient'">
-                  {{ StockCtrl.movement.entity.instance.reference }} - {{ StockCtrl.movement.entity.instance.display_name }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
+      <!-- destination -->
+      <div class="row">
+        <bh-stock-entry-exit-type 
+          on-entry-exit-type-select-callback="StockCtrl.selectExitType(type)"
+          reference="StockCtrl.reference"
+          display-name="StockCtrl.displayName"
+          is-entry="false">
+        </bh-stock-entry-exit-type>
       </div>
 
-      <!--service -->
-      <div class="col-md-3 col-sm-6 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'service'}" 
-          ng-click="StockCtrl.selectExitType('service')" name="btn-service">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                SERVICE
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'service'" translate>STOCK.EXIT_SERVICE</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'service'">
-                  {{ StockCtrl.movement.entity.instance.name }}
-                </span>
-              </div>
+      <!-- date and note -->
+      <div class="row">
+        <div class="col-xs-6">
+          <!-- date -->
+          <bh-date-editor
+            date-value="StockCtrl.movement.date"
+            max-date="StockCtrl.timestamp" >
+          </bh-date-editor>
+
+          <!-- note -->
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockForm.$submitted && StockForm.description.$invalid }">
+            <label class="control-label">
+              <span translate>FORM.LABELS.DESCRIPTION</span>
+            </label>
+            <textarea
+              class="form-control"
+              name="description"
+              ng-model="StockCtrl.movement.description"
+              placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              ng-maxlength="StockCtrl.maxLength"
+              required>
+            </textarea>
+            <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-          </div>
-        </button>
-      </div>
-
-      <!--depot -->
-      <div class="col-md-3 col-sm-6 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'depot'}" 
-          ng-click="StockCtrl.selectExitType('depot')" name="btn-depot">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui lg ima-blue statistic">
-              <div class="value">
-                DEPOT
-              </div>
-              <div class="uilabel">
-                <span ng-hide="StockCtrl.movement.entity.type === 'depot'" translate>STOCK.EXIT_DEPOT</span>
-                <span ng-show="StockCtrl.movement.entity.type === 'depot'">
-                  {{ StockCtrl.movement.entity.instance.text }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      <!--depot -->
-      <div class="col-md-3 col-sm-6 col-xs-12">
-        <button class="btn-block panel panel-default segment" type="button" 
-          ng-class="{'bg-ima-dark-blue': StockCtrl.movement.exit_type === 'loss'}" 
-          ng-click="StockCtrl.selectExitType('loss')" name="btn-loss">
-          <div class="panel-body text-center text-ellipsis">
-            <div class="ui lg ima-blue statistic">
-              <div class="value" translate>
-                STOCK.EXIT_LOSS
-              </div>
-              <div class="uilabel" translate>
-                STOCK.EXIT_LOSS
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-
-    </div>
-
-    <!-- date and note -->
-    <div class="row">
-      <div class="col-xs-6">
-        <!-- date -->
-        <bh-date-editor
-          date-value="StockCtrl.movement.date"
-          max-date="StockCtrl.timestamp" >
-        </bh-date-editor>
-
-        <!-- note -->
-        <div class="form-group"
-          ng-class="{ 'has-error' : StockForm.$submitted && StockForm.description.$invalid }">
-          <label class="control-label">
-            <span translate>FORM.LABELS.DESCRIPTION</span>
-          </label>
-          <textarea
-            class="form-control"
-            name="description"
-            ng-model="StockCtrl.movement.description"
-            placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
-            ng-maxlength="StockCtrl.maxLength"
-            required>
-          </textarea>
-          <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- add and recovery -->
-    <div class="row" style="padding-bottom : 5px;">
-      <div class="col-xs-12">
+      <!-- add and recovery -->
+      <div class="row" style="padding-bottom : 5px;">
+        <div class="col-xs-12">
 
-        <!-- info -->
-        <p
-          style="padding-top : 10px;"
-          class="text-info"
-          ng-show="!StockCtrl.movement.exit_type">
-          <span class="fa fa-info-circle"></span> 
-          <span translate>FORM.INFO.NO_DESTINATION</span>
-        </p>
+          <!-- info -->
+          <p
+            style="padding-top : 10px;"
+            class="text-info"
+            ng-show="!StockCtrl.movement.exit_type">
+            <span class="fa fa-info-circle"></span> 
+            <span translate>FORM.INFO.NO_DESTINATION</span>
+          </p>
 
-        <!-- "Recover Items" button -->
-        <div class="btn-group pull-right" role="group">
-          <button
-            type="button"
-            class="btn btn-default"
-            ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
-            ng-click="StockCtrl.readCache()"
-            ng-disabled="!StockCtrl.hasCacheAvailable">
-            <span class="fa fa-recycle"></span> 
-            <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
-          </button>
-        </div>
-
-        <!-- "Add number of grid rows" input-group -->
-        <div class="input-group">
-          <span class="input-group-btn">
+          <!-- "Recover Items" button -->
+          <div class="btn-group pull-right" role="group">
             <button
               type="button"
-              id="btn-add-rows"
               class="btn btn-default"
-              ng-disabled="!StockCtrl.movement.exit_type"
-              ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> 
-              <span translate>FORM.BUTTONS.ADD</span>
+              ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
+              ng-click="StockCtrl.readCache()"
+              ng-disabled="!StockCtrl.hasCacheAvailable">
+              <span class="fa fa-recycle"></span> 
+              <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
             </button>
-          </span>
-          <input
-            type="number"
-            class="form-control"
-            ng-model="StockCtrl.itemIncrement"
-            style="max-width : 40px;"
-            ng-disabled="!StockCtrl.movement.exit_type">
           </div>
-      </div>
-    </div>
 
-    <!-- grid -->
-    <div id="stock-exit-grid" 
-      ui-grid="StockCtrl.gridOptions" 
-      style="height: 300px; width: 100%;"
-      ui-grid-auto-resize
-      ui-grid-resize-columns>
-    </div>
-
-    <!-- footer -->
-    <div class="row" style="margin-top: 5px;">
-      <div class="col-xs-6 col-xs-offset-6">
-        <div class="text-right">
-          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
-            FORM.BUTTONS.SUSPEND
-          </button>
-
-          <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
-            <span translate>FORM.BUTTONS.SUBMIT</span>
-          </bh-loading-button>
+          <!-- "Add number of grid rows" input-group -->
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                id="btn-add-rows"
+                class="btn btn-default"
+                ng-disabled="!StockCtrl.movement.exit_type"
+                ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
+                <span class="fa fa-plus-circle"></span> 
+                <span translate>FORM.BUTTONS.ADD</span>
+              </button>
+            </span>
+            <input
+              type="number"
+              class="form-control"
+              ng-model="StockCtrl.itemIncrement"
+              style="max-width : 40px;"
+              ng-disabled="!StockCtrl.movement.exit_type">
+            </div>
         </div>
       </div>
-    </div>
 
+      <!-- grid -->
+      <div id="stock-exit-grid" 
+        ui-grid="StockCtrl.gridOptions" 
+        style="height: 300px; width: 100%;"
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+      </div>
+
+      <!-- footer -->
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-xs-6 col-xs-offset-6">
+          <div class="text-right">
+            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
+              FORM.BUTTONS.SUSPEND
+            </button>
+
+            <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
+              <span translate>FORM.BUTTONS.SUBMIT</span>
+            </bh-loading-button>
+          </div>
+        </div>
+      </div>
     </form>
-
   </div>
 </div>
