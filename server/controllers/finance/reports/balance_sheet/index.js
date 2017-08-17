@@ -172,17 +172,17 @@ function processAccounts(data) {
 
     // process for getting totals
     const totals = Object.keys(accounts)
-    .reduce((t, key) => {
-      const account = accounts[key];
-      t.debit += (account.debit || 0);
-      t.credit += (account.credit || 0);
-      t.balance += (account.balance || 0);
-      return t;
-    }, {
-      debit   : 0,
-      credit  : 0,
-      balance  : 0,
-    });
+      .reduce((t, key) => {
+        const account = accounts[key];
+        t.debit += (account.debit || 0);
+        t.credit += (account.credit || 0);
+        t.balance += (account.balance || 0);
+        return t;
+      }, {
+        debit   : 0,
+        credit  : 0,
+        balance  : 0,
+      });
 
     bundle[type] = { accounts, totals };
   });

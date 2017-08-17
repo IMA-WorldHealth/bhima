@@ -45,11 +45,9 @@ function formatFilters(qs) {
   ];
 
   return columns.filter(column => {
-
     const value = qs[column.field];
 
     if (!_.isUndefined(value)) {
-
       if (column.isPeriod) {
         const service = new PeriodService(new Date());
         column.value = service.periods[value].translateKey;

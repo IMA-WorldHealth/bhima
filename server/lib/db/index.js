@@ -24,7 +24,6 @@ const NotFound = require('../errors/NotFound');
  * @requires Transaction
  */
 class DatabaseConnector {
-
   /** @constructor */
   constructor() {
     const params = {

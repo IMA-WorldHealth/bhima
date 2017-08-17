@@ -33,9 +33,9 @@ const winston = require('winston');
 const uuid = require('node-uuid');
 
 // configure the uploads directory based on global process variables
-const defaultDir = 'uploads';                     // note: this must be a relative path
+const defaultDir = 'uploads'; // note: this must be a relative path
 const dir = process.env.UPLOAD_DIR || defaultDir; // relative path
-const fsdir = path.join(process.cwd(), dir);      // global path
+const fsdir = path.join(process.cwd(), dir); // global path
 
 if (!process.env.UPLOAD_DIR) {
   winston.warn(

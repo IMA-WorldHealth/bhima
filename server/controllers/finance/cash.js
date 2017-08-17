@@ -123,11 +123,11 @@ function lookup(id) {
  */
 function read(req, res, next) {
   listPayment(req.query)
-   .then((rows) => {
-     res.status(200).json(rows);
-   })
-   .catch(next)
-   .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -240,8 +240,8 @@ function update(req, res, next) {
   // if checks pass, we are free to continue with our updates to the db
   lookup(req.params.uuid)
 
-      // if we get here, we know we have a cash record by this UUID.
-      // we can try to update it.
+  // if we get here, we know we have a cash record by this UUID.
+  // we can try to update it.
     .then(() => db.exec(sql, [req.body, db.bid(req.params.uuid)]))
     .then(() => lookup(req.params.uuid))
     .then((record) => {

@@ -49,10 +49,10 @@ function set(req, res, next) {
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(sql, [data, buid])
-  .then(() => {
-    res.status(200).json({ link : data.avatar });
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      res.status(200).json({ link : data.avatar });
+    })
+    .catch(next)
+    .done();
 }
 

@@ -14,9 +14,9 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 // IF no client_timestamp is passed with the request, the server's timestamp is used
 // IF a client_timestamp is passed the client timestamp is used
 // const PERIODS = {
-  // today : () => { return { start : moment().toDate(), end : moment().toDate() } },
-  // week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
-  // month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
+// today : () => { return { start : moment().toDate(), end : moment().toDate() } },
+// week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
+// month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
 // };
 /**
  * @class FilterParser

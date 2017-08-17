@@ -56,10 +56,10 @@ function createStock(req, res, next) {
   };
 
   params.lots.forEach((lot) => {
-        // lot expiration date
+    // lot expiration date
     date = new Date(lot.expiration_date);
 
-        // lot prepare query
+    // lot prepare query
     createLotQuery = 'INSERT INTO lot SET ?';
     createLotObject = {
       uuid             : db.bid(uuid.v4()),
@@ -73,7 +73,7 @@ function createStock(req, res, next) {
       delay            : 0,
     };
 
-        // entering movement prepare query
+    // entering movement prepare query
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
     createMovementObject = {
       uuid          : db.bid(uuid.v4()),
@@ -88,10 +88,10 @@ function createStock(req, res, next) {
       user_id       : document.user,
     };
 
-        // transaction - add lot
+    // transaction - add lot
     transaction.addQuery(createLotQuery, [createLotObject]);
 
-        // transaction - add movement
+    // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
 
@@ -189,7 +189,7 @@ function depotMovement(document, params) {
   parameters.enity_uuid = parameters.enity_uuid ? db.bid(parameters.enity_uuid) : null;
 
   parameters.lots.forEach((lot) => {
-        // OUT:
+    // OUT:
     paramOut = {
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : db.bid(lot.uuid),
@@ -205,7 +205,7 @@ function depotMovement(document, params) {
       user_id       : document.user,
     };
 
-        // IN:
+    // IN:
     paramIn = {
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : db.bid(lot.uuid),
@@ -335,9 +335,9 @@ function createIntegration(req, res, next) {
     INSERT INTO integration SET ?
   `;
   db.exec(sql, [integration])
-  .then(() => res.status(200).json(identifier))
-  .catch(next)
-  .done();
+    .then(() => res.status(200).json(identifier))
+    .catch(next)
+    .done();
 }
 
 /**

@@ -3,7 +3,7 @@
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
- **/
+ * */
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
@@ -97,16 +97,16 @@ function del(req, res, next) {
     'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])
-  .then((row) => {
+    .then((row) => {
     // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
-    }
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
+      }
 
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 }
 
 

@@ -62,7 +62,7 @@ function createItemsMetadata(record, session) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record])
-  .then(() => uuid.unparse(record.uuid));
+    .then(() => uuid.unparse(record.uuid));
 }
 
 /**

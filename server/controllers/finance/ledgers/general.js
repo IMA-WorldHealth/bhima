@@ -13,9 +13,9 @@ exports.route = function list(req, res, next) {
     ORDER BY gl.trans_date;`;
 
   db.exec(sql, [req.query.since])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };

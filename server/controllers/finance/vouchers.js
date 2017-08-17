@@ -112,7 +112,7 @@ function find(options) {
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   let typeIds = [];
 
-  if(options.type_ids) {
+  if (options.type_ids) {
     typeIds = typeIds.concat(options.type_ids);
   }
 
@@ -139,7 +139,7 @@ function find(options) {
 
   filters.fullText('description');
 
-  filters.custom('type_ids', 'v.type_id IN (?)',  typeIds);
+  filters.custom('type_ids', 'v.type_id IN (?)', typeIds);
 
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');

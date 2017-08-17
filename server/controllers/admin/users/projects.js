@@ -26,10 +26,10 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 

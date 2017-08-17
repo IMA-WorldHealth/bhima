@@ -67,11 +67,11 @@ exports.listHolidays = function listHolidays(req, res, next) {
   ];
 
   db.exec(sql, data)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -95,11 +95,11 @@ exports.checkHoliday = function checkHoliday(req, res, next) {
   }
 
   db.exec(sql, data)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -108,11 +108,11 @@ exports.checkHoliday = function checkHoliday(req, res, next) {
 exports.checkOffday = function checkHoliday(req, res, next) {
   const sql = `SELECT * FROM offday WHERE date = ? AND id <> ?`;
   db.exec(sql, [req.query.date, req.query.id])
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -356,18 +356,18 @@ function create(req, res, next) {
  */
 function search(req, res, next) {
   find(req.query)
-  .then((rows) => {
+    .then((rows) => {
     // publish a SEARCH event on the medical channel
-    topic.publish(topic.channels.MEDICAL, {
-      event   : topic.events.SEARCH,
-      entity  : topic.entities.PATIENT,
-      user_id : req.session.user.id,
-    });
+      topic.publish(topic.channels.MEDICAL, {
+        event   : topic.events.SEARCH,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+      });
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
