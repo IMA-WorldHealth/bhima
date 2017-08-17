@@ -1,11 +1,8 @@
 /* global by,browser, element */
 const q = require('q');
-const moment = require('moment');
-
-const fmt = (date) => moment(date).format('YYYY-MM-DD');
 
 // checks to see if we are running on a Continuous Integration environment
-const isCI = !!process.env.TRAVIS_BUILD_NUMBER;
+const isCI = process.env.TRAVIS_BUILD_NUMBER !== undefined;
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -70,20 +67,12 @@ function configureCI(cfg) {
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
+    name                : `bhima-${process.env.TRAVIS_BRANCH}`,
+    tags                : [
+      `node: ${process.env.TRAVIS_NODE_VERSION}`,
+      `os: ${process.env.TRAVIS_OS_NAME}`,
+    ],
   }];
-
-  // set up for screenshots using mochawesome-screenshots
-  cfg.mochaOpts = {
-    reporter        : 'mochawesome-screenshots',
-    reporterOptions : {
-      reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : `travis-${fmt(new Date())}-${process.env.TRAVIS_BUILD_NUMBER}`,
-      reportTitle          : 'Bhima End to End Tests',
-      takePassedScreenshot : false,
-      clearOldScreenshots  : true,
-    },
-    timeout : 30000,
-  };
 }
 
 // expose to the outside world
