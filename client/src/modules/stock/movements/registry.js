@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('StockMovementsController', StockMovementsController);
 
 StockMovementsController.$inject = [
-  'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
-  'SessionService', 'FluxService', 'ReceiptModal', 'GridGroupingService',
+  'StockService', 'NotifyService', 'uiGridConstants', '$translate',
+  'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
+  'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService'
 ];
 
 /**
@@ -13,9 +13,11 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController(Stock, Notify,
   uiGridConstants, $translate, Modal,
-  Languages, Session, Flux, ReceiptModal, Grouping) {
+  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState) {
   var vm = this;
   var filterKey = 'movement';
+  var state;
+  var gridColumns;
 
   vm.gridApi = {};
 
@@ -151,6 +153,10 @@ function StockMovementsController(Stock, Notify,
   vm.openReceiptModal = openReceiptModal;
   vm.toggleGroup = toggleGroup;
   vm.selectGroup = selectGroup;
+  vm.download = Stock.download;
+
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
 
   // grid api
   function onRegisterApi(gridApi) {
@@ -198,6 +204,21 @@ function StockMovementsController(Stock, Notify,
 
     return load(Stock.filter[filterKey].formatHTTP(true));
   }
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the lots registry's columns.
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  };
+
+  vm.saveGridState = state.saveGridState;
+
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   // load stock lots in the grid
   function load(filters) {
@@ -255,6 +276,13 @@ function StockMovementsController(Stock, Notify,
 
   // initialize module
   function startup() {
+
+    if($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      Stock.filter[filterKey].replaceFilters(changes);		
+      Stock.cacheFilters(filterKey);
+    }
+
     load(Stock.filter[filterKey].formatHTTP(true));
     vm.latestViewFilters = Stock.filter[filterKey].formatView();
   }
