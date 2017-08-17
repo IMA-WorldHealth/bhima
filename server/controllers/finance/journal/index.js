@@ -70,9 +70,15 @@ function lookupTransaction(recordUuid) {
 // 3. UNION ALL between both complete sets of data
 // 4. Apply date order
 function naiveTransactionSearch(options, includeNonPosted) {
+  // hack to ensure only the correct amount of rows are returned - this should be improved in the more effecient method of selection
+  var limitCondition = '';
+  if (options.limit) {
+    limitCondition = ` LIMIT ${Number(options.limit)}`;
+  }
+
   if (!includeNonPosted) {
     const query = buildTransactionQuery(_.cloneDeep(options), false);
-    return db.exec(`{query.sql} ORDER BY trans_date DESC`, query.parameters);
+    return db.exec(`(${query.sql}) ORDER BY trans_date DESC ${limitCondition}`, query.parameters);
   }
 
   // clone options as filter parsing process mutates object
@@ -149,12 +155,12 @@ function buildTransactionQuery(options, posted) {
  * includeAggregates
  */
 function find(options) {
-  if (options.includeNonPosted) {
+  if (options.includeNonPosted && Boolean(Number(options.includeNonPosted))) {
     delete options.includeNonPosted;
     return naiveTransactionSearch(options, true);
   }
 
-  return naiveTransactionSearch(options, true);
+  return naiveTransactionSearch(options, false);
 }
 
 /**
@@ -260,8 +266,7 @@ function editTransaction(req, res, next) {
       // transaction chagnes written successfully - return latest version of transaction
       return lookupTransaction(recordUuid);
     })
-    .then((updatedTransaction) => {
-      const updatedRows = updatedTransaction.journal;
+    .then((updatedRows) => {
       res.status(200).json(updatedRows);
     })
     .catch(next);

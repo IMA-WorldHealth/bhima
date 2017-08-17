@@ -77,6 +77,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       delete row.currencyName;
       delete row.project_name;
       delete row.display_name;
+      delete row.posted;
     });
     return rows.data;
   }
@@ -97,16 +98,16 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
-    { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
-    { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
-    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'user_id', label : 'FORM.LABELS.USER' },
-    { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
-    { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
-    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
-    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-    { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
-
+      { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
+      { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
+      { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+      { key : 'user_id', label : 'FORM.LABELS.USER' },
+      { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
+      { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
+      { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+      { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+      { key : 'includeNonPosted', label : 'TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_SHORT' },
+      { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
   if (filterCache.filters) {
     // load cached filter definition if it exists
@@ -164,8 +165,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     }).result;
   }
 
-  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions
-  // details
+  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
   function openTransactionEditModal(transactionUuid, readOnly) {
     return Modal.open({
       templateUrl : 'modules/journal/modals/editTransaction.modal.html',
