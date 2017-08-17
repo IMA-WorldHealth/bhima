@@ -3,10 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService',
-  'SessionService', 'util', 'bhConstants', 'ReceiptModal',
-  'StockFormService', 'StockService', 'StockModalService',
-  'uiGridGroupingConstants', '$translate',
+  'DepotService', 'InventoryService', 'NotifyService', 'SessionService',
+  'util', 'bhConstants', 'ReceiptModal', 'StockFormService',
+  'StockService', 'StockModalService', 'uiGridGroupingConstants', '$translate',
 ];
 
 /**
@@ -14,7 +13,10 @@ StockExitController.$inject = [
  * @description This controller is responsible to handle stock exit module
  * @todo Implement caching data feature
  */
-function StockExitController(Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock, StockModal, uiGridGroupingConstants, $translate) {
+function StockExitController(
+  Depots, Inventory, Notify, Session,
+  util, bhConstants, ReceiptModal, StockForm,
+  Stock, StockModal, uiGridGroupingConstants, $translate) {
   var vm = this;
   var mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
@@ -50,7 +52,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         field : 'status',
         width : 25,
         displayName : '',
-        cellTemplate : 'modules/stock/exit/templates/status.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
       },
 
       {
@@ -58,14 +60,14 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 120,
         displayName : 'INVENTORY.CODE',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/code.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
       },
 
       {
         field : 'description',
         displayName : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/description.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
       },
 
       {
@@ -73,7 +75,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 150,
         displayName : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
       },
 
       {
@@ -81,7 +83,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 150,
         displayName : 'TABLE.COLUMNS.UNIT_PRICE',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/price.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/price.tmpl.html',
       },
 
       {
@@ -90,7 +92,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         displayName : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
-        treeAggregationType : uiGridGroupingConstants.aggregation.SUM
+        treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       },
 
       {
@@ -98,7 +100,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 75,
         displayName : 'TABLE.COLUMNS.UNIT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html',
       },
 
       {
@@ -106,7 +108,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 150,
         displayName : 'TABLE.COLUMNS.AVAILABLE',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/available.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
       },
 
       {
@@ -114,7 +116,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 150,
         displayName : 'TABLE.COLUMNS.AMOUNT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/amount.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/amount.tmpl.html',
       },
 
       {
@@ -122,7 +124,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
         width : 150,
         displayName : 'TABLE.COLUMNS.EXPIRE_IN',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html'
+        cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
       },
 
       { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
@@ -174,11 +176,15 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid, includeEmptyLot : 0 })
-      .then(function (lots) {
-        item.lots = lots;
-      })
-      .catch(Notify.handleError);
+    Stock.lots.read(null, {
+      depot_uuid : vm.depot.uuid,
+      inventory_uuid : item.inventory.inventory_uuid,
+      includeEmptyLot : 0,
+    })
+    .then(function (lots) {
+      item.lots = lots;
+    })
+    .catch(Notify.handleError);
   }
 
   // init actions
@@ -267,11 +273,11 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     setSelectedEntity();
   }
 
-  function setSelectedEntity (entity){
+  function setSelectedEntity(entity) {
     var uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
-  }  
+  }
 
   // ================================ submit ================================
   function submit(form) {

@@ -21,6 +21,7 @@
     "ENTRY_DOCUMENT"  : "Entry Document",
     "ENTRY_PURCHASE"  : "Purchase",
     "ENTRY_INTEGRATION" : "Integration",
+    "ENTRY_TRANSFER"  : "Transfert",
     "EXPIRATION_DATE" : "Expiration Date",
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_RISK" : "Expiration Risk",

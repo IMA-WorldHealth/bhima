@@ -107,12 +107,12 @@ function createStock(req, res, next) {
  * POST /stock/movement
  * Create a new stock movement
  */
-function createMovement(req, res, next) {  
+function createMovement(req, res, next) {
   const params = req.body;
-  
+
   const document = {
     uuid : params.document_uuid || uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 

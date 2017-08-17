@@ -60,11 +60,7 @@ function StockLotsRegistryTests() {
   it('find lots by inventory', () => {
     modal.setInventory('First Test Inventory Item');
     modal.submit();
-<<<<<<< HEAD
     GU.expectRowCount(gridId, 10 + (3 * depotGroupingRow));
-=======
-    GU.expectRowCount(gridId, 8 + (2 * depotGroupingRow));
->>>>>>> e8ed3696d2bc3992c3b6e653b0566c311e3cb56e
   });
 
 

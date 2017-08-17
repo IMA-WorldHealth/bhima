@@ -534,14 +534,14 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * @param {string} documentUuid
  * @param {object} enterprise
  * @param {object} fluxes - { entry : FLUX_OF_ENTRY, exit : FLUX_OF_EXIT }
- * @param {boolean} isExit 
+ * @param {boolean} exit
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise, is_exit, fluxes) {
+function getDepotMovement(documentUuid, enterprise, exit, fluxes) {
   const data = {};
-  const is_exit = isExit ? 1 : 0;
-  
+  const isExit = exit ? 1 : 0;
+
   const movementFlux = {
     entry : fluxes.entry || Stock.flux.FROM_OTHER_DEPOT,
     exit : fluxes.exit || Stock.flux.TO_OTHER_DEPOT,
@@ -569,11 +569,11 @@ function getDepotMovement(documentUuid, enterprise, is_exit, fluxes) {
     WHERE 
       m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
-  return db.exec(sql, [is_exit, isExit ? movementFlux.exit : movementFlux.entry, db.bid(documentUuid)])
+  return db.exec(sql, [isExit, isExit ? movementFlux.exit : movementFlux.entry, db.bid(documentUuid)])
     .then((rows) => {
       if (!rows.length) {
         throw new NotFound('document not found for exit');
-      }      
+      }
       const line = rows[0];
 
       data.enterprise = enterprise;
@@ -591,7 +591,7 @@ function getDepotMovement(documentUuid, enterprise, is_exit, fluxes) {
       };
 
       data.rows = rows;
-      return data ;
+      return data;
     });
 }
 

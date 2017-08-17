@@ -54,11 +54,7 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
     FU.modal.submit();
-<<<<<<< HEAD
     GU.expectRowCount(gridId, 15 + (3 * depotGroupingRow));
-=======
-    GU.expectRowCount(gridId, 13 + (2 * depotGroupingRow));
->>>>>>> e8ed3696d2bc3992c3b6e653b0566c311e3cb56e
 
     // clear filters
     FU.buttons.clear();
@@ -84,21 +80,13 @@ function StockMovementsRegistryTests() {
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-<<<<<<< HEAD
     GU.expectRowCount(gridId, 24 + (3 * depotGroupingRow));
-=======
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
->>>>>>> e8ed3696d2bc3992c3b6e653b0566c311e3cb56e
 
     // to patient
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-<<<<<<< HEAD
     GU.expectRowCount(gridId, 24 + (3 * depotGroupingRow));
-=======
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
->>>>>>> e8ed3696d2bc3992c3b6e653b0566c311e3cb56e
 
     // to depot
     FU.buttons.search();
