@@ -1,5 +1,11 @@
 /* global by,browser, element */
 const q = require('q');
+const moment = require('moment');
+
+const fmt = (date) => moment(date).format('YYYY-MM-DD');
+
+// checks to see if we are running on a Continuous Integration environment
+const isCI = !!process.env.TRAVIS_BUILD_NUMBER;
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -29,9 +35,7 @@ const config = {
 
   // default browsers to run
   multiCapabilities : [{
-    // 'browserName': 'firefox',
- // }, {
-    'browserName': 'chrome',
+    browserName : 'chrome',
   }],
 
   // this will log the user in to begin with
@@ -49,29 +53,31 @@ const config = {
   },
 };
 
-// configuration for running on SauceLabs via Travis
-if (process.env.TRAVIS_BUILD_NUMBER) {
-  // SauceLabs credentials
-  config.sauceUser = process.env.SAUCE_USERNAME;
-  config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+// if we are running in a continuous integration environment, modify the options to
+// use CI-specific rules.
+if (isCI) {
+  configureCI(config);
+}
+
+
+function configureCI(cfg) {
+  // credentials for running on saucelabs
+  cfg.sauceUser = process.env.SAUCE_USERNAME;
+  cfg.sauceKey = process.env.SAUCE_ACCESS_KEY;
 
   // modify the browsers to use Travis identifiers
-  config.multiCapabilities = [{
-    // 'browserName': 'firefox',
-    //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    //  'build': process.env.TRAVIS_BUILD_NUMBER,
-  // }, {
+  cfg.multiCapabilities = [{
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
   }];
 
-  // make Travis take screenshots!
-  config.mochaOpts = {
+  // set up for screenshots using mochawesome-screenshots
+  cfg.mochaOpts = {
     reporter        : 'mochawesome-screenshots',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : `protractor-${new Date().toDateString().replace(/\s/g,'-')}-${process.env.TRAVIS_BUILD_NUMBER}`,
+      reportName           : `travis-${fmt(new Date())}-${process.env.TRAVIS_BUILD_NUMBER}`,
       reportTitle          : 'Bhima End to End Tests',
       takePassedScreenshot : false,
       clearOldScreenshots  : true,

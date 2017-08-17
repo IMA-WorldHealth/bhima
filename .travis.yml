@@ -1,4 +1,4 @@
-sudo: required
+
 dist: trusty
 
 before_install:
@@ -16,7 +16,7 @@ services:
 
 language: node_js
 node_js:
-  - "6"
+  - 6
   - node
 
 before_script:
@@ -27,15 +27,25 @@ before_script:
 script:
   - npm run test
 
+# NOTE: this must be > 1
 git:
   depth: 3
 
-#
+# if node_modules do not change frequently, we can just cache them.
 cache:
   yarn: true
   directories:
     - node_modules
 
+
+# addons to connect to Sauce Labs and run cloud-based e2e tests
+addons:
+  sauce_connect:
+    username: "jniles"
+  jwt:
+    secure: "HmSHDcMWeqnEVRNKXOOE5V3vAW9zWYfpeWckxr2y1QWaGB5bjIysf3gejaLxVb/tKrd01RwBR5/aA7iWslpdXSfMvcFCNcPUXO7aH21h2LSLE5ZGsieSPGxpuI25FPtb0tpOl8v+nVncKrO0hQkfSWiGS2fqeNVgbmV5Eye8LvjLRDWFCRyBRHpjuOSNk8xWaw+vXHXn2kGQ8iDVRBiLLkYMn2msw0NXZYWREmL5yLXcQWiER8iSawrat62EzVi5k8eQCvblXMv3htutrWSwOQQrCcooK9LhZF2cCRctG4KHHQls3attM+6r5BMtf28Vh7myvfkUvoxpiW1UZCAEJarzSO2Of4Y6wqbabHR2Opji8f6ihRFqLNEI8owEewWeG1IXp7d68cLvpZbbBCMPUNdg9AzZXsm6GdLChY5DDWuuPs1AHN71bTEHD1rCjcrIKaGv1KYtJP5ER774+fdbOj+akeTgwVIFk0YDUMZHbLu1r77Jxu2x8G9JpGCw564G/zD9kUe5c+ZbWAesUFzrPNiNrX30LUiKHZtzjXVbxPGypBc673uBpawuVl5SL2xvInnTDzYjZf+zRBGM/rqYkvBbvYFpXAURMz4Tn3W2jbaLJu670N7uvR/MHdoNTL+xALlFlvV+lLnUhVsni1fXWHoZ327vSKoWBDvbs6Pd/eA="
+
+# bors-ng uses .tmp branches for combination builds
 branches:
   except:
     # do not build any branches that have *.tmp in their name
