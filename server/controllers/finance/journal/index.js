@@ -87,7 +87,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 
   const combinedParameters = posted.parameters.concat(nonPosted.parameters);
 
-  return db.exec(`(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC`, combinedParameters);
+  return db.exec(`(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC ${limitCondition}`, combinedParameters);
 }
 
 // if posted ONLY return posted transactions
