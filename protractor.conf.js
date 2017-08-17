@@ -46,7 +46,7 @@ const config = {
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
-    }).delay(3100);
+    }).delay(isCI ? 10000 : 3100);
   },
 };
 
