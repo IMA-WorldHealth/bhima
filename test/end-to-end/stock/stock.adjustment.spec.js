@@ -52,4 +52,4 @@ function StockAdjustmentTests() {
   });
 }
 
-describe('Stock Adustment Test', StockAdjustmentTests);
+describe('Stock Adjustment Test', StockAdjustmentTests);

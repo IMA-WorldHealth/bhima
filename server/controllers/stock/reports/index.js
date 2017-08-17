@@ -324,7 +324,7 @@ function stockExitDepotReceipt(req, res, next) {
   }
 
   return getMovementFluxes(documentUuid)
-    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, fluxes))
+    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, true, fluxes))
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
@@ -353,7 +353,7 @@ function stockEntryDepotReceipt(req, res, next) {
   }
 
   return getMovementFluxes(documentUuid)
-    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, fluxes))
+    .then(fluxes => getDepotMovement(documentUuid, req.session.enterprise, false, fluxes))
     .then(data => report.render(data))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
@@ -534,43 +534,55 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * @param {string} documentUuid
  * @param {object} enterprise
  * @param {object} fluxes - { entry : FLUX_OF_ENTRY, exit : FLUX_OF_EXIT }
+ * @param {boolean} isExit 
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise, fluxes) {
+function getDepotMovement(documentUuid, enterprise, is_exit, fluxes) {
   const data = {};
-  const sql = `
-    SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
-      m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
-      u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
-    FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
-    WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
-  `;
-
+  const is_exit = isExit ? 1 : 0;
+  
   const movementFlux = {
     entry : fluxes.entry || Stock.flux.FROM_OTHER_DEPOT,
     exit : fluxes.exit || Stock.flux.TO_OTHER_DEPOT,
   };
 
-  return db.exec(sql, [1, movementFlux.exit, db.bid(documentUuid)])
+  const sql = `
+    SELECT 
+      i.code, i.text, BUID(m.document_uuid) AS document_uuid,
+      m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
+      u.display_name AS user_display_name,
+      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+      l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
+    FROM 
+      stock_movement m
+    JOIN 
+      lot l ON l.uuid = m.lot_uuid
+    JOIN 
+      inventory i ON i.uuid = l.inventory_uuid
+    JOIN 
+      depot d ON d.uuid = m.depot_uuid
+    JOIN 
+      user u ON u.id = m.user_id
+    LEFT JOIN 
+      depot dd ON dd.uuid = entity_uuid
+    WHERE 
+      m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
+
+  return db.exec(sql, [is_exit, isExit ? movementFlux.exit : movementFlux.entry, db.bid(documentUuid)])
     .then((rows) => {
-      // exit movement
       if (!rows.length) {
         throw new NotFound('document not found for exit');
-      }
+      }      
       const line = rows[0];
 
       data.enterprise = enterprise;
-      data.exit = {};
+      const key = isExit ? 'exit' : 'entry';
+      data[key] = {};
 
-      data.exit.details = {
+      data[key].details = {
         depot_name         : line.depot_name,
+        otherDepotName     : line.otherDepotName || '',
         user_display_name  : line.user_display_name,
         description        : line.description,
         date               : line.date,
@@ -579,27 +591,7 @@ function getDepotMovement(documentUuid, enterprise, fluxes) {
       };
 
       data.rows = rows;
-      return db.exec(sql, [0, movementFlux.entry, db.bid(documentUuid)]);
-    })
-    .then((rows) => {
-      // entry movement
-      if (!rows.length) {
-        throw new NotFound('document not found for entry');
-      }
-      const line = rows[0];
-
-      data.enterprise = enterprise;
-      data.entry = {};
-
-      data.entry.details = {
-        depot_name         : line.depot_name,
-        user_display_name  : line.user_display_name,
-        description        : line.description,
-        date               : line.date,
-        document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
-      };
-      return data;
+      return data ;
     });
 }
 

@@ -1,15 +1,22 @@
-{"DEPOT":{"ADD_DEPOT":"Ajouter un dépôt",
-"ALL_DEPOTS":"Tous les dépôts",
-"DEPOTS_LIST":"Liste des dépôts",
-"DESCRIPTION":"Ce module vous permet de Lister, Creer, Modifier et Supprimer un dépôt",
-"EDIT_DEPOT":"Modifier Dépôt",
-"WAREHOUSE":"Entrepôts",
-"LABEL":"Dépôt",
-"CREATED":"Dépôt crée avec succès",
-"UPDATED":"Dépôt mise à jour avec succès",
-"DELETED":"Dépôt supprimer avec succès",
-"DELETE":"Supprimer",
-"MAIN":{"TITLE":"Gestion des dépôts"},
-"NO_DEPOT":"Aucun dépôt",
-"NOT_ALLOWED_ACTIONS":"Ce dépôt est protégé, vous ne pouvez effectuer des modifications sur ce dépôt",
-"TITLE":"Gestion des dépôts"}}
+{
+    "DEPOT": {
+        "ADD_DEPOT": "Ajouter un dépôt",
+        "ALL_DEPOTS": "Tous les dépôts",
+        "CREATED":"Dépôt crée avec succès",
+        "DELETED":"Dépôt supprimer avec succès",
+        "DELETE":"Supprimer",
+        "DEPOTS_LIST": "Liste des dépôts",
+        "DESCRIPTION": "Ce module vous permet de Lister, Creer, Modifier et Supprimer un dépôt",
+        "EDIT_DEPOT": "Editer les informations d'un dépôt",
+        "ENTITY" : "Depot",
+        "LABEL":"Dépôt",
+        "MAIN": {
+            "TITLE": "Gestion des dépôts"
+        },
+        "NO_DEPOT": "Aucun dépôt",
+        "NOT_ALLOWED_ACTIONS":"Ce dépôt est protégé, vous ne pouvez effectuer des modifications sur ce dépôt",
+        "TITLE": "Gestion des dépôts",
+        "UPDATED":"Dépôt mise à jour avec succès",
+        "WAREHOUSE":"Entrepôts"
+    }
+}

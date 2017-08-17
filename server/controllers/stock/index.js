@@ -7,14 +7,14 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
- *
- *
- * @requires lib/db
  * @requires lib/node-uuid
+ * @requires moment
+ * @requires lib/db
+ * @requires stock/core
  */
 
 const uuid = require('node-uuid');
-
+const moment = require('moment');
 const db = require('../../lib/db');
 const core = require('./core');
 
@@ -107,12 +107,12 @@ function createStock(req, res, next) {
  * POST /stock/movement
  * Create a new stock movement
  */
-function createMovement(req, res, next) {
+function createMovement(req, res, next) {  
   const params = req.body;
-
+  
   const document = {
-    uuid : uuid.v4(),
-    date : new Date(params.date),
+    uuid : params.document_uuid || uuid.v4(),
+    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
     user : req.session.user.id,
   };
 
@@ -176,62 +176,51 @@ function normalMovement(document, params) {
 
 /**
  * @function depotMovement
- * @description movement between depots, there are two lines for IN and OUT
+ * @description movement between depots
  */
 function depotMovement(document, params) {
-  let paramIn;
-  let paramOut;
+  let record;
   let isWarehouse;
   let isServiceDepot;
   let isDistributable;
 
   const transaction = db.transaction();
   const parameters = params;
+  const isExit = parameters.isExit ? 1 : 0;
 
-  parameters.enity_uuid = parameters.enity_uuid ? db.bid(parameters.enity_uuid) : null;
+  parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
+
+  const depotUuid = isExit ? db.bid(parameters.from_depot) : db.bid(parameters.to_depot);
+  const entityUuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
+  const exitFlux = parameters.to_depot_service ? core.flux.TO_SERVICE : core.flux.TO_OTHER_DEPOT;
+  const entryFlux = parameters.from_depot_service ? core.flux.FROM_SERVICE : core.flux.FROM_OTHER_DEPOT;
+  const fluxId = isExit ? exitFlux : entryFlux;
 
   parameters.lots.forEach((lot) => {
-        // OUT:
-    paramOut = {
+
+    record = {
+      depot_uuid    : depotUuid,
+      entity_uuid   : entityUuid,
+      is_exit       : isExit,
+      flux_id       : fluxId,
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : db.bid(lot.uuid),
-      depot_uuid    : db.bid(parameters.from_depot),
       document_uuid : db.bid(document.uuid),
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       date          : document.date,
-      entity_uuid   : db.bid(parameters.to_depot),
-      is_exit       : 1,
-      flux_id       : parameters.to_depot_service ? core.flux.TO_SERVICE : core.flux.TO_OTHER_DEPOT,
       description   : parameters.description,
       user_id       : document.user,
     };
 
-        // IN:
-    paramIn = {
-      uuid          : db.bid(uuid.v4()),
-      lot_uuid      : db.bid(lot.uuid),
-      depot_uuid    : db.bid(parameters.to_depot),
-      document_uuid : db.bid(document.uuid),
-      quantity      : lot.quantity,
-      unit_cost     : lot.unit_cost,
-      date          : document.date,
-      entity_uuid   : db.bid(parameters.from_depot),
-      is_exit       : 0,
-      flux_id       : parameters.from_depot_service ? core.flux.FROM_SERVICE : core.flux.FROM_OTHER_DEPOT,
-      description   : parameters.description,
-      user_id       : document.user,
-    };
-
-    transaction.addQuery('INSERT INTO stock_movement SET ?', [paramOut]);
-    transaction.addQuery('INSERT INTO stock_movement SET ?', [paramIn]);
+    transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
 
     isWarehouse = !!(parameters.from_depot_is_warehouse);
     isServiceDepot = !!(parameters.from_depot_service);
     isDistributable = !!(isWarehouse || isServiceDepot);
 
     // track distribution to patient
-    if (paramOut.is_exit && isDistributable) {
+    if (record.is_exit && isDistributable) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
       ];
