@@ -58,14 +58,14 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary).to.have.length(2);
 
         // all accounts have 0 balance before
-        expect(summary[0].balance_before).to.equal(0);
-        expect(summary[1].balance_before).to.equal(0);
+        expect(summary[0].balance_before).to.equal(25);
+        expect(summary[1].balance_before).to.equal(-25);
 
-        expect(summary[0].debit_equiv).to.equal(100);
+        expect(summary[0].debit_equiv).to.equal(75);
         expect(summary[1].debit_equiv).to.equal(0);
 
         expect(summary[0].credit_equiv).to.equal(0);
-        expect(summary[1].credit_equiv).to.equal(100);
+        expect(summary[1].credit_equiv).to.equal(75)
 
         expect(summary[0].balance_final).to.equal(100);
         expect(summary[1].balance_final).to.equal(-100);
@@ -73,12 +73,11 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it.skip('POST /journal/transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
+  it('POST /journal/transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
         expect(res).to.have.status(201);
-        expect(res).to.be.json;
         return agent.get(`/journal/${POSTING_TXNS[0]}`);
       })
       .then((res) => {
