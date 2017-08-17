@@ -35,7 +35,7 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/inventory/items/?params={{ InventoryCtrl.parameters }}&lang={{ InventoryCtrl.lang }}" 
+              <a ng-href="/reports/inventory/items/?params={{ InventoryCtrl.parameters }}&lang={{ InventoryCtrl.lang }}"
                 download="{{ 'INVENTORY.PRICE_LIST_REPORT' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
@@ -57,7 +57,7 @@
           data-method="filter">
           <i class="fa fa-filter"></i>
         </button>
-        
+
         <a
           class="btn btn-default text-capitalize"
           ui-sref="inventory.create"
@@ -72,7 +72,7 @@
           id="research">
           <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
         </button>
-      </div>      
+      </div>
     </div>
 
   </div>
@@ -86,7 +86,6 @@
   </bh-filters>
 </div>
 
-
 <!-- grid content  -->
 <div class="flex-content">
   <div class="container-fluid">
@@ -99,6 +98,13 @@
       ui-grid-exporter
       ui-grid-auto-resize
       ui-grid-resize-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="InventoryCtrl.loading"
+        empty-state="InventoryCtrl.gridOptions.data.length === 0"
+        error-state="InventoryCtrl.hasError">
+      </bh-grid-loading-indicator>
+
     </div>
   </div>
 </div>

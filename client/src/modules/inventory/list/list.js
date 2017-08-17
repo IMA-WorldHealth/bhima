@@ -32,6 +32,9 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   vm.gridOptions = {};
   vm.gridApi = {};
 
+  vm.loading = true;
+
+
   // grid default options
   columnDefs = [
     { field : 'code',
@@ -138,6 +141,7 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   }
 
   function runResearch(params) {
+
     if (params) {
       search.assignFilters(params);
       vm.latestViewFilters = search.latestViewFilters();
@@ -145,12 +149,22 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       vm.parameters = JSON.stringify(params);
     }
 
+    vm.loading = true;
+    vm.hasError = false;
+
     Inventory.read(null, params)
       .then(function (rows) {
         vm.gridOptions.data = rows;
       })
-      .catch(Notify.handleError);
+      .catch(function (exception) {
+        vm.hasError = true;
+        Notify.handleError(exception);
+      })
+      .finally(function () {
+        vm.loading = false; // this will execute after the data is downloaded.
+      });
   }
+
 
   // research and filter data in Inventory List
   function research() {
