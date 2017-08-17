@@ -31,7 +31,8 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
-  vm.loading = false;
+
+  vm.loading = true;
 
 
   // grid default options
@@ -162,8 +163,6 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       .finally(function () {
         vm.loading = false; // this will execute after the data is downloaded.
       });
-
-    vm.loading = false;
   }
 
 
