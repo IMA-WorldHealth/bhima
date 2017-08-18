@@ -34,12 +34,12 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/movements/?{{ StockCtrl.download('pdf') }}" download="{{ 'TREE.STOCK_MOVEMENTS' | translate }}">
+              <a ng-href="/reports/stock/movements/?{{ StockCtrl.download('movement', 'pdf') }}" download="{{ 'TREE.STOCK_MOVEMENTS' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/movements/?{{ StockCtrl.download('csv') }}" download="{{ 'TREE.STOCK_MOVEMENTS' | translate }}">
+              <a ng-href="/reports/stock/movements/?{{ StockCtrl.download('movement', 'csv') }}" download="{{ 'TREE.STOCK_MOVEMENTS' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>

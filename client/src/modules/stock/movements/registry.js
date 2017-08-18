@@ -16,6 +16,7 @@ function StockMovementsController(Stock, Notify,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState) {
   var vm = this;
   var filterKey = 'movement';
+  var cacheKey = 'movements-grid';
   var state;
   var gridColumns;
 
