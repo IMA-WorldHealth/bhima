@@ -160,7 +160,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
     var noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
 
     if (noChanges) {
-      Modal.close();
+      Modal.close({});
       return;
     }
 

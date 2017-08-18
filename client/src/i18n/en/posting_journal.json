@@ -74,7 +74,8 @@
     },
     "WARNINGS":{
       "MISSING_ENTITY":"Record without entity type and entity ID",
-      "NO_TRANSACTIONS_SELECTED":"No transactions selected. You must be in Transaction view to use this tool."
+      "NO_TRANSACTIONS_SELECTED":"No transactions selected. You must be in Transaction view to use this tool.",
+      "MULTIPLE_TRANSACTION_EDIT_DISABLED":"You have multiple transactions selected. Multiple transaction editing is currently disabled"
     },
     "TRIAL_BALANCE" : {
       "TITLE" : "Trial Balance",
