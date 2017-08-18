@@ -4,6 +4,9 @@ const q = require('q');
 // checks to see if we are running on a Continuous Integration environment
 const isCI = process.env.TRAVIS_BUILD_NUMBER !== undefined;
 
+// milliseconds to the seconds
+const seconds = 1000;
+
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
 // is Travis loading the configuration, we parse the
@@ -46,7 +49,7 @@ const config = {
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
-    }).delay(isCI ? 10000 : 3100);
+    }).delay(isCI ? 10 * seconds : 4 * seconds);
   },
 };
 
@@ -73,6 +76,12 @@ function configureCI(cfg) {
       `os: ${process.env.TRAVIS_OS_NAME}`,
     ],
   }];
+
+  cfg.mochaOpts = {
+    bail : true,
+    timeout : 120 * seconds,
+    reporter : 'list',
+  };
 }
 
 // expose to the outside world
