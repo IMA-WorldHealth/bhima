@@ -592,9 +592,29 @@ function stockLotsReport(req, res, next) {
   let options = {};
   let display = {};
   let hasFilter = false;
+  let filters = [];
 
   const data = {};
   let report;
+
+// getting params
+  var defaultParam = req.query;
+  try {
+
+    const keys = Object.keys(defaultParam);
+    keys.forEach((key) => {
+      if ((key !== 'lang') && (key !== 'renderer')) {
+        filters.push({ displayName : key, value : defaultParam[key] });
+      }
+    }, keys);
+    // filters paramter found
+    hasFilter = filters.length > 0;
+
+  } catch (error) {
+    //
+  }
+
+
   const optionReport = _.extend(req.query, {
     filename : 'TREE.STOCK_LOTS',
     orientation : 'landscape',
@@ -604,12 +624,13 @@ function stockLotsReport(req, res, next) {
 
   // set up the report with report manager
   try {
+/*
     if (req.query.identifiers && req.query.display) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
       hasFilter = Object.keys(display).length > 0;
     }
-
+*/
     report = new ReportManager(STOCK_LOTS_REPORT_TEMPLATE, req.session, optionReport);
   } catch (e) {
     return next(e);
@@ -626,6 +647,7 @@ function stockLotsReport(req, res, next) {
       data.hasFilter = hasFilter;
       data.csv = rows;
       data.display = display;
+      data.filters = filters;
 
       // group by depot
       let depots = _.groupBy(rows, d => d.depot_text);
@@ -659,6 +681,7 @@ function stockMovementsReport(req, res, next) {
   let options = {};
   let display = {};
   let hasFilter = false;
+  let filters = [];
 
   const data = {};
   let report;
@@ -677,6 +700,11 @@ function stockMovementsReport(req, res, next) {
       hasFilter = Object.keys(display).length > 0;
     }
 
+    filters = Object.keys(display).map(function (key) {
+      return { displayName : key, value : display[key] };
+    }, display);
+
+
     report = new ReportManager(STOCK_MOVEMENTS_REPORT_TEMPLATE, req.session, optionReport);
   } catch (e) {
     return next(e);
@@ -686,6 +714,7 @@ function stockMovementsReport(req, res, next) {
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
+      data.filters = filters;
       data.csv = rows;
       data.display = display;
 
