@@ -228,6 +228,8 @@ function getTransaction(req, res, next) {
     .done();
 }
 
+// @TODO(sfount) move edit transaction code to seperate server controller - split editing process
+//               up into smaller self contained methods
 function editTransaction(req, res, next) {
   const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?';
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?';
@@ -241,17 +243,22 @@ function editTransaction(req, res, next) {
   const rowsRemoved = req.body.removed;
 
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
-  // _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
 
   // verify that this transaction is NOT in the general ledger already
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
     .then((currentTransaction) => {
-      // check the source of the first transaction row
       const posted = currentTransaction[0].posted;
 
+      // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
         throw new BadRequest('Posted transactions cannot be edited', 'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED');
+      }
+
+      // make sure that the user tools cannot simply remove all rows without going through
+      // the deletion API
+      if (rowsAdded.length === 0 && rowsRemoved.length >= currentTransaction.length) {
+        throw new BadRequest('The editing API cannot remove all rows in a transaction', 'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS');
       }
 
       // continue with edititing - transform requested additional columns
