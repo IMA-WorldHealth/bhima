@@ -35,7 +35,7 @@ function StockEntryExitTypeController() {
     };
 
     $ctrl.display = function () {
-        if ($ctrl.isEntry) {
+        if ($ctrl.isEntry === true) {
             return $ctrl.reference || '';
         }
         var list = [];
