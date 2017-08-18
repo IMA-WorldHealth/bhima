@@ -469,7 +469,7 @@ function JournalController(Journal, Sorting, Grouping,
   function editTransactionModal() {
     // block multiple simultaneous edit
     if (selection.selected.groups.length > 1) {
-      Notify.warn('You have multiple transactions selected. Multiple transaction editing is currently disabled');
+      Notify.warn('POSTING_JOURNAL.WARNINGS.MULTIPLE_TRANSACTION_EDIT_DISABLED');
       return;
     }
 
@@ -486,30 +486,36 @@ function JournalController(Journal, Sorting, Grouping,
         var updatedRows = editSessionResult.updatedTransaction;
         var changed = angular.isDefined(updatedRows);
 
-        vm.gridApi.selection.clearSelectedRows();
-        if (changed) {
-          // update only rows that already existed and have been edited
-          editSessionResult.edited.forEach(function (uuid) {
-            // update record that already exists
-            var currentRow = journalStore.get(uuid);
-            var updatedRow = editSessionResult.updatedTransaction.get(uuid);
-
-            Object.keys(currentRow).forEach(function (key) {
-              currentRow[key] = updatedRow[key];
-            });
-          });
-
-          // remove rows that existed before and have been removed
-          editSessionResult.removed.forEach(function (uuid) {
-            journalStore.remove(uuid);
-          });
-
-          if (editSessionResult.added.length) {
-            // rows have been added, we have no guarantees on filters so display a warning
-            vm.unknownTransactionEditState = true;
-          }
-          vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+        if (!changed) {
+          Notify.warn('FORM.WARNINGS.NO_CHANGES');
+          return;
         }
+
+        vm.gridApi.selection.clearSelectedRows();
+
+        // update only rows that already existed and have been edited
+        editSessionResult.edited.forEach(function (uuid) {
+          // update record that already exists
+          var currentRow = journalStore.get(uuid);
+          var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+
+          Object.keys(currentRow).forEach(function (key) {
+            currentRow[key] = updatedRow[key];
+          });
+        });
+
+        // remove rows that existed before and have been removed
+        editSessionResult.removed.forEach(function (uuid) {
+          journalStore.remove(uuid);
+        });
+
+        if (editSessionResult.added.length) {
+          // rows have been added, we have no guarantees on filters so display a warning
+          vm.unknownTransactionEditState = true;
+        }
+        vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+        Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
       });
   }
 
