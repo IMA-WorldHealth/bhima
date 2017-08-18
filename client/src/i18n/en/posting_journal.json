@@ -68,7 +68,8 @@
       "SINGLE_LINE_TRANSACTION":"A transaction must have two or more lines. To correct this, locate the transaction and add the balancing line.",
       "EDIT_INVALID_ACCOUNT":"Transaction contains invalid account(s)",
       "EDIT_INVALID_ENTITY":"Transaction contains an invalid entity",
-      "EDIT_INVALID_REFERENCE":"Transaction contains an invalid reference"
+      "EDIT_INVALID_REFERENCE":"Transaction contains an invalid reference",
+      "TRANSACTION_ALREADY_POSTED":"Posted transaction cannot be altered by this process"
     },
     "WARNINGS":{
       "MISSING_ENTITY":"Record without entity type and entity ID",
