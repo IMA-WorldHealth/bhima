@@ -243,7 +243,20 @@ function editTransaction(req, res, next) {
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
   // _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
 
-  transformColumns(rowsAdded, true)
+  // verify that this transaction is NOT in the general ledger already
+  // @FIXME(sfount) this logic needs to be updated when allowing super user editing
+  lookupTransaction(recordUuid)
+    .then((currentTransaction) => {
+      // check the source of the first transaction row
+      const posted = currentTransaction[0].posted;
+
+      if (posted) {
+        throw new BadRequest('Posted transactions cannot be edited', 'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED');
+      }
+
+      // continue with edititing - transform requested additional columns
+      return transformColumns(rowsAdded, true)
+    })
     .then((result) => {
       result.forEach((row) => {
         db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
@@ -261,7 +274,6 @@ function editTransaction(req, res, next) {
       return transaction.execute();
     })
     .then((result) => {
-
       // transaction chagnes written successfully - return latest version of transaction
       return lookupTransaction(recordUuid);
     })
