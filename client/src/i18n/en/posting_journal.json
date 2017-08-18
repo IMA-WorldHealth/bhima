@@ -69,7 +69,8 @@
       "EDIT_INVALID_ACCOUNT":"Transaction contains invalid account(s)",
       "EDIT_INVALID_ENTITY":"Transaction contains an invalid entity",
       "EDIT_INVALID_REFERENCE":"Transaction contains an invalid reference",
-      "TRANSACTION_ALREADY_POSTED":"Posted transaction cannot be altered by this process"
+      "TRANSACTION_ALREADY_POSTED":"Transaction has already been posted and cannot be edited",
+      "USER_CANNOT_EDIT_POSTED_TRANSACTION":"User cannot edit this transaction as it has already been posted"
     },
     "WARNINGS":{
       "MISSING_ENTITY":"Record without entity type and entity ID",

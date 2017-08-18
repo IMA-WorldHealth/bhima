@@ -2,14 +2,18 @@
   <ol class="headercrumb">
     <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
     <li class="title" translate>{{ModalCtrl.shared.trans_id}}</li>
-    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
-    <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
+    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
+    <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
   </ol>
-
 </div>
 
 <div class="modal-body">
-    <!-- Record information -->
+  <!-- warn user that standard users cannot edit posted transactions -->
+  <div class="alert alert-warning" ng-if="ModalCtrl.validation.blockedPostedTransactionEdit"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
+    <i class="fa fa-warning"></i> <span translate>POSTING_JOURNAL.ERRORS.USER_CANNOT_EDIT_POSTED_TRANSACTION</span>
+  </div>
+
+  <!-- Record information -->
     <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
 
       <div class="row" ng-if="ModalCtrl.loadingTransaction">
@@ -46,10 +50,10 @@
               <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.origin_id).text || '-'}}</p>
             </div>
             <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
-              <select 
-                ng-model="ModalCtrl.shared.origin_id" 
+              <select
+                ng-model="ModalCtrl.shared.origin_id"
                 ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
-                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data" 
+                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data"
                 class="form-control">
                 <option disabled value="">--<span translate>POSTING_JOURNAL.NO_TRANSACTION_TYPE</span>--</option>
               </select>
@@ -68,12 +72,12 @@
             </div>
             <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
               <div class="input-group">
-              <input 
+              <input
                 uib-datepicker-popup="dd/MM/yyyy"
-                ng-model="ModalCtrl.shared.trans_date" 
+                ng-model="ModalCtrl.shared.trans_date"
                 ng-change="ModalCtrl.handleTransactionDateChange(ModalCtrl.shared.trans_date)"
                 is-open="ModalCtrl.dateEditorOpen"
-                type="text" 
+                type="text"
                 class="form-control"></input>
               <span class="input-group-btn">
                 <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
@@ -85,9 +89,9 @@
       </form>
       </div>
     </div>
-    
+
     <div class="alert alert-danger" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
-    <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
+      <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
     </div>
 
     <!-- Transaction row edit utilities -->
@@ -96,7 +100,7 @@
       <button ng-disabled="!ModalCtrl.settupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
     </div>
     <div id="edit-grid" style="height : 230px" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
-      <bh-grid-loading-indicator 
+      <bh-grid-loading-indicator
         loading-state="ModalCtrl.loadingTransaction"
         empty-state="ModalCtrl.gridOptions.data.length === 0"
         error-state="ModalCtrl.hasError">
