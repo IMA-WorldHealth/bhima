@@ -37,21 +37,20 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
 
   voucherFilters.registerDefaultFilters([
     { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
+    { key : 'custom_period_start', label : 'PERIODS.START', comparitor : '>', valueFilter : 'date' },
+    { key : 'custom_period_end', label : 'PERIODS.END', comparitor : '<', valueFilter : 'date' },
     { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
   voucherFilters.registerCustomFilters([
-      { key: 'user_id', label: 'FORM.LABELS.USER' },
-      { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
-      { key: 'dateFrom', label: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
-      { key: 'dateTo', label: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
-      { key: 'reversed', label: 'FORM.INFO.ANNULLED' },
-      { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
-      { key: 'type_ids', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'reversed', label : 'FORM.INFO.ANNULLED' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+    { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
+    { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
-  
-  if(filterCache.filters){
+
+  if (filterCache.filters) {
     voucherFilters.loadCache(filterCache.filters);
   }
 
@@ -78,16 +77,16 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
 
   function removeFilter(key) {
     voucherFilters.resetFilterState(key);
-  };
+  }
 
   // load filters from cache
   function cacheFilters() {
     filterCache.filters = voucherFilters.formatCache();
-  };
+  }
 
   function loadCachedFilters() {
     voucherFilters.loadCache(filterCache.filters || {});
-  };
+  }
 
   // returns true if the key starts with an underscore
   function isInternalKey(key) {
@@ -111,7 +110,6 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
    * Wraps the prototype create method.
    */
   function create(voucher) {
-
     var v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
@@ -169,7 +167,7 @@ function VoucherService(Api, $http, TransactionTypeStore, Modal,
 
     // return  serialized options
     return $httpParamSerializer(options);
-  };
+  }
 
   /**
    * @function openSearchModal

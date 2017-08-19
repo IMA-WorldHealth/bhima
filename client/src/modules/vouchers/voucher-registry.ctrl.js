@@ -144,10 +144,6 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
     Receipts.voucher(uuid);
   }
 
-  function isEmpty(object) {
-    return Object.keys(object).length === 0;
-  }
-
   function load(filters) {
     // flush error and loading states
     vm.hasError = false;
@@ -212,6 +208,15 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
 
   // initialize module
   function startup() {
+    var changes;
+
+    if ($state.params.filters.length) {
+      changes = angular.copy($state.params.filters);
+
+      Vouchers.filters.replaceFilters(changes);
+      Vouchers.cacheFilters();
+    }
+
     Vouchers.transactionType()
       .then(function (store) {
         vm.transactionTypes = store;
@@ -228,7 +233,7 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
     // column configuration has direct access to the grid API to alter the current
     // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
-  };
+  }
 
 
   vm.saveGridState = state.saveGridState;
@@ -236,7 +241,7 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
   function clearGridState() {
     state.clearGridState();
     $state.reload();
-  };
+  }
 
   startup();
 }
