@@ -9,27 +9,12 @@ describe('(/journal) API endpoint', () => {
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
   const NUM_ROW_ALL_RECORDS = 13;
-  const DISTINCT_TRANSACTIONS = 6;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
-  it('GET /journal returns a set of records ', () =>
+  it('GET /journal returns a set of records', () =>
     agent.get('/journal')
       .then((res) => {
         helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
-      })
-      .catch(helpers.handler)
-  );
-
-  it('GET /journal returns an object of aggregate information and journal rows with aggregates flag set', () =>
-    agent.get('/journal')
-      .query({ aggregates: 1 })
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-
-        expect(res.body).to.be.a('object');
-        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
-        expect(res.body.aggregate).to.have.length(DISTINCT_TRANSACTIONS);
       })
       .catch(helpers.handler)
   );
@@ -39,7 +24,7 @@ describe('(/journal) API endpoint', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.journal).to.have.length(NUM_ROWS_FETCHING_TRANSACTION);
+        expect(res.body).to.have.length(NUM_ROWS_FETCHING_TRANSACTION);
       })
       .catch(helpers.handler)
   );
@@ -67,20 +52,6 @@ function SearchTests() {
       .query({ description })
       .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /journal query with filters returns correct aggregate information for subset', () => {
-    const NUM_MATCHES = 1;
-    return agent.get('/journal')
-      .query({ description, aggregates: 1 })
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.be.a('object');
-        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
-        expect(res.body.aggregate).to.have.length(NUM_MATCHES);
       })
       .catch(helpers.handler);
   });
