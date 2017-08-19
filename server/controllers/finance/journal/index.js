@@ -11,6 +11,7 @@
  * @requires lodash
  * @requires node-uuid
  * @requires lib/db
+ * @requires lib/filter
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
  */
@@ -46,7 +47,7 @@ exports.count = count;
 function lookupTransaction(recordUuid) {
   const options = {
     record_uuid : recordUuid,
-    includeNonPosted : true
+    includeNonPosted : true,
   };
 
   return find(options)
@@ -92,7 +93,8 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid']) ;
+  db.convert(options, ['uuid', 'record_uuid']);
+
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
   const table = posted ? 'general_ledger' : 'posting_journal';
@@ -198,13 +200,11 @@ function journalEntryList(options, source) {
 
 
 /**
- * GET /journal
- * Getting data from the posting journal
+ * @method list
  *
- * optional query flags
- * - aggregates {Boolean} If passed as true queries will return an object with
- *   both requested journal rows as well as aggregate information about all
- *   transactions involved in the request; total credits, debits and row counts.
+ * @description
+ * This function simply uses the find() method to filter the posting journal and
+ * (optionally) the general ledger.
  */
 function list(req, res, next) {
   find(req.query)

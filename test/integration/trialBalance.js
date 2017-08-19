@@ -65,7 +65,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary[1].debit_equiv).to.equal(0);
 
         expect(summary[0].credit_equiv).to.equal(0);
-        expect(summary[1].credit_equiv).to.equal(75)
+        expect(summary[1].credit_equiv).to.equal(75);
 
         expect(summary[0].balance_final).to.equal(100);
         expect(summary[1].balance_final).to.equal(-100);
@@ -73,7 +73,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /journal/transactions posts the a transaction to general_ledger and remove it form the posting_general', () => {
+  it('POST /journal/transactions posts the a transaction to general_ledger and remove it from the posting_general', () => {
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
@@ -81,7 +81,11 @@ describe('(/journal/trialbalance) API endpoint', () => {
         return agent.get(`/journal/${POSTING_TXNS[0]}`);
       })
       .then((res) => {
-        helpers.api.errored(res, 404);
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        const isPosted = res.body[0].posted;
+        expect(isPosted).to.equal(1);
       })
       .catch(helpers.handler);
   });
