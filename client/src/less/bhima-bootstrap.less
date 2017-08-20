@@ -14,6 +14,8 @@
 @ima-light-orange:    #fdba64;
 @ima-light-blue:      #6fbdee;
 
+@ima-purple : #7859BF;
+
 /** @todo move all structure code into less with configurable variables */ /** * Application structure variables - these widths are used to determine how much
  * space the tree navigation takes up in its `expanded` and `collapsed` states.
  */
@@ -122,6 +124,11 @@ input[type=number] {-moz-appearance: textfield;}
  */
 .pad-bottom {
   padding-bottom : @grid-gutter-width / 2;
+}
+
+.label.label-emphasize{
+  background-color: @ima-purple;
+  color: #fff;
 }
 
 /* expert mode */
