@@ -23,7 +23,7 @@ function VoucherRegistrySearch() {
   const NUM_USER_RECORDS = 13;
   const NUM_DESCRIPTION_RECORDS = 2;
   const NUM_TRANSACTION_TYPE_RECORD = 1;
-  const transactionTypes = ['Autres Depenses']
+  const transactionTypes = ['Autres Depenses'];
 
   let modal;
   let filters;
