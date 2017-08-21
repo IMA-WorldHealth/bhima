@@ -82,6 +82,14 @@ class SearchModal {
     FU.input('$ctrl.searchQueries.description', description, this.element);
   }
 
+  setEntryExit (value) {
+    FU.radio('$ctrl.searchQueries.is_exit', value);
+  }
+
+  setMovementReason (reason) {
+    FU.uiSelect('$ctrl.searchQueries.flux_id', reason);
+  }
+
   /*
    NOTE:
    Since these modules are shared between all search forms, please make sure you always use
