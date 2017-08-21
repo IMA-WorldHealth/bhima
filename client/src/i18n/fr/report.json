@@ -27,7 +27,7 @@
       "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
     },
     "CASHFLOW" : {
-      "TITLE":"Rapports de flux de trésorerie",
+      "TITLE":"Rapports de flux de trésorerie physique",
       "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie"
     },
     "CASH_INCOME":"Recettes",

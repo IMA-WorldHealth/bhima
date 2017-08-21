@@ -22,10 +22,9 @@
       "EXPLOITATION_RESULT": "Exploitation Result"
     },
     "CASH_EXPENSE": "Expenses",
-
     "CASHFLOW_BY_SERVICE": {"TITLE":"Cash flow By Service", "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"},
     "CASHFLOW" : {
-      "TITLE":"Cash Flow Report",
+      "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash"
     },   
     "CASH_INCOME":"Incomes",

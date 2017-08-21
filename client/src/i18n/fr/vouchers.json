@@ -20,7 +20,7 @@
 "VALID_TOTALS":"Les transactions sont valides (Transactions balancées)",
 "VOUCHER":"Bordereau de Transfert"},
 "TYPES":{"SUPPORT_PAYMENT_DESCRIPTION":"Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."},
-"GLOBAL":{"CASHFLOW_OPTION":"Option pour cashflow",
+"GLOBAL":{"CASHFLOW_OPTION":"Option pour le flux de trésorerie physique",
 "CONVENTION_INVOICES":"Convention - Paiement factures",
 "TRANSFER_DESCRIPTION": "Transfert: De {{ fromAccount }} à {{ toAccount }} pour {{ amount }} {{ symbol }}",
 "SUPPORT_FORM":"Prise en Charge des patients",
