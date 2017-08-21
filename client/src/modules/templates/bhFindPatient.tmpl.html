@@ -31,7 +31,7 @@
         ng-model="$ctrl.idInput"
         ng-if="$ctrl.selected == $ctrl.options.findById"
         ng-keypress="$ctrl.onKeyPress($event)"
-        translate-attr="{ 'placeholder': '$ctrl.selected.placeholder' }"
+        translate-attr="{ 'placeholder': '{{$ctrl.selected.placeholder}}' }"
         ng-required="$ctrl.required">
 
       <!-- search by Name  -->
@@ -47,7 +47,7 @@
         typeahead-loading="$ctrl.loadingPatients"
         typeahead-template-url="/modules/templates/patientList.tmpl.html"
         typeahead-on-select="$ctrl.submit($item)"
-        translate-attr="{ 'placeholder': '$ctrl.selected.placeholder' }"
+        translate-attr="{ 'placeholder': '{{$ctrl.selected.placeholder}}' }"
         ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->

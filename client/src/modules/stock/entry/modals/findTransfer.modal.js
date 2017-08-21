@@ -71,7 +71,7 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   /** get transfer document */
