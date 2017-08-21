@@ -62,8 +62,8 @@ function lookupTransaction(recordUuid) {
     });
 }
 
-// @TODO(sfount) find a more effecient way of combining multiple table sets than a union all on the final results
-//               - new method should be proven as more effecient on large data sets before being accepted
+// @TODO(sfount) find a more efficient way of combining multiple table sets than a union all on the final results
+//               - new method should be proven as more efficient on large data sets before being accepted
 //
 // Current merge logic : subset 1 UNION ALL subset 2 ORDER
 // 1. select all from the posting journal including all joins, conditions etc.
@@ -71,8 +71,9 @@ function lookupTransaction(recordUuid) {
 // 3. UNION ALL between both complete sets of data
 // 4. Apply date order
 function naiveTransactionSearch(options, includeNonPosted) {
-  // hack to ensure only the correct amount of rows are returned - this should be improved in the more effecient method of selection
-  var limitCondition = '';
+  // hack to ensure only the correct amount of rows are returned - this should be improved
+  // in the more efficient method of selection
+  let limitCondition = '';
   if (options.limit) {
     limitCondition = ` LIMIT ${Number(options.limit)}`;
   }
@@ -135,13 +136,11 @@ function buildTransactionQuery(options, posted) {
   filters.equals('origin_id');
   filters.equals('record_uuid');
 
-  filters.equals('record_uuid');
-
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   return {
     sql : filters.applyQuery(sql),
-    parameters : filters.parameters()
+    parameters : filters.parameters(),
   };
 }
 
@@ -167,6 +166,7 @@ function find(options) {
 
 /**
  * @function journalEntryList
+ *
  * Allows you to select which transactions to print
  */
 function journalEntryList(options, source) {
@@ -229,7 +229,7 @@ function getTransaction(req, res, next) {
     .done();
 }
 
-// @TODO(sfount) move edit transaction code to seperate server controller - split editing process
+// @TODO(sfount) move edit transaction code to separate server controller - split editing process
 //               up into smaller self contained methods
 function editTransaction(req, res, next) {
   const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?';
@@ -243,13 +243,18 @@ function editTransaction(req, res, next) {
   const rowsAdded = req.body.added;
   const rowsRemoved = req.body.removed;
 
+  let _oldTransaction;
+
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
 
   // verify that this transaction is NOT in the general ledger already
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
-    .then((currentTransaction) => {
-      const posted = currentTransaction[0].posted;
+    .then((oldTransaction) => {
+      const posted = oldTransaction[0].posted;
+
+      // bind the current transaction under edit as "oldTransaction"
+      _oldTransaction = oldTransaction;
 
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
@@ -258,12 +263,12 @@ function editTransaction(req, res, next) {
 
       // make sure that the user tools cannot simply remove all rows without going through
       // the deletion API
-      if (rowsAdded.length === 0 && rowsRemoved.length >= currentTransaction.length) {
+      if (rowsAdded.length === 0 && rowsRemoved.length >= oldTransaction.length) {
         throw new BadRequest('The editing API cannot remove all rows in a transaction', 'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS');
       }
 
-      // continue with edititing - transform requested additional columns
-      return transformColumns(rowsAdded, true)
+      // continue with editing - transform requested additional columns
+      return transformColumns(rowsAdded, true, _oldTransaction);
     })
     .then((result) => {
       result.forEach((row) => {
@@ -272,7 +277,7 @@ function editTransaction(req, res, next) {
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
 
-      return transformColumns(rowsChanged, false);
+      return transformColumns(rowsChanged, false, _oldTransaction);
     })
     .then((result) => {
       _.each(result, (row, uid) => {
@@ -281,8 +286,8 @@ function editTransaction(req, res, next) {
       });
       return transaction.execute();
     })
-    .then((result) => {
-      // transaction chagnes written successfully - return latest version of transaction
+    .then(() => {
+      // transaction changes written successfully - return latest version of transaction
       return lookupTransaction(recordUuid);
     })
     .then((updatedRows) => {
@@ -300,10 +305,21 @@ function editTransaction(req, res, next) {
 // converts all valid posting journal editable columns into data representations
 // returns valid errors for incorrect data
 // @TODO Many requests are made vs. getting one look up table and using that - this can be greatly optimised
-function transformColumns(rows, newRecord) {
+function transformColumns(rows, newRecord, oldTransaction) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
+  const EXCHANGE_RATE_QUERY = `
+    SELECT ? * IF(enterprise.currency_id = ?, 1, GetExchangeRate(enterprise.id, ?, ?)) AS amount FROM enterprise
+    JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
+  `;
+
+  // these are global/shared properties of the current transaction
+  // TODO(@jniles) - define these shared properties in an isomorphic way to share between
+  // client and server.
+  const projectId = oldTransaction[0].project_id;
+  const transactionDate = oldTransaction[0].trans_date;
+  const currencyId = oldTransaction[0].currency_id;
 
   const databaseRequests = [];
   const databaseValues = [];
@@ -314,7 +330,7 @@ function transformColumns(rows, newRecord) {
   // this works on both the object provided from changes and the array from new
   // rows - that might be a hack
   _.each(rows, (row) => {
-    // supports specific columns that can be eddited on the client
+    // supports specific columns that can be edited on the client
     // accounts are required on new rows, business logic should be moved elsewhere
     if (newRecord && !row.account_number) {
       throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
@@ -376,14 +392,48 @@ function transformColumns(rows, newRecord) {
       delete row.hrReference;
     }
 
-    // in the future this could factor in the currency ID. Right now there is no way
-    // of viewing or editing the debit and credit columns on the client
+    // NOTE: To update the amounts, we need to have the enterprise_id, currency_id, and date.
+    // These are attained from the old transaction (oldTransaction) or the changed transaction.
+
     if (row.debit_equiv) {
-      row.debit = row.debit_equiv;
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_QUERY);
+      databaseValues.push([row.debit_equiv, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+
+        row.debit = amount;
+      });
     }
 
     if (row.credit_equiv) {
-      row.credit = row.credit_equiv;
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_QUERY);
+      databaseValues.push([row.credit_equiv, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+        row.credit = amount;
+      });
     }
 
     // ensure date strings are processed correctly
