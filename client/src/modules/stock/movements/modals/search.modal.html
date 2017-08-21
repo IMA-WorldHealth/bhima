@@ -19,7 +19,7 @@
           <div class="form-group">
             <fieldset>
               <legend translate>STOCK.MOVEMENTS</legend>
-
+              <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
               <label class="control-label">
                 <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
                 <span translate>STOCK.INPUT</span>
@@ -51,13 +51,15 @@
           <!-- lot number  -->
           <div class="form-group">
             <label class="control-label" translate>STOCK.LOT</label>
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
             <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
           </div>
 
           <!-- movements flux -->
           <div class="form-group">
             <label class="control-label" translate>STOCK.FLUX</label>
-
+            <bh-clear on-clear="$ctrl.clear('flux_id')"></bh-clear>
+            
             <ui-select name="inventory" ng-model="$ctrl.searchQueries.flux_id">
               <ui-select-match>
                 <span translate>{{$select.selected.label}}</span>
@@ -72,7 +74,10 @@
           <fieldset>
             <legend translate>FORM.LABELS.DATE</legend>
             <bh-date-interval
-              date-id="date" date-from="$ctrl.searchQueries.dateFrom" date-to="$ctrl.searchQueries.dateTo" mode="clean">
+              date-id="date" 
+              date-from="$ctrl.searchQueries.dateFrom" 
+              date-to="$ctrl.searchQueries.dateTo" 
+              mode="clean">
             </bh-date-interval>
           </fieldset>
         </div>
@@ -86,7 +91,13 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input 
+              name="limit"
+              type="number"
+              bh-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

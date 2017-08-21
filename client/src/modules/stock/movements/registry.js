@@ -149,12 +149,14 @@ function StockMovementsController(Stock, Notify,
 
   // expose to the view
   vm.search = search;
+  vm.openColumnConfigModal = openColumnConfigModal;
   vm.onRemoveFilter = onRemoveFilter;
   vm.getFluxName = getFluxName;
   vm.openReceiptModal = openReceiptModal;
   vm.toggleGroup = toggleGroup;
   vm.selectGroup = selectGroup;
   vm.download = Stock.download;
+  vm.clearGridState = clearGridState;
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
@@ -260,14 +262,17 @@ function StockMovementsController(Stock, Notify,
 
   // search modal
   function search() {
-    Modal.openSearchMovements()
-      .then(function (filters) {
-        if (!filters) { return; }
+    var filtersSnapshot = Stock.filter[filterKey].formatHTTP();
 
-        vm.isToday = false;
-        reload(filters);
+    Modal.openSearchMovements(filtersSnapshot)
+      .then(function (changes) {
+        Stock.filter[filterKey].replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = Stock.filter[filterKey].formatView();
+
+        return load(Stock.filter[filterKey].formatHTTP(true));
       })
-      .catch(Notify.handleError);
+      .catch(angular.noop);
   }
 
   // get flux name
