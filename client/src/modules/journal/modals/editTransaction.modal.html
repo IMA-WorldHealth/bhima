@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <div class="alert alert-danger" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
+    <div class="alert alert-danger" id="validation-errored-alert" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
       <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
     </div>
 
@@ -99,7 +99,7 @@
       <button ng-disabled="!ModalCtrl.settupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
       <button ng-disabled="!ModalCtrl.settupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
     </div>
-    <div id="edit-grid" style="height : 230px" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
+    <div style="height : 230px" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
       <bh-grid-loading-indicator
         loading-state="ModalCtrl.loadingTransaction"
         empty-state="ModalCtrl.gridOptions.data.length === 0"
@@ -109,7 +109,7 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-default" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
+  <button class="btn btn-default" data-method="cancel" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
   <bh-loading-button ng-if="!ModalCtrl.readOnly" disabled="!ModalCtrl.settupComplete" loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
     <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
   </bh-loading-button>

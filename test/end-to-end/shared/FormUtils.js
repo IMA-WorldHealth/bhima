@@ -15,6 +15,7 @@ const buttons = {
   search : function search() { return $('[data-method="search"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
+  edit   : function edit() { return $('[data-method="edit"]').click(); },
   clear  : function clear() { return $('[data-method="clear"]').click(); },
   print  : function print() { return $('[data-method="print"]').click(); },
   back   : function back() { return $('[data-method="back"]').click(); },
