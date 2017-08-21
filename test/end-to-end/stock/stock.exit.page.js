@@ -36,8 +36,7 @@ function StockExitPage() {
    */
   page.setService = function setService(service) {
     components.stockEntryExitType.set('service');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    FU.uiSelect('$ctrl.selected', service, modalContent);
+    components.depotSelect.set(service);
     FU.modal.submit();
   };
 
@@ -47,8 +46,7 @@ function StockExitPage() {
    */
   page.setDestinationDepot = function setDestinationDepot(depot) {
     components.stockEntryExitType.set('depot');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    FU.uiSelect('$ctrl.selected', depot, modalContent);
+    components.depotSelect.set(depot);
     FU.modal.submit();
   };
 

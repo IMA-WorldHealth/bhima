@@ -76,41 +76,41 @@ function StockMovementsRegistryTests() {
     // FIXME: reasons must not depend on translations
     //        selection with `id` works but it is not completed
 
-    // from purchase  
+    // from purchase
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 8 + depotGroupingRow);
 
-    // to patient 
+    // to patient
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
-    // to depot 
+    // to depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
 
     // from depot
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'En provenance d\'un depot');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // positive adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Positif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // negative adjustment
     FU.buttons.search();
     FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Negatif)');
     FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
 
     // clear filters
     FU.buttons.clear();

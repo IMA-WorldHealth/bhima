@@ -1,9 +1,9 @@
 angular.module('bhima.services')
 .service('ServiceService', ServiceService);
 
-ServiceService.$inject = [ '$http', 'util' ];
+ServiceService.$inject = ['$http', 'util'];
 
-function ServiceService ($http, util) {
+function ServiceService($http, util) {
   var service = this;
   var baseUrl = '/services/';
 
@@ -12,26 +12,26 @@ function ServiceService ($http, util) {
   service.update = update;
   service.delete = del;
 
-  function create(service) {
-    return $http.post(baseUrl, service)
+  function create(serviceObject) {
+    return $http.post(baseUrl, serviceObject)
     .then(util.unwrapHttpResponse);
   }
 
-  function read(id, params) {
-     var url = baseUrl.concat(id || '');
-     return $http.get(url, { params : params })
+  function read(id, parameters) {
+    var url = baseUrl.concat(id || '');
+    return $http.get(url, { params : parameters })
      .then(util.unwrapHttpResponse);
   }
 
-  function update(id, service) {
-    delete service.abbr;
-    delete service.enterprise_name;
-    delete service.cc_id;
-    delete service.pc_id;
-    delete service.cost_center_name;
-    delete service.profit_center_name;
+  function update(id, serviceObject) {
+    delete serviceObject.abbr;
+    delete serviceObject.enterprise_name;
+    delete serviceObject.cc_id;
+    delete serviceObject.pc_id;
+    delete serviceObject.cost_center_name;
+    delete serviceObject.profit_center_name;
 
-    return $http.put(baseUrl + id, service)
+    return $http.put(baseUrl + id, serviceObject)
     .then(util.unwrapHttpResponse);
   }
 

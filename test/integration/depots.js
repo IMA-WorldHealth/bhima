@@ -65,7 +65,7 @@ describe('(/depots) The depots API ', function () {
   });
 
   it('POST /depots should not create when missing data', function () {
-    delete badDepot.enterprise_id;
+    delete badDepot.text;
     return agent.post('/depots')
     .send(badDepot)
     .then(function (res) {
@@ -91,7 +91,7 @@ describe('(/depots) The depots API ', function () {
   it('GET /depots should returns the list of depots', function () {
     return agent.get('/depots')
     .then(function (res) {
-      helpers.api.listed(res, 4);
+      helpers.api.listed(res, 7);
     })
     .catch(helpers.handler);
   });

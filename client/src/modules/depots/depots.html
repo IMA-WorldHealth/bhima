@@ -1,131 +1,44 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path="DepotCtrl.bcPaths"
-  button="DepotCtrl.bcButtons">
-</bh-breadcrumb>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> DEPOT.TITLE </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ng-click="DepotCtrl.createDepot()" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>DEPOT.ADD_DEPOT</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="DepotCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : DepotCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div class="row">
+    <div id="depot-grid"
+      ui-grid="DepotCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
 
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            {{ "DEPOT.DEPOTS_LIST" | translate }}
-          </div>
-          <table class="table table-condensed">
-            <thead>
-              <tr>
-                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
-                <th>{{ "TABLE.COLUMNS.IS_WAREHOUSE" | translate }}</th>
-                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="depot in DepotCtrl.depotList">
-                <td>{{ depot.text }}</td>
-                <td>
-                  <i ng-if="depot.is_warehouse" class="glyphicon glyphicon-ok-sign"></i>
-                </td>
-                <td>
-                  <a name="depot-{{depot.text}}" class="btn btn-xs btn-default"
-                    ng-click="DepotCtrl.update(depot.uuid)">
-                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
-                  </a>
-
-                  <a name="delete-{{depot.text}}" class="btn btn-xs btn-danger"
-                    ng-click="DepotCtrl.remove(depot.uuid)">
-                    <i class="glyphicon glyphicon-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}
-                  </a>
-                </td>
-              </tr>
-              <tr ng-if="!DepotCtrl.depotList.length">
-                <td colspan="4" class="text-center"><i>{{ "DEPOT.NO_DEPOT" | translate }}</i></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-md-6" ng-switch="DepotCtrl.view">
-
-        <div class="alert alert-info" ng-switch-default>
-          <h4>{{ "DEPOT.MAIN.TITLE" | translate }}</h4>
-          <p>{{ "DEPOT.DESCRIPTION" | translate }}</p>
-        </div>
-
-        <div ng-switch-when="action">
-          <form class="panel panel-primary"
-            ng-class="{ 'panel-danger': DepotCtrl.action === 'remove'}"
-            name="ActionForm" ng-submit="DepotCtrl.submit(ActionForm)" novalidate>
-            <div class="panel-heading">
-              {{ DepotCtrl.actionTitle | translate }}
-            </div>
-            <div class="panel-body">
-
-              <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
-                <label class="control-label">
-                  {{ 'FORM.LABELS.NAME' | translate }}
-                </label>
-                <input
-                  class="form-control"
-                  name="text"
-                  ng-maxlength="DepotCtrl.maxLength"
-                  ng-model="DepotCtrl.depot.text" required>
-                <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label">
-                  <input
-                    type="checkbox"
-                    name="is_warehouse"
-                    ng-true-value="1"
-                    ng-false-value="0"
-                    ng-model="DepotCtrl.depot.is_warehouse">
-                  {{ "FORM.LABELS.IS_WAREHOUSE" | translate }}
-                </label>
-              </div>
-
-            </div>
-            <div class="panel-footer">
-
-              <button class="btn btn-default pull-right" type="submit" data-method="submit">
-                {{ "FORM.BUTTONS.SUBMIT" | translate }}
-              </button>
-              <button class="btn btn-default" type="button" ng-click="DepotCtrl.cancel()" data-method="cancel">
-                {{ "FORM.BUTTONS.CANCEL" | translate }}
-              </button>
-
-              <div class="clearfix"></div>
-
-              <!-- error feedback area -->
-              <div ng-if="DepotCtrl.state.errored && ActionForm.$submitted"
-                class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
-              </div>
-
-            </div>
-          </form>
-        </div>
-
-        <!-- success feedback -->
-        <div class="alert alert-success" ng-switch-when="success">
-          <h4 id="update_success" ng-if="DepotCtrl.state.updated">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFO.UPDATE_SUCCESS" | translate }}
-          </h4>
-          <h4 id="create_success" ng-if="DepotCtrl.state.created">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFO.SAVE_SUCCESS" | translate }}
-          </h4>
-          <h4 id="delete_success" ng-if="DepotCtrl.state.removed">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFO.DELETE_SUCCESS" | translate }}
-          </h4>
-        </div>
-
-      </div>
+      <bh-grid-loading-indicator
+        loading-state="DepotCtrl.loading"
+        empty-state="DepotCtrl.gridOptions.data.length === 0"
+        error-state="DepotCtrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
   </div>
 </div>

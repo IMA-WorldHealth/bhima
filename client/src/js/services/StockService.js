@@ -70,16 +70,16 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   function removeLotFilter(key) {
     StockLotFilters.resetFilterState(key);
-  };
+  }
 
   // load filters from cache
   function cacheLotFilters() {
     filterLotCache.filters = StockLotFilters.formatCache();
-  };
+  }
 
   function loadCachedLotFilters() {
     StockLotFilters.loadCache(filterLotCache.filters || {});
-  };
+  }
 
   // downloads a type of report based on the
   function download(type) {
@@ -91,10 +91,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
     // return  serialized options
     return $httpParamSerializer(options);
-  };
+  }
 
   // uniformSelectedEntity function implementation
-  // change name, text and display_nam into displayName  
+  // change name, text and display_nam into displayName
   function uniformSelectedEntity(entity) {
     if (!entity) {
       return {};
@@ -107,7 +107,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       }
     });
 
-    return {reference : entity.reference || '', displayName : entity.displayName || ''};
+    return { reference : entity.reference || '', displayName : entity.displayName || '' };
   }
 
   var service = {
@@ -121,7 +121,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     removeLotFilter : removeLotFilter,
     loadCachedLotFilters : loadCachedLotFilters,
     download     : download,
-    uniformSelectedEntity : uniformSelectedEntity
+    uniformSelectedEntity : uniformSelectedEntity,
   };
 
   return service;

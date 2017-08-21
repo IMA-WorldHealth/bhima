@@ -11,15 +11,16 @@
 
   <div class="modal-body">
     <div class="form-group">
-      <label class="control-label" translate>FORM.LABELS.SERVICE</label>
-      <ui-select name="service" ng-model="$ctrl.selected">
-        <ui-select-match>
-          <span>{{$select.selected.name}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="service as service in $ctrl.services | filter:$select.search">
-          <span ng-bind-html="service.name | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
+      <bh-depot-select
+        label="'SERVICE.LABEL'"
+        placeholder="'FORM.SELECT.SERVICE'"
+        depot-uuid="$ctrl.selected.uuid"
+        except-uuid="$ctrl.Data.depot.uuid"
+        on-select-callback="$ctrl.onSelectDepot(depot)"
+        validate-trigger="FindForm.$submitted"
+        only-services="true"
+        required="true">
+      </bh-depot-select>
     </div>
   </div>
 

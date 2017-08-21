@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : $ctrl.validateTrigger && DepotForm.depot_uuid.$invalid }">
 
     <label class="control-label" translate>
-      STOCK.DEPOT
+      {{ $ctrl.label }}
     </label>
     
     <ng-transclude></ng-transclude>
@@ -13,7 +13,7 @@
       ng-model="$ctrl.depotUuid"
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.DEPOT' | translate }}">
+      <ui-select-match placeholder="{{ $ctrl.placeholder | translate }}">
         <span>{{$select.selected.text}}</span>
       </ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="depot.uuid as depot in $ctrl.depots | filter: { 'text': $select.search }">

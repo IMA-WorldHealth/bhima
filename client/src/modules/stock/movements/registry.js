@@ -21,26 +21,27 @@ function StockMovementsController(Stock, Notify,
 
   // bind flux id with receipt
   var mapFlux = {
-    1  : { receipt: ReceiptModal.stockEntryPurchaseReceipt },
-    2  : { receipt: ReceiptModal.stockEntryDepotReceipt },
-    3  : { receipt: ReceiptModal.stockAdjustmentReceipt },
-    8  : { receipt: ReceiptModal.stockExitDepotReceipt },
-    9  : { receipt: ReceiptModal.stockExitPatientReceipt },
-    10 : { receipt: ReceiptModal.stockExitServiceReceipt },
-    11 : { receipt: ReceiptModal.stockExitLossReceipt },
-    12 : { receipt: ReceiptModal.stockAdjustmentReceipt },
-    13 : { receipt: ReceiptModal.stockEntryIntegrationReceipt },
+    1  : { receipt : ReceiptModal.stockEntryPurchaseReceipt },
+    2  : { receipt : ReceiptModal.stockEntryDepotReceipt },
+    3  : { receipt : ReceiptModal.stockAdjustmentReceipt },
+    5  : { receipt : ReceiptModal.stockEntryDepotReceipt },
+    8  : { receipt : ReceiptModal.stockExitDepotReceipt },
+    9  : { receipt : ReceiptModal.stockExitPatientReceipt },
+    10 : { receipt : ReceiptModal.stockExitServiceReceipt },
+    11 : { receipt : ReceiptModal.stockExitLossReceipt },
+    12 : { receipt : ReceiptModal.stockAdjustmentReceipt },
+    13 : { receipt : ReceiptModal.stockEntryIntegrationReceipt },
   };
 
   // grouping box
   vm.groupingBox = [
-    { label: 'STOCK.INVENTORY', value: 'text' },
-    { label: 'STOCK.IO', value: 'io' },
-    { label: 'STOCK.LOT', value: 'label' },
+    { label : 'STOCK.INVENTORY', value : 'text' },
+    { label : 'STOCK.IO', value : 'io' },
+    { label : 'STOCK.LOT', value : 'label' },
   ];
 
   // global variables
-  vm.filters = { lang: Languages.key };
+  vm.filters = { lang : Languages.key };
   vm.formatedFilters = [];
   vm.enterprise = Session.enterprise;
 
@@ -182,7 +183,7 @@ function StockMovementsController(Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
-    var today = { defaultPeriod: 'today' };
+    var today = { defaultPeriod : 'today' };
     var params = filters;
 
     var noFilter = (!filters);
@@ -191,7 +192,7 @@ function StockMovementsController(Stock, Notify,
     if (noAttributes) {
       params = today;
       vm.isToday = true;
-      vm.filters = { display: today, identifiers: today };
+      vm.filters = { display : today, identifiers : today };
       vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
     }
 

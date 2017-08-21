@@ -34,9 +34,11 @@ function list(req, res, next) {
     sql = `
       SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid, 
         s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name,
+        d.text as depot_name, BUID(d.uuid) as service_depot_uuid
       FROM service AS s
-      JOIN enterprise AS e ON s.enterprise_id = e.id
+      JOIN enterprise AS e ON s.enterprise_id = e.id 
+      LEFT JOIN depot d ON d.service_uuid = s.uuid
       LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
       LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
   }
@@ -58,27 +60,41 @@ function list(req, res, next) {
  * Create a service in the database
  */
 function create(req, res, next) {
-  const record = req.body;
-  const sql = `INSERT INTO service SET ?`;
+  const serviceRecord = req.body;
+  const transaction = db.transaction();
 
   // add contextual information
-  record.enterprise_id = req.session.enterprise.id;
-
-  delete record.id;
+  serviceRecord.enterprise_id = req.session.enterprise.id;
 
   // service unique uuid as entity uuid
-  record.uuid = db.bid(uuid.v4());
+  serviceRecord.uuid = db.bid(uuid.v4());
 
-  db.exec(sql, [record])
+  // remove id if it exists
+  delete serviceRecord.id;
+
+  // depot parameters
+  const depotRecord = {
+    uuid : db.bid(uuid.v4()),
+    text : 'Service - '.concat(serviceRecord.name),
+    enterprise_id : serviceRecord.enterprise_id,
+    service_uuid : serviceRecord.uuid,
+  };
+
+  const insertService = `INSERT INTO service SET ?`;
+  const insertDepot = `INSERT INTO depot SET ?`;
+
+  transaction.addQuery(insertService, [serviceRecord]);
+  transaction.addQuery(insertDepot, [depotRecord]);
+
+  transaction.execute()
     .then((result) => {
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.CREATE,
         entity : Topic.entities.SERVICE,
         user_id : req.session.user.id,
-        id : result.insertId,
+        id : result[0].insertId,
       });
-
-      res.status(201).json({ id : result.insertId });
+      res.status(201).json({ id : result[0].insertId });
     })
     .catch(next)
     .done();
@@ -134,11 +150,22 @@ function update(req, res, next) {
  * Remove a service in the database.
  */
 function remove(req, res, next) {
-  const sql = 'DELETE FROM service WHERE id = ?;';
+  const transaction = db.transaction();
 
-  db.exec(sql, [req.params.id])
+  const queryService = 'SELECT uuid FROM service WHERE id = ?;';
+
+  const removeDepot = 'DELETE FROM depot WHERE service_uuid = ?;';
+
+  const removeService = 'DELETE FROM service WHERE uuid = ?;';
+
+  db.one(queryService, [req.params.id])
+    .then((service) => {
+      transaction.addQuery(removeDepot, [service.uuid]);
+      transaction.addQuery(removeService, [service.uuid]);
+      return transaction.execute();
+    })
     .then((result) => {
-      if (!result.affectedRows) {
+      if (!result[1].affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
 
