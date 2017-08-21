@@ -2,7 +2,10 @@
   "REPORT":{
     "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Rapport du Compte",
-    "AGED_CREDITORS":"Balance agée des Créances",
+    "AGED_CREDITORS":{
+      "TITLE":"Balance agée des Créances",
+      "DESCRIPTION":"Ce rapport affiche toutes les créances par Créditeurs et par période"
+    },
     "AGED_DEBTORS":{
       "TITLE":"Balance agée des Conventionnés",
       "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"

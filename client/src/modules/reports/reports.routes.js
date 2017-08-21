@@ -15,6 +15,7 @@ angular.module('bhima.routes')
       'inventory_report',
       'inventory_file',
       'cashflowByService',
+      'aged_creditors',
     ];
 
     $stateProvider
@@ -31,12 +32,12 @@ angular.module('bhima.routes')
         },
         abstract : true,
       })
-       .state('reportsBase.reportsArchive', {
-         url : '/:key/archive',
-         controller : 'ReportsArchiveController as ArchiveCtrl',
-         templateUrl : 'modules/reports/archive.html',
-         params : { key : { squash : true, value : null } },
-       });
+      .state('reportsBase.reportsArchive', {
+        url : '/:key/archive',
+        controller : 'ReportsArchiveController as ArchiveCtrl',
+        templateUrl : 'modules/reports/archive.html',
+        params : { key : { squash : true, value : null } },
+      });
 
     SUPPORTED_REPORTS.forEach(function (key) {
       $stateProvider.state('reportsBase.'.concat(key), {
