@@ -11,91 +11,84 @@ describe('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
+  const editingGridId = 'transaction-edit-grid';
+
   // simulates a double click
   const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
 
   before(() => helpers.navigate(path));
 
   it('edits a transaction change an account', () => {
-    // click the "grouping" button
-    FU.buttons.grouping();
-    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCellName(gridId, 1, 4);
+    GU.selectRow(gridId, 0);
+    FU.buttons.edit();
+
+    const accountNumberCell = GU.getCell(editingGridId, 0, 1);
     doubleClick(accountNumberCell);
+    FU.typeahead('accountInputValue', '1100');
 
-    FU.typeahead('accountInputValue', '1100', accountNumberCell);
-    element.all(by.css('[data-method="save"]')).click();
-
+    FU.buttons.submit();
     components.notification.hasSuccess();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
   });
 
 
   it('edits a transaction change value of Debit and Credit', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const debitCell = GU.getCellName(gridId, 1, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
+    GU.selectRow(gridId, 0);
+    FU.buttons.edit();
+
+    const debitCell = GU.getCell(editingGridId, 0, 2);
+    const creditCell = GU.getCell(editingGridId, 1, 3);
+
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(150);
 
     doubleClick(creditCell);
     creditCell.element(by.css('input')).sendKeys(150);
 
-    element.all(by.css('[data-method="save"]')).click();
-
+    FU.buttons.submit();
     components.notification.hasSuccess();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
   });
 
   // Test for validation
-  it('Preventing a single-line transaction', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
+  it.skip('Preventing a single-line transaction', () => {
+    GU.selectRow(gridId, 1);
+    FU.buttons.edit();
 
-    element.all(by.css('[class="ui-grid-selection-row-header-buttons ui-grid-icon-ok ng-scope"]')).get(3).click();
+    GU.selectRow(editingGridId, 3);
+    FU.buttons.delete();
+    FU.buttons.submit();
 
-    element.all(by.css('[data-method="delete"]')).click();
-    element.all(by.css('[data-method="save"]')).click();
+    element(by.id('validation-errored-alert')).isPresent();
 
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    // element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.cancel();
   });
 
-  it('Preventing unbalanced transaction', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
+  it.skip('Preventing unbalanced transaction', () => {
+    GU.selectRow(gridId, 1);
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 3, 6);
+    const debitCell = GU.getCellName(gridId, 2, 3);
+    const creditCell = GU.getCellName(gridId, 3, 4);
 
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(100);
 
-    browser.actions().mouseMove(creditCell).doubleClick().perform();
+    doubleClick(creditCell);
     creditCell.element(by.css('input')).sendKeys(50);
 
-    element.all(by.css('[data-method="save"]')).click();
-
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.submit();
+    element(by.id('validation-errored-alert')).isPresent();
+    FU.buttons.cancel();
   });
 
-  it('Preventing transaction who have debit and Credit null', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
+  it.skip('Preventing transaction who have debit and Credit null', () => {
+    GU.selectRow(gridId, 1);
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
+    const debitCell = GU.getCellName(gridId, 2, 3);
+    const creditCell = GU.getCellName(gridId, 2, 4);
 
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(0);
@@ -103,21 +96,18 @@ describe('Edit Posting Journal', () => {
     doubleClick(creditCell);
     creditCell.element(by.css('input')).sendKeys(0);
 
-    element.all(by.css('[data-method="save"]')).click();
-
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.submit();
+    element(by.id('validation-errored-alert')).isPresent();
+    FU.buttons.cancel();
   });
 
-  it('Preventing transaction who was debited and Credited in a same line', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
+  it.skip('Preventing transaction who was debited and Credited in a same line', () => {
+    GU.selectRow(gridId, 1);
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
+    const debitCell = GU.getCellName(gridId, 2, 3);
+    const creditCell = GU.getCellName(gridId, 2, 4);
 
     doubleClick(debitCell);
     debitCell.element(by.css('input')).sendKeys(50);
@@ -125,11 +115,8 @@ describe('Edit Posting Journal', () => {
     doubleClick(creditCell);
     creditCell.element(by.css('input')).sendKeys(50);
 
-    element.all(by.css('[data-method="save"]')).click();
-
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.submit();
+    element(by.id('validation-errored-alert')).isPresent();
+    FU.buttons.cancel();
   });
 });
