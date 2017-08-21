@@ -1,12 +1,17 @@
-{"PATIENT_REGISTRY":{"CARD":"Carte",
-"DAY":"jour",
-"DAYS":"jours",
-"INVOICES":"Les factures",
-"INVOICE":"La facture",
-"MONTH":"mois",
-"MONTHS":"mois",
-"PAYMENTS":"Les paiements",
-"RECORD":"Enregistrement",
-"YEAR_OLD":"an",
-"YEARS_OLD":"ans",
-"TITLE":"Registre des patients"}}
+{
+  "PATIENT_REGISTRY":{
+    "CARD":"Carte",
+    "DAY":"jour",
+    "DAYS":"jours",
+    "INVOICES":"Les Factures",
+    "VOUCHERS":"Les Bordereaux",
+    "INVOICE":"La facture",
+    "MONTH":"mois",
+    "MONTHS":"mois",
+    "PAYMENTS":"Les Paiements",
+    "RECORD":"Enregistrement",
+    "YEAR_OLD":"an",
+    "YEARS_OLD":"ans",
+    "TITLE":"Registre des Patients"
+  }
+}

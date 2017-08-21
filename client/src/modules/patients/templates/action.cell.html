@@ -32,5 +32,10 @@
         <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
       </a>
     </li>
+    <li>
+      <a data-method="voucher" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }]})" href>
+        <span class="fa fa-address-card-o"></span> <span translate>PATIENT_REGISTRY.VOUCHERS</span>
+      </a>
+    </li>
   </ul>
 </div>
