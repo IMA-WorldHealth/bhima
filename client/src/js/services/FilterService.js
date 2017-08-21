@@ -82,7 +82,7 @@ function FilterService(Store) {
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) {  return filter._key; });
+    var activeKeys = activeFilters.map(function (filter) { return filter._key; });
 
     function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1; }
 
