@@ -40,9 +40,10 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     type                 : 'number',
     displayName          : 'TABLE.COLUMNS.DEBIT',
     headerCellFilter     : 'translate',
-    footerCellClass      : 'text-right text-danger',
     cellClass            : 'text-right',
     cellFilter           : 'currency:'.concat(currencyId),
+    footerCellClass      : 'text-right text-danger',
+    footerCellFilter     : 'currency:'.concat(currencyId),
     aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
   }, {
@@ -50,9 +51,10 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     type                 : 'number',
     displayName          : 'TABLE.COLUMNS.CREDIT',
     headerCellFilter     : 'translate',
-    footerCellClass      : 'text-right text-danger',
-    cellFilter           : 'currency:'.concat(currencyId),
     cellClass            : 'text-right',
+    cellFilter           : 'currency:'.concat(currencyId),
+    footerCellClass      : 'text-right text-danger',
+    footerCellFilter     : 'currency:'.concat(currencyId),
     aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
   }, {
@@ -90,6 +92,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     // api.expandable.on.rowExpandedStateChanged(null, loadSubGridRecords);
   }
 
+  /*
   function loadSubGridRecords(row) {
     var accountId = row.entity.accountId;
 
@@ -107,6 +110,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
         vm.loadingSubGrid = false;
       });
   }
+  */
 
   subGridColumns = [{
     field            : 'trans_id',
