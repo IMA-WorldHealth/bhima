@@ -6,6 +6,9 @@
  * generates a receipt.  It provides an identifier that is templated into the
  * human readable ID on HTTP requests to provide more context than the simple
  * {project_id}.{increment} schema previously used.
+ *
+ * documentPath - server side route for generating the entities document
+ * redirectPath - direct to client side entity representation
  */
 
 module.exports = {
@@ -31,7 +34,8 @@ module.exports = {
   PATIENT : {
     key          : 'PA',
     table        : 'patient',
-    redirectPath : '/#/patients/?',
+    documentPath:'/reports/finance/financialPatient/',
+    redirectPath : '/#/patients/?'
   },
   DOCUMENT : {
     key : 'DO',
