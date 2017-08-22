@@ -204,6 +204,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Stock
 (160, 1), (161, 1), (162, 1), (163, 1), (164, 1), (165, 1), (166, 1), (167, 1), (181, 1), (182, 1),
 
+-- [Folder] reports/aged_creditors: The Aged Creditor report
+(168, 1),
+
 -- Account statement
 (170, 1),
 (171, 1),

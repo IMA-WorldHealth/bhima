@@ -68,7 +68,7 @@ INSERT INTO unit VALUES
   (165, 'Stock Entry', 'STOCK.ENTRY', 'The stock entry module', 160, '/partials/stock/entry', '/stock/entry'),
   (166, 'Stock Origins', 'STOCK.ORIGINS', 'The stock origins module', 160, '/partials/stock/origins', '/stock/origins'),
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/partials/stock/adjustment', '/stock/adjustment'),
-  -- (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/partials/finance/reports/agedCreditors', '/reports/agedCreditors'),
+  (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/modules/reports/aged_creditors', '/reports/aged_creditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/partials/account_statement/', '/account_statement'),
   (171, 'Balance Sheet Statement', 'TREE.BALANCE_SHEET', 'Balance Sheet Module', 144, '/modules/reports/balance_sheet_report/', '/reports/balance_sheet_report'),
   (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
@@ -102,11 +102,12 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE.TITLE'),
   (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS'),
-  (10, 'agedCreditors','REPORT.AGED_CREDITORS'),
+  (10, 'aged_creditors','TREE.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
   (12, 'cash_report', 'REPORT.CASH_REPORT'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT');
+
 
 -- Supported Languages
 INSERT INTO `language` VALUES

@@ -2,7 +2,10 @@
   "REPORT": {
     "CLIENTS" : "Rapport Clients",
     "ACCOUNT": "Account Statement",
-    "AGED_CREDITORS": "Aged Debts",
+    "AGED_CREDITORS":{
+     "TITLE":"Aged Creditors",
+     "DESCRIPTION":"This report displays all receivables owed to creditors by period."
+    },
     "AGED_DEBTORS": {
       "TITLE": "Aged Debtors",
       "DESCRIPTION": "This report show all the debts of the clients, while specifying the debts per period"

@@ -82,7 +82,7 @@ function queryContext(queryParams) {
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
-    WHERE DATE(gl.trans_date) <= DATE(?)  
+    WHERE DATE(gl.trans_date) <= DATE(?)
     GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY dg.name;
