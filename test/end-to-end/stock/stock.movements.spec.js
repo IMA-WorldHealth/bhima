@@ -1,135 +1,120 @@
-/* global element, by, browser */
-'use strict';
-
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
+const SearchModal = require('../shared/search.page');
+const Filters = require('../shared/components/bhFilters');
 
 function StockMovementsRegistryTests() {
+  let modal;
+  let filters;
 
   // navigate to the page
   before(() => helpers.navigate('#/stock/movements'));
 
-  const gridId = 'stock-movements-grid';
+  beforeEach(() => {
+    SearchModal.open();
+    modal = new SearchModal('stock-movements-search');
+    filters = new Filters();
+  });
 
+  afterEach(() => {
+    filters.resetFilters();
+  });
+
+  const gridId = 'stock-movements-grid';
   const depotGroupingRow = 1;
 
-  it('find entry/exit movements', () => {
+  it('finds lot for all time', () => {
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    modal.submit();
+    GU.expectRowCount(gridId, 25);
+  });
 
-    // entry movements
-    FU.buttons.search();
-    FU.radio('$ctrl.bundle.is_exit', 0);
-    FU.modal.submit();
+  it('find entry movements ', () => {
+    // for Entry
+    modal.setEntryExit(0);
+    modal.submit();
     GU.expectRowCount(gridId, 15 + (2 * depotGroupingRow));
+  });
 
-    // exit movements
-    FU.buttons.search();
-    FU.radio('$ctrl.bundle.is_exit', 1);
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
-
-    // clear filters
-    FU.buttons.clear();
+  it('find exit movements', () => {
+    // for Exit
+    modal.setEntryExit(1);
+    modal.submit();
+    GU.expectRowCount(gridId, 16 + depotGroupingRow);
   });
 
   it('find movements by depot', () => {
-
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Secondaire');
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 6 + depotGroupingRow);
-
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.depot_uuid', 'Depot Principal');
-    FU.modal.submit();
+    modal.setDepot('Depot Principal');
+    modal.submit();
     GU.expectRowCount(gridId, 17 + depotGroupingRow);
-
-    // clear filters
-    FU.buttons.clear();
   });
 
   it('find movements by inventory', () => {
-
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.inventory_uuid', 'First Test Inventory Item');
-    FU.modal.submit();
+    modal.setInventory('First Test Inventory Item');
+    modal.submit();
     GU.expectRowCount(gridId, 13 + (2 * depotGroupingRow));
-
-    // clear filters
-    FU.buttons.clear();
   });
 
 
   it('find movements by lot name', () => {
-
-    FU.buttons.search();
-    FU.input('$ctrl.bundle.label', 'VITAMINE-A');
+    modal.setLotLabel('VITAMINE-A');
     FU.modal.submit();
     GU.expectRowCount(gridId, 5 + depotGroupingRow);
-
-    // clear filters
-    FU.buttons.clear();
   });
 
-  it('find by lots reasons', () => {
-    // FIXME: reasons must not depend on translations
-    //        selection with `id` works but it is not completed
-
-    // from purchase  
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'Commande d\'achat');
-    FU.modal.submit();
+  it('find by lots reasons for purchase order', () => {
+    // FIX ME: reasons must not depend on translations
+    //selection with `id` works but it is not completed
+    modal.setMovementReason('Commande d\'achat');
+    modal.submit();
     GU.expectRowCount(gridId, 24 + depotGroupingRow);
+  });
 
-    // to patient 
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un patient');
-    FU.modal.submit();
+  it('find by lots reasons for distribution to patient', () => {
+     // to patient
+    modal.setMovementReason('Vers un patient');
+    modal.submit();
+    GU.expectRowCount(gridId, 24 + depotGroupingRow);    
+  });
+
+  it('find by lots reasons for distribution to depot', () => {
+    modal.setMovementReason('Vers un depot');
+    modal.submit();
     GU.expectRowCount(gridId, 24 + depotGroupingRow);
+  });
 
-    // to depot 
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'Vers un depot');
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
-
+  it('find by lots reasons for distribution from depot', () => {
     // from depot
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'En provenance d\'un depot');
-    FU.modal.submit();
+    modal.setMovementReason('En provenance d\'un depot');
+    modal.submit();
     GU.expectRowCount(gridId, 24 + depotGroupingRow);
-
-    // positive adjustment
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Positif)');
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
-
-    // negative adjustment
-    FU.buttons.search();
-    FU.uiSelect('$ctrl.bundle.flux_id', 'Ajustement (Negatif)');
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
-
-    // clear filters
-    FU.buttons.clear();
   });
+
+  it('find by lots reasons for positive adjustement', () => {
+    modal.setMovementReason('Ajustement (Positif)');
+    modal.submit();
+    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+  });
+
+  it('find by lots reasons for negative adjustement', () => {
+    modal.setMovementReason('Ajustement (Negatif)');
+    modal.submit();
+    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+  });  
 
   it('find lots by date - Fev 2017', () => {
-
-    FU.buttons.search();
-    components.dateInterval.range('02/02/2017', '02/02/2017');
-    FU.modal.submit();
+    modal.setdateInterval('02/02/2017', '02/02/2017', 'date');
+    modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);
+  });
 
-    FU.buttons.search();
-    components.dateInterval.range('01/01/2015', '30/01/2015');
-    FU.modal.submit();
+  it('find zero lot by date - january 2015', () => {
+    modal.setdateInterval('01/01/2015', '30/01/2015', 'date');
+    modal.submit();
     GU.expectRowCount(gridId, 0);
-
-    // clear filters
-    FU.buttons.clear();
   });
 }
 

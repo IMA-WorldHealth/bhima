@@ -1,7 +1,7 @@
 <form
   name="ModalForm"
   ng-submit="$ctrl.submit(ModalForm)"
-  data-modal="stock-lots-search"
+  data-modal="stock-movements-search"
   novalidate>
 
   <div class="modal-header">
@@ -12,80 +12,100 @@
   </div>
 
   <div class="modal-body">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- movements  -->
+          <div class="form-group">
+            <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
+            <div class="radio">
+              <label>
+                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
+                <span translate>STOCK.INPUT</span>
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
+                <span translate>STOCK.OUTPUT</span>
+              </label>
+            </div>
+          </div>
 
-    <!-- movements  -->
-    <div class="form-group">
-      <fieldset>
-        <legend translate>STOCK.MOVEMENTS</legend>
+          <!-- depot -->
+          <bh-depot-select
+            depot-uuid="$ctrl.searchQueries.depot_uuid"
+            required="false"
+            on-select-callback="$ctrl.onSelectDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
 
-        <label class="control-label">
-          <input type="radio" name="is_exit" value="0" ng-model="$ctrl.bundle.is_exit"> 
-          <span translate>STOCK.INPUT</span>
-        </label> &nbsp; 
+          <!-- inventory -->
+          <bh-inventory-select
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
 
-        <label class="control-label">
-          <input type="radio" name="is_exit" value="1" ng-model="$ctrl.bundle.is_exit"> 
-          <span translate>STOCK.OUTPUT</span>
-        </label> &nbsp;
-      </fieldset>
-    </div>
+          <!-- lot number  -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.LOT</label>
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
+            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
+          </div>
 
-    <!-- depot -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.DEPOT</label>
+          <!-- movements flux -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.FLUX</label>
+            <bh-clear on-clear="$ctrl.clear('flux_id')"></bh-clear>
+            
+            <ui-select name="inventory" ng-model="$ctrl.searchQueries.flux_id">
+              <ui-select-match>
+                <span translate>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
+                <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
 
-      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.text}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
-          <span ng-bind-html="depot.text | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+          <!-- date -->
+          <fieldset>
+            <legend translate>FORM.LABELS.DATE</legend>
+            <bh-date-interval
+              date-id="date" 
+              date-from="$ctrl.searchQueries.dateFrom" 
+              date-to="$ctrl.searchQueries.dateTo" 
+              mode="clean">
+            </bh-date-interval>
+          </fieldset>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
 
-    <!-- inventory -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.INVENTORY</label>
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input 
+              name="limit"
+              type="number"
+              bh-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
-          <span ng-bind-html="inventory.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-
-    <!-- lot number  -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.LOT</label>
-      <input type="text" class="form-control" name="label" ng-model="$ctrl.bundle.label">
-    </div>
-
-    <!-- movements flux -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.FLUX</label>
-
-      <ui-select name="inventory" ng-model="$ctrl.bundle.flux_id">
-        <ui-select-match>
-          <span translate>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
-          <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-
-    <!-- date -->
-    <fieldset>
-      <legend translate>FORM.LABELS.DATE</legend>
-      <bh-date-interval
-        date-id="date" date-from="$ctrl.bundle.dateFrom" date-to="$ctrl.bundle.dateTo" mode="clean">
-      </bh-date-interval>
-    </fieldset>
-
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>    
   </div>
 
   <div class="modal-footer">

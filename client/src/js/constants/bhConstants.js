@@ -111,6 +111,11 @@ function constantConfig() {
         table : 'patient',
       },
     },
+    defaultFilters : [
+      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+      { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
+      { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
+      { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
   };
 }
 

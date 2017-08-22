@@ -35,12 +35,12 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('lot', 'pdf') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.download('lot', 'csv') }}" download="{{ 'VOUCHER_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
@@ -88,9 +88,8 @@
   </div>
 </div>
 
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+<div class="flex-util bh-filter-bar">
   <bh-filters
-    style="max-width:90%"
     filters="StockLotsCtrl.latestViewFilters"
     on-remove-filter="StockLotsCtrl.onRemoveFilter(filter)">
   </bh-filters>

@@ -18,6 +18,8 @@ function StockLotsController(Stock, Notify,
   var vm = this;
 
   var cacheKey = 'lot-grid';
+  var filterKey = 'lot';
+  var stockLotFilters = Stock.filter.lot;
   var gridColumns;
   var state;
 
@@ -92,22 +94,12 @@ function StockLotsController(Stock, Notify,
   // expose to the view
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;
-  vm.onRemoveFilter = onRemoveFilter;
   vm.selectGroup = selectGroup;
   vm.toggleGroup = toggleGroup;
   vm.loading = false;
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
-
-  // on remove one filter
-  function onRemoveFilter(key) {
-    Stock.removeLotFilter(key);
-    Stock.cacheLotFilters();
-    vm.latestViewFilters = Stock.lotFilters.formatView();
-    
-     return load(Stock.lotFilters.formatHTTP(true));
-  }
 
   // select group
   function selectGroup(group) {
@@ -129,8 +121,14 @@ function StockLotsController(Stock, Notify,
 
   // initialize module
   function startup() {
-    load(Stock.lotFilters.formatHTTP(true));
-    vm.latestViewFilters = Stock.lotFilters.formatView();
+
+    if($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      stockLotFilters.replaceFilters(changes);		
+      Stock.cacheFilters(filterKey);
+    }
+    load(stockLotFilters.formatHTTP(true));
+    vm.latestViewFilters = stockLotFilters.formatView();
   }
 
   /**
@@ -174,26 +172,25 @@ function StockLotsController(Stock, Notify,
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {
-    Stock.removeLotFilter(key);
+    Stock.removeFilter(filterKey, key);
 
-    Stock.cacheLotFilters();
-    vm.latestViewFilters = Stock.lotFilters.formatView();
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockLotFilters.formatView();
 
-    return load(Stock.lotFilters.formatHTTP(true));
+    return load(stockLotFilters.formatHTTP(true));
   }
 
   function search() {
-    var filtersSnapshot = Stock.lotFilters.formatHTTP();
+    var filtersSnapshot = stockLotFilters.formatHTTP();
 
     Modal.openSearchLots(filtersSnapshot)
       .then(function (changes) {
-        Stock.lotFilters.replaceFilters(changes);
-        Stock.cacheLotFilters();
-        vm.latestViewFilters = Stock.lotFilters.formatView();
+        stockLotFilters.replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = stockLotFilters.formatView();
 
-        return load(Stock.lotFilters.formatHTTP(true));
-      })
-      .catch(angular.noop);
+        return load(stockLotFilters.formatHTTP(true));
+      });
   }
 
   // This function opens a modal through column service to let the user toggle
