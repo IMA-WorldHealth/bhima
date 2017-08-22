@@ -228,9 +228,7 @@ function processingWeekCashflow(params) {
     // get all periods for the the current fiscal year
     return queryIncomeExpense(params);
   })
-  .then((result) => {
-    return groupByPeriod(glb.periods, result, params.weekly);
-  })
+  .then(result =>  groupByPeriod(glb.periods, result, params.weekly))
   .then(groupingIncomeExpenseByPeriod)
   .then((flows) => {
     return { openningBalance : glb.openningBalance, flows };

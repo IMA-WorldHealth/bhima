@@ -15,14 +15,14 @@ angular.module('bhima.components')
   });
 
 CashboxSelectController.$inject = [
-  'CashboxService'
+  'CashboxService', 'NotifyService'
 ];
 
 /**
  * Cashbox selection component
  *
  */
-function CashboxSelectController(Cashbox) {
+function CashboxSelectController(Cashbox, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -43,7 +43,8 @@ function CashboxSelectController(Cashbox) {
         });
         
         $ctrl.cashboxes = cashboxes;
-      });
+      })
+      .catch(Notify.handleError);
 
     $ctrl.valid = true;
   };
