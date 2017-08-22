@@ -17,19 +17,19 @@
         <div class="tab-body">
           <!-- movements  -->
           <div class="form-group">
-            <fieldset>
-              <legend translate>STOCK.MOVEMENTS</legend>
-              <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
-              <label class="control-label">
+            <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
+            <div class="radio">
+              <label>
                 <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
                 <span translate>STOCK.INPUT</span>
-              </label> &nbsp; 
-
-              <label class="control-label">
-                <input type="radio" name="is_exit" value="1" ng-model="$ctrl.searchQueries.is_exit"> 
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
                 <span translate>STOCK.OUTPUT</span>
-              </label> &nbsp;
-            </fieldset>
+              </label>
+            </div>
           </div>
 
           <!-- depot -->

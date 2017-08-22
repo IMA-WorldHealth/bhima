@@ -43,7 +43,7 @@ function StockMovementsRegistryTests() {
     // for Exit
     modal.setEntryExit(1);
     modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
+    GU.expectRowCount(gridId, 16 + depotGroupingRow);
   });
 
   it('find movements by depot', () => {

@@ -16,6 +16,7 @@ function StockMovementsController(Stock, Notify,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState) {
   var vm = this;
   var filterKey = 'movement';
+  var stockMovementFilters = Stock.filter.movement;
   var cacheKey = 'movements-grid';
   var state;
   var gridColumns;
@@ -203,9 +204,9 @@ function StockMovementsController(Stock, Notify,
     Stock.removeFilter(filterKey, key);
 
     Stock.cacheFilters(filterKey);
-    vm.latestViewFilters = Stock.filter[filterKey].formatView();
+    vm.latestViewFilters = stockMovementFilters.formatView();
 
-    return load(Stock.filter[filterKey].formatHTTP(true));
+    return load(stockMovementFilters.formatHTTP(true));
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -228,21 +229,6 @@ function StockMovementsController(Stock, Notify,
     vm.hasError = false;
     vm.loading = true;
 
-
-    // var today = { defaultPeriod: 'today' };
-    // var params = filters;
-
-    // var noFilter = (!filters);
-    // var noAttributes = (noFilter || (Object.keys(filters).length === 0));
-
-    // if (noAttributes) {
-    //   params = today;
-    //   vm.isToday = true;
-    //   vm.filters = { display: today, identifiers: today };
-    //   vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    // }
-
-
     Stock.movements.read(null, filters).then(function (rows) {
       // set flux name
       rows.forEach(function (row) {
@@ -262,17 +248,16 @@ function StockMovementsController(Stock, Notify,
 
   // search modal
   function search() {
-    var filtersSnapshot = Stock.filter[filterKey].formatHTTP();
+    var filtersSnapshot = stockMovementFilters.formatHTTP();
 
     Modal.openSearchMovements(filtersSnapshot)
       .then(function (changes) {
-        Stock.filter[filterKey].replaceFilters(changes);
+        stockMovementFilters.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
-        vm.latestViewFilters = Stock.filter[filterKey].formatView();
+        vm.latestViewFilters = stockMovementFilters.formatView();
 
-        return load(Stock.filter[filterKey].formatHTTP(true));
-      })
-      .catch(angular.noop);
+        return load(stockMovementFilters.formatHTTP(true));
+      });
   }
 
   // get flux name
@@ -285,12 +270,12 @@ function StockMovementsController(Stock, Notify,
 
     if($state.params.filters) {
       var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      Stock.filter[filterKey].replaceFilters(changes);		
+      stockMovementFilters.replaceFilters(changes);		
       Stock.cacheFilters(filterKey);
     }
 
-    load(Stock.filter[filterKey].formatHTTP(true));
-    vm.latestViewFilters = Stock.filter[filterKey].formatView();
+    load(stockMovementFilters.formatHTTP(true));
+    vm.latestViewFilters = stockMovementFilters.formatView();
   }
 
   startup();
