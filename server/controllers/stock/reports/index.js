@@ -634,24 +634,6 @@ function stockLotsReport(req, res, next) {
   const data = {};
   let report;
 
-// getting params
-  var defaultParam = req.query;
-  try {
-
-    const keys = Object.keys(defaultParam);
-    keys.forEach((key) => {
-      if ((key !== 'lang') && (key !== 'renderer')) {
-        filters.push({ displayName : key, value : defaultParam[key] });
-      }
-    }, keys);
-    // filters paramter found
-    hasFilter = filters.length > 0;
-
-  } catch (error) {
-    //
-  }
-
-
   const optionReport = _.extend(req.query, {
     filename : 'TREE.STOCK_LOTS',
     orientation : 'landscape',
@@ -719,7 +701,6 @@ function stockMovementsReport(req, res, next) {
   let options = {};
   let display = {};
   let hasFilter = false;
-  let filters = [];
 
   const data = {};
   let report;
@@ -738,11 +719,6 @@ function stockMovementsReport(req, res, next) {
       hasFilter = Object.keys(display).length > 0;
     }
 
-    filters = Object.keys(display).map(function (key) {
-      return { displayName : key, value : display[key] };
-    }, display);
-
-
     report = new ReportManager(STOCK_MOVEMENTS_REPORT_TEMPLATE, req.session, optionReport);
   } catch (e) {
     return next(e);
@@ -753,7 +729,6 @@ function stockMovementsReport(req, res, next) {
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
-      data.filters = filters;
       data.csv = rows;
       data.display = display;
       data.filters = formatFilters(display);
