@@ -60,15 +60,60 @@
     </div>
   </div>
   <div ng-show="$ctrl.customExpanded">
+
     <div class="row">
-      <div class="col-md-6">
-        <label translate>PERIODS.CUSTOM_FROM</label>
-        <input class="form-control" ng-model="$ctrl.customSelection.from" type="date">
+      <div class="col-md-5">
+        <div class="input-group">
+          <input
+            id="modal-date-from"
+            name="dateFrom"
+            type="text"
+            class="form-control"
+            uib-datepicker-popup="{{ $ctrl.dateFormat }}"
+            datepicker-options="$ctrl.pickerOptions"
+            is-open="$ctrl.dateFromIsOpen"
+            show-button-bar="false"
+            ng-model="$ctrl.customSelection.from"
+            ng-change="$ctrl.onChange"
+            ng-required="$ctrl.required">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
+                <i class="fa fa-calendar-plus-o"></i>
+              </button>
+            </span>
+        </div>
       </div>
-      <div class="col-md-6">
-        <label translate>PERIODS.CUSTOM_TO</label>
-        <input class="form-control" ng-model="$ctrl.customSelection.to" type="date">
+      <div class="col-md-2">
+
       </div>
+      <div class="col-md-5">
+        <div class="input-group">
+        <input
+          id="modal-date-to"
+          name="dateTo"
+          type="text"
+          class="form-control"
+          uib-datepicker-popup="{{ $ctrl.dateFormat }}"
+          datepicker-options="$ctrl.pickerOptions"
+          is-open="$ctrl.dateToIsOpen"
+          show-button-bar="false"
+          ng-model="$ctrl.customSelection.to"
+          ng-change="$ctrl.onChange"
+          ng-required="$ctrl.required"
+          >
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">
+              <i class="fa fa-calendar-plus-o"></i>
+            </button>
+          </span>
+      </div>
+      <div class="help-block" ng-messages="DateIntervalForm.dateTo.$error" ng-show="$ctrl.validationTrigger && DateIntervalForm.dateTo.$invalid">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+
+      </div>
+
+
     </div>
 
     <div class="row" style="margin-top : 5px">
