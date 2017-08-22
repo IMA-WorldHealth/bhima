@@ -275,10 +275,22 @@ function JournalController(Journal, Sorting, Grouping,
     // gather the selected transactions together
     var selectedTransactionIds = selection.selected.groups;
     var selectedRecordUuids;
+    var rows;
+    var hasPostedRecords;
 
     // make sure a row is selected before running the trial balance
     if (selectedTransactionIds.length === 0) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
+      return;
+    }
+
+    rows = vm.gridApi.selection.getSelectedRows();
+    hasPostedRecords = rows.some(function (row) {
+      return row.posted === 1;
+    });
+
+    if (hasPostedRecords) {
+      Notify.warn('POSTING_JOURNAL.WARNINGS.TRIAL_BALANCE_HAS_POSTED_RECORDS');
       return;
     }
 
@@ -323,7 +335,6 @@ function JournalController(Journal, Sorting, Grouping,
   vm.exportFile = function exportFile() {
     exportation.run();
   };
-
 
   function errorHandler(error) {
     vm.hasError = true;
@@ -371,7 +382,7 @@ function JournalController(Journal, Sorting, Grouping,
         // TODO(@jniles) - this is kind of hacky.  We shouldn't have to check the $params on every
         // load(), only on the initial load.  Redesign?
         if ($state.params.scrollTo) {
-          transactions.scrollIntoView($state.params.scrollTo);
+          // transactions.scrollIntoView($state.params.scrollTo);
           delete $state.params.scrollTo;
         }
       })
