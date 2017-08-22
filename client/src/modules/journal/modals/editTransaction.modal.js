@@ -39,6 +39,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
 
     { field                            : 'debit_equiv',
       displayName                      : 'TABLE.COLUMNS.DEBIT',
+      cellClass                        : 'text-right',
       headerCellFilter                 : 'translate',
       aggregationHideLabel : true,
       enableCellEdit : !vm.readOnly,
@@ -47,6 +48,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
 
     { field                            : 'credit_equiv',
       displayName                      : 'TABLE.COLUMNS.CREDIT',
+      cellClass                        : 'text-right',
       headerCellFilter                 : 'translate',
       enableFiltering : true,
       aggregationHideLabel : true,
