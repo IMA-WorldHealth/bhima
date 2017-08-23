@@ -5,13 +5,22 @@ VALUES (2, 1, 40111002 ,0, "SUPPLIER'S ACCOUNT 1"),
         (2, 1, 40111003 ,0, "SUPPLIER'S ACCOUNT 2");
 
 
+
 -- creditor group
+SELECT @account_idSup1 :=  id
+FROM account
+WHERE number = 40111002;
+SELECT @account_idSup2 :=  id
+FROM account
+WHERE number = 40111003;
+
+
 SET @CreditorGroup1 = HUID(UUID());
 SET @CreditorGroup2 = HUID(UUID());
 
 INSERT INTO creditor_group (enterprise_id, uuid,name, account_id, locked)
-VALUES (1,@CreditorGroup1, 'Creditor groud supplier1', 286,0),
-        (1, @CreditorGroup2, 'Creditor groud supplier2', 287,0);
+VALUES (1,@CreditorGroup1, 'Creditor groud supplier1', @account_idSup1,0),
+        (1, @CreditorGroup2, 'Creditor groud supplier2', @account_idSup2,0);
 
 -- creating creditors
 SET @Creditor1 =  HUID(UUID());
