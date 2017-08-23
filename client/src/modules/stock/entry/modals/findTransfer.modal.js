@@ -10,35 +10,29 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   uiGridConstants, Filtering, Receipts, data) {
   var vm = this;
   vm.filterEnabled = false;
-  vm.gridOptions = { appScopeProvider: vm };
+  vm.gridOptions = { appScopeProvider : vm };
 
   var filtering = new Filtering(vm.gridOptions);
   var columns = [
     {
-      field: 'date',
-      cellFilter: 'date',
-      filter: { condition: filtering.filterByDate },
-      displayName: 'TABLE.COLUMNS.DATE',
-      headerCellFilter: 'translate',
-      sort: { priority: 0, direction: 'desc' },
+      field : 'date',
+      cellFilter : 'date',
+      filter : { condition : filtering.filterByDate },
+      displayName : 'TABLE.COLUMNS.DATE',
+      headerCellFilter : 'translate',
+      sort : { priority : 0, direction : 'desc' },
     },
     {
-      field: 'depot_text',
-      displayName: 'FORM.LABELS.DEPOT',
-      headerCellFilter: 'translate'
+      field : 'documentReference',
+      displayName : 'FORM.LABELS.REFERENCE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
     },
     {
-      field: 'description',
-      displayName: 'FORM.LABELS.DESCRIPTION',
-      headerCellFilter: 'translate'
+      field : 'depot_text',
+      displayName : 'FORM.LABELS.ORIGIN',
+      headerCellFilter : 'translate',
     },
-    {
-      field: 'action',
-      displayName: '',
-      enableFiltering: false,
-      enableSorting: false,
-      cellTemplate: 'modules/stock/entry/modals/templates/transfer_view.tmpl.html'
-    }
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -56,7 +50,6 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   vm.showReceipt = showReceipt;
 
   vm.hasError = false;
-  vm.lo
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -79,37 +72,37 @@ function StockFindTransferModalController(Instance, StockService, Notify,
     Receipts.stockExitDepotReceipt(uuid, true);
   }
 
-  function load (){
+  function load() {
     vm.loading = true;
 
     StockService.movements.read(null, {
-      entity_uuid: data.depot_uuid,
-      is_exit: 1,
+      entity_uuid : data.depot_uuid,
+      is_exit : 1,
       groupByDocument : 1,
     })
     .then(function (transfers) {
       vm.gridOptions.data = transfers;
     })
-    .catch(function (err){
+    .catch(function (err) {
       vm.hasError = true;
       Notify.errorHandler(err);
     })
-    .finally(function (){
+    .finally(function () {
       vm.loading = false;
     });
   }
 
   // submit
   function submit() {
-    if(!vm.selectedRow) {return;}
+    if (!vm.selectedRow) { return 0; }
     return StockService.movements.read(null, {
-      document_uuid: vm.selectedRow.document_uuid,
-      is_exit: 1,
+      document_uuid : vm.selectedRow.document_uuid,
+      is_exit : 1,
     })
     .then(function (transfers) {
       Instance.close(transfers);
     })
-    .catch(Notify.errorHandler);    
+    .catch(Notify.errorHandler);
   }
 
   // cancel

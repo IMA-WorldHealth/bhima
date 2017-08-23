@@ -98,7 +98,8 @@ function stockExitPatientReceipt(req, res, next) {
       u.display_name AS user_display_name, p.display_name AS patient_display_name,
       CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference, p.hospital_no,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -106,6 +107,7 @@ function stockExitPatientReceipt(req, res, next) {
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
@@ -127,7 +129,7 @@ function stockExitPatientReceipt(req, res, next) {
         description          : line.description,
         date                 : line.date,
         document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
+        document_reference   : line.documentReference,
       };
 
       data.rows = rows;
@@ -167,12 +169,14 @@ function stockAdjustmentReceipt(req, res, next) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
@@ -192,7 +196,7 @@ function stockAdjustmentReceipt(req, res, next) {
         description        : line.description,
         date               : line.date,
         document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
+        document_reference : line.documentReference,
       };
 
       data.rows = rows;
@@ -232,13 +236,15 @@ function stockExitServiceReceipt(req, res, next) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, s.name AS service_display_name,
       CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 
@@ -258,7 +264,7 @@ function stockExitServiceReceipt(req, res, next) {
         description          : line.description,
         date                 : line.date,
         document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
+        document_reference   : line.documentReference,
       };
 
       data.rows = rows;
@@ -298,12 +304,14 @@ function stockExitLossReceipt(req, res, next) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 
@@ -322,7 +330,7 @@ function stockExitLossReceipt(req, res, next) {
         description        : line.description,
         date               : line.date,
         document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
+        document_reference : line.documentReference,
       };
 
       data.rows = rows;
@@ -422,7 +430,8 @@ function stockEntryPurchaseReceipt(req, res, next) {
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference,
       p.note, p.cost, p.date AS purchase_date, p.payment_method,
-      s.display_name AS supplier_display_name, proj.name AS project_display_name
+      s.display_name AS supplier_display_name, proj.name AS project_display_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -431,6 +440,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
     JOIN purchase p ON p.uuid = l.origin_uuid
     JOIN supplier s ON s.uuid = p.supplier_uuid
     JOIN project proj ON proj.id = p.project_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
@@ -450,7 +460,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
         description           : line.description,
         date                  : line.date,
         document_uuid         : line.document_uuid,
-        document_reference    : line.document_reference,
+        document_reference    : line.documentReference,
         purchase_reference    : line.purchase_reference,
         p_note                : line.note,
         p_cost                : line.cost,
@@ -500,7 +510,8 @@ function stockEntryIntegrationReceipt(req, res, next) {
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, integ.reference) AS integration_reference,
       integ.description, integ.date AS integration_date,
-      proj.name AS project_display_name
+      proj.name AS project_display_name,
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -508,6 +519,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
     JOIN user u ON u.id = m.user_id
     JOIN integration integ ON integ.uuid = l.origin_uuid
     JOIN project proj ON proj.id = integ.project_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_INTEGRATION} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
@@ -527,7 +539,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
         description           : line.description,
         date                  : line.date,
         document_uuid         : line.document_uuid,
-        document_reference    : line.document_reference,
+        document_reference    : line.documentReference,
         integration_reference : line.integration_reference,
         integration_date      : line.integration_date,
         project_display_name  : line.project_display_name,
@@ -547,40 +559,36 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * getDepotMovement
  * @param {string} documentUuid
  * @param {object} enterprise
- * @param {boolean} isExit 
+ * @param {boolean} exit
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise, isExit) {
+function getDepotMovement(documentUuid, enterprise, exit) {
   const data = {};
-  const is_exit = isExit ? 1 : 0;
+  const isExit = exit ? 1 : 0;
   const sql = `
         SELECT 
           i.code, i.text, BUID(m.document_uuid) AS document_uuid,
           m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
           u.display_name AS user_display_name,
           CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
-          l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
+          l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName,
+          dm.text AS documentReference
         FROM 
           stock_movement m
-        JOIN 
-          lot l ON l.uuid = m.lot_uuid
-        JOIN 
-          inventory i ON i.uuid = l.inventory_uuid
-        JOIN 
-          depot d ON d.uuid = m.depot_uuid
-        JOIN 
-          user u ON u.id = m.user_id
-        LEFT JOIN 
-          depot dd ON dd.uuid = entity_uuid
-        WHERE 
-          m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid
+        JOIN user u ON u.id = m.user_id
+        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN depot dd ON dd.uuid = entity_uuid
+        WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
-  return db.exec(sql, [is_exit, isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)])
+  return db.exec(sql, [isExit, isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)])
     .then((rows) => {
       if (!rows.length) {
         throw new NotFound('document not found for exit');
-      }      
+      }
       const line = rows[0];
 
       data.enterprise = enterprise;
@@ -594,11 +602,11 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
         description        : line.description,
         date               : line.date,
         document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
+        document_reference : line.documentReference,
       };
 
       data.rows = rows;
-      return data ;
+      return data;
     });
 }
 

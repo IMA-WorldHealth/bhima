@@ -22,7 +22,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock integration
   var integration = new Api('/stock/integration');
 
-  //Filter service
+  // Filter service
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
   var filterMovementCache = new AppCache('stock-movement-filters');
@@ -32,13 +32,13 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
-    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
-    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' },
-    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter : 'date' },
-    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter : 'date' },
-    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter : 'date' },
-    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter : 'date' }
+    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'label', label : 'STOCK.LOT' },
+    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date' },
+    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date' },
+    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor : '>', valueFilter : 'date' },
+    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date' },
   ]);
 
   StockMovementFilters.registerCustomFilters([
@@ -114,17 +114,17 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   }
 
   function removeFilter(filterKey, valueKey) {
-   stockFilter[filterKey].resetFilterState(valueKey);
-  };
+    stockFilter[filterKey].resetFilterState(valueKey);
+  }
 
   // load filters from cache
   function cacheFilters(filterKey) {
     filterCache[filterKey].filters = stockFilter[filterKey].formatCache();
-  };
+  }
 
   function loadCachedFilters(filterKey) {
-   stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
-  };
+    stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
+  }
 
   // downloads a type of report based on the
   function download(filterKey, type) {
@@ -136,10 +136,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
     // return  serialized options
     return $httpParamSerializer(options);
-  };
+  }
 
   // uniformSelectedEntity function implementation
-  // change name, text and display_nam into displayName  
+  // change name, text and display_nam into displayName
   function uniformSelectedEntity(entity) {
     if (!entity) {
       return {};
@@ -152,7 +152,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       }
     });
 
-    return {reference : entity.reference || '', displayName : entity.displayName || ''};
+    return { reference : entity.reference || '', displayName : entity.displayName || '' };
   }
 
   var service = {
@@ -166,7 +166,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     removeFilter : removeFilter,
     loadCachedFilters : loadCachedFilters,
     download     : download,
-    uniformSelectedEntity : uniformSelectedEntity
+    uniformSelectedEntity : uniformSelectedEntity,
   };
 
   return service;

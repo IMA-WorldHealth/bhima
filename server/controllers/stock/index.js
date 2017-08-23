@@ -8,19 +8,13 @@
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
  * @requires lib/node-uuid
- * @requires moment
  * @requires lib/db
  * @requires stock/core
  */
 
 const uuid = require('node-uuid');
-const moment = require('moment');
-
 const db = require('../../lib/db');
 const core = require('./core');
-
-const util = require('../../lib/util');
-const _ = require('lodash');
 
 // expose to the API
 exports.createStock = createStock;
@@ -108,6 +102,9 @@ function createStock(req, res, next) {
 
     // writting all records relative to the movement in the posting journal table
     transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
+
+    // transaction - movement reference
+    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
   // execute all operations as one transaction
@@ -123,12 +120,12 @@ function createStock(req, res, next) {
  * POST /stock/movement
  * Create a new stock movement
  */
-function createMovement(req, res, next) {  
+function createMovement(req, res, next) {
   const params = req.body;
-  
+
   const document = {
     uuid : params.document_uuid || uuid.v4(),
-    date : moment(new Date(params.date)).format('YYYY-MM-DD').toString(),
+    date : new Date(params.date),
     user : req.session.user.id,
   };
 
@@ -185,6 +182,9 @@ function normalMovement(document, params) {
       ];
       transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
     }
+
+    // transaction - movement reference
+    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
   return transaction.execute();
@@ -195,29 +195,25 @@ function normalMovement(document, params) {
  * @description movement between depots
  */
 function depotMovement(document, params) {
-  let paramIn;
-  let paramOut;
   let isWarehouse;
   const transaction = db.transaction();
   const parameters = params;
-  const isExit = parameters.isExit;
+  const isExit = parameters.isExit ? 1 : 0;
 
   let record;
-  
+
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
-  const depot_uuid = isExit ? db.bid(parameters.from_depot) : db.bid(parameters.to_depot);
-  const entity_uuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
-  const is_exit = isExit ? 1 : 0;
-  const flux_id = isExit ? core.flux.TO_OTHER_DEPOT : core.flux.FROM_OTHER_DEPOT;
+  const depotUuid = isExit ? db.bid(parameters.from_depot) : db.bid(parameters.to_depot);
+  const entityUuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
+  const fluxId = isExit ? core.flux.TO_OTHER_DEPOT : core.flux.FROM_OTHER_DEPOT;
 
   parameters.lots.forEach((lot) => {
-
     record = {
-      depot_uuid,
-      entity_uuid,
-      is_exit,
-      flux_id,
+      depot_uuid    : depotUuid,
+      entity_uuid   : entityUuid,
+      is_exit       : isExit,
+      flux_id       : fluxId,
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : db.bid(lot.uuid),
       document_uuid : db.bid(document.uuid),
@@ -229,7 +225,7 @@ function depotMovement(document, params) {
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
-    
+
     isWarehouse = !!(parameters.from_depot_is_warehouse);
 
     // track distribution to patient
@@ -239,6 +235,9 @@ function depotMovement(document, params) {
       ];
       transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
     }
+
+    // transaction - movement reference
+    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
   return transaction.execute();
@@ -381,4 +380,25 @@ function getStockConsumptionAverage(req, res, next) {
       res.status(200).send(rows);
     })
     .catch(next);
+}
+
+/**
+ * GET /stock/transfer
+ */
+function getStockTransfer(req, res, next) {
+  const params = req.query;
+
+  const query = `
+    SELECT 
+      BUID(m.document_uuid) AS document_uuid, m.date,
+      d.text AS depot_name, dd.text as other_depot_name,
+      dm.text AS document_reference
+    FROM 
+      stock_movement m
+    JOIN depot d ON d.uuid = m.depot_uuid
+    JOIN depot dd ON dd.uuid = m.entity_uuid
+    JOIN document_map dm ON dm.uuid = m.document_uuid
+    WHERE m.is_exit = ? AND m.flux_id = ? AND dd.uuid = ? 
+    GROUP BY m.document_uuid
+  `;
 }

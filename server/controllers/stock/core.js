@@ -61,18 +61,18 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
   const params = parameters;
   const sql = sqlQuery || `
-    SELECT
-      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-      l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
-      i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
-    JOIN depot d ON d.uuid = m.depot_uuid
-`;
-
-  // make sure all uuids are properly converted to binary
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
+          i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
+          dm.text AS documentReference
+        FROM lot l 
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
+        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
+        JOIN document_map dm ON dm.uuid = m.document_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid 
+    `;
   db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
 
   const filters = new FilterParser(params, { autoParseStatements : false });
@@ -148,12 +148,14 @@ function getLotsDepot(depotUuid, params, finalClause) {
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
             i.avg_consumption, i.purchase_interval, i.delay,
-            iu.text AS unit_type
-        FROM stock_movement m
+            iu.text AS unit_type,
+            dm.text AS documentReference
+        FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN inventory_unit iu ON iu.id = i.unit_id
-        JOIN depot d ON d.uuid = m.depot_uuid
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
+        JOIN depot d ON d.uuid = m.depot_uuid 
+        JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken}`;
@@ -192,21 +194,23 @@ function getLotsMovements(depotUuid, params) {
   }
 
   const sql = `
-      SELECT
-        BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description,
-        d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
-        l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-        BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
-        BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
-        m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
-        f.label AS flux_label, i.delay,
-        iu.text AS unit_type
-      FROM stock_movement m
-      JOIN lot l ON l.uuid = m.lot_uuid
-      JOIN inventory i ON i.uuid = l.inventory_uuid
-      JOIN inventory_unit iu ON iu.id = i.unit_id
-      JOIN depot d ON d.uuid = m.depot_uuid
-      JOIN flux f ON f.id = m.flux_id
+        SELECT 
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description, 
+          d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
+          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+          BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
+          BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
+          m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+          f.label AS flux_label, i.delay,
+          iu.text AS unit_type,
+          dm.text AS documentReference
+        FROM stock_movement m 
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
+        JOIN depot d ON d.uuid = m.depot_uuid 
+        JOIN flux f ON f.id = m.flux_id 
+        JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   return getLots(sql, params, finalClause);
@@ -231,10 +235,11 @@ function getLotsOrigins(depotUuid, params) {
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
             l.entry_date, i.code, i.text, origin.display_name, origin.reference,
             BUID(m.document_uuid) AS document_uuid, m.flux_id,
-            iu.text AS unit_type
-        FROM lot l
-        JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN inventory_unit iu ON iu.id = i.unit_id
+            iu.text AS unit_type,
+            dm.text AS documentReference
+        FROM lot l 
+        JOIN inventory i ON i.uuid = l.inventory_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN (
           SELECT
             p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference,
@@ -256,6 +261,7 @@ function getLotsOrigins(depotUuid, params) {
         ) AS origin ON origin.uuid = l.origin_uuid
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.is_exit = 0
           AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
+        JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   return getLots(sql, params);
@@ -403,12 +409,14 @@ function getInventoryQuantityAndConsumption(params) {
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
         l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
         i.avg_consumption, i.purchase_interval, i.delay,
-        iu.text AS unit_type
-    FROM stock_movement m
+        iu.text AS unit_type,
+        dm.text AS documentReference
+    FROM stock_movement m 
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN depot d ON d.uuid = m.depot_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN depot d ON d.uuid = m.depot_uuid 
+    JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ';
@@ -458,12 +466,14 @@ function getInventoryMovements(params) {
         m.quantity, m.is_exit, m.date,
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
         l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-        i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type
-    FROM stock_movement m
+        i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
+        dm.text AS documentReference
+    FROM stock_movement m 
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN depot d ON d.uuid = m.depot_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN depot d ON d.uuid = m.depot_uuid 
+    JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   return getLots(sql, params, ' ORDER BY m.date ASC ')
