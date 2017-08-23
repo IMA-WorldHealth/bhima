@@ -18,6 +18,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
+  vm.loagingState = false;
 
   // make sure we have all the suppliers we need.
   Suppliers.read()
@@ -83,7 +84,9 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
     // copy the purchase order object into something that can be sent to the server
     var order = angular.copy(vm.order.details);
     order.items = angular.copy(vm.order.store.data);
-    
+
+    vm.loadingState = true;
+
     return Purchases.create(order)
       .then(function (res) {
 
@@ -93,7 +96,10 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
         // reset the module
         clear(form);
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loadingState = false;
+      });
   }
 
   // fired whenever an input in the grid is changed.

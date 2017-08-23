@@ -14,11 +14,18 @@
       top note panel for the purchase order.details
       inspired by the patient invoice page's ergonomics
     -->
+     <form name="PurchaseOrderForm"
+              autocomplete="off" autocapitalize="off"
+              autocorrect="off"
+              ng-submit="PurchaseCtrl.submit(PurchaseOrderForm)"
+              novalidate>
+
     <div class="row">
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <form name="PurchaseOrderForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+
+
               <div class="col-md-6">
 
                 <div class="form-group"
@@ -105,7 +112,7 @@
                 </div>
               </div>
             </div>
-          </form>
+
         </div>
       </div>
     </div>
@@ -177,20 +184,19 @@
     <!-- TODO Temporary styles -->
     <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
       <div class="col-md-12 text-right">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          ng-disabled="!PurchaseCtrl.supplier"
-          ng-click="PurchaseCtrl.submit(PurchaseOrderForm)"
-          data-method="submit">
-          {{ "FORM.BUTTONS.SUBMIT" | translate }}
-        </button>
+
+          <bh-loading-button
+              disabled="!PurchaseCtrl.supplier"
+              loading-state="PurchaseCtrl.loadingState">
+                <span translate>FORM.BUTTONS.SAVE</span>
+          </bh-loading-button>
+
         <button
           type="button"
           class="btn btn-default"
           ng-click="PurchaseCtrl.clear(PurchaseOrderForm)"
-          data-method="clear">
-          {{ "FORM.BUTTONS.CLEAR" | translate }}
+          data-method="clear" translate>
+          FORM.BUTTONS.CLEAR
         </button>
         <p
           class="text-danger"
@@ -199,6 +205,8 @@
         </p>
       </div>
     </div>
+
+    </form>
   </div>
 </div>
 
