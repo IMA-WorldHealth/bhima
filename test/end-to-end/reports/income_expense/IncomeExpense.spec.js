@@ -13,8 +13,8 @@ describe('Income Expense report ::', () => {
 
   const dataset = {
     fiscal_id : 2,
-    periodFrom_id : 16,
-    periodTo_id : 27,
+    periodFrom_id : 201602,
+    periodTo_id : 201607,
     type : 'Recettes et dépenses',
     report_name : 'Income Expense Report Saved by E2E',
     renderer : 'PDF',
