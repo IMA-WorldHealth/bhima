@@ -36,11 +36,11 @@ function GridSortingService(util) {
     first = Number(/[a-z,A-Z]*([0-9]*)/g.exec(a)[1]);
     second = Number(/[a-z,A-Z]*([0-9]*)/g.exec(b)[1]);
 
-    if (first > second) {
+    if (first < second) {
       return 1;
     }
 
-    if (first < second) {
+    if (first > second) {
       return -1;
     }
 
