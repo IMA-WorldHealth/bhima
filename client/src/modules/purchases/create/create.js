@@ -85,7 +85,8 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
     var order = angular.copy(vm.order.details);
     order.items = angular.copy(vm.order.store.data);
 
-    vm.loagingState = true;
+    vm.loadingState = true;
+
     return Purchases.create(order)
       .then(function (res) {
 
@@ -97,7 +98,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
       })
       .catch(Notify.handleError)
       .finally(function () {
-        vm.loagingState = false;
+        vm.loadingState = false;
       });
   }
 
