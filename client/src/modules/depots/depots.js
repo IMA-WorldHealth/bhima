@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('DepotManagementController', DepotManagementController);
 
 DepotManagementController.$inject = [
-  'DepotService', 'SessionService', 'ModalService',
+  'DepotService', 'ModalService',
   'NotifyService', 'uiGridConstants', '$state',
 ];
 
@@ -12,7 +12,7 @@ DepotManagementController.$inject = [
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController(Depots, Session, ModalService,
+function DepotManagementController(Depots, ModalService,
   Notify, uiGridConstants, $state) {
   var vm = this;
 

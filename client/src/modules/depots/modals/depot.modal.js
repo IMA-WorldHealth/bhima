@@ -2,12 +2,10 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'ServiceService', 'DepotService',
-  'SessionService', 'ModalService', 'NotifyService',
+  '$state', 'DepotService', 'ModalService', 'NotifyService',
 ];
 
-function DepotModalController($state, Services, Depots,
-  SessionService, ModalService, Notify) {
+function DepotModalController($state, Depots, ModalService, Notify) {
   var vm = this;
 
   vm.depot = $state.params.depot;
@@ -21,7 +19,7 @@ function DepotModalController($state, Services, Depots,
   function submit(depotForm) {
     var promise;
 
-    if (depotForm.$invalid || !depotForm.$dirty) { return 0; }
+    if (depotForm.$invalid || depotForm.$pristine) { return 0; }
 
     promise = (vm.isCreating) ?
       Depots.create(vm.depot) :
@@ -37,6 +35,6 @@ function DepotModalController($state, Services, Depots,
   }
 
   function closeModal() {
-    $state.transitionTo('depots');
+    $state.go('depots');
   }
 }
