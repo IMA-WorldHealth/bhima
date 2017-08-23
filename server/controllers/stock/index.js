@@ -15,8 +15,11 @@
 
 const uuid = require('node-uuid');
 const moment = require('moment');
+
 const db = require('../../lib/db');
 const core = require('./core');
+
+const StockFinanceWriter = require('./stockFinanceWriter');
 
 // expose to the API
 exports.createStock = createStock;
@@ -46,6 +49,8 @@ function createStock(req, res, next) {
   let createMovementQuery;
   let createMovementObject;
   let date;
+
+  const stockFinanceWriter = new StockFinanceWriter('lot');
 
   const transaction = db.transaction();
 
@@ -94,6 +99,8 @@ function createStock(req, res, next) {
         // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
+
+  stockFinanceWriter.writePurchase(document, params.lots);
 
   transaction.execute()
     .then(() => {

@@ -110,6 +110,7 @@ function getIds() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadata(params) {
+  db.convert(params, ['inventory_uuids']);
   const filters = new FilterParser(params, { tableAlias : 'inventory' });
 
   const sql =
@@ -123,6 +124,7 @@ function getItemsMetadata(params) {
       inventory.unit_id = iu.id`;
 
   filters.fullText('text', 'text', 'inventory');
+  filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
   filters.setOrder('ORDER BY inventory.code ASC');
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();

@@ -200,6 +200,13 @@ class DatabaseConnector {
       if (data[key] && typeof data[key] === 'string') {
         data[key] = this.bid(data[key]);
       }
+
+      if(data[key] && Array.isArray(data[key])) { 
+        var that = this;
+        data[key] = data[key].map(function (item){
+          return that.bid(item);
+        });
+      }
     });
 
     return data;
@@ -214,6 +221,8 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
+
+
 }
 
 module.exports = new DatabaseConnector();
