@@ -4,10 +4,7 @@
  * This class is represents a service page in term of structure and
  * behaviour so it is a service page object
  **/
-
 const chai = require('chai');
-
-const expect = chai.expect;
 
 const helpers = require('../shared/helpers');
 
@@ -18,18 +15,19 @@ const GA = require('../shared/GridAction');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-function ServicePage() {
-  const page = this;
-  const path = '#!/services';
-  const gridId = 'service-grid';
-  const serviceGrid = element(by.id(gridId));
-  const actionLinkColumn = 1;
+class ServicePage {
+
+  constructor() {
+    this.gridId = 'service-grid';
+    this.serviceGrid = element(by.id(this.gridId));
+    this.actionLinkColumn = 1;
+  }
 
   /**
    * send back the number of services in the grid
    */
-  function getServiceCount() {
-    return serviceGrid
+  getServiceCount() {
+    return this.serviceGrid
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
@@ -38,7 +36,7 @@ function ServicePage() {
   /**
    * simulate the create service button click to show the dialog of creation
    */
-  function createService(name) {
+  createService(name) {
     FU.buttons.create();
     FU.input('ServiceModalCtrl.service.name', name);
     FU.buttons.submit();
@@ -48,7 +46,7 @@ function ServicePage() {
   /**
    * block creation without the service name
    */
-  function errorOnCreateService() {
+  errorOnCreateService() {
     FU.buttons.create();
     FU.buttons.submit();
     FU.validation.error('ServiceModalCtrl.service.name');
@@ -58,8 +56,8 @@ function ServicePage() {
   /**
    * simulate a click on the edit link of a service
    */
-  function editService(n, name) {
-    GA.clickOnMethod(n, actionLinkColumn, 'edit', gridId);
+  editService(n, name) {
+    GA.clickOnMethod(n, this.actionLinkColumn, 'edit', this.gridId);
     FU.input('ServiceModalCtrl.service.name', name);
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -68,8 +66,8 @@ function ServicePage() {
   /**
    * simulate a click on the delete link of a service
    */
-  function deleteService(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'delete', gridId);
+  deleteService(n) {
+    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
     components.modalAction.confirm();
     components.notification.hasSuccess();
   }
@@ -77,27 +75,19 @@ function ServicePage() {
   /**
    * cancel deletion process
    */
-  function cancelDeleteService(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'delete', gridId);
+  cancelDeleteService(n) {
+    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
     components.modalAction.dismiss();
   }
 
   /**
    * forbid deletion of used service
    */
-  function errorOnDeleteService(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'delete', gridId);
+  errorOnDeleteService(n) {
+    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
     components.modalAction.confirm();
     components.notification.hasError();
   }
-
-  page.getServiceCount = getServiceCount;
-  page.createService = createService;
-  page.editService = editService;
-  page.deleteService = deleteService;
-  page.errorOnCreateService = errorOnCreateService;
-  page.errorOnDeleteService = errorOnDeleteService;
-  page.cancelDeleteService = cancelDeleteService;
 }
 
 module.exports = ServicePage;

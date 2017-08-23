@@ -2,12 +2,10 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'DepotService', 'SessionService',
-  'ModalService', 'NotifyService', 'uiGridConstants', '$state',
+  'ServiceService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
-function ServicesController(Services, Depots, SessionService,
-  ModalService, Notify, uiGridConstants, $state) {
+function ServicesController(Services, ModalService, Notify, uiGridConstants, $state) {
   var vm = this;
 
   // bind methods
