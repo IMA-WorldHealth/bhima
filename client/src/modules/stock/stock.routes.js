@@ -31,13 +31,7 @@ angular.module('bhima.routes')
         controller  : 'StockEntryController as StockCtrl',
         templateUrl : 'modules/stock/entry/entry.html',
       })
-
-      .state('stockOrigins', {
-        url         : '/stock/origins',
-        controller  : 'StockOriginsController as StockOriginCtrl',
-        templateUrl : 'modules/stock/origins/registry.html',
-      })
-
+      
       .state('stockAdjustment', {
         url         : '/stock/adjustment',
         controller  : 'StockAdjustmentController as StockCtrl',
