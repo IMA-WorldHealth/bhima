@@ -116,11 +116,6 @@
                     ng-class="{'has-error' : DetailForm.grade.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.grades.length === 0">
-                      <i class="fa fa-warning"></i>
-                      <span translate>EMPLOYEE.NO_GRADE</span>
-                      <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
-                    </uib-alert>
 
                     <label class="col-md-3 control-label" translate>FORM.LABELS.GRADE</label>
                     <div class="col-md-9">
@@ -135,6 +130,12 @@
                           <span ng-bind-html="g.format | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
+
+                      <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.grades.length === 0">
+                      <i class="fa fa-warning"></i>
+                      <span translate>EMPLOYEE.NO_GRADE</span>,
+                      <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                    </uib-alert>
 
                       <div class="help-block" ng-messages="DetailForm.grade.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
