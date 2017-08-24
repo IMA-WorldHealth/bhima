@@ -1,18 +1,14 @@
 -- adding  accounts,  for suppliers
 
-INSERT INTO account (type_id, enterprise_id, number, parent, label)
-VALUES (2, 1, 40111002 ,0, "SUPPLIER'S ACCOUNT 1"),
-        (2, 1, 40111003 ,0, "SUPPLIER'S ACCOUNT 2");
+SET @account_idSup1 = 300;
+SET @account_idSup2 = 301;
+INSERT INTO account (id,type_id, enterprise_id, number, parent, label)
+VALUES (@account_idSup1, 2, 1, 40111002 ,0, "SUPPLIER'S ACCOUNT 1"),
+        (@account_idSup2, 2, 1, 40111003 ,0, "SUPPLIER'S ACCOUNT 2");
 
 
 
 -- creditor group
-SELECT @account_idSup1 :=  id
-FROM account
-WHERE number = 40111002;
-SELECT @account_idSup2 :=  id
-FROM account
-WHERE number = 40111003;
 
 
 SET @CreditorGroup1 = HUID(UUID());
