@@ -1334,4 +1334,47 @@ BEGIN
   ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
 END $$
 
+-- This stored procedure, insert a lot record into the table
+CREATE PROCEDURE CreateLot (
+  IN uuid BINARY(16),
+  IN label VARCHAR(255),
+  IN initial_quantity INT(11),
+  IN quantity INT(11),
+  IN unit_cost DECIMAL(19,4) UNSIGNED,
+  IN expiration_date DATE,
+  IN inventory_uuid BINARY(16),
+  IN origin_uuid BINARY(16),
+  IN delay INT(11)
+)
+BEGIN
+  INSERT INTO 
+    `lot` (`uuid`, `label`, `initial_quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`)
+  VALUES
+    (uuid, label, initial_quantity, quantity, unit_cost, expiration_date, inventory_uuid, origin_uuid, delay);
+END $$
+
+
+-- This stored procedure, insert a record into the table stock movement
+CREATE PROCEDURE CreateStockMovement (
+  IN uuid BINARY(16),
+  IN document_uuid BINARY(16),
+  IN depot_uuid BINARY(16),
+  IN lot_uuid BINARY(16),
+  IN entity_uuid BINARY(16),
+  IN description TEXT,
+  IN flux_id INT(11),
+  IN date DATETIME,
+  IN quantity INT(11),
+  IN unit_cost DECIMAL(19, 4) UNSIGNED,
+  IN is_exit TINYINT(1),
+  IN user_id SMALLINT(5) UNSIGNED,
+  IN reference INT(11) UNSIGNED  
+)
+BEGIN
+  INSERT INTO
+    `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`)
+  VALUES
+    (uuid, document_uuid, depot_uuid, lot_uuid, entity_uuid, description, flux_id, date, quantity, unit_cost, is_exit, user_id, reference);
+END $$
+
 DELIMITER ;

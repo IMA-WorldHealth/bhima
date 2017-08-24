@@ -19,6 +19,9 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const core = require('./core');
 
+const util = require('../../lib/util');
+const _ = require('lodash');
+
 const StockFinanceWriter = require('./stockFinanceWriter');
 
 // expose to the API
@@ -50,6 +53,8 @@ function createStock(req, res, next) {
   let createMovementObject;
   let date;
 
+  let lots = processLot(params.lots);
+
   const stockFinanceWriter = new StockFinanceWriter('lot');
 
   const transaction = db.transaction();
@@ -60,12 +65,12 @@ function createStock(req, res, next) {
     user : req.session.user.id,
   };
 
+
   params.lots.forEach((lot) => {
-        // lot expiration date
     date = new Date(lot.expiration_date);
 
-        // lot prepare query
-    createLotQuery = 'INSERT INTO lot SET ?';
+    // createLotQuery = 'INSERT INTO lot SET ?';
+
     createLotObject = {
       uuid             : db.bid(uuid.v4()),
       label            : lot.label,
@@ -108,6 +113,28 @@ function createStock(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+// this function process lot list in order to insert them to the database
+function processLot (lots) {
+  const items = lots || [];
+
+  // make sure that lot items have their uuids
+  items.forEach((item) => {
+    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.inventory_uuid = db.bid(item.inventory_uuid);
+    item.origin_uuid = db.bid(item.origin_uuid);
+    item.delay = 0;
+  });
+
+  // create a filter to align lot item columns to the SQL columns
+  const filter =
+    util.take(
+      'uuid', 'label', 'initial_quantity', 'quantity', 'unit_cost', 'expiration_date', 'inventory_uuid', 'origin_uuid', 'delay'
+    );
+
+  // prepare lot items for insertion into database
+  return _.map(items, filter);
 }
 
 /**
