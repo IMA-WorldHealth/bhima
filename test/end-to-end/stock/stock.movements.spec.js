@@ -24,12 +24,13 @@ function StockMovementsRegistryTests() {
 
   const gridId = 'stock-movements-grid';
   const depotGroupingRow = 1;
+  const MAGIC_NUMBER = 22;
 
   it('finds lot for all time', () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
-    GU.expectRowCount(gridId, 25);
+    GU.expectRowCount(gridId, 23);
   });
 
   it('find entry movements ', () => {
@@ -67,43 +68,43 @@ function StockMovementsRegistryTests() {
 
   it('find by lots reasons for purchase order', () => {
     // FIX ME: reasons must not depend on translations
-    //selection with `id` works but it is not completed
+    // selection with `id` works but it is not completed
     modal.setMovementReason('Commande d\'achat');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to patient', () => {
-     // to patient
+    // to patient
     modal.setMovementReason('Vers un patient');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);    
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', () => {
     modal.setMovementReason('Vers un depot');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution from depot', () => {
     // from depot
     modal.setMovementReason('En provenance d\'un depot');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
   });
 
   it('find by lots reasons for positive adjustement', () => {
     modal.setMovementReason('Ajustement (Positif)');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
   });
 
   it('find by lots reasons for negative adjustement', () => {
     modal.setMovementReason('Ajustement (Negatif)');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
-  });  
+    GU.expectRowCount(gridId, MAGIC_NUMBER + depotGroupingRow);
+  });
 
   it('find lots by date - Fev 2017', () => {
     modal.setdateInterval('02/02/2017', '02/02/2017', 'date');
