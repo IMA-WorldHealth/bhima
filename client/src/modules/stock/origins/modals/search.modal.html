@@ -1,0 +1,112 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-origins-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK_ORIGINS</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- origin order -->
+          <bh-origin-select
+            origin-uuid="$ctrl.searchQueries.origin_uuid"
+            required="false"
+            on-select-callback="$ctrl.onSelectOrigin(origin)">
+            <bh-clear on-clear="$ctrl.clear('origin_uuid')"></bh-clear>
+          </bh-origin-select>
+
+
+          <!-- Inventaire -->
+          <bh-inventory-select
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
+
+          <!-- lot number  -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.LOT</label>
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
+            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
+            <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- Code  -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.CODE</label>
+            <bh-clear on-clear="$ctrl.clear('code')"></bh-clear>
+            <input type="text" class="form-control" name="code" ng-model="$ctrl.searchQueries.code">
+            <div class="help-block" ng-messages="ModalForm.code.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!--entry date -->
+          <fieldset>
+            <legend translate>STOCK.ENTRY_DATE</legend>
+            <bh-date-interval
+              date-id="entry-date"
+              date-from="$ctrl.searchQueries.entry_date_from"
+              date-to="$ctrl.searchQueries.entry_date_to"
+              mode="clean">
+            </bh-date-interval>
+          </fieldset>
+          
+          <!-- expiration date -->
+          <fieldset>
+            <legend translate>STOCK.EXPIRATION_DATE</legend>
+            <bh-date-interval
+              date-id="expiration-date"
+              date-from="$ctrl.searchQueries.expiration_date_from"
+              date-to="$ctrl.searchQueries.expiration_date_to"
+              mode="clean">
+            </bh-date-interval>
+          </fieldset>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+          
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input 
+              name="limit"
+              type="number"
+              bh-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

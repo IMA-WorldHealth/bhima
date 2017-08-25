@@ -80,6 +80,7 @@
     "STOCK_INVENTORY_REPORT":"[Stock] Inventory Report",
     "STOCK_LOTS":"Stock Lots",
     "STOCK_MOVEMENTS":"Stock Movements",
+    "STOCK_ORIGINS":"Lots Origins",
     "SUBSIDY":"Subsidy Management",
     "TRANSACTION_TYPE":"Transaction Types",
     "USERS":"Users",

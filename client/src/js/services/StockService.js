@@ -25,16 +25,31 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   //Filter service
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
+  var StockOriginFilters = new Filters();
+
   var filterMovementCache = new AppCache('stock-movement-filters');
-  var filterLotCache = new AppCache('stock-lot-filters'); 
+  var filterLotCache = new AppCache('stock-lot-filters');
+  var filterOriginCache = new AppCache('stock-origin-filters'); 
 
   StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
   StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
+  StockOriginFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
-    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
-    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' },
+    { key : 'depot_uuid', label: 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key : 'label', label: 'STOCK.LOT' },
+    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter : 'date' },
+    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter : 'date' },
+    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter : 'date' },
+    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter : 'date' },
+  ]);
+
+  StockOriginFilters.registerCustomFilters([
+    { key : 'origin_uuid', label: 'STOCK.ORIGIN' },
+    { key : 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key : 'label', label: 'STOCK.LOT' },
+    { key : 'code', label: 'STOCK.CODE' },
     { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter : 'date' },
     { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter : 'date' },
     { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter : 'date' },
@@ -60,23 +75,29 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     StockMovementFilters.loadCache(filterMovementCache.filters);
   }
 
+  if(filterOriginCache.filters){
+    StockOriginFilters.loadCache(filterOriginCache.filters);
+  }
+
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignLotDefaultFilters();
   assignMovementDefaultFilters();
+  assignOriginDefaultFilters();
 
   // creating an an object of filter to avoid method duplication
   var stockFilter = {
     lot : StockLotFilters,
-    movement : StockMovementFilters    
+    movement : StockMovementFilters,
+    origin : StockOriginFilters
   }
 
   // creating an object of filter object to avoid method duplication
   var filterCache = {
     lot : filterLotCache,
-    movement : filterMovementCache
+    movement : filterMovementCache,
+    origin : filterOriginCache
   }
   
-
   function assignLotDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
     var assignedKeys = Object.keys(StockLotFilters.formatHTTP());
@@ -113,9 +134,28 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     }
   }
 
+  function assignOriginDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(StockOriginFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      movements.util.arrayIncludes(assignedKeys, ['period']);
+
+    if (!periodDefined) {
+      StockOriginFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      StockOriginFilters.assignFilter('limit', 100);
+    }
+  }
+
   function removeFilter(filterKey, valueKey) {
    stockFilter[filterKey].resetFilterState(valueKey);
   };
+
 
   // load filters from cache
   function cacheFilters(filterKey) {

@@ -2,10 +2,10 @@ angular.module('bhima.services')
     .service('StockModalService', StockModalService);
 
 // dependencies injection 
-StockModalService.$inject = [ '$uibModal' ];
+StockModalService.$inject = [ '$uibModal', '$http', 'util' ];
 
 // service definition 
-function StockModalService(Modal) {
+function StockModalService(Modal, $http, util) {
   var service = this;
 
   var modalParameters = {
@@ -23,6 +23,8 @@ function StockModalService(Modal) {
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
+  service.openSearchOrigins = openSearchOrigins;
+  service.stockOrigin = stockOrigin;
 
     /** search stock lots */
   function openSearchLots(request) {
@@ -185,4 +187,30 @@ function StockModalService(Modal) {
     var instance = Modal.open(params);
     return instance.result;
   }
+
+    /** search stock origins */
+  function openSearchOrigins(request) {
+    var params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/origins/modals/search.modal.html',
+      controller   : 'SearchOriginsModalController',
+      controllerAs : '$ctrl',
+      size         : 'md',
+      backdrop     : 'static',
+      animation    : false,
+      resolve      : {
+        data : function dataProvider() { return request; },
+      },
+    });
+
+    var instance = Modal.open(params);
+    return instance.result;
+  }
+
+    /** list of all Origin of stock */
+  function stockOrigin() {
+    var path = '/stock/origins';
+    return $http.get(path)
+      .then(util.unwrapHttpResponse);
+  }  
+
 }

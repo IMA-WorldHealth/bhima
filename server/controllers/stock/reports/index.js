@@ -12,6 +12,7 @@ const db = require('../../../lib/db');
 const identifiers = require('../../../config/identifiers');
 const NotFound = require('../../../lib/errors/NotFound');
 const ReportManager = require('../../../lib/ReportManager');
+const PeriodService = require('../../../lib/period');
 
 const Stock = require('../core');
 
@@ -33,6 +34,7 @@ const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
 const STOCK_INVENTORY_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventory.report.handlebars`;
+const STOCK_ORIGINS_REPORT_TEMPLATE = `${BASE_PATH}/stock_origins.report.handlebars`;
 
 // ===================================== receipts ========================================
 
@@ -611,7 +613,7 @@ function stockLotsReport(req, res, next) {
     delete options.defaultPeriod;
   }
 
-  return Stock.getLotsDepot(null, options)
+  return Stock.getLotsDepot(null, optionReport)
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
@@ -636,6 +638,111 @@ function stockLotsReport(req, res, next) {
     .catch(next)
     .done();
 }
+
+/**
+ * @method stockOriginsReport
+ *
+ * @description
+ * This method builds the stock origins report as either a JSON, PDF, or HTML
+ * file to be sent to the client.
+ *
+ * GET /reports/stock/origins
+ */
+function stockOriginsReport(req, res, next) {
+  let options = {};
+  let display = {};
+  let hasFilter = false;
+
+  let report;
+  const optionReport = _.extend(req.query, {
+    filename : 'TREE.STOCK_ORIGINS',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
+
+  const filters = formatFiltersOrigin(optionReport);
+  const data = { filters };
+
+  // set up the report with report manager
+  try {
+    if (req.query.identifiers && req.query.display) {
+      options = JSON.parse(req.query.identifiers);
+      display = JSON.parse(req.query.display);
+      hasFilter = Object.keys(display).length > 0;
+    }
+
+    report = new ReportManager(STOCK_ORIGINS_REPORT_TEMPLATE, req.session, optionReport);
+  } catch (e) {
+    return next(e);
+  }
+
+  return Stock.getLotsOrigins(null, optionReport)
+    .then((rows) => {
+      data.rows = rows;
+      data.hasFilter = hasFilter;
+      data.csv = rows;
+      data.display = display;
+      data.optionReport = optionReport;
+
+      // group by origin_uuid
+      let origins = _.groupBy(rows, l => l.reference);
+
+      // make sure that they keys are sorted in alphabetical order
+      origins = _.mapValues(origins, lines => {
+        _.sortBy(lines, 'reference');
+        return lines;
+      });
+
+      data.origins = origins;
+
+      return report.render(data);
+    })
+    .then((result) => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
+}
+
+// translation key mappings for dynamic filters
+// Basically, to show a pretty filter bar, this will translate URL query params
+// into human-readable text to be placed in the report, showing the properties
+// filtered on.
+function formatFiltersOrigin(qs) {
+
+  const columns = [
+    { field : 'origin_uuid', displayName : 'STOCK.ORIGIN' },
+    { field : 'inventory_uuid', displayName : 'STOCK.INVENTORY' },
+    { field : 'label', displayName : 'STOCK.LOT' },
+    { field : 'code', displayName : 'STOCK.CODE' },
+    { field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true },
+    { field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true },
+    { field : 'expiration_date_from', displayName : 'STOCK.EXPIRATION_DATE', comparitor : '>', isDate : true },
+    { field : 'expiration_date_to', displayName : 'STOCK.EXPIRATION_DATE', comparitor : '<', isDate : true },
+    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
+    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
+  ];
+
+  return columns.filter(column => {
+
+    const value = qs[column.field];
+
+    if (!_.isUndefined(value)) {
+
+      if (column.isPeriod) {
+        const service = new PeriodService(new Date());
+        column.value = service.periods[value].translateKey;
+      } else {
+        column.value = value;
+      }
+      return true;
+    }
+    return false;
+  });
+}
+
+
 
 /**
  * @method stockMovementsReport
@@ -673,7 +780,7 @@ function stockMovementsReport(req, res, next) {
     return next(e);
   }
 
-  return Stock.getLotsMovements(null, options)
+  return Stock.getLotsMovements(null, optionReport)
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
@@ -840,3 +947,4 @@ exports.stockExitLossReceipt = stockExitLossReceipt;
 exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
 exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
+exports.stockOriginsReport = stockOriginsReport;
