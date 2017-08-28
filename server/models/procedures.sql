@@ -1377,4 +1377,12 @@ BEGIN
     (uuid, document_uuid, depot_uuid, lot_uuid, entity_uuid, description, flux_id, date, quantity, unit_cost, is_exit, user_id, reference);
 END $$
 
+
+CREATE PROCEDURE PostPurchase (IN document_uuid BINARY(16))
+BEGIN
+
+END $$
+
+
+
 DELIMITER ;

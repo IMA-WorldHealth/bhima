@@ -16,22 +16,26 @@
  * 
  * The writting will increase or decrease the stock account as it is a entry or an exit  
  * 
+ * @requires uuid
+ * @requires ../../lib/db
  * @requires ../inventory/inventory/core
  **/
 
+const uuid = require('node-uuid');
+const db = require('../../lib/db');
 const inventoryCore = require('../inventory/inventory/core');
 class StockFinanceWriter {
 
     /**
      * @constructs
      * 
-     * During the object creation, the entity is needed to distinguish
-     * which table is concerned by the operation and the value of the entity 
+     * During the object creation, the source is needed to distinguish
+     * which table is concerned by the operation and the value of the source 
      * variable is provided by the component which requires the StockFinanceWriter
      * object
      **/
-    constructor(entity) {
-        this.entity = entity;
+    constructor(source) {
+        this.source = source;
     }
 
     /**
@@ -42,11 +46,11 @@ class StockFinanceWriter {
      * This method is fired when a stock must be entered from a purchase order
      * at this step, we consider the purchase order is already confirmed.
      * 
-     * This method will debit the 3 account (in theory) or the stock account (in reality)
-     * and will credit the variation account which is the expense account commonly
-     * BHIMA is so flexible, the user can choose the stock account and expense account as he neede
+     * This method will debit the class 3 account (in theory) or the stock account (in reality)
+     * and will credit the variation account which is an expense account commonly
+     * BHIMA is so flexible, the user can choose the stock account and expense account as he needs
      * 
-     * This operation will be repeat for each lot item in the list, so if we have n item in the list
+     * This operation will be repeat for each lot item in the list, so if we have n item (n > 0) in the list
      * of lot then we will have 2n writting in the journal. so the method will send an array of 2n elements
      * back to the main controller.
      * 
@@ -57,23 +61,29 @@ class StockFinanceWriter {
      * - user : Id of the user who performs the operation 
      **/
     writePurchase(metadata, lotList) {
+        const expectedSource = 'purchase';
+
+        if(expectedSource !== this.source) {
+            throw new Error(`Uncompatible method, can not execute the method writePurchase with the source : ${this.source} the expected source is ${expectedSource}`);
+        }
         // making sure we are about to work on an array
-        const lots = [].concat(lotList);
+        const lots = [].concat(lotList);        
         const lines = [];
 
         var inventory_uuids = lotList.map(function (item) {
             return item.inventory_uuid;
         });
 
-        this.inventoriesDetails(inventory_uuids, true)
+        return this.inventoriesDetails(inventory_uuids, true)
             .then(function (detailsList) {
-                //building object to make persistent
+                console.log('this is the details list', detailsList);
 
                 lots.forEach(function (lot) {
-                    var obj = {
-                        uuid,
-                        account_id,
-                        debit,
+
+                  const stockLine = {
+                      uuid        : db.bid(uuid.v4()),
+                      account_id  : detailsList[lot.inventory_uuid].stock_account,
+                      debit       : ,
                         credit,
                         debit_equiv,
                         credit_equiv,
@@ -96,8 +106,7 @@ class StockFinanceWriter {
                     lines.push(obj);
                 });
 
-
-                console.log('resultat', res);
+                return [1];
             });
     }
 
@@ -116,7 +125,7 @@ class StockFinanceWriter {
             .then(function (data) {
                 if (asObject) {
                   return data.reduce(function (obj, item) {
-                    obj[item.uuid] = item;
+                    obj[db.bid(item.uuid)] = item;
                     return obj;
                   }, {});
                 }

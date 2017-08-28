@@ -46,83 +46,79 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
  */
 function createStock(req, res, next) {
   const params = req.body;
-
-  let createLotQuery;
-  let createLotObject;
-  let createMovementQuery;
-  let createMovementObject;
-  let date;
-
-  let lots = processLot(params.lots);
-
-  const stockFinanceWriter = new StockFinanceWriter('lot');
-
   const transaction = db.transaction();
-
+  const stockFinanceWriter = new StockFinanceWriter('purchase');
+  const lotResult = processLots(params.lots);
   const document = {
     uuid : uuid.v4(),
     date : new Date(params.date),
     user : req.session.user.id,
+    depot_uuid : params.depot_uuid,
+    flux_id : params.flux_id
   };
+  const movements = processMovements(document, lotResult.processedLots);
 
-
-  params.lots.forEach((lot) => {
-    date = new Date(lot.expiration_date);
-
-    // createLotQuery = 'INSERT INTO lot SET ?';
-
-    createLotObject = {
-      uuid             : db.bid(uuid.v4()),
-      label            : lot.label,
-      initial_quantity : lot.quantity,
-      quantity         : lot.quantity,
-      unit_cost        : lot.unit_cost,
-      expiration_date  : date,
-      inventory_uuid   : db.bid(lot.inventory_uuid),
-      origin_uuid      : db.bid(lot.origin_uuid),
-      delay            : 0,
-    };
-
-        // entering movement prepare query
-    createMovementQuery = 'INSERT INTO stock_movement SET ?';
-    createMovementObject = {
-      uuid          : db.bid(uuid.v4()),
-      lot_uuid      : createLotObject.uuid,
-      depot_uuid    : db.bid(params.depot_uuid),
-      document_uuid : db.bid(document.uuid),
-      flux_id       : params.flux_id,
-      date          : document.date,
-      quantity      : lot.quantity,
-      unit_cost     : lot.unit_cost,
-      is_exit       : 0,
-      user_id       : document.user,
-    };
-
-        // transaction - add lot
-    transaction.addQuery(createLotQuery, [createLotObject]);
-
-        // transaction - add movement
-    transaction.addQuery(createMovementQuery, [createMovementObject]);
+  // writting all lots in the table lot, this is a transactionnal task
+  lotResult.mappedLots.forEach((item) => {
+    transaction.addQuery('CALL CreateLot(?)', [item]);
   });
 
-  stockFinanceWriter.writePurchase(document, params.lots);
+  movements.forEach((item) => {
+    transaction.addQuery('CALL CreateStockMovement(?)', [item]);
+  });
 
-  transaction.execute()
-    .then(() => {
-      res.status(201).json({ uuid : document.uuid });
-    })
-    .catch(next)
-    .done();
+  const promise = stockFinanceWriter.writePurchase(document, lotResult.processedLots);
+
+  promise.then((journalRecords) => {
+  });
+
+  // transaction.execute()
+  //   .then(() => {
+  //     res.status(201).json({ uuid : document.uuid });
+  //   })
+  //   .catch(next)
+  //   .done();
+}
+
+function processMovements (document, lots) {
+  
+  const items = lots || [];
+  const movements = [];
+
+  items.forEach((item) => {
+    
+    const movement = {
+      uuid       : db.bid(uuid.v4()),
+      lot_uuid   : item.uuid,
+      depot_uuid : db.bid(document.depot_uuid),
+      document_uuid : db.bid(document.uuid),
+      flux_id    : document.flux_id,
+      date       : document.date,
+      quantity   : item.quantity,
+      unit_cost  : item.unit_cost,
+      is_exit    : 0,
+      user_id    : document.user 
+    };
+
+    movements.push(movement);
+  });
+
+  const filter = 
+  util.take('uuid', 'docuemnt_uuid', 'depot_uuid', 'lot_uuid', 'flux_id', 'date', 'quantity', 'unit_cost', 'is_exit', 'user_id');
+
+  // prepare movement items for insertion into database
+  return _.map(movements, filter);
 }
 
 // this function process lot list in order to insert them to the database
-function processLot (lots) {
+function processLots (lots) {
   const items = lots || [];
 
   // make sure that lot items have their uuids
   items.forEach((item) => {
     item.uuid = db.bid(item.uuid || uuid.v4());
     item.inventory_uuid = db.bid(item.inventory_uuid);
+    item.expiration_date = new Date(item.expiration_date);
     item.origin_uuid = db.bid(item.origin_uuid);
     item.delay = 0;
   });
@@ -133,8 +129,7 @@ function processLot (lots) {
       'uuid', 'label', 'initial_quantity', 'quantity', 'unit_cost', 'expiration_date', 'inventory_uuid', 'origin_uuid', 'delay'
     );
 
-  // prepare lot items for insertion into database
-  return _.map(items, filter);
+  return {mappedLots : _.map(items, filter), processedLots : items};
 }
 
 /**
