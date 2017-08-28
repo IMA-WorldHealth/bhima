@@ -1,7 +1,7 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">{{ "TREE.CASH_WINDOW" | translate }}</li>
-    <li class="title">{{ "CASH.SELECTION.TITLE" | translate }}</li>
+    <li class="static" translate>TREE.CASH_WINDOW</li>
+    <li class="title" translate>CASH.SELECTION.TITLE</li>
   </ol>
 </div>
 
@@ -9,22 +9,24 @@
 
   <!-- link to cashboxes page if cashboxes not found -->
   <p class="text-info">
-    <i class="fa fa-question-circle-o"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+    <i class="fa fa-question-circle-o"></i>
+    <span translate>CASH.VOUCHER.CASHBOXES.MISSING</span>
 
     <a href ui-sref="cashboxes.create">
-      <i class="fa fa-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+      <i class="fa fa-link"></i> <span translate>CASH.VOUCHER.CASHBOXES.LINK</span>
     </a>
   </p>
 
+  <label class="control-label" translate>CASH.SELECTION.CURRENT_PROJECT_CASHBOXES</label>
+
   <!-- list of cashboxes -->
-  <ul class="list-group">
+  <ul class="list-group" ng-if="$ctrl.hasCurrentProjectCashboxes">
     <li
       class="list-group-item"
-      ng-repeat="cashbox in $ctrl.cashboxes"
+      ng-repeat="cashbox in $ctrl.currentProjectCashboxes"
       ng-class="{'active' : $ctrl.selectedCashbox.id === cashbox.id}"
       ng-click="$ctrl.selectCashbox(cashbox.id)"
-      style="cursor:pointer;"
-      >
+      style="cursor:pointer;">
 
       <span id="cashbox-{{ cashbox.id }}">
         <i class="fa fa-inbox"></i> {{ cashbox.label }}
@@ -35,6 +37,37 @@
       </span>
     </li>
   </ul>
+
+  <!-- show message if there are no cashboxes for current project -->
+  <p ng-if="!$ctrl.hasCurrentProjectCashboxes" translate>
+    CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES
+  </p>
+
+  <label class="control-label" translate>CASH.SELECTION.OTHER_PROJECT_CASHBOXES</label>
+
+  <ul class="list-group" ng-if="$ctrl.hasOtherProjectCashboxes">
+    <li
+      class="list-group-item"
+      ng-repeat="cashbox in $ctrl.otherProjectCashboxes"
+      ng-class="{'active' : $ctrl.selectedCashbox.id === cashbox.id}"
+      ng-click="$ctrl.selectCashbox(cashbox.id)"
+      style="cursor:pointer;">
+
+      <span id="cashbox-{{ cashbox.id }}">
+        <i class="fa fa-inbox"></i> {{ cashbox.label }}
+      </span>
+
+      <span ng-show="$ctrl.selectedCashbox.id === cashbox.id" class="badge">
+        <i class="fa fa-check"></i>
+      </span>
+    </li>
+  </ul>
+
+  <!-- show message if there are no cashboxes for current project -->
+  <p ng-if="!$ctrl.hasOtherProjectCashboxes" translate>
+    CASH.SELECTION.NO_OTHER_PROJECT_CASHBOXES
+  </p>
+
 </div>
 
 <div class="modal-footer">
@@ -44,8 +77,9 @@
     ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
     ui-sref-opts="{ reload : true }"
     ng-disabled="!$ctrl.cashboxId"
+    translate
     data-cashbox-modal-cancel>
-    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    FORM.BUTTONS.CANCEL
   </button>
 
   <button
@@ -54,7 +88,8 @@
     ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
     ui-sref-opts="{ reload : true }"
     ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id"
+    translate
     data-cashbox-modal-submit>
-    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    FORM.BUTTONS.SUBMIT
   </button>
 </div>
