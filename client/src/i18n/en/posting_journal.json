@@ -52,6 +52,8 @@
     "ERRORS":{
       "DATE_IN_WRONG_PERIOD":"Dates in wrong period",
       "MISSING_DESCRIPTION":"Descriptions omitted",
+      "NO_FISCAL_FOR_DATE":"There is no fiscal year for this Date",
+      "CLOSED_FISCAL_YEAR":"The fiscal year for this date has already been closed",
       "VARIOUS_TRANSACTION_TYPE":"Various transaction type for a transaction",
       "LOCKED_ACCOUNT":"An accountant has locked one or more accounts used in a transaction.  To correct this error, update the transaction or unlock the periods.",
       "TRANSACTION_DIFF_DATES" : "A transaction must have identical dates, yet some transaction contains different dates.  Correct this by updating the dates of the affected transactions.",

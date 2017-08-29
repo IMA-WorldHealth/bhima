@@ -30,6 +30,7 @@ exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
 exports.getPeriodByFiscal = getPeriodByFiscal;
+exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 
 /**
  * @method lookupFiscalYear
@@ -647,4 +648,26 @@ function getPeriodByFiscal(fiscalYearId) {
   `;
 
   return db.exec(sql, [fiscalYearId]);
+}
+
+/**
+ * @method lookupFiscalYearByDate
+ *
+ * @description
+ * This function returns a single record from the fiscal year table matching
+ * the DATE provided.  If no record is found, it throws a NotFound error.
+ *
+ * @returns {Promise} - a promise resolving to the fiscal record
+ *
+ * @private
+ */
+function lookupFiscalYearByDate(transDate) {
+  const sql = `
+    SELECT p.fiscal_year_id, p.id, f.locked, f.note
+    FROM period AS p
+    JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
+    WHERE DATE(p.start_date) <= DATE(?) AND DATE(p.end_date) >= DATE(?);
+  `;
+
+  return db.exec(sql, [transDate, transDate]);
 }

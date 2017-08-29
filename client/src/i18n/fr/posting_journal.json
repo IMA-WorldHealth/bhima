@@ -50,6 +50,8 @@
 "COLUMNS":"Colonnes"},
 "ERRORS":{"DATE_IN_WRONG_PERIOD":"Dates dans la mauvaise periode",
 "MISSING_DESCRIPTION":"Descriptions omises",
+"NO_FISCAL_FOR_DATE":"Il n'existe pas d'année fiscale pour cette Date",
+"CLOSED_FISCAL_YEAR":"L'annee fiscale pour cette date a déjà été fermé",
 "VARIOUS_TRANSACTION_TYPE":"Type de transaction different pour une meme transaction",
 "TRANSACTION_DIFF_DATES" : "Transactions avec des dates differentes",
 "LOCKED_ACCOUNT":"Compte(s) verrouille(s)",

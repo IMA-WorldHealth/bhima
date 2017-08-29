@@ -28,6 +28,9 @@ const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
+// Fiscal Service
+const FiscalService = require('../../finance/fiscal');
+
 // expose to the api
 exports.list = list;
 exports.getTransaction = getTransaction;
@@ -243,6 +246,7 @@ function editTransaction(req, res, next) {
   const rowsRemoved = req.body.removed;
 
   let _oldTransaction;
+  let transDate;
 
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
 
@@ -275,7 +279,28 @@ function editTransaction(req, res, next) {
         // row = transformColumns(row);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
+      return selectTransDate(rowsChanged);
+    })
+    .then((trans_date) => {
+      transDate = trans_date;
+      return FiscalService.lookupFiscalYearByDate(transDate);
+    })
+    .then((result) => {
+      if (transDate) {
+        if (!result.length) {
+          throw new BadRequest('Invalid Fiscal Year', 'POSTING_JOURNAL.ERRORS.NO_FISCAL_FOR_DATE');
+        }
 
+        if (result[0].locked) {
+          throw new BadRequest('Closed Fiscal Year', 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR');
+        }
+
+        _.each(rowsChanged, (row) => {
+          row.fiscal_year_id = result[0].fiscal_year_id;
+          row.period_id = result[0].id;
+        });
+      }
+      
       return transformColumns(rowsChanged, false, _oldTransaction);
     })
     .then((result) => {
@@ -449,6 +474,17 @@ function transformColumns(rows, newRecord, oldTransaction) {
 
   return q.all(promises)
     .then(() => rows);
+}
+
+//Check the Valid Update of Date
+function selectTransDate(rows){
+  let transDate;
+
+  _.each(rows, (row) => {
+    transDate = row.trans_date;
+  });
+
+  return transDate;
 }
 
 
