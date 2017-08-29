@@ -6,6 +6,7 @@ const bhInventorySelect = require('../shared/components/bhInventorySelect');
 const bhDateInterval = require('../shared/components/bhDateInterval');
 const bhTransactionTypeSelect = require('../shared/components/bhTransactionTypeSelect');
 const bhSupplierSelect = require('../shared/components/bhSupplierSelect');
+const bhOriginSelect = require('../shared/components/bhOriginSelect');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -148,6 +149,10 @@ class SearchModal {
 
   setCustomPeriod(start, end) {
     bhPeriodSelect.custom(start, end);
+  }
+
+  setOrigin (origin){
+    bhOriginSelect.set(origin);
   }
 
   close() {

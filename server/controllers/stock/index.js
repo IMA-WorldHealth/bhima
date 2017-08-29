@@ -28,6 +28,7 @@ exports.listLotsMovements = listLotsMovements;
 exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
+exports.listOrigins = listOrigins;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
@@ -301,6 +302,21 @@ function listLotsOrigins(req, res, next) {
   const params = req.query;
 
   core.getLotsOrigins(null, params)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /stock/origins
+ * returns list of origins 
+ */
+function listOrigins(req, res, next) {
+  const params = req.query;
+
+  core.getOrigins(null, params)
     .then((rows) => {
       res.status(200).json(rows);
     })

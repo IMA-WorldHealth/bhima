@@ -78,6 +78,7 @@
 "STOCK_INVENTORY_REPORT":"[Stock] Fiche de stock",
 "STOCK_LOTS":"Lots en stock",
 "STOCK_MOVEMENTS":"Movements de stock",
+"STOCK_ORIGINS":"Origines des lots",
 "TRANSACTION_TYPE":"Types de Transaction",
 "SUBSIDY":"Gestion des subventions",
 "USERS":"Utilisateurs",

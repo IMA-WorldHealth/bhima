@@ -2,20 +2,29 @@ angular.module('bhima.controllers')
 .controller('StockOriginsController', StockOriginsController);
 
 StockOriginsController.$inject = [
-  'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService',
-  'SearchFilterFormatService', 'LanguageService',
-  'GridGroupingService', 'ReceiptModal',
+  'StockService', 'NotifyService','uiGridConstants', 
+  '$translate', 'StockModalService', 'SearchFilterFormatService', 
+  'LanguageService', 'GridGroupingService', 'ReceiptModal', 
+  'AppCache', '$state', 'GridColumnService', 'GridStateService',
 ];
 
 /**
  * Stock Origin Controller
- * This module is a registry page for stock lots
+ * This module is a registry page for stock origins
  */
-function StockOriginsController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Grouping, Receipts) {
+function StockOriginsController(Stock, Notify, uiGridConstants, 
+  $translate, Modal, SearchFilterFormat, Languages, 
+  Grouping, Receipts, AppCache, $state, Columns, GridState) {
   var vm = this;
+
+  var cacheKey = 'StockOrigins';
+  var cache = AppCache(cacheKey);
+  var state;
+
+  var filterKey = 'origin';
+  var stockOriginFilters = Stock.filter.origin;
+
+  vm.download = Stock.download;
 
   // map receipts
   var mapOriginDocument = {
@@ -35,7 +44,7 @@ function StockOriginsController(Stock, Notify,
 
   // global variables
   vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
+  vm.latestViewFilters = [];
 
   // grid columns
   var columns = [
@@ -90,7 +99,16 @@ function StockOriginsController(Stock, Notify,
     flatEntityAccess  : true,
   };
 
+  var columnConfig = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+
   vm.grouping = new Grouping(vm.gridOptions, true, 'reference', vm.grouped, true);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
 
   // expose to the view
   vm.search = search;
@@ -100,10 +118,16 @@ function StockOriginsController(Stock, Notify,
   vm.toggleGroup = toggleGroup;
   vm.getOriginDocument = getOriginDocument;
   vm.getEntryDocument = getEntryDocument;
+  vm.openColumnConfiguration = openColumnConfiguration;
 
   // on remove one filter
   function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
+    Stock.removeFilter(filterKey, key);
+
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockOriginFilters.formatView();
+
+    return load(stockOriginFilters.formatHTTP(true));
   }
 
   // select group
@@ -124,6 +148,10 @@ function StockOriginsController(Stock, Notify,
     }
   }
 
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
+  }
+
   function getOriginDocument(uuid, origin) {
     if (!mapOriginDocument[origin]) { return; }
 
@@ -141,23 +169,16 @@ function StockOriginsController(Stock, Notify,
     SearchFilterFormat.clearFilters(reload);
   }
 
-  // load stock lots in the grid
+  // initialize module
+  function startup() {
+    load(stockOriginFilters.formatHTTP(true));
+    vm.latestViewFilters = stockOriginFilters.formatView();
+  }
+
+  // load stock origins in the grid
   function load(filters) {
-    var today = { defaultPeriod: 'today' };
-    var params = filters;
-
-    var noFilter = (!filters);
-    var noAttributes = (noFilter || (Object.keys(filters).length === 0));
-
-    if (noAttributes) {
-      params = today;
-      vm.isToday = true;
-      vm.filters = { display: today, identifiers: today };
-      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    }
-
-    Stock.stocks.read('/origins', params).then(function (lots) {
-      vm.gridOptions.data = lots;
+    Stock.stocks.read('/origins', filters).then(function (origins) {
+      vm.gridOptions.data = origins;
 
       vm.grouping.unfoldAllGroups();
     })
@@ -166,22 +187,25 @@ function StockOriginsController(Stock, Notify,
 
   // search modal
   function search() {
-    Modal.openSearchLots()
-    .then(function (filters) {
-      if (!filters) { return; }
+    var filtersSnapshot = stockOriginFilters.formatHTTP();
 
-      vm.isToday = false;
-      reload(filters);
-    })
-    .catch(Notify.handleError);
+    Modal.openSearchOrigins(filtersSnapshot)
+      .then(function (changes) {
+        stockOriginFilters.replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = stockOriginFilters.formatView();
+
+        return load(stockOriginFilters.formatHTTP(true));
+      })
+      .catch(angular.noop);
   }
 
   // reload
   function reload(filters) {
     vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
+    vm.latestViewFilters = stockOriginFilters.formatView();
     load(filters.identifiers);
   }
 
-  load();
+  startup();
 }

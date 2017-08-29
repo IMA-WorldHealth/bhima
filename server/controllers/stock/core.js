@@ -40,6 +40,7 @@ exports.getLots = getLots;
 exports.getLotsDepot = getLotsDepot;
 exports.getLotsMovements = getLotsMovements;
 exports.getLotsOrigins = getLotsOrigins;
+exports.getOrigins = getOrigins;
 exports.stockManagementProcess = stockManagementProcess;
 
 // stock consumption
@@ -71,7 +72,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
-  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid', 'origin_uuid']);
   const filters = new FilterParser(params, { autoParseStatements : false });
 
   filters.equals('uuid', 'uuid', 'l');
@@ -81,7 +82,9 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('origin_uuid', 'uuid', 'origin');
   filters.equals('text', 'text', 'i');
+  filters.equals('code', 'code', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
 
@@ -103,6 +106,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
+
   return db.exec(query, queryParameters);
 }
 
@@ -223,7 +227,7 @@ function getLotsOrigins(depotUuid, params) {
 
   const sql = `
         SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date, 
-            BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid, 
+            BUID(l.inventory_uuid) AS inventory_uuid, BUID(origin.uuid) AS origin_uuid, 
             l.entry_date, i.code, i.text, origin.display_name, origin.reference, 
             BUID(m.document_uuid) AS document_uuid, m.flux_id,
             iu.text AS unit_type
@@ -255,6 +259,41 @@ function getLotsOrigins(depotUuid, params) {
 
   return getLots(sql, params);
 }
+
+/**
+ * @function getOrigins
+ *
+ * @description returns all stock origins
+ *
+ * @param {object} params - A request query object
+ */
+function getOrigins() {
+
+  const sql = `
+  SELECT BUID(origin.uuid) AS uuid, origin.reference, origin.display_name FROM
+    (
+      SELECT
+        p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference,
+        'STOCK.PURCHASE_ORDER' AS display_name
+      FROM
+        purchase p JOIN project proj ON proj.id = p.project_id
+      UNION
+      SELECT
+        d.uuid, CONCAT_WS('.', '${identifiers.DONATION.key}', proj.abbr, d.reference) AS reference,
+        'STOCK.DONATION' AS display_name
+        FROM
+          donation d JOIN project proj ON proj.id = d.project_id
+      UNION
+      SELECT
+        i.uuid, CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, i.reference) AS reference,
+        'STOCK.INTEGRATION' AS display_name
+        FROM
+          integration i JOIN project proj ON proj.id = i.project_id
+    ) AS origin`;
+
+  return db.exec(sql);
+}
+
 
 /**
  * Stock Management Processing

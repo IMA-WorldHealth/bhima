@@ -1,0 +1,93 @@
+{{> head title="TREE.STOCK_ORIGINS" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'TREE.STOCK_ORIGINS'}}
+      </h2>
+
+      <h4 class="text-center">
+        {{#if optionReport.custom_period_start}}
+          {{date optionReport.custom_period_start }} - {{date optionReport.custom_period_end}}
+        {{else}} 
+          {{date}} 
+        {{/if}}
+      </h4>
+
+      <!-- filters  -->
+      <p class="pills">
+        {{#each filters}}
+          <span class="label label-primary text-capitalize">
+            <i class="fa fa-filter"></i> {{translate this.displayName}}
+
+            {{#if this.comparitor}} {{this.comparitor}}
+            {{else}}: {{/if}}
+
+            {{#if this.isDate}} {{date this.value}}
+            {{else}} {{translate this.value}} {{/if}}
+          </span>
+        {{/each}}
+      </p>
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th>{{translate 'STOCK.ORIGIN_DOCUMENT'}}</th>
+            <th>{{translate 'STOCK.ORIGIN'}}</th>
+            <th>{{translate 'STOCK.CODE'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
+            <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- for each depots which contains lots -->
+          {{#each origins as | items reference |}}
+
+            <!-- this is the origin group header -->
+            <tr style="border:none">
+              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+                {{ reference }} 
+              </th>
+
+              <th colspan="6" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+              </th>
+            </tr>
+
+            <!-- these are the items for each group -->
+            {{#each items as | item | }}
+              <tr>
+                <td>{{reference}}</td>
+                <td>{{translate display_name}}</td>
+                <td>{{code}}</td>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{date entry_date}}</td>
+                <td class="text-right">{{date expiration_date}}</td>
+              </tr>
+            {{/each}}
+
+            <!-- blank row  -->
+            {{#unless @last }}
+              <!-- blank line -->
+              <tr style="border:none;">
+                <th style="border:none;"></th>
+              </tr>
+            {{/unless}}
+
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

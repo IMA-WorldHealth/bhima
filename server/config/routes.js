@@ -572,6 +572,8 @@ exports.configure = function configure(app) {
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
   app.get('/stock/lots/origins', stock.listLotsOrigins);
+  app.get('/stock/origins', stock.listOrigins);
+  //app.get('/stock/origins', stock.listLotsOrigins);
 
   app.get('/stock/lots/depots/', stock.listLotsDepot);
   app.get('/stock/inventories/depots', stock.listInventoryDepot);
@@ -584,6 +586,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
+  app.get('/reports/stock/origins', stockReports.stockOriginsReport);
 
   // stock receipts API
   app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);

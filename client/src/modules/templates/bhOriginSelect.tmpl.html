@@ -1,0 +1,27 @@
+<div ng-form="OriginForm" bh-origin-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validateTrigger && OriginForm.origin_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      STOCK.ORIGIN
+    </label>
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="origin_uuid" 
+      ng-model="$ctrl.originUuid"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PURCHASE_ORDER' | translate }}">
+        <span>{{$select.selected.reference}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="origin.uuid as origin in $ctrl.origins | filter: { 'reference': $select.search }">
+        <span ng-bind-html="origin.reference | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="OriginForm.origin_uuid.$error" ng-show="$ctrl.validateTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
