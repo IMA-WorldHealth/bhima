@@ -75,11 +75,11 @@ describe('Suppliers', () => {
     // the following fields are not required
     FU.validation.ok('SupplierCtrl.supplier.phone');
     FU.validation.ok('SupplierCtrl.supplier.email');
-    FU.validation.ok('SupplierCtrl.supplier.locked');
     FU.validation.ok('SupplierCtrl.supplier.address_2');
     FU.validation.ok('SupplierCtrl.supplier.fax');
     FU.validation.ok('SupplierCtrl.supplier.note');
 
     components.notification.hasDanger();
+
   });
 });
