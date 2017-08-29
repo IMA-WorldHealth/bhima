@@ -78,33 +78,33 @@ class StockFinanceWriter {
             .then(function (detailsList) {
                 console.log('this is the details list', detailsList);
 
-                lots.forEach(function (lot) {
+                // lots.forEach(function (lot) {
 
-                  const stockLine = {
-                      uuid        : db.bid(uuid.v4()),
-                      account_id  : detailsList[lot.inventory_uuid].stock_account,
-                      debit       : ,
-                        credit,
-                        debit_equiv,
-                        credit_equiv,
+                //   const stockLine = {
+                //       uuid        : db.bid(uuid.v4()),
+                //       account_id  : detailsList[lot.inventory_uuid].stock_account,
+                //       debit       : ,
+                //         credit,
+                //         debit_equiv,
+                //         credit_equiv,
 
-                        project_id,
-                        fiscal_year_id,
-                        period_id,
-                        trans_id,
-                        trans_date,
-                        record_uuid,
-                        description,                        
-                        currency_id,
-                        entity,
-                        reference_uuid,
-                        comment,
-                        origin_id,
-                        user_id,                       
-                    }
+                //         project_id,
+                //         fiscal_year_id,
+                //         period_id,
+                //         trans_id,
+                //         trans_date,
+                //         record_uuid,
+                //         description,                        
+                //         currency_id,
+                //         entity,
+                //         reference_uuid,
+                //         comment,
+                //         origin_id,
+                //         user_id,                       
+                //     }
 
-                    lines.push(obj);
-                });
+                //     lines.push(obj);
+                // });
 
                 return [1];
             });

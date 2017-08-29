@@ -1339,7 +1339,6 @@ CREATE PROCEDURE CreateLot (
   IN uuid BINARY(16),
   IN label VARCHAR(255),
   IN initial_quantity INT(11),
-  IN quantity INT(11),
   IN unit_cost DECIMAL(19,4) UNSIGNED,
   IN expiration_date DATE,
   IN inventory_uuid BINARY(16),
@@ -1350,7 +1349,7 @@ BEGIN
   INSERT INTO 
     `lot` (`uuid`, `label`, `initial_quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`)
   VALUES
-    (uuid, label, initial_quantity, quantity, unit_cost, expiration_date, inventory_uuid, origin_uuid, delay);
+    (uuid, label, initial_quantity, unit_cost, expiration_date, inventory_uuid, origin_uuid, delay);
 END $$
 
 
@@ -1378,11 +1377,83 @@ BEGIN
 END $$
 
 
-CREATE PROCEDURE PostPurchase (IN document_uuid BINARY(16))
+CREATE PROCEDURE PostPurchase (
+  IN document_uuid BINARY(16),
+  IN date DATETIME,
+  IN enterprise_id SMALLINT(5) UNSIGNED,
+  IN project_id SMALLINT(5) UNSIGNED,
+  IN currency_id TINYINT(3) UNSIGNED,
+  IN user_id SMALLINT(5) UNSIGNED
+)
 BEGIN
+  DECLARE InvalidInventoryAccounts CONDITION FOR SQLSTATE '45006';
+  DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE verify_invalid_accounts SMALLINT(5);
 
+  SET current_fiscal_year_id = (
+    SELECT id FROM fiscal_year AS fy
+    WHERE date BETWEEN fy.start_date AND DATE(ADDDATE(fy.start_date, INTERVAL fy.number_of_months MONTH)) AND fy.enterprise_id = enterprise_id
+  );
+
+  SET current_period_id = (
+    SELECT id FROM period AS p
+    WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
+  );
+
+  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
+
+  SET transaction_id = GenerateTransactionId(project_id);
+
+  CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
+
+ -- Check that all every inventory has a stock account and a variation account - if they do not the transaction will be Unbalanced
+  SELECT 
+    COUNT(l.uuid) INTO verify_invalid_accounts
+  FROM 
+    lot AS l
+  JOIN 
+  	stock_movement sm ON sm.lot_uuid = l.uuid
+  JOIN 
+  	inventory i ON i.uuid = l.inventory_uuid
+  JOIN 
+  	inventory_group ig ON ig.uuid = i.group_uuid
+  WHERE 
+  	ig.stock_account IS NULL AND 
+    ig.cogs_account IS NULL AND
+    sm.document_uuid = document_uuid;
+  
+  IF verify_invalid_accounts > 0 THEN
+    SIGNAL InvalidInventoryAccounts
+    SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
+  END IF;
+
+  INSERT INTO posting_journal 
+  (
+    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, origin_id, user_id
+  ) 
+  SELECT
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    date, p.uuid, sm.description, ig.stock_account, pi.total, 0, pi.total, 0, currency_id,
+    9, user_id
+  FROM
+    purchase As p
+  JOIN 
+  	 purchase_item pi ON p.uuid = pi.purchase_uuid
+  JOIN 
+    inventory i ON i.uuid = pi.inventory_uuid
+  JOIN 
+    inventory_group ig ON ig.uuid = i.group_uuid
+  JOIN
+  	 lot l ON l.inventory_uuid = i.uuid
+  JOIN 
+  	 stock_movement sm ON sm.lot_uuid = l.uuid
+  WHERE
+    sm.document_uuid = document_uuid;
 END $$
-
-
-
 DELIMITER ;

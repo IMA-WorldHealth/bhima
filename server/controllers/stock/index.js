@@ -66,18 +66,20 @@ function createStock(req, res, next) {
   movements.forEach((item) => {
     transaction.addQuery('CALL CreateStockMovement(?)', [item]);
   });
+  const commonInfos = [ db.bid(document.uuid), document.date, req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
 
-  const promise = stockFinanceWriter.writePurchase(document, lotResult.processedLots);
-
-  promise.then((journalRecords) => {
+  lotResult.processedLots.forEach(() => {
+    transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
   });
 
-  // transaction.execute()
-  //   .then(() => {
-  //     res.status(201).json({ uuid : document.uuid });
-  //   })
-  //   .catch(next)
-  //   .done();
+  console.log('ready to execute');
+
+  transaction.execute()
+    .then(() => {
+      res.status(201).json({ uuid : document.uuid });
+    })
+    .catch(next)
+    .done();
 }
 
 function processMovements (document, lots) {
@@ -126,7 +128,7 @@ function processLots (lots) {
   // create a filter to align lot item columns to the SQL columns
   const filter =
     util.take(
-      'uuid', 'label', 'initial_quantity', 'quantity', 'unit_cost', 'expiration_date', 'inventory_uuid', 'origin_uuid', 'delay'
+      'uuid', 'label', 'initial_quantity', 'unit_cost', 'expiration_date', 'inventory_uuid', 'origin_uuid', 'delay'
     );
 
   return {mappedLots : _.map(items, filter), processedLots : items};
