@@ -80,5 +80,6 @@ describe('Suppliers', () => {
     FU.validation.ok('SupplierCtrl.supplier.note');
 
     components.notification.hasDanger();
+
   });
 });
