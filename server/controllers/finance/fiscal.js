@@ -655,11 +655,7 @@ function getPeriodByFiscal(fiscalYearId) {
  *
  * @description
  * This function returns a single record from the fiscal year table matching
- * the DATE provided.  If no record is found, it throws a NotFound error.
  *
- * @returns {Promise} - a promise resolving to the fiscal record
- *
- * @private
  */
 function lookupFiscalYearByDate(transDate) {
   const sql = `

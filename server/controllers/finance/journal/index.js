@@ -278,8 +278,9 @@ function editTransaction(req, res, next) {
         db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
         // row = transformColumns(row);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
-      });
-      return selectTransDate(rowsChanged);
+      });      
+
+      return pickTransDate(rowsChanged);
     })
     .then((trans_date) => {
       transDate = trans_date;
@@ -294,14 +295,9 @@ function editTransaction(req, res, next) {
         if (result[0].locked) {
           throw new BadRequest('Closed Fiscal Year', 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR');
         }
-
-        _.each(rowsChanged, (row) => {
-          row.fiscal_year_id = result[0].fiscal_year_id;
-          row.period_id = result[0].id;
-        });
       }
       
-      return transformColumns(rowsChanged, false, _oldTransaction);
+      return transformColumns(rowsChanged, false, _oldTransaction, result);
     })
     .then((result) => {
       _.each(result, (row, uid) => {
@@ -329,7 +325,7 @@ function editTransaction(req, res, next) {
 // converts all valid posting journal editable columns into data representations
 // returns valid errors for incorrect data
 // @TODO Many requests are made vs. getting one look up table and using that - this can be greatly optimised
-function transformColumns(rows, newRecord, oldTransaction) {
+function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
@@ -462,8 +458,12 @@ function transformColumns(rows, newRecord, oldTransaction) {
 
     // ensure date strings are processed correctly
     // @TODO standardise formatting vs. lookup behaviour
-    if (row.trans_date) {
+    if (row.trans_date) { 
       row.trans_date = new Date(row.trans_date);
+
+      // Assign the fiscal year value and the period each time the trans_date Change
+      row.fiscal_year_id = setFiscalData[0].fiscal_year_id;
+      row.period_id = setFiscalData[0].id;
     }
   });
 
@@ -476,10 +476,10 @@ function transformColumns(rows, newRecord, oldTransaction) {
     .then(() => rows);
 }
 
-//Check the Valid Update of Date
-function selectTransDate(rows){
+//Pick trans_date
+function pickTransDate(rows){
   let transDate;
-
+  
   _.each(rows, (row) => {
     transDate = row.trans_date;
   });
