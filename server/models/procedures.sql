@@ -446,14 +446,16 @@ BEGIN
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, origin_id, user_id
-  ) SELECT
+  )
+   SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
-    i.description, ig.sales_account, ii.debit, ii.credit, ii.debit, ii.credit,
+    CONCAT(dm.text,': ', inv.text) as txt, ig.sales_account, ii.debit, ii.credit, ii.debit, ii.credit,
     currencyId, 11, i.user_id
-  FROM invoice AS i JOIN invoice_item AS ii JOIN inventory as inv JOIN inventory_group AS ig ON
+  FROM invoice AS i JOIN invoice_item AS ii JOIN inventory as inv JOIN inventory_group AS ig JOIN document_map as dm ON
     i.uuid = ii.invoice_uuid AND
     ii.inventory_uuid = inv.uuid AND
-    inv.group_uuid = ig.uuid
+    inv.group_uuid = ig.uuid AND
+    dm.uuid = i.uuid
   WHERE i.uuid = iuuid;
 
   -- copy the invoice_subsidy records into the posting_journal (debits)
@@ -1310,9 +1312,9 @@ CREATE PROCEDURE ComputeStockConsumptionByPeriod (
   IN depot_uuid BINARY(16),
   IN period_id MEDIUMINT(8),
   IN movementQuantity INT(11)
-) 
-BEGIN 
-  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES 
+)
+BEGIN
+  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
     (inventory_uuid, depot_uuid, period_id, movementQuantity)
   ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
 END $$
@@ -1323,12 +1325,12 @@ CREATE PROCEDURE ComputeStockConsumptionByDate (
   IN depot_uuid BINARY(16),
   IN movementDate DATE,
   IN movementQuantity INT(11)
-) 
-BEGIN 
-  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) 
-    SELECT inventory_uuid, depot_uuid, p.id, movementQuantity 
-    FROM period p 
-    WHERE DATE(movementDate) BETWEEN DATE(p.start_date) AND DATE(p.end_date) 
+)
+BEGIN
+  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`)
+    SELECT inventory_uuid, depot_uuid, p.id, movementQuantity
+    FROM period p
+    WHERE DATE(movementDate) BETWEEN DATE(p.start_date) AND DATE(p.end_date)
   ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
 END $$
 
