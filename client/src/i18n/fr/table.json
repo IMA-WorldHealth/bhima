@@ -23,6 +23,7 @@
             "CHARGE": "Charge",
             "CLIENT": "Client",
             "CODE": "Code",
+            "COMMENT" :"Comment",
             "COST": "Coût",
             "COST_CENTER": "Centre de cout",
             "COUNTRY": "Pays",
