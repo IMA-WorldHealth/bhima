@@ -150,8 +150,8 @@ function FilterService(Store) {
 
     Object.keys(this._filterIndex).forEach(function (key) {
       var filter = this._filterIndex[key];
-
-      if (filter._value) {
+      
+      if (filter._value !== null && filter._value !== undefined && filter._value.length !== '') {
         filtered.push(angular.copy(filter));
       }
     }.bind(this));
