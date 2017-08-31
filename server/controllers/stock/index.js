@@ -22,8 +22,6 @@ const core = require('./core');
 const util = require('../../lib/util');
 const _ = require('lodash');
 
-const StockFinanceWriter = require('./stockFinanceWriter');
-
 // expose to the API
 exports.createStock = createStock;
 exports.createMovement = createMovement;
@@ -47,7 +45,6 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
 function createStock(req, res, next) {
   const params = req.body;
   const transaction = db.transaction();
-  const stockFinanceWriter = new StockFinanceWriter('purchase');
   const lotResult = processLots(params.lots);
   const document = {
     uuid : uuid.v4(),
@@ -63,17 +60,20 @@ function createStock(req, res, next) {
     transaction.addQuery('CALL CreateLot(?)', [item]);
   });
 
+  // writting all necessary movement based to the lot entry operation, this is a transcationnal task
   movements.forEach((item) => {
     transaction.addQuery('CALL CreateStockMovement(?)', [item]);
   });
+
+  // An arry of common info, to send to the store procedure in order to insert to the posting journal
   const commonInfos = [ db.bid(document.uuid), document.date, req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
 
+  // writting all records relative to the movement in the posting journal table
   lotResult.processedLots.forEach(() => {
     transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
   });
 
-  console.log('ready to execute');
-
+  // execute all 3 operations as one transaction
   transaction.execute()
     .then(() => {
       res.status(201).json({ uuid : document.uuid });
@@ -99,14 +99,16 @@ function processMovements (document, lots) {
       quantity   : item.quantity,
       unit_cost  : item.unit_cost,
       is_exit    : 0,
-      user_id    : document.user 
+      user_id    : document.user ,
+      entity_uuid : null,
+      description : null
     };
 
     movements.push(movement);
   });
 
   const filter = 
-  util.take('uuid', 'docuemnt_uuid', 'depot_uuid', 'lot_uuid', 'flux_id', 'date', 'quantity', 'unit_cost', 'is_exit', 'user_id');
+  util.take('uuid', 'document_uuid', 'depot_uuid', 'lot_uuid', 'entity_uuid', 'description', 'flux_id', 'date', 'quantity', 'unit_cost', 'is_exit', 'user_id');
 
   // prepare movement items for insertion into database
   return _.map(movements, filter);

@@ -1366,17 +1366,16 @@ CREATE PROCEDURE CreateStockMovement (
   IN quantity INT(11),
   IN unit_cost DECIMAL(19, 4) UNSIGNED,
   IN is_exit TINYINT(1),
-  IN user_id SMALLINT(5) UNSIGNED,
-  IN reference INT(11) UNSIGNED  
+  IN user_id SMALLINT(5) UNSIGNED
 )
 BEGIN
   INSERT INTO
-    `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`)
+    `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`)
   VALUES
-    (uuid, document_uuid, depot_uuid, lot_uuid, entity_uuid, description, flux_id, date, quantity, unit_cost, is_exit, user_id, reference);
+    (uuid, document_uuid, depot_uuid, lot_uuid, entity_uuid, description, flux_id, date, quantity, unit_cost, is_exit, user_id);
 END $$
 
-
+-- This processus inserts records relative to the stock movement in the posting journal
 CREATE PROCEDURE PostPurchase (
   IN document_uuid BINARY(16),
   IN date DATETIME,
@@ -1393,22 +1392,22 @@ BEGIN
   DECLARE transaction_id VARCHAR(100);
   DECLARE verify_invalid_accounts SMALLINT(5);
 
+  -- getting the curent fiscal year
   SET current_fiscal_year_id = (
     SELECT id FROM fiscal_year AS fy
     WHERE date BETWEEN fy.start_date AND DATE(ADDDATE(fy.start_date, INTERVAL fy.number_of_months MONTH)) AND fy.enterprise_id = enterprise_id
   );
 
+  -- getting the period id
   SET current_period_id = (
     SELECT id FROM period AS p
     WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
   );
 
-  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
-  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
-
+  -- getting the transaction number
   SET transaction_id = GenerateTransactionId(project_id);
 
-  CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
+  CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, 1, date);
 
  -- Check that all every inventory has a stock account and a variation account - if they do not the transaction will be Unbalanced
   SELECT 
@@ -1431,6 +1430,7 @@ BEGIN
     SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
 
+  -- Debiting stock account, by inserting a record to the posting journal table
   INSERT INTO posting_journal 
   (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
@@ -1442,17 +1442,43 @@ BEGIN
     date, p.uuid, sm.description, ig.stock_account, pi.total, 0, pi.total, 0, currency_id,
     9, user_id
   FROM
-    purchase As p
+    stock_movement As sm
   JOIN 
-  	 purchase_item pi ON p.uuid = pi.purchase_uuid
+    lot l ON l.uuid = sm.lot_uuid
+  JOIN
+    purchase p ON p.uuid = l.origin_uuid
+  JOIN 
+    purchase_item pi ON pi.purchase_uuid = p.uuid  	 
   JOIN 
     inventory i ON i.uuid = pi.inventory_uuid
   JOIN 
-    inventory_group ig ON ig.uuid = i.group_uuid
-  JOIN
-  	 lot l ON l.inventory_uuid = i.uuid
+    inventory_group ig ON ig.uuid = i.group_uuid    
+  WHERE
+    sm.document_uuid = document_uuid;
+
+-- Crediting cost of good sale account, by inserting a record to the posting journal table
+  INSERT INTO posting_journal 
+  (
+    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, origin_id, user_id
+  ) 
+  SELECT
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    date, p.uuid, sm.description, ig.cogs_account, 0, pi.total, 0, pi.total, currency_id,
+    9, user_id
+  FROM
+    stock_movement As sm
   JOIN 
-  	 stock_movement sm ON sm.lot_uuid = l.uuid
+    lot l ON l.uuid = sm.lot_uuid
+  JOIN
+    purchase p ON p.uuid = l.origin_uuid
+  JOIN 
+    purchase_item pi ON pi.purchase_uuid = p.uuid  	 
+  JOIN 
+    inventory i ON i.uuid = pi.inventory_uuid
+  JOIN 
+    inventory_group ig ON ig.uuid = i.group_uuid    
   WHERE
     sm.document_uuid = document_uuid;
 END $$
