@@ -128,7 +128,7 @@ function CashPaymentRegistryController(
     Modal.openSearchCashPayment(filtersSnapshot)
       .then(function (changes) {
         Cash.filters.replaceFilters(changes);
-
+        
         Cash.cacheFilters();
         vm.latestViewFilters = Cash.filters.formatView();
 
