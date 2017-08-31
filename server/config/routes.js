@@ -184,6 +184,7 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
+  app.put('/journal/comments', journal.commentPostingJournal);
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);

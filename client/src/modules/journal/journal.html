@@ -55,17 +55,23 @@
         </div>
 
         <div class="toolbar-item">
+          <button data-method="comment" class="btn btn-default" ng-disabled="JournalCtrl.selection.selected.groups.length==0" ng-click="JournalCtrl.commentRows()">
+            <i class="fa fa-sticky-note-o"></i> <span class="visible-lg-inline" translate>FORM.LABELS.COMMENT</span>
+          </button>
+        </div>
+
+        <div class="toolbar-item">
           <button data-method="search" class="btn btn-default" ng-click="JournalCtrl.openSearchModal()">
             <i class="fa fa-search"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.SEARCH</span>
           </button>
         </div>
         <div class="toolbar-item">
-          <button 
-            ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }" 
+          <button
+            ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }"
             ng-disabled="JournalCtrl.selection.selected.groups.length === 0"
             ng-click="JournalCtrl.editTransactionModal()"
             class="btn btn-default" data-method="edit">
-            <i class="fa fa-pencil-square-o"></i> 
+            <i class="fa fa-pencil-square-o"></i>
               <span ng-if="JournalCtrl.selection.selected.groups.length === 1">({{JournalCtrl.selection.selected.groups[0]}})</span>
               <span ng-if="JournalCtrl.selection.selected.groups.length > 1">(...)</span>
           </button>

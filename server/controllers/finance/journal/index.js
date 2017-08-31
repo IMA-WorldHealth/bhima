@@ -40,6 +40,7 @@ exports.journalEntryList = journalEntryList;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
+exports.commentPostingJournal = commentPostingJournal;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -278,7 +279,7 @@ function editTransaction(req, res, next) {
         db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
         // row = transformColumns(row);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
-      });      
+      });
 
       return pickTransDate(rowsChanged);
     })
@@ -296,7 +297,7 @@ function editTransaction(req, res, next) {
           throw new BadRequest('Closed Fiscal Year', 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR');
         }
       }
-      
+
       return transformColumns(rowsChanged, false, _oldTransaction, result);
     })
     .then((result) => {
@@ -458,7 +459,7 @@ function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
 
     // ensure date strings are processed correctly
     // @TODO standardise formatting vs. lookup behaviour
-    if (row.trans_date) { 
+    if (row.trans_date) {
       row.trans_date = new Date(row.trans_date);
 
       // Assign the fiscal year value and the period each time the trans_date Change
@@ -479,7 +480,7 @@ function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
 //Pick trans_date
 function pickTransDate(rows){
   let transDate;
-  
+
   _.each(rows, (row) => {
     transDate = row.trans_date;
   });
@@ -548,4 +549,25 @@ function count(req, res, next) {
       res.status(200).send(rows);
     })
     .catch(next);
+}
+
+
+/**
+ * PUT /journal/comments
+ * @param {object} params - { uuids: [...], comment: '' }
+ */
+function commentPostingJournal(req, res, next) {
+  const params = req.body.params;
+  const uuids = params.uuids.map(db.bid);
+
+  const sql = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
+  db.exec(sql, [params.comment, [uuids]])
+    .then((rows) => {
+      if (!rows.affectedRows || rows.affectedRows !== uuids.length) {
+        throw new BadRequest('Error on update posting journal comment');
+      }
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
 }
