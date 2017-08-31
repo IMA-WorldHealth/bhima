@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('JournalService', JournalService);
 
 // Dependencies injection
-JournalService.$inject = ['PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService', '$uibModal'];
+JournalService.$inject = [ 'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService', '$uibModal'];
 
 /**
  * Journal Service
@@ -15,8 +15,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   service.grid = grid;
   service.saveChanges = saveChanges;
   service.openSearchModal = openSearchModal;
+  service.openCommentModal = openCommentModal;
   service.openTransactionEditModal = openTransactionEditModal;
   service.mapTransactionIdsToRecordUuids = mapTransactionIdsToRecordUuids;
+  service.commentPostingJournal = commentPostingJournal;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -165,6 +167,26 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
     }).result;
   }
 
+   /**
+   * @method openCommentModal
+   * @param {object} request
+   */
+  function openCommentModal(request) {
+    var params = {
+      templateUrl  : 'modules/account_statement/modals/comment.modal.html',
+      controller   : 'CommentJournalController',
+      controllerAs : '$ctrl',
+      size         : 'md',
+      backdrop     : 'static',
+      resolve : {
+        modalParameters :  function dataProvider() { return request; },
+      },
+    };
+    var instance = Modal.open(params);
+    return instance.result;
+  }
+
+
   // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
   function openTransactionEditModal(transactionUuid, readOnly) {
     return Modal.open({
@@ -179,6 +201,13 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
       },
     }).result;
   }
+
+  // updating the posting journal by adding comments in transactions
+  function commentPostingJournal(params) {
+    return service.$http.put(URL.concat('comments'), { 'params' : params })
+      .then(service.util.unwrapHttpResponse);
+  }
+
 
   return service;
 }

@@ -37,7 +37,7 @@ exports.journalEntryList = journalEntryList;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
-
+exports.commentPostingJournal = commentPostingJournal;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -513,4 +513,25 @@ function count(req, res, next) {
       res.status(200).send(rows);
     })
     .catch(next);
+}
+
+
+/**
+ * PUT /journal/comments
+ * @param {object} params - { uuids: [...], comment: '' }
+ */
+function commentPostingJournal(req, res, next) {
+  const params = req.body.params;
+  const uuids = params.uuids.map(db.bid);
+
+  const sql = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
+  db.exec(sql, [params.comment, [uuids]])
+    .then((rows) => {
+      if (!rows.affectedRows || rows.affectedRows !== uuids.length) {
+        throw new BadRequest('Error on update posting journal comment');
+      }
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
 }

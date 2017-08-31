@@ -57,6 +57,8 @@ function JournalController(Journal, Sorting, Grouping,
   var cache = AppCache(cacheKey.concat('-module'));
   var vm = this;
 
+  vm.selectedRows = [];
+
   // number of all of the transactions in the system
   Journal.count()
     .then(function (data) {
@@ -77,8 +79,31 @@ function JournalController(Journal, Sorting, Grouping,
     flatEntityAccess           : true,
     enableGroupHeaderSelection : true,
     enableRowHeaderSelection   : true,
-    onRegisterApi : function (api) { vm.gridApi = api; }
+    onRegisterApi :  function onRegisterApi(api) {
+      vm.gridApi = api;
+    },
   };
+
+  // comment selected rows
+  vm.commentRows = function commentRows() {
+
+    vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
+
+    Journal.openCommentModal({ rows : vm.selectedRows })
+    .then(function (comment) {
+      if (!comment) { return; }
+      updateGridComment(vm.selectedRows, comment);
+      Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
+    })
+    .catch(Notify.handleError);
+  };
+
+   // update local rows
+  function updateGridComment(rows, comment) {
+    rows.forEach(function (row) {
+      row.entity.comment = comment;
+    });
+  }
 
   vm.grouped = angular.isDefined(cache.grouped) ? cache.grouped : false;
 
@@ -265,6 +290,9 @@ function JournalController(Journal, Sorting, Grouping,
       displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
       visible          : false },
+    { field            : 'comment',
+      displayName      : 'TABLE.COLUMNS.COMMENT',
+      headerCellFilter : 'translate' },
   ];
   vm.gridOptions.columnDefs = columns;
 
