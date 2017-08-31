@@ -1,56 +1,57 @@
-/* global element, by, browser */
-'use strict';
+/* global element, by */
 
-const path    = require('path');
-const chai    = require('chai');
-const expect  = chai.expect;
+const path = require('path');
+const chai = require('chai');
 
-const components  = require('../shared/components');
-const helpers     = require('../shared/helpers');
-const FU          = require('../shared/FormUtils');
+const expect = chai.expect;
+
+const components = require('../shared/components');
+const helpers = require('../shared/helpers');
+const FU = require('../shared/FormUtils');
+
 helpers.configure(chai);
 
 // path to the fixtures directory
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-describe('Patient Record', function () {
+describe('Patient Record', () => {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   // calcul Age dynamically
-  var currentDate = new Date();
-  var currentYear = currentDate.getFullYear();
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
 
   // Calculate age and transform ageTestPatient2 to String
-  var ageTestPatient2 = (currentYear - 1990) + '';
+  const ageTestPatient2 = `${(currentYear - 1990)}`;
 
   const patient = {
     name : 'Test 2 Patient',
     id : 'PA.TPA.2',
     hospital_no : '110',
     age : ageTestPatient2,
-    gender : 'M'
+    gender : 'M',
   };
 
   const url = root.concat(id);
 
   before(() => helpers.navigate(url));
 
-  it('downloads and correctly displays patient information', function () {
+  it('downloads and correctly displays patient information', () => {
     FU.hasText(by.id('name'), patient.name);
     FU.hasText(by.id('patientID'), patient.id);
     FU.hasText(by.id('hospitalNo'), patient.hospital_no);
     FU.hasText(by.id('age'), patient.age);
     FU.hasText(by.id('gender'), patient.gender);
- });
+  });
 
   // sub unit tests - these can be moved to individual files if they become too large
-  it('displays the correct number of patient visits', function () {
+  it('displays the correct number of patient visits', () => {
     expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(1);
   });
 
-  it('admits a patient', function () {
-    var diagnosisLabel = 'dio';
+  it('admits a patient', () => {
+    const diagnosisLabel = 'dio';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
@@ -60,8 +61,8 @@ describe('Patient Record', function () {
     expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
   });
 
-  it('dicharges a patient with a new diagnosis', function () {
-    var diagnosisLabel = 'iod';
+  it('dicharges a patient with a new diagnosis', () => {
+    const diagnosisLabel = 'iod';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
@@ -71,14 +72,13 @@ describe('Patient Record', function () {
 
     // this is part of the same visit so expect no difference in number of visits
     expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
-
   });
 
   // Upload patient documents
   it('upload a valid image as document', () => {
-    let title = '[e2e] New Image As Document';
-    let fileToUpload = 'file.jpg';
-    let absolutePath = path.resolve(fixtures, fileToUpload);
+    const title = '[e2e] New Image As Document';
+    const fileToUpload = 'file.jpg';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
 
@@ -91,9 +91,9 @@ describe('Patient Record', function () {
 
   // upload patient documents
   it('upload a PDF document', () => {
-    let title = '[e2e] New Document';
-    let fileToUpload = 'file.pdf';
-    let absolutePath = path.resolve(fixtures, fileToUpload);
+    const title = '[e2e] New Document';
+    const fileToUpload = 'file.pdf';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
     FU.input('$ctrl.title', title);
@@ -105,9 +105,9 @@ describe('Patient Record', function () {
 
   // test invalid file upload
   it('cannot upload invalid document', () => {
-    let title = '[e2e] Invalid Document';
-    let fileToUpload = '../shared/upload/file.virus';
-    let absolutePath = path.resolve(fileToUpload);
+    const title = '[e2e] Invalid Document';
+    const fileToUpload = 'file.virus';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
 
@@ -127,7 +127,7 @@ describe('Patient Record', function () {
     FU.exists(by.css('[data-view="list"]'), true);
   });
 
-  it('informs the user that there is no patient for invalid request', function () {
+  it('informs the user that there is no patient for invalid request', () => {
     helpers.navigate(root.concat('invalidid'));
     components.notification.hasError();
     FU.exists(by.id('nopatient'), true);
