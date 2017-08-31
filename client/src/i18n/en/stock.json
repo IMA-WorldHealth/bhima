@@ -64,6 +64,8 @@
     "LOSS_DISTRIBUTION" : "Stock Loss",
     "PURCHASE_ORDER"  : "Purchase Order",
     "QUANTITY"        : "Quantity",
+    "TRANSFER_RECEIVED" : "Received",
+    "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
       "ENTRY_DEPOT"    : "Stock Entry",

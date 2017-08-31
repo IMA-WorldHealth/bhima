@@ -1,0 +1,10 @@
+<div class="ui-grid-cell-contents">
+  <div class="bg-warning" ng-show="row.entity.countedReceived > 0">
+    <span translate>STOCK.TRANSFER_RECEIVED</span>
+    ({{row.entity.countedReceived}})
+  </div>
+
+  <div class="bg-success" ng-hide="row.entity.countedReceived > 0">
+      <span translate>STOCK.TRANSFER_AVAILABLE</span>
+  </div>
+</div>

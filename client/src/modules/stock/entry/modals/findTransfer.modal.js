@@ -9,11 +9,23 @@ StockFindTransferModalController.$inject = [
 function StockFindTransferModalController(Instance, StockService, Notify,
   uiGridConstants, Filtering, Receipts, data) {
   var vm = this;
+  var filtering;
+  var columns;
+
   vm.filterEnabled = false;
+  vm.filterReceived = false;
+
   vm.gridOptions = { appScopeProvider : vm };
 
-  var filtering = new Filtering(vm.gridOptions);
-  var columns = [
+  filtering = new Filtering(vm.gridOptions);
+
+  columns = [
+    {
+      field : 'status',
+      displayName : 'FORM.LABELS.STATUS',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html',
+    },
     {
       field : 'date',
       cellFilter : 'date',
@@ -23,13 +35,13 @@ function StockFindTransferModalController(Instance, StockService, Notify,
       sort : { priority : 0, direction : 'desc' },
     },
     {
-      field : 'documentReference',
+      field : 'document_reference',
       displayName : 'FORM.LABELS.REFERENCE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
     },
     {
-      field : 'depot_text',
+      field : 'depot_name',
       displayName : 'FORM.LABELS.ORIGIN',
       headerCellFilter : 'translate',
     },
@@ -42,12 +54,14 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   vm.gridOptions.enableColumnMenus = false;
   vm.gridOptions.fastWatch = true;
   vm.gridOptions.flatEntityAccess = true;
-  vm.toggleFilter = toggleFilter;
+  vm.gridOptions.rowTemplate = 'modules/stock/entry/modals/templates/transfer.row.tmpl.html';
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.showReceipt = showReceipt;
+  vm.toggleFilter = toggleFilter;
+  vm.toggleReceived = toggleReceived;
 
   vm.hasError = false;
 
@@ -67,6 +81,12 @@ function StockFindTransferModalController(Instance, StockService, Notify,
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  /** toggle received */
+  function toggleReceived() {
+    vm.filterReceived = !vm.filterReceived;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   /** get transfer document */
   function showReceipt(uuid) {
     Receipts.stockExitDepotReceipt(uuid, true);
@@ -75,10 +95,8 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   function load() {
     vm.loading = true;
 
-    StockService.movements.read(null, {
-      entity_uuid : data.depot_uuid,
-      is_exit : 1,
-      groupByDocument : 1,
+    StockService.transfers.read(null, {
+      depot_uuid : data.depot_uuid,
     })
     .then(function (transfers) {
       vm.gridOptions.data = transfers;

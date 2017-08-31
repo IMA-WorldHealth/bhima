@@ -64,6 +64,8 @@
     "LOSS_DISTRIBUTION" : "Perte de Stock",
     "PURCHASE_ORDER"  : "Commande d'Achat",
     "QUANTITY"        : "Quantité",
+    "TRANSFER_RECEIVED" : "Reçu",
+    "TRANSFER_AVAILABLE" : "Disponible",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Ajustement",
       "ENTRY_DEPOT"    : "Entrée de Stock",

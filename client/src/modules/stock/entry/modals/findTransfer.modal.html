@@ -19,6 +19,16 @@
           <span class="fa fa-filter"></span>
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <button type="button"
+          ng-click="$ctrl.toggleReceived()"
+          class="btn btn-sm btn-default"
+          ng-class="{ 'btn-warning' : $ctrl.filterReceived }">
+          <span class="fa fa-eye"></span>
+          <span translate>STOCK.TRANSFER_RECEIVED</span>
+        </button>
+      </div>
     </div>
   </div>
 

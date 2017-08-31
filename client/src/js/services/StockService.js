@@ -22,6 +22,9 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock integration
   var integration = new Api('/stock/integration');
 
+  // API for stock transfer
+  var transfers = new Api('/stock/transfers');
+
   // Filter service
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
@@ -161,11 +164,12 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     movements    : movements,
     inventories  : inventories,
     integration  : integration,
+    transfers    : transfers,
     filter       : stockFilter,
     cacheFilters : cacheFilters,
     removeFilter : removeFilter,
     loadCachedFilters : loadCachedFilters,
-    download     : download,
+    download : download,
     uniformSelectedEntity : uniformSelectedEntity,
   };
 

@@ -601,5 +601,8 @@ exports.configure = function configure(app) {
   app.get('/stock/consumptions/average/:periodId', stock.getStockConsumptionAverage);
   app.get('/stock/consumptions/:periodId', stock.getStockConsumption);
 
+  // stock transfers
+  app.get('/stock/transfers', stock.getStockTransfers);
+
   app.get('/diagnoses', diagnoses.list);
 };

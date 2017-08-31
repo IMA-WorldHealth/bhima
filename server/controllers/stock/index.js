@@ -31,6 +31,9 @@ exports.createIntegration = createIntegration;
 exports.getStockConsumption = getStockConsumption;
 exports.getStockConsumptionAverage = getStockConsumptionAverage;
 
+// stock transfers
+exports.getStockTransfers = getStockTransfers;
+
 
 /**
  * POST /stock/lots
@@ -385,20 +388,43 @@ function getStockConsumptionAverage(req, res, next) {
 /**
  * GET /stock/transfer
  */
-function getStockTransfer(req, res, next) {
+function getStockTransfers(req, res, next) {
   const params = req.query;
 
+  // Get received transfer for the given depot
+  const queryReceived = `
+    SELECT 
+      COUNT(m.document_uuid) AS countedReceived,
+      BUID(m.document_uuid) AS document_uuid,
+      document_uuid AS binary_document_uuid
+    FROM 
+      stock_movement m
+    JOIN depot d ON d.uuid = m.depot_uuid
+    WHERE d.uuid = ? AND m.is_exit = 0 AND m.flux_id = ${core.flux.FROM_OTHER_DEPOT}
+    GROUP BY m.document_uuid
+  `;
+
+  // Get transfer for the given depot
   const query = `
     SELECT 
       BUID(m.document_uuid) AS document_uuid, m.date,
-      d.text AS depot_name, dd.text as other_depot_name,
-      dm.text AS document_reference
+      d.text AS depot_name, dd.text AS other_depot_name,
+      dm.text AS document_reference,
+      rx.countedReceived
     FROM 
       stock_movement m
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN depot dd ON dd.uuid = m.entity_uuid
     JOIN document_map dm ON dm.uuid = m.document_uuid
-    WHERE m.is_exit = ? AND m.flux_id = ? AND dd.uuid = ? 
+    LEFT JOIN (${queryReceived}) rx ON rx.binary_document_uuid = m.document_uuid
+    WHERE dd.uuid = ? AND m.is_exit = 1 AND m.flux_id = ${core.flux.TO_OTHER_DEPOT}
     GROUP BY m.document_uuid
   `;
+
+  db.exec(query, [db.bid(params.depot_uuid), db.bid(params.depot_uuid)])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
