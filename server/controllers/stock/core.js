@@ -70,7 +70,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN inventory i ON i.uuid = l.inventory_uuid 
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
-        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         JOIN depot d ON d.uuid = m.depot_uuid 
     `;
   db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
@@ -155,7 +155,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN depot d ON d.uuid = m.depot_uuid 
-        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken}`;
@@ -210,7 +210,7 @@ function getLotsMovements(depotUuid, params) {
         JOIN inventory_unit iu ON iu.id = i.unit_id 
         JOIN depot d ON d.uuid = m.depot_uuid 
         JOIN flux f ON f.id = m.flux_id 
-        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   return getLots(sql, params, finalClause);
@@ -261,7 +261,7 @@ function getLotsOrigins(depotUuid, params) {
         ) AS origin ON origin.uuid = l.origin_uuid
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.is_exit = 0
           AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
-        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
   return getLots(sql, params);
@@ -416,7 +416,7 @@ function getInventoryQuantityAndConsumption(params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN inventory_unit iu ON iu.id = i.unit_id 
     JOIN depot d ON d.uuid = m.depot_uuid 
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ';
@@ -473,7 +473,7 @@ function getInventoryMovements(params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN inventory_unit iu ON iu.id = i.unit_id 
     JOIN depot d ON d.uuid = m.depot_uuid 
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   return getLots(sql, params, ' ORDER BY m.date ASC ')

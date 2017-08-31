@@ -138,7 +138,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   // ==============================================================================
 
   const depotPrincipalUuid = 'f9caeb16-1684-43c5-a6c4-47dbac1df296';
-  const depotPrincipalMvt = 13; // 10 initial plus 2 distributions
+  const depotPrincipalMvt = 13; // 10 initial plus 3 distributions
   const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
   // create new stock lots
@@ -166,7 +166,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // list all movement relatives to 'Depot Principal'
-  it('GET /stock/lots/movements?depot_uuid=... returns movements for Depot Principal (13: 9 IN + 2 OUT)', () => agent.get(`/stock/lots/movements?depot_uuid=${depotPrincipalUuid}`)
+  it('GET /stock/lots/movements?depot_uuid=... returns movements for Depot Principal (13: 10 IN + 3 OUT)', () => agent.get(`/stock/lots/movements?depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
         helpers.api.listed(res, depotPrincipalMvt);
       })
