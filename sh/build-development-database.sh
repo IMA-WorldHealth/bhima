@@ -38,6 +38,8 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
 
 echo "[build] test data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/development-build.sql 1> /dev/null
+echo '[build] updating test data'
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/update_dev_build.sql 1> /dev/null
 
 echo "[update] account type to account category"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/account_type.sql &> /dev/null
