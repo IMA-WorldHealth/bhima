@@ -19,13 +19,21 @@
 
       <!-- filters  -->
       {{#if hasFilter}}
-        <div>
-          {{#if display.depot_uuid}}{{translate 'STOCK.DEPOT'}}: {{look display 'depot_uuid'}} /{{/if}}
-          {{#if display.inventory_uuid}} {{translate 'STOCK.INVENTORY'}}: {{look display 'inventory_uuid'}} /{{/if}}
-          {{#if display.label}}{{translate 'STOCK.LOT'}}: {{look display 'label'}} /{{/if}}
-          {{#if display.dateFrom}} {{translate 'FORM.LABELS.DATE'}}> {{date (look display 'dateFrom')}} /{{/if}}
-          {{#if display.dateTo}} {{translate 'FORM.LABELS.DATE'}}< {{date (look display 'dateTo')}} /{{/if}}
-        </div>
+
+        <p class="pills">
+          {{#each filters}}
+            <span class="label label-primary text-capitalize">
+              <i class="fa fa-filter"></i> {{translate this.displayName}}
+
+              {{#if this.comparitor}} {{this.comparitor}}
+              {{else}}: {{/if}}
+
+              {{#if this.isDate}} {{date this.value}}
+              {{else}} {{translate this.value}} {{/if}}
+            </span>
+          {{/each}}
+        </p>
+
       {{/if}}
 
       <!-- list of data  -->
