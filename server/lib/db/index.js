@@ -201,11 +201,12 @@ class DatabaseConnector {
         data[key] = this.bid(data[key]);
       }
 
+      // the key exists on the object and value is an array
       if(data[key] && Array.isArray(data[key])) { 
         var that = this;
-        data[key] = data[key].map(function (item){
-          return that.bid(item);
-        });
+
+        // Every item should be converted to binary
+        data[key] = data[key].map(this.bid);
       }
     });
 
