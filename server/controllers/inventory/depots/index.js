@@ -44,12 +44,15 @@ function create(req, res, next) {
   // prevent missing uuid by generating a new one
   req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
+  // enterprise for the depot
+  req.body.enterprise_id = req.session.enterprise.id;
+
   db.exec(query, [req.body])
-  .then(() => {
-    res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
