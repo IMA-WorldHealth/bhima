@@ -42,7 +42,6 @@ const STOCK_INVENTORY_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventory.report.han
 * Whitch must appear in the report
 */
 function formatFilters(qs) {
-
   const columns = [
     { field : 'depot_uuid', displayName : 'STOCK.DEPOT' },
     { field : 'inventory_uuid', displayName : 'STOCK.INVENTORY' },
@@ -56,11 +55,9 @@ function formatFilters(qs) {
   ];
 
   return columns.filter(column => {
-
     const value = qs[column.field];
 
     if (!_.isUndefined(value)) {
-
       if (column.isPeriod) {
         const service = new PeriodService(new Date());
         column.value = service.periods[value].translateKey;
@@ -629,7 +626,6 @@ function stockLotsReport(req, res, next) {
   let options = {};
   let display = {};
   let hasFilter = false;
-  let filters = [];
 
   const data = {};
   let report;
@@ -643,7 +639,6 @@ function stockLotsReport(req, res, next) {
 
   // set up the report with report manager
   try {
-
     if (req.query.identifiers && req.query.display) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
@@ -667,7 +662,7 @@ function stockLotsReport(req, res, next) {
       data.hasFilter = hasFilter;
       data.csv = rows;
       data.display = display;
-      data.filters = formatFilters(defaultParam);
+      data.filters = formatFilters(options);
 
       // group by depot
       let depots = _.groupBy(rows, d => d.depot_text);
@@ -767,7 +762,7 @@ function stockInventoriesReport(req, res, next) {
   let display = {};
   let hasFilter = false;
   let report;
-  let filters = [];
+  let filters;
 
   const data = {};
   const bundle = {};
@@ -785,10 +780,7 @@ function stockInventoriesReport(req, res, next) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
       hasFilter = Object.keys(display).length > 0;
-      // let convert display to array
-     // console.log(display);
       filters = formatFilters(display);
-
     } else if (req.query.params) {
       options = JSON.parse(req.query.params);
       bundle.delay = options.inventory_delay;
@@ -861,30 +853,30 @@ function stockInventoryReport(req, res, next) {
   }
 
   return db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)])
-  .then((inventory) => {
-    data.inventory = inventory;
+    .then((inventory) => {
+      data.inventory = inventory;
 
-    return db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]);
-  })
-  .then((depot) => {
-    data.depot = depot;
+      return db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]);
+    })
+    .then((depot) => {
+      data.depot = depot;
 
-    return Stock.getInventoryMovements(options);
-  })
-  .then((rows) => {
-    data.rows = rows.movements;
-    data.totals = rows.totals;
-    data.result = rows.result;
-    data.csv = rows.movements;
-    data.dateTo = options.dateTo;
+      return Stock.getInventoryMovements(options);
+    })
+    .then((rows) => {
+      data.rows = rows.movements;
+      data.totals = rows.totals;
+      data.result = rows.result;
+      data.csv = rows.movements;
+      data.dateTo = options.dateTo;
 
-    return report.render(data);
-  })
-  .then((result) => {
-    res.set(result.headers).send(result.report);
-  })
-  .catch(next)
-  .done();
+      return report.render(data);
+    })
+    .then((result) => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
 // expose to the api
