@@ -1,7 +1,6 @@
 angular.module('bhima.services')
-.service('TransactionTypeStoreService', TransactionTypeStoreService);
+  .service('TransactionTypeStoreService', TransactionTypeStoreService);
 
-// dependencies injection
 TransactionTypeStoreService.$inject = ['$q', 'TransactionTypeService', 'Store'];
 
 /**

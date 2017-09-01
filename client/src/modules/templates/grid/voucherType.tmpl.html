@@ -1,14 +1,25 @@
 <div class="ui-grid-cell-contents">
-  <span class="label" ng-class="{
+
+  <span class="label" ng-if="!row.groupHeader" ng-class="{
     'label-success': row.entity._isIncome,
     'label-warning': row.entity._isExpense,
     'label-danger': row.entity._isOther
     }">
     <span translate>{{ row.entity._type }}</span>
-    <span ng-if="row.groupHeader">{{ COL_FIELD }}</span>
   </span>
 
-  <span ng-if="grid.appScope.isDefined(row.entity)" class="label label-default" translate>
-    FORM.LABELS.UNDEFINED
+  <span ng-if="row.groupHeader" ng-init="child = row.treeNode.children[0].row">
+    <span class="label" ng-class="{
+      'label-success': child.entity._isIncome,
+      'label-warning': child.entity._isExpense,
+      'label-danger': child.entity._isOther
+      }">
+      <span translate>{{ child.entity._type }}</span>
+    </span>
+
+    <span>({{ row.treeNode.children.length }})</span>
+
   </span>
 </div>
+
+

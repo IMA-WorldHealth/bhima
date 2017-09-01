@@ -1,16 +1,14 @@
 angular.module('bhima.services')
-  .factory('TransactionTypeService', TransactionTypeService);
+  .service('TransactionTypeService', TransactionTypeService);
 
-TransactionTypeService.$inject = [ 'PrototypeApiService' ];
+TransactionTypeService.$inject = ['PrototypeApiService'];
 
 /**
  * @class Transaction Type
  *
  * @description
- * This service manages crud operation for transaction type
+ * This service manages CRUD operations on transaction types.
  */
 function TransactionTypeService(Api) {
-  var service = new Api('/transaction_type/');
-
-  return service;
+  return new Api('/transaction_type/');
 }
