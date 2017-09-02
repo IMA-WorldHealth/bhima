@@ -20,13 +20,13 @@
             <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
             <div class="radio">
               <label>
-                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
+                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.INPUT</span>
               </label>
             </div>
             <div class="radio">
               <label>
-                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit"> 
+                <input type="radio" name="is_exit" value="1" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.OUTPUT</span>
               </label>
             </div>
@@ -59,27 +59,16 @@
           <div class="form-group">
             <label class="control-label" translate>STOCK.FLUX</label>
             <bh-clear on-clear="$ctrl.clear('flux_id')"></bh-clear>
-            
+
             <ui-select name="inventory" ng-model="$ctrl.searchQueries.flux_id">
               <ui-select-match>
                 <span translate>{{$select.selected.label}}</span>
               </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
+              <ui-select-choices ui-select-focus-patch repeat="flux.id as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
                 <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>
               </ui-select-choices>
             </ui-select>
           </div>
-
-          <!-- date -->
-          <fieldset>
-            <legend translate>FORM.LABELS.DATE</legend>
-            <bh-date-interval
-              date-id="date" 
-              date-from="$ctrl.searchQueries.dateFrom" 
-              date-to="$ctrl.searchQueries.dateTo" 
-              mode="clean">
-            </bh-date-interval>
-          </fieldset>
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
@@ -91,7 +80,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input 
+            <input
               name="limit"
               type="number"
               bh-integer
@@ -105,14 +94,14 @@
           </div>
         </div>
       </uib-tab>
-    </uib-tabset>    
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <button type="submit" class="btn btn-primary" data-method="submit" translate> 
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
       FORM.BUTTONS.SUBMIT
     </button>
   </div>

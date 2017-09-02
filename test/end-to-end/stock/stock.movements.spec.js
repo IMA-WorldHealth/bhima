@@ -1,7 +1,6 @@
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
-const components = require('../shared/components');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 
@@ -39,11 +38,11 @@ function StockMovementsRegistryTests() {
     GU.expectRowCount(gridId, 15 + (2 * depotGroupingRow));
   });
 
-  it('find exit movements', () => {
+  it('filters by entry/exit', () => {
     // for Exit
     modal.setEntryExit(1);
     modal.submit();
-    GU.expectRowCount(gridId, 16 + depotGroupingRow);
+    GU.expectRowCount(gridId, 8 + depotGroupingRow);
   });
 
   it('find movements by depot', () => {
@@ -67,54 +66,42 @@ function StockMovementsRegistryTests() {
 
   it('find by lots reasons for purchase order', () => {
     // FIX ME: reasons must not depend on translations
-    //selection with `id` works but it is not completed
+    // selection with `id` works but it is not completed
     modal.setMovementReason('Commande d\'achat');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 8 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to patient', () => {
-     // to patient
+    // to patient
     modal.setMovementReason('Vers un patient');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);    
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', () => {
     modal.setMovementReason('Vers un depot');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution from depot', () => {
     // from depot
     modal.setMovementReason('En provenance d\'un depot');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find by lots reasons for positive adjustement', () => {
     modal.setMovementReason('Ajustement (Positif)');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find by lots reasons for negative adjustement', () => {
     modal.setMovementReason('Ajustement (Negatif)');
     modal.submit();
-    GU.expectRowCount(gridId, 24 + depotGroupingRow);
-  });  
-
-  it('find lots by date - Fev 2017', () => {
-    modal.setdateInterval('02/02/2017', '02/02/2017', 'date');
-    modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
-  });
-
-  it('find zero lot by date - january 2015', () => {
-    modal.setdateInterval('01/01/2015', '30/01/2015', 'date');
-    modal.submit();
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 }
 
