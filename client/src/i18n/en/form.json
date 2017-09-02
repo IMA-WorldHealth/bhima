@@ -239,6 +239,7 @@
             "DEBTOR_GROUP_FORM": "Form debtor group record",
             "DEFINE_UNTIL_DATE": "Define a limit date",
             "DEFAULT_QUANTITY": "Default Quantity",
+            "DEBTOR_BALANCE_REMAINING": "Debtor's Remaining Balance",
             "DEPOT": "Depot",
             "DESCRIPTION": "Description",
             "DESIGNATION": "Designation",
