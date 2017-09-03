@@ -1,6 +1,6 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+    <li class="static" translate>VOUCHERS.GLOBAL.CASH_TRANSFER</li>
     <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
   </ol>
 </div>
@@ -14,7 +14,7 @@
       ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.cashbox.$invalid }">
       <label class="control-label" translate>
         FORM.LABELS.CASHBOX
-      </label> 
+      </label>
       (<label class="control-label" translate>FORM.LABELS.DEBIT</label>)
 
       <ui-select
@@ -37,10 +37,10 @@
     </div>
 
     <!-- select the transfer account (to credit) -->
-    <div 
+    <div
       class="form-group"
       ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.account.$invalid }">
-      <label class="control-label"  translate>VOUCHERS.GLOBAL.TRANSFER_ACCOUNT</label> 
+      <label class="control-label"  translate>VOUCHERS.GLOBAL.TRANSFER_ACCOUNT</label>
       (<label class="control-label"  translate>FORM.LABELS.CREDIT</label>)
 
       <!-- input typeahead -->

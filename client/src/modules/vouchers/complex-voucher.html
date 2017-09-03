@@ -1,8 +1,57 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path="ComplexVoucherCtrl.paths"
-  dropdown="ComplexVoucherCtrl.dropdown">
-</bh-breadcrumb>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title text-capitalize" translate>VOUCHERS.COMPLEX.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle toolbar-dropdown>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+
+            <li role="menuitem">
+              <a href data-action="convention-payment" ng-click="ComplexVoucherCtrl.openConventionPaymentModal()">
+                <i class="fa fa-building"></i> <span translate>VOUCHERS.GLOBAL.CONVENTION_INVOICES</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-action="generic-expense" ng-click="ComplexVoucherCtrl.openGenericIncomeModal()">
+                <i class="fa fa-level-down"></i> <span translate>VOUCHERS.GLOBAL.GENERIC_INCOME</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-action="generic-income" ng-click="ComplexVoucherCtrl.openGenericExpenseModal()">
+                <i class="fa fa-level-up"></i> <span translate>VOUCHERS.GLOBAL.GENERIC_EXPENSE</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-action="cash-transfer" ng-click="ComplexVoucherCtrl.openCashTransferModal()">
+                <i class="fa fa-reply-all"></i> <span translate>VOUCHERS.GLOBAL.CASH_TRANSFER</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-action="support-patient" ng-click="ComplexVoucherCtrl.openSupportPatientModal()">
+                <i class="fa fa-wpforms"></i> <span translate>VOUCHERS.GLOBAL.SUPPORT_FORM</span>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 <div class="flex-content">
   <div class="container-fluid">
