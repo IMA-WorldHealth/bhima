@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('DebtorGroupService', DebtorGroupService);
+  .service('DebtorGroupService', DebtorGroupService);
 
 DebtorGroupService.$inject = ['$http', '$uibModal', 'util', 'SessionService'];
 
@@ -64,17 +64,17 @@ function DebtorGroupService($http, Modal, util, SessionService) {
     delete debtorGroup.uuid;
 
     return $http.put(url, debtorGroup)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   /**
   * @method remove
   * @param {string} uuid The debtor group uuid
   * @description This function is responsible for deleting a debtor group
-  */  
+  */
   function remove(uuid) {
     return $http.delete(baseUrl.concat(uuid))
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
 
@@ -109,13 +109,9 @@ function DebtorGroupService($http, Modal, util, SessionService) {
       controller : 'BillingServiceSubscriptions as SubCtrl',
       size : 'md',
       resolve : {
-        Subscriptions : function Subscriptions() {
-          return subscriptions;
-        },
-        DebtorGroup : function DebtorGroup() {
-          return debtorGroup;
-        }
-      }
+        Subscriptions : function Subscriptions() { return subscriptions; },
+        DebtorGroup : function DebtorGroup() { return debtorGroup; },
+      },
     });
   }
 
@@ -125,13 +121,9 @@ function DebtorGroupService($http, Modal, util, SessionService) {
       controller : 'SubsidySubscriptions as SubCtrl',
       size : 'md',
       resolve : {
-        Subscriptions : function Subscriptions() {
-          return subscriptions;
-        },
-        DebtorGroup : function DebtorGroup() {
-          return debtorGroup;
-        }
-      }
+        Subscriptions : function Subscriptions() { return subscriptions; },
+        DebtorGroup : function DebtorGroup() { return debtorGroup; },
+      },
     });
   }
 

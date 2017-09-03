@@ -35,9 +35,9 @@
     </div>
 
     <bh-debtor-group-select
-      debtor-group-uuid = "ToolCtrl.convention"
-      name = "convention"
-      label = "FORM.LABELS.CONVENTION"
+      debtor-group-uuid="ToolCtrl.convention"
+      name="convention"
+      label="FORM.LABELS.CONVENTION"
       on-select-callback = "ToolCtrl.onSelectDebtor(debtorGroup)">
     </bh-debtor-group-select>
 
@@ -70,7 +70,7 @@
       FORM.BUTTONS.CANCEL
     </button>
 
-    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.hasSelectedRows">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
