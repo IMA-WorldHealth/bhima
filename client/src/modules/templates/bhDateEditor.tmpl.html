@@ -12,12 +12,11 @@
 <ng-form name="DateEditorForm" novalidate>
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && DateEditorForm.$invalid } "
-    data-date-editor
-    >
+    ng-class="{ 'has-error' : DateEditorForm.$$parentForm.$submitted && DateEditorForm.$invalid } "
+    data-date-editor>
 
-    <label class="control-label">
-      {{ ($ctrl.label || "FORM.LABELS.DATE") | translate }}
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
     </label>
 
     <!-- input component implementation -->
@@ -31,11 +30,11 @@
         is-open="$ctrl.editMode"
         datepicker-options="$ctrl.options"
         show-button-bar="false"
-        data-date-editor-input
         ng-readonly="!$ctrl.editMode"
+        ng-change="$ctrl._onChange()"
         ng-disabled="$ctrl.disabled"
         ng-required="required"
-        >
+        data-date-editor-input>
       <span class="input-group-btn">
         <button
           type="button"
@@ -43,24 +42,22 @@
           ng-click="$ctrl.toggleEditMode()"
           ng-disabled="$ctrl.editMode || $ctrl.disabled"
           data-date-editor-dropdown-toggle>
-          <span class="glyphicon glyphicon-calendar"></span>
-          {{ "FORM.LABELS.SET_DATE" | translate }}
+          <i class="fa fa-calendar-plus"></i> <span translate>FORM.LABELS.SET_DATE</span>
         </button>
       </span>
     </div>
 
     <!-- validation/error messages for the form (see discussion at the top -->
-    <div class="help-block" ng-messages="DateEditorForm.$error" ng-show="$ctrl.validationTrigger && DateEditorForm.$invalid">
+    <div class="help-block" ng-messages="DateEditorForm.$error" ng-show="DateEditorForm.$$parentForm.$submitted">
 
       <!-- @todo - potentially include this message in the generic date validation messages -->
       <p ng-message="dateDisabled">
-        <span class="glyphicon glyphicon-warning-sign"></span>
-        {{ "FORM.ERRORS.DATE_OUT_OF_RANGE" | translate }}
+        <i class="fa fa-warning"></i> <span translate>FORM.ERRORS.DATE_OUT_OF_RANGE</span>
       </p>
     </div>
 
     <!-- validation/error messages for date input -->
-    <div class="help-block" ng-messages="DateEditorForm.date.$error" ng-show="$ctrl.validationTrigger && DateEditorForm.date.$invalid">
+    <div class="help-block" ng-messages="DateEditorForm.date.$error" ng-show="DateEditorForm.$$parentForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

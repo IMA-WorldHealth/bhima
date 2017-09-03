@@ -63,7 +63,7 @@
 
                 <bh-date-editor
                   date-value="CashCtrl.Payment.details.date"
-                  validation-trigger="CashVoucherForm.$submitted"
+                  on-change="CashCtrl.Payment.setDate(date)"
                   max-date="CashCtrl.timestamp">
                 </bh-date-editor>
 
