@@ -182,7 +182,6 @@ describe('Complex Vouchers', function () {
     // Find Patient
     components.findPatient.findByName(detail.patientName);
 
-
     // select invoices
     GU.selectRow('invoiceGrid', detail.invoices[0]);
 
@@ -218,13 +217,13 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // description
     FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();
@@ -255,13 +254,13 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // description
     FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();
@@ -281,7 +280,7 @@ describe('Complex Vouchers', function () {
       tool    : 'Transfert d\'argent',
       cashbox : 'Test Primary Cashbox A',
       account : '41001',
-      amount  : 20,
+      amount  : 200,
     };
 
     // click on the convention tool
@@ -291,10 +290,10 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();
