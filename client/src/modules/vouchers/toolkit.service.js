@@ -55,6 +55,24 @@ function VoucherToolkitService(Modal) {
   };
 
   /**
+   * @method getBlankVoucherRow
+   *
+   * @description
+   * Generates a new, unfilled voucher row.  This is used in almost every voucher tool.
+   *
+   * @returns {object} - the voucher row object
+   */
+  service.getBlankVoucherRow = function getBlankVoucherRow() {
+    return {
+      account_id     : undefined,
+      debit          : 0,
+      credit         : 0,
+      reference_uuid : undefined,
+      entity_uuid    : undefined,
+    };
+  };
+
+  /**
    * @function open
    * @description This function initialise a modal for the selected tool
    * @param {Object} option A detailed option object that should provide

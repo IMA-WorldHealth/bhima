@@ -1,14 +1,13 @@
 angular.module('bhima.controllers')
-.controller('GenericIncomeKitController', GenericIncomeKitController);
+  .controller('GenericIncomeKitController', GenericIncomeKitController);
 
-// DI definition
 GenericIncomeKitController.$inject = [
   '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants',
+  'data', 'AccountStoreService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants) {
+function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants, ToolKits) {
   var vm = this;
 
   // global variables
@@ -35,8 +34,9 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
   // generate transaction rows
   function generateTransactionRows(params) {
     var rows = [];
-    var debitRow = generateRow();
-    var creditRow = generateRow();
+
+    var debitRow = ToolKits.getBlankVoucherRow();
+    var creditRow = ToolKits.getBlankVoucherRow();
 
     var cashboxAccountId = params.cashbox.account_id;
     var selectedAccountId = params.account.id;
@@ -54,17 +54,6 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
     rows.push(creditRow);
 
     return rows;
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined
-    };
   }
 
   // submission

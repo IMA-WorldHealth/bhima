@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 // DI definition
 CashTransferKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService', '$translate', 'bhConstants',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', '$translate', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhConstants) {
+function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhConstants, ToolKits) {
   var vm = this;
 
   vm.onSelectAccountCallback = onSelectAccountCallback;
@@ -27,8 +27,9 @@ function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhCons
   // generate transaction rows
   function generateTransactionRows(params) {
     var rows = [];
-    var debitRow = generateRow();
-    var creditRow = generateRow();
+
+    var debitRow = ToolKits.getBlankVoucherRow();
+    var creditRow = ToolKits.getBlankVoucherRow();
 
     var cashboxAccountId = params.cashbox.account_id;
     var selectedAccountId = params.account.id;
@@ -48,21 +49,9 @@ function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhCons
     return rows;
   }
 
-
   // called when an account has been selected from the view
   function onSelectAccountCallback(account) {
     vm.account = account;
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined,
-    };
   }
 
   // submission

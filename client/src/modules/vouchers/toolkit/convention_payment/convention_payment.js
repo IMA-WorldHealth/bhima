@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 ConventionPaymentKitController.$inject = [
   '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'CashboxService',
-  'SessionService', 'bhConstants', '$translate',
+  'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService'
 ];
 
 // Import transaction rows for a convention payment
-function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes, Session, bhConstants, $translate) {
+function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes, Session, bhConstants, $translate, ToolKits) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
@@ -69,15 +69,16 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
     var invoices = result.invoices;
 
     // first, generate a cashbox row
-    var cashboxRow = generateRow();
+    var cashboxRow = ToolKits.getBlankVoucherRow();
     cashboxRow.account_id = cashboxAccountId;
     cashboxRow.debit = vm.totalSelected;
     cashboxRow.credit = 0;
     rows.push(cashboxRow);
 
+
     // then loop through each selected item and credit it with the convention account
     invoices.forEach(function (invoice) {
-      var row = generateRow();
+      var row = ToolKits.getBlankVoucherRow();
 
       row.account_id = conventionAccountId;
       row.reference_uuid = invoice.uuid;
@@ -103,17 +104,6 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
     });
 
     return rows;
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined,
-    };
   }
 
   /* ================ Invoice grid parameters ===================== */

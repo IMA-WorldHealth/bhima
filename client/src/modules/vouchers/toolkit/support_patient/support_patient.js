@@ -4,11 +4,11 @@ angular.module('bhima.controllers')
 // DI definition
 SupportPatientKitController.$inject = [
   '$uibModalInstance', 'NotifyService', 'SessionService', 'data', 'bhConstants',
-  'DebtorService'
+  'DebtorService', 'VoucherToolkitService'
 ];
 
 // Import transaction rows for a Support Patient
-function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors) {
+function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors, ToolKits) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
@@ -25,7 +25,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   vm.import = submit;
   vm.loadInvoice = loadInvoice;
   vm.onSelectAccount = onSelectAccount;
-  
+
   // get debtor group invoices
   function selectPatientInvoices(debtorId) {
     // load patient invoices
@@ -33,7 +33,6 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
     Debtors.invoices(debtorId, { balanced: 0 })
       .then(function (invoices) {
-
         vm.gridOptions.data = invoices || [];
 
         // total amount
@@ -43,7 +42,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
-        
+
         vm.invoices = data;
       })
       .catch(Notify.handleError);
@@ -64,10 +63,11 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     var supportAccountId = result.account_id;
     var supportedAccountId = result.patient.account_id;
     var invoices = result.invoices;
+    var supportRow = ToolKits.getBlankVoucherRow();
+
     rows.typeId = bhConstants.transactionType.SUPPORT_INCOME;
 
     // first, generate a support row
-    var supportRow = generateRow();
     supportRow.account_id = supportAccountId;
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
@@ -75,7 +75,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
     // then loop through each selected item and credit it with the Supported account
     invoices.forEach(function (invoice) {
-      var row = generateRow();
+      var row = ToolKits.getBlankVoucherRow();
 
       row.account_id = supportedAccountId;
       row.reference_uuid = invoice.uuid;
@@ -85,7 +85,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
       // this is needed for a nice display in the grid
       row.entity = formatEntity(result.patient);
 
-      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from 
+      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from
       // the database or ommitted
       invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
       row.document = invoice;
@@ -103,17 +103,6 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
       label : patient.text,
       type  : 'D',
       uuid  : patient.debtor_uuid,
-    };
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined,
     };
   }
 

@@ -1,14 +1,13 @@
 angular.module('bhima.controllers')
-.controller('GenericExpenseKitController', GenericExpenseKitController);
+  .controller('GenericExpenseKitController', GenericExpenseKitController);
 
-// DI definition
 GenericExpenseKitController.$inject = [
   '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants',
+  'data', 'AccountStoreService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants) {
+function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants, ToolKits) {
   var vm = this;
 
   // global variables
@@ -25,8 +24,7 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     })
     .catch(Notify.handleError);
 
-  // load cashboxes
-  Cashbox.read(null, { detailed: 1 })
+  Cashbox.read(null, { detailed : 1 })
     .then(function (data) {
       vm.cashboxes = data;
     })
@@ -35,8 +33,9 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
   // generate transaction rows
   function generateTransactionRows(params) {
     var rows = [];
-    var debitRow = generateRow();
-    var creditRow = generateRow();
+
+    var debitRow = ToolKits.getBlankVoucherRow();
+    var creditRow = ToolKits.getBlankVoucherRow();
 
     var cashboxAccountId = params.cashbox.account_id;
     var selectedAccountId = params.account.id;
@@ -54,17 +53,6 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     rows.push(creditRow);
 
     return rows;
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined
-    };
   }
 
   // submission
