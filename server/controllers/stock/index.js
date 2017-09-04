@@ -415,7 +415,7 @@ function getStockTransfers(req, res, next) {
       stock_movement m
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN depot dd ON dd.uuid = m.entity_uuid
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN (${queryReceived}) rx ON rx.binary_document_uuid = m.document_uuid
     WHERE dd.uuid = ? AND m.is_exit = 1 AND m.flux_id = ${core.flux.TO_OTHER_DEPOT}
     GROUP BY m.document_uuid

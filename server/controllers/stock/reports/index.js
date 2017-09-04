@@ -107,7 +107,7 @@ function stockExitPatientReceipt(req, res, next) {
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
@@ -176,7 +176,7 @@ function stockAdjustmentReceipt(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
@@ -244,7 +244,7 @@ function stockExitServiceReceipt(req, res, next) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 
@@ -311,7 +311,7 @@ function stockExitLossReceipt(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 
@@ -580,7 +580,7 @@ function getDepotMovement(documentUuid, enterprise, exit) {
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
         JOIN user u ON u.id = m.user_id
-        JOIN document_map dm ON dm.uuid = m.document_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         LEFT JOIN depot dd ON dd.uuid = entity_uuid
         WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
