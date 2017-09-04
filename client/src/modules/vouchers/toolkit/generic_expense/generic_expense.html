@@ -37,24 +37,12 @@
     </div>
 
     <!-- select the origin account (to debit) -->
-    <div class="form-group">
-      <label translate>VOUCHERS.GLOBAL.DESTINATION_ACCOUNT</label>
+    <bh-account-select
+      label="VOUCHERS.GLOBAL.DESTINATION_ACCOUNT"
+      on-select-callback="ToolCtrl.onSelectAccountCallback(account)"
+      exclude-title-accounts="true">
       (<label translate>FORM.LABELS.DEBIT</label>)
-      <!-- input typeahead -->
-      <input
-        type="text"
-        class="form-control"
-        name="entity"
-        ng-model="ToolCtrl.account"
-        ng-disabled="!ToolCtrl.cashbox"
-        uib-typeahead="account as account.label for account in ToolCtrl.accounts.data | filter:$viewValue | limitTo:8"
-        typeahead-no-results="ToolCtrl.noEntity"
-        typeahead-loading="ToolCtrl.loadingEntity"
-        typeahead-template-url="/modules/templates/accountList.tmpl.html"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"
-        required>
-      <!-- /input typeahead -->
-    </div>
+    </bh-account-select>
 
     <!-- description -->
     <div class="form-group">
@@ -62,15 +50,11 @@
       <textarea class="form-control" ng-model="ToolCtrl.description"></textarea>
     </div>
 
-    <!-- amount -->
-    <div class="form-group">
-      <label translate>FORM.LABELS.AMOUNT</label>
-      <div class="input-group">
-        <span class="input-group-addon">{{ ToolCtrl.cashbox.symbol }}</span>
-        <input class="form-control" type="number" ng-model="ToolCtrl.amount" ng-disabled="!ToolCtrl.cashbox" required>
-      </div>
-    </div>
-
+    <bh-currency-input
+      currency-id="ToolCtrl.cashbox.currency_id"
+      model="ToolCtrl.amount"
+      validation-trigger="ToolForm.$submitted">
+    </bh-currency-input>
   </div>
 
   <div class="modal-footer">

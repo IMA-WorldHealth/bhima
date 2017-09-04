@@ -2,27 +2,18 @@ angular.module('bhima.controllers')
   .controller('GenericIncomeKitController', GenericIncomeKitController);
 
 GenericIncomeKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants', 'VoucherToolkitService',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants, ToolKits) {
+function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
   var vm = this;
-
-  // global variables
-  vm.tool = Data;
 
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
 
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
+  vm.onSelectAccountCallback = onSelectAccountCallback;
 
   // load cashboxes
   Cashbox.read(null, { detailed: 1 })
@@ -30,6 +21,11 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
       vm.cashboxes = data;
     })
     .catch(Notify.handleError);
+
+
+  function onSelectAccountCallback(account) {
+    vm.account = account;
+  }
 
   // generate transaction rows
   function generateTransactionRows(params) {
@@ -68,7 +64,7 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
     Instance.close({
       rows        : bundle,
       description : vm.description,
-      type_id     : bhConstants.transactionType.GENERIC_INCOME, // Generic Income ID
+      type_id     : bhConstants.transactionType.GENERIC_INCOME,
       currency_id : vm.cashbox.currency_id,
     });
   }

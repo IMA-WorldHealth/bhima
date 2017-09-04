@@ -2,27 +2,18 @@ angular.module('bhima.controllers')
   .controller('GenericExpenseKitController', GenericExpenseKitController);
 
 GenericExpenseKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants', 'VoucherToolkitService',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants, ToolKits) {
+function GenericExpenseKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
   var vm = this;
-
-  // global variables
-  vm.tool = Data;
 
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
 
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
+  vm.onSelectAccountCallback = onSelectAccountCallback;
 
   Cashbox.read(null, { detailed : 1 })
     .then(function (data) {
@@ -55,6 +46,10 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     return rows;
   }
 
+  function onSelectAccountCallback(account) {
+    vm.account = account;
+  }
+
   // submission
   function submit(form) {
     if (form.$invalid) { return; }
@@ -67,7 +62,7 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     Instance.close({
       rows        : bundle,
       description : vm.description,
-      type_id     : bhConstants.transactionType.GENERIC_EXPENSE, // Generic Expense ID
+      type_id     : bhConstants.transactionType.GENERIC_EXPENSE,
       currency_id : vm.cashbox.currency_id,
     });
   }
