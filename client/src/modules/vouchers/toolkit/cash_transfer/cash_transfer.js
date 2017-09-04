@@ -1,35 +1,24 @@
 angular.module('bhima.controllers')
-.controller('CashTransferKitController', CashTransferKitController);
+  .controller('CashTransferKitController', CashTransferKitController);
 
 // DI definition
 CashTransferKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'SessionService', '$translate',
-  'bhConstants',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', '$translate', 'bhConstants',
 ];
 
 // Import transaction rows for a convention payment
-function CashTransferKitController(Instance, Notify, Cashbox,
-  Data, AccountStore, Session, $translate, bhConstants) {
+function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhConstants) {
   var vm = this;
 
-  // global variables
-  vm.enterprise = Session.enterprise;
-  vm.tool = Data;
+  vm.onSelectAccountCallback = onSelectAccountCallback;
 
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
 
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
-
   // load cashboxes
-  Cashbox.read(null, { detailed: 1, is_auxiliary: 0 })
+  // FIXME(@jniles) - why do we need to set is_auxiliary to be 0?
+  Cashbox.read(null, { detailed : 1, is_auxiliary : 0 })
     .then(function (data) {
       vm.cashboxes = data;
     })
@@ -57,6 +46,12 @@ function CashTransferKitController(Instance, Notify, Cashbox,
     rows.push(creditRow);
 
     return rows;
+  }
+
+
+  // called when an account has been selected from the view
+  function onSelectAccountCallback(account) {
+    vm.account = account;
   }
 
   // generate row element
@@ -89,7 +84,7 @@ function CashTransferKitController(Instance, Notify, Cashbox,
     Instance.close({
       rows        : bundle,
       description : msg,
-      type_id     : bhConstants.transactionType.TRANSFER, // Cash transfer
+      type_id     : bhConstants.transactionType.TRANSFER,
       currency_id : vm.cashbox.currency_id,
     });
   }
