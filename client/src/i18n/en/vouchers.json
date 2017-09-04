@@ -31,6 +31,7 @@
       "TRANSFER_DESCRIPTION": "Transfer: From {{ fromAccount }} to {{ toAccount }} for {{ amount }} {{ symbol }}",
       "CONVENTION_PAYMENT_DESCRIPTION": "Convention Payment: Payment for {{ numInvoices }} invoice(s) by {{ debtorGroupName }}.",
       "CONVENTION_INVOICES":"Convention - Invoices payment",
+      "SUPPORT_PAYMENT_DESCRIPTION":"Debt transfer from {{ patientName }} ({{ patientReference}}) for {{ numInvoices }} invoice(s) {{ invoiceReferences }}.",
       "SUPPORT_FORM":"Patients Support - Form",
       "SUPPORT_TEXT":"When the above two fields are filled in, we will look for open debts for the patient to assign to the \"Support Patient\" Account.",
       "IMPORT_TRANSACTION":"Import transactions",

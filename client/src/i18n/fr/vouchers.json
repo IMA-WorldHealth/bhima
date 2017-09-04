@@ -30,6 +30,7 @@
       "CASHFLOW_OPTION":"Option pour le flux de trésorerie physique",
       "CONVENTION_INVOICES":"Convention - Paiement factures",
       "CONVENTION_PAYMENT_DESCRIPTION": "Convention Paiement Factures: Paiement pour {{ numInvoices }} factures(s) par {{ debtorGroupName }}.",
+      "SUPPORT_PAYMENT_DESCRIPTION":"Prise en charge de {{ patientName }} ({{ patientReference}}) pour {{ numInvoices }} facture(s) {{ invoiceReferences }}.",
       "TRANSFER_DESCRIPTION": "Transfert: De {{ fromAccount }} à {{ toAccount }} pour {{ amount }} {{ symbol }}",
       "SUPPORT_FORM":"Prise en Charge des patients",
       "SUPPORT_TEXT":"Lorsque les deux champs ci-dessus sont remplis, Les dettes du patient apparaissent en vue qu'une  \"Prise en Charge\" puissent être attribue à un Compte.",
