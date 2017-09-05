@@ -203,8 +203,6 @@ class DatabaseConnector {
 
       // the key exists on the object and value is an array
       if(data[key] && Array.isArray(data[key])) { 
-        var that = this;
-
         // Every item should be converted to binary
         data[key] = data[key].map(this.bid);
       }
