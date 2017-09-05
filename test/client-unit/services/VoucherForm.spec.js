@@ -103,7 +103,7 @@ describe('VoucherForm', () => {
     });
 
     it('creates a new store with two items in it', () => {
-      expect(constructorForm.store).to.be.defined;
+      expect(constructorForm.store).to.exist;
       expect(constructorForm.store.identifier).to.equal('uuid');
 
       // two rows should be added
@@ -111,7 +111,7 @@ describe('VoucherForm', () => {
     });
 
     it('sets default data based on Session', () => {
-      expect(constructorForm.details).to.be.defined;
+      expect(constructorForm.details).to.exist;
       expect(constructorForm.details.project_id).to.be.equal(Session.project.id);
       expect(constructorForm.details.currency_id).to.be.equal(Session.enterprise.currency_id);
       expect(constructorForm.details.user_id).to.be.equal(Session.user.id);
@@ -129,7 +129,7 @@ describe('VoucherForm', () => {
     form.removeItem(item.uuid);
 
     expect(form.store.data).to.have.length(1);
-    expect(form.store.get(item.uuid)).to.not.be.defined;
+    expect(form.store.get(item.uuid)).to.be.undefined;
   });
 
   it('#clear() removes all data from the internal store', () => {
