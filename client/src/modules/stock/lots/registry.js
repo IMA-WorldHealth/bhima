@@ -124,9 +124,10 @@ function StockLotsController(Stock, Notify,
 
     if($state.params.filters) {
       var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      stockLotFilters.replaceFilters(changes);		
+      stockLotFilters.replaceFilters(changes);
       Stock.cacheFilters(filterKey);
     }
+
     load(stockLotFilters.formatHTTP(true));
     vm.latestViewFilters = stockLotFilters.formatView();
   }
@@ -160,14 +161,14 @@ function StockLotsController(Stock, Notify,
     toggleLoadingIndicator();
 
     Stock.lots.read(null, filters)
-    .then(function(lots){
-      vm.gridOptions.data = lots;
-      vm.grouping.unfoldAllGroups();
-    })
-    .catch(errorHandler)
-    .finally(function (){
-      toggleLoadingIndicator();     
-    });
+      .then(function (lots) {
+        vm.gridOptions.data = lots;
+        vm.grouping.unfoldAllGroups();
+      })
+      .catch(errorHandler)
+      .finally(function (){
+        toggleLoadingIndicator();
+      });
   }
 
   // remove a filter with from the filter object, save the filters and reload
