@@ -200,6 +200,12 @@ class DatabaseConnector {
       if (data[key] && typeof data[key] === 'string') {
         data[key] = this.bid(data[key]);
       }
+
+      // the key exists on the object and value is an array
+      if(data[key] && Array.isArray(data[key])) { 
+        // Every item should be converted to binary
+        data[key] = data[key].map(this.bid);
+      }
     });
 
     return data;
@@ -214,6 +220,8 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
+
+
 }
 
 module.exports = new DatabaseConnector();

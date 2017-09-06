@@ -15,8 +15,12 @@
 
 const uuid = require('node-uuid');
 const moment = require('moment');
+
 const db = require('../../lib/db');
 const core = require('./core');
+
+const util = require('../../lib/util');
+const _ = require('lodash');
 
 // expose to the API
 exports.createStock = createStock;
@@ -40,27 +44,30 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
  */
 function createStock(req, res, next) {
   const params = req.body;
-
-  let createLotQuery;
-  let createLotObject;
-  let createMovementQuery;
-  let createMovementObject;
-  let date;
-
   const transaction = db.transaction();
-
   const document = {
     uuid : uuid.v4(),
     date : new Date(params.date),
     user : req.session.user.id,
+    depot_uuid : params.depot_uuid,
+    flux_id : params.flux_id
   };
+  
+  let createLotQuery;
+  let createMovementQuery;
+  let createLotObject;
+  let createMovementObject;
+  let commonInfos;
+  let date;
 
   params.lots.forEach((lot) => {
-        // lot expiration date
+    // parse the expiration date
     date = new Date(lot.expiration_date);
 
-        // lot prepare query
+    // prepare lot insertion query
     createLotQuery = 'INSERT INTO lot SET ?';
+
+    // the lot object to insert
     createLotObject = {
       uuid             : db.bid(uuid.v4()),
       label            : lot.label,
@@ -73,12 +80,14 @@ function createStock(req, res, next) {
       delay            : 0,
     };
 
-        // entering movement prepare query
+    // prepare movement insertion query
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
+
+    // the movement object to insert
     createMovementObject = {
       uuid          : db.bid(uuid.v4()),
       lot_uuid      : createLotObject.uuid,
-      depot_uuid    : db.bid(params.depot_uuid),
+      depot_uuid    : db.bid(document.depot_uuid),
       document_uuid : db.bid(document.uuid),
       flux_id       : params.flux_id,
       date          : document.date,
@@ -88,13 +97,20 @@ function createStock(req, res, next) {
       user_id       : document.user,
     };
 
-        // transaction - add lot
+    // adding a lot insertion query into the transaction
     transaction.addQuery(createLotQuery, [createLotObject]);
 
-        // transaction - add movement
+    // adding a movement insertion query into the transaction
     transaction.addQuery(createMovementQuery, [createMovementObject]);
+
+    // An arry of common info, to send to the store procedure in order to insert to the posting journal
+    commonInfos = [ db.bid(document.uuid), document.date, req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, document.user ];
+
+    // writting all records relative to the movement in the posting journal table
+    transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
   });
 
+  // execute all operations as one transaction
   transaction.execute()
     .then(() => {
       res.status(201).json({ uuid : document.uuid });
