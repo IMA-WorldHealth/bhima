@@ -99,7 +99,7 @@ describe('Store', function () {
     try {
       store.post({ name : 'Error' });
     } catch (error) {
-      expect(error).to.be.defined;
+      expect(error).to.exist;
     }
   });
 
