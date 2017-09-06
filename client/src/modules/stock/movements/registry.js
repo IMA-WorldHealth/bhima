@@ -47,98 +47,81 @@ function StockMovementsController(Stock, Notify,
   vm.enterprise = Session.enterprise;
 
   // grid columns
-  var columns = [
-    {
-      field : 'depot_text',
-      displayName : 'STOCK.DEPOT',
-      headerCellFilter : 'translate',
-      aggregationType : uiGridConstants.aggregationTypes.count,
-    },
-
-    {
-      field : 'io',
-      displayName : 'STOCK.IO',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/io.cell.html',
-    },
-
-    {
-      field : 'documentReference',
-      displayName : 'TABLE.COLUMNS.REFERENCE',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'text',
-      displayName : 'STOCK.INVENTORY',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'label',
-      displayName : 'STOCK.LOT',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'quantity',
-      displayName : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
-      cellClass : 'text-right',
-      footerCellClass : 'text-right',
-    },
-
-    {
-      field : 'unit_type',
-      width : 75,
-      displayName : 'TABLE.COLUMNS.UNIT',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
-    },
-
-    {
-      field : 'unit_cost',
-      displayName : 'STOCK.UNIT_COST',
-      headerCellFilter : 'translate',
-      cellFilter : 'currency:grid.appScope.enterprise.currency_id',
-      cellClass : 'text-right',
-    },
-
-    {
-      field : 'cost',
-      displayName : 'STOCK.COST',
-      headerCellFilter : 'translate',
-      aggregationType : totalCost,
-      cellClass : 'text-right',
-      cellTemplate : 'modules/stock/movements/templates/cost.cell.html',
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
-      footerCellClass : 'text-right',
-    },
-
-    {
-      field : 'date',
-      displayName : 'FORM.LABELS.DATE',
-      headerCellFilter : 'translate',
-      cellFilter : 'date',
-      cellClass : 'text-right',
-    },
-
-    {
-      field : 'flux_id',
-      displayName : 'STOCK.FLUX',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
-    },
-
-    {
-      field : 'action',
-      displayName : '',
-      enableFiltering : false,
-      enableSorting : false,
-      cellTemplate : 'modules/stock/movements/templates/action.cell.html',
-    },
-  ];
+  var columns = [{
+    field : 'depot_text',
+    displayName : 'STOCK.DEPOT',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
+  }, {
+    field : 'io',
+    displayName : 'STOCK.IO',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/movements/templates/io.cell.html',
+  }, {
+    field : 'documentReference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'text',
+    displayName : 'STOCK.INVENTORY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'label',
+    displayName : 'STOCK.LOT',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'quantity',
+    type: 'number',
+    displayName : 'STOCK.QUANTITY',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
+    cellClass : 'text-right',
+    footerCellClass : 'text-right',
+  }, {
+    field : 'unit_type',
+    width : 75,
+    displayName : 'TABLE.COLUMNS.UNIT',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
+  }, {
+    field : 'unit_cost',
+    type : 'number',
+    displayName : 'STOCK.UNIT_COST',
+    headerCellFilter : 'translate',
+    cellFilter : 'currency:grid.appScope.enterprise.currency_id',
+    cellClass : 'text-right',
+  }, {
+    field : 'cost',
+    type : 'number',
+    displayName : 'STOCK.COST',
+    headerCellFilter : 'translate',
+    aggregationType : totalCost,
+    aggregationHideLabel : true,
+    cellFilter : 'currency:grid.appScope.enterprise.currency_id',
+    cellClass : 'text-right',
+    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+    footerCellClass : 'text-right',
+  }, {
+    field : 'date',
+    type: 'date',
+    displayName : 'FORM.LABELS.DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
+    cellClass : 'text-right',
+  }, {
+    field : 'flux_id',
+    displayName : 'STOCK.FLUX',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
+  }, {
+    field : 'action',
+    displayName : '',
+    enableFiltering : false,
+    enableSorting : false,
+    cellTemplate : 'modules/stock/movements/templates/action.cell.html',
+  }];
 
   // options for the UI grid
   vm.gridOptions = {
