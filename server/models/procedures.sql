@@ -1049,7 +1049,7 @@ CREATE PROCEDURE CreatePeriods(
 )
 BEGIN
   DECLARE periodId MEDIUMINT(8);
-  DECLARE periodNumber SMALLINT(5);
+  DECLARE periodNumber SMALLINT(5) DEFAULT 0;
   DECLARE periodStartDate DATE;
   DECLARE periodEndDate DATE;
   DECLARE periodLocked TINYINT(1);
@@ -1066,7 +1066,6 @@ BEGIN
   DECLARE fyUserId MEDIUMINT(5);
   DECLARE fyNote TEXT;
 
-  DECLARE v_i INT DEFAULT 0;
 
   -- get the fiscal year informations
   SELECT
@@ -1078,24 +1077,24 @@ BEGIN
   FROM fiscal_year WHERE id = fiscalYearId;
 
   -- insert N+2 period
-  WHILE v_i <= fyNumberOfMonths + 1 DO
+  WHILE periodNumber <= fyNumberOfMonths + 1 DO
 
-    IF v_i = 0 OR v_i = fyNumberOfMonths + 1 THEN
+    IF periodNumber = 0 OR periodNumber = fyNumberOfMonths + 1 THEN
       -- Extremum periods 0 and N+1
-      -- Insert periods with null dates
-      INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
-      VALUES (fiscalYearId, v_i, NULL, NULL, 0);
+      -- Insert periods with null dates - period id is YYYY00
+      INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
     ELSE
       -- Normal periods
       -- Get period dates range
-      CALL GetPeriodRange(fyStartDate, v_i, periodStartDate, periodEndDate);
+      CALL GetPeriodRange(fyStartDate, periodNumber, periodStartDate, periodEndDate);
 
-      -- Inserting periods
-      INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
-      VALUES (fiscalYearId, v_i, periodStartDate, periodEndDate, 0);
+      -- Inserting periods -- period id is YYYYMM
+      INSERT INTO period(`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (DATE_FORMAT(periodStartDate, '%Y%m'), fiscalYearId, periodNumber, periodStartDate, periodEndDate, 0);
     END IF;
 
-    SET v_i = v_i + 1;
+    SET periodNumber = periodNumber + 1;
   END WHILE;
 END $$
 
@@ -1374,75 +1373,75 @@ BEGIN
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, 1, date);
 
  -- Check that all every inventory has a stock account and a variation account - if they do not the transaction will be Unbalanced
-  SELECT 
+  SELECT
     COUNT(l.uuid) INTO verify_invalid_accounts
-  FROM 
+  FROM
     lot AS l
-  JOIN 
+  JOIN
   	stock_movement sm ON sm.lot_uuid = l.uuid
-  JOIN 
+  JOIN
   	inventory i ON i.uuid = l.inventory_uuid
-  JOIN 
+  JOIN
   	inventory_group ig ON ig.uuid = i.group_uuid
-  WHERE 
-  	ig.stock_account IS NULL AND 
+  WHERE
+  	ig.stock_account IS NULL AND
     ig.cogs_account IS NULL AND
     sm.document_uuid = document_uuid;
-  
+
   IF verify_invalid_accounts > 0 THEN
     SIGNAL InvalidInventoryAccounts
     SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
 
   -- Debiting stock account, by inserting a record to the posting journal table
-  INSERT INTO posting_journal 
+  INSERT INTO posting_journal
   (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, origin_id, user_id
-  ) 
+  )
   SELECT
-    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id,
     date, p.uuid, sm.description, ig.stock_account, pi.total, 0, pi.total, 0, currency_id,
     PURCHASE_TRANSACTION_TYPE, user_id
   FROM
     stock_movement As sm
-  JOIN 
+  JOIN
     lot l ON l.uuid = sm.lot_uuid
   JOIN
     purchase p ON p.uuid = l.origin_uuid
-  JOIN 
-    purchase_item pi ON pi.purchase_uuid = p.uuid  	 
-  JOIN 
+  JOIN
+    purchase_item pi ON pi.purchase_uuid = p.uuid
+  JOIN
     inventory i ON i.uuid = pi.inventory_uuid
-  JOIN 
-    inventory_group ig ON ig.uuid = i.group_uuid    
+  JOIN
+    inventory_group ig ON ig.uuid = i.group_uuid
   WHERE
     sm.document_uuid = document_uuid;
 
 -- Crediting cost of good sale account, by inserting a record to the posting journal table
-  INSERT INTO posting_journal 
+  INSERT INTO posting_journal
   (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, origin_id, user_id
-  ) 
+  )
   SELECT
-    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id, 
+    HUID(UUID()), project_id, current_fiscal_year_id, current_period_id, transaction_id,
     date, p.uuid, sm.description, ig.cogs_account, 0, pi.total, 0, pi.total, currency_id,
     PURCHASE_TRANSACTION_TYPE, user_id
   FROM
     stock_movement As sm
-  JOIN 
+  JOIN
     lot l ON l.uuid = sm.lot_uuid
   JOIN
     purchase p ON p.uuid = l.origin_uuid
-  JOIN 
-    purchase_item pi ON pi.purchase_uuid = p.uuid  	 
-  JOIN 
+  JOIN
+    purchase_item pi ON pi.purchase_uuid = p.uuid
+  JOIN
     inventory i ON i.uuid = pi.inventory_uuid
-  JOIN 
-    inventory_group ig ON ig.uuid = i.group_uuid    
+  JOIN
+    inventory_group ig ON ig.uuid = i.group_uuid
   WHERE
     sm.document_uuid = document_uuid;
 END $$
