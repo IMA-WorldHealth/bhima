@@ -7,68 +7,13 @@
  * @module stock/reports/
  */
 
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const identifiers = require('../../../config/identifiers');
 const NotFound = require('../../../lib/errors/NotFound');
-const ReportManager = require('../../../lib/ReportManager');
 
 const PeriodService = require('../../../lib/period');
-const Stock = require('../core');
-
-const BASE_PATH = './server/controllers/stock/reports';
-
-// receipts
-const STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.handlebars`;
-const STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.handlebars`;
-const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handlebars`;
-const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
-
-const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
-const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
-const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
-const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
-
-// reports
-const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
-const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
-const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
-const STOCK_INVENTORY_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventory.report.handlebars`;
 
 // ===================================== receipts ========================================
-
-/*
-* This function help to format filter display name
-* Whitch must appear in the report
-*/
-function formatFilters(qs) {
-  const columns = [
-    { field : 'depot_uuid', displayName : 'STOCK.DEPOT' },
-    { field : 'inventory_uuid', displayName : 'STOCK.INVENTORY' },
-    { field : 'status', displayName : 'FORM.LABELS.STATUS' },
-    { field : 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
-    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
-    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
-
-    { field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true },
-    { field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true },
-  ];
-
-  return columns.filter(column => {
-    const value = qs[column.field];
-
-    if (!_.isUndefined(value)) {
-      if (column.isPeriod) {
-        const service = new PeriodService(new Date());
-        column.value = service.periods[value].translateKey;
-      } else {
-        column.value = value;
-      }
-      return true;
-    }
-    return false;
-  });
-}
 
 /**
  * @method stockExitPatientReceipt
@@ -547,7 +492,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
  * getDepotMovement
  * @param {string} documentUuid
  * @param {object} enterprise
- * @param {boolean} isExit 
+ * @param {boolean} isExit
  * @description return depot movement informations
  * @return {object} data
  */
@@ -555,32 +500,32 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
   const data = {};
   const is_exit = isExit ? 1 : 0;
   const sql = `
-        SELECT 
+        SELECT
           i.code, i.text, BUID(m.document_uuid) AS document_uuid,
           m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
           u.display_name AS user_display_name,
           CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
           l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
-        FROM 
+        FROM
           stock_movement m
-        JOIN 
+        JOIN
           lot l ON l.uuid = m.lot_uuid
-        JOIN 
+        JOIN
           inventory i ON i.uuid = l.inventory_uuid
-        JOIN 
+        JOIN
           depot d ON d.uuid = m.depot_uuid
-        JOIN 
+        JOIN
           user u ON u.id = m.user_id
-        LEFT JOIN 
+        LEFT JOIN
           depot dd ON dd.uuid = entity_uuid
-        WHERE 
+        WHERE
           m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
   return db.exec(sql, [is_exit, isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)])
     .then((rows) => {
       if (!rows.length) {
         throw new NotFound('document not found for exit');
-      }      
+      }
       const line = rows[0];
 
       data.enterprise = enterprise;
@@ -604,75 +549,6 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
 
 // ================================== end receipts ======================================
 
-/**
- * @method stockLotsReport
- *
- * @description
- * This method builds the stock lots report as either a JSON, PDF, or HTML
- * file to be sent to the client.
- *
- * GET /reports/stock/lots
- */
-function stockLotsReport(req, res, next) {
-  let options = {};
-  let display = {};
-  let hasFilter = false;
-
-  const data = {};
-  let report;
-
-  const optionReport = _.extend(req.query, {
-    filename : 'TREE.STOCK_LOTS',
-    orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
-  });
-
-  // set up the report with report manager
-  try {
-    if (req.query.identifiers && req.query.display) {
-      options = JSON.parse(req.query.identifiers);
-      display = JSON.parse(req.query.display);
-      hasFilter = Object.keys(display).length > 0;
-    }
-
-    report = new ReportManager(STOCK_LOTS_REPORT_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
-
-  if (options.defaultPeriod) {
-    options.defaultPeriodEntry = options.defaultPeriod;
-    delete options.defaultPeriod;
-  }
-
-
-  return Stock.getLotsDepot(null, options)
-    .then((rows) => {
-      data.rows = rows;
-      data.hasFilter = hasFilter;
-      data.csv = rows;
-      data.display = display;
-      data.filters = formatFilters(options);
-
-      // group by depot
-      let depots = _.groupBy(rows, d => d.depot_text);
-
-      // make sure that they keys are sorted in alphabetical order
-      depots = _.mapValues(depots, lines => {
-        _.sortBy(lines, 'depot_text');
-        return lines;
-      });
-
-      data.depots = depots;
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
-}
 
 /**
  * @method stockMovementsReport
@@ -869,6 +745,8 @@ function stockInventoryReport(req, res, next) {
     .catch(next)
     .done();
 }
+
+const stockLotsReport = require('./stock/lots_report');
 
 // expose to the api
 exports.stockLotsReport = stockLotsReport;
