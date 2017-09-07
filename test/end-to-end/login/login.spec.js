@@ -66,7 +66,7 @@ describe('Login Page', () => {
   it('has a default project value', () => {
     const defaultProject = element(by.model('LoginCtrl.credentials.project'))
         .$('option:checked').getText();
-    expect(defaultProject).to.be.defined;
+    expect(defaultProject).to.exist;
     expect(defaultProject).to.not.be.empty;
   });
 

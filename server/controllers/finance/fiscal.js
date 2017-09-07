@@ -249,10 +249,10 @@ function lookupBalance(fiscalYearId, periodNumber) {
   const sql = `
     SELECT t.period_id, a.id, a.label,
       SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
-    FROM period_total t 
-    JOIN account a ON a.id = t.account_id 
-    JOIN period p ON p.id = t.period_id 
-    WHERE t.fiscal_year_id = ? AND p.number <= ?  
+    FROM period_total t
+    JOIN account a ON a.id = t.account_id
+    JOIN period p ON p.id = t.period_id
+    WHERE t.fiscal_year_id = ? AND p.number <= ?
     GROUP BY a.id HAVING balance <> 0;
   `;
 
@@ -479,7 +479,7 @@ function closing(req, res, next) {
     })
     .then(() => {
       const sqlProfitAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit 
+        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
         FROM period_total AS pt
         JOIN account AS a ON pt.account_id = a.id
         JOIN account_type AS at ON a.type_id = at.id
@@ -488,7 +488,7 @@ function closing(req, res, next) {
       `;
 
       const sqlChargeAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit 
+        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
         FROM period_total AS pt
         JOIN account AS a ON pt.account_id = a.id
         JOIN account_type AS at ON a.type_id = at.id
@@ -516,7 +516,7 @@ function closing(req, res, next) {
     })
     .then(() => {
       const sqlInsertVoucherItem = `
-        INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid) 
+        INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
         VALUES (?, ?, ?, ?, ?, ?);
       `;
 
@@ -641,7 +641,7 @@ function closing(req, res, next) {
 function getPeriodByFiscal(fiscalYearId) {
   const sql = `
     SELECT period.number, period.id
-    FROM period 
+    FROM period
     JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
     WHERE period.fiscal_year_id = ? AND period.number <> 13;
   `;

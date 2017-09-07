@@ -214,7 +214,7 @@ CREATE TABLE `config_cotisation_item` (
 DROP TABLE IF EXISTS `config_paiement_period`;
 
 CREATE TABLE `config_paiement_period` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `paiement_period_id` int(10) unsigned NOT NULL,
   `weekFrom` date NOT NULL,
   `weekTo` date NOT NULL,
