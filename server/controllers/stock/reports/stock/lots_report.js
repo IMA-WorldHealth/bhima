@@ -1,4 +1,4 @@
-const { _, ReportManager, Stock, formatFilters } = require('../common');
+const { _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE } = require('../common');
 
 /**
  * @method stockLotsReport
