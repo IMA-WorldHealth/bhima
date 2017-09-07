@@ -175,6 +175,7 @@ function StockEntryController(Depots, Inventory, Notify,
         instance : transfers[0],
       };
 
+      vm.reference = transfers[0].documentReference;
       populate(transfers);
     })
     .catch(Notify.handleError);
