@@ -205,7 +205,7 @@ function StockEntryController(Depots, Inventory, Notify,
 
   function initSelectedEntity() {
     vm.displayName = '';
-    vm.reference = vm.displayName;
+    vm.reference = '';
   }
 
   function setSelectedEntity(entity) {
