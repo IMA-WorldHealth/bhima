@@ -56,4 +56,4 @@ function stockInventoryReport(req, res, next) {
     .done();
 }
 
-exports.stockInventoyReport = stockInventoriesReport;
+exports.stockInventoyReport = stockInventoryReport;
