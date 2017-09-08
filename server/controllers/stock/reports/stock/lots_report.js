@@ -1,4 +1,4 @@
-const { _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE } = require('../common');
+const { _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_LOTS_REPORT_TEMPLATE } = require('../common');
 
 /**
  * @method stockLotsReport
@@ -17,11 +17,8 @@ function stockLotsReport(req, res, next) {
   const data = {};
   let report;
 
-  const optionReport = _.extend(req.query, {
-    filename : 'TREE.STOCK_LOTS',
-    orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
+  const optionReport = _.extend(req.query, pdfOptions, {
+    filename : 'TREE.STOCK_LOTS'
   });
 
   // set up the report with report manager

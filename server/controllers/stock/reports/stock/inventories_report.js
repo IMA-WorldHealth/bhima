@@ -1,4 +1,4 @@
-const { _, ReportManager, Stock, formatFilters, STOCK_INVENTORIES_REPORT_TEMPLATE } = require('../common');
+const { _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_INVENTORIES_REPORT_TEMPLATE } = require('../common');
 
 /**
  * @method stockInventoriesReport
@@ -19,11 +19,9 @@ function stockInventoriesReport(req, res, next) {
   const data = {};
   const bundle = {};
 
-  const optionReport = _.extend(req.query, {
-    filename : 'TREE.STOCK_INVENTORY',
-    orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
+//optionReports
+  const optionReport = _.extend(req.query, pdfOptions, {
+    filename : 'TREE.STOCK_INVENTORY'
   });
 
   // set up the report with report manager

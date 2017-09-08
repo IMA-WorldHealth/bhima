@@ -122,6 +122,13 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
     });
 }
 
+// Extensible PDF layout options
+const pdfOptions = {
+  orientation : 'landscape',
+  footerRight : '[page] / [toPage]',
+  footerFontSize : '8',
+}
+
 // Exports
 exports._ = _;
 
@@ -134,6 +141,8 @@ exports.NotFound = NotFound;
 exports.formatFilters = formatFilters;
 exports.identifiers = identifiers;
 exports.getDepotMovement = getDepotMovement;
+
+exports.pdfOptions = pdfOptions;
 
 exports.STOCK_EXIT_PATIENT_TEMPLATE = STOCK_EXIT_PATIENT_TEMPLATE;
 exports.STOCK_EXIT_SERVICE_TEMPLATE = STOCK_EXIT_SERVICE_TEMPLATE;
