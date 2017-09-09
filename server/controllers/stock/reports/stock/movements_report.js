@@ -61,4 +61,4 @@ function stockMovementsReport(req, res, next) {
     .done();
 }
 
-exports.stockMovementsReport = stockMovementsReport;
+module.exports = stockMovementsReport;

@@ -64,4 +64,4 @@ function stockExitLossReceipt(req, res, next) {
     .done();
 }
 
-exports.stockExitLossReceipt = stockExitLossReceipt;
+module.exports = stockExitLossReceipt;

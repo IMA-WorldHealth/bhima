@@ -78,4 +78,4 @@ function stockEntryPurchaseReceipt(req, res, next) {
     .done();
 }
 
-exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
+module.exports = stockEntryPurchaseReceipt;

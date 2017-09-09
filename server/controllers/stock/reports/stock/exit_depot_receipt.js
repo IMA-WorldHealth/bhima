@@ -28,4 +28,4 @@ function stockExitDepotReceipt(req, res, next) {
     .done();
 }
 
-exports.stockExitDepotReceipt = stockExitDepotReceipt;
+module.exports = stockExitDepotReceipt;

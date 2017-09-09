@@ -70,4 +70,4 @@ function stockExitPatientReceipt(req, res, next) {
     .done();
 }
 
-exports.stockExitPatientReceipt = stockExitPatientReceipt;
+module.exports = stockExitPatientReceipt;

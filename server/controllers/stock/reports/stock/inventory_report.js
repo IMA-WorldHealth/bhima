@@ -53,4 +53,4 @@ function stockInventoryReport(req, res, next) {
     .done();
 }
 
-exports.stockInventoyReport = stockInventoryReport;
+module.exports = stockInventoryReport;

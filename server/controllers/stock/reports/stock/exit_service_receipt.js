@@ -66,4 +66,4 @@ function stockExitServiceReceipt(req, res, next) {
     .done();
 }
 
-exports.stockExitServiceReceipt = stockExitServiceReceipt;
+module.exports = stockExitServiceReceipt;

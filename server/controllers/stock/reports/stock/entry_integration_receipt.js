@@ -73,4 +73,4 @@ function stockEntryIntegrationReceipt(req, res, next) {
     .done();
 }
 
-exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
+module.exports = stockEntryIntegrationReceipt;

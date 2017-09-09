@@ -65,4 +65,4 @@ function stockAdjustmentReceipt(req, res, next) {
     .done();
 }
 
-exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
+module.exports = stockAdjustmentReceipt;
