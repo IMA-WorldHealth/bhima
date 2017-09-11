@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
-.controller('AccountStatementController', AccountStatementController);
+  .controller('AccountStatementController', AccountStatementController);
 
 // DI
 AccountStatementController.$inject = [
   'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
-  'Store', 'FilterService', 'ModalService', 'LanguageService',
-  '$filter', 'GridExportService',
+  'FilterService', 'ModalService', 'LanguageService',
+  'GridExportService',
 ];
 
 /**
@@ -15,8 +15,7 @@ AccountStatementController.$inject = [
  */
 function AccountStatementController(GeneralLedger, Notify, Journal,
   Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
-  AccountStatement, Store, Filters, Modal, Languages,
-  $filter, GridExport) {
+  AccountStatement, Filters, Modal, Languages, GridExport) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
@@ -58,7 +57,7 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
     { field                : 'trans_date',
       displayName          : 'TABLE.COLUMNS.DATE',
       headerCellFilter     : 'translate',
-      cellFilter           : 'date:"' + bhConstants.dates.format + '"',
+      cellFilter           : 'date:"'.concat(bhConstants.dates.format, '"'),
       filter               : { condition : filtering.filterByDate },
       editableCellTemplate : 'modules/journal/templates/date.edit.html',
       footerCellTemplate   : '<i></i>' },
@@ -74,6 +73,7 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
 
     {
       field            : 'debit_equiv',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter : 'translate',
       cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
@@ -85,6 +85,7 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
     },
 
     { field            : 'credit_equiv',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.CREDIT',
       headerCellFilter : 'translate',
       cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
@@ -124,12 +125,14 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
       visible          : false },
 
     { field            : 'debit',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
       cellTemplate     : '/modules/journal/templates/debit.grid.html' },
 
     { field            : 'credit',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
@@ -181,12 +184,12 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
   // comment selected rows
   vm.commentRows = function commentRows() {
     AccountStatement.openCommentModal({ rows : vm.selectedRows })
-    .then(function (comment) {
-      if (!comment) { return; }
-      updateGridComment(vm.selectedRows, comment);
-      Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
-    })
-    .catch(Notify.handleError);
+      .then(function (comment) {
+        if (!comment) { return; }
+        updateGridComment(vm.selectedRows, comment);
+        Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
+      })
+      .catch(Notify.handleError);
   };
 
   // update local rows
@@ -236,9 +239,11 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
       return;
     }
 
-    var uuids = vm.gridApi.selection.getSelectedGridRows().map(function (row) {
-      return row.entity.uuid;
-    });
+    var uuids = vm.gridApi.selection.getSelectedGridRows()
+      .map(function (row) {
+        return row.entity.uuid;
+      });
+
     return { renderer : type || 'pdf', lang : Languages.key, uuids: uuids };
   }
 
@@ -263,19 +268,22 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
     vm.latestViewFilters = AccountStatement.filters.formatView();
   }
 
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
   // startup
   function load(options) {
-    vm.loading = true;
+    toggleLoadingIndicator();
+
     vm.hasErrors = false;
 
     GeneralLedger.read(null, options)
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(function (data) {
+        vm.gridOptions.data = data;
+      })
+      .catch(handleError)
+      .finally(toggleLoadingIndicator);
   }
 
   // catch loading errors
