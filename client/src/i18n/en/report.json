@@ -25,7 +25,8 @@
     "CASHFLOW_BY_SERVICE": {"TITLE":"Cash flow By Service", "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"},
     "CASHFLOW" : {
       "TITLE":"Cash Flow Physical Report",
-      "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash"
+      "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
+      "SHOW_WEEKLY_REPORT_HELP":"Enabling this option will allow to view the cash flow report per week"
     },   
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
