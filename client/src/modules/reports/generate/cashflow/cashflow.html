@@ -1,0 +1,60 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.CASHFLOW.TITLE</h3>
+      <p class="text-info" translate>REPORT.CASHFLOW.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <!-- date interval  -->
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              required="true">
+            </bh-date-interval>
+
+            <!-- by week  -->
+            <div class="checkbox">
+              <label>
+                <input 
+                  type="checkbox"
+                  name="weekly"
+                  ng-model="ReportConfigCtrl.reportDetails.weekly"
+                  ng-checked="ReportConfigCtrl.checked"
+                  ng-true-value="1"
+                  ng-false-value="0">
+                <span translate>FORM.LABELS.WEEKLY_REPORT</span>
+              </label>
+            </div>
+
+            <bh-cashbox-select
+              cashboxId = "ReportConfigCtrl.reportDetails.account_id"
+              name = "cashbox"
+              on-select-callback = "ReportConfigCtrl.onSelectCashbox(cashbox)">
+            </bh-cashbox-select>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

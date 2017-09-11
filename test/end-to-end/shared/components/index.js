@@ -28,10 +28,14 @@ module.exports = {
   fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
   debtorGroupSelect : require('./bhDebtorGroupSelect'),
   multipleDebtorGroupSelect : require('./bhMultipleDebtorGroupSelect'),
+<<<<<<< 635a35ada7264d7794aa026e0358597591595e0f
   depotSelect    : require('./bhDepotSelect'),
   inventorySelect : require('./bhInventorySelect'),
   transactionTypeSelect : require('./bhTransactionTypeSelect'),
   patientGroupSelect : require('./bhPatientGroupSelect'),
   supplierSelect : require('./bhSupplierSelect'),
   stockEntryExitType : require('./bhStockEntryExitType'),
+=======
+  cashboxSelect   : require('./bhCashBoxSelect'),
+>>>>>>> Fix conflict in merging
 };
