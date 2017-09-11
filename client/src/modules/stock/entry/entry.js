@@ -315,7 +315,7 @@ function StockEntryController(
   }
 
   // submit integration
-  function submitIntegration() {
+  function submitIntegration() {    
     var movement = {
       depot_uuid  : vm.depot.uuid,
       entity_uuid : null,
@@ -325,17 +325,33 @@ function StockEntryController(
       user_id     : Session.user.id,
     };
 
-    Stock.integration.create({ description : vm.movement.description })
-      .then(function (uuid) {
-        movement.lots = processLotsFromStore(vm.Stock.store.data, uuid);
-        return Stock.stocks.create(movement);
-      })
-      .then(function (document) {
-        vm.Stock.store.clear();
-        vm.movement = {};
-        ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
-      })
-      .catch(Notify.handleError);
+    var lots = vm.Stock.store.data.reduce(function (current, previous) {
+        return previous.lots.map(function (lot) {
+          return {
+            label            : lot.lot,
+            initial_quantity : lot.quantity,
+            quantity         : lot.quantity,
+            unit_cost        : previous.unit_cost,
+            expiration_date  : lot.expiration_date,
+            inventory_uuid   : previous.inventory.uuid,
+            origin_uuid      : uuid,
+          };
+        }).concat(current);
+      }, []);    
+    
+    var entry = {
+      integration : { description : vm.movement.description },
+      lots : lots,
+      movement : movement,
+    }
+
+    Stock.integration.create(entry)
+    .then(function (document) {
+      vm.Stock.store.clear();
+      vm.movement = {};
+      ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+    })
+    .catch(Notify.handleError);
   }
 
   // submit donation
