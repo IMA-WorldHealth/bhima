@@ -1,4 +1,6 @@
-const { _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockExitPatientReceipt

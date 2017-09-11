@@ -1,4 +1,6 @@
-const { _, ReportManager, Stock, identifiers, NotFound, STOCK_EXIT_SERVICE_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, Stock, identifiers, db, NotFound, STOCK_EXIT_SERVICE_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockExitServiceReceipt

@@ -1,4 +1,6 @@
-const { _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ENTRY_PURCHASE_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ENTRY_PURCHASE_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockEntryPurchaseReceipt

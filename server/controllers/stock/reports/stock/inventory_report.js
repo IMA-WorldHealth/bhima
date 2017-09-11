@@ -1,4 +1,6 @@
-const { _, db, ReportManager, Stock, pdfOptions, STOCK_INVENTORY_REPORT_TEMPLATE } = require('../common');
+const {
+  _, db, ReportManager, Stock, pdfOptions, STOCK_INVENTORY_REPORT_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockInventoryReport

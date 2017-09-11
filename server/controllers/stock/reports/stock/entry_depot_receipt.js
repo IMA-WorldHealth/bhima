@@ -1,4 +1,6 @@
-const { _, ReportManager, getDepotMovement, STOCK_ENTRY_DEPOT_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, getDepotMovement, STOCK_ENTRY_DEPOT_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockEntryDepotReceipt

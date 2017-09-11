@@ -1,4 +1,7 @@
-const { _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE
+} = require('../common');
+
 
 /**
  * @method stockAdjustmentReceipt

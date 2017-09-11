@@ -1,4 +1,6 @@
-const { _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE } = require('../common');
+const {
+  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE
+} = require('../common');
 
 /**
  * @method stockMovementsReport
