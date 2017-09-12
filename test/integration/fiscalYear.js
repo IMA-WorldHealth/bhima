@@ -9,7 +9,7 @@ describe('(/fiscal) Fiscal Year', function () {
     end_date : new Date('2018-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test',
-    closing_account: 3627,
+    closing_account: 3627, // what is this account?
   };
 
   var responseKeys = ['id', 'enterprise_id', 'number_of_months', 'label', 'start_date', 'end_date', 'previous_fiscal_year_id', 'locked', 'note'];

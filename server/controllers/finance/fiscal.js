@@ -619,7 +619,10 @@ function closing(req, res, next) {
     })
     .then((rows) => {
       const queryUpdateFiscal = rows.pop();
-      if (!queryUpdateFiscal.changedRows) {
+
+      // Note: changedRows is generated from the server message.
+      // It is not correctly parsed and set in multi-langual environments.
+      if (!queryUpdateFiscal.affectedRows) {
         throw new BadRequest('FISCAL.FAILURE_CLOSING', 'Failure occurs during the closing of the fiscal year');
       }
       res.status(200).json({ id });
