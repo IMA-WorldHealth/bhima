@@ -16,6 +16,7 @@ angular.module('bhima.routes')
       'inventory_file',
       'cashflowByService',
       'aged_creditors',
+      'cashflow',
     ];
 
     $stateProvider

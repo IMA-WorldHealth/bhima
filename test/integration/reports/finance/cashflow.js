@@ -14,11 +14,9 @@ describe(`(${target}) Cashflow Reports`, function () {
   };
 
   const keys = [
-    'dateFrom', 'dateTo', 'incomes', 'expenses', 'summationIncome', 'summationExpense',
-    'sum_incomes', 'sum_expense', 'periodicBalance', 'periodicOpenningBalance',
-    'incomesLabels', 'expensesLabels', 'totalIncomes', 'totalExpenses', 'periodicData',
-    'openningBalance', 'accountName', 'periodStartArray',
-  ];
+    'dateFrom', 'dateTo', 'weekly', 'incomes', 'expenses', 'summationIncome', 'summationExpense', 'sum_incomes', 'sum_expense',
+    'periodicBalance', 'periodicOpenningBalance', 'incomesLabels', 'expensesLabels', 'totalIncomes', 'totalExpenses', 'periodicData',
+    'openningBalance', 'periodStartArray', 'periodRange', 'metadata'];
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
 

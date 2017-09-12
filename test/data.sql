@@ -163,7 +163,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (144,1),
 
 -- [Folder] Reports
--- Cashflow report:       (145,1),
 -- Chart of account:      (148, 1),
 -- Balance report:        (150, 1),
 -- Report Customer Debts: (151,1),
@@ -179,6 +178,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- [Folder] reports/aged_debtors: The Report Aged Debtors
 (151,1),
+
+-- [Folder] Cashflow report:       
+(145,1),
 
 -- [Folder] reports/account_reports: The Report accounts
 (152,1),

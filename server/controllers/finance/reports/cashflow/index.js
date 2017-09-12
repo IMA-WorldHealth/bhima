@@ -26,6 +26,9 @@ const identifiers = require('../../../../config/identifiers');
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
 const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/reportByService.handlebars';
 
+// TODO(@jniles) - merge this into the regular accounts controller
+const AccountsExtra = require('../../accounts/extra');
+
 // expose to the API
 exports.report = report;
 exports.weeklyReport = weeklyReport;
@@ -66,11 +69,12 @@ function processingCashflowReport(params) {
         throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
       }
       glb.periods = periods;
-      return closingBalance(params.account_id, glb.periods[0].start_date);
+      return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date, false);
     })
     .then((balance) => {
-      if (!balance.length) { balance[0] = { balance : 0, account_id : params.account_id }; }
-      glb.openningBalance = balance[0];
+      if (!balance) { balance = { balance : 0}; }
+      glb.openningBalance = balance;
+
       return queryIncomeExpense(params);
     })
     .then((result) => {
@@ -99,48 +103,30 @@ function queryIncomeExpense(params, dateFrom, dateTo) {
   }
 
   const requette = `
-      SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
-        SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
-        t.debit, t.credit, t.currency_id, t.description, t.comment,
-        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name,
-        x.text AS transactionType
-      FROM
-      (
-        (
-          SELECT pj.project_id, pj.uuid, pj.record_uuid, pj.trans_date,
-            pj.debit_equiv, pj.credit_equiv, pj.debit, pj.credit,
-            pj.account_id, pj.entity_uuid, pj.currency_id, pj.trans_id,
-            pj.description, pj.comment, pj.origin_id, pj.user_id
-          FROM posting_journal pj
-          WHERE pj.account_id IN (?) AND 
-            DATE(pj.trans_date) >= DATE(?) AND 
-            DATE(pj.trans_date) <= DATE(?) AND 
-            pj.origin_id <> 10 AND 
-            pj.record_uuid NOT IN 
-            (SELECT reference_uuid FROM voucher WHERE type_id = 10)
-        ) UNION (
-          SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
-            gl.debit_equiv, gl.credit_equiv, gl.debit, gl.credit,
-            gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
-            gl.description, gl.comment, gl.origin_id, gl.user_id
-          FROM general_ledger gl
-          WHERE gl.account_id IN (?) AND
-           DATE(gl.trans_date) >= DATE(?) AND
-            DATE(gl.trans_date) <= DATE(?) AND
-             gl.origin_id <> 10 AND
-             gl.record_uuid NOT IN
-             (SELECT reference_uuid FROM voucher WHERE type_id = 10)
-        )
-      ) AS t, account AS a, user as u, transaction_type as x
-      WHERE t.account_id = a.id AND t.user_id = u.id AND t.origin_id = x.id
-      GROUP BY t.trans_id ;`;
+    SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, t.period_id, a.number, a.label,
+      SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
+      t.debit, t.credit, t.currency_id, t.description, t.comment,
+      BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name,
+      x.text AS transactionType
+    FROM (        
+      SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date, gl.period_id,
+        gl.debit_equiv, gl.credit_equiv, gl.debit, gl.credit,
+        gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
+        gl.description, gl.comment, gl.origin_id, gl.user_id
+      FROM general_ledger gl
+      WHERE gl.account_id = ? AND
+        DATE(gl.trans_date) >= DATE(?) AND
+        DATE(gl.trans_date) <= DATE(?) AND
+        gl.origin_id <> 10 AND
+        gl.record_uuid NOT IN
+        (SELECT reference_uuid FROM voucher WHERE type_id = 10)
+    ) AS t, account AS a, user as u, transaction_type as x
+    WHERE t.account_id = a.id AND t.user_id = u.id AND t.origin_id = x.id
+    GROUP BY t.trans_id ;`;
 
   return db.exec(
     requette,
     [
-      params.account_id,
-      params.dateFrom,
-      params.dateTo,
       params.account_id,
       params.dateFrom,
       params.dateTo,
@@ -160,8 +146,10 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
     const expenses = pf.flows.filter((posting) => {
       return posting.credit_equiv > 0;
     });
+
     grouping.push({ period : pf.period, incomes, expenses });
   });
+
   return grouping;
 }
 
@@ -171,16 +159,22 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
  * @param {array} flows The result of queryIncomeExpense i.e. all incomes and expense
  * @description This function help to group incomes or expenses by month
  */
-function groupByPeriod(periods, flows) {
+function groupByPeriod(periods, flows, weekly) {
   var grouping = [];
   periods.forEach((p) => {
     var data = [];
     flows.forEach((f) => {
-      const transDate = new Date(f.trans_date);
-      const startDate = new Date(p.start_date);
-      const endDate = new Date(p.end_date);
-      if (transDate <= endDate && transDate >= startDate) {
-        data.push(f);
+      if (weekly) {        
+        const transDate = new Date(f.trans_date);
+        const startDate = new Date(p.start_date);
+        const endDate = new Date(p.end_date);
+        if (transDate <= endDate && transDate >= startDate) {
+          data.push(f);
+        }
+      } else {        
+        if (p.id === f.period_id) {
+          data.push(f);
+        }
       }
     });
     grouping.push({ period : p, flows : data });
@@ -223,15 +217,22 @@ function processingWeekCashflow(params) {
     throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
   }
 
-  // get all periods for the the current fiscal year
-  return queryIncomeExpense(params)
-    .then((result) => {
-      return groupByPeriod(glb.periods, result);
-    })
-    .then(groupingIncomeExpenseByPeriod)
-    .then((flows) => {
-      return { openningBalance : glb.balance, flows };
-    });
+  // Using dateFrom as the beginning of all periods, To avoid using dates not included in fiscal years
+  glb.periods[0].start_date = params.dateFrom;
+
+  return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date)
+  .then((balance) => {
+    if (!balance) { balance = { balance : 0, account_id : params.account_id }; }
+    glb.openningBalance = balance;
+
+    // get all periods for the the current fiscal year
+    return queryIncomeExpense(params);
+  })
+  .then(result =>  groupByPeriod(glb.periods, result, params.weekly))
+  .then(groupingIncomeExpenseByPeriod)
+  .then((flows) => {
+    return { openningBalance : glb.openningBalance, flows };
+  });
 }
 
 /** @function getWeeks */
@@ -320,12 +321,11 @@ function document(req, res, next) {
   const params = req.query;
 
   let documentReport;
-
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
 
   // weekly parameter
-  session.weekly = params.weekly;
+  session.weekly = Number(params.weekly);
 
   // FIXME Manual assignment of user, should be done generically for PDF reports
   _.defaults(params, { orientation : 'landscape', user : req.session.user });
@@ -363,7 +363,6 @@ function document(req, res, next) {
    */
   function reporting(rows) {
     initialization();
-
     session.periodicData = rows.flows;
     /** @todo: convert into enterprise currency */
     session.openningBalance = rows.openningBalance.balance;
@@ -371,7 +370,7 @@ function document(req, res, next) {
     session.periodicData.forEach((flow) => {
       groupingResult(flow.incomes, flow.expenses, Moment(flow.period.start_date).format('YYYY-MM-DD'));
     });
-
+  
     session.periodStartArray = session.periodicData.map((flow) => {
       return Moment(flow.period.start_date).format('YYYY-MM-DD');
     });
@@ -419,7 +418,7 @@ function document(req, res, next) {
     session.sum_expense[period] = 0;
 
     if (session.summationIncome[period]) {
-      session.summationIncome[period].forEach((transaction) => {
+      session.summationIncome[period].forEach((transaction) => {  
         // if only cashes values must be in only enterprise currency
         /** @todo: convert into enterprise currency */
         session.sum_incomes[period] += transaction.value;
@@ -437,8 +436,8 @@ function document(req, res, next) {
     }
 
     session.periodicBalance[period] = isFirstPeriod(period) ?
-      ((session.openningBalance + session.sum_incomes[period]) - session.sum_expense[period]) :
-      ((session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period]) - session.sum_expense[period]);
+      ((Number(session.openningBalance) + Number(session.sum_incomes[period])) - Number(session.sum_expense[period])) :
+      ((Number(session.periodicBalance[previousPeriod(period)]) + Number(session.sum_incomes[period]))- Number(session.sum_expense[period]));
 
     session.periodicOpenningBalance[period] = isFirstPeriod(period) ?
       session.openningBalance :
@@ -534,9 +533,6 @@ function document(req, res, next) {
    * @description group incomes and expenses by origin_id for each period
    */
   function groupingResult(incomes, expenses, period) {
-    const tempIncome = {};
-    const tempExpense = {};
-
     session.summationIncome[period] = [];
     session.summationExpense[period] = [];
 
@@ -552,27 +548,30 @@ function document(req, res, next) {
     // income
     if (incomes) {
       incomes.forEach((item) => {
-        tempIncome[item.origin_id] = typeof tempIncome[item.origin_id] !== 'undefined';
-
-        if (tempIncome[item.origin_id] === true) {
+        if(item.origin_id){
           const value = incomes.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
           }, 0);
+
           session.summationIncome[period].push({
             transfer_type : item.transactionType,
             currency_id   : item.currency_id,
             value,
-          });
+          });          
         }
       });
     }
 
+    // Removing duplicates
+    let cacheIncome = {};
+    session.summationIncome[period] = session.summationIncome[period].filter(function(elem, index, array) {
+      return cacheIncome[elem.transfer_type] ? 0 : cacheIncome[elem.transfer_type] = 1;
+    });
+
     // Expense
     if (expenses) {
       expenses.forEach((item) => {
-        tempExpense[item.origin_id] = typeof tempExpense[item.origin_id] !== 'undefined';
-
-        if (tempExpense[item.origin_id] === true) {
+        if(item.origin_id){
           const value = expenses.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
@@ -585,6 +584,12 @@ function document(req, res, next) {
         }
       });
     }
+
+    // Removing duplicates
+    let cacheExpense = {};
+    session.summationExpense[period] = session.summationExpense[period].filter(function(elem, index, array) {
+      return cacheExpense[elem.transfer_type] ? 0 : cacheExpense[elem.transfer_type] = 1;
+    });
   }
 }
 
