@@ -386,7 +386,7 @@ function createIntegration(req, res, next) {
     commonInfos = [ db.bid(documentUuid), new Date(params.movement.date), req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
 
     // writting all records relative to the movement in the posting journal table
-    transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
+    transaction.addQuery('CALL PostStockEntry(?)', [commonInfos]);
   });
 
   // execute all operations as one transaction

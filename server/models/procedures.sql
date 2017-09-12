@@ -1350,7 +1350,7 @@ BEGIN
 END $$
 
 -- This processus inserts records relative to the stock movement in the posting journal
-CREATE PROCEDURE PostPurchase (
+CREATE PROCEDURE PostStockEntry (
   IN document_uuid BINARY(16),
   IN date DATETIME,
   IN enterprise_id SMALLINT(5) UNSIGNED,
