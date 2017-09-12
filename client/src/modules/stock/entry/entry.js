@@ -333,14 +333,13 @@ function StockEntryController(
             quantity         : lot.quantity,
             unit_cost        : previous.unit_cost,
             expiration_date  : lot.expiration_date,
-            inventory_uuid   : previous.inventory.uuid,
-            origin_uuid      : uuid,
+            inventory_uuid   : previous.inventory.uuid
           };
         }).concat(current);
       }, []);    
     
     var entry = {
-      integration : { description : vm.movement.description },
+      integration : { date : vm.movement.date, description : vm.movement.description },
       lots : lots,
       movement : movement,
     }

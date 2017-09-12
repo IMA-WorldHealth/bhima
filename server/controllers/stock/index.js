@@ -341,12 +341,12 @@ function createIntegration(req, res, next) {
   const identifier = uuid.v4();
   const documentUuid = uuid.v4();
   let commonInfos;
-  
+
   const integration = {
     uuid        : db.bid(identifier),
     project_id  : req.session.project.id,
     description : params.integration.description || 'INTEGRATION',
-    date        : new Date(),
+    date        : new Date(params.integration.date),
   };
   const sql = `INSERT INTO integration SET ?`;
 
@@ -357,25 +357,25 @@ function createIntegration(req, res, next) {
 
     // adding a lot insertion query into the transaction
     transaction.addQuery(`INSERT INTO lot SET ?`, {
-      uuid             : lotUuid,
+      uuid             : db.bid(lotUuid),
       label            : lot.label,
       initial_quantity : lot.quantity,
       quantity         : lot.quantity,
       unit_cost        : lot.unit_cost,
       expiration_date  : new Date(lot.expiration_date),
       inventory_uuid   : db.bid(lot.inventory_uuid),
-      origin_uuid      : db.bid(lot.origin_uuid),
+      origin_uuid      : db.bid(identifier),
       delay            : 0,
     });
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
       uuid          : db.bid(uuid.v4()),
-      lot_uuid      : lotUuid,
+      lot_uuid      : db.bid(lotUuid),
       depot_uuid    : db.bid(params.movement.depot_uuid),
       document_uuid : db.bid(documentUuid),
       flux_id       : params.movement.flux_id,
-      date          : params.movement.date,
+      date          : new Date(params.movement.date),
       quantity      : lot.quantity,
       unit_cost     : lot.unit_cost,
       is_exit       : 0,
@@ -383,7 +383,7 @@ function createIntegration(req, res, next) {
     });
 
     // An arry of common info, to send to the store procedure in order to insert to the posting journal
-    commonInfos = [ db.bid(documentUuid), params.movement.date, req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
+    commonInfos = [ db.bid(documentUuid), new Date(params.movement.date), req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
 
     // writting all records relative to the movement in the posting journal table
     transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
