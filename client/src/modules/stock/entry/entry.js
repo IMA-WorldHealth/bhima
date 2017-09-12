@@ -341,7 +341,7 @@ function StockEntryController(
     var entry = {
       integration : { date : vm.movement.date, description : vm.movement.description },
       lots : lots,
-      movement : movement,
+      movement : movement
     }
 
     Stock.integration.create(entry)

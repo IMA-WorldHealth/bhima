@@ -102,12 +102,13 @@ function createStock(req, res, next) {
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
 
-  // An arry of common info, to send to the store procedure in order to insert to the posting journal
+  // An array of common info, to send to the store procedure in order to insert to the posting journal
   const commonInfos = [
     db.bid(document.uuid), document.date,
     req.session.enterprise.id, req.session.project.id,
     req.session.enterprise.currency_id, document.user,
   ];
+
 
   // writting all records relative to the movement in the posting journal table
   transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
@@ -383,10 +384,17 @@ function createIntegration(req, res, next) {
     });
 
     // An arry of common info, to send to the store procedure in order to insert to the posting journal
-    commonInfos = [ db.bid(documentUuid), new Date(params.movement.date), req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, req.session.user.id ];
+    commonInfos = [ 
+      db.bid(documentUuid),
+      new Date(params.movement.date),
+      req.session.enterprise.id,
+      req.session.project.id,
+      req.session.enterprise.currency_id,
+      req.session.user.id
+    ];
 
     // writting all records relative to the movement in the posting journal table
-    transaction.addQuery('CALL PostStockEntry(?)', [commonInfos]);
+    transaction.addQuery('CALL PostIntegration(?)', [commonInfos]);
   });
 
   // execute all operations as one transaction
