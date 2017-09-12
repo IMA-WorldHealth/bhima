@@ -20,10 +20,10 @@ function StockEntryController(Depots, Inventory, Notify,
   var inventoryStore;
 
   var mapEntry = {
-    purchase    : { find: findPurchase, submit: submitPurchase },
-    donation    : { find: angular.noop, submit: angular.noop }, // donation is not yet implemented
-    integration : { find: handleIntegrationSelection, submit: submitIntegration},
-    transfer_reception : {find: findTransfer, submit : submitTransferReception},
+    purchase    : { find : findPurchase, submit : submitPurchase },
+    donation    : { find : angular.noop, submit : angular.noop }, // donation is not yet implemented
+    integration : { find : handleIntegrationSelection, submit : submitIntegration },
+    transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
 
   vm.Stock = new StockForm('StockEntry');
@@ -78,7 +78,7 @@ function StockEntryController(Depots, Inventory, Notify,
         cellTemplate     : 'modules/stock/entry/templates/quantity.tmpl.html',
         aggregationType  : uiGridConstants.aggregationTypes.sum },
 
-      { field: 'actions', width: 25, cellTemplate: 'modules/stock/entry/templates/actions.tmpl.html' },
+      { field : 'actions', width : 25, cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html' },
     ],
     onRegisterApi    : onRegisterApi,
     data             : vm.Stock.store.data,
@@ -127,7 +127,7 @@ function StockEntryController(Depots, Inventory, Notify,
 
   // init actions
   function moduleInit() {
-    vm.movement = { date: new Date(), entity: {} };
+    vm.movement = { date : new Date(), entity : {} };
     loadInventories();
     setupDepot(vm.depot);
   }
@@ -137,7 +137,7 @@ function StockEntryController(Depots, Inventory, Notify,
     Inventory.read()
       .then(function (inventories) {
         vm.inventories = inventories;
-        inventoryStore = new Store({ identifier: 'uuid', data: inventories });
+        inventoryStore = new Store({ identifier : 'uuid', data : inventories });
       })
       .catch(Notify.handleError);
   }
@@ -148,7 +148,7 @@ function StockEntryController(Depots, Inventory, Notify,
     initSelectedEntity();
 
     StockModal.openFindPurchase()
-    .then(function(purchase) {
+    .then(function (purchase) {
       if (!purchase) { return; }
       vm.movement.entity = {
         uuid     : purchase[0].uuid,
@@ -163,11 +163,11 @@ function StockEntryController(Depots, Inventory, Notify,
   }
 
     // find transfer
-  function findTransfer(params) {
+  function findTransfer() {
     initSelectedEntity();
 
-    StockModal.openFindTansfer({depot_uuid : vm.depot.uuid})
-    .then(function(transfers) {
+    StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
+    .then(function (transfers) {
       if (!transfers) { return; }
       vm.movement.entity = {
         uuid     : transfers[0].uuid,
@@ -175,12 +175,13 @@ function StockEntryController(Depots, Inventory, Notify,
         instance : transfers[0],
       };
 
+      vm.reference = transfers[0].documentReference;
       populate(transfers);
     })
     .catch(Notify.handleError);
   }
 
-  function handleIntegrationSelection (){
+  function handleIntegrationSelection() {
     initSelectedEntity();
   }
 
@@ -202,15 +203,16 @@ function StockEntryController(Depots, Inventory, Notify,
     });
   }
 
-  function initSelectedEntity (){
-    vm.reference = vm.displayName = '';
+  function initSelectedEntity() {
+    vm.displayName = '';
+    vm.reference = '';
   }
 
-  function setSelectedEntity (entity){
+  function setSelectedEntity(entity) {
     var uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
-  } 
+  }
 
   // ============================ lots management ===========================
   function setLots(inventory) {
@@ -292,7 +294,7 @@ function StockEntryController(Depots, Inventory, Notify,
       user_id     : Session.user.id,
     };
 
-    Stock.integration.create({ description: vm.movement.description })
+    Stock.integration.create({ description : vm.movement.description })
     .then(function (uuid) {
       var lots = vm.Stock.store.data.reduce(function (current, previous) {
         return previous.lots.map(function (lot) {
@@ -320,22 +322,22 @@ function StockEntryController(Depots, Inventory, Notify,
   }
 
   //submit transfer reception
-  function submitTransferReception (){
+  function submitTransferReception(){
     var movement = {
-      from_depot: vm.movement.entity.instance.depot_uuid,
-      to_depot: vm.depot.uuid,
+      from_depot : vm.movement.entity.instance.depot_uuid,
+      to_depot : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
-      date: vm.movement.entity.instance.date,
-      description: vm.movement.entity.instance.description,
-      isExit: false,
-      user_id: Session.user.id,
+      date : vm.movement.entity.instance.date,
+      description : vm.movement.entity.instance.description,
+      isExit : false,
+      user_id : Session.user.id,
     };
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
-        uuid: row.lot_uuid,
-        quantity: row.lots[0].quantity,
-        unit_cost: row.unit_cost,
+        uuid : row.lot_uuid,
+        quantity : row.lots[0].quantity,
+        unit_cost : row.unit_cost,
       };
     });
 

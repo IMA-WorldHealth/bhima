@@ -9,36 +9,37 @@ StockFindTransferModalController.$inject = [
 function StockFindTransferModalController(Instance, StockService, Notify,
   uiGridConstants, Filtering, Receipts, data) {
   var vm = this;
-  vm.filterEnabled = false;
-  vm.gridOptions = { appScopeProvider: vm };
+  var filtering;
+  var columns;
 
-  var filtering = new Filtering(vm.gridOptions);
-  var columns = [
-    {
-      field: 'date',
-      cellFilter: 'date',
-      filter: { condition: filtering.filterByDate },
-      displayName: 'TABLE.COLUMNS.DATE',
-      headerCellFilter: 'translate',
-      sort: { priority: 0, direction: 'desc' },
-    },
-    {
-      field: 'depot_text',
-      displayName: 'FORM.LABELS.DEPOT',
-      headerCellFilter: 'translate'
-    },
-    {
-      field: 'description',
-      displayName: 'FORM.LABELS.DESCRIPTION',
-      headerCellFilter: 'translate'
-    },
-    {
-      field: 'action',
-      displayName: '',
-      enableFiltering: false,
-      enableSorting: false,
-      cellTemplate: 'modules/stock/entry/modals/templates/transfer_view.tmpl.html'
-    }
+  vm.filterEnabled = false;
+  vm.filterReceived = false;
+
+  vm.gridOptions = { appScopeProvider : vm };
+
+  filtering = new Filtering(vm.gridOptions);
+
+  columns = [
+    { field : 'status',
+      displayName : 'FORM.LABELS.STATUS',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html' },
+
+    { field : 'date',
+      cellFilter : 'date',
+      filter : { condition : filtering.filterByDate },
+      displayName : 'TABLE.COLUMNS.DATE',
+      headerCellFilter : 'translate',
+      sort : { priority : 0, direction : 'desc' } },
+
+    { field : 'document_reference',
+      displayName : 'FORM.LABELS.REFERENCE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html' },
+
+    { field : 'depot_name',
+      displayName : 'FORM.LABELS.ORIGIN',
+      headerCellFilter : 'translate' },
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -48,15 +49,15 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   vm.gridOptions.enableColumnMenus = false;
   vm.gridOptions.fastWatch = true;
   vm.gridOptions.flatEntityAccess = true;
-  vm.toggleFilter = toggleFilter;
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.showReceipt = showReceipt;
+  vm.toggleFilter = toggleFilter;
+  vm.toggleReceived = toggleReceived;
 
   vm.hasError = false;
-  vm.lo
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -74,42 +75,57 @@ function StockFindTransferModalController(Instance, StockService, Notify,
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  /** toggle received */
+  function toggleReceived() {
+    vm.filterReceived = !vm.filterReceived;
+    vm.gridOptions.data = vm.filterReceived ? vm.allTransfers : vm.pendingTransfers;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   /** get transfer document */
   function showReceipt(uuid) {
     Receipts.stockExitDepotReceipt(uuid, true);
   }
 
-  function load (){
+  function load() {
     vm.loading = true;
 
-    StockService.movements.read(null, {
-      entity_uuid: data.depot_uuid,
-      is_exit: 1,
-      groupByDocument : 1,
+    StockService.transfers.read(null, {
+      depot_uuid : data.depot_uuid,
     })
     .then(function (transfers) {
-      vm.gridOptions.data = transfers;
+      vm.allTransfers = transfers;
+      vm.pendingTransfers = transfers.filter(transferNotReceived);
+      vm.gridOptions.data = vm.pendingTransfers;
     })
-    .catch(function (err){
+    .catch(function (err) {
       vm.hasError = true;
       Notify.errorHandler(err);
     })
-    .finally(function (){
+    .finally(function () {
       vm.loading = false;
     });
   }
 
+  /**
+   * @function tranferNotReceived
+   * @description filter by not yet received
+   */
+  function transferNotReceived(transfer) {
+    return !transfer.countedReceived;
+  }
+
   // submit
   function submit() {
-    if(!vm.selectedRow) {return;}
+    if (!vm.selectedRow) { return 0; }
     return StockService.movements.read(null, {
-      document_uuid: vm.selectedRow.document_uuid,
-      is_exit: 1,
+      document_uuid : vm.selectedRow.document_uuid,
+      is_exit : 1,
     })
     .then(function (transfers) {
       Instance.close(transfers);
     })
-    .catch(Notify.errorHandler);    
+    .catch(Notify.errorHandler);
   }
 
   // cancel

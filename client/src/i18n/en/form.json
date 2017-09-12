@@ -359,6 +359,7 @@
             "FINAL_BALANCE" : "Final Balance",
             "INTERMEDIATE_BALANCE" : "Intermediate Balance",
             "OPTIONAL_INFO": "Optional Information",
+            "ORIGIN":"Origin",
             "ORIGIN_LOCATION": "Location of Origin",
             "ORIGIN_VILLAGE": "Village of Origin",
             "ORIGIN_SECTOR": "Sector of Origin",

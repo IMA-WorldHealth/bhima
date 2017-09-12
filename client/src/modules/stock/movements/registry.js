@@ -59,6 +59,10 @@ function StockMovementsController(Stock, Notify,
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/movements/templates/io.cell.html',
   }, {
+    field : 'documentReference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+  }, {
     field : 'text',
     displayName : 'STOCK.INVENTORY',
     headerCellFilter : 'translate',

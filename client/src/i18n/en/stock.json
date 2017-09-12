@@ -21,6 +21,7 @@
     "ENTRY_DOCUMENT"  : "Entry Document",
     "ENTRY_PURCHASE"  : "Purchase",
     "ENTRY_INTEGRATION" : "Integration",
+    "ENTRY_TRANSFER"  : "Transfer",
     "EXPIRATION_DATE" : "Expiration Date",
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_RISK" : "Expiration Risk",
@@ -63,6 +64,8 @@
     "LOSS_DISTRIBUTION" : "Stock Loss",
     "PURCHASE_ORDER"  : "Purchase Order",
     "QUANTITY"        : "Quantity",
+    "TRANSFER_RECEIVED" : "Received",
+    "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
       "ENTRY_DEPOT"    : "Stock Entry",

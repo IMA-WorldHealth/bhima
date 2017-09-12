@@ -1333,6 +1333,22 @@ BEGIN
   ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
 END $$
 
+-- stock movement document reference
+-- This procedure calculate the reference of a movement based on the document_uuid
+-- Insert this reference calculated into the document_map table as the movement reference 
+CREATE PROCEDURE ComputeMovementReference (
+  IN documentUuid BINARY(16)
+)
+BEGIN
+  DECLARE reference INT(11);
+
+  SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
+
+  INSERT INTO `document_map` (uuid, text) 
+  VALUES (documentUuid, CONCAT('MVT.', reference))
+  ON DUPLICATE KEY UPDATE uuid = uuid;
+END $$
+
 -- This processus inserts records relative to the stock movement in the posting journal
 CREATE PROCEDURE PostPurchase (
   IN document_uuid BINARY(16),
