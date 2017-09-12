@@ -1,103 +1,38 @@
 {{> head title="TREE.CASHFLOW" }}
 
-<div class="container-fluid">
+<body>
   <!-- heading  -->
-  <div class="row">
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
-      <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
-      </p>
-    </div>
+  {{> header }}
 
-    <div class="col-xs-4">
-      <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{translate 'TREE.CASHFLOW'}}<br>
-        <small>{{date dateFrom }} - {{date dateTo }}</small>
-      </h1>
-    </div>
+  <h3 class="text-center text-uppercase">
+    <strong>
+      {{translate 'TREE.CASHFLOW'}}<br>
+      <small>{{date dateFrom }} - {{date dateTo }}</small>
+    </strong>
+  </h3>
 
-    <div class="col-xs-4">
-      <h2 style="margin:15px;" class="text-right text-uppercase">
-        {{ accountName }} <i class="fa fa-archive"></i>
-      </h2>
-    </div>
-  </div>
+  <h4 class="text-center">
+    <strong>{{ accountName }} <i class="fa fa-archive"></i></strong>
+  </h4>
+  <section>
+    <div class="row">
+      <!-- the generated report  -->
+      <div class="col-xs-12">
 
-  <div class="row">
-    <!-- the generated report  -->
-    <div class="col-xs-12">
+        <!-- summary label  -->
+        <p><u>{{translate 'FORM.LABELS.SUMMARY'}}</u></p>
 
-      <!-- summary label  -->
-      <p><u>{{translate 'FORM.LABELS.SUMMARY'}}</u></p>
+        <!-- cashflow summary  -->
+        <table
+          class="table table-bordered table-condensed"
+          style="border: 2px solid #ccc;">
 
-      <!-- cashflow summary  -->
-      <table
-        class="table table-bordered table-condensed"
-        style="border: 2px solid #ccc;">
-
-        <!-- heaging -->
-        <tr>
-          <th style="width: 20%;"></th>
-          {{#each periodRange as |period $index|}}
-          <th class="text-right text-uppercase">
-            {{date period.start 'MMMM'}}
-            {{#if ../weekly}}<br>
-              <small style="font-size: 10px;">
-                {{translate 'FORM.LABELS.WEEK'}} {{add $index 1}}:
-                {{date period.start 'DD/MM'}} - {{date period.end 'DD/MM'}}
-              </small>
-            {{/if}}
-          </th>
-          {{/each}}
-        </tr>
-
-        <!-- white line -->
-        <tr>
-          <td style="background-color: #efefef;" colspan="{{add periodicData.length 1 }}"></td>
-        </tr>
-
-        <!-- openning balance  -->
-        <tr>
-          <td class="text-left"><strong>{{translate 'REPORT.OPENING_BALANCE'}}<strong></td>
-          {{#each periodStartArray as |period $index|}}
-          <td class="text-right">
-            {{#if (look ../periodicOpenningBalance period)}}
-              {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}
-            {{/if}}
-          </td>
-          {{/each}}
-        </tr>
-
-        <!-- closing balance  -->
-        <tr>
-          <td class="text-left"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
-          {{#each periodStartArray as |period $index|}}
-          <td class="text-right">
-            {{#if (look ../periodicBalance period)}}
-              {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
-            {{/if}}
-          </td>
-          {{/each}}
-        </tr>
-      </table>
-
-      <!-- details labels  -->
-      <p><u>{{translate 'FORM.LABELS.DETAILS'}}</u></p>
-
-      <!-- Cashflow report -->
-      <table class="table table-condensed table-bordered">
-
-        <thead>
-          <!-- heading  -->
-          <tr>
+          <!-- heaging -->
+          <tr style="background-color: #ddd;">
             <th style="width: 20%;"></th>
             {{#each periodRange as |period $index|}}
             <th class="text-right text-uppercase">
-              {{date period.start 'MMMM'}}
+              {{date period.start 'MMM'}} / {{date period.start 'YYYY'}}
               {{#if ../weekly}}<br>
                 <small style="font-size: 10px;">
                   {{translate 'FORM.LABELS.WEEK'}} {{add $index 1}}:
@@ -107,120 +42,179 @@
             </th>
             {{/each}}
           </tr>
-        </thead>
 
-        <tbody>
-          <!-- cash on hand (openning) -->
+          <!-- white line -->
           <tr>
-            <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.OPENING_BALANCE'}}<strong></td>
+            <td style="background-color: #efefef;" colspan="{{add periodicData.length 1 }}"></td>
+          </tr>
+
+          <!-- openning balance  -->
+          <tr>
+            <td class="text-left"><strong>{{translate 'REPORT.OPENING_BALANCE'}}<strong></td>
             {{#each periodStartArray as |period $index|}}
-            <td class="text-right" style="background-color: #ccc;">
-              <strong>
-                {{#if (look ../periodicOpenningBalance period)}}
-                  {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}} 
+            <td class="text-right">
+              {{#if (look ../periodicOpenningBalance period)}}
+                {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
+            {{/each}}
+          </tr>
+
+          <!-- closing balance  -->
+          <tr>
+            <td class="text-left"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
+            {{#each periodStartArray as |period $index|}}
+            <td class="text-right">
+              {{#if (look ../periodicBalance period)}}
+                {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
+              {{/if}}
+            </td>
+            {{/each}}
+          </tr>
+        </table>
+
+        <!-- details labels  -->
+        <p><u>{{translate 'FORM.LABELS.DETAILS'}}</u></p>
+
+        <!-- Cashflow report -->
+        <table class="table table-condensed table-bordered">
+
+          <thead>
+            <!-- heading  -->
+            <tr style="background-color: #ddd;">
+              <th style="width: 20%;"></th>
+              {{#each periodRange as |period $index|}}
+              <th class="text-right text-uppercase">
+                {{date period.start 'MMM'}} / {{date period.start 'YYYY'}}
+                {{#if ../weekly}}<br>
+                  <small style="font-size: 10px;">
+                    {{translate 'FORM.LABELS.WEEK'}} {{add $index 1}}:
+                    {{date period.start 'DD/MM'}} - {{date period.end 'DD/MM'}}
+                  </small>
                 {{/if}}
-              </strong>
-            </td>
+              </th>
+              {{/each}}
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- cash on hand (openning) -->
+            <tr>
+              <td class="text-left text-uppercase"><strong>{{translate 'REPORT.OPENING_BALANCE'}}<strong></td>
+              {{#each periodStartArray as |period $index|}}
+              <td class="text-right">
+                <strong>
+                  {{#if (look ../periodicOpenningBalance period)}}
+                    {{currency (look ../periodicOpenningBalance period) ../metadata.enterprise.currency_id}} 
+                  {{/if}}
+                </strong>
+              </td>
+              {{/each}}
+            </tr>
+
+            <!-- white line -->
+            <tr>
+              <td colspan="{{add periodicData.length 1}}"></td>
+            </tr>
+
+            <!-- cash incomes label  -->
+            <tr>
+              <td style="background-color: #efefef; letter-spacing: 5px;"
+                class="text-center text-uppercase"
+                colspan="{{add periodStartArray.length 1}}">
+                <strong>{{translate 'REPORT.CASH_INCOME'}}</strong>
+              </td>
+            </tr>
+
+            <!-- cash incomes  -->
+            {{#each incomesLabels as |label|}}
+            <tr>
+              <td class="text-left"><strong>{{translate label}}<strong></td>
+              {{#each ../periodStartArray as |period $index|}}
+              <td class="text-right">
+                {{#if (look ../../incomes period label)}}
+                  {{currency (look ../../incomes period label) ../../metadata.enterprise.currency_id}}
+                {{/if}}  
+              </td>
+              {{/each}}
+            </tr>
             {{/each}}
-          </tr>
 
-          <!-- cash incomes label  -->
-          <tr>
-            <td style="background-color: #efefef; letter-spacing: 5px;"
-              class="text-center text-uppercase"
-              colspan="{{add periodStartArray.length 1}}">
-              <strong>{{translate 'REPORT.CASH_INCOME'}}</strong>
-            </td>
-          </tr>
+            <!-- total incomes -->
+            <tr>
+              <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
+              {{#each periodStartArray as |period $index|}}
+              <td class="text-right" style="background-color: #efefef;">
+                <b>{{currency (look ../totalIncomes period) ../metadata.enterprise.currency_id}}</b>
+              </td>
+              {{/each}}
+            </tr>
 
-          <!-- cash incomes  -->
-          {{#each incomesLabels as |label|}}
-          <tr>
-            <td class="text-left"><strong>{{translate label}}<strong></td>
-            {{#each ../periodStartArray as |period $index|}}
-            <td class="text-right">
-              {{#if (look ../../incomes period label)}}
-                {{currency (look ../../incomes period label) ../../metadata.enterprise.currency_id}}
-              {{/if}}  
-            </td>
+            <!-- white line -->
+            <tr>
+              <td colspan="{{add periodicData.length 1}}"></td>
+            </tr>
+
+            <!-- cash expenses label  -->
+            <tr>
+              <td style="background-color: #efefef; letter-spacing: 5px;"
+                class="text-center text-uppercase"
+                colspan="{{add periodStartArray.length 1}}">
+                <strong>{{translate 'REPORT.CASH_EXPENSE'}}</strong>
+              </td>
+            </tr>
+
+            <!-- cash expenses  -->
+            {{#each expensesLabels as |label|}}
+            <tr>
+              <td class="text-left"><strong>{{translate label}}<strong></td>
+              {{#each ../periodStartArray as |period $index|}}
+              <td class="text-right">
+                {{#if (look ../../expenses period label)}}
+                  {{currency (look ../../expenses period label) ../../metadata.enterprise.currency_id}}
+                {{/if}}  
+              </td>
+              {{/each}}
+            </tr>
             {{/each}}
-          </tr>
-          {{/each}}
 
-          <!-- total incomes -->
-          <tr>
-            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
-            {{#each periodStartArray as |period $index|}}
-            <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (look ../totalIncomes period) ../metadata.enterprise.currency_id}}</b>
-            </td>
-            {{/each}}
-          </tr>
+            <!-- total expenses -->
+            <tr>
+              <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
+              {{#each periodStartArray as |period $index|}}
+              <td class="text-right" style="background-color: #efefef;">
+                <b>{{currency (look ../totalExpenses period) ../metadata.enterprise.currency_id}}</b>
+              </td>
+              {{/each}}
+            </tr>
 
-          <!-- white line -->
-          <tr>
-            <td colspan="{{add periodicData.length 1}}"></td>
-          </tr>
+            <!-- white line -->
+            <tr>
+              <td colspan="{{add periodicData.length 1}}"></td>
+            </tr>
 
-          <!-- cash expenses label  -->
-          <tr>
-            <td style="background-color: #efefef; letter-spacing: 5px;"
-              class="text-center text-uppercase"
-              colspan="{{add periodStartArray.length 1}}">
-              <strong>{{translate 'REPORT.CASH_EXPENSE'}}</strong>
-            </td>
-          </tr>
+            <!-- montly balance -->
+            <tr>
+              <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'REPORT.MONTHLY_BALANCE'}}<strong></td>
+              {{#each periodStartArray as |period $index|}}
+              <td class="text-right" style="background-color: #efefef;">
+                <b>{{currency (substract (look ../totalIncomes period) (look ../totalExpenses period)) ../metadata.enterprise.currency_id}}</b>
+              </td>
+              {{/each}}
+            </tr>
 
-          <!-- cash expenses  -->
-          {{#each expensesLabels as |label|}}
-          <tr>
-            <td class="text-left"><strong>{{translate label}}<strong></td>
-            {{#each ../periodStartArray as |period $index|}}
-            <td class="text-right">
-              {{#if (look ../../expenses period label)}}
-                {{currency (look ../../expenses period label) ../../metadata.enterprise.currency_id}}
-              {{/if}}  
-            </td>
-            {{/each}}
-          </tr>
-          {{/each}}
-
-          <!-- total expenses -->
-          <tr>
-            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
-            {{#each periodStartArray as |period $index|}}
-            <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (look ../totalExpenses period) ../metadata.enterprise.currency_id}}</b>
-            </td>
-            {{/each}}
-          </tr>
-
-          <!-- white line -->
-          <tr>
-            <td colspan="{{add periodicData.length 1}}"></td>
-          </tr>
-
-          <!-- montly balance -->
-          <tr>
-            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'REPORT.MONTHLY_BALANCE'}}<strong></td>
-            {{#each periodStartArray as |period $index|}}
-            <td class="text-right" style="background-color: #efefef;">
-              <b>{{currency (substract (look ../totalIncomes period) (look ../totalExpenses period)) ../metadata.enterprise.currency_id}}</b>
-            </td>
-            {{/each}}
-          </tr>
-
-          <!-- balance (month closing) -->
-          <tr>
-            <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
-            {{#each periodStartArray as |period $index|}}
-            <td class="text-right" style="background-color: #ccc;">
-              {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
-            </td>
-            {{/each}}
-          </tr>
-        </tbody>
-      </table>
+            <!-- balance (month closing) -->
+            <tr>
+              <td style="background-color: #ddd;" class="text-left text-uppercase"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
+              {{#each periodStartArray as |period $index|}}
+              <td class="text-right" style="background-color: #ddd;">
+                {{currency (look ../periodicBalance period) ../metadata.enterprise.currency_id}}
+              </td>
+              {{/each}}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</div>
+  </section>  
+</body>

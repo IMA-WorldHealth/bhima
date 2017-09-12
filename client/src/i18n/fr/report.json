@@ -26,7 +26,11 @@
       "TITLE" : "Rapports de flux de trésorerie par Service",
       "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
     },
-    "CASHFLOW":"Cashflow",
+    "CASHFLOW" : {
+      "TITLE":"Rapports de flux de trésorerie physique",
+      "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
+      "SHOW_WEEKLY_REPORT_HELP":"L'activation de cette option permettra de visualiser le rapport du cash flow par semaine"
+    },
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
     "CLOSING_BALANCE":"Balance à la cloture",
