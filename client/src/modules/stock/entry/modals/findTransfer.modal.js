@@ -20,31 +20,26 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   filtering = new Filtering(vm.gridOptions);
 
   columns = [
-    {
-      field : 'status',
+    { field : 'status',
       displayName : 'FORM.LABELS.STATUS',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html',
-    },
-    {
-      field : 'date',
+      cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html' },
+
+    { field : 'date',
       cellFilter : 'date',
       filter : { condition : filtering.filterByDate },
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
-      sort : { priority : 0, direction : 'desc' },
-    },
-    {
-      field : 'document_reference',
+      sort : { priority : 0, direction : 'desc' } },
+
+    { field : 'document_reference',
       displayName : 'FORM.LABELS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
-    },
-    {
-      field : 'depot_name',
+      cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html' },
+
+    { field : 'depot_name',
       displayName : 'FORM.LABELS.ORIGIN',
-      headerCellFilter : 'translate',
-    },
+      headerCellFilter : 'translate' },
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -54,7 +49,6 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   vm.gridOptions.enableColumnMenus = false;
   vm.gridOptions.fastWatch = true;
   vm.gridOptions.flatEntityAccess = true;
-  vm.gridOptions.rowTemplate = 'modules/stock/entry/modals/templates/transfer.row.tmpl.html';
 
   // bind methods
   vm.submit = submit;
@@ -84,6 +78,7 @@ function StockFindTransferModalController(Instance, StockService, Notify,
   /** toggle received */
   function toggleReceived() {
     vm.filterReceived = !vm.filterReceived;
+    vm.gridOptions.data = vm.filterReceived ? vm.allTransfers : vm.pendingTransfers;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -99,7 +94,9 @@ function StockFindTransferModalController(Instance, StockService, Notify,
       depot_uuid : data.depot_uuid,
     })
     .then(function (transfers) {
-      vm.gridOptions.data = transfers;
+      vm.allTransfers = transfers;
+      vm.pendingTransfers = transfers.filter(transferNotReceived);
+      vm.gridOptions.data = vm.pendingTransfers;
     })
     .catch(function (err) {
       vm.hasError = true;
@@ -108,6 +105,14 @@ function StockFindTransferModalController(Instance, StockService, Notify,
     .finally(function () {
       vm.loading = false;
     });
+  }
+
+  /**
+   * @function tranferNotReceived
+   * @description filter by not yet received
+   */
+  function transferNotReceived(transfer) {
+    return !transfer.countedReceived;
   }
 
   // submit
