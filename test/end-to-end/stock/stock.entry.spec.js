@@ -3,7 +3,7 @@ const EntryPage = require('./stock.entry.page');
 
 function StockEntryTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
-  const DEPOT_SECONDAIRE = 'Depot Secondaire';
+  const DEPOT_SECONDAIRE = 'Second';
   const DESCRIPTION = 'Entree de stock';
 
   // the page object

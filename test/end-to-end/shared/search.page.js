@@ -82,11 +82,11 @@ class SearchModal {
     FU.input('$ctrl.searchQueries.description', description, this.element);
   }
 
-  setEntryExit (value) {
+  setEntryExit(value) {
     FU.radio('$ctrl.searchQueries.is_exit', value);
   }
 
-  setMovementReason (reason) {
+  setMovementReason(reason) {
     FU.uiSelect('$ctrl.searchQueries.flux_id', reason);
   }
 
@@ -122,11 +122,11 @@ class SearchModal {
     bhSupplierSelect.set(supplier);
   }
 
-  setDepot (depot){
+  setDepot(depot) {
     bhDepotSelect.set(depot);
   }
 
-  setInventory (inventory){
+  setInventory(inventory) {
     bhInventorySelect.set(inventory);
   }
 
@@ -134,7 +134,7 @@ class SearchModal {
     FU.input('$ctrl.searchQueries.label', label, this.element);
   }
 
-  setdateInterval (dateFrom, dateTo, id) {
+  setdateInterval(dateFrom, dateTo, id) {
     bhDateInterval.range(dateFrom, dateTo, id);
   }
 

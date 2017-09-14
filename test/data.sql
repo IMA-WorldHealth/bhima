@@ -179,7 +179,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] reports/aged_debtors: The Report Aged Debtors
 (151,1),
 
--- [Folder] Cashflow report:       
+-- [Folder] Cashflow report:
 (145,1),
 
 -- [Folder] reports/account_reports: The Report accounts

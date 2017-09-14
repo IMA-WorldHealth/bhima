@@ -27,7 +27,7 @@ function StockLotsRegistryTests() {
   const LOT_FOR_ALLTIME = 16;
   const LOT_FOR_TODAY = 10;
   const LOT_FOR_LAST_YEAR = 16;
-  
+
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, () => {
     modal.switchToDefaultFilterTab();
@@ -51,6 +51,7 @@ function StockLotsRegistryTests() {
   });
 
   it('find lots in depot principal', () => {
+    browser.debugger();
     modal.setDepot('Depot Principal');
     modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);
