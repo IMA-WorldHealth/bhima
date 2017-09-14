@@ -1,6 +1,5 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
-
     $stateProvider
       .state('stockLots', {
         url         : '/stock/lots',
@@ -24,19 +23,25 @@ angular.module('bhima.routes')
         url         : '/stock/exit',
         controller  : 'StockExitController as StockCtrl',
         templateUrl : 'modules/stock/exit/exit.html',
+        onExit  : ['$uibModalStack', closeModals],
       })
 
       .state('stockEntry', {
         url         : '/stock/entry',
         controller  : 'StockEntryController as StockCtrl',
         templateUrl : 'modules/stock/entry/entry.html',
+        onExit  : ['$uibModalStack', closeModals],
       })
-      
+
       .state('stockAdjustment', {
         url         : '/stock/adjustment',
         controller  : 'StockAdjustmentController as StockCtrl',
         templateUrl : 'modules/stock/adjustment/adjustment.html',
-      })
-      ;
-  },
-  ]);
+        onExit  : ['$uibModalStack', closeModals],
+      });
+  }]);
+
+
+function closeModals($uibModalStack) {
+  $uibModalStack.dismissAll();
+}

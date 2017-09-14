@@ -33,7 +33,6 @@ function StockExitController(
 
   vm.util = util;
   vm.Stock = new StockForm('StockExit');
-  vm.depot = {};
   vm.movement = {};
 
   // bind methods

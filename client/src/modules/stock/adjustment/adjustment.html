@@ -2,12 +2,31 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title"><span translate>STOCK.ADJUSTMENT</span> <span class="text-uppercase badge badge-primary">{{StockCtrl.movement.ADJUSTMENT_type}}</span></li>
+      <li ng-class="{ 'title' : !StockCtrl.depot.uuid, 'static' : StockCtrl.depot.uuid }">
+        <span translate>STOCK.ADJUSTMENT</span>
+      </li>
+      <li class="title" ng-if="StockCtrl.depot.uuid">
+        <span>{{ StockCtrl.depot.text }}</span>
+        <span class="text-uppercase badge badge-primary" ng-show="StockCtrl.adjustmentOption">
+          {{ StockCtrl.adjustmentOption }}
+        </span>
+      </li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <bh-depot-dropdown on-select="StockCtrl.setupDepot(depot)"></bh-depot-dropdown>
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href ng-click="StockCtrl.changeDepot()" data-action="change-depot">
+                <i class="fa fa-archive"></i> <span translate>DEPOT.CHANGE</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -23,17 +42,18 @@
       <div class="col-xs-6">
         <!-- adjustment type -->
         <div class="form-group">
-          <div class="well well-sm clearfix">
-            <label class="col-md-6 text-action">
-              <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'increase'"> 
-              <span translate>STOCK.INCREASE</span>
-            </label>
+          <div class="well well-sm">
+            <div class="radio">
+              <label class="radio-inline" style="padding: 0 3em;">
+                <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'increase'">
+                <span translate>STOCK.INCREASE</span>
+              </label>
 
-            <label class="col-md-6 text-action">
-              <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'decrease'"> 
-              <span translate>STOCK.DECREASE</span>
-            </label>
-          </div>
+              <label class="radio-inline" style="padding: 0 3em;">
+                <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'decrease'">
+                <span translate>STOCK.DECREASE</span>
+              </label>
+            </div>
         </div>
 
         <!-- date -->
@@ -52,7 +72,7 @@
             class="form-control"
             name="description"
             ng-model="StockCtrl.movement.description"
-            placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+            placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
             ng-maxlength="StockCtrl.maxLength"
             required>
           </textarea>
@@ -84,7 +104,7 @@
           style="padding-top : 10px;"
           class="text-info"
           ng-show="!StockCtrl.adjustmentOption">
-          <span class="fa fa-info-circle"></span> 
+          <span class="fa fa-info-circle"></span>
           <span translate>FORM.INFO.NO_DESTINATION</span>
         </p>
 
@@ -96,7 +116,7 @@
             ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
             ng-click="StockCtrl.readCache()"
             ng-disabled="!StockCtrl.hasCacheAvailable">
-            <span class="fa fa-recycle"></span> 
+            <span class="fa fa-recycle"></span>
             <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
           </button>
         </div>
@@ -110,7 +130,7 @@
               class="btn btn-default"
               ng-disabled="!StockCtrl.adjustmentOption"
               ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> 
+              <span class="fa fa-plus-circle"></span>
               <span translate>FORM.BUTTONS.ADD</span>
             </button>
           </span>
@@ -125,8 +145,8 @@
     </div>
 
     <!-- grid -->
-    <div id="stock-adjustment-grid" 
-      ui-grid="StockCtrl.gridOptions" 
+    <div id="stock-adjustment-grid"
+      ui-grid="StockCtrl.gridOptions"
       style="height: 300px; width: 100%;"
       ui-grid-auto-resize
       ui-grid-resize-columns>
@@ -146,8 +166,6 @@
         </div>
       </div>
     </div>
-
     </form>
-
   </div>
 </div>
