@@ -18,7 +18,17 @@
     </li>
   </ul>
 </div>
-<div ng-if="!$ctrl.hasDepotsAvailable" class="btn-group" uib-dropdown>
+<div ng-show="$ctrl.loading" class="btn-group" uib-dropdown>
+
+  <a class="btn btn-warning" ui-sref="depots">
+    <span>
+      <span class="fa fa-circle-o-notch fa-spin"></span>
+      <span translate>FORM.INFO.LOADING</span>
+
+    </span>
+  </a>
+</div>
+<div ng-if="!$ctrl.hasDepotsAvailable && $ctrl.loading ==false" class="btn-group" uib-dropdown>
   <a class="btn btn-warning" ui-sref="depots">
     <span>
       <i class="fa fa-warning"></i> <span translate>DEPOT.NO_DEPOT</span>
