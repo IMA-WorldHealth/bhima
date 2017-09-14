@@ -1,7 +1,7 @@
 const helpers = require('../shared/helpers');
 const EntryPage = require('./stock.entry.page');
 
-function StockExitTests() {
+function StockEntryTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
   const DESCRIPTION = 'Entree de stock';
@@ -87,4 +87,4 @@ function StockExitTests() {
   });
 }
 
-describe('Stock Entry Test', StockExitTests);
+describe('Stock Entry Test', StockEntryTests);

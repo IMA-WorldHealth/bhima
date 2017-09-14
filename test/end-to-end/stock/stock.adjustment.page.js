@@ -1,8 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+
+const SharedStockPage = require('./stock.shared.page');
 
 function StockAdjustmentPage() {
   const page = this;
@@ -11,14 +13,7 @@ function StockAdjustmentPage() {
 
   // the grid id
   page.gridId = gridId;
-
-  /**
-   * @method setDepot
-   * @param {string} label - the depot label
-   */
-  page.setDepot = function setDepot(label) {
-    components.depotDropdown.set(label);
-  };
+  page.setDepot = SharedStockPage.setDepot;
 
   /**
    * @method setAdjustment
