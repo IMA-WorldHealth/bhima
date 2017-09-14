@@ -8,7 +8,6 @@
  * @module e2e/componets
  * @public
  */
-'use strict';
 
 module.exports = {
   currencySelect : require('./bhCurrencySelect'),
@@ -19,9 +18,8 @@ module.exports = {
   modalAction    : require('./bhModalAction'),
   notification   : require('./notify'),
   dateInterval   : require('./bhDateInterval'),
-  reportPeriodSelect  : require('./bhReportPeriodSelect'),
+  reportPeriodSelect : require('./bhReportPeriodSelect'),
   accountSelect  : require('./bhAccountSelect'),
-  depotDropdown  : require('./bhDepotDropdown'),
   datePicker     : require('./bhDatePicker'),
   userSelect     : require('./bhUserSelect'),
   reportSource   : require('./bhReportSource'),
