@@ -271,7 +271,7 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     var uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
-  }  
+  }
 
   // ================================ submit ================================
   function submit(form) {
@@ -279,6 +279,10 @@ function StockExitController(Depots, Inventory, Notify, Session, util, bhConstan
     mapExit[vm.movement.exit_type].submit()
       .then(function () {
         vm.validForSubmit = false;
+        // reseting the form
+        vm.movement = {};
+        form.$setPristine();
+        form.$setUntouched();
       })
       .catch(Notify.handleError);
   }
