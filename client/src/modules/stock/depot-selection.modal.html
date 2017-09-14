@@ -1,7 +1,7 @@
 <div class="modal-header" data-depot-selection-modal>
   <ol class="headercrumb">
     <li class="static" translate>TREE.DEPOTS</li>
-    <li class="title" translate>Depot Selection</li>
+    <li class="title" translate>DEPOT.MODAL.SELECTION</li>
   </ol>
 </div>
 
@@ -10,27 +10,24 @@
   <!-- link to depots page if depots not found -->
   <p class="text-info">
     <i class="fa fa-question-circle-o"></i>
-    <span translate>Do not see any depots?</span>
+    <span translate>DEPOT.MODAL.NO_DEPOTS</span>
 
     <a href ui-sref="depots.create">
-      <i class="fa fa-link"></i> <span translate>Create a Depot</span>
+      <i class="fa fa-link"></i> <span translate>DEPOT.ADD_DEPOT</span>
     </a>
   </p>
 
   <div uib-alert class="alert-warning" ng-if="$ctrl.hasNoDefaultDepot">
     <p>
-      <i class="fa fa-warning"></i>
-      It looks like you don't have a default depot set!  Please select your depot from the list below.
-      You will only need to do this once.
-    </p>
-    <p>
-      If your depot is not listed below, you can add it with this link:
-      <a href ui-sref="depots.create"><b><span translate>Create a new depot</span></b></a>.
+      <strong> <i class="fa fa-warning"></i> <span translate>DEPOT.MODAL.NO_DEFAULT_DEPOT</span></strong>
+      <br />
+      <span translate>DEPOT.MODAL.SELECTION_EXPLANATION</span>
+      <a href ui-sref="depots.create"><b><span translate>DEPOT.ADD_DEPOT</span></b></a>.
     </p>
   </div>
 
 
-  <label class="control-label" translate>Select a Depot</label>
+  <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
 
   <!-- list of depots -->
   <ul class="list-group">

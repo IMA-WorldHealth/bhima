@@ -18,6 +18,13 @@
     "NOT_ALLOWED_ACTIONS" : "Ce dépôt est protégé, vous ne pouvez effectuer des modifications sur ce dépôt",
     "TITLE" : "Gestion des dépôts",
     "UPDATED" : "Dépôt mise à jour avec succès",
-    "WAREHOUSE" : "Entrepôts"
+    "WAREHOUSE" : "Entrepôts",
+    "MODAL" : {
+      "SELECTION" : "Selectionner Dépôt",
+      "NO_DEPOTS" : "Est-ce qu'il n'y a pas des dépôts?",
+      "SELECT_A_DEPOT" : "Selectionner un Dépôt",
+      "NO_DEFAULT_DEPOT" : "Vous devez selectionner un depot.",
+      "SELECTION_EXPLANATION" : "Il semble que vous n'avez pas un depot selectionner.  S'il vous plait, selectionnez votre depot dans la liste suivante.  Vous devez le faire une fois.  Si vous ne le trouvez pas, vous pouvez ajouter-le avec ce lien:"
+    }
   }
 }
