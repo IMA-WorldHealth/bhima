@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.DEPOTS</li>
+    <li class="title" translate>Depot Selection</li>
+  </ol>
+</div>
+
+<div class="modal-body">
+
+  <!-- link to depots page if depots not found -->
+  <p class="text-info">
+    <i class="fa fa-question-circle-o"></i>
+    <span translate>Do not see any depots?</span>
+
+    <a href ui-sref="depots.create">
+      <i class="fa fa-link"></i> <span translate>Create a Depot</span>
+    </a>
+  </p>
+
+  <div uib-alert class="alert-warning" ng-if="$ctrl.hasNoDefaultDepot">
+    <p>
+      <i class="fa fa-warning"></i>
+      It looks like you don't have a default depot set!  Please select your depot from the list below.
+      You will only need to do this once.
+    </p>
+    <p>
+      If your depot is not listed below, you can add it with this link:
+      <a href ui-sref="depots.create"><b><span translate>Create a new depot</span></b></a>.
+    </p>
+  </div>
+
+
+  <label class="control-label" translate>Select a Depot</label>
+
+  <!-- list of depots -->
+  <ul class="list-group">
+    <li
+      class="list-group-item"
+      ng-repeat="depot in $ctrl.depots track by depot.uuid"
+      ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
+      ng-click="$ctrl.selectDepot(depot.uuid)"
+      style="cursor:pointer;">
+
+      <span id="depot-{{ depot.uuid }}">
+        <i class="fa fa-inbox"></i> {{ depot.text }}
+      </span>
+
+      <span ng-show="$ctrl.depot.uuid === depot.uuid" class="badge">
+        <i class="fa fa-check"></i>
+      </span>
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button
+    data-method="cancel"
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.cancel()"
+    ng-disabled="!$ctrl.hasSelectedDepot()"
+    translate>
+    FORM.BUTTONS.CANCEL
+  </button>
+
+  <button
+    type="button"
+    data-method="submit"
+    class="btn btn-primary"
+    ng-disabled="!$ctrl.hasSelectedDepot()"
+    ng-click="$ctrl.submit()"
+    translate>
+    FORM.BUTTONS.SUBMIT
+  </button>
+</div>

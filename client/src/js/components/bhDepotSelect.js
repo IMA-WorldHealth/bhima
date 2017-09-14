@@ -11,9 +11,7 @@ angular.module('bhima.components')
     },
   });
 
-DepotSelectController.$inject = [
-  'DepotService', 'NotifyService'
-];
+DepotSelectController.$inject = ['DepotService', 'NotifyService'];
 
 /**
  * Depot selection component
@@ -22,15 +20,16 @@ function DepotSelectController(Depots, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    // fired when a depot has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
+    $ctrl.loading = true;
 
-    // load all Depots
     Depots.read()
       .then(function (depots) {
         $ctrl.depots = depots;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        $ctrl.loading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary

@@ -116,7 +116,7 @@ function StockEntryPage() {
       FU.input('$ctrl.inventory.unit_cost', inventoryUnitCost);
     }
 
-    lotsArray.forEach((lot, index) => {      
+    lotsArray.forEach((lot, index) => {
       lotCell = GU.getCell(lotGridId, index, 1);
       quantityCell = GU.getCell(lotGridId, index, 2);
       expirationDateCell = GU.getCell(lotGridId, index, 3);
@@ -124,15 +124,15 @@ function StockEntryPage() {
       // enter lot label
       if(!isTransferReception){
         FU.input('row.entity.lot', lot.label, lotCell);
-      }        
+      }
 
       // enter lot quantity
       FU.input('row.entity.quantity', lot.quantity, quantityCell);
-      
+
       // enter lot expiration date
       if(!isTransferReception){
         components.datePicker.set(lot.expiration_date, expirationDateCell);
-      }  
+      }
 
       if (index < lotsArray.length - 1) {
         // Add another lot line
