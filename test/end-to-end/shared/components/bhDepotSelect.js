@@ -5,11 +5,7 @@ const FU = require('../FormUtils');
 module.exports = {
   selector : '[bh-depot-select]',
   set      : function set(depot, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
-
-    target.click();
-
-    FU.uiSelect('$ctrl.depotUuid', depot, target);
+    const anchor = id ? element(by.id(id)) : $('body');
+    FU.uiSelect('$ctrl.depotUuid', depot, anchor);
   },
 };

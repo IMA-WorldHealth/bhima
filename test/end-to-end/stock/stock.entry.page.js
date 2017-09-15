@@ -1,8 +1,10 @@
-/* global element, by, browser */
+/* global by, element */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+
+const SharedStockPage = require('./stock.shared.page');
 
 function StockEntryPage() {
   const page = this;
@@ -11,14 +13,7 @@ function StockEntryPage() {
 
   // the grid id
   page.gridId = gridId;
-
-  /**
-   * @method setDepot
-   * @param {string} label - the depot label
-   */
-  page.setDepot = function setDepot(label) {
-    components.depotDropdown.set(label);
-  };
+  page.setDepot = SharedStockPage.setDepot;
 
   /**
    * @method setPurchase
@@ -116,23 +111,23 @@ function StockEntryPage() {
       FU.input('$ctrl.inventory.unit_cost', inventoryUnitCost);
     }
 
-    lotsArray.forEach((lot, index) => {      
+    lotsArray.forEach((lot, index) => {
       lotCell = GU.getCell(lotGridId, index, 1);
       quantityCell = GU.getCell(lotGridId, index, 2);
       expirationDateCell = GU.getCell(lotGridId, index, 3);
 
       // enter lot label
-      if(!isTransferReception){
+      if (!isTransferReception) {
         FU.input('row.entity.lot', lot.label, lotCell);
-      }        
+      }
 
       // enter lot quantity
       FU.input('row.entity.quantity', lot.quantity, quantityCell);
-      
+
       // enter lot expiration date
-      if(!isTransferReception){
+      if (!isTransferReception) {
         components.datePicker.set(lot.expiration_date, expirationDateCell);
-      }  
+      }
 
       if (index < lotsArray.length - 1) {
         // Add another lot line

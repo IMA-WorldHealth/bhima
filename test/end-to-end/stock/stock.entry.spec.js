@@ -1,11 +1,9 @@
-/* global element, by, browser */
-
 const helpers = require('../shared/helpers');
 const EntryPage = require('./stock.entry.page');
 
-function StockExiTests() {
+function StockEntryTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
-  const DEPOT_SECONDAIRE = 'Depot Secondaire';
+  const DEPOT_SECONDAIRE = 'Second';
   const DESCRIPTION = 'Entree de stock';
 
   // the page object
@@ -89,4 +87,4 @@ function StockExiTests() {
   });
 }
 
-describe('Stock Entry Test', StockExiTests);
+describe('Stock Entry Test', StockEntryTests);

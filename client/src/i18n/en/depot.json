@@ -1,22 +1,30 @@
 {
-    "DEPOT": {
-        "ADD_DEPOT": "Add a Depot",
-        "ALL_DEPOTS": "All Depots",
-        "CREATED":"Depot created with success",
-        "DELETED":"Depot deleted with success",
-        "DELETE":"Delete",
-        "DEPOTS_LIST": "Depots list",
-        "DESCRIPTION": "This module allows you to List, Create, Edit and Delete a Depot",
-        "EDIT_DEPOT": "Edit the information in a Depot",
-        "ENTITY" : "Depot",
-        "LABEL":"Depot",
-        "MAIN": {
-            "TITLE": "Depot Management"
-        },
-        "NO_DEPOT": "No Depot",
-        "NOT_ALLOWED_ACTIONS":"Protected Depot, you cannot perform modification on this depot",
-        "TITLE": "Depot Management",
-        "UPDATED":"Depot updated with success",
-        "WAREHOUSE":"Warehouse"
+  "DEPOT" : {
+    "ADD_DEPOT" : "Add a Depot",
+    "ALL_DEPOTS" : "All Depots",
+    "CREATED" : "Depot created with success",
+    "CHANGE" : "Change Depot",
+    "DELETED" : "Depot deleted with success",
+    "DELETE" : "Delete",
+    "DEPOTS_LIST" : "Depots list",
+    "DESCRIPTION" : "This module allows you to List, Create, Edit and Delete a Depot",
+    "EDIT_DEPOT" : "Edit the information in a Depot",
+    "ENTITY" : "Depot",
+    "LABEL" : "Depot",
+    "MAIN" : {
+      "TITLE" : "Depot Management"
+    },
+    "NO_DEPOT" : "No Depot",
+    "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",
+    "TITLE" : "Depot Management",
+    "UPDATED" : "Depot updated with success",
+    "WAREHOUSE" : "Warehouse",
+    "MODAL" : {
+      "SELECTION" : "Depot Selection",
+      "NO_DEPOTS" : "Do not see any depots?",
+      "SELECT_A_DEPOT" : "Select a depot",
+      "NO_DEFAULT_DEPOT" : "You need to choose a depot.",
+      "SELECTION_EXPLANATION" : "It looks like you don't have a default depot set!  Please select your depot from the list below.  You will only need to do this once.  If your depot is not listed below, you can add it with this link:"
     }
+  }
 }

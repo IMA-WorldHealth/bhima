@@ -3,10 +3,10 @@ angular.module('bhima.services')
 
 StockService.$inject = [
   'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants'];
+  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+];
 
 function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
-
   // API for stock lots
   var stocks = new Api('/stock/lots');
 
@@ -29,7 +29,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
   var filterMovementCache = new AppCache('stock-movement-filters');
-  var filterLotCache = new AppCache('stock-lot-filters'); 
+  var filterLotCache = new AppCache('stock-lot-filters');
 
   StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
   StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
@@ -45,21 +45,21 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   ]);
 
   StockMovementFilters.registerCustomFilters([
-    { key : 'is_exit', label : 'STOCK.OUTPUT'},    
-    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
-    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' },
-    { key: 'flux_id', label: 'STOCK.FLUX'},
+    { key : 'is_exit', label : 'STOCK.OUTPUT'},
+    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'label', label : 'STOCK.LOT' },
+    { key : 'flux_id', label : 'STOCK.FLUX'},
     { key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor: '>', valueFilter : 'date' },
     { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' }
   ]);
 
 
-  if(filterLotCache.filters){
+  if (filterLotCache.filters) {
     StockLotFilters.loadCache(filterLotCache.filters);
   }
 
-  if(filterMovementCache.filters){
+  if (filterMovementCache.filters) {
     StockMovementFilters.loadCache(filterMovementCache.filters);
   }
 
@@ -67,18 +67,17 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   assignLotDefaultFilters();
   assignMovementDefaultFilters();
 
-  // creating an an object of filter to avoid method duplication
+  // creating an object of filter to avoid method duplication
   var stockFilter = {
     lot : StockLotFilters,
-    movement : StockMovementFilters    
-  }
+    movement : StockMovementFilters,
+  };
 
   // creating an object of filter object to avoid method duplication
   var filterCache = {
     lot : filterLotCache,
-    movement : filterMovementCache
-  }
-  
+    movement : filterMovementCache,
+  };
 
   function assignLotDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
@@ -149,6 +148,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     }
 
     var keys = ['name', 'text', 'display_name'];
+
     keys.forEach(function (key) {
       if (entity[key]) {
         entity.displayName = entity[key];
@@ -158,7 +158,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     return { reference : entity.reference || '', displayName : entity.displayName || '' };
   }
 
-  var service = {
+  return {
     stocks       : stocks,
     lots         : lots,
     movements    : movements,
@@ -172,6 +172,4 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     download : download,
     uniformSelectedEntity : uniformSelectedEntity,
   };
-
-  return service;
 }
