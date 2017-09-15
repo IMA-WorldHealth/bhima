@@ -151,12 +151,17 @@
             "UPDATE_SUCCESS": "Mise à jour avec succès",
             "UPLOAD_PICTURE_FAILED": "Le fichier selectionné n'est pas une image",
             "VIEW_BEGINNING_BALANCE": "Aperçue de la balance d'ouverture",
-            "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
+            "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture",
+            "UNPOSTED_TRANSACTION": "Transactions non-posté ne sont pas affichées",
+            "TRANSACTIONS": "Transactions",
+            "ROWS": "enregistrements"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Compte",
             "ACCOUNT_EXTRACT": "Extrait de compte",
+            "NON_POSTED_TRANSACTIONS": "Transactions non-posté",
+            "POSTED_TRANSACTIONS": "Transactions posté",
             "ACCOUNT_NUMBER": "Numéro de Compte",
             "ACCOUNT_TITLE": "Libelle de Compte",
             "ACCOUNT_TYPE": "Type de Compte",
