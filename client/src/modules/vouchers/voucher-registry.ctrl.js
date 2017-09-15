@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 VoucherController.$inject = [
-  'VoucherService', 'NotifyService', 'uiGridGroupingConstants', 'uiGridConstants',
-  'bhConstants', 'ReceiptModal', 'GridSortingService', 'GridColumnService',
+  'VoucherService', 'NotifyService', 'uiGridGroupingConstants', 'TransactionTypeService',
+  'uiGridConstants', 'bhConstants', 'ReceiptModal', 'GridSortingService', 'GridColumnService',
   'GridStateService', '$state',
 ];
 
@@ -12,10 +12,14 @@ VoucherController.$inject = [
  * Vouchers Registry Controller
  *
  * @description
- * This controller is responsible for display all vouchers in the voucher table.
+ * This controller is responsible for display all vouchers in the voucher table as a
+ * registry.  The registry supports client-side filtering, server-side searching, column
+ * reordering, and many more features.
  */
-function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
-  uiGridConstants, bhConstants, Receipts, Sorting, Columns, GridState, $state) {
+function VoucherController(
+  Vouchers, Notify, uiGridGroupingConstants, TransactionTypes,
+  uiGridConstants, bhConstants, Receipts, Sorting, Columns, GridState, $state
+) {
   var vm = this;
 
   var cacheKey = 'voucher-grid';
@@ -23,14 +27,11 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
   var state;
   var columnDefs;
 
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  var transactionTypeMap = {};
+
   var INCOME = bhConstants.transactionType.INCOME;
   var EXPENSE = bhConstants.transactionType.EXPENSE;
-  var OTHER = bhConstants.transactionType.OTHER;
 
-  /* global variables */
-  vm.transactionTypes = {};
-  vm.gridApi = {};
   vm.gridOptions = {};
 
   vm.search = search;
@@ -42,87 +43,74 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
   vm.loading = false;
 
   // grid default options
-  var columnDefs = [{
-    field: 'reference',
-    displayName: 'TABLE.COLUMNS.REFERENCE',
-    headerCellFilter: 'translate',
-    cellTemplate: 'modules/vouchers/templates/uuid.tmpl.html',
-    treeAggregationType: uiGridGroupingConstants.aggregation.COUNT,
-    sortingAlgorithm: Sorting.algorithms.sortByReference,
-    treeAggregationLabel: '',
+  columnDefs = [{
+    field : 'reference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/vouchers/templates/uuid.tmpl.html',
+    treeAggregationType : uiGridGroupingConstants.aggregation.COUNT,
+    sortingAlgorithm : Sorting.algorithms.sortByReference,
+    treeAggregationLabel : '',
   }, {
-    field: 'type_id',
-    displayName: 'TABLE.COLUMNS.TYPE',
-    headerCellFilter: 'translate',
-    cellTemplate: 'modules/templates/grid/voucherType.tmpl.html',
-    treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-    treeAggregationLabel: '',
-    groupingShowAggregationMenu: false,
+    field : 'type_id',
+    displayName : 'TABLE.COLUMNS.TYPE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/templates/grid/voucherType.tmpl.html',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    treeAggregationLabel : '',
+    groupingShowAggregationMenu : false,
   }, {
-    field: 'date',
-    displayName: 'TABLE.COLUMNS.DATE',
-    headerCellFilter: 'translate',
-    type: 'date',
-    cellFilter: 'date:"mediumDate"',
-    groupingShowAggregationMenu: false,
+    field : 'date',
+    displayName : 'TABLE.COLUMNS.DATE',
+    headerCellFilter : 'translate',
+    type : 'date',
+    cellFilter : 'date :"mediumDate"',
+    groupingShowAggregationMenu : false,
   }, {
-    field: 'description',
-    displayName: 'TABLE.COLUMNS.DESCRIPTION',
-    headerCellFilter: 'translate',
-    groupingShowAggregationMenu: false,
+    field : 'description',
+    displayName : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter : 'translate',
+    groupingShowAggregationMenu : false,
   }, {
-    field: 'amount',
-    displayName: 'TABLE.COLUMNS.AMOUNT',
-    headerCellFilter: 'translate',
-    treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-    treeAggregationLabel: '',
-    footerCellClass: 'text-right',
-    type: 'number',
-    groupingShowAggregationMenu: false,
-    cellTemplate: 'modules/vouchers/templates/amount.grid.tmpl.html',
+    field : 'amount',
+    displayName : 'TABLE.COLUMNS.AMOUNT',
+    headerCellFilter : 'translate',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    treeAggregationLabel : '',
+    footerCellClass : 'text-right',
+    type : 'number',
+    groupingShowAggregationMenu : false,
+    cellTemplate : 'modules/vouchers/templates/amount.grid.tmpl.html',
   }, {
-    field: 'display_name',
-    displayName: 'TABLE.COLUMNS.RESPONSIBLE',
-    headerCellFilter: 'translate',
-    groupingShowAggregationMenu: false,
+    field : 'display_name',
+    displayName : 'TABLE.COLUMNS.RESPONSIBLE',
+    headerCellFilter : 'translate',
+    groupingShowAggregationMenu : false,
   }, {
-    field: 'action',
-    displayName: '...',
-    enableFiltering: false,
-    enableColumnMenu: false,
-    enableSorting: false,
-    cellTemplate: 'modules/vouchers/templates/action.cell.html',
+    field : 'action',
+    displayName : '...',
+    enableFiltering : false,
+    enableColumnMenu : false,
+    enableSorting : false,
+    cellTemplate : 'modules/vouchers/templates/action.cell.html',
   }];
 
   vm.gridOptions = {
-    appScopeProvider: vm,
-    showColumnFooter: true,
-    enableColumnMenu: false,
-    enableSorting: true,
-    flatEntityAccess: true,
-    fastWatch: true,
-    columnDefs: columnDefs,
+    appScopeProvider : vm,
+    showColumnFooter : true,
+    enableColumnMenu : false,
+    enableSorting : true,
+    flatEntityAccess : true,
+    fastWatch : true,
+    columnDefs : columnDefs,
   };
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
 
   // expose function
-  vm.get = get;
-  vm.isDefined = isDefined;
   vm.showReceipt = showReceipt;
   vm.bhConstants = bhConstants;
-
-  // isDefined Type
-  function isDefined(row) {
-    return row.uuid && (row.type_id === null || row.type_id === undefined);
-  }
-
-  // get vouchers transaction
-  function get(originId) {
-    if (originId === null || originId === undefined) { return {}; }
-    return vm.transactionTypes.get(originId);
-  }
 
   // search voucher
   function search() {
@@ -135,8 +123,7 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
         vm.latestViewFilters = Vouchers.filters.formatView();
 
         return load(Vouchers.filters.formatHTTP(true));
-      })
-      .catch(angular.noop);
+      });
   }
 
   // showReceipt
@@ -149,28 +136,26 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    Vouchers.read(null, filters).then(function (vouchers) {
-      vm.gridOptions.data = vouchers;
+    Vouchers.read(null, filters)
+      .then(function (vouchers) {
+        vm.gridOptions.data = vouchers;
 
-      // loop through the vouchers and precompute the voucher type tags
-      vouchers.forEach(function (voucher) {
-        var transaction = get(voucher.type_id);
-        voucher._isIncome = (transaction.type === INCOME);
-        voucher._isExpense = (transaction.type === EXPENSE);
-        voucher._isOther = (transaction.type === OTHER);
-        voucher._type = transaction.text;
-      });
+        vouchers.forEach(function (voucher) {
+          var transactionType;
+          var isNull = (voucher.type_id === null);
 
-      vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-    })
-      .catch(function (err) {
-        if (err && !err.code) { return; }
-        Notify.handleError(err);
+          if (!isNull) {
+            // determine the transaction_type for this voucher
+            transactionType = transactionTypeMap[voucher.type_id];
+            voucher._isIncome = (transactionType.type === INCOME);
+            voucher._isExpense = (transactionType.type === EXPENSE);
+            voucher._isOther = !(voucher._isIncome || voucher._isExpense);
+            voucher._type = transactionType.text;
+          }
+        });
       })
       .catch(errorHandler)
-      .finally(function () {
-        toggleLoadingIndicator();
-      });
+      .finally(toggleLoadingIndicator);
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -217,14 +202,19 @@ function VoucherController(Vouchers, Notify, uiGridGroupingConstants,
       Vouchers.cacheFilters();
     }
 
-    Vouchers.transactionType()
-      .then(function (store) {
-        vm.transactionTypes = store;
-      })
-      .catch(Notify.handleError);
-
-    load(Vouchers.filters.formatHTTP(true));
     vm.latestViewFilters = Vouchers.filters.formatView();
+
+    // before we can properly render the vouchers, we need to have
+    // a transaction type mapping set up.
+    TransactionTypes.read()
+      .then(function (types) {
+        // organize transaction types into a map
+        types.forEach(function (type) {
+          transactionTypeMap[type.id] = type;
+        });
+
+        return load(Vouchers.filters.formatHTTP(true));
+      });
   }
 
   // This function opens a modal through column service to let the user toggle
