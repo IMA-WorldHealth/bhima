@@ -272,6 +272,10 @@ function StockExitController(
     mapExit[vm.movement.exit_type].submit()
       .then(function () {
         vm.validForSubmit = false;
+        // reseting the form
+        vm.movement = {};
+        form.$setPristine();
+        form.$setUntouched();
       })
       .catch(Notify.handleError);
   }
