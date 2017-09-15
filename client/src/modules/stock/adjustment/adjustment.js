@@ -122,9 +122,11 @@ function StockAdjustmentController(
       .catch(Notify.handleError);
   }
 
-  function setupStock() {
+  function setupStock(depot) {
     vm.Stock.setup();
     vm.Stock.store.clear();
+    loadInventories(depot);
+    checkValidity();
   }
 
   function startup() {
@@ -138,15 +140,9 @@ function StockAdjustmentController(
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (vm.depot) {
       setupStock();
-      loadInventories(vm.depot);
-      checkValidity();
     } else {
       changeDepot()
-        .then(setupStock)
-        .then(function () {
-          loadInventories(vm.depot);
-          checkValidity();
-        });
+        .then(setupStock);
     }
   }
 
@@ -158,20 +154,6 @@ function StockAdjustmentController(
         vm.selectableInventories = angular.copy(inventories);
       })
       .catch(Notify.handleError);
-  }
-
-  // remove item from selectable inventories
-  function popInventory(item) {
-    var idx;
-    if (!item) { return; }
-    vm.selectableInventories.indexOf(item.inventory);
-    vm.selectableInventories.splice(idx, 1);
-  }
-
-  // insert item into selectable inventories
-  function pushInventory(inventory) {
-    if (!inventory) { return; }
-    vm.selectableInventories.push(inventory);
   }
 
   // check validity
@@ -229,6 +211,7 @@ function StockAdjustmentController(
       .then(function (depot) {
         vm.depot = depot;
         cache.depot = vm.depot;
+        return depot;
       });
   }
 

@@ -1,6 +1,5 @@
 const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
-const components = require('../shared/components');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 
@@ -51,7 +50,6 @@ function StockLotsRegistryTests() {
   });
 
   it('find lots in depot principal', () => {
-    browser.debugger();
     modal.setDepot('Depot Principal');
     modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);

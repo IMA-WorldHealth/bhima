@@ -19,7 +19,7 @@ function DepotService(Api, Modal) {
    * @description
    * Opens the selection modal to allow a user to select a depot.
    *
-   * @returns Promise - a promise containing the depot.
+   * @returns Promise - a promise containing the selected depot.
    */
   service.openSelectionModal = function openSelectionModal(depot) {
     return Modal.open({

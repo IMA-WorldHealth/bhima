@@ -15,7 +15,7 @@
       "TITLE" : "Depot Management"
     },
     "NO_DEPOT" : "No Depot",
-    "NOT_ALLOWED_ACTIONS" : "This depot is protect.  You cannot modify its properties.",
+    "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",
     "TITLE" : "Depot Management",
     "UPDATED" : "Depot updated with success",
     "WAREHOUSE" : "Warehouse",
@@ -23,7 +23,7 @@
       "SELECTION" : "Depot Selection",
       "NO_DEPOTS" : "Do not see any depots?",
       "SELECT_A_DEPOT" : "Select a depot",
-      "NO_DEFAULT_DEPOT" : "Oops!  We need you to choose a depot.",
+      "NO_DEFAULT_DEPOT" : "You need to choose a depot.",
       "SELECTION_EXPLANATION" : "It looks like you don't have a default depot set!  Please select your depot from the list below.  You will only need to do this once.  If your depot is not listed below, you can add it with this link:"
     }
   }

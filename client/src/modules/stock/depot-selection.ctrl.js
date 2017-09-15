@@ -17,7 +17,7 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
   vm.hasSelectedDepot = hasSelectedDepot;
   vm.loading = false;
 
-  // this is a one-time message shown to the user if they do not have a cached depot.
+  // this is a toggle for a one-time message shown to the user if they do not have a cached depot.
   vm.hasNoDefaultDepot = !angular.isDefined(depot);
 
   vm.submit = function submit() { Instance.close(vm.depot); };
@@ -37,13 +37,9 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
 
   // fired when a user selects a depot from a list
   function selectDepot(uuid) {
-    var selected;
-
-    vm.depots.forEach(function (d) {
-      if (d.uuid === uuid) { selected = d; }
-    });
-
-    vm.depot = selected;
+    vm.depot = vm.depots.filter(function (d) {
+      return d.uuid === uuid;
+    }).pop();
   }
 
   function toggleLoadingIndicator() {

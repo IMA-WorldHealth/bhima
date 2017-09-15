@@ -124,7 +124,6 @@ function StockExitController(
   vm.gridOptions = gridOptions;
   vm.checkValidity = checkValidity;
 
-  // exit type
   function selectExitType(exitType) {
     vm.movement.exit_type = exitType.label;
     mapExit[exitType.label].find();
