@@ -1,23 +1,23 @@
-<div name="TransactionTypeForm" bh-transaction-type-select ng-model-options="{ updateOn: 'default' }">
-  <div 
+<div ng-form="TransactionTypeForm" bh-transaction-type-select ng-model-options="{ updateOn: 'default' }">
+  <div
     class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && TransactionTypeForm.transactionTypes.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
 
-    <ui-select 
+    <ui-select
         multiple
-        name="transactionTypes" 
+        name="transactionTypes"
         ng-model="$ctrl.selectedTransactionTypes"
         on-select="$ctrl.handleChange($ctrl.selectedTransactionTypes)"
         on-remove="$ctrl.handleChange($ctrl.selectedTransactionTypes)"
         close-on-select="false"
         ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
-          <span>{{$item.plainText}}</span>
+        <span>{{ $item.plainText }}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.transactionTypes | filter:{plainText : $select.search} | orderBy:'plainText')">
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.transactionTypes | filter: { plainText : $select.search } | orderBy: 'plainText')">
         <span ng-bind-html="type.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
