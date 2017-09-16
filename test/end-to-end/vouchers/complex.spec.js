@@ -1,6 +1,4 @@
-/* global browser, element, by */
-
-'use strict';
+/* global by */
 
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
@@ -9,10 +7,9 @@ const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 
 describe('Complex Vouchers', function () {
-
   before(() => helpers.navigate('vouchers/complex'));
 
-  it('creates a complex voucher', function () {
+  it('creates a complex voucher', () => {
     const page = new ComplexVoucherPage();
 
     // set a new timeout to avoid warnings
@@ -27,12 +24,12 @@ describe('Complex Vouchers', function () {
       date        : new Date(),
       description : 'Complex voucher test e2e',
       rows        : [
-        { account: 'Test Debtor Accounts1', debit: 18, credit: 0, entity: { type: 'D', name: 'Patient/2/Patient' } },
-        { account: 'Test Capital One', debit: 0, credit: 8, reference: { type: 'voucher', index: 0 } },
-        { account: 'Test Capital Two', debit: 0, credit: 5, reference: { type: 'voucher', index: 2 } },
-        { account: 'First Test Item Account', debit: 0, credit: 5, reference: { type: 'voucher', index: 1 } },
-        { account: 'Test Capital One', debit: 7, credit: 0, entity: { type: 'C', name: 'Fournisseur' } },
-        { account: 'Test Capital Two', debit: 0, credit: 7, reference: { type: 'patient-invoice', index: 1 } },
+        { account : 'Test Debtor Accounts1', debit : 18, credit : 0, entity: { type : 'D', name : 'Patient/2/Patient' } },
+        { account : 'Test Capital One', debit : 0, credit : 8, reference : { type : 'voucher', index: 0 } },
+        { account : 'Test Capital Two', debit : 0, credit : 5, reference : { type : 'voucher', index: 2 } },
+        { account : 'First Test Item Account', debit : 0, credit : 5, reference : { type : 'voucher', index: 1 } },
+        { account : 'Test Capital One', debit : 7, credit : 0, entity: { type : 'C', name : 'Fournisseur' } },
+        { account : 'Test Capital Two', debit : 0, credit : 7, reference : { type : 'patient-invoice', index: 1 } },
       ],
     };
 
@@ -53,7 +50,7 @@ describe('Complex Vouchers', function () {
 
     // loop through each row and assign the correct form values
     voucher.rows.forEach((row, idx) => {
-      let current = page.row(idx);
+      const current = page.row(idx);
       current.account(row.account);
       current.debit(row.debit);
       current.credit(row.credit);
@@ -82,7 +79,7 @@ describe('Complex Vouchers', function () {
     $('[data-method="close"]').click();
   });
 
-  it('forbid submit when there is no transfer type for financial account', function () {
+  it('forbid submit when there is no transfer type for financial account', () => {
     const page = new ComplexVoucherPage();
 
     /*
@@ -94,9 +91,9 @@ describe('Complex Vouchers', function () {
       date        : new Date(),
       description : 'Complex voucher test e2e',
       rows        : [
-        { account: 'Test Debtor Accounts1', debit: 17, credit: 0, entity: { type: 'D', name: 'Patient/2/Patient' }},
-        { account: 'Test Capital One', debit: 0, credit: 17, reference: { type: 'voucher', index: 0 }}
-      ]
+        { account : 'Test Debtor Accounts1', debit : 17, credit : 0, entity: { type : 'D', name : 'Patient/2/Patient' } },
+        { account : 'Test Capital One', debit : 0, credit : 17, reference : { type : 'voucher', index: 0 } },
+      ],
     };
 
     // configure the date to today
@@ -110,7 +107,7 @@ describe('Complex Vouchers', function () {
 
     // loop through each row and assign the correct form values
     voucher.rows.forEach((row, idx) => {
-      let current = page.row(idx);
+      const current = page.row(idx);
       current.account(row.account);
       current.debit(row.debit);
       current.credit(row.credit);
@@ -130,8 +127,7 @@ describe('Complex Vouchers', function () {
   });
 
   it('Convention import invoices and payment via the tool', () => {
-
-    let detail = {
+    const detail = {
       tool            : 'Convention - Paiement factures',
       cashbox         : '$',
       convention      : 'Second Test',
@@ -169,10 +165,8 @@ describe('Complex Vouchers', function () {
   });
 
   it('Support Patient Invoices by an Account via the tool', () => {
-    const page = new ComplexVoucherPage();
-
-    let detail = {
-      tool          : 'Prise en Charge des patients',
+    const detail = {
+      tool          : 'Prise en Charge',
       accountNumber : 42002,
       patientName   : 'Test 2',
       description   : 'Patient support invoices',
@@ -186,8 +180,7 @@ describe('Complex Vouchers', function () {
     components.accountSelect.set(detail.accountNumber);
 
     // Find Patient
-    components.findPatient.findByName(detail.patientName);    
-
+    components.findPatient.findByName(detail.patientName);
 
     // select invoices
     GU.selectRow('invoiceGrid', detail.invoices[0]);
@@ -209,8 +202,7 @@ describe('Complex Vouchers', function () {
   });
 
   it('Generic Income via the tool', () => {
-
-    let detail = {
+    const detail = {
       tool        : 'Recette Generique',
       cashbox     : 'Test Primary Cashbox A',
       account     : '41001',
@@ -225,13 +217,13 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // description
     FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();
@@ -247,8 +239,7 @@ describe('Complex Vouchers', function () {
   });
 
   it('Generic Expense via the tool', () => {
-
-    let detail = {
+    const detail = {
       tool        : 'Depense Generique',
       cashbox     : 'Test Primary Cashbox A',
       account     : '41001',
@@ -263,13 +254,13 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // description
     FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();
@@ -285,12 +276,11 @@ describe('Complex Vouchers', function () {
   });
 
   it('Cash Transfer via the tool', () => {
-
-    let detail = {
+    const detail = {
       tool    : 'Transfert d\'argent',
       cashbox : 'Test Primary Cashbox A',
       account : '41001',
-      amount  : 20,
+      amount  : 200,
     };
 
     // click on the convention tool
@@ -300,10 +290,10 @@ describe('Complex Vouchers', function () {
     FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    FU.typeahead('ToolCtrl.account', detail.account);
+    components.accountSelect.set(detail.account);
 
     // amount
-    FU.input('ToolCtrl.amount', detail.amount);
+    components.currencyInput.set(detail.amount);
 
     // validate selection
     FU.modal.submit();

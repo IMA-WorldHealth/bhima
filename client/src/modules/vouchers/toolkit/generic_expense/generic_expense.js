@@ -1,32 +1,21 @@
 angular.module('bhima.controllers')
-.controller('GenericExpenseKitController', GenericExpenseKitController);
+  .controller('GenericExpenseKitController', GenericExpenseKitController);
 
-// DI definition
 GenericExpenseKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants) {
+function GenericExpenseKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
   var vm = this;
-
-  // global variables
-  vm.tool = Data;
 
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
 
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
+  vm.onSelectAccountCallback = onSelectAccountCallback;
 
-  // load cashboxes
-  Cashbox.read(null, { detailed: 1 })
+  Cashbox.read(null, { detailed : 1 })
     .then(function (data) {
       vm.cashboxes = data;
     })
@@ -35,8 +24,9 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
   // generate transaction rows
   function generateTransactionRows(params) {
     var rows = [];
-    var debitRow = generateRow();
-    var creditRow = generateRow();
+
+    var debitRow = ToolKits.getBlankVoucherRow();
+    var creditRow = ToolKits.getBlankVoucherRow();
 
     var cashboxAccountId = params.cashbox.account_id;
     var selectedAccountId = params.account.id;
@@ -56,15 +46,8 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     return rows;
   }
 
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined
-    };
+  function onSelectAccountCallback(account) {
+    vm.account = account;
   }
 
   // submission
@@ -79,7 +62,7 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, Data, AccountSto
     Instance.close({
       rows        : bundle,
       description : vm.description,
-      type_id     : bhConstants.transactionType.GENERIC_EXPENSE, // Generic Expense ID
+      type_id     : bhConstants.transactionType.GENERIC_EXPENSE,
       currency_id : vm.cashbox.currency_id,
     });
   }

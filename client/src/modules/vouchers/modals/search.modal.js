@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 
-  'bhConstants', 'PeriodService', 'Store', 'util', 'TransactionTypeService', '$translate'
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util',
 ];
 
 /**
@@ -14,28 +13,28 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, 
-bhConstants, Periods, Store, util, TransactionTypes, $translate) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util) {
   var vm = this;
-  var changes = new Store({identifier : 'key'});
-  vm.filters = filters;
-  vm.searchQueries = {};
-  vm.defaultQueries = {};
-
+  var changes = new Store({ identifier : 'key' });
   var searchQueryOptions = [
     'reference', 'description', 'user_id', 'type_ids',
   ];
 
+  vm.filters = filters;
+  vm.searchQueries = {};
+  vm.defaultQueries = {};
+
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-  if(filters.limit){
+  if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
 
-  vm.onTransactionTypesChange = function onTransactionTypesChange (transactionTypes){
+  vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
     vm.searchQueries.type_ids = transactionTypes;
-  }
+  };
 
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
@@ -68,9 +67,8 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-
     // delete type_ids if there is no transaction type sent
-    if(vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0){
+    if (vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0) {
       vm.clear('type_ids');
     }
 
@@ -85,5 +83,5 @@ bhConstants, Periods, Store, util, TransactionTypes, $translate) {
 
     // return values to the voucher controller
     return ModalInstance.close(loggedChanges);
-  }
+  };
 }

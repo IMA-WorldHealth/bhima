@@ -19,9 +19,10 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  * @todo/@fixme - this error notification system needs serious refactor.
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Session,
-  FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
-  GridAggregators, uiGridConstants, VoucherForm, $timeout) {
+function ComplexJournalVoucherController(
+  Vouchers, $translate, Currencies, Session, FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
+  GridAggregators, uiGridConstants, VoucherForm, $timeout
+) {
   var vm = this;
 
   // bind constants
@@ -45,22 +46,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   };
 
-  // bread crumb paths
-  vm.paths = [{
-    label : $translate.instant('TREE.FINANCE'),
-  }, {
-    label   : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
-    current : true,
-  }];
-
-  // breadcrumb dropdown
-  vm.dropdown = [{
-    label  : 'FORM.LABELS.MENU',
-    color  : 'btn-default',
-    icon   : 'fa-cogs',
-    option : Toolkit.options,
-  }];
-
   // ui-grid options
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -76,32 +61,31 @@ function ComplexJournalVoucherController(Vouchers, $translate, Currencies, Sessi
     vm.gridApi = api;
   }
 
-  /** ======================== voucher tools ========================== */
+  vm.openConventionPaymentModal = function openConventionPaymentModal() {
+    Toolkit.openConventionPaymentModal()
+      .then(processVoucherToolRows);
+  };
 
-  // toolkit action definition
-  var conventionPaymentTool = Toolkit.tools.convention_payment;
-  var supportPatientTool = Toolkit.tools.support_patient;
-  var genericIncomeTool = Toolkit.tools.generic_income;
-  var genericExpenseTool = Toolkit.tools.generic_expense;
-  var cashTransferTool = Toolkit.tools.cash_transfer;
+  vm.openGenericIncomeModal = function openGenericIncomeModal() {
+    Toolkit.openGenericIncomeModal()
+      .then(processVoucherToolRows);
+  };
 
-  // action on convention payment tool
-  conventionPaymentTool.action = openVoucherTool(conventionPaymentTool);
-  genericIncomeTool.action = openVoucherTool(genericIncomeTool);
-  genericExpenseTool.action = openVoucherTool(genericExpenseTool);
-  cashTransferTool.action = openVoucherTool(cashTransferTool);
-  supportPatientTool.action = openVoucherTool(supportPatientTool);
 
-  /**
-   * @function openVoucherTool
-   *
-   * @description open the modal of the tool
-   */
-  function openVoucherTool(voucherTool) {
-    return function () {
-      return Toolkit.open(voucherTool).then(processVoucherToolRows);
-    };
-  }
+  vm.openGenericExpenseModal = function openGenericExpenseModal() {
+    Toolkit.openGenericExpenseModal()
+      .then(processVoucherToolRows);
+  };
+
+  vm.openCashTransferModal = function openCashTransferModal() {
+    Toolkit.openCashTransferModal()
+      .then(processVoucherToolRows);
+  };
+
+  vm.openSupportPatientModal = function openSupportPatientModal() {
+    Toolkit.openSupportPatientModal()
+      .then(processVoucherToolRows);
+  };
 
   /**
    * @function processVoucherToolRows

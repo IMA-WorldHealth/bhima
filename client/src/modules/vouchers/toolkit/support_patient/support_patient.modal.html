@@ -1,6 +1,7 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+    <li class="static" translate>VOUCHERS.GLOBAL.SUPPORT_FORM</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
   </ol>
 </div>
 
@@ -15,7 +16,6 @@
     </bh-account-select>
 
     <bh-find-patient
-      suppress-reset="false"
       on-search-complete="ToolCtrl.loadInvoice(patient)"
       on-register-api="ToolCtrl.onRegisterApiCallback(api)"
       validation-trigger="ToolForm.$submitted"
@@ -35,7 +35,7 @@
     </div>
 
     <p ng-show="!ToolCtrl.debtorUuid" class="text-info">
-      <i class="fa fa-info-circle"></i> <span translate> VOUCHERS.GLOBAL.SUPPORT_TEXT </span>
+      <i class="fa fa-info-circle"></i> <span translate>VOUCHERS.GLOBAL.SUPPORT_TEXT</span>
     </p>
 
     <div ng-show="ToolCtrl.debtorUuid" class="text-right">
@@ -54,7 +54,7 @@
       FORM.BUTTONS.CANCEL
     </button>
 
-    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="!ToolCtrl.hasSelectedRows">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

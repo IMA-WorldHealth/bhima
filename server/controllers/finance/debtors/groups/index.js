@@ -234,11 +234,12 @@ function list(req, res, next) {
 }
 
 /**
- * GET /debtor_groups/{:uuid}/invoices?balanced=1
+ * GET /debtor_groups/:uuid/invoices?balanced=1
  *
  * @function invoices
  *
- * @description This function is responsible for getting all invoices of a specified debtor group
+ * @description
+ * This function is responsible for getting all invoices of a specified debtor group.
  *
  */
 function invoices(req, res, next) {
@@ -281,7 +282,7 @@ function loadInvoices(params) {
   let sqlInvoices = `
     SELECT BUID(i.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, i.reference) AS reference,
       SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit - credit) AS balance, BUID(entity_uuid) AS entity_uuid,
-      i.date
+      i.date, entity_map.text AS entityReference
     FROM (
       SELECT record_uuid AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
         entity_uuid, invoice.reference, invoice.project_id
@@ -310,6 +311,7 @@ function loadInvoices(params) {
       WHERE entity_uuid IN (?) AND invoice.reversed <> 1
     ) AS i
     JOIN project ON i.project_id = project.id
+    JOIN entity_map ON i.entity_uuid = entity_map.uuid
     WHERE i.uuid NOT IN (
       SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
     )

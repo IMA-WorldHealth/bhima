@@ -1,6 +1,6 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static" translate>{{ ToolCtrl.tool.label }}</li>
+    <li class="static" translate>VOUCHERS.GLOBAL.CONVENTION_INVOICES</li>
     <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
   </ol>
 </div>
@@ -35,12 +35,12 @@
     </div>
 
     <bh-debtor-group-select
-      debtor-group-uuid = "ToolCtrl.convention"
-      name = "convention"
-      label = "FORM.LABELS.CONVENTION"
+      debtor-group-uuid="ToolCtrl.convention"
+      name="convention"
+      label="FORM.LABELS.CONVENTION"
       on-select-callback = "ToolCtrl.onSelectDebtor(debtorGroup)">
     </bh-debtor-group-select>
-  
+
     <!-- select invoices  -->
     <div ng-show="ToolCtrl.convention">
       <div
@@ -70,7 +70,7 @@
       FORM.BUTTONS.CANCEL
     </button>
 
-    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolForm.$invalid || !ToolCtrl.hasSelectedRows">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

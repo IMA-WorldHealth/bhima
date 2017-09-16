@@ -1,50 +1,43 @@
 angular.module('bhima.controllers')
   .controller('SupportPatientKitController', SupportPatientKitController);
 
-// DI definition
 SupportPatientKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'SessionService', 'data', 'bhConstants',
-  'DebtorService'
+  '$uibModalInstance', 'NotifyService', 'SessionService', 'bhConstants', 'DebtorService', '$translate',
+  'VoucherToolkitService',
 ];
 
 // Import transaction rows for a Support Patient
-function SupportPatientKitController(Instance, Notify, Session, Data, bhConstants, Debtors) {
+function SupportPatientKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, ToolKits) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
-  // global variables
   vm.enterprise = Session.enterprise;
-  vm.gridOptions = {};
-  vm.tool = Data;
-  vm.patientInvoice = false;
 
-  // expose to the view
-  vm.selectPatientInvoices = selectPatientInvoices;
   vm.close = Instance.close;
   vm.import = submit;
   vm.loadInvoice = loadInvoice;
   vm.onSelectAccount = onSelectAccount;
-  
-  // get debtor group invoices
-  function selectPatientInvoices(debtorId) {
-    // load patient invoices
-    vm.debtorUuid = debtorId;
 
-    Debtors.invoices(debtorId, { balanced: 0 })
+  // helper aggregation function
+  function aggregate(sum, row) {
+    return sum + row.balance;
+  }
+
+  // get debtor group invoices
+  function selectPatientInvoices(debtorUuid) {
+    // load patient invoices
+    vm.debtorUuid = debtorUuid;
+
+    Debtors.invoices(debtorUuid, { balanced : 0 })
       .then(function (invoices) {
+        // total amount
+        var totals = invoices.reduce(aggregate, 0);
 
         vm.gridOptions.data = invoices || [];
 
-        // total amount
-        vm.totalInvoices = vm.gridOptions.data.reduce(function (current, previous) {
-          return current + previous.balance;
-        }, 0);
-
         // make sure we are always within precision
-        vm.totalInvoices = Number.parseFloat(vm.totalInvoices.toFixed(MAX_DECIMAL_PRECISION));
-        
-        vm.invoices = data;
+        vm.totalInvoices = Number.parseFloat(totals.toFixed(MAX_DECIMAL_PRECISION));
       })
       .catch(Notify.handleError);
   }
@@ -64,10 +57,11 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     var supportAccountId = result.account_id;
     var supportedAccountId = result.patient.account_id;
     var invoices = result.invoices;
+    var supportRow = ToolKits.getBlankVoucherRow();
+
     rows.typeId = bhConstants.transactionType.SUPPORT_INCOME;
 
     // first, generate a support row
-    var supportRow = generateRow();
     supportRow.account_id = supportAccountId;
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
@@ -75,7 +69,7 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
 
     // then loop through each selected item and credit it with the Supported account
     invoices.forEach(function (invoice) {
-      var row = generateRow();
+      var row = ToolKits.getBlankVoucherRow();
 
       row.account_id = supportedAccountId;
       row.reference_uuid = invoice.uuid;
@@ -83,10 +77,10 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
       row.credit = invoice.balance;
 
       // this is needed for a nice display in the grid
-      row.entity = formatEntity(result.patient);
+      row.entity = { label : result.patient.text, type: 'D', uuid : result.patient.debtor_uuid };
 
-      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from 
-      // the database or ommitted
+      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from
+      // the database or omitted
       invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
       row.document = invoice;
 
@@ -97,58 +91,49 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
     return rows;
   }
 
-  // format entity
-  function formatEntity(patient) {
-    return {
-      label : patient.text,
-      type  : 'D',
-      uuid  : patient.debtor_uuid,
-    };
-  }
-
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined,
-    };
-  }
-
   /* ================ Invoice grid parameters ===================== */
-  vm.gridOptions.appScopeProvider = vm;
-  vm.gridOptions.enableFiltering = true;
-  vm.gridOptions.onRegisterApi = onRegisterApi;
-  vm.gridOptions.fastWatch = true;
-  vm.gridOptions.flatEntityAccess = true;
 
-  vm.gridOptions.columnDefs = [
-    { field: 'reference', displayName: 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-    { field: 'date', cellFilter: 'date', displayName: 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter: 'translate', enableFiltering: false },
-    { field            : 'balance',
-      displayName      : 'TABLE.COLUMNS.BALANCE',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      enableFiltering  : false,
-      cellTemplate     : '/modules/templates/grid/balance.cell.html',
-    },
-  ];
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableFiltering : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    enableSelectionBatchEvent : false,
+    onRegisterApi : onRegisterApi,
+  };
+
+  vm.gridOptions.columnDefs = [{
+    field : 'reference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'date',
+    cellFilter : 'date',
+    displayName : 'TABLE.COLUMNS.BILLING_DATE',
+    headerCellFilter : 'translate',
+    enableFiltering : false,
+  }, {
+    field : 'balance',
+    type : 'number',
+    displayName : 'TABLE.COLUMNS.BALANCE',
+    headerCellFilter : 'translate',
+    enableFiltering : true,
+    cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    cellClass : 'text-right',
+  }];
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
     vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionCallback);
-    vm.gridApi.selection.on.rowSelectionChangedBatch(null, rowSelectionCallback);
   }
 
+  // called whenever the selection changes in the ui-grid
   function rowSelectionCallback() {
-    vm.selectedRows = vm.gridApi.selection.getSelectedRows();
-    vm.totalSelected = vm.selectedRows.reduce(function (current, previous) {
-      return current + previous.balance;
-    }, 0);
+    var selected = vm.gridApi.selection.getSelectedRows();
+    var aggregation = selected.reduce(aggregate, 0);
 
-    vm.totalSelected = Number.parseFloat(vm.totalSelected.toFixed(MAX_DECIMAL_PRECISION));
+    vm.hasSelectedRows = selected.length > 0;
+    vm.totalSelected = Number.parseFloat(aggregation.toFixed(MAX_DECIMAL_PRECISION));
   }
 
   /* ================ End Invoice grid parameters ===================== */
@@ -157,16 +142,27 @@ function SupportPatientKitController(Instance, Notify, Session, Data, bhConstant
   function submit(form) {
     if (form.$invalid) { return; }
 
+    var selected = vm.gridApi.selection.getSelectedRows();
+
     var bundle = generateTransactionRows({
       account_id : vm.account_id,
       patient    : vm.patient,
-      invoices   : vm.selectedRows,
+      invoices   : selected,
+    });
+
+    var invoiceRefs = selected.map(function (i) { return i.reference; }).join(', ');
+
+    var msg = $translate.instant('VOUCHERS.GLOBAL.SUPPORT_PAYMENT_DESCRIPTION', {
+      patientName : vm.patient.display_name,
+      patientReference : vm.patient.reference,
+      invoiceReferences : invoiceRefs,
     });
 
     Instance.close({
       rows    : bundle,
       patient : vm.patient,
-      type_id : bhConstants.transactionType.SUPPORT_INCOME, // Patient Support ID
+      description : msg,
+      type_id : bhConstants.transactionType.SUPPORT_INCOME,
     });
   }
 }
