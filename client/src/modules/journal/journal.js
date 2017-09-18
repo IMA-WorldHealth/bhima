@@ -82,7 +82,7 @@ function JournalController(
   vm.commentRows = function commentRows() {
     var selectedRows = vm.gridApi.selection.getSelectedGridRows();
 
-    Journal.openCommentModal({ rows : vm.selectedRows })
+    Journal.openCommentModal({ rows : selectedRows })
       .then(function (comment) {
         if (!comment) { return; }
         updateGridComment(selectedRows, comment);
