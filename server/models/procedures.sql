@@ -1433,7 +1433,8 @@ BEGIN
   JOIN
     inventory_group ig ON ig.uuid = i.group_uuid
   WHERE
-    sm.document_uuid = document_uuid;
+    sm.document_uuid = document_uuid
+  GROUP BY i.uuid;
 
 -- Crediting cost of good sale account, by inserting a record to the posting journal table
   INSERT INTO posting_journal
@@ -1459,6 +1460,7 @@ BEGIN
   JOIN
     inventory_group ig ON ig.uuid = i.group_uuid
   WHERE
-    sm.document_uuid = document_uuid;
+    sm.document_uuid = document_uuid
+  GROUP BY i.uuid;
 END $$
 DELIMITER ;
