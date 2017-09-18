@@ -158,22 +158,12 @@
           </div>
 
           <!-- "Add number of grid rows" input-group -->
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button
-                type="button"
-                id="btn-add-rows"
-                class="btn btn-default"
-                ng-click="ComplexVoucherCtrl.Voucher.addItems(ComplexVoucherCtrl.itemIncrement)">
-                <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
-              </button>
-            </span>
-            <input
-              type="number"
-              class="form-control"
-              ng-model="ComplexVoucherCtrl.itemIncrement"
-              style="max-width : 40px;">
-          </div>
+          <bh-add-item
+            item-increment = "ComplexVoucherCtrl.itemIncrement"
+            name = "add_item_voucher"
+            recipient = "ComplexVoucherCtrl.Voucher.details.currency_id"
+            on-change = "ComplexVoucherCtrl.Voucher.addItems(item)">
+          </bh-add-item>
         </div>
       </div>
 

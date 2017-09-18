@@ -1,0 +1,20 @@
+<div ng-form="{{ $ctrl.name }}" bh-add-item ng-model-options="{ updateOn: 'default' }">  
+  <div class="input-group">
+    <span class="input-group-btn">
+      <button
+        id="btn-add-rows"
+        type="button"
+        class="btn btn-default"
+        ng-disabled="!$ctrl.recipient"
+        ng-click="$ctrl.addItems($ctrl.itemIncrement)">
+        <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
+      </button>
+    </span>
+    <input
+      type="number"
+      class="form-control"
+      ng-model="$ctrl.itemIncrement"
+      style="max-width : 40px;"
+      ng-disabled="!$ctrl.recipient">
+  </div>
+</div>
