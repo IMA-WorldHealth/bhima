@@ -6,6 +6,7 @@ const GU = require('../../shared/GridUtils');
 
 const findPatient = require('../../shared/components/bhFindPatient');
 const dateEditor = require('../../shared/components/bhDateEditor');
+const addItem = require('../../shared/components/bhAddItem'); 
 
 function PatientInvoicePage() {
   const page = this;
@@ -60,8 +61,7 @@ function PatientInvoicePage() {
 
   // adds n rows to the grid
   page.addRows = function addRows(n) {
-    FU.input('PatientInvoiceCtrl.itemIncrement', n);
-    btns.add.click();
+    addItem.set(n);
   };
 
   // returns n rows

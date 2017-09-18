@@ -3,8 +3,8 @@
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
-
 const SharedStockPage = require('./stock.shared.page');
+
 
 function StockAdjustmentPage() {
   const page = this;
@@ -43,8 +43,7 @@ function StockAdjustmentPage() {
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    FU.input('StockCtrl.itemIncrement', n);
-    element(by.css('[id="btn-add-rows"]')).click();
+    components.addItem.set(n);
   };
 
   /**
