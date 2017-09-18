@@ -218,6 +218,7 @@ function JournalController(
     displayName                      : 'TABLE.COLUMNS.DEBIT',
     headerCellFilter                 : 'translate',
     cellClass                        : 'text-right',
+    footerCellClass : 'text-right',
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : function (aggregation) {
       aggregation.rendered = aggregation.value;
@@ -230,6 +231,7 @@ function JournalController(
     displayName                      : 'TABLE.COLUMNS.CREDIT',
     headerCellFilter                 : 'translate',
     cellClass                        : 'text-right',
+    footerCellClass : 'text-right',
     treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : function (aggregation) {
       aggregation.rendered = aggregation.value;
@@ -247,6 +249,7 @@ function JournalController(
     displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
     cellClass        : 'text-right',
     headerCellFilter : 'translate',
+    footerCellClass : 'text-right',
     visible          : false,
     cellTemplate     : '/modules/journal/templates/debit.grid.html',
   }, {
@@ -254,6 +257,7 @@ function JournalController(
     type             : 'number',
     displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
     cellClass        : 'text-right',
+    footerCellClass : 'text-right',
     headerCellFilter : 'translate',
     visible          : false,
     cellTemplate     : '/modules/journal/templates/credit.grid.html',
@@ -446,6 +450,10 @@ function JournalController(
 
     var totalNonPosted = Object.keys(uniqueTransactions).length - totalPosted;
     var remainingSystemTransactions = vm.numberTotalSystemTransactions - totalNonPosted;
+
+    if (Number.isNaN(remainingSystemTransactions)) {
+      remainingSystemTransactions = 0;
+    }
 
     return {
       totalRows : totalRows,
