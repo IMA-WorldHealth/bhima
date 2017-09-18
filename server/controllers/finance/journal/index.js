@@ -33,7 +33,7 @@ exports.list = list;
 exports.getTransaction = getTransaction;
 exports.reverse = reverse;
 exports.find = find;
-exports.journalEntryList = journalEntryList;
+exports.buildTransactionQuery = buildTransactionQuery;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
@@ -98,7 +98,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid']);
+  db.convert(options, ['uuid', 'record_uuid', 'uuids']);
 
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
@@ -139,6 +139,7 @@ function buildTransactionQuery(options, posted) {
   filters.equals('origin_id');
   filters.equals('record_uuid');
 
+  filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   return {
@@ -166,42 +167,6 @@ function find(options) {
 
   return naiveTransactionSearch(options, false);
 }
-
-/**
- * @function journalEntryList
- *
- * Allows you to select which transactions to print
- */
-function journalEntryList(options, source) {
-  const uuids = options.uuids.map(uid => db.bid(uid));
-  const origin = source || 'posting_journal';
-
-  const sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-      dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-      p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-      BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-      BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-      pro.name AS project_name, per.start_date AS period_start,
-      per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-    FROM ${origin} p
-      JOIN project pro ON pro.id = p.project_id
-      JOIN period per ON per.id = p.period_id
-      JOIN account a ON a.id = p.account_id
-      JOIN user u ON u.id = p.user_id
-      JOIN currency c ON c.id = p.currency_id
-      LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-      LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-      LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-    WHERE p.uuid IN (?)
-    ORDER BY p.trans_date DESC, record_uuid ASC
-  `;
-
-  return db.exec(sql, [uuids]);
-}
-
 
 /**
  * @method list

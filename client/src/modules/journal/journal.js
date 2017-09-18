@@ -336,18 +336,26 @@ function JournalController(
 
   // format Export Parameters
   function formatExportParameters(type) {
+    // gather the selected transactions together
+    var selectedTransactionIds = selection.selected.groups;
+    var rows;
+    var uuids;
+
     // @TODO(sfount) this should not be requirement for exporting - filter on group like editing
     // make sure a row is selected before running the trial balance
-    if (grouping.selectedRowCount < 1) {
+    if (selectedTransactionIds.length === 0) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
       return;
     }
 
-    var uuids = vm.grouping.getSelectedGroups().map(function (trans) {
-      return trans.uuid;
-    });
+    rows = vm.gridApi.selection.getSelectedRows();
 
-    return { renderer: type || 'pdf', lang: Languages.key, uuids: uuids };
+    // gather unique uuids to ship back to the server
+    uuids = rows
+      .map(function (row) { return row.uuid; })
+      .filter(function (uuid, index, array) { return array.indexOf(uuid) === index; });
+
+    return { renderer : type || 'pdf', lang : Languages.key, uuids : uuids };
   }
 
   // display the journal printable report of selected transactions
@@ -357,7 +365,7 @@ function JournalController(
 
     if (!params) { return; }
 
-    Modal.openReports({ url: url, params: params });
+    Modal.openReports({ url : url, params : params });
   };
 
   // export data into csv file
