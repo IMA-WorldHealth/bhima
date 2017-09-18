@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
   .controller('JournalEditTransactionController', JournalEditTransactionController);
 
-JournalEditTransactionController.$inject = ['JournalService', 'LanguageService', 'Store', 'TransactionTypeService', '$uibModalInstance', 'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid'];
+JournalEditTransactionController.$inject = [
+  'JournalService', 'LanguageService', 'Store', 'TransactionTypeService', '$uibModalInstance',
+  'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid',
+];
 
 function JournalEditTransactionController(Journal, Languages, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) {
   var gridApi = {};
@@ -17,7 +20,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
 
   vm.validation = {
     errored : false,
-    blockedPostedTransactionEdit : false
+    blockedPostedTransactionEdit : false,
   };
 
   // @TODO(sfount) column definitions currently duplicated across journal and here
@@ -230,9 +233,9 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
         addedRows.splice(addedRows.indexOf(row.uuid), 1);
       }
 
-      vm.rows.remove(row.uuid)
+      vm.rows.remove(row.uuid);
     });
-  }
+  };
 
   function handleCellEdit(rowEntity, colDef, newValue, oldValue) {
     if (oldValue !== newValue) {

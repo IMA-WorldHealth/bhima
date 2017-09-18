@@ -1,5 +1,4 @@
-/**
- * The /journal HTTP API endpoint
+/** The /journal HTTP API endpoint
  *
  * @module finance/journal/
  *
@@ -16,8 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-
-// npm deps
 const q = require('q');
 const _ = require('lodash');
 const uuid = require('node-uuid');
@@ -92,7 +89,10 @@ function naiveTransactionSearch(options, includeNonPosted) {
 
   const combinedParameters = posted.parameters.concat(nonPosted.parameters);
 
-  return db.exec(`(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC ${limitCondition}`, combinedParameters);
+  return db.exec(
+    `(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC ${limitCondition}`,
+    combinedParameters
+  );
 }
 
 // if posted ONLY return posted transactions
@@ -246,59 +246,63 @@ function editTransaction(req, res, next) {
   const rowsAdded = req.body.added;
   const rowsRemoved = req.body.removed;
 
-  let _oldTransaction;
-  let transDate;
+  let _transactionToEdit;
+  let _fiscalYear;
 
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
 
   // verify that this transaction is NOT in the general ledger already
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
-    .then((oldTransaction) => {
-      const posted = oldTransaction[0].posted;
+    .then((transactionToEdit) => {
+      const { posted, trans_id } = transactionToEdit[0];
 
-      // bind the current transaction under edit as "oldTransaction"
-      _oldTransaction = oldTransaction;
+      // bind the current transaction under edit as "transactionToEdit"
+      _transactionToEdit = transactionToEdit;
 
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
-        throw new BadRequest('Posted transactions cannot be edited', 'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED');
+        throw new BadRequest(
+          `Posted transactions cannot be edited.  Transaction ${trans_id} is already posted.`,
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED'
+        );
       }
 
       // make sure that the user tools cannot simply remove all rows without going through
       // the deletion API
-      if (rowsAdded.length === 0 && rowsRemoved.length >= oldTransaction.length) {
-        throw new BadRequest('The editing API cannot remove all rows in a transaction', 'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS');
+      const allRowsRemoved = (rowsAdded.length === 0 && rowsRemoved.length >= transactionToEdit.length);
+      const singleRow = ((rowsAdded.length - rowsRemoved.length) + transactionToEdit.length) === 1;
+      if (allRowsRemoved || singleRow) {
+        throw new BadRequest(
+          `Transaction ${trans_id} has too few rows!  A valid transaction must contain at least two rows.`,
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS'
+        );
+      }
+
+      // retrieve the transaction date
+      const transDate = getTransactionDate(rowsChanged, transactionToEdit);
+      return FiscalService.lookupFiscalYearByDate(transDate);
+    })
+    .then((fiscalYear) => {
+      _fiscalYear = fiscalYear;
+
+      if (fiscalYear.locked) {
+        throw new BadRequest(
+          `${fiscalYear.label} is closed and locked.  You cannot make transactions against it.`,
+          'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR'
+        );
       }
 
       // continue with editing - transform requested additional columns
-      return transformColumns(rowsAdded, true, _oldTransaction);
+      return transformColumns(rowsAdded, true, _transactionToEdit, fiscalYear);
     })
     .then((result) => {
       result.forEach((row) => {
-        db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
-        // row = transformColumns(row);
+        db.convert(row, ['uuid', 'record_uuid', 'entity_uuid', 'reference_uuid']);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
 
-      return pickTransDate(rowsChanged);
-    })
-    .then((trans_date) => {
-      transDate = trans_date;
-      return FiscalService.lookupFiscalYearByDate(transDate);
-    })
-    .then((result) => {
-      if (transDate) {
-        if (!result.length) {
-          throw new BadRequest('Invalid Fiscal Year', 'POSTING_JOURNAL.ERRORS.NO_FISCAL_FOR_DATE');
-        }
-
-        if (result[0].locked) {
-          throw new BadRequest('Closed Fiscal Year', 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR');
-        }
-      }
-
-      return transformColumns(rowsChanged, false, _oldTransaction, result);
+      return transformColumns(rowsChanged, false, _transactionToEdit, _fiscalYear);
     })
     .then((result) => {
       _.each(result, (row, uid) => {
@@ -326,7 +330,7 @@ function editTransaction(req, res, next) {
 // converts all valid posting journal editable columns into data representations
 // returns valid errors for incorrect data
 // @TODO Many requests are made vs. getting one look up table and using that - this can be greatly optimised
-function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
+function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
@@ -338,9 +342,9 @@ function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
   // these are global/shared properties of the current transaction
   // TODO(@jniles) - define these shared properties in an isomorphic way to share between
   // client and server.
-  const projectId = oldTransaction[0].project_id;
-  const transactionDate = oldTransaction[0].trans_date;
-  const currencyId = oldTransaction[0].currency_id;
+  const projectId = transactionToEdit[0].project_id;
+  const transactionDate = transactionToEdit[0].trans_date;
+  const currencyId = transactionToEdit[0].currency_id;
 
   const databaseRequests = [];
   const databaseValues = [];
@@ -414,7 +418,7 @@ function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
     }
 
     // NOTE: To update the amounts, we need to have the enterprise_id, currency_id, and date.
-    // These are attained from the old transaction (oldTransaction) or the changed transaction.
+    // These are attained from the old transaction (transactionToEdit) or the changed transaction.
 
     if (row.debit_equiv) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
@@ -462,30 +466,18 @@ function transformColumns(rows, newRecord, oldTransaction, setFiscalData) {
     if (row.trans_date) {
       row.trans_date = new Date(row.trans_date);
 
-      // Assign the fiscal year value and the period each time the trans_date Change
-      row.fiscal_year_id = setFiscalData[0].fiscal_year_id;
-      row.period_id = setFiscalData[0].id;
+      // Assign the fiscal year value and the period each time the trans_date change
+      row.fiscal_year_id = setFiscalData.fiscal_year_id;
+      row.period_id = setFiscalData.id;
     }
   });
 
   promises = databaseRequests.map((request, index) =>
     db.exec(request, databaseValues[index])
-      .then(results => assignments[index](results))
-  );
+      .then(results => assignments[index](results)));
 
   return q.all(promises)
     .then(() => rows);
-}
-
-//Pick trans_date
-function pickTransDate(rows){
-  let transDate;
-
-  _.each(rows, (row) => {
-    transDate = row.trans_date;
-  });
-
-  return transDate;
 }
 
 
@@ -524,7 +516,8 @@ function reverse(req, res, next) {
       if (rows.length > 0) {
         // transaction already cancelled
         throw new BadRequest(
-          'The transaction has been already cancelled', 'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
+          'The transaction has been already cancelled',
+          'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
         );
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
@@ -551,13 +544,31 @@ function count(req, res, next) {
     .catch(next);
 }
 
+/**
+ * @function getTransactionDate
+ *
+ * @description
+ * This function computes the date of the transaction from the submitted data.
+ * It will prefer changed rows over the underlying transaction, if the user changed the trans_date.
+ */
+function getTransactionDate(changedRows = {}, oldRows) {
+  // for some reason, changedRows is an object while all others are arrays.
+  // we must convert it to an array.
+  const changes = _.map(changedRows, row => row);
+
+  const rows = [...oldRows, ...changes];
+  return rows
+    .filter(row => row.trans_date)
+    .map(row => row.trans_date)
+    .pop();
+}
 
 /**
  * PUT /journal/comments
  * @param {object} params - { uuids: [...], comment: '' }
  */
 function commentPostingJournal(req, res, next) {
-  const params = req.body.params;
+  const { params } = req.body;
   const uuids = params.uuids.map(db.bid);
 
   const sql = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';

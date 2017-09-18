@@ -659,11 +659,11 @@ function getPeriodByFiscal(fiscalYearId) {
  */
 function lookupFiscalYearByDate(transDate) {
   const sql = `
-    SELECT p.fiscal_year_id, p.id, f.locked, f.note
+    SELECT p.fiscal_year_id, p.id, f.locked, f.note, f.label
     FROM period AS p
     JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
     WHERE DATE(p.start_date) <= DATE(?) AND DATE(p.end_date) >= DATE(?);
   `;
 
-  return db.exec(sql, [transDate, transDate]);
+  return db.one(sql, [transDate, transDate], transDate, 'fiscal year');
 }
