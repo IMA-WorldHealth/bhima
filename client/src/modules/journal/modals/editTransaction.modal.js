@@ -2,21 +2,33 @@ angular.module('bhima.controllers')
   .controller('JournalEditTransactionController', JournalEditTransactionController);
 
 JournalEditTransactionController.$inject = [
-  'JournalService', 'LanguageService', 'Store', 'TransactionTypeService', '$uibModalInstance',
+  'JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid',
 ];
 
-function JournalEditTransactionController(Journal, Languages, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid) {
+function JournalEditTransactionController(
+  Journal, Store, TransactionType, Modal,
+  transactionUuid, readOnly, uiGridConstants, uuid
+) {
   var gridApi = {};
   var vm = this;
+  var editColumns;
+
+  // Variables for tracking edits
+  var removedRows = [];
+  var addedRows = [];
+  var changes = {};
+
+  var footerTemplate =
+    '<div class="ui-grid-cell-contents"><span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span></div>';
 
   // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
-  vm.languages = Languages;
   vm.loadingTransaction = false;
-  vm.settupComplete = false;
+  vm.setupComplete = false;
 
   // @TODO(sfount) apply read only logic to save buttons and grid editing logic
   vm.readOnly = readOnly || false;
+
 
   vm.validation = {
     errored : false,
@@ -24,76 +36,75 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   };
 
   // @TODO(sfount) column definitions currently duplicated across journal and here
-  var editColumns = [
-    { field              : 'description',
-      displayName        : 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter   : 'translate',
-      allowCellFocus : !vm.readOnly,
-      enableCellEdit : !vm.readOnly
-    },
-
-    { field                : 'account_number',
-      displayName          : 'TABLE.COLUMNS.ACCOUNT',
-      editableCellTemplate : '<div><div ui-grid-edit-account></div></div>',
-      cellTemplate         : '/modules/journal/templates/account.cell.html',
-      enableCellEdit : !vm.readOnly,
-      allowCellFocus : !vm.readOnly,
-      headerCellFilter     : 'translate' },
-
-    { field                            : 'debit_equiv',
-      displayName                      : 'TABLE.COLUMNS.DEBIT',
-      cellClass                        : 'text-right',
-      headerCellFilter                 : 'translate',
-      type : 'number',
-      aggregationHideLabel : true,
-      enableCellEdit : !vm.readOnly,
-      allowCellFocus : !vm.readOnly,
-      aggregationType : uiGridConstants.aggregationTypes.sum },
-
-    { field                            : 'credit_equiv',
-      displayName                      : 'TABLE.COLUMNS.CREDIT',
-      cellClass                        : 'text-right',
-      headerCellFilter                 : 'translate',
-      enableFiltering : true,
-      type : 'number',
-      aggregationHideLabel : true,
-      enableCellEdit : !vm.readOnly,
-      allowCellFocus : !vm.readOnly,
-      aggregationType : uiGridConstants.aggregationTypes.sum
-    },
-    { field                : 'hrEntity',
-      displayName          : 'TABLE.COLUMNS.RECIPIENT',
-      headerCellFilter     : 'translate',
-      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
-      enableCellEdit : !vm.readOnly,
-      allowCellFocus : !vm.readOnly,
-      visible              : true },
-
-    { field            : 'hrReference',
-      displayName      : 'TABLE.COLUMNS.REFERENCE',
-      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
-      headerCellFilter : 'translate',
-      enableCellEdit : !vm.readOnly,
-      allowCellFocus : !vm.readOnly,
-      visible          : true }
-  ];
+  editColumns = [{
+    field              : 'description',
+    displayName        : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter   : 'translate',
+    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.readOnly,
+  }, {
+    field                : 'account_number',
+    displayName          : 'TABLE.COLUMNS.ACCOUNT',
+    editableCellTemplate : '<div><div ui-grid-edit-account></div></div>',
+    cellTemplate         : '/modules/journal/templates/account.cell.html',
+    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.readOnly,
+    headerCellFilter     : 'translate',
+  }, {
+    field                            : 'debit_equiv',
+    displayName                      : 'TABLE.COLUMNS.DEBIT',
+    cellClass                        : 'text-right',
+    headerCellFilter                 : 'translate',
+    type : 'number',
+    aggregationHideLabel : true,
+    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.readOnly,
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+  }, {
+    field                            : 'credit_equiv',
+    displayName                      : 'TABLE.COLUMNS.CREDIT',
+    cellClass                        : 'text-right',
+    headerCellFilter                 : 'translate',
+    enableFiltering : true,
+    type : 'number',
+    aggregationHideLabel : true,
+    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.readOnly,
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+  }, {
+    field                : 'hrEntity',
+    displayName          : 'TABLE.COLUMNS.RECIPIENT',
+    headerCellFilter     : 'translate',
+    cellTemplate : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
+    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.readOnly,
+    visible              : true,
+  }, {
+    field            : 'hrReference',
+    displayName      : 'TABLE.COLUMNS.REFERENCE',
+    cellTemplate : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
+    headerCellFilter : 'translate',
+    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.readOnly,
+    visible          : true,
+  }];
 
   vm.gridOptions = {
     columnDefs : editColumns,
     showColumnFooter : true,
     showGridFooter : true,
     appScopeProvider : vm,
-    gridFooterTemplate : '<div class="ui-grid-cell-contents"><span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span></div>',
+    gridFooterTemplate : footerTemplate,
     onRegisterApi : function (api) {
       gridApi = api;
       gridApi.edit.on.afterCellEdit(null, handleCellEdit);
-    }
+    },
   };
 
   vm.close = Modal.dismiss;
 
   // @TODO(sfount) move to component vm.dateEditorOpen = false;
-  vm.openDateEditor = function () { vm.dateEditorOpen = !vm.dateEditorOpen; }
+  vm.openDateEditor = function openDateEditor() { vm.dateEditorOpen = !vm.dateEditorOpen; };
 
   // module dependencies
   TransactionType.read()
@@ -105,7 +116,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
     .then(function (transaction) {
-      vm.settupComplete = true;
+      vm.setupComplete = true;
 
       verifyEditableTransaction(transaction);
 
@@ -141,11 +152,6 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
     }
   }
 
-  // Variables for tracking edits
-  var removedRows = [];
-  var addedRows = [];
-  var changes = {};
-
   // Editing global transaction attributes
   vm.handleTransactionTypeChange = function handleTransactionTypeChange(currentValue) {
     applyAttributeToRows('origin_id', currentValue);
@@ -163,6 +169,11 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
     addedRows.push(row.uuid);
     vm.rows.post(row);
   };
+
+  // helper function to pull out the uuid property on an array of objects
+  function mapRowUuids(uid) {
+    return { uuid : uid };
+  }
 
   vm.saveTransaction = function saveTransaction() {
     var noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
@@ -182,7 +193,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
     var transactionRequest = {
       uuid : vm.shared.record_uuid,
       newRows : { data : filterRowsByUuid(vm.rows.data, addedRows) },
-      removedRows : removedRows.map(function (uuid) { return { uuid : uuid }; })
+      removedRows : removedRows.map(mapRowUuids),
     };
 
     Journal.saveChanges(transactionRequest, changes)
@@ -195,7 +206,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
           edited : Object.keys(changes),
           added : addedRows,
           removed : removedRows,
-          updatedTransaction : transaction
+          updatedTransaction : transaction,
         };
 
         Modal.close(editSessionResult);
@@ -238,8 +249,9 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   };
 
   function handleCellEdit(rowEntity, colDef, newValue, oldValue) {
+    var isOriginalRow;
     if (oldValue !== newValue) {
-      var isOriginalRow = !contains(addedRows, rowEntity.uuid);
+      isOriginalRow = !contains(addedRows, rowEntity.uuid);
 
       if (isOriginalRow) {
         changes[rowEntity.uuid] = changes[rowEntity.uuid] || {};
@@ -251,7 +263,7 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   // Edit utilities
   function applyAttributeToRows(key, value) {
     vm.rows.data.forEach(function (row) {
-      handleCellEdit({ uuid : row.uuid }, { field : key}, value, row[key]);
+      handleCellEdit({ uuid : row.uuid }, { field : key }, value, row[key]);
       row[key] = value;
     });
   }
@@ -269,12 +281,17 @@ function JournalEditTransactionController(Journal, Languages, Store, Transaction
   // takes a transaction row and returns all parameters that are shared among the transaction
   // @TODO(sfount) rewrite method given current transaction service code
   function sharedDetails(row) {
-    var columns = ['hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date', 'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id'];
+    var columns = [
+      'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date',
+      'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id',
+    ];
+
     var shared = {};
 
     columns.forEach(function (column) {
       shared[column] = row[column];
     });
+
     return shared;
   }
 }
