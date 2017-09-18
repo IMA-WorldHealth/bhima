@@ -2,13 +2,10 @@ angular.module('bhima.controllers')
   .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'JournalService', 'GridSortingService', 'GridGroupingService',
-  'GridFilteringService', 'GridColumnService',
-  'SessionService', 'NotifyService', 'GridEditorService',
-  'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', 'FindEntityService',
-  '$rootScope', '$filter', '$translate', 'GridExportService', 'TransactionTypeService', 'GridStateService',
-  'GridSelectionService', 'TrialBalanceService',
+  'JournalService', 'GridSortingService', 'GridGroupingService', 'GridFilteringService', 'GridColumnService',
+  'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
+  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', '$translate', 'GridExportService',
+  'GridStateService', 'GridSelectionService', 'TrialBalanceService',
 ];
 
 /**
@@ -31,20 +28,19 @@ JournalController.$inject = [
  *
  * @todo Propose utility bar view design
  */
-function JournalController(Journal, Sorting, Grouping,
-  Filtering, Columns, Session, Notify, Editors,
-  bhConstants, $state, uiGridConstants, Modal, Languages, AppCache, Store,
-  uiGridGroupingConstants, Export, FindEntity, $rootScope, $filter,
-  $translate, GridExport, TransactionType, GridState, GridSelection, TrialBalance) {
-  // Journal utilities
+function JournalController(
+  Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
+  $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
+  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance
+) {
   var sorting;
   var grouping;
   var filtering;
   var columnConfig;
-  // var transactions;
   var exportation;
   var state;
   var selection;
+  var columns;
 
   // store journal data
   var journalStore = new Store({ identifier : 'uuid' });
@@ -56,8 +52,6 @@ function JournalController(Journal, Sorting, Grouping,
   // top level cache
   var cache = AppCache(cacheKey.concat('-module'));
   var vm = this;
-
-  vm.selectedRows = [];
 
   // number of all of the transactions in the system
   Journal.count()
@@ -86,19 +80,18 @@ function JournalController(Journal, Sorting, Grouping,
 
   // comment selected rows
   vm.commentRows = function commentRows() {
-
-    vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
+    var selectedRows = vm.gridApi.selection.getSelectedGridRows();
 
     Journal.openCommentModal({ rows : vm.selectedRows })
-    .then(function (comment) {
-      if (!comment) { return; }
-      updateGridComment(vm.selectedRows, comment);
-      Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
-    })
-    .catch(Notify.handleError);
+      .then(function (comment) {
+        if (!comment) { return; }
+        updateGridComment(selectedRows, comment);
+        Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
+      })
+      .catch(Notify.handleError);
   };
 
-   // update local rows
+  // update local rows
   function updateGridComment(rows, comment) {
     rows.forEach(function (row) {
       row.entity.comment = comment;
@@ -110,7 +103,8 @@ function JournalController(Journal, Sorting, Grouping,
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
 
-  sorting = new Sorting(vm.gridOptions);
+  sorting = new Sorting();
+
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
@@ -125,9 +119,6 @@ function JournalController(Journal, Sorting, Grouping,
   vm.grouping = grouping;
 
   vm.selection = selection;
-
-  // Attaching the transaction to the view
-  // vm.transactions = transactions;
 
   vm.onRemoveFilter = onRemoveFilter;
 
@@ -153,7 +144,7 @@ function JournalController(Journal, Sorting, Grouping,
    * in the journal grid. Initialise each of the journal utilities,
    * providing them access to the journal
    * configuration options :
-   *    sorting = new Sorting(vm.gridOptions);
+   *    sorting = new Sorting();
    *    grouping = new Grouping(vm.gridOptions);
    *    filtering  = new Filtering(vm.gridOptions);
    *
@@ -162,138 +153,140 @@ function JournalController(Journal, Sorting, Grouping,
    *      cause unexpected behaviour (splitting up of groups) when sorting
    *      other columns. This can be avoided by setting default sort and group.
    */
-  var columns = [
-    { field            : 'uuid',
-      displayName      : 'TABLE.COLUMNS.ID',
-      headerCellFilter : 'translate',
-      visible          : false },
+  columns = [{
+    field            : 'uuid',
+    displayName      : 'TABLE.COLUMNS.ID',
+    headerCellFilter : 'translate',
+    visible          : false,
+  }, {
+    field            : 'project_name',
+    displayName      : 'TABLE.COLUMNS.PROJECT',
+    headerCellFilter : 'translate',
+    visible          : false,
+    enableCellEdit   : false,
+  }, {
+    field            : 'period_end',
+    displayName      : 'TABLE.COLUMNS.PERIOD',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
+    visible          : false,
+  }, {
+    field            : 'trans_id',
+    displayName      : 'TABLE.COLUMNS.TRANSACTION',
+    headerCellFilter : 'translate',
+    sortingAlgorithm : sorting.transactionIds,
+    width            : 110,
+    cellTemplate     : 'modules/journal/templates/transaction-id.cell.html',
+  }, {
+    field                            : 'trans_date',
+    displayName                      : 'TABLE.COLUMNS.DATE',
+    headerCellFilter                 : 'translate',
+    cellFilter                       : 'date:"'.concat(bhConstants.dates.format, '"'),
+    filter                           : { condition: filtering.filterByDate },
+    treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
+    customTreeAggregationFinalizerFn : function (aggregation) {
+      aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
+    },
 
-    { field            : 'project_name',
-      displayName      : 'TABLE.COLUMNS.PROJECT',
-      headerCellFilter : 'translate',
-      visible          : false,
-      enableCellEdit   : false },
+    // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
+    sort : {
+      priority : 0,
+      direction : uiGridConstants.DESC,
+    },
+    footerCellTemplate : '<i></i>',
+  }, {
+    field                : 'hrRecord',
+    displayName          : 'TABLE.COLUMNS.RECORD',
+    headerCellFilter     : 'translate',
+    visible              : true,
+    cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" /></div>',
+    treeAggregationType  : uiGridGroupingConstants.aggregation.MIN,
+    treeAggregationLabel : '',
+    footerCellTemplate   : '<i></i>',
+  }, {
+    field              : 'description',
+    displayName        : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter   : 'translate',
+  }, {
+    field                : 'account_number',
+    displayName          : 'TABLE.COLUMNS.ACCOUNT',
+    cellTemplate         : '/modules/journal/templates/account.cell.html',
+    headerCellFilter     : 'translate',
+  }, {
+    field                            : 'debit_equiv',
+    type                             : 'number',
+    displayName                      : 'TABLE.COLUMNS.DEBIT',
+    headerCellFilter                 : 'translate',
+    cellClass                        : 'text-right',
+    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : function (aggregation) {
+      aggregation.rendered = aggregation.value;
+    },
+    enableFiltering : true,
+    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+  }, {
+    field                            : 'credit_equiv',
+    type                             : 'number',
+    displayName                      : 'TABLE.COLUMNS.CREDIT',
+    headerCellFilter                 : 'translate',
+    cellClass                        : 'text-right',
+    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : function (aggregation) {
+      aggregation.rendered = aggregation.value;
+    },
+    enableFiltering : true,
+    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+  }, {
+    field            : 'currencyName',
+    displayName      : 'TABLE.COLUMNS.CURRENCY',
+    headerCellFilter : 'translate',
+    visible          : false,
+  }, {
+    field            : 'debit',
+    type             : 'number',
+    displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
+    cellClass        : 'text-right',
+    headerCellFilter : 'translate',
+    visible          : false,
+    cellTemplate     : '/modules/journal/templates/debit.grid.html',
+  }, {
+    field            : 'credit',
+    type             : 'number',
+    displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
+    cellClass        : 'text-right',
+    headerCellFilter : 'translate',
+    visible          : false,
+    cellTemplate     : '/modules/journal/templates/credit.grid.html',
+  }, {
+    field                : 'hrEntity',
+    displayName          : 'TABLE.COLUMNS.RECIPIENT',
+    headerCellFilter     : 'translate',
+    cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
+    visible              : true,
+  }, {
+    field            : 'hrReference',
+    displayName      : 'TABLE.COLUMNS.REFERENCE',
+    cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
+    headerCellFilter : 'translate',
+    visible          : true,
+  }, {
+    field                : 'origin_id',
+    displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
+    headerCellFilter     : 'translate',
+    // @FIXME(sfount) transaction types relied on data in the controller that is gone
+    // cellTemplate         : '/modules/journal/templates/transaction_type.html',
+    visible              : false,
+  }, {
+    field            : 'display_name',
+    displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
+    headerCellFilter : 'translate',
+    visible          : false,
+  }, {
+    field            : 'comment',
+    displayName      : 'FORM.LABELS.COMMENT',
+    headerCellFilter : 'translate',
+  }];
 
-    { field            : 'period_end',
-      displayName      : 'TABLE.COLUMNS.PERIOD',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
-      visible          : false },
-
-    { field            : 'trans_id',
-      displayName      : 'TABLE.COLUMNS.TRANSACTION',
-      headerCellFilter : 'translate',
-      sortingAlgorithm : sorting.transactionIds,
-      width            : 110,
-      cellTemplate     : 'modules/journal/templates/transaction-id.cell.html' },
-
-    { field                            : 'trans_date',
-      displayName                      : 'TABLE.COLUMNS.DATE',
-      headerCellFilter                 : 'translate',
-      cellFilter                       : 'date:"' + bhConstants.dates.format + '"',
-      filter                           : { condition: filtering.filterByDate },
-      treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
-      customTreeAggregationFinalizerFn : function (aggregation) {
-        aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
-      },
-      // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
-      sort : {
-        priority : 0,
-        direction : uiGridConstants.DESC
-      },
-      footerCellTemplate : '<i></i>' },
-
-    { field                : 'hrRecord',
-      displayName          : 'TABLE.COLUMNS.RECORD',
-      headerCellFilter     : 'translate',
-      visible              : true,
-      cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" /></div>',
-      treeAggregationType  : uiGridGroupingConstants.aggregation.MIN,
-      treeAggregationLabel : '',
-      footerCellTemplate   : '<i></i>' },
-
-    { field              : 'description',
-      displayName        : 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter   : 'translate',
-      footerCellTemplate : '<i></i>' },
-
-    { field                : 'account_number',
-      displayName          : 'TABLE.COLUMNS.ACCOUNT',
-      cellTemplate         : '/modules/journal/templates/account.cell.html',
-      headerCellFilter     : 'translate',
-    }, {
-      field                            : 'debit_equiv',
-      type                             : 'number',
-      displayName                      : 'TABLE.COLUMNS.DEBIT',
-      headerCellFilter                 : 'translate',
-      cellClass                        : 'text-right',
-      treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-      customTreeAggregationFinalizerFn : function (aggregation) {
-        aggregation.rendered = aggregation.value;
-      },
-      enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' },
-
-    { field                            : 'credit_equiv',
-      type                             : 'number',
-      displayName                      : 'TABLE.COLUMNS.CREDIT',
-      headerCellFilter                 : 'translate',
-      cellClass                        : 'text-right',
-      treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-      customTreeAggregationFinalizerFn : function (aggregation) {
-        aggregation.rendered = aggregation.value;
-      },
-      enableFiltering : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id' },
-
-    { field            : 'currencyName',
-      displayName      : 'TABLE.COLUMNS.CURRENCY',
-      headerCellFilter : 'translate',
-      visible          : false },
-
-    { field            : 'debit',
-      type             : 'number',
-      displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
-      cellClass        : 'text-right',
-      headerCellFilter : 'translate',
-      visible          : false,
-      cellTemplate     : '/modules/journal/templates/debit.grid.html' },
-
-    { field            : 'credit',
-      type             : 'number',
-      displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
-      cellClass        : 'text-right',
-      headerCellFilter : 'translate',
-      visible          : false,
-      cellTemplate     : '/modules/journal/templates/credit.grid.html' },
-
-    { field                : 'hrEntity',
-      displayName          : 'TABLE.COLUMNS.RECIPIENT',
-      headerCellFilter     : 'translate',
-      cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
-      visible              : true },
-
-    { field            : 'hrReference',
-      displayName      : 'TABLE.COLUMNS.REFERENCE',
-      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
-      headerCellFilter : 'translate',
-      visible          : true },
-
-    { field                : 'origin_id',
-      displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
-      headerCellFilter     : 'translate',
-      // @FIXME(sfount) transaction types relied on data in the controller that is gone
-      // cellTemplate         : '/modules/journal/templates/transaction_type.html',
-      visible              : false },
-
-    { field            : 'display_name',
-      displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
-      headerCellFilter : 'translate',
-      visible          : false },
-    { field            : 'comment',
-      displayName      : 'TABLE.COLUMNS.COMMENT',
-      headerCellFilter : 'translate' },
-  ];
   vm.gridOptions.columnDefs = columns;
 
   vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -385,7 +378,6 @@ function JournalController(Journal, Sorting, Grouping,
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
 
-    // @fixme
     Journal.grid(null, options)
       .then(function (records) {
         // number of transactions downloaded and shown in the current journal
@@ -459,7 +451,7 @@ function JournalController(Journal, Sorting, Grouping,
       totalRows : totalRows,
       totalPosted : totalPosted,
       totalNonPosted : totalNonPosted,
-      remainingSystemTransactions : remainingSystemTransactions
+      remainingSystemTransactions : remainingSystemTransactions,
     };
   }
 
@@ -564,7 +556,7 @@ function JournalController(Journal, Sorting, Grouping,
 
   // TODO(@jniles) rename this method and migrate all code to it
   // looks up the Record UUID from a Transaction ID
-  function lookupIntermediateRecordUuid(transID) {
-    return transactionIdToRecordUuidMap[transID];
+  function lookupIntermediateRecordUuid(transId) {
+    return transactionIdToRecordUuidMap[transId];
   }
 }
