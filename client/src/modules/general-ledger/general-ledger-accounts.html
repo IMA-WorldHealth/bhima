@@ -12,22 +12,22 @@
           <a class="btn btn-default" uib-dropdown-toggle>
             <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
           </a>
-          
+
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
               <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openFiscalYearConfiguration()">
                 <i class="fa fa-calendar"></i> <span translate>FISCAL.FISCAL_YEAR</span>
               </a>
-            </li> 
+            </li>
 
-            <li role="separator" class="divider"></li>          
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openColumnConfiguration()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
-            </li> 
+            </li>
 
-            <li role="separator" class="divider"></li>  
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a href data-method="save-state" ng-click="GeneralLedgerAccountsCtrl.saveGridState()">
                 <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
@@ -46,11 +46,18 @@
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
+
+            <li role="menuitem">
+              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerAccountsCtrl.download('xlsx', GeneralLedgerAccountsCtrl.filters) }}" download="{{GeneralLedgerAccountsCtrl.fiscalYearLabel | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
+
             <li role="menuitem">
               <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerAccountsCtrl.download('csv', GeneralLedgerAccountsCtrl.filters) }}" download="{{ GeneralLedgerAccountsCtrl.fiscalYearLabel | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
-            </li>                               
+            </li>
           </ul>
         </div>
       </div>

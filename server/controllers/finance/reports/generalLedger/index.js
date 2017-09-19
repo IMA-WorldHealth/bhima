@@ -57,7 +57,11 @@ function renderReport(req, res, next) {
       return report.render(data);
     })
     .then((result) => {
-      res.set(result.headers).send(result.report);
+      if(result.headers.type ==='xlsx'){
+        res.xls(result.headers.filename, result.report.rows);
+      }else{
+        res.set(result.headers).send(result.report);
+      }
     })
     .catch(next)
     .done();

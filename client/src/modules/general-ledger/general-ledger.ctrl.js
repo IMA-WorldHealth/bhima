@@ -217,9 +217,10 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping,
   }
 
   // display the journal printable report of selected transactions
-  vm.openJournalReport = function openJournalReport() {
+  vm.openJournalReport = function openJournalReport(renderer) {
     var url = '/reports/finance/posted_journal';
-    var params = formatExportParameters('pdf');
+    var renderer_ = renderer || pdf;
+    var params = formatExportParameters(renderer_);
 
     if (!params) { return; }
 
