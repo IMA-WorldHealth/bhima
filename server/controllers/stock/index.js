@@ -236,7 +236,7 @@ function depotMovement(document, params) {
 
     isWarehouse = !!(parameters.from_depot_is_warehouse);
 
-    // track distribution to patient
+    // track distribution to other depot from a warehouse
     if (record.is_exit && isWarehouse) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,

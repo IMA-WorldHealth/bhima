@@ -78,6 +78,7 @@
     },
     "RECEIVER"        : "Recepteur",
     "RECEPTION_TRANSFER" : "Transfert",
+    "RECEPTION_DESCRIPTION" : "Reception de stock",
     "RESPONSIBLE"     : "Gestionnaire du stock",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",

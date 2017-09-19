@@ -331,7 +331,7 @@ function StockEntryController(
       from_depot : vm.movement.entity.instance.depot_uuid,
       to_depot : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
-      date : vm.movement.entity.instance.date,
+      date : vm.movement.date,
       description : vm.movement.entity.instance.description,
       isExit : false,
       user_id : Session.user.id,
