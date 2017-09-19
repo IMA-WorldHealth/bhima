@@ -112,10 +112,8 @@
 
          <!-- "Component Add number of grid rows" input-group -->
           <bh-add-item
-            item-increment = "PatientInvoiceCtrl.itemIncrement"
-            name = "add_item_invoice"
-            recipient = "PatientInvoiceCtrl.Invoice.recipient"
-            on-change = "PatientInvoiceCtrl.addItems(item)">
+            disable = "PatientInvoiceCtrl.Invoice.recipient"
+            callback = "PatientInvoiceCtrl.addItems(numItem)">
           </bh-add-item> 
 
           <!-- @todo - hacky check for inventory to prevent local variables -->

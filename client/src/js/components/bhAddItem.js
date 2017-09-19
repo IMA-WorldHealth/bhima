@@ -4,11 +4,8 @@ angular.module('bhima.components')
     controller  : addItemController,
     transclude  : true,
     bindings    : {
-      itemIncrement    : '<',
-      recipient        : '<',
-      disable          : '<?',
-      onChange         : '&?',
-      name             : '@?',
+      disable          : '<',
+      callback         : '&?',
     },
   });
 
@@ -23,13 +20,16 @@ function addItemController() {
 
   $ctrl.$onInit = function onInit() {    
     // default for form name
-    $ctrl.name = $ctrl.name || 'AddItemForm';
+    $ctrl.name = 'AddItemForm';
+    
+    // default value for incrementation
+    $ctrl.itemIncrement = 1;
   };
 
-  // fires the onSelectCallback bound to the component boundary
+  // fires the Callback bound to the component boundary
   $ctrl.addItems = function ($item) {
     if ($item > 0) {
-      $ctrl.onChange({ item : $item });  
+      $ctrl.callback({ numItem : $item });  
     }
   };
 }

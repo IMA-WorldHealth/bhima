@@ -105,10 +105,8 @@
 
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item
-            item-increment = "StockCtrl.itemIncrement"
-            name = "add_item_exit"
-            recipient = "StockCtrl.movement.exit_type"
-            on-change = "StockCtrl.addItems(item)">
+            disable = "StockCtrl.movement.exit_type"
+            callback = "StockCtrl.addItems(numItem)">
           </bh-add-item>
 
         </div>

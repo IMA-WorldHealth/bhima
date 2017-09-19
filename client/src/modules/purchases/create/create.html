@@ -135,10 +135,8 @@
 
         <!-- "Add number of grid rows" input-group -->
         <bh-add-item
-          item-increment = "PurchaseCtrl.itemIncrement"
-          name = "add_item_purchase"
-          recipient = "PurchaseCtrl.supplier"
-          on-change = "PurchaseCtrl.addItems(item)">
+          disable = "PurchaseCtrl.supplier"
+          callback = "PurchaseCtrl.addItems(numItem)">
         </bh-add-item>
 
 
