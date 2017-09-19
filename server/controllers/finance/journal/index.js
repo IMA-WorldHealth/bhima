@@ -533,13 +533,13 @@ function getTransactionDate(changedRows = {}, oldRows) {
  * @param {object} params - { uuids: [...], comment: '' }
  */
 function commentPostingJournal(req, res, next) {
-  const { uids, comment } = req.body.params;
-  const uuids = uids.map(db.bid);
+  const { uuids, comment } = req.body.params;
+  const uids = uuids.map(db.bid);
   const sql = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
 
-  db.exec(sql, [comment, [uuids]])
+  db.exec(sql, [comment, [uids]])
     .then((rows) => {
-      const updatedWithSuccess = rows.affectedRows && rows.affectedRows === uuids.length;
+      const updatedWithSuccess = rows.affectedRows && rows.affectedRows === uids.length;
 
       if (!updatedWithSuccess) {
         throw new BadRequest('Error on update posting journal comment.');

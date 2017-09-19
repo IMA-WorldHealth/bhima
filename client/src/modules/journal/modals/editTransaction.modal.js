@@ -130,8 +130,7 @@ function JournalEditTransactionController(
       vm.shared = sharedDetails(vm.rows.data[0]);
       vm.gridOptions.data = vm.rows.data;
     })
-    .catch(function (error) {
-      console.error(error);
+    .catch(function () {
       vm.hasError = true;
     })
     .finally(function () {
@@ -201,6 +200,7 @@ function JournalEditTransactionController(
     Journal.saveChanges(transactionRequest, changes)
       .then(function (resultUpdatedTransaction) {
         var transaction = new Store({ identifier : 'uuid' });
+
         transaction.setData(resultUpdatedTransaction);
 
         // collapse information for the module that might expect to apply optimistic updates
@@ -285,7 +285,7 @@ function JournalEditTransactionController(
   function sharedDetails(row) {
     var columns = [
       'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date',
-      'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id',
+      'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
     ];
 
     var shared = {};
