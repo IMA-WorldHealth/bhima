@@ -47,14 +47,14 @@ function createStock(req, res, next) {
     date : new Date(params.date),
     user : req.session.user.id,
     depot_uuid : params.depot_uuid,
-    flux_id : params.flux_id
+    flux_id : params.flux_id,
+    description : params.description,
   };
-  
+
   let createLotQuery;
   let createMovementQuery;
   let createLotObject;
   let createMovementObject;
-  let commonInfos;
   let date;
 
   params.lots.forEach((lot) => {
@@ -92,6 +92,7 @@ function createStock(req, res, next) {
       unit_cost     : lot.unit_cost,
       is_exit       : 0,
       user_id       : document.user,
+      description   : document.description,
     };
 
     // adding a lot insertion query into the transaction
@@ -99,16 +100,20 @@ function createStock(req, res, next) {
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(createMovementQuery, [createMovementObject]);
-
-    // An arry of common info, to send to the store procedure in order to insert to the posting journal
-    commonInfos = [ db.bid(document.uuid), document.date, req.session.enterprise.id, req.session.project.id, req.session.enterprise.currency_id, document.user ];
-
-    // writting all records relative to the movement in the posting journal table
-    transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
-
-    // transaction - movement reference
-    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
+
+  // An arry of common info, to send to the store procedure in order to insert to the posting journal
+  const commonInfos = [
+    db.bid(document.uuid), document.date,
+    req.session.enterprise.id, req.session.project.id,
+    req.session.enterprise.currency_id, document.user,
+  ];
+
+  // writting all records relative to the movement in the posting journal table
+  transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
+
+  // transaction - movement reference
+  transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
 
   // execute all operations as one transaction
   transaction.execute()
