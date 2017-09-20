@@ -569,14 +569,20 @@ function document(req, res, next) {
 
     // Removing duplicates
     const cacheIncome = {};
-    session.summationIncome[period] = session.summationIncome[period].filter((elem, index) => {
-      return cacheIncome[elem.transfer_type] ? 0 : cacheIncome[elem.transfer_type] = 1;
+    session.summationIncome[period] = session.summationIncome[period].filter((elem) => {
+      const hasElement = cacheIncome[elem.transfer_type];
+      if (hasElement) {
+        return false;
+      }
+
+      cacheIncome[elem.transfer_type] = 1;
+      return true;
     });
 
     // Expense
     if (expenses) {
       expenses.forEach((item) => {
-        if(item.origin_id){
+        if (item.origin_id) {
           const value = expenses.reduce((a, b) => {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
@@ -591,9 +597,15 @@ function document(req, res, next) {
     }
 
     // Removing duplicates
-    let cacheExpense = {};
-    session.summationExpense[period] = session.summationExpense[period].filter(function(elem, index, array) {
-      return cacheExpense[elem.transfer_type] ? 0 : cacheExpense[elem.transfer_type] = 1;
+    const cacheExpense = {};
+    session.summationExpense[period] = session.summationExpense[period].filter((elem) => {
+      const hasElement = cacheExpense[elem.transfer_type];
+      if (hasElement) {
+        return false;
+      }
+
+      cacheExpense[elem.transfer_type] = 1;
+      return true;
     });
   }
 }

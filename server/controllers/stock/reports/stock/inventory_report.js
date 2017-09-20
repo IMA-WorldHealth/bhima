@@ -1,5 +1,5 @@
 const {
-  _, db, ReportManager, Stock, pdfOptions, STOCK_INVENTORY_REPORT_TEMPLATE
+  _, db, ReportManager, Stock, pdfOptions, STOCK_INVENTORY_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -17,7 +17,7 @@ function stockInventoryReport(req, res, next) {
   let report;
 
   const optionReport = _.extend(req.query, pdfOptions, {
-    filename : 'TREE.STOCK_INVENTORY_REPORT'
+    filename : 'TREE.STOCK_INVENTORY_REPORT',
   });
 
   // set up the report with report manager

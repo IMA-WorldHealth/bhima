@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE
+  _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE,
 } = require('../common');
 
 /**

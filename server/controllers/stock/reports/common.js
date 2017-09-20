@@ -73,7 +73,7 @@ function formatFilters(qs) {
  */
 function getDepotMovement(documentUuid, enterprise, isExit) {
   const data = {};
-  const is_exit = isExit ? 1 : 0;
+  const isExitValue = isExit ? 1 : 0;
   const sql = `
         SELECT
           i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -96,7 +96,11 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
         WHERE
           m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
-  return db.exec(sql, [is_exit, isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)])
+  return db.exec(sql, [
+    isExitValue,
+    isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT,
+    db.bid(documentUuid),
+  ])
     .then((rows) => {
       if (!rows.length) {
         throw new NotFound('document not found for exit');
@@ -118,7 +122,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
       };
 
       data.rows = rows;
-      return data ;
+      return data;
     });
 }
 
@@ -127,7 +131,7 @@ const pdfOptions = {
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
   footerFontSize : '8',
-}
+};
 
 // Exports
 exports._ = _;

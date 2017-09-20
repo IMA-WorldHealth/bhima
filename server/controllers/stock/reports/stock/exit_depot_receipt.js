@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, getDepotMovement, STOCK_EXIT_DEPOT_TEMPLATE
+  _, ReportManager, getDepotMovement, STOCK_EXIT_DEPOT_TEMPLATE,
 } = require('../common');
 
 /**
