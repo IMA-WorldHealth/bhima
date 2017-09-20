@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ENTRY_DONATION_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, STOCK_ENTRY_DONATION_TEMPLATE,
 } = require('../common');
 
 /**
@@ -64,6 +64,12 @@ function stockEntryDonationReceipt(req, res, next) {
       };
 
       data.rows = rows;
+
+      // sum elements of rows by their `total` property
+      data.total = data.rows.reduce((aggregate, row) => {
+        return row.total + aggregate;
+      }, 0);
+
       return report.render(data);
     })
     .then((result) => {

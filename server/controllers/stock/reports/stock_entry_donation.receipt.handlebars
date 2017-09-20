@@ -77,13 +77,13 @@
           <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=9}}
+        {{> emptyTable columns=7}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
         <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        <td class="text-right">{{currency total enterprise.currency_id}}</td>
       </tr>
     </tfoot>
   </table>
