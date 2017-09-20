@@ -1,3 +1,8 @@
-{"DOWNLOADS":{"JSON":"Télécharger en JSON",
-"PDF":"Télécharger en PDF",
-"CSV":"Télécharger en CSV"}}
+{
+  "DOWNLOADS": {
+    "JSON":"Télécharger en JSON",
+    "PDF":"Télécharger en PDF",
+    "CSV":"Télécharger en CSV",
+    "EXCEL":  "Télécharger en Excel"
+  }
+}

@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE
+  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -19,7 +19,7 @@ function stockMovementsReport(req, res, next) {
   const data = {};
   let report;
   const optionReport = _.extend(req.query, pdfOptions, {
-    filename : 'TREE.STOCK_MOVEMENTS'
+    filename : 'TREE.STOCK_MOVEMENTS',
   });
 
   // set up the report with report manager

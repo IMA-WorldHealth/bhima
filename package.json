@@ -55,6 +55,7 @@
     "express": "^4.13.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.4",
+    "json2xls":"^0.1.2",
     "gulp-merge-json": "^1.1.0",
     "helmet": "^3.8.0",
     "ioredis": "^3.1.2",

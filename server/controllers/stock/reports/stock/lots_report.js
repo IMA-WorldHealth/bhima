@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_LOTS_REPORT_TEMPLATE
+  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_LOTS_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -20,7 +20,7 @@ function stockLotsReport(req, res, next) {
   let report;
 
   const optionReport = _.extend(req.query, pdfOptions, {
-    filename : 'TREE.STOCK_LOTS'
+    filename : 'TREE.STOCK_LOTS',
   });
 
   // set up the report with report manager

@@ -38,6 +38,7 @@ const renderers = {
   html : require('./renderers/html'),
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
+  xlsx  : require('./renderers/xlsx'),
 };
 
 // default report configuration
@@ -149,6 +150,7 @@ class ReportManager {
         const fileDate = (new Date()).toLocaleDateString();
         const formattedName = `${translatedName} ${fileDate}`;
         renderHeaders['Content-Disposition'] = `filename=${formattedName}${renderer.extension}`;
+        renderHeaders.filename = `${formattedName}${renderer.extension}`;
       }
 
       // FIXME this branching logic should be promised based
