@@ -2,14 +2,11 @@ angular.module('bhima.components')
   .component('bhAddItem', {
     templateUrl : 'modules/templates/bhAddItem.tmpl.html',
     controller  : addItemController,
-    transclude  : true,
     bindings    : {
-      disable          : '<',
-      callback         : '&?',
+      disable     : '<',
+      Callback    : '&',
     },
   });
-
-addItemController.$inject = [];
 
 /**
  * Add Item component
