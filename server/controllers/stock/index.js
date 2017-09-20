@@ -395,6 +395,9 @@ function createIntegration(req, res, next) {
 
     // writting all records relative to the movement in the posting journal table
     transaction.addQuery('CALL PostIntegration(?)', [commonInfos]);
+
+    // transaction - movement reference
+    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
   });
 
   // execute all operations as one transaction
