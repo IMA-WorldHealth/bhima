@@ -110,25 +110,11 @@
             </button>
           </div>
 
-          <!-- "Add number of grid rows" input-group -->
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button
-                id="btn-add-rows"
-                type="button"
-                class="btn btn-default"
-                ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
-                ng-click="PatientInvoiceCtrl.addItems(PatientInvoiceCtrl.itemIncrement)">
-                <i class="fa fa-plus-circle"></i> <span translate>FORM.BUTTONS.ADD</span>
-              </button>
-            </span>
-            <input
-              type="number"
-              class="form-control"
-              ng-model="PatientInvoiceCtrl.itemIncrement"
-              style="max-width : 40px;"
-              ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
-          </div>
+         <!-- "Component Add number of grid rows" input-group -->
+          <bh-add-item
+            disable = "PatientInvoiceCtrl.Invoice.recipient"
+            callback = "PatientInvoiceCtrl.addItems(numItem)">
+          </bh-add-item> 
 
           <!-- @todo - hacky check for inventory to prevent local variables -->
           <p

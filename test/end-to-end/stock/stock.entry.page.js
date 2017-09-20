@@ -62,8 +62,7 @@ function StockEntryPage() {
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    FU.input('StockCtrl.itemIncrement', n);
-    element(by.css('[id="btn-add-rows"]')).click();
+    components.addItem.set(n);
   };
 
   /**

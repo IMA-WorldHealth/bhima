@@ -93,24 +93,11 @@
         </p>
 
         <!-- "Add number of grid rows" input-group -->
-        <div class="input-group">
-          <span class="input-group-btn">
-            <button
-              type="button"
-              id="btn-add-rows"
-              class="btn btn-default"
-              ng-disabled="!StockCtrl.movement.entry_type || StockCtrl.movement.entry_type === 'purchase'"
-              ng-click="StockCtrl.addItems(StockCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> <span translate>FORM.BUTTONS.ADD</span>
-            </button>
-          </span>
-          <input
-            type="number"
-            class="form-control"
-            ng-model="StockCtrl.itemIncrement"
-            style="max-width : 40px;"
-            ng-disabled="!StockCtrl.movement.entry_type">
-          </div>
+        <bh-add-item
+          disable = "StockCtrl.entryOption"
+          callback = "StockCtrl.addItems(numItem)">
+        </bh-add-item>
+
       </div>
     </div>
 

@@ -46,6 +46,8 @@ function StockEntryController(
   vm.setLots = setLots;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
+  vm.entryOption = false;
+
 
   // grid options
   var gridOptions = {
@@ -96,6 +98,8 @@ function StockEntryController(
   function selectEntryType(entryType) {
     vm.movement.entry_type = entryType.label;
     mapEntry[entryType.label].find();
+    
+    vm.entryOption = entryType && entryType.label !== 'purchase';
   }
 
   // configure items

@@ -134,23 +134,11 @@
         </div>
 
         <!-- "Add number of grid rows" input-group -->
-        <div class="input-group">
-          <span class="input-group-btn">
-            <button
-              id="btn-add-rows"
-              class="btn btn-default"
-              ng-disabled="!PurchaseCtrl.supplier"
-              ng-click="PurchaseCtrl.addItems(PurchaseCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
-            </button>
-          </span>
-          <input
-            type="number"
-            class="form-control"
-            ng-model="PurchaseCtrl.itemIncrement"
-            style="max-width : 40px;"
-            ng-disabled="!PurchaseCtrl.supplier">
-          </div>
+        <bh-add-item
+          disable = "PurchaseCtrl.supplier"
+          callback = "PurchaseCtrl.addItems(numItem)">
+        </bh-add-item>
+
 
         <!-- @todo - hacky check for inventory to prevent local variables -->
         <p
