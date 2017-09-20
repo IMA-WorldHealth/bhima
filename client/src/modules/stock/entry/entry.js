@@ -6,7 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
   'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
-  '$translate',
+  'uuid', '$translate',
 ];
 
 /**
@@ -17,7 +17,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, $translate
+  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
   var vm = this;
   var inventoryStore;
@@ -26,8 +26,8 @@ function StockEntryController(
 
   var mapEntry = {
     purchase    : { find : findPurchase, submit : submitPurchase },
-    donation    : { find : handleSelection, submit : submitDonation },
-    integration : { find : handleSelection, submit : submitIntegration },
+    donation    : { find : handleDonationSelection, submit : submitDonation },
+    integration : { find : handleIntegrationSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
 
@@ -195,8 +195,14 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  function handleSelection() {
-    initSelectedEntity();
+  function handleIntegrationSelection() {
+    var description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
+    initSelectedEntity(description);
+  }
+
+  function handleDonationSelection() {
+    var description = $translate.instant('STOCK.RECEPTION_DONATION');
+    initSelectedEntity(description);
   }
 
   // populate the grid
@@ -217,9 +223,10 @@ function StockEntryController(
     });
   }
 
-  function initSelectedEntity() {
+  function initSelectedEntity(description) {
     vm.displayName = '';
     vm.reference = '';
+    vm.movement.description = description;
   }
 
   function setSelectedEntity(entity) {

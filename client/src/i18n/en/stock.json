@@ -81,6 +81,8 @@
     "RECEIVER"        : "Recepteur",
     "RECEPTION_TRANSFER" : "Transfer",
     "RECEPTION_DESCRIPTION" : "Stock Reception",
+    "RECEPTION_INTEGRATION" : "Stock Entry by Integration",
+    "RECEPTION_DONATION" : "Stock Entry from a donation",
     "RESPONSIBLE"     : "Stock Manager",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
