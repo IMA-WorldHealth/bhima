@@ -27,15 +27,16 @@
 
           <table class="table table-condensed">
             <thead>
-              <tr ng-if="PriceListCtrl.loading" class="text-center">
-                <td colspan="3"><loading-indicator></loading-indicator></td>
-              </tr>
+
               <tr>
                 <th translate> TABLE.COLUMNS.DESCRIPTION </th>
                 <th colspan="2" style="width: 20%;" translate> TABLE.COLUMNS.ACTION </th>
               </tr>
             </thead>
             <tbody>
+               <tr ng-if="PriceListCtrl.loading" class="text-center">
+                <td colspan="3"><loading-indicator></loading-indicator></td>
+              </tr>
               <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
                 <td> {{ list.label }} </td>
                 <td colspan="2">
