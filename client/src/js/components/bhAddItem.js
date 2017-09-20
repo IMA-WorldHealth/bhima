@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : addItemController,
     bindings    : {
       disable     : '<',
-      Callback    : '&',
+      callback    : '&',
     },
   });
 
