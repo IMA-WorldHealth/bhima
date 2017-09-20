@@ -26,8 +26,8 @@ function StockEntryController(
 
   var mapEntry = {
     purchase    : { find : findPurchase, submit : submitPurchase },
-    donation    : { find : angular.noop, submit : angular.noop },  // donation is not yet implemented
-    integration : { find : handleIntegrationSelection, submit : submitIntegration },
+    donation    : { find : handleSelection, submit : submitDonation },
+    integration : { find : handleSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
 
@@ -195,7 +195,7 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  function handleIntegrationSelection() {
+  function handleSelection() {
     initSelectedEntity();
   }
 
@@ -327,6 +327,35 @@ function StockEntryController(
         vm.Stock.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+      })
+      .catch(Notify.handleError);
+  }
+
+  // submit donation
+  function submitDonation() {
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : null,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      flux_id     : bhConstants.flux.FROM_DONATION,
+      user_id     : Session.user.id,
+    };
+
+    /*
+      the origin_uuid of lots is set on the client
+      because donation table depends on donor, and donor management
+      is not yet implemented in the application
+
+      TODO: add a donor management module
+    */
+    movement.lots = processLotsFromStore(vm.Stock.store.data, Uuid());
+
+    return Stock.stocks.create(movement)
+      .then(function (document) {
+        vm.Stock.store.clear();
+        vm.movement = {};
+        ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
       })
       .catch(Notify.handleError);
   }
