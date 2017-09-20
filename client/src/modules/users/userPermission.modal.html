@@ -7,9 +7,11 @@
         <label class="badge badge-warning">{{ UserPermissionModalCtrl.user.display_name }} ({{ UserPermissionModalCtrl.user.username }})</label>
       </li>
     </ol>
-  </div>
 
+
+  </div>
   <div class="modal-body">
+
     <ul class="list-group" style="max-height: 70vh; overflow:auto;">
       <li class="list-group-item">
         <div class="checkbox">
@@ -17,6 +19,12 @@
             <input type="checkbox" ng-model="UserPermissionModalCtrl.super" ng-change="UserPermissionModalCtrl.toggleSuperUserPermissions(UserPermissionModalCtrl.super)">
             <b>{{ "USERS.SUPER" | translate }}</b>
           </label>
+        </div>
+      </li>
+      <li class="list-group-item" ng-show="UserPermissionModalCtrl.loading">
+        <div class="msg text-center">
+          <span><span class="fa fa-circle-o-notch  fa-spin"></span>
+          <b> <span translate>TABLE.COLUMNS.LOADING</span></b></span>
         </div>
       </li>
       <li ng-repeat="unit in UserPermissionModalCtrl.units" class="list-group-item">

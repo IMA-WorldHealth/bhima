@@ -26,6 +26,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
   vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
   vm.toggleParents = toggleParents;
   vm.closeModal = closeModal;
+  vm.loading = true;
 
   // loads the permissions tree for a given user.
   function editPermissions(user) {
@@ -63,7 +64,10 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
 
         vm.units = units;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // used in the view to set permission's tree padding based on depth
