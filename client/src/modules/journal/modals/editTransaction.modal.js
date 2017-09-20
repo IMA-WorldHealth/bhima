@@ -3,12 +3,11 @@ angular.module('bhima.controllers')
 
 JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance',
-  'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid',
+  'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util',
 ];
 
 function JournalEditTransactionController(
-  Journal, Store, TransactionType, Modal,
-  transactionUuid, readOnly, uiGridConstants, uuid
+  Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid, util
 ) {
   var gridApi = {};
   var vm = this;
@@ -19,6 +18,14 @@ function JournalEditTransactionController(
   var addedRows = [];
   var changes = {};
 
+  // must have transaction_type for certain cases
+  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
+  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
+  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
+  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
+  var ERROR_NEGATIVE_VALUES = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_VALUES'
+  var ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
+
   var footerTemplate =
     '<div class="ui-grid-cell-contents"><span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span></div>';
 
@@ -28,7 +35,6 @@ function JournalEditTransactionController(
 
   // @TODO(sfount) apply read only logic to save buttons and grid editing logic
   vm.readOnly = readOnly || false;
-
 
   vm.validation = {
     errored : false,
@@ -137,6 +143,77 @@ function JournalEditTransactionController(
       vm.loadingTransaction = false;
     });
 
+  /**
+   * @function offlineTransactionValidation
+   *
+   * @description
+   * This function validates transactions without doing a round-trip to the server.  It implements some simple checks
+   * such as:
+   *  1. Making sure a transaction has multiple lines
+   *  2. Make sure a transaction is balanced
+   *  3. Making sure a transaction involves at least two accounts
+   *  4. Making sure a transaction has a transaction_type associated with it.
+   *  5. Make sure both the debits and credits are defined and not equal to each other.
+   *
+   * If any of these checks fail, the transaction submission is aborted until the user corrects those mistakes.
+   */
+  function offlineTransactionValidation(rows) {
+    var hasSingleLine = rows.length < 2;
+    if (hasSingleLine) {
+      return ERROR_SINGLE_ROW_TRANSACTION;
+    }
+
+    var debits = 0;
+    var credits = 0;
+
+    var i = rows.length;
+    var row;
+    while (i--) {
+      row = rows[i];
+
+      var hasTransactionType = typeof row.origin_id === 'number';
+      if (!hasTransactionType) {
+        return ERROR_MISSING_TRANSACTION_TYPE;
+      }
+
+      var hasNegativeNumbers = (row.debit_equiv < 0 || row.credit_equiv < 0);
+      if (hasNegativeNumbers) {
+        return ERROR_NEGATIVE_NUMBERS;
+      }
+
+      window.util = util;
+
+      var hasSingleNumericValue = !util.xor(Boolean(row.debit_equiv), Boolean(row.credit_equiv));
+      if (hasSingleNumericValue) {
+        return ERROR_INVALID_DEBITS_AND_CREDITS;
+      }
+
+      credits += row.credit_equiv;
+      debits += row.debit_equiv;
+    }
+
+    var uniqueAccountsArray = rows
+      .map(function (row) {
+        return row.account_id;
+      })
+      .filter(function (accountId, index, array) {
+        return array.indexOf(accountId) === index;
+      });
+
+    var hasSingleAccount = uniqueAccountsArray.length === 1;
+    if (hasSingleAccount) {
+      return ERROR_SINGLE_ACCOUNT_TRANSACTION;
+    }
+
+    var hasImbalancedTransaction = Number(debits.toFixed('2')) !== Number(credits.toFixed('2'));
+    if (hasImbalancedTransaction) {
+      return ERROR_IMBALANCED_TRANSACTION;
+    }
+
+    return false;
+  }
+
+
   function verifyEditableTransaction(transaction) {
     var posted = transaction[0].posted;
 
@@ -184,10 +261,13 @@ function JournalEditTransactionController(
       return;
     }
 
-    // reset error validation
-    vm.validation.errored = false;
-    vm.validation.message = null;
-    vm.saving = true;
+    // run local validation before submission
+    var offlineErrors = offlineTransactionValidation(vm.rows.data);
+    if (offlineErrors) {
+      vm.validation.errored = true;
+      vm.validation.message = offlineErrors;
+      return;
+    }
 
     // building object to conform to legacy API
     // @FIXME(sfount) update journal service API for human readable interface
@@ -196,6 +276,13 @@ function JournalEditTransactionController(
       newRows : { data : filterRowsByUuid(vm.rows.data, addedRows) },
       removedRows : removedRows.map(mapRowUuids),
     };
+
+
+    // reset error validation
+    vm.validation.errored = false;
+    vm.validation.message = null;
+    vm.saving = true;
+
 
     Journal.saveChanges(transactionRequest, changes)
       .then(function (resultUpdatedTransaction) {

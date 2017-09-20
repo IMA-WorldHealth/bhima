@@ -35,22 +35,27 @@ describe('Edit Posting Journal', () => {
     GU.selectRow(gridId, 0);
     FU.buttons.edit();
 
-    const debitCell = GU.getCell(editingGridId, 0, 2);
-    const creditCell = GU.getCell(editingGridId, 1, 3);
+    const debitCellA = GU.getCell(editingGridId, 0, 2);
+    const creditCellA = GU.getCell(editingGridId, 0, 3);
+    const debitCellB = GU.getCell(editingGridId, 1, 2);
+    const creditCellB = GU.getCell(editingGridId, 1, 3);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(150);
+    doubleClick(debitCellA);
+    debitCellA.element(by.css('input')).sendKeys(150);
+    doubleClick(creditCellA);
+    creditCellA.element(by.css('input')).sendKeys(0);
 
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(150);
+    doubleClick(debitCellB);
+    debitCellB.element(by.css('input')).sendKeys(0);
+    doubleClick(creditCellB);
+    creditCellB.element(by.css('input')).sendKeys(150);
 
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
   // Test for validation
-  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
-  it.skip('Preventing a single-line transaction', () => {
+  it('Preventing a single-line transaction', () => {
     GU.selectRow(gridId, 1);
     FU.buttons.edit();
 
@@ -63,8 +68,7 @@ describe('Edit Posting Journal', () => {
     FU.buttons.cancel();
   });
 
-  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
-  it.skip('Preventing unbalanced transaction', () => {
+  it('Preventing unbalanced transaction', () => {
     GU.selectRow(gridId, 1);
     FU.buttons.edit();
 
@@ -82,8 +86,7 @@ describe('Edit Posting Journal', () => {
     FU.buttons.cancel();
   });
 
-  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
-  it.skip('Preventing transaction who have debit and Credit null', () => {
+  it('Preventing transaction who have debit and Credit null', () => {
     GU.selectRow(gridId, 1);
     FU.buttons.edit();
 
@@ -101,8 +104,7 @@ describe('Edit Posting Journal', () => {
     FU.buttons.cancel();
   });
 
-  // @TODO(sfount) this logic is no longer validated by the client or the server - if this validation is reimplemented the test can be added
-  it.skip('Preventing transaction who was debited and Credited in a same line', () => {
+  it('Preventing transaction who was debited and Credited in a same line', () => {
     GU.selectRow(gridId, 1);
     FU.buttons.edit();
 
