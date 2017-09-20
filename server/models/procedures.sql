@@ -1383,9 +1383,6 @@ BEGIN
     WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
   );
 
-  -- getting the transaction number
-  SET transaction_id = GenerateTransactionId(project_id);
-
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, 1, date);
 
  -- Check that all every inventory has a stock account and a variation account - if they do not the transaction will be Unbalanced
@@ -1408,6 +1405,9 @@ BEGIN
     SIGNAL InvalidInventoryAccounts
     SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
+
+  -- getting the transaction number
+  SET transaction_id = GenerateTransactionId(project_id);
 
   -- Debiting stock account, by inserting a record to the posting journal table
   INSERT INTO posting_journal
@@ -1477,7 +1477,6 @@ BEGIN
   DECLARE InvalidInventoryAccounts CONDITION FOR SQLSTATE '45006';
   DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
-  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
   DECLARE transaction_id VARCHAR(100);
   DECLARE verify_invalid_accounts SMALLINT(5);
   DECLARE STOCK_INTEGRATION_TRANSACTION_TYPE TINYINT(3) UNSIGNED;
@@ -1497,9 +1496,6 @@ BEGIN
     SELECT id FROM period AS p
     WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
   );
-
-  -- getting the transaction number
-  SET transaction_id = GenerateTransactionId(project_id);
 
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, 1, date);
 
@@ -1524,6 +1520,10 @@ BEGIN
     SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
 
+  
+  -- getting the transaction number
+  SET transaction_id = GenerateTransactionId(project_id);
+
   -- Debiting stock account, by inserting a record to the posting journal table
   INSERT INTO posting_journal 
   (
@@ -1546,7 +1546,8 @@ BEGIN
   JOIN 
     inventory_group ig ON ig.uuid = inv.group_uuid    
   WHERE
-    sm.document_uuid = document_uuid;
+    sm.document_uuid = document_uuid
+  GROUP BY inv.uuid;
 
 -- Crediting cost of good sale account, by inserting a record to the posting journal table
   INSERT INTO posting_journal 
@@ -1570,6 +1571,7 @@ BEGIN
   JOIN 
     inventory_group ig ON ig.uuid = inv.group_uuid    
   WHERE
-    sm.document_uuid = document_uuid;
+    sm.document_uuid = document_uuid
+  GROUP BY inv.uuid;
 END $$
 DELIMITER ;
