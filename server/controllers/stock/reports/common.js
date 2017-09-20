@@ -80,7 +80,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
           i.code, i.text, BUID(m.document_uuid) AS document_uuid,
           m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
           u.display_name AS user_display_name,
-          CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+          dm.text AS document_reference,
           l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
         FROM
           stock_movement m
@@ -94,6 +94,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
           user u ON u.id = m.user_id
         LEFT JOIN
           depot dd ON dd.uuid = entity_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         WHERE
           m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
