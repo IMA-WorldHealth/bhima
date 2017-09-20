@@ -60,7 +60,8 @@
         <div class="btn-group" uib-dropdown>
           <a class="btn btn-default" 
             ng-class="{ 'btn-info' : StockCtrl.grouped }" 
-            ng-click="StockCtrl.toggleGroup(StockCtrl.selectedGroup.value)">
+            ng-click="StockCtrl.toggleGroup(StockCtrl.selectedGroup.value)"
+            ng-disabled="!StockCtrl.selectedGroup.label">
             <span>
               <i class="fa fa-object-group"></i>
               <span ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
