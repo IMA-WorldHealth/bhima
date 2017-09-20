@@ -6,6 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
   'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
+  '$translate',
 ];
 
 /**
@@ -16,7 +17,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache
+  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, $translate
 ) {
   var vm = this;
   var inventoryStore;
@@ -188,6 +189,7 @@ function StockEntryController(
         };
 
         vm.reference = transfers[0].documentReference;
+        vm.movement.description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
         populate(transfers);
       })
       .catch(Notify.handleError);
@@ -335,7 +337,7 @@ function StockEntryController(
       from_depot : vm.movement.entity.instance.depot_uuid,
       to_depot : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
-      date : vm.movement.entity.instance.date,
+      date : vm.movement.date,
       description : vm.movement.entity.instance.description,
       isExit : false,
       user_id : Session.user.id,
