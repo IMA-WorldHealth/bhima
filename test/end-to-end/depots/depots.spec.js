@@ -1,10 +1,5 @@
-/* global element, by, inject, browser */
-const chai = require('chai');
-
 const helpers = require('../shared/helpers');
 const DepotPage = require('./depots.page');
-
-helpers.configure(chai);
 
 describe('Depots Management', () => {
   // navigate to the page
@@ -22,14 +17,12 @@ describe('Depots Management', () => {
     is_warehouse : 1,
   };
 
-  const LAST_RECORD = 0; // based on alphabetical sort and position
-
   it('successfully creates a new depot', () => {
     Page.createDepot(depot.text, false);
   });
 
   it('successfully edits a depot', () => {
-    Page.editDepot(LAST_RECORD, updateDepot.text);
+    Page.editDepot(depot.text, updateDepot.text);
   });
 
   it('don\'t create when incorrect depot name', () => {
@@ -37,6 +30,6 @@ describe('Depots Management', () => {
   });
 
   it('successfully delete a depot', () => {
-    Page.deleteDepot(LAST_RECORD);
+    Page.deleteDepot(updateDepot.text);
   });
 });

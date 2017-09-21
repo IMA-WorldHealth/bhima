@@ -1,23 +1,22 @@
-/* global element, by, browser */
+/* global element, by */
 
 /**
  * This class is represents a depot page in term of structure and
  * behaviour so it is a depot page object
- **/
+ */
 
 const chai = require('chai');
-
 const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-/** loading grid actions **/
+/* loading grid actions */
 const GA = require('../shared/GridAction');
+const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class DepotPage {
-
   constructor() {
     this.gridId = 'depot-grid';
     this.depotGrid = element(by.id(this.gridId));
@@ -60,20 +59,28 @@ class DepotPage {
   /**
    * simulate a click on the edit link of a depot
    */
-  editDepot(n, name) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'edit', this.gridId);
-    FU.input('DepotModalCtrl.depot.text', name);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+  editDepot(text, newDepotText) {
+    GU.getGridIndexesMatchingText(this.gridId, text)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+        FU.input('DepotModalCtrl.depot.text', newDepotText);
+        FU.buttons.submit();
+        components.notification.hasSuccess();
+      });
   }
 
   /**
    * simulate a click on the delete link of a depot
    */
-  deleteDepot(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.confirm();
-    components.notification.hasSuccess();
+  deleteDepot(text) {
+    GU.getGridIndexesMatchingText(this.gridId, text)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+        components.modalAction.confirm();
+        components.notification.hasSuccess();
+      });
   }
 
   /**
