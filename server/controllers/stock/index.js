@@ -345,8 +345,8 @@ function createIntegration(req, res, next) {
   const integration = {
     uuid        : db.bid(identifier),
     project_id  : req.session.project.id,
-    description : params.integration.description || 'INTEGRATION',
-    date        : new Date(params.integration.date),
+    description : params.movement.description || 'INTEGRATION',
+    date        : new Date(params.movement.date),
   };
   const sql = `INSERT INTO integration SET ?`;
 
@@ -380,7 +380,7 @@ function createIntegration(req, res, next) {
       unit_cost     : lot.unit_cost,
       is_exit       : 0,
       user_id       : params.movement.user_id,
-      description   : integration.description,
+      description   : params.movement.description,
     });
   });
 

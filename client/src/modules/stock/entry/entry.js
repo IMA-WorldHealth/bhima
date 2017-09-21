@@ -326,7 +326,6 @@ function StockEntryController(
     };
     
     var entry = {
-      integration : { date : vm.movement.date, description : vm.movement.description },
       lots : processLotsFromStore(vm.Stock.store.data, movement.entity_uuid),
       movement : movement
     }
