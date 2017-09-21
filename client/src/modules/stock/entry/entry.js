@@ -324,23 +324,10 @@ function StockEntryController(
       flux_id     : bhConstants.flux.FROM_INTEGRATION,
       user_id     : Session.user.id,
     };
-
-    var lots = vm.Stock.store.data.reduce(function (current, previous) {
-        return previous.lots.map(function (lot) {
-          return {
-            label            : lot.lot,
-            initial_quantity : lot.quantity,
-            quantity         : lot.quantity,
-            unit_cost        : previous.unit_cost,
-            expiration_date  : lot.expiration_date,
-            inventory_uuid   : previous.inventory.uuid
-          };
-        }).concat(current);
-      }, []);    
     
     var entry = {
       integration : { date : vm.movement.date, description : vm.movement.description },
-      lots : lots,
+      lots : processLotsFromStore(vm.Stock.store.data, movement.entity_uuid),
       movement : movement
     }
 

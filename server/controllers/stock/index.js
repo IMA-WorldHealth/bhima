@@ -341,7 +341,6 @@ function createIntegration(req, res, next) {
   const params = req.body;
   const identifier = uuid.v4();
   const documentUuid = uuid.v4();
-  let commonInfos;
 
   const integration = {
     uuid        : db.bid(identifier),
@@ -381,10 +380,12 @@ function createIntegration(req, res, next) {
       unit_cost     : lot.unit_cost,
       is_exit       : 0,
       user_id       : params.movement.user_id,
+      description   : integration.description,
     });
+  });
 
     // An arry of common info, to send to the store procedure in order to insert to the posting journal
-    commonInfos = [ 
+    const commonInfos = [ 
       db.bid(documentUuid),
       new Date(params.movement.date),
       req.session.enterprise.id,
@@ -398,7 +399,6 @@ function createIntegration(req, res, next) {
 
     // transaction - movement reference
     transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
-  });
 
   // execute all operations as one transaction
   transaction.execute()
