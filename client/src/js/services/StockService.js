@@ -51,7 +51,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'label', label : 'STOCK.LOT' },
     { key : 'flux_id', label : 'STOCK.FLUX'},
     { key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor: '>', valueFilter : 'date' },
-    { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' }
+    { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' },
   ]);
 
 

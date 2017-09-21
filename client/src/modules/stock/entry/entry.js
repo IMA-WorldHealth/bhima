@@ -6,7 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
   'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
-  '$translate',
+  'uuid', '$translate',
 ];
 
 /**
@@ -17,7 +17,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, $translate
+  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
   var vm = this;
   var inventoryStore;
@@ -26,7 +26,7 @@ function StockEntryController(
 
   var mapEntry = {
     purchase    : { find : findPurchase, submit : submitPurchase },
-    donation    : { find : angular.noop, submit : angular.noop },  // donation is not yet implemented
+    donation    : { find : handleDonationSelection, submit : submitDonation },
     integration : { find : handleIntegrationSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
@@ -196,7 +196,13 @@ function StockEntryController(
   }
 
   function handleIntegrationSelection() {
-    initSelectedEntity();
+    var description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
+    initSelectedEntity(description);
+  }
+
+  function handleDonationSelection() {
+    var description = $translate.instant('STOCK.RECEPTION_DONATION');
+    initSelectedEntity(description);
   }
 
   // populate the grid
@@ -217,9 +223,10 @@ function StockEntryController(
     });
   }
 
-  function initSelectedEntity() {
+  function initSelectedEntity(description) {
     vm.displayName = '';
     vm.reference = '';
+    vm.movement.description = description;
   }
 
   function setSelectedEntity(entity) {
@@ -327,6 +334,35 @@ function StockEntryController(
         vm.Stock.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+      })
+      .catch(Notify.handleError);
+  }
+
+  // submit donation
+  function submitDonation() {
+    var movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : null,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      flux_id     : bhConstants.flux.FROM_DONATION,
+      user_id     : Session.user.id,
+    };
+
+    /*
+      the origin_uuid of lots is set on the client
+      because donation table depends on donor, and donor management
+      is not yet implemented in the application
+
+      TODO: add a donor management module
+    */
+    movement.lots = processLotsFromStore(vm.Stock.store.data, Uuid());
+
+    return Stock.stocks.create(movement)
+      .then(function (document) {
+        vm.Stock.store.clear();
+        vm.movement = {};
+        ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
       })
       .catch(Notify.handleError);
   }

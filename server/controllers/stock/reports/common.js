@@ -10,6 +10,7 @@ const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebar
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
 const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
+const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt.handlebars`;
 const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
 
 // reports
@@ -79,7 +80,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
           i.code, i.text, BUID(m.document_uuid) AS document_uuid,
           m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
           u.display_name AS user_display_name,
-          CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+          dm.text AS document_reference,
           l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
         FROM
           stock_movement m
@@ -93,6 +94,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
           user u ON u.id = m.user_id
         LEFT JOIN
           depot dd ON dd.uuid = entity_uuid
+        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         WHERE
           m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
@@ -156,6 +158,7 @@ exports.STOCK_EXIT_LOSS_TEMPLATE = STOCK_EXIT_LOSS_TEMPLATE;
 exports.STOCK_ENTRY_DEPOT_TEMPLATE = STOCK_ENTRY_DEPOT_TEMPLATE;
 exports.STOCK_ENTRY_PURCHASE_TEMPLATE = STOCK_ENTRY_PURCHASE_TEMPLATE;
 exports.STOCK_ENTRY_INTEGRATION_TEMPLATE = STOCK_ENTRY_INTEGRATION_TEMPLATE;
+exports.STOCK_ENTRY_DONATION_TEMPLATE = STOCK_ENTRY_DONATION_TEMPLATE;
 exports.STOCK_ADJUSTMENT_TEMPLATE = STOCK_ADJUSTMENT_TEMPLATE;
 
 exports.STOCK_LOTS_REPORT_TEMPLATE = STOCK_LOTS_REPORT_TEMPLATE;
