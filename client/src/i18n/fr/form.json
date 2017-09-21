@@ -81,6 +81,7 @@
         "ERRORS": {
             "AT_LEAST_1_COL": "Au moins une colonne doit être sélectionnée",
             "CONNECTION": "Erreur de connexion",
+            "EXCESSIVE_QUANTITY": "Quantité excessive",
             "GENERIC": "Le formulaire contient des erreurs",
             "HAS_ERROR": "Contiens une erreur",
             "HAS_ERRORS": "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",

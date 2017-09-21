@@ -81,6 +81,7 @@
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
             "CONNECTION": "Connection error",
+            "EXCESSIVE_QUANTITY": "Excessive Quantity",
             "GENERIC": "The form contains errors.",
             "HAS_ERROR": "Contains an error",
             "HAS_ERRORS": "The form contains errors.  Please correct them and resubmit.",

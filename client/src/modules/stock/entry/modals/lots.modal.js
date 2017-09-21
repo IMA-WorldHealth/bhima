@@ -34,6 +34,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         displayName      : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.input.tmpl.html' },
 
       { field            : 'quantity',
@@ -41,6 +42,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         displayName      : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.sum,
+        aggregationHideLabel : true,
         footerCellClass  : 'text-right',
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html' },
 
@@ -126,7 +128,16 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
     // set the value if the date is not correct
     vm.isExpiration = hasExpiration ? false : true;
+    vm.isExcessiveQuatity = hasQuantity ? false : true;
+
     vm.submitError = vm.isExpiration;
+    if (vm.isExpiration) {
+      vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
+    }
+
+    if (vm.isExcessiveQuatity) {
+      vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
+    }
 
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;
     vm.sum = sum;
@@ -151,7 +162,11 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       vm.errorText = 'FORM.ERRORS.RECORD_ERROR';
 
       if (vm.isExpiration) {
-        vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';   
+        vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
+      }
+
+      if (vm.isExcessiveQuatity) {
+        vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
       }
 
       return;
@@ -164,6 +179,10 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
         if (vm.isExpiration) {
           vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';   
+        }
+
+        if (vm.isExcessiveQuatity) {
+          vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
         }
 
         return;         
