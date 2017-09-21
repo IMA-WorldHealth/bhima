@@ -124,6 +124,10 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     var hasExpiration = (new Date(inventory.expiration_date) >= new Date());
     inventory.is_valid = (hasQuantity && hasLotLabel && hasExpiration);
 
+    // set the value if the date is not correct
+    vm.isExpiration = hasExpiration ? false : true;
+    vm.submitError = vm.isExpiration;
+
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;
     vm.sum = sum;
 
@@ -140,8 +144,31 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   // submit
-  function submit() {
-    if (!validLots()) { return; }
+  function submit(detailsForm) {
+    // This structure check if there are empty field
+    if (detailsForm.$invalid) {
+      vm.submitError = true;
+      vm.errorText = 'FORM.ERRORS.RECORD_ERROR';
+
+      if (vm.isExpiration) {
+        vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';   
+      }
+
+      return;
+    } else {
+      vm.submitError = false;
+      // If the form is still at this level the only remaining reason is the expiration date
+
+      if (!validLots()) { 
+        vm.submitError = true;
+
+        if (vm.isExpiration) {
+          vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';   
+        }
+
+        return;         
+      }
+    }
 
     Instance.close({ lots: vm.gridOptions.data, quantity: vm.sum });
   }
