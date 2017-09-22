@@ -5,24 +5,25 @@ StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants',
+  'GridGroupingService', 'bhConstants', 'GridStateService', '$state'
 ];
 
 /**
- * Stock movements Controller
- * This module is a registry page for stock movements
+ * Stock Inventory Controller
+ * This module is a registry page for stock inventories
  */
 function StockInventoriesController(Stock, Notify,
   uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Session, Grouping, bhConstants) {
+  SearchFilterFormat, Languages, Session, Grouping, bhConstants, GridStateService, $state) {
   var vm = this;
 
+  var cacheKey = 'stock-inventory-grid';
+
   // global variables
-  vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
+  // vm.filters = { lang: Languages.key };
+  // vm.formatedFilters = [];
   vm.enterprise = Session.enterprise;
 
-  // grid columns
   var columns = [
     { field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
@@ -108,7 +109,7 @@ function StockInventoriesController(Stock, Notify,
     enableColumnMenus : false,
     columnDefs        : columns,
     enableSorting     : true,
-    showColumnFooter  : true,
+    // showColumnFooter  : true,
     fastWatch         : true,
     flatEntityAccess  : true,
   };
