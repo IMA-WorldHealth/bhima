@@ -5,24 +5,23 @@ StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService',
   'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants', 'GridStateService', '$state'
+  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService'
 ];
 
 /**
  * Stock Inventory Controller
  * This module is a registry page for stock inventories
  */
-function StockInventoriesController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Session, Grouping, bhConstants, GridStateService, $state) {
+function StockInventoriesController(
+  Stock, Notify, uiGridConstants, $translate, Modal,
+  SearchFilterFormat, Languages, Session, Grouping, bhConstants, GridState, $state, Columns
+) {
   var vm = this;
-
+  var filterKey = 'inventory';
+  var StockInventoryFilters = Stock.filter.inventory;
   var cacheKey = 'stock-inventory-grid';
-
-  // global variables
-  // vm.filters = { lang: Languages.key };
-  // vm.formatedFilters = [];
-  vm.enterprise = Session.enterprise;
+  var state;
+  var gridColumns;
 
   var columns = [
     { field            : 'depot_text',
@@ -103,24 +102,31 @@ function StockInventoriesController(Stock, Notify,
       cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html' },
   ];
 
-  // options for the UI grid
+  vm.enterprise = Session.enterprise;
+  vm.gridApi = {};  
+
   vm.gridOptions = {
     appScopeProvider  : vm,
     enableColumnMenus : false,
     columnDefs        : columns,
     enableSorting     : true,
-    // showColumnFooter  : true,
     fastWatch         : true,
     flatEntityAccess  : true,
+    onRegisterApi : onRegisterApi,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  state = new GridState(vm.gridOptions, cacheKey);
 
-  // expose to the view
-  vm.search = search;
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
-  vm.setStatusFlag = setStatusFlag;
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  // expose view logic
+  // vm.search = search;
+  // vm.onRemoveFilter = onRemoveFilter;
+  // vm.clearFilters = clearFilters;
+  // vm.setStatusFlag = setStatusFlag;
 
   function setStatusFlag(item) {
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_SOLD_OUT;
@@ -142,21 +148,24 @@ function StockInventoriesController(Stock, Notify,
 
   // load stock lots in the grid
   function load(filters) {
+    vm.hasError = false;
     vm.loading = true;
 
-    Stock.inventories.read(null, filters).then(function (rows) {
-      vm.loading = false;
+    Stock.inventories.read(null, filters)
+      .then(function (rows) {
+        // set status flags
+        rows.forEach(function (item) {
+          setStatusFlag(item);
+        });
 
-      // set status flags
-      rows.forEach(function (item) {
-        setStatusFlag(item);
+        vm.gridOptions.data = rows;
+
+        vm.grouping.unfoldAllGroups();
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
       });
-
-      vm.gridOptions.data = rows;
-
-      vm.grouping.unfoldAllGroups();
-    })
-    .catch(Notify.handleError);
   }
 
   // search modal
@@ -176,5 +185,16 @@ function StockInventoriesController(Stock, Notify,
     load(filters.identifiers);
   }
 
-  load();
+  function startup (){
+    if ($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      stockMovementFilters.replaceFilters(changes);
+      Stock.cacheFilters(filterKey);
+    }
+
+    load(StockInventoryFilters.formatHTTP(true));
+    vm.latestViewFilters = StockInventoryFilters.formatView();
+  }
+
+  startup();
 }
