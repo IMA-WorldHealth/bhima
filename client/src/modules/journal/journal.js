@@ -84,7 +84,6 @@ function JournalController(
 
     Journal.openCommentModal({ rows : selectedRows })
       .then(function (comment) {
-        if (!comment) { return; }
         updateGridComment(selectedRows, comment);
         Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
       })

@@ -1585,7 +1585,6 @@ BEGIN
     sm.document_uuid = document_uuid
   GROUP BY inv.uuid;
 END $$
-DELIMITER ;
 
 
 /*
@@ -1648,3 +1647,5 @@ BEGIN
   JOIN account ON account.id = combined.account_id
   ORDER BY account.number;
 END $$
+
+DELIMITER ;
