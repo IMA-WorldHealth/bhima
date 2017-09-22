@@ -27,7 +27,7 @@
       "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
       "SHOW_WEEKLY_REPORT_HELP":"Enabling this option will allow to view the cash flow report per week"
-    },   
+    },
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
     "CLIENTS_REPORT": {
@@ -54,7 +54,7 @@
       "SHOW_DETAILED_VIEW" : "Include Columns for Last Dates of Invoicing and Payment",
       "SHOW_DETAILED_VIEW_HELP" : "Enabling this option will include the last date the debtor paid and the last date they were invoiced.  This is useful for understanding when they were at the institution.  However, it will make the query take slightly longer.",
       "SHOW_UNVERIFIED_TRANSACTIONS" : "Include Unverified Transactions",
-      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "Enabling this option includes records from the Posting Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Posting Journal transactions and moved them to the General Ledger."
+      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "Enabling this option includes records from the Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Journal transactions and moved them to the General Ledger."
     },
     "OPENING_BALANCE": "Opening Balance",
     "ORDER": {

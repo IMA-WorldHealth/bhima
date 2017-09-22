@@ -10,11 +10,6 @@ angular.module('bhima.routes')
           scrollTo : null,
         },
       })
-      .state('postedJournal', {
-        url         : '/journal/posted',
-        controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
-        templateUrl : 'modules/general-ledger/general-ledger.html',
-      })
       .state('TrialBalanceModal', {
         parent  : 'journal',
         onEnter : ['$state', '$uibModal', function ($state, Modal) {

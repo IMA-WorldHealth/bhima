@@ -60,6 +60,6 @@
       "IS_BALANCED" : "Balanced",
       "POSTED_TRANSACTIONS" : "Success!  Posted {{ numRecords }} Transactions to the General Ledger."
     },
-    "TITLE" : "Posting Journal"
+    "TITLE" : "Journal"
   }
 }
