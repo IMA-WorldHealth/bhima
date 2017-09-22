@@ -24,6 +24,7 @@ function chart(req, res, next) {
     csvKey : 'accounts',
     filename : 'REPORT.CHART_OF_ACCOUNTS',
     orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
   });
 
   try {

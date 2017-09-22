@@ -12,9 +12,9 @@
   <br>
 
   <!-- content  -->
-  <table class="table table-condensed table-striped table-bordered">
+  <table class="table table-condensed table-striped table-bordered table-report">
     <thead>
-      <tr>
+      <tr style="background-color:#ddd;">
         <th class="text-left" style="width: 15%;"></th>
         <th>{{translate 'ACCOUNT.LABEL'}}</th>
         <th>{{translate 'FORM.LABELS.TYPE'}}</th>
@@ -23,7 +23,7 @@
 
     <tbody>
       {{#each accounts}}
-        {{#if this.is_title_account}}
+        {{#if this.is_title}}
           <tr>
             <td class="text-right"><strong>{{ this.number }}</strong></td>
             <td class="text-left">
