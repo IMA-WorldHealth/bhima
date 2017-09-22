@@ -32,11 +32,11 @@
     <div class="form-group">
       <label translate>STOCK.UNIT_COST</label>
 
-      <div ng-if="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'">
+      <div ng-if="!$ctrl.hasEditableInventory">
         <span class="form-control-static">{{ $ctrl.inventory.unit_cost }}  {{ $ctrl.enterprise.currencyLabel }} </span>
       </div>
 
-      <div class="input-group" ng-if="$ctrl.entryType !== 'purchase' && $ctrl.entryType !== 'transfer_reception'">
+      <div ng-if="$ctrl.hasEditableInventory" class="input-group">
         <input  
           class="form-control" 
           type="number" 

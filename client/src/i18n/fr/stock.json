@@ -23,6 +23,10 @@
     "ENTRY_DONATION"  : "Donation",
     "ENTRY_INTEGRATION" : "Integration",
     "ENTRY_TRANSFER"  : "Transfert",
+    "ERRORS" : {
+      "EXCESSIVE_QUANTITY": "Quantité excessive",
+      "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration"
+    },    
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque à Perimer",
     "EXPIRATION"      : "Expiration",

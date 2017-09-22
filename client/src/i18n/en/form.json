@@ -81,7 +81,6 @@
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
             "CONNECTION": "Connection error",
-            "EXCESSIVE_QUANTITY": "Excessive Quantity",
             "GENERIC": "The form contains errors.",
             "HAS_ERROR": "Contains an error",
             "HAS_ERRORS": "The form contains errors.  Please correct them and resubmit.",
@@ -91,7 +90,6 @@
             "MISSING_DEBTOR_ID": "Identifying missing Debtor",
             "RECORD_ERROR": "Please resolve any errors on the form (marked in red).",
             "REQUIRED": "This value is required.",
-            "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiry date",
             "INVALID": "invalid data",
             "LOCKED_USER": "You are locked, contact the administrator of the System",
             "PERIOD_ORDER": "Period from should be before period to",

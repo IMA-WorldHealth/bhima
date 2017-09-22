@@ -81,7 +81,6 @@
         "ERRORS": {
             "AT_LEAST_1_COL": "Au moins une colonne doit être sélectionnée",
             "CONNECTION": "Erreur de connexion",
-            "EXCESSIVE_QUANTITY": "Quantité excessive",
             "GENERIC": "Le formulaire contient des erreurs",
             "HAS_ERROR": "Contiens une erreur",
             "HAS_ERRORS": "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",
@@ -89,7 +88,6 @@
             "MISSING": "Informations manquantes",
             "MISSING_CASHBOX_ID": "Caisse non definie",
             "MISSING_DEBTOR_ID": "Identifiant Debiteur manquant",
-            "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration",
             "RECORD_ERROR": "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
             "REQUIRED": "Cette valeur est requise.",
             "INVALID": "Donnees Invalides",

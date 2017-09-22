@@ -118,26 +118,37 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     handleChange(inventory);
   }
 
+
+  function hasInvalidInventory(hasQuantity, hasExpiration) {
+    var error;
+
+    var isExpiration = hasExpiration ? false : true;
+    var isExcessiveQuatity = hasQuantity ? false : true;
+
+    if (isExcessiveQuatity) {
+      vm.errorText = 'STOCK.ERRORS.EXCESSIVE_QUANTITY';
+      error = true;
+    } else if (isExpiration) {
+      vm.errorText = 'STOCK.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
+      error = true;
+    }
+
+    return error;
+  }
+
   // handleChange
   function handleChange(inventory) {
-    var sum = vm.gridOptions.data.reduce(sumQuantity, 0);
+    vm.error =  false;
+
+    var sum = vm.gridOptions.data.reduce(sumQuantity, 0);  
     var hasQuantity = (vm.inventory.quantity >= sum);
     var hasLotLabel = inventory.lot;
     var hasExpiration = (new Date(inventory.expiration_date) >= new Date());
     inventory.is_valid = (hasQuantity && hasLotLabel && hasExpiration);
 
-    // set the value if the date is not correct
-    vm.isExpiration = hasExpiration ? false : true;
-    vm.isExcessiveQuatity = hasQuantity ? false : true;
+    vm.error = hasInvalidInventory(hasQuantity, hasExpiration);
+    vm.submitError = vm.error ? vm.error : false;
 
-    vm.submitError = vm.isExpiration;
-    if (vm.isExpiration) {
-      vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
-    }
-
-    if (vm.isExcessiveQuatity) {
-      vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
-    }
 
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;
     vm.sum = sum;
@@ -159,15 +170,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     // This structure check if there are empty field
     if (detailsForm.$invalid) {
       vm.submitError = true;
-      vm.errorText = 'FORM.ERRORS.RECORD_ERROR';
-
-      if (vm.isExpiration) {
-        vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
-      }
-
-      if (vm.isExcessiveQuatity) {
-        vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
-      }
+      vm.errorText = vm.error ? vm.error : 'FORM.ERRORS.RECORD_ERROR'; 
 
       return;
     } else {
@@ -175,15 +178,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       // If the form is still at this level the only remaining reason is the expiration date
 
       if (!validLots()) { 
-        vm.submitError = true;
-
-        if (vm.isExpiration) {
-          vm.errorText = 'FORM.ERRORS.PLEASE_CHECK_EXPIRY_DATE';   
-        }
-
-        if (vm.isExcessiveQuatity) {
-          vm.errorText = 'FORM.ERRORS.EXCESSIVE_QUANTITY';
-        }
+        vm.submitError = vm.error ? vm.error : false;
 
         return;         
       }
@@ -201,6 +196,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   function sumQuantity(current, previous) {
     return previous.quantity + current;
   }
+
+  // determine if the inventory quantity and cost should be editable or not.
+  vm.hasEditableInventory = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
 
   init();
 }
