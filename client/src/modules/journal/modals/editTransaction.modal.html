@@ -97,7 +97,7 @@
     <!-- Transaction row edit utilities -->
     <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
       <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
-      <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate>POSTING_JOURNAL.REMOVE_ROW</button>
+      <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate data-method="delete">POSTING_JOURNAL.REMOVE_ROW</button>
     </div>
     <div style="height : 230px" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
       <bh-grid-loading-indicator

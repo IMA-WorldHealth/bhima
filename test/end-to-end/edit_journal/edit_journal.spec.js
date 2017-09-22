@@ -30,95 +30,87 @@ describe('Edit Posting Journal', () => {
     components.notification.hasSuccess();
   });
 
+  function editInput(rowIndex, columnIndex, value) {
+    const cell = GU.getCell(editingGridId, rowIndex, columnIndex);
+    // clear old clicks and focus the cell
+    cell.click();
+    // open the editing pane
+    doubleClick(cell);
+    cell.element(by.css('input')).clear().sendKeys(value);
+  }
 
-  it('edits a transaction change value of Debit and Credit', () => {
+
+  it('edits a transaction change value of debit and credit', () => {
     GU.selectRow(gridId, 0);
     FU.buttons.edit();
 
-    const debitCellA = GU.getCell(editingGridId, 0, 2);
-    const creditCellA = GU.getCell(editingGridId, 0, 3);
-    const debitCellB = GU.getCell(editingGridId, 1, 2);
-    const creditCellB = GU.getCell(editingGridId, 1, 3);
+    // change the first row (index 0), debit and credit inputs (index 2 and 3)
+    editInput(0, 2, 100);
+    editInput(0, 3, 0);
 
-    doubleClick(debitCellA);
-    debitCellA.element(by.css('input')).sendKeys(150);
-    doubleClick(creditCellA);
-    creditCellA.element(by.css('input')).sendKeys(0);
-
-    doubleClick(debitCellB);
-    debitCellB.element(by.css('input')).sendKeys(0);
-    doubleClick(creditCellB);
-    creditCellB.element(by.css('input')).sendKeys(150);
+    editInput(1, 2, 0);
+    editInput(1, 3, 100);
 
     FU.buttons.submit();
+    FU.exists(by.id('validation-errored-alert'), false);
     components.notification.hasSuccess();
   });
 
   // Test for validation
-  it('Preventing a single-line transaction', () => {
-    GU.selectRow(gridId, 1);
+  it('prevents a single line transaction', () => {
+    GU.selectRow(gridId, 0);
     FU.buttons.edit();
 
-    GU.selectRow(editingGridId, 3);
+    GU.selectRow(editingGridId, 0);
     FU.buttons.delete();
     FU.buttons.submit();
 
-    element(by.id('validation-errored-alert')).isPresent();
+    FU.exists(by.id('validation-errored-alert'), true);
 
     FU.buttons.cancel();
   });
 
-  it('Preventing unbalanced transaction', () => {
-    GU.selectRow(gridId, 1);
+  it('prevents an unbalanced transaction', () => {
     FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 3);
-    const creditCell = GU.getCellName(gridId, 3, 4);
+    editInput(0, 2, 100);
+    editInput(0, 3, 0);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(100);
-
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(50);
+    editInput(1, 2, 0);
+    editInput(1, 3, 50);
 
     FU.buttons.submit();
-    element(by.id('validation-errored-alert')).isPresent();
+
+    FU.exists(by.id('validation-errored-alert'), true);
+
     FU.buttons.cancel();
   });
 
-  it('Preventing transaction who have debit and Credit null', () => {
-    GU.selectRow(gridId, 1);
+  it('preventing transaction who have debit and credit null', () => {
     FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 3);
-    const creditCell = GU.getCellName(gridId, 2, 4);
+    editInput(0, 2, 0);
+    editInput(0, 3, 0);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(0);
-
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(0);
+    editInput(1, 2, 0);
+    editInput(1, 3, 0);
 
     FU.buttons.submit();
-    element(by.id('validation-errored-alert')).isPresent();
+    FU.exists(by.id('validation-errored-alert'), true);
     FU.buttons.cancel();
   });
 
-  it('Preventing transaction who was debited and Credited in a same line', () => {
-    GU.selectRow(gridId, 1);
+  it('preventing transaction who was debited and credited in a same line', () => {
     FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 3);
-    const creditCell = GU.getCellName(gridId, 2, 4);
+    editInput(0, 2, 10);
+    editInput(0, 3, 10);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(50);
-
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(50);
+    editInput(1, 2, 10);
+    editInput(1, 3, 0);
 
     FU.buttons.submit();
-    element(by.id('validation-errored-alert')).isPresent();
+    FU.exists(by.id('validation-errored-alert'), true);
     FU.buttons.cancel();
   });
 });
