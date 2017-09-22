@@ -315,7 +315,7 @@ function StockEntryController(
   }
 
   // submit integration
-  function submitIntegration() {
+  function submitIntegration() {    
     var movement = {
       depot_uuid  : vm.depot.uuid,
       entity_uuid : null,
@@ -324,18 +324,19 @@ function StockEntryController(
       flux_id     : bhConstants.flux.FROM_INTEGRATION,
       user_id     : Session.user.id,
     };
+    
+    var entry = {
+      lots : processLotsFromStore(vm.Stock.store.data, movement.entity_uuid),
+      movement : movement
+    }
 
-    Stock.integration.create({ description : vm.movement.description })
-      .then(function (uuid) {
-        movement.lots = processLotsFromStore(vm.Stock.store.data, uuid);
-        return Stock.stocks.create(movement);
-      })
-      .then(function (document) {
-        vm.Stock.store.clear();
-        vm.movement = {};
-        ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
-      })
-      .catch(Notify.handleError);
+    Stock.integration.create(entry)
+    .then(function (document) {
+      vm.Stock.store.clear();
+      vm.movement = {};
+      ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+    })
+    .catch(Notify.handleError);
   }
 
   // submit donation

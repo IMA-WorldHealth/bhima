@@ -139,7 +139,8 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense', 'PAYBACK', 1),
   (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense', 'ACHAT', 1),
   (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 'CREDIT NOTE', 1),
-  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1);
+  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1),
+  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'stock integration', 'STOCK. INT', 1);
 
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
