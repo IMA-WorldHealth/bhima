@@ -49,10 +49,9 @@
                 class="form-control"
                 name="project"
                 ng-model="UpdateCtrl.box.project_id"
-                ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
+                ng-options="project.id as project.name for project in CashCtrl.projects"
                 required>
-                <option value="" disabled translate>FORM.SELECT.PROJECT</option>
-              </select>
+                </select>
               <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>

@@ -126,7 +126,7 @@ describe('Cashboxes', () => {
     FU.buttons.submit();
 
     // everything should have error highlights
-    FU.validation.error('UpdateCtrl.box.project_id');
+    // FU.validation.error('UpdateCtrl.box.project_id');
     FU.validation.error('UpdateCtrl.box.label');
 
     components.notification.hasDanger();

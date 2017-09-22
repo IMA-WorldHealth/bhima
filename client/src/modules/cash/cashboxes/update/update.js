@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 CashboxUpdateController.$inject = [
   '$state', '$uibModal', 'ModalService', 'NotifyService',
-  'CashboxService', 'CurrencyService',
+  'CashboxService', 'CurrencyService', 'SessionService',
 ];
 
-function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies) {
+function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies, Session) {
   var vm = this;
 
   var CREATE_STATE = 'cashboxes.create';
@@ -17,7 +17,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   var cashboxUuid = $state.params.uuid;
 
   vm.state = $state;
-  vm.box = {};
+  vm.box = { project_id : Session.project.id };
   vm.submit = submit;
   vm.configureCurrency = configureCurrency;
   vm.remove = remove;
@@ -33,6 +33,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
         // FIXME remove convuluted logic
       vm.box.is_auxiliary = 1;
     }
+
   }).catch(Notify.handleError);
 
   // form submission
