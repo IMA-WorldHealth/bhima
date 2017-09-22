@@ -59,11 +59,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // to the login page.
     } else if (!isLoggedIn && !isLoginState) {
       event.preventDefault();
-
-      if (!isRootState) {
-        Notify.warn('AUTH.UNAUTHENTICATED');
-      }
-
       $state.go('login');
     }
 

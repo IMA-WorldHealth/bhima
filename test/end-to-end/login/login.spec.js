@@ -70,19 +70,6 @@ describe('Login Page', () => {
     expect(defaultProject).to.not.be.empty;
   });
 
-  it('prevents navigation to other pages with a growl notification', () => {
-    // assert that we are on the login page with no notifications present on the page
-    expect(helpers.getCurrentPath()).to.eventually.equal('#!/login');
-    FU.exists(by.css('[data-bh-growl-notification]'), false);
-
-    // attempt to navigate to the settings page
-    helpers.navigate(settings);
-
-    // assert that we are still on the login page with a notification
-    expect(helpers.getCurrentPath()).to.eventually.equal('#!/login');
-    components.notification.hasWarn();
-  });
-
   it('allows a valid user to log in to the application', () => {
     FU.input('LoginCtrl.credentials.username', 'superuser');
     FU.input('LoginCtrl.credentials.password', 'superuser');
