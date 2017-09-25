@@ -129,7 +129,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
-    { key : 'inventoryLabel', label : 'FORM.LABELS.INVENTORY' },
+    { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
     { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
     { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
@@ -188,6 +188,8 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
+
 
   return service;
 }

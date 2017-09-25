@@ -195,7 +195,7 @@ function create(req, res, next) {
 function find(options) {
   // ensure expected options are parsed as binary
   db.convert(options, [
-    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid',
+    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid',
   ]);
 
   const filters = new FilterParser(options, { tableAlias : 'invoice', autoParseStatements : false });
@@ -232,8 +232,7 @@ function find(options) {
   );
 
   filters.custom(
-    'inventoryLabel',
-    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item JOIN inventory ON inventory.uuid = invoice_item.inventory_uuid WHERE inventory.text = ?)'
+   'inventory_uuid', 'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)'
   );
 
   filters.period('period', 'date');

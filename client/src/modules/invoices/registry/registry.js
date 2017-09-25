@@ -163,7 +163,7 @@ function InvoiceRegistryController(
   function startup() {
     if ($state.params.filters) {
       // Fix me, generate change dynamically
-      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value }];
+      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value, displayValue : $state.params.filters.displayValue }];
 
       Invoices.filters.replaceFilters(change);
       Invoices.cacheFilters();
