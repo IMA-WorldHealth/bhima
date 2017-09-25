@@ -52,4 +52,7 @@ echo "[build] recomputing mappings"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();" &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();" &> /dev/null
 
+echo "[build] recalculating period totals"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecalculatePeriodTotals();" &> /dev/null
+
 echo "[/build]"

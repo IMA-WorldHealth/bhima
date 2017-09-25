@@ -1,5 +1,4 @@
 /* global expect, agent */
-
 const helpers = require('./helpers');
 
 /*
@@ -54,11 +53,11 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(res.body.errors).to.have.length(0);
 
         // The transactions TRANS1, TRANS2 hit 2 accounts and should have the following profiles
-        const summary = res.body.summary;
+        const { summary } = res.body;
         expect(summary).to.have.length(2);
 
         // all accounts have 0 balance before
-        expect(summary[0].balance_before).to.equal(25);
+        expect(summary[0].balance_before).to.equal(50);
         expect(summary[1].balance_before).to.equal(-25);
 
         expect(summary[0].debit_equiv).to.equal(75);
@@ -67,7 +66,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary[0].credit_equiv).to.equal(0);
         expect(summary[1].credit_equiv).to.equal(75);
 
-        expect(summary[0].balance_final).to.equal(100);
+        expect(summary[0].balance_final).to.equal(125);
         expect(summary[1].balance_final).to.equal(-100);
       })
       .catch(helpers.handler);
