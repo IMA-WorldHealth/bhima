@@ -32,4 +32,8 @@
 "SUBSCRIBED":"Debtors subscribed",
 "UPDATED":"Debtor group record updated",
 "LOADING":"Fetching Debtor Group",
+"CONVENTION":{
+  "TITLE":"Convention",
+  "DESCRIPTION":"A convention group is a group (enterprise) which takes charge of the invoices of the patients belonging to this group"
+},
 "SUBSCRIPTIONS":"Subscriptions"}}

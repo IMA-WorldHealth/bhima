@@ -32,4 +32,8 @@
 "TITLE":"Gestion des Groupes des Débiteurs",
 "SUBSCRIBED":"Débiteurs abonnés",
 "SUBSCRIPTIONS":"Abonnements",
+"CONVENTION":{
+  "TITLE":"Convention",
+  "DESCRIPTION":"Un groupe convention est un groupe (entreprise) qui prend la charge des factures des patients faisant partie de ce groupe."
+},
 "UPDATED":"Enregistrement du groupe débiteur mis à jour"}}

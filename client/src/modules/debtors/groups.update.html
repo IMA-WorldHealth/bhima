@@ -129,9 +129,31 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <span class="fa fa-book" aria-hidden="true"></span>
+            <span translate>DEBTOR_GROUP.CONVENTION.TITLE</span>
+          </div>
+          <div class="panel-body">
+            <h5><b translate>DEBTOR_GROUP.CONVENTION.TITLE</b></h5>
+            <p translate>DEBTOR_GROUP.CONVENTION.DESCRIPTION</p>
+            <div class="checkbox">
+              <label>
+                <input 
+                  type="checkbox"
+                  name="is_convention"
+                  ng-model="GroupUpdateCtrl.group.is_convention" 
+                  ng-true-value="1"
+                  ng-false-value="0">
+                <span translate>DEBTOR_GROUP.CONVENTION.TITLE</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="fa fa-book" aria-hidden="true"></span>
             {{ "DEBTOR_GROUP.POLICIES.TITLE" | translate }}
           </div>
-          <div class="panel panel-body">
+          <div class="panel-body">
 
             <div class="row">
               <div class="col-md-12">
