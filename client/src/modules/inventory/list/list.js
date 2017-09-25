@@ -181,8 +181,8 @@ function InventoryListController(
 
   function startup() {
     // if parameters are passed through the $state object, use them.
-    if ($state.params.filters.length) {
-      Inventory.filters.replaceFilters(angular.copy($state.params.filters));
+    if ($state.params.filters.length > 0) {
+      Inventory.filters.replaceFilters($state.params.filters);
     }
 
     load(Inventory.filters.formatHTTP(true));
