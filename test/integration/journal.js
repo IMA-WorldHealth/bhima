@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 const helpers = require('./helpers');
 
 /*
@@ -8,11 +8,10 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
-  const NUM_ROW_ALL_RECORDS = 15;
-  const DISTINCT_TRANSACTIONS = 7;
+  const NUM_ROW_ALL_RECORDS = 13;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
-  it('GET /journal : it returns a set of records ', () =>
+  it('GET /journal returns a set of records', () =>
     agent.get('/journal')
       .then((res) => {
         helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
@@ -20,26 +19,12 @@ describe('(/journal) API endpoint', () => {
       .catch(helpers.handler)
   );
 
-  it('GET /journal - returns an object of aggregate information and journal rows with aggregates flag set', () =>
-    agent.get('/journal')
-      .query({ aggregates: 1 })
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-
-        expect(res.body).to.be.a('object');
-        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
-        expect(res.body.aggregate).to.have.length(DISTINCT_TRANSACTIONS);
-      })
-      .catch(helpers.handler)
-  );
-
-  it('GET /journal/:record_uuid : it returns an object with the transaction and aggregate information', () =>
+  it('GET /journal/:record_uuid returns an object with the transaction and aggregate information', () =>
     agent.get(`/journal/${RECORD_UUID}`)
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.journal).to.have.length(NUM_ROWS_FETCHING_TRANSACTION);
+        expect(res.body).to.have.length(NUM_ROWS_FETCHING_TRANSACTION);
       })
       .catch(helpers.handler)
   );
@@ -59,7 +44,7 @@ function SearchTests() {
   const description = 'unique';
   const account_id = 3628;
   const amount = 100;
-  const distinct_trans = 7;
+  const DISTINCT_TRANSACTIONS = 6;
 
   it(`GET /journal?description=${description} should match one record`, () => {
     const NUM_MATCHES = 1;
@@ -67,20 +52,6 @@ function SearchTests() {
       .query({ description })
       .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /journal query with filters returns correct aggregate information for subset', () => {
-    const NUM_MATCHES = 1;
-    return agent.get('/journal')
-      .query({ description, aggregates: 1 })
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.be.a('object');
-        expect(res.body).to.contain.all.keys(['journal', 'aggregate']);
-        expect(res.body.aggregate).to.have.length(NUM_MATCHES);
       })
       .catch(helpers.handler);
   });
@@ -115,14 +86,13 @@ function SearchTests() {
       .catch(helpers.handler);
   });
 
-  it('GET /journal/ count  returns return the numbers of transaction from Journal', () => {
+  it('GET /journal/count returns return the numbers of transactions from Journal', () => {
     return agent.get('/journal/count')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body[0].number_transactions).to.equal(distinct_trans);
+        expect(res.body[0].number_transactions).to.equal(DISTINCT_TRANSACTIONS);
       })
       .catch(helpers.handler);
   });
-
 }

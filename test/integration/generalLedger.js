@@ -1,30 +1,18 @@
-/* global expect, chai, agent */
-
+/* global agent */
 const helpers = require('./helpers');
 
-/*
- * The /journal API endpoint
- */
-describe('(/general_ledger) API endpoint', function () {
+describe('(/journal/transactions) API endpoint', function () {
+  const RECORDS_TO_POST = [
+    'c44619e0-3a88-4754-a750-a414fc9567bf',
+    '8fefadec-c036-48ce-bc4e-e307d1301960',
+  ];
 
-  /**
-   * object containing different format of transaction to send to the
-   *server in order to get transactions or records
-   **/
-  var parameters = {
-    transactionToPost : {params : {transactions : ['TRANS2'], transactions : ['TRANS6']}},
-    allRecords : {number : 2},
-  };
+  const NUM_ROW_ALL_RECORDS = 6;
 
-  const NUM_ROW_ALL_RECORDS = 4;
-
-  it('GET /general_ledger : it returns a set of records after receiving data from posting journal ', function () {
-
-    return agent.post('/trial_balance/post_transactions')
-      .send(parameters.transactionToPost.params)
-      .then(function () {
-        return agent.get('/general_ledger');
-      })
+  it('POST /journal/transactions will post data to the General Ledger', function () {
+    return agent.post('/journal/transactions')
+      .send({ transactions : RECORDS_TO_POST })
+      .then(() => agent.get('/general_ledger'))
       .then(function (res) {
         helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
       })

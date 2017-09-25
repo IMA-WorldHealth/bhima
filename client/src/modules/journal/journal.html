@@ -4,16 +4,11 @@
       <li class="static" translate>TREE.FINANCE</li>
       <li class="title">
         <span translate>POSTING_JOURNAL.TITLE</span>
-
-        <span class="badge badge-primary text-uppercase" ng-show="JournalCtrl.transactions.isEditing()">
-          <i class="fa fa-street-view"></i>
-          <span translate>POSTING_JOURNAL.EDIT_MODE</span>
-        </span>
       </li>
     </ol>
 
     <div class="toolbar">
-      <fieldset ng-disabled="JournalCtrl.transactions.isEditing()">
+      <fieldset>
         <div class="toolbar-item">
           <div uib-dropdown dropdown-append-to-body data-action="open-tools">
             <a class="btn btn-default" uib-dropdown-toggle>
@@ -60,13 +55,30 @@
         </div>
 
         <div class="toolbar-item">
+          <button data-method="comment" class="btn btn-default" ng-disabled="JournalCtrl.selection.selected.groups.length==0" ng-click="JournalCtrl.commentRows()">
+            <i class="fa fa-sticky-note-o"></i> <span class="visible-lg-inline" translate>FORM.LABELS.COMMENT</span>
+          </button>
+        </div>
+
+        <div class="toolbar-item">
           <button data-method="search" class="btn btn-default" ng-click="JournalCtrl.openSearchModal()">
-            <i class="fa fa-search"></i> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
+            <i class="fa fa-search"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.SEARCH</span>
+          </button>
+        </div>
+        <div class="toolbar-item">
+          <button
+            ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }"
+            ng-disabled="JournalCtrl.selection.selected.groups.length === 0"
+            ng-click="JournalCtrl.editTransactionModal()"
+            class="btn btn-default" data-method="edit">
+            <i class="fa fa-pencil-square-o"></i>
+              <span ng-if="JournalCtrl.selection.selected.groups.length === 1">({{JournalCtrl.selection.selected.groups[0]}})</span>
+              <span ng-if="JournalCtrl.selection.selected.groups.length > 1">(...)</span>
           </button>
         </div>
         <div class="toolbar-item">
           <button ng-class="{ 'btn-info' : JournalCtrl.gridGroupedState() }" class="btn btn-default" data-method="grouping" ng-click="JournalCtrl.toggleTransactionGroup()">
-            <i class="fa fa-object-group"></i> <span class="hidden-xs" translate>FORM.LABELS.TRANSACTION</span>
+            <i class="fa fa-object-group"></i> <span class="visible-lg-inline" translate>FORM.LABELS.TRANSACTION</span>
           </button>
         </div>
         <div class="toolbar-item">
@@ -89,51 +101,24 @@
   </bh-filters>
 </div>
 
-<!-- @todo remove hardcoded styles -->
-<div
-  ng-if="JournalCtrl.transactions.isEditing()"
-  class="flex-util bg-primary"
-  style="height : 42px; line-height : 2.2; padding-left : 10px; padding-right : 10px;">
-  <div class="text-menu-item"><b>{{ JournalCtrl.transactions._entity.trans_id }}</b></div>
-  <div class="text-menu-item"><span translate>POSTING_JOURNAL.DEBIT_LETTER</span>: {{ JournalCtrl.transactions._entity.aggregates.debit }}</div>
-  <div class="text-menu-item"><span translate>POSTING_JOURNAL.CREDIT_LETTER</span>: {{ JournalCtrl.transactions._entity.aggregates.credit }}</div>
-  <div class="text-menu-item"><span translate>POSTING_JOURNAL.TOTAL_ROWS</span>: {{ JournalCtrl.transactions._entity.aggregates.totalRows }}</div>
-  <div class="toolbar">
-    <div class="toolbar-item">
-      <button ng-click="JournalCtrl.transactions.addRow()" data-method="add" class="btn btn-sm btn-default">
-        <i class="fa fa-plus-circle"></i> <span translate>POSTING_JOURNAL.ADD_ROW</span>
-      </button>
-      <button ng-click="JournalCtrl.transactions.removeRows()" data-method="delete" class="btn btn-sm btn-default">
-        <i class="fa fa-trash"></i> <span translate>POSTING_JOURNAL.REMOVE_ROW</span>
-      </button>
-      <button ng-click="JournalCtrl.saveTransaction()" data-method="save" class="btn btn-sm btn-default">
-        <i class="fa fa-save"></i> <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
-      </button>
-      <button ng-click="JournalCtrl.cancelEdit()" data-method="cancel" class="btn btn-sm btn-default">
-        <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL_EDIT</span>
-      </button>
-    </div>
-  </div>
+<div ng-if="JournalCtrl.unknownTransactionEditState" class="alert alert-info" style="margin : 5px; margin-bottom : 0px; border-radius : 0px; padding : 10px;">
+  <i class="fa fa-info-circle"></i> <span><span translate>POSTING_JOURNAL.OUTDATED_DATA_MESSAGE_1</span> <a ng-click="JournalCtrl.reloadData()" href><span translate>POSTING_JOURNAL.CLICK_HERE_TO_RELOAD</span></a> <span translate>POSTING_JOURNAL.OUTDATED_DATA_MESSAGE_2</span></span>
 </div>
 
 <!-- Overflow stops the scroll bar from pushing the screen on grid size change -->
 <div class="flex-content" style="overflow-y : hidden;">
   <div class="container-fluid">
-
     <div class="row">
       <div class="col-md-12">
-
         <div
           id="journal-grid"
           class="grid-journal"
-          ng-style="JournalCtrl.filterBarHeight"
+          ng-class="{ 'grid-journal' : !JournalCtrl.unknownTransactionEditState, 'grid-journal-alert' : JournalCtrl.unknownTransactionEditState }"
           ui-grid="JournalCtrl.gridOptions"
           ui-grid-auto-resize
           ui-grid-resize-columns
           ui-grid-move-columns
           ui-grid-selection
-          ui-grid-cellNav
-          ui-grid-edit
           ui-grid-grouping
           ui-grid-exporter
           ui-grid-save-state>

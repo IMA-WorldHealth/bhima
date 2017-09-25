@@ -95,7 +95,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
     this.patient = patient;
     this.details.debtor_uuid = patient.debtor_uuid;
 
-    return Patients.balance(patient.debtor_uuid)
+    return Patients.balance(patient.uuid)
       .then(function (balance) {
 
         var patientAccountBalance = balance * -1;

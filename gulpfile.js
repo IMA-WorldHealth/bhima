@@ -189,7 +189,7 @@ gulp.task('client-compile-vendor', () =>
 // writes output to style.min.css
 gulp.task('client-compile-css', () =>
   gulp.src(paths.client.css)
-    .pipe(cssnano())
+    .pipe(cssnano({ zindex : false }))
     .pipe(concat('css/style.min.css'))
     .pipe(gulp.dest(CLIENT_FOLDER))
 );
