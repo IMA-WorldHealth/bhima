@@ -3,11 +3,13 @@ angular.module('bhima.controllers')
 
 ConventionPaymentKitController.$inject = [
   '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'CashboxService',
-  'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService'
+  'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes, Session, bhConstants, $translate, ToolKits) {
+function ConventionPaymentKitController(
+  Instance, DebtorGroup, Notify, Cashboxes,
+  Session, bhConstants, $translate, ToolKits) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
@@ -45,6 +47,7 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
 
   // get debtor group invoices
   function selectGroupInvoices(convention) {
+    vm.loading = true;
     DebtorGroup.invoices(convention.uuid, { is_convention : 1 })
       .then(function (invoices) {
 
@@ -57,7 +60,13 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(total.toFixed(MAX_DECIMAL_PRECISION));
       })
-      .catch(Notify.handleError);
+      .catch(function (err) {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // generate transaction rows
