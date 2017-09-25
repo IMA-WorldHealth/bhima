@@ -58,11 +58,11 @@
           <!-- movements flux -->
           <div class="form-group">
             <label class="control-label" translate>STOCK.FLUX</label>
-            <bh-clear on-clear="$ctrl.clear('flux_id')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clearFluxIds()"></bh-clear>
 
-            <ui-select name="inventory" ng-model="$ctrl.searchQueries.flux_id">
+            <ui-select multiple name="inventory" ng-model="$ctrl.selectedFluxes">
               <ui-select-match>
-                <span translate>{{$select.selected.label}}</span>
+                <span translate>{{$item.label}}</span>
               </ui-select-match>
               <ui-select-choices ui-select-focus-patch repeat="flux.id as flux in $ctrl.fluxes | filter:{ 'label': $select.search }">
                 <span ng-bind-html="flux.label | translate | highlight:$select.search"></span>

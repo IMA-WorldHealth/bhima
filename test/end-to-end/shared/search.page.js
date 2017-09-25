@@ -87,7 +87,7 @@ class SearchModal {
   }
 
   setMovementReason(reason) {
-    FU.uiSelect('$ctrl.searchQueries.flux_id', reason);
+    FU.uiSelect('$ctrl.selectedFluxes', reason);
   }
 
   /*
