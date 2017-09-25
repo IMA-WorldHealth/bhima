@@ -113,7 +113,7 @@ BEGIN
   GROUP BY i.uuid;
 END $$
 
--- This processus inserts records relative to the stock movement integration in the posting journal
+-- This procedure inserts records relative to the stock movement integration in the posting journal
 CREATE PROCEDURE PostIntegration (
   IN document_uuid BINARY(16),
   IN date DATETIME,
