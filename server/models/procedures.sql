@@ -10,44 +10,44 @@ DELIMITER $$
   StageBillingService, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
   PostingJournalErrorHandler, CopyInvoiceToPostingJournal and PostToGeneralLedger
 */
-SOURCE procedures/invoicing.sql
+SOURCE server/models/procedures/invoicing.sql
 
 /*
   Cash procedures include: HandleCashRounding, PostCash, StageCash,
   StageCashItem, VerifyCashTemporaryTables, CalculateCashInvoiceBalances,
   WriteCashItems and WriteCash
 */
-SOURCE procedures/cash.sql
+SOURCE server/models/procedures/cash.sql
 
 /*
   Time period procedures include: CreateFiscalYear, GetPeriodRange and
   CreatePeriods
 */
-SOURCE procedures/time_period.sql
+SOURCE server/models/procedures/time_period.sql
 
 /*
   Voucher procedures include: PostVoucher and ReverseTransaction
 */
-SOURCE procedures/voucher.sql
+SOURCE server/models/procedures/voucher.sql
 
 /*
   Location procedures include: MergeLocations
 */
-SOURCE procedures/location.sql
+SOURCE server/models/procedures/location.sql
 
 /*
   Trial balance procedures include: StageTrialBalanceTransaction and
   TrialBalance
 */
-SOURCE procedures/trial_balance.sql
+SOURCE server/models/procedures/trial_balance.sql
 
 /*
   Stock procedures include: ComputeStockConsumptionByPeriod,
   ComputeStockConsumptionByDate and ComputeMovementReference
 */
-SOURCE procedures/stock.sql
+SOURCE server/models/procedures/stock.sql
 
 /*
   Posting procedures include: PostPurchase and PostIntegration
 */
-SOURCE procedures/posting.sql
+SOURCE server/models/procedures/posting.sql
