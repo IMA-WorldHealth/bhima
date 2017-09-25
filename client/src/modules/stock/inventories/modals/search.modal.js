@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchInventoriesModalController.$inject = [
-  'data','NotifyService', '$uibModalInstance', 'SearchFilterFormatService', 'Store', 'PeriodService', 'util',
+  'data','NotifyService', '$uibModalInstance', 'Store', 'PeriodService', 'util',
 ];
 
-function SearchInventoriesModalController(data, Notify, Instance, SearchFilterFormat, Store, Periods, util) {
+function SearchInventoriesModalController(data, Notify, Instance, Store, Periods, util) {
   var vm = this;
   var changes = new Store({identifier : 'key'});
   var searchQueryOptions = [
