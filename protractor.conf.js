@@ -1,6 +1,12 @@
 /* global by,browser, element */
 const q = require('q');
 
+// checks to see if we are running on a Continuous Integration environment
+const isCI = process.env.TRAVIS_BUILD_NUMBER !== undefined;
+
+// milliseconds to the seconds
+const seconds = 1000;
+
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
 // is Travis loading the configuration, we parse the
@@ -29,9 +35,7 @@ const config = {
 
   // default browsers to run
   multiCapabilities : [{
-    // 'browserName': 'firefox',
- // }, {
-    'browserName': 'chrome',
+    browserName : 'chrome',
   }],
 
   // this will log the user in to begin with
@@ -45,38 +49,38 @@ const config = {
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
-    }).delay(3100);
+    }).delay(isCI ? 10 * seconds : 4 * seconds);
   },
 };
 
-// configuration for running on SauceLabs via Travis
-if (process.env.TRAVIS_BUILD_NUMBER) {
-  // SauceLabs credentials
-  config.sauceUser = process.env.SAUCE_USERNAME;
-  config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+// if we are running in a continuous integration environment, modify the options to
+// use CI-specific rules.
+if (isCI) {
+  configureCI(config);
+}
+
+
+function configureCI(cfg) {
+  // credentials for running on saucelabs
+  cfg.sauceUser = process.env.SAUCE_USERNAME;
+  cfg.sauceKey = process.env.SAUCE_ACCESS_KEY;
 
   // modify the browsers to use Travis identifiers
-  config.multiCapabilities = [{
-    // 'browserName': 'firefox',
-    //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    //  'build': process.env.TRAVIS_BUILD_NUMBER,
-  // }, {
+  cfg.multiCapabilities = [{
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
+    name                : `bhima-${process.env.TRAVIS_BRANCH}`,
+    tags                : [
+      `node: ${process.env.TRAVIS_NODE_VERSION}`,
+      `os: ${process.env.TRAVIS_OS_NAME}`,
+    ],
   }];
 
-  // make Travis take screenshots!
-  config.mochaOpts = {
-    reporter        : 'mochawesome-screenshots',
-    reporterOptions : {
-      reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : `protractor-${new Date().toDateString().replace(/\s/g,'-')}-${process.env.TRAVIS_BUILD_NUMBER}`,
-      reportTitle          : 'Bhima End to End Tests',
-      takePassedScreenshot : false,
-      clearOldScreenshots  : true,
-    },
-    timeout : 30000,
+  cfg.mochaOpts = {
+    bail : true,
+    timeout : 120 * seconds,
+    reporter : 'list',
   };
 }
 
