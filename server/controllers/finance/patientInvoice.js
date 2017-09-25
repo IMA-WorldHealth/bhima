@@ -231,6 +231,11 @@ function find(options) {
     'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = ?)'
   );
 
+  filters.custom(
+    'inventoryLabel',
+    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item JOIN inventory ON inventory.uuid = invoice_item.inventory_uuid WHERE inventory.text = ?)'
+  );
+
   filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');

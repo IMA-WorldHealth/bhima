@@ -29,6 +29,7 @@
         "GLOBAL": {
             "CASHFLOW_OPTION": "Option pour cashflow",
             "CONVENTION_INVOICES": "Convention - Paiement factures",
+            "CONVENTION_PAYMENT_DESCRIPTION": "Paiement des Conventions: paiement de {{numInvoices}} facture(s) par {{debtorGroupName}}.",
             "TRANSFER_DESCRIPTION": "Transfert: De {{ fromAccount }} à {{ toAccount }} pour {{ amount }} {{ symbol }}",
             "SUPPORT_FORM": "Prise en Charge des patients",
             "SUPPORT_TEXT": "Lorsque les deux champs ci-dessus sont remplis, Les dettes du patient apparaissent en vue qu'une  \"Prise en Charge\" puissent être attribue à un Compte.",
@@ -44,6 +45,7 @@
                 "SUCCESS": "Bon de paiement enregistré avec succès."
             },
             "REPORT": "Rapport des Quittances",
+            "SUPPORT_PAYMENT_DESCRIPTION":"Transfert de la dette du {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
             "TITLE": "Quittance",
             "TRANSFER_TYPE_INFO": "Type de transaction selon qu'on a soit une recette ou une depense",
             "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"
