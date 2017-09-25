@@ -119,6 +119,7 @@
             "ITEMS_FULL": "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
             "LOADING": "Chargement en cours",
             "MANY_TRYS": "Plusieurs tentatives",
+            "MAX_LOT_REACHED": "Lot maximal atteint",
             "NOT_CONFIGURED": "Les comptes ne sont pas configuree.",
             "NOTE": "Note",
             "NO_SOURCE": "Aucune source definie",

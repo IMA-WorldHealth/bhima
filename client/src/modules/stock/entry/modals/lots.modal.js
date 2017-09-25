@@ -34,6 +34,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         displayName      : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.input.tmpl.html' },
 
       { field            : 'quantity',
@@ -41,6 +42,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         displayName      : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.sum,
+        aggregationHideLabel : true,
         footerCellClass  : 'text-right',
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html' },
 
@@ -116,13 +118,37 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     handleChange(inventory);
   }
 
+
+  function hasInvalidInventory(hasQuantity, hasExpiration) {
+    var error;
+
+    var isExpiration = hasExpiration ? false : true;
+    var isExcessiveQuatity = hasQuantity ? false : true;
+
+    if (isExcessiveQuatity) {
+      vm.errorText = 'STOCK.ERRORS.EXCESSIVE_QUANTITY';
+      error = true;
+    } else if (isExpiration) {
+      vm.errorText = 'STOCK.ERRORS.PLEASE_CHECK_EXPIRY_DATE';
+      error = true;
+    }
+
+    return error;
+  }
+
   // handleChange
   function handleChange(inventory) {
-    var sum = vm.gridOptions.data.reduce(sumQuantity, 0);
+    vm.error =  false;
+
+    var sum = vm.gridOptions.data.reduce(sumQuantity, 0);  
     var hasQuantity = (vm.inventory.quantity >= sum);
     var hasLotLabel = inventory.lot;
     var hasExpiration = (new Date(inventory.expiration_date) >= new Date());
     inventory.is_valid = (hasQuantity && hasLotLabel && hasExpiration);
+
+    vm.error = hasInvalidInventory(hasQuantity, hasExpiration);
+    vm.submitError = vm.error ? vm.error : false;
+
 
     vm.remainingQuantity = (vm.inventory.quantity - sum >= 0) ? vm.inventory.quantity - sum : 0;
     vm.sum = sum;
@@ -140,8 +166,23 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   // submit
-  function submit() {
-    if (!validLots()) { return; }
+  function submit(detailsForm) {
+    // This structure check if there are empty field
+    if (detailsForm.$invalid) {
+      vm.submitError = true;
+      vm.errorText = vm.error ? vm.error : 'FORM.ERRORS.RECORD_ERROR'; 
+
+      return;
+    } else {
+      vm.submitError = false;
+      // If the form is still at this level the only remaining reason is the expiration date
+
+      if (!validLots()) { 
+        vm.submitError = vm.error ? vm.error : false;
+
+        return;         
+      }
+    }
 
     Instance.close({ lots: vm.gridOptions.data, quantity: vm.sum });
   }
@@ -155,6 +196,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   function sumQuantity(current, previous) {
     return previous.quantity + current;
   }
+
+  // determine if the inventory quantity and cost should be editable or not.
+  vm.hasEditableInventory = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
 
   init();
 }

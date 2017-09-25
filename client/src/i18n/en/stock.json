@@ -23,6 +23,10 @@
     "ENTRY_DONATION"  : "Donation",
     "ENTRY_INTEGRATION" : "Integration",
     "ENTRY_TRANSFER"  : "Transfer",
+    "ERRORS" : {
+      "EXCESSIVE_QUANTITY": "Excessive Quantity",
+      "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiration date"
+    },
     "EXPIRATION_DATE" : "Expiration Date",
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_RISK" : "Expiration Risk",

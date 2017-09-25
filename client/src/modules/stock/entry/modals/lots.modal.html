@@ -4,17 +4,23 @@
   novalidate>
 
   <div class="modal-header">
-    <div class="headercrumb">
-      <i class="fa fa-tags"></i> 
-      <h3 style="margin: 0px;">{{ $ctrl.inventory.inventory.label }}</h3>
-    </div>
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="static" translate>STOCK.ENTRY</li>
+      <li class="title">{{ $ctrl.inventory.inventory.label }}</li>
+    </ol>
   </div>
 
   <div class="modal-body clearfix">
     <div class="form-group">
-      <label translate>FORM.LABELS.GLOBAL_QUANTITY</label>
+      <label class="control-label" translate>FORM.LABELS.GLOBAL_QUANTITY</label>
+      
+      <div ng-if="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'">
+        <span class="form-control-static">{{ $ctrl.inventory.quantity }}</span>
+      </div>
+
       <input 
-        ng-disabled="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'" 
+        ng-if="$ctrl.entryType !== 'purchase' && $ctrl.entryType !== 'transfer_reception'" 
         class="form-control" 
         type="number" 
         ng-model="$ctrl.inventory.quantity" 
@@ -25,9 +31,13 @@
 
     <div class="form-group">
       <label translate>STOCK.UNIT_COST</label>
-      <div class="input-group">
-        <input 
-          ng-disabled="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'" 
+
+      <div ng-if="!$ctrl.hasEditableInventory">
+        <span class="form-control-static">{{ $ctrl.inventory.unit_cost }}  {{ $ctrl.enterprise.currencyLabel }} </span>
+      </div>
+
+      <div ng-if="$ctrl.hasEditableInventory" class="input-group">
+        <input  
           class="form-control" 
           type="number" 
           ng-model="$ctrl.inventory.unit_cost"
@@ -69,6 +79,12 @@
       <i class="fa fa-warning"></i> 
       <span translate>FORM.INFO.MAX_LOT_REACHED</span>
     </p>
+
+    <p ng-if="$ctrl.submitError" class="alert alert-danger" style="margin: 5px 0px;">
+      <i class="fa fa-warning"></i> 
+      <span translate>{{ $ctrl.errorText }}</span>
+    </p>
+
   </div>
 
   <div class="modal-footer">

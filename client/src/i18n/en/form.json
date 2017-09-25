@@ -119,6 +119,7 @@
             "GRID_STATE_SUCCESS": "Grid settings saved",
             "LOADING": "Loading",
             "MANY_TRYS": "Many tries",
+            "MAX_LOT_REACHED": "Max lot reached",
             "NOT_CONFIGURED": "The accounts for this currency have not been configured yet.",
             "NOTE": "Note",
             "NO_SOURCE": "No source defined",
