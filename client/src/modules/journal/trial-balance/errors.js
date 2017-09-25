@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 TrialBalanceErrorsController.$inject = ['TrialBalanceService', 'NotifyService'];
 
 /**
- * @module TrialBalanceErrorsController
+ * @overview TrialBalanceErrorsController
  *
  * @description
  * This controller provides a view of the errors in the selected transactions

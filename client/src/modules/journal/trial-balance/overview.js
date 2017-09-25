@@ -16,7 +16,6 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
   var currencyId = Session.enterprise.currency_id;
 
   var columns;
-  var subGridColumns;
 
   var GRID_HEADER_ERROR_CLASS = 'ui-grid-header-cell-error';
   var GRID_HEADER_DEFAULT_CLASS = 'ui-grid-header-cell-primary';
@@ -79,72 +78,13 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     fastWatch         : true,
     flatEntityAccess  : true,
     columnDefs        : columns,
-    expandableRowTemplate : '/modules/journal/trial-balance/overview.subgrid.html',
-    expandableRowScope : vm,
     enableColumnResizing : true,
     onRegisterApi : onRegisterApi,
   };
 
   function onRegisterApi(api) {
     vm.gridApi = api;
-
-    // TODO - should we really cache the trial balance transactions?
-    // api.expandable.on.rowExpandedStateChanged(null, loadSubGridRecords);
   }
-
-  /*
-  function loadSubGridRecords(row) {
-    var accountId = row.entity.accountId;
-
-    // turn on the subgrid loading indicator
-    vm.loadingSubGrid = true;
-
-    TrialBalance.fetchSubGridRecords(accountId)
-      .then(function (data) {
-        vm.subGridOptions.data = data;
-      })
-      .catch(function () {
-        vm.hasSubGridErrors = true;
-      })
-      .finally(function () {
-        vm.loadingSubGrid = false;
-      });
-  }
-  */
-
-  subGridColumns = [{
-    field            : 'trans_id',
-    displayName      : 'TABLE.COLUMNS.TRANSACTION',
-    headerCellFilter : 'translate',
-  }, {
-    field                : 'credit_equiv',
-    type                 : 'number',
-    displayName          : 'TABLE.COLUMNS.CREDIT',
-    headerCellFilter     : 'translate',
-    cellFilter           : 'currency:'.concat(currencyId),
-    cellClass            : 'text-right',
-  }, {
-    field                : 'debit_equiv',
-    type                 : 'number',
-    displayName          : 'TABLE.COLUMNS.DEBIT',
-    headerCellFilter     : 'translate',
-    cellFilter           : 'currency:'.concat(currencyId),
-    cellClass            : 'text-right',
-  }, {
-    field            : 'actions',
-    displayName      : '',
-    headerCellFilter : 'translate',
-    enableSorting    : false,
-    cellTemplate     : '/modules/journal/trial-balance/.html',
-  }];
-
-  vm.subGridOptions = {
-    enableColumnMenus : false,
-    showColumnFooter  : false,
-    fastWatch : true,
-    flatEntityAccess : true,
-    columnDefs : subGridColumns,
-  };
 
   // FIXME(@jniles) - this is kind of hacky
   TrialBalance.bindGridExporter(

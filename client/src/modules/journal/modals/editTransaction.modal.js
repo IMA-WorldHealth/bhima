@@ -181,8 +181,6 @@ function JournalEditTransactionController(
         return ERROR_NEGATIVE_NUMBERS;
       }
 
-      window.util = util;
-
       var hasSingleNumericValue = !util.xor(Boolean(row.debit_equiv), Boolean(row.credit_equiv));
       if (hasSingleNumericValue) {
         return ERROR_INVALID_DEBITS_AND_CREDITS;

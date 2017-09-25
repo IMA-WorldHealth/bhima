@@ -6,10 +6,9 @@
     <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
   </ol>
 </div>
-
 <div class="modal-body">
   <!-- warn user that standard users cannot edit posted transactions -->
-  <div class="alert alert-warning" ng-if="ModalCtrl.validation.blockedPostedTransactionEdit"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
+  <div class="alert alert-warning pad-alert" ng-if="ModalCtrl.validation.blockedPostedTransactionEdit">
     <i class="fa fa-warning"></i> <span translate>POSTING_JOURNAL.ERRORS.USER_CANNOT_EDIT_POSTED_TRANSACTION</span>
   </div>
 
@@ -90,7 +89,7 @@
       </div>
     </div>
 
-    <div class="alert alert-danger" id="validation-errored-alert" ng-if="ModalCtrl.validation.errored"  style="border-radius : 0px; padding-left : 5px; padding-right : 5px; padding-top : 10px; padding-bottom : 10px; margin-bottom : 10px;">
+    <div class="alert alert-danger pad-alert" id="validation-errored-alert" ng-if="ModalCtrl.validation.errored">
       <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
     </div>
 

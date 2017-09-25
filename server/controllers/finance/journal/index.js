@@ -530,21 +530,26 @@ function getTransactionDate(changedRows = {}, oldRows) {
 
 /**
  * PUT /journal/comments
+ *
+ * @function commentPostingJournal
+ *
+ * @description
+ * This function will put a comment on both the posting journal and general ledger.
+ *
  * @param {object} params - { uuids: [...], comment: '' }
  */
 function commentPostingJournal(req, res, next) {
   const { uuids, comment } = req.body.params;
   const uids = uuids.map(db.bid);
-  const sql = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
 
-  db.exec(sql, [comment, [uids]])
-    .then((rows) => {
-      const updatedWithSuccess = rows.affectedRows && rows.affectedRows === uids.length;
+  const journalUpdate = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
+  const ledgerUpdate = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
 
-      if (!updatedWithSuccess) {
-        throw new BadRequest('Error on update posting journal comment.');
-      }
-
+  q.all([
+    db.exec(journalUpdate, [comment, [uids]]),
+    db.exec(ledgerUpdate, [comment, [uids]]),
+  ])
+    .then(() => {
       res.sendStatus(200);
     })
     .catch(next)
