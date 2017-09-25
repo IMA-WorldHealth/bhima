@@ -18,7 +18,7 @@ function StockInventoriesController(
 ) {
   var vm = this;
   var filterKey = 'inventory';
-  var StockInventoryFilters = Stock.filter.inventory;
+  var stockInventoryFilters = Stock.filter.inventory;
   var cacheKey = 'stock-inventory-grid';
   var state;
   var gridColumns;
@@ -116,7 +116,14 @@ function StockInventoriesController(
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
+  vm.saveGridState = state.saveGridState;
+
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -124,9 +131,19 @@ function StockInventoriesController(
 
   // expose view logic
   vm.search = search;
-  // vm.onRemoveFilter = onRemoveFilter;
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
   // vm.clearFilters = clearFilters;
   // vm.setStatusFlag = setStatusFlag;
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the inventories registry's columns.
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  }
 
   function setStatusFlag(item) {
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_SOLD_OUT;
@@ -138,7 +155,12 @@ function StockInventoriesController(
 
   // on remove one filter
   function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
+    Stock.removeFilter(filterKey, key);
+
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockInventoryFilters.formatView();
+
+    return load(stockInventoryFilters.formatHTTP(true));
   }
 
   // clear all filters
@@ -170,15 +192,15 @@ function StockInventoriesController(
 
   // open a modal to let user filtering data
   function search() {
-    var filtersSnapshot = StockInventoryFilters.formatHTTP();
+    var filtersSnapshot = stockInventoryFilters.formatHTTP();
 
     Modal.openSearchInventories(filtersSnapshot)
     .then(function (changes) {
-      StockInventoryFilters.replaceFilters(changes);
+      stockInventoryFilters.replaceFilters(changes);
       Stock.cacheFilters(filterKey);
-      vm.latestViewFilters = StockInventoryFilters.formatView();
+      vm.latestViewFilters = stockInventoryFilters.formatView();
       
-      return load(StockInventoryFilters.formatHTTP(true));
+      return load(stockInventoryFilters.formatHTTP(true));
     });
   }
 
@@ -196,8 +218,8 @@ function StockInventoriesController(
       Stock.cacheFilters(filterKey);
     }
 
-    load(StockInventoryFilters.formatHTTP(true));
-    vm.latestViewFilters = StockInventoryFilters.formatView();
+    load(stockInventoryFilters.formatHTTP(true));
+    vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
   startup();
