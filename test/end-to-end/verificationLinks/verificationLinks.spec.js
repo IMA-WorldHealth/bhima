@@ -58,5 +58,14 @@ describe('Check links', () => {
     GU.expectRowCount('payment-registry', 0);
   });
 
+  it('Check link betwen Inventory Registry -> Invoice Registry', () => {
+    helpers.navigate('#!/inventory/list');
+    filters.resetFilters();
+
+    element.all(by.css('[data-method="action"]')).get(3).click();
+    element.all(by.css('[data-method="invoice"]')).get(3).click();
+    page.expectNumberOfGridRows(2);
+  });
+
 });
 
