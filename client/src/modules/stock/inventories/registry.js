@@ -3,8 +3,7 @@ angular.module('bhima.controllers')
 
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService',
-  'SearchFilterFormatService', 'LanguageService', 'SessionService',
+  'uiGridConstants', '$translate', 'StockModalService','LanguageService', 'SessionService',
   'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService'
 ];
 
@@ -13,8 +12,8 @@ StockInventoriesController.$inject = [
  * This module is a registry page for stock inventories
  */
 function StockInventoriesController(
-  Stock, Notify, uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Session, Grouping, bhConstants, GridState, $state, Columns
+  Stock, Notify, uiGridConstants, $translate, Modal, Languages,
+  Session, Grouping, bhConstants, GridState, $state, Columns
 ) {
   var vm = this;
   var filterKey = 'inventory';
@@ -40,9 +39,7 @@ function StockInventoriesController(
     { field            : 'quantity',
       displayName      : 'STOCK.QUANTITY',
       headerCellFilter : 'translate',
-      aggregationType  : uiGridConstants.aggregationTypes.sum,
-      cellClass        : 'text-right',
-      footerCellClass  : 'text-right',
+      cellClass        : 'text-right'
     },
 
     { field            : 'unit_type',
@@ -134,7 +131,6 @@ function StockInventoriesController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
-  // vm.clearFilters = clearFilters;
   // vm.setStatusFlag = setStatusFlag;
 
   // This function opens a modal through column service to let the user toggle
@@ -161,11 +157,6 @@ function StockInventoriesController(
     vm.latestViewFilters = stockInventoryFilters.formatView();
 
     return load(stockInventoryFilters.formatHTTP(true));
-  }
-
-  // clear all filters
-  function clearFilters() {
-    SearchFilterFormat.clearFilters(reload);
   }
 
   // load stock lots in the grid
@@ -202,13 +193,6 @@ function StockInventoriesController(
       
       return load(stockInventoryFilters.formatHTTP(true));
     });
-  }
-
-  // reload
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
-    load(filters.identifiers);
   }
 
   function startup (){

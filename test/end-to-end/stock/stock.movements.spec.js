@@ -28,7 +28,7 @@ function StockMovementsRegistryTests() {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
-    GU.expectRowCount(gridId, 25);
+    GU.expectRowCount(gridId, 23);
   });
 
   it('find entry movements ', () => {
