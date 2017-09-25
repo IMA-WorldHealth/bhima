@@ -91,7 +91,7 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages,
   // to compensate for the delay in browsers opening the print dialog
   var loadingIndicatorDelay = 1000;
 
-  function print() {    
+  function print() {
     var url = component.pdfUrl;
     var configuration = requestOptions();
 

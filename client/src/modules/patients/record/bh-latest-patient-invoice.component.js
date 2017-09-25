@@ -4,7 +4,7 @@ angular.module('bhima.components')
   controllerAs : '$ctrl',
   templateUrl  : 'modules/patients/record/bh-latest-patient-invoice.html',
   bindings     : {
-    debtorUuid : '<',  // Required patient uuid
+    patientUuid : '<',  // Required patient uuid
   },
 });
 
@@ -26,12 +26,12 @@ function LatestInvoice(Patient, moment, Notify, Session, $q) {
 
   /** getting patient document */
   function startup() {
-    if (!vm.debtorUuid) { return; }
+    if (!vm.patientUuid) { return; }
     vm.loading = true;
 
     var requests = $q.all([
-      Patient.latest(vm.debtorUuid),
-      Patient.balance(vm.debtorUuid)
+      Patient.latest(vm.patientUuid),
+      Patient.balance(vm.patientUuid)
     ]);
 
     requests.then(function (results) {
@@ -44,6 +44,6 @@ function LatestInvoice(Patient, moment, Notify, Session, $q) {
      .finally(function () {
        vm.loading = false;
       });
- 
+
   }
 }

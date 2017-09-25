@@ -26,12 +26,17 @@ function getEntity(req, res, next) {
   const reference = codeRef[2];
   const documentDefinition = identifiersIndex[code];
 
+  // consider corner cases to gaurd against infinite redirects
   if (!documentDefinition) {
     throw new BadRequest(`Invalid document type provided - '${code}'`);
   }
 
+  if (!documentDefinition.documentPath) {
+    throw new BadRequest(`Document type does not support document path - '${code}'`);
+  }
+
   const query = `
-    SELECT BUID(uuid) as uuid 
+    SELECT BUID(uuid) as uuid
     FROM ${documentDefinition.table} as documentTable JOIN project ON documentTable.project_id = project.id
     WHERE project.abbr = ? AND documentTable.reference = ?
   `;
@@ -52,5 +57,5 @@ function indexIdentifiers() {
   _.forEach(identifiers, (entity) => {
     identifiersIndex[entity.key] = entity;
   });
-} 
+}
 

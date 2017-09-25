@@ -1,5 +1,4 @@
-/**
- * The /journal HTTP API endpoint
+/** The /journal HTTP API endpoint
  *
  * @module finance/journal/
  *
@@ -11,12 +10,11 @@
  * @requires lodash
  * @requires node-uuid
  * @requires lib/db
+ * @requires lib/filter
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
  */
 
-
-// npm deps
 const q = require('q');
 const _ = require('lodash');
 const uuid = require('node-uuid');
@@ -27,15 +25,19 @@ const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
+// Fiscal Service
+const FiscalService = require('../../finance/fiscal');
+
 // expose to the api
 exports.list = list;
 exports.getTransaction = getTransaction;
 exports.reverse = reverse;
 exports.find = find;
-exports.journalEntryList = journalEntryList;
+exports.buildTransactionQuery = buildTransactionQuery;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
+exports.commentPostingJournal = commentPostingJournal;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -44,34 +46,15 @@ exports.count = count;
  * @returns {Promise} object - a promise resolving to the part of transaction object.
  */
 function lookupTransaction(recordUuid) {
-  const sql = `
-      SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-        p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-        dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-        p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-        BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-        BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-        pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-      FROM posting_journal p
-        JOIN project pro ON pro.id = p.project_id
-        JOIN period per ON per.id = p.period_id
-        JOIN account a ON a.id = p.account_id
-        JOIN user u ON u.id = p.user_id
-        JOIN currency c ON c.id = p.currency_id
-        LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-        LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-        LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-      WHERE p.record_uuid = ?
-      ORDER BY p.trans_date DESC
-    `;
+  const options = {
+    record_uuid : recordUuid,
+    includeNonPosted : true,
+  };
 
-  return db.exec(sql, [db.bid(recordUuid)])
-    .then(rows => addAggregateData(rows))
+  return find(options)
     .then((result) => {
       // if no records matching, throw a 404
-      if (result.journal.length === 0) {
+      if (result.length === 0) {
         throw new NotFound(`Could not find a transaction with record_uuid: ${recordUuid}.`);
       }
 
@@ -79,24 +62,50 @@ function lookupTransaction(recordUuid) {
     });
 }
 
-/**
- * @function find
- *
- * @description
- * This function filters the posting journal by query parameters passed in via
- * the options object.  If no query parameters are provided, the method will
- * return all items in the posting journal
- */
-function find(options, source) {
+// @TODO(sfount) find a more efficient way of combining multiple table sets than a union all on the final results
+//               - new method should be proven as more efficient on large data sets before being accepted
+//
+// Current merge logic : subset 1 UNION ALL subset 2 ORDER
+// 1. select all from the posting journal including all joins, conditions etc.
+// 2. select all from the general ledger including all joins, conditions etc.
+// 3. UNION ALL between both complete sets of data
+// 4. Apply date order
+function naiveTransactionSearch(options, includeNonPosted) {
+  // hack to ensure only the correct amount of rows are returned - this should be improved
+  // in the more efficient method of selection
+  let limitCondition = '';
+  if (options.limit) {
+    limitCondition = ` LIMIT ${Number(options.limit)}`;
+  }
+
+  if (!includeNonPosted) {
+    const query = buildTransactionQuery(_.cloneDeep(options), false);
+    return db.exec(`(${query.sql}) ORDER BY trans_date DESC ${limitCondition}`, query.parameters);
+  }
+
+  // clone options as filter parsing process mutates object
+  const posted = buildTransactionQuery(_.cloneDeep(options), true);
+  const nonPosted = buildTransactionQuery(_.cloneDeep(options), false);
+
+  const combinedParameters = posted.parameters.concat(nonPosted.parameters);
+
+  return db.exec(
+    `(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC ${limitCondition}`,
+    combinedParameters
+  );
+}
+
+// if posted ONLY return posted transactions
+// if not posted ONLY return non-posted transactions
+function buildTransactionQuery(options, posted) {
+  db.convert(options, ['uuid', 'record_uuid', 'uuids']);
+
   const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
 
-  // @FIXME selected the source between the posting journal and general ledger should be carefully designed
-  // as it will be used in many places, allowing a calling method
-  // to arbitrarily define the table should be replaced
-  const origin = source || 'posting_journal';
+  const table = posted ? 'general_ledger' : 'posting_journal';
 
   const sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+    SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
@@ -105,7 +114,7 @@ function find(options, source) {
       p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-    FROM ${origin} p
+    FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
@@ -128,165 +137,51 @@ function find(options, source) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('origin_id');
+  filters.equals('record_uuid');
 
+  filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
-  filters.setOrder('ORDER BY p.trans_date DESC');
-
-  const query = filters.applyQuery(sql);
-
-  const parameters = filters.parameters();
-  return db.exec(query, parameters);
+  return {
+    sql : filters.applyQuery(sql),
+    parameters : filters.parameters(),
+  };
 }
 
 /**
- * @function journalEntryList
- * Allows you to select which transactions to print
- */
-function journalEntryList(options, source) {
-  const uuids = options.uuids.map(uid => db.bid(uid));
-  const origin = source || 'posting_journal';
-
-  const sql = `
-    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-      dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-      p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-      BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-      BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-      pro.name AS project_name, per.start_date AS period_start,
-      per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-    FROM ${origin} p
-      JOIN project pro ON pro.id = p.project_id
-      JOIN period per ON per.id = p.period_id
-      JOIN account a ON a.id = p.account_id
-      JOIN user u ON u.id = p.user_id
-      JOIN currency c ON c.id = p.currency_id
-      LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-      LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-      LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-    WHERE p.uuid IN (?)
-    ORDER BY p.trans_date DESC, record_uuid ASC
-  `;
-
-  return db.exec(sql, [uuids]);
-}
-
-
-/**
- * GET /journal
- * Getting data from the posting journal
+ * @function find
  *
- * optional query flags
- * - aggregates {Boolean} If passed as true queries will return an object with
- *   both requested journal rows as well as aggregate information about all
- *   transactions involved in the request; total credits, debits and row counts.
+ * @description
+ * This function filters the posting journal by query parameters passed in via
+ * the options object.  If no query parameters are provided, the method will
+ * return all items in the posting journal
+ *
+ * includeNonPosted
+ * includeAggregates
  */
-function list(req, res, next) {
-  let promise;
-
-  const includeAggregates = Number(req.query.aggregates);
-  delete req.query.aggregates;
-
-  // TODO - clean this up a bit.  We should only use a single column definition
-  // for both this and find()
-  if (_.isEmpty(req.query)) {
-    const sql = `
-      SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
-        p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-        dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
-        p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
-        BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-        BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-        p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-        pro.name AS project_name, per.start_date AS period_start,
-        per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
-      FROM posting_journal p
-        JOIN project pro ON pro.id = p.project_id
-        JOIN period per ON per.id = p.period_id
-        JOIN account a ON a.id = p.account_id
-        JOIN user u ON u.id = p.user_id
-        JOIN currency c ON c.id = p.currency_id
-        LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
-        LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
-        LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-      ORDER BY p.trans_date DESC
-    `;
-
-    promise = db.exec(sql);
-  } else {
-    promise = find(req.query);
+function find(options) {
+  if (options.includeNonPosted && Boolean(Number(options.includeNonPosted))) {
+    delete options.includeNonPosted;
+    return naiveTransactionSearch(options, true);
   }
 
-  promise
-    .then((journalResults) => {
-      // aggregate information requested - return promise getting this info
-      if (includeAggregates) {
-        return addAggregateData(journalResults);
-      }
+  return naiveTransactionSearch(options, false);
+}
 
-      // no aggregates required - directly return results
-      return journalResults;
-    })
-    .then((rows) => {
-      res.status(200).json(rows);
+/**
+ * @method list
+ *
+ * @description
+ * This function simply uses the find() method to filter the posting journal and
+ * (optionally) the general ledger.
+ */
+function list(req, res, next) {
+  find(req.query)
+    .then((journalResults) => {
+      return res.status(200).send(journalResults);
     })
     .catch(next)
     .done();
-}
-
-/**
- * Wrapper method for requesting and formatting journal rows and aggregate
- * information
- *
- * - returns a correctly formatted object with aggregates and journal rows
- */
-function addAggregateData(journalRows) {
-  return queryTransactionAggregates(journalRows)
-    .then((aggregateResults) => {
-      // format object according to API specification
-      return {
-        journal   : journalRows,
-        aggregate : aggregateResults,
-      };
-    });
-}
-
-/**
- * Add additional transaction aggregate information based on the transactions/
- * rows in journal queries
- *
- * - Expects an array of journal voucher rows
- *
- * - This one flag returns an object containing both journal rows and aggregate
- *   information , this is described in the API
- */
-function queryTransactionAggregates(journalRows) {
-  const transactionIds = journalRows
-    .map(row => row.record_uuid)
-
-    // only keep elements that are unique
-    .filter((transactionId, index, allTransactionIds) => allTransactionIds.indexOf(transactionId) === index)
-
-    .map(transactionId => db.bid(transactionId));
-
-  const emptyTransactions = transactionIds.length === 0;
-  const aggregateQuery = `
-    SELECT
-      trans_id, SUM(credit_equiv) as credit_equiv, BUID(record_uuid) as record_uuid,
-      SUM(debit_equiv) as debit_equiv, COUNT(uuid) as totalRows
-    FROM posting_journal
-    WHERE record_uuid in (?)
-    GROUP BY record_uuid;
-  `;
-
-  // if there are no record uuids to search on we can optimise by not running the query
-  if (emptyTransactions) {
-    return Promise.resolve([]);
-  }
-
-  return db.exec(aggregateQuery, [transactionIds]);
 }
 
 /**
@@ -302,29 +197,77 @@ function getTransaction(req, res, next) {
     .done();
 }
 
+// @TODO(sfount) move edit transaction code to separate server controller - split editing process
+//               up into smaller self contained methods
 function editTransaction(req, res, next) {
   const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?';
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?';
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?';
 
   const transaction = db.transaction();
+  const recordUuid = req.params.record_uuid;
 
   const rowsChanged = req.body.changed;
   const rowsAdded = req.body.added;
   const rowsRemoved = req.body.removed;
 
-  rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
-  // _.each(rowsChanged, (row, uuid) => transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uuid)]));
+  let _transactionToEdit;
+  let _fiscalYear;
 
-  transformColumns(rowsAdded, true)
+  rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
+
+  // verify that this transaction is NOT in the general ledger already
+  // @FIXME(sfount) this logic needs to be updated when allowing super user editing
+  lookupTransaction(recordUuid)
+    .then((transactionToEdit) => {
+      const { posted, trans_id } = transactionToEdit[0];
+
+      // bind the current transaction under edit as "transactionToEdit"
+      _transactionToEdit = transactionToEdit;
+
+      // check the source (posted vs. non-posted) of the first transaction row
+      if (posted) {
+        throw new BadRequest(
+          `Posted transactions cannot be edited.  Transaction ${trans_id} is already posted.`,
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED'
+        );
+      }
+
+      // make sure that the user tools cannot simply remove all rows without going through
+      // the deletion API
+      const allRowsRemoved = (rowsAdded.length === 0 && rowsRemoved.length >= transactionToEdit.length);
+      const singleRow = ((rowsAdded.length - rowsRemoved.length) + transactionToEdit.length) === 1;
+      if (allRowsRemoved || singleRow) {
+        throw new BadRequest(
+          `Transaction ${trans_id} has too few rows!  A valid transaction must contain at least two rows.`,
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS'
+        );
+      }
+
+      // retrieve the transaction date
+      const transDate = getTransactionDate(rowsChanged, transactionToEdit);
+      return FiscalService.lookupFiscalYearByDate(transDate);
+    })
+    .then((fiscalYear) => {
+      _fiscalYear = fiscalYear;
+
+      if (fiscalYear.locked) {
+        throw new BadRequest(
+          `${fiscalYear.label} is closed and locked.  You cannot make transactions against it.`,
+          'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR'
+        );
+      }
+
+      // continue with editing - transform requested additional columns
+      return transformColumns(rowsAdded, true, _transactionToEdit, fiscalYear);
+    })
     .then((result) => {
       result.forEach((row) => {
-        db.convert(row, ['uuid', 'record_uuid', 'entity_uuid']);
-        // row = transformColumns(row);
+        db.convert(row, ['uuid', 'record_uuid', 'entity_uuid', 'reference_uuid']);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
 
-      return transformColumns(rowsChanged, false);
+      return transformColumns(rowsChanged, false, _transactionToEdit, _fiscalYear);
     })
     .then((result) => {
       _.each(result, (row, uid) => {
@@ -333,8 +276,12 @@ function editTransaction(req, res, next) {
       });
       return transaction.execute();
     })
-    .then((result) => {
-      res.status(200).json(result);
+    .then(() => {
+      // transaction changes written successfully - return latest version of transaction
+      return lookupTransaction(recordUuid);
+    })
+    .then((updatedRows) => {
+      res.status(200).json(updatedRows);
     })
     .catch(next);
 
@@ -348,10 +295,21 @@ function editTransaction(req, res, next) {
 // converts all valid posting journal editable columns into data representations
 // returns valid errors for incorrect data
 // @TODO Many requests are made vs. getting one look up table and using that - this can be greatly optimised
-function transformColumns(rows, newRecord) {
+function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
   const ACCOUNT_NUMBER_QUERY = 'SELECT id FROM account WHERE number = ?';
   const ENTITY_QUERY = 'SELECT uuid FROM entity_map WHERE text = ?';
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
+  const EXCHANGE_RATE_QUERY = `
+    SELECT ? * IF(enterprise.currency_id = ?, 1, GetExchangeRate(enterprise.id, ?, ?)) AS amount FROM enterprise
+    JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
+  `;
+
+  // these are global/shared properties of the current transaction
+  // TODO(@jniles) - define these shared properties in an isomorphic way to share between
+  // client and server.
+  const projectId = transactionToEdit[0].project_id;
+  const transactionDate = transactionToEdit[0].trans_date;
+  const currencyId = transactionToEdit[0].currency_id;
 
   const databaseRequests = [];
   const databaseValues = [];
@@ -362,7 +320,7 @@ function transformColumns(rows, newRecord) {
   // this works on both the object provided from changes and the array from new
   // rows - that might be a hack
   _.each(rows, (row) => {
-    // supports specific columns that can be eddited on the client
+    // supports specific columns that can be edited on the client
     // accounts are required on new rows, business logic should be moved elsewhere
     if (newRecord && !row.account_number) {
       throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
@@ -424,27 +382,64 @@ function transformColumns(rows, newRecord) {
       delete row.hrReference;
     }
 
-    // in the future this could factor in the currency ID. Right now there is no way
-    // of viewing or editing the debit and credit columns on the client
+    // NOTE: To update the amounts, we need to have the enterprise_id, currency_id, and date.
+    // These are attained from the old transaction (transactionToEdit) or the changed transaction.
+
     if (row.debit_equiv) {
-      row.debit = row.debit_equiv;
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_QUERY);
+      databaseValues.push([row.debit_equiv, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+
+        row.debit = amount;
+      });
     }
 
     if (row.credit_equiv) {
-      row.credit = row.credit_equiv;
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_QUERY);
+      databaseValues.push([row.credit_equiv, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+        row.credit = amount;
+      });
     }
 
     // ensure date strings are processed correctly
     // @TODO standardise formatting vs. lookup behaviour
     if (row.trans_date) {
       row.trans_date = new Date(row.trans_date);
+
+      // Assign the fiscal year value and the period each time the trans_date change
+      row.fiscal_year_id = setFiscalData.fiscal_year_id;
+      row.period_id = setFiscalData.id;
     }
   });
 
   promises = databaseRequests.map((request, index) =>
     db.exec(request, databaseValues[index])
-      .then(results => assignments[index](results))
-  );
+      .then(results => assignments[index](results)));
 
   return q.all(promises)
     .then(() => rows);
@@ -486,7 +481,8 @@ function reverse(req, res, next) {
       if (rows.length > 0) {
         // transaction already cancelled
         throw new BadRequest(
-          'The transaction has been already cancelled', 'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
+          'The transaction has been already cancelled',
+          'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
         );
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
@@ -511,4 +507,51 @@ function count(req, res, next) {
       res.status(200).send(rows);
     })
     .catch(next);
+}
+
+/**
+ * @function getTransactionDate
+ *
+ * @description
+ * This function computes the date of the transaction from the submitted data.
+ * It will prefer changed rows over the underlying transaction, if the user changed the trans_date.
+ */
+function getTransactionDate(changedRows = {}, oldRows) {
+  // for some reason, changedRows is an object while all others are arrays.
+  // we must convert it to an array.
+  const changes = _.map(changedRows, row => row);
+
+  const rows = [...oldRows, ...changes];
+  return rows
+    .filter(row => row.trans_date)
+    .map(row => row.trans_date)
+    .pop();
+}
+
+/**
+ * PUT /journal/comments
+ *
+ * @function commentPostingJournal
+ *
+ * @description
+ * This function will put a comment on both the posting journal and general ledger.
+ *
+ * @param {object} params - { uuids: [...], comment: '' }
+ */
+function commentPostingJournal(req, res, next) {
+  const { uuids, comment } = req.body.params;
+  const uids = uuids.map(db.bid);
+
+  const journalUpdate = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
+  const ledgerUpdate = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
+
+  q.all([
+    db.exec(journalUpdate, [comment, [uids]]),
+    db.exec(ledgerUpdate, [comment, [uids]]),
+  ])
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
 }

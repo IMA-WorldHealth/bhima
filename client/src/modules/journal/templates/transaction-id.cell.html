@@ -1,0 +1,16 @@
+<!-- Ensure that values are only shown in the group header if grouped by transaction -->
+<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">
+  <!-- @TODO(sfount) UI-Grid may expose a better way to do this in the future -->
+  <!-- if this is a group header we have to use the tree node children attributes to determine if this transaction is posted -->
+  <span ng-if="row.groupHeader">
+    <span style="color : #FDBA64" class="fa fa-circle" ng-if="row.treeNode.children[0].row.entity.posted"></span>
+    <span style="color : #6FBDEE" class="fa fa-circle" ng-if="!row.treeNode.children[0].row.entity.posted"></span>
+  </span>
+
+  <!-- if this not a group header we can directly access the row entity property -->
+  <span ng-if="!row.groupHeader">
+    <span style="color : #FDBA64" class="fa fa-circle" ng-if="row.entity.posted"></span>
+    <span style="color : #6FBDEE" class="fa fa-circle" ng-if="!row.entity.posted"></span>
+  </span>
+  {{COL_FIELD CUSTOM_FILTERS}}
+</div>

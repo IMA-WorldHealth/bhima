@@ -224,6 +224,7 @@ function lookupPatient(patientUuid) {
   // convert uuid to database usable binary uuid
   const buid = db.bid(patientUuid);
 
+  // @FIXME(sfount) ALL patient queries should use the same column selection and gaurantee the same information
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
@@ -232,9 +233,9 @@ function lookupPatient(patientUuid) {
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName
-    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
-    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName, a.number
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id AND a.id = dg.account_id
     WHERE p.uuid = ?;
   `;
 
@@ -428,7 +429,7 @@ function patientEntityQuery(detailed) {
   //       _before_selecting.
   // build the main part of the SQL query
   const sql = `
-    SELECT 
+    SELECT
       BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
@@ -575,7 +576,7 @@ function loadLatestInvoice(inv) {
   const combinedLedger = `
     (
       (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM posting_journal)
-      UNION 
+      UNION
       (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM general_ledger)
     ) AS comb`;
 
@@ -642,7 +643,7 @@ function loadLatestInvoice(inv) {
 }
 
 /*
- Search for information about the latest patient Invoice
+ Search for information about the latest patient Invoice - accepts patient UUID
  */
 function latestInvoice(req, res, next) {
   const uid = req.params.uuid;
@@ -653,7 +654,8 @@ function latestInvoice(req, res, next) {
     SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
     FROM invoice
     JOIN user ON user.id = invoice.user_id
-    WHERE debtor_uuid = ?
+    JOIN patient on patient.debtor_uuid = invoice.debtor_uuid
+    WHERE patient.uuid = ?
     AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSE_TYPE_ID})
     ORDER BY date DESC
     LIMIT 1;
