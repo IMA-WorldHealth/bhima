@@ -3,19 +3,19 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryListController.$inject = [
-  '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants',
-  'ModalService', '$state', '$rootScope', 'appcache',
-  'SearchFilterService', 'GridColumnService', 'GridStateService',
-  'GridExportService', 'LanguageService',
+  'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService', '$state', 'FilterService',
+  'appcache', 'GridColumnService', 'GridStateService', 'GridExportService', 'LanguageService',
+  'SessionService',
 ];
 
 /**
  * Inventory List Controllers
  * This controller is responsible of the inventory list module
  */
-function InventoryListController($translate, Inventory, Notify, uiGridConstants,
-  Modal, $state, $rootScope, AppCache,
-  SearchFilters, Columns, GridState, GridExport, Languages) {
+function InventoryListController(
+  Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
+  GridExport, Languages, Session
+) {
   var vm = this;
   var cacheKey = 'InventoryGrid';
   var cache = new AppCache(cacheKey);
@@ -24,7 +24,6 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   var exportation;
   var columnDefs;
   var state;
-  var search = new SearchFilters(cacheKey);
 
   // global variables
   vm.lang = Languages.key;
@@ -34,72 +33,74 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
 
   vm.loading = true;
 
-
   // grid default options
-  columnDefs = [
-    { field : 'code',
-      displayName : 'FORM.LABELS.CODE',
-      headerCellFilter : 'translate',
-      aggregationType : uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true,
-    },
-
-    { field : 'consumable',
-      displayName : 'FORM.LABELS.CONSUMABLE',
-      headerCellFilter : 'translate',
-      cellTemplate : '/modules/inventory/list/templates/consumable.cell.tmpl.html',
-    },
-
-    { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate' },
-
-    { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate' },
-
-    { field : 'price',
-      displayName : 'FORM.LABELS.UNIT_PRICE',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      type : 'number',
-    },
-
-    { field : 'default_quantity',
-      displayName : 'FORM.LABELS.DEFAULT_QUANTITY',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      type : 'number',
-    },
-
-    { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate' },
-
-    { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate' },
-
-    { field : 'unit_weight',
-      displayName : 'FORM.LABELS.WEIGHT',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      type : 'number',
-      visible : false,
-    },
-
-    { field : 'unit_volume',
-      displayName : 'FORM.LABELS.VOLUME',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      type : 'number',
-      visible : false,
-    },
-
-    {
-      field : 'action',
-      displayName : '',
-      cellTemplate : '/modules/inventory/list/templates/action.cell.html',
-      enableFiltering : false,
-      enableSorting : false,
-      enableColumnMenu : false,
-    }];
+  columnDefs = [{
+    field : 'code',
+    displayName : 'FORM.LABELS.CODE',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
+  }, {
+    field : 'consumable',
+    displayName : 'FORM.LABELS.CONSUMABLE',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/consumable.cell.tmpl.html',
+  }, {
+    field : 'groupName',
+    displayName : 'FORM.LABELS.GROUP',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'label',
+    displayName : 'FORM.LABELS.LABEL',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'price',
+    displayName : 'FORM.LABELS.UNIT_PRICE',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    type : 'number',
+  }, {
+    field : 'default_quantity',
+    displayName : 'FORM.LABELS.DEFAULT_QUANTITY',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+  }, {
+    field : 'type',
+    displayName : 'FORM.LABELS.TYPE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'unit',
+    displayName : 'FORM.LABELS.UNIT',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'unit_weight',
+    displayName : 'FORM.LABELS.WEIGHT',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+    visible : false,
+  }, {
+    field : 'unit_volume',
+    displayName : 'FORM.LABELS.VOLUME',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+    visible : false,
+  }, {
+    field : 'action',
+    displayName : '',
+    cellTemplate : '/modules/inventory/list/templates/action.cell.html',
+    enableFiltering : false,
+    enableSorting : false,
+    enableColumnMenu : false,
+  }];
 
   vm.gridOptions = {
     appScopeProvider : vm,
     enableFiltering  : vm.filterEnabled,
+    enableColumnMenus : false,
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
@@ -113,11 +114,9 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
   state = new GridState(vm.gridOptions, cacheKey);
 
   // expose methods and object
-  vm.searchFilter = search;
   vm.saveGridState = state.saveGridState;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
-  vm.clearFilters = clearFilters;
   vm.onRemoveFilter = onRemoveFilter;
 
   vm.toggleFilter = toggleFilter;
@@ -140,15 +139,7 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function runResearch(params) {
-
-    if (params) {
-      search.assignFilters(params);
-      vm.latestViewFilters = search.latestViewFilters();
-      vm.hasCustomFilters = search.hasCustomFilters();
-      vm.parameters = JSON.stringify(params);
-    }
-
+  function load(params) {
     vm.loading = true;
     vm.hasError = false;
 
@@ -165,42 +156,39 @@ function InventoryListController($translate, Inventory, Notify, uiGridConstants,
       });
   }
 
-
   // research and filter data in Inventory List
   function research() {
-    Inventory.openSearchModal()
-      .then(function (parameters) {
-        if (!parameters) { return; }
+    var filtersSnapshot = Inventory.filters.formatHTTP();
 
-        runResearch(parameters);
+    Inventory.openSearchModal(filtersSnapshot)
+      .then(function (changes) {
+        Inventory.filters.replaceFilters(changes);
+        Inventory.cacheFilters();
+        vm.latestViewFilters = Inventory.filters.formatView();
+
+        return load(Inventory.filters.formatHTTP(true));
       });
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    $state.params.filters = null;
-
-    search.removeFilter(key);
-    runResearch(search.getParameters());
+    Inventory.removeFilter(key);
+    Inventory.cacheFilters();
+    vm.latestViewFilters = Inventory.filters.formatView();
+    return load(Inventory.filters.formatHTTP(true));
   }
 
-  // clears the filters
-  function clearFilters() {
-    startup();
-    $state.params.filters = null;
 
-    search.clearFilters();
-    vm.latestViewFilters = search.latestViewFilters();
-    vm.hasCustomFilters = search.hasCustomFilters();
-    runResearch();
-  }
-
-  // startup
   function startup() {
-    // if filters are directly passed in
-    runResearch(search.getParameters());
+    // if parameters are passed through the $state object, use them.
+    if ($state.params.filters.length) {
+      Inventory.filters.replaceFilters(angular.copy($state.params.filters));
+    }
 
-    // load the cached filter state
+    load(Inventory.filters.formatHTTP(true));
+    vm.latestViewFilters = Inventory.filters.formatView();
+
+    // load the cached inline filter state
     vm.filterEnabled = cache.filterEnabled || false;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
   }

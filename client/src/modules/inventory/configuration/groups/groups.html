@@ -37,7 +37,9 @@
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
           <td>
-            <a ui-sref="inventory.list({ filters : { group_uuid : group.uuid }})" href>
+            <a
+              ui-sref="inventory.list({ filters : [{ key : \'group_uuid\', value : groud.uuid, displayValue: group.name }] })"
+              href>
               {{ group.inventory_counted }} <span class="text-lowercase" translate> INVENTORY.ELEMENT</span>(s)
             </a>
           </td>

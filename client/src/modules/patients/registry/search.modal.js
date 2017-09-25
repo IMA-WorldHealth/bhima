@@ -19,7 +19,6 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
 
-
   vm.today = new Date();
   vm.defaultQueries = {};
   vm.searchQueries = {};
@@ -45,11 +44,11 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
 
   vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
-  }
+  };
 
   vm.onSelectPatientGroup = function onSelectPatientGroup(patientGroup) {
     vm.searchQueries.patient_group_uuid = patientGroup.uuid;
-  }
+  };
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
