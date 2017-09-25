@@ -123,7 +123,7 @@ function StockInventoriesController(
   }
 
   // expose view logic
-  // vm.search = search;
+  vm.search = search;
   // vm.onRemoveFilter = onRemoveFilter;
   // vm.clearFilters = clearFilters;
   // vm.setStatusFlag = setStatusFlag;
@@ -168,14 +168,18 @@ function StockInventoriesController(
       });
   }
 
-  // search modal
+  // open a modal to let user filtering data
   function search() {
-    Modal.openSearchInventories()
-    .then(function (filters) {
-      if (!filters) { return; }
-      reload(filters);
-    })
-    .catch(Notify.handleError);
+    var filtersSnapshot = StockInventoryFilters.formatHTTP();
+
+    Modal.openSearchInventories(filtersSnapshot)
+    .then(function (changes) {
+      StockInventoryFilters.replaceFilters(changes);
+      Stock.cacheFilters(filterKey);
+      vm.latestViewFilters = StockInventoryFilters.formatView();
+      
+      return load(StockInventoryFilters.formatHTTP(true));
+    });
   }
 
   // reload

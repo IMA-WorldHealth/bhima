@@ -12,68 +12,82 @@
   </div>
 
   <div class="modal-body">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- depot -->
+          <bh-depot-select
+            depot-uuid="$ctrl.searchQueries.depot_uuid"
+            required="false"
+            on-select-callback="$ctrl.onSelectDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
 
-    <!-- depot -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.DEPOT</label>
+          <!-- inventory -->
+          <bh-inventory-select
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
 
-      <ui-select name="depot" ng-model="$ctrl.bundle.depot_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.text}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="depot as depot in $ctrl.depots | filter:{ 'text': $select.search }">
-          <span ng-bind-html="depot.text | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+          <!-- status -->
+          <div class="form-group">
+              <p class="control-label" style="margin-bottom:5px;">
+                <strong translate>FORM.LABELS.STATUS</strong>
+              </p>
 
-    <!-- inventory -->
-    <div class="form-group">
-      <label class="control-label" translate>STOCK.INVENTORY</label>
+              <label class="radio-inline">
+                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'sold_out'">
+                <span translate>STOCK.STATUS.SOLD_OUT</span>
+              </label>
 
-      <ui-select name="inventory" ng-model="$ctrl.bundle.inventory_uuid">
-        <ui-select-match>
-          <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="inventory as inventory in $ctrl.inventories | filter:{ 'label': $select.search }">
-          <span ng-bind-html="inventory.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+              <label class="radio-inline">
+                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'in_stock'">
+                <span translate>STOCK.STATUS.IN_STOCK</span>
+              </label>
 
-    <!-- status -->
-    <div class="form-group">
-      <fieldset>
-        <legend translate>STOCK.STATUS.LABEL</legend>
+              <label class="radio-inline">
+                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'security_reached'">
+                <span translate>STOCK.STATUS.SECURITY</span>
+              </label>
 
-        <label class="control-label">
-          <input type="radio" name="status" ng-value="'sold_out'" ng-model="$ctrl.bundle.status"> 
-          <span translate>STOCK.STATUS.SOLD_OUT</span>
-        </label> &nbsp; 
+              <label class="radio-inline">
+                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'minimum_reached'">
+                <span translate>STOCK.STATUS.MINIMUM</span>
+              </label>
 
-        <label class="control-label">
-          <input type="radio" name="status" ng-value="'in_stock'" ng-model="$ctrl.bundle.status"> 
-          <span translate>STOCK.STATUS.IN_STOCK</span>
-        </label> &nbsp; 
+              <label class="radio-inline">
+                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'over_maximum'">
+                <span translate>STOCK.STATUS.OVER_MAX</span>
+              </label>
+          </div>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
 
-        <label class="control-label">
-          <input type="radio" name="status" ng-value="'security_reached'" ng-model="$ctrl.bundle.status"> 
-          <span translate>STOCK.STATUS.SECURITY</span>
-        </label> &nbsp; 
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input
+              name="limit"
+              type="number"
+              bh-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
-        <label class="control-label">
-          <input type="radio" name="status" ng-value="'minimum_reached'" ng-model="$ctrl.bundle.status"> 
-          <span translate>STOCK.STATUS.MINIMUM</span>
-        </label> &nbsp; 
-
-        <label class="control-label">
-          <input type="radio" name="status" ng-value="'over_maximum'" ng-model="$ctrl.bundle.status"> 
-          <span translate>STOCK.STATUS.OVER_MAX</span>
-        </label> &nbsp; 
-
-      </fieldset>
-    </div>
-
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">
