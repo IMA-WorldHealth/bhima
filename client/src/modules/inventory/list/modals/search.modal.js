@@ -1,80 +1,88 @@
 angular.module('bhima.controllers')
-.controller('InventoryServiceModalController', InventoryServiceModalController);
+  .controller('InventorySearchModalController', InventorySearchModalController);
 
-InventoryServiceModalController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'params', 'InventoryService', 'AppCache',
+InventorySearchModalController.$inject = [
+  '$uibModalInstance', 'NotifyService', 'filters', 'InventoryService', 'Store', 'util',
 ];
 
 /**
- * @class InventoryServiceModalController
+ * @class InventorySearchModalController
  *
  * @description
  * This controller is responsible for setting up the filters for the Inventory
  * search functionality on the Inventory list.  Filters that are already
- * applied to the grid can be passed in via the params inject.
+ * applied to the grid can be passed in via the filters inject.
  */
-function InventoryServiceModalController(ModalInstance, Notify, params, Inventory, AppCache) {
+function InventorySearchModalController(ModalInstance, Notify, filters, Inventory, Store, util) {
   var vm = this;
-  var cache = new AppCache('InventorySearchCache');
 
-  // bind filters if they have already been applied.  Otherwise, default to an
-  // empty object.
-  vm.params = params || {};
+  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
+  var searchQueryOptions = [
+    'code', 'group_uuid', 'consumable', 'label', 'type_id', 'price',
+  ];
+
+  var changes = new Store({ identifier : 'key' });
+  vm.filters = filters;
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
-  vm.types = {};
 
-  loadCachedParameters();
+  vm.today = new Date();
+  vm.defaultQueries = {};
+  vm.searchQueries = {};
+
+  // assign default limit filter
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
+  }
+
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
   Inventory.Groups.read()
     .then(function (result) {
       vm.inventoryGroups = result;
-    });
+    })
+    .catch(Notify.handleError);
 
-    // Inventory Type
+  // Inventory Type
   Inventory.Types.read()
     .then(function (types) {
       vm.types = types;
     })
     .catch(Notify.handleError);
 
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
+  };
+
   // returns the parameters to the parent controller
   function submit(form) {
-    var parameters;
-
-    if (form.$invalid) { return 0; }
-
-    cache.params = vm.params;
-    parameters = angular.copy(cache.params);
-
-      // make sure we don't have any undefined or empty parameters
-    angular.forEach(parameters, function (value, key) {
-      if (value === null || value === '') {
-        delete parameters[key];
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      if (angular.isDefined(value)) {
+        changes.post({ key : key, value : value });
       }
     });
 
-    return ModalInstance.close(parameters);
+    var loggedChanges = changes.getAll();
+
+    // return values to the Patient Registry Controller
+    return ModalInstance.close(loggedChanges);
   }
 
-  // clears search parameters.  Custom logic if a date is used so that we can
-  // clear two properties.
   function clear(value) {
-    delete vm.params[value];
+    delete vm.searchQueries[value];
   }
 
   // dismiss the modal
   function cancel() {
     ModalInstance.close();
-  }
-
-  // load cached data
-  function loadCachedParameters() {
-    if (cache.params) {
-      vm.params = cache.params;
-    }
   }
 }

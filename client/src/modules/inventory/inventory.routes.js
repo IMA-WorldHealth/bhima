@@ -45,17 +45,11 @@ angular.module('bhima.routes')
         url : '/:uuid',
         params : {
           uuid : { squash : true, value : null },
-          created : false,  // default for transitioning from child states
-          updated : false,  // default for transitioning from child states
-          filters : null,
+          created : false, // default for transitioning from child states
+          updated : false, // default for transitioning from child states
+          filters : [],
         },
       });
-      // @TODO IMPLEMENT THEM
-      // .state('/inventory/types',  {
-      //   url : '/inventory/types',
-      //   controller : 'InventoryTypesController as InventoryCtrl',
-      //   templateUrl : 'modules/inventory/types/types.html'
-      // })
   }]);
 
 

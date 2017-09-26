@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 
 const chai = require('chai');
 const GU = require('../shared/GridUtils');
@@ -9,7 +9,6 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Inventory List', () => {
-
   // navigate to the page
   before(() => helpers.navigate('#/inventory'));
 
@@ -81,7 +80,7 @@ describe('Inventory List', () => {
   it(`should find one Inventory with Label "${metadataSearch.label}"`, () => {
     element(by.id('research')).click();
 
-    FU.input('ModalCtrl.params.text', metadataSearch.label);
+    FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
     FU.modal.submit();
 
     GU.expectRowCount('inventoryListGrid', 1);
