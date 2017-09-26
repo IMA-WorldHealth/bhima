@@ -2,10 +2,11 @@ angular.module('bhima.services')
   .service('CashFormService', CashFormService);
 
 CashFormService.$inject = [
-  'appcache', 'SessionService', 'PatientService', 'ExchangeRateService'
+  'appcache', 'SessionService', 'PatientService', 'ExchangeRateService',
+  'DebtorGroupService', 'DebtorService',
 ];
 
-function CashFormService(AppCache, Session, Patients, Exchange) {
+function CashFormService(AppCache, Session, Patients, Exchange, DebtorGroup, Debtors) {
 
   // sets the default payment type is an invoice payment
   var DEFAULT_PAYMENT_TYPE = 0;
@@ -97,12 +98,20 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
 
     return Patients.balance(patient.uuid)
       .then(function (balance) {
-
         var patientAccountBalance = balance * -1;
-
         self.messages.hasPositiveAccountBalance = patientAccountBalance > 0;
         self.messages.patientAccountBalance = patientAccountBalance;
-
+        return Debtors.read(patient.debtor_uuid);
+      })
+      .then(function (debtor) {
+        return DebtorGroup.read(debtor.group_uuid);
+      })
+      .then(function (debtorGroup) {
+        if (debtorGroup.is_convention) {
+          self.messages.isNonCashPatient = true;
+          self.messages.patientName = ''.concat('[', patient.reference, '] ', patient.display_name);
+          self.messages.patientConventionName = debtorGroup.name;
+        }
         self.digest();
       });
   };

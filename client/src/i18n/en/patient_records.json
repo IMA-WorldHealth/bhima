@@ -26,4 +26,5 @@
 "REPORT_TITLE":"Patient Financial Activity"},
 "STAT_TOTAL_PATIENT":"Total Patients",
 "STAT_TOTAL_VISIT":"Total Visits",
+"IS_COVERED_BY":"is covered by",
 "STAT_TOTAL_NEW":"New Patients"}}
