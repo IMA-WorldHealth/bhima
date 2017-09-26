@@ -23,6 +23,7 @@
 "STAT_TOTAL_VISIT":"Total Visits",
 "STAT_TOTAL_NEW":"Nouveaux Patients",
 "IS_COVERED_BY":"est couvert par",
+"INVOICE_COVERED_BY":"Cette facture est couverte par",
 "TITLE":"Patients",
 "UPDATE_PICTURE":"Mettre à jour la Photo",
 "UPLOAD_PICTURE":"Télécharger Photo Patient",

@@ -159,6 +159,15 @@
             </td>
           </tr>
         {{/if}}
+
+        {{!-- is convention --}}
+        {{#if recipient.is_convention}}
+          <tr>
+            <td colspan='2' class="text-right">
+              <h4 style="border: 1px solid #333;"><b>{{translate 'PATIENT_RECORDS.INVOICE_COVERED_BY'}}: {{recipient.debtor_group_name}}</b></h4>
+            </td>
+          </tr>
+        {{/if}}
       </table>
 
     </div>
