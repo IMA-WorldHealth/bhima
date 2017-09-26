@@ -15,6 +15,7 @@ function ConventionPaymentKitController(
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // global variables
+  vm.debtorGroupFilter = { is_convention : 1 };
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
 
@@ -31,13 +32,6 @@ function ConventionPaymentKitController(
     selectGroupInvoices(vm.convention);
   }
 
-  // load conventions
-  DebtorGroup.read()
-    .then(function (list) {
-      vm.conventionGroupList = list;
-    })
-    .catch(Notify.handleError);
-
   // load cashboxes
   Cashboxes.read(null, { detailed : 1 })
     .then(function (cashboxes) {
@@ -50,7 +44,6 @@ function ConventionPaymentKitController(
     vm.loading = true;
     DebtorGroup.invoices(convention.uuid, { is_convention : 1 })
       .then(function (invoices) {
-
         // total amount
         var total = invoices.reduce(aggregate, 0);
 
@@ -169,11 +162,14 @@ function ConventionPaymentKitController(
 
   // submission
   function submit(form) {
+    var selected;
+    var bundle;
+
     if (form.$invalid) { return; }
 
-    var selected = vm.gridApi.selection.getSelectedRows();
+    selected = vm.gridApi.selection.getSelectedRows();
 
-    var bundle = generateTransactionRows({
+    bundle = generateTransactionRows({
       cashbox    : vm.cashbox,
       convention : vm.convention,
       invoices   : selected,

@@ -11,21 +11,24 @@ angular.module('bhima.components')
       label             : '@?',
       required          : '<?',
       validationTrigger : '<',
+      filter            : '<',
     },
   });
 
 DebtorGroupSelectController.$inject = [
-  'DebtorService',
+  'DebtorGroupService',
 ];
 
 /**
  * Debtor Group selection component
  *
  */
-function DebtorGroupSelectController(Debtors) {
+function DebtorGroupSelectController(DebtorGroup) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
+    var filters = $ctrl.filter || {};
+
     // fired when a Debtor Group has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
@@ -36,7 +39,7 @@ function DebtorGroupSelectController(Debtors) {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEBTOR_GROUP';
 
     // load all Debtor Group
-    Debtors.groups()
+    DebtorGroup.read(null, filters)
       .then(function (debtorGroups) {
         $ctrl.debtorGroups = debtorGroups;
       });
