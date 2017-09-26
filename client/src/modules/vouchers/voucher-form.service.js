@@ -181,8 +181,8 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       }
 
       // validate that total debit equals to total credit
-      var totalDebit = Number(this.totals.debit).toFixed(2);
-      var totalCredit = Number(this.totals.credit).toFixed(2);
+      var totalDebit = Number(this.totals.debit).toFixed(4);
+      var totalCredit = Number(this.totals.credit).toFixed(4);
       var hasBalancedDebitsAndCredits = (totalDebit === totalCredit);
       if (!hasBalancedDebitsAndCredits) {
         err = ERROR_IMBALANCED_TRANSACTION;
