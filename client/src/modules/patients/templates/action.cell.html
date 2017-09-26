@@ -23,6 +23,12 @@
     </li>
     <li class="divider"></li>
     <li>
+      <a data-method="financialActivities" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}" target="_blank">
+        <span class="fa fa-file-text-o"></span> <span translate>FORM.LABELS.VIEW_FINANCIAL_ACT</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
       <a data-method="invoice" ui-sref="invoiceRegistry({ filters : { key : 'patientReference', value : row.entity.reference }})" href>
         <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
       </a>
