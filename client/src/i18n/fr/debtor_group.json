@@ -34,6 +34,7 @@
 "SUBSCRIPTIONS":"Abonnements",
 "CONVENTION":{
   "TITLE":"Convention",
-  "DESCRIPTION":"Un groupe convention est un groupe (entreprise) qui prend la charge des factures des patients faisant partie de ce groupe."
+  "DESCRIPTION":"Les factures des débiteurs de ce groupe seront couvertes par le compte de ce débiteur. Les patients appartenant à ce groupe seront empêchés de payer leurs factures à la caisse",
+  "CANNOT_PAY":"Ce patient ne paie pas de factures. Ses factures sont couvertes par"
 },
 "UPDATED":"Enregistrement du groupe débiteur mis à jour"}}

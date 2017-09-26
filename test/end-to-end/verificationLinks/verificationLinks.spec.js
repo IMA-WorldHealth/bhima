@@ -39,7 +39,7 @@ describe('Check links', () => {
     helpers.navigate('#!/debtors/groups');
 
     element.all(by.css('[class="fa fa-bars"]')).get(1).click();
-    expectNumberOfGridRows(4);
+    expectNumberOfGridRows(3);
   });
 
   it('Check link between Patient Registry -> Invoice Registry', () => {

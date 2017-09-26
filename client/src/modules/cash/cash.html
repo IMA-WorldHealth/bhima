@@ -61,14 +61,20 @@
                   required="true">
                 </bh-find-patient>
 
-                <bh-date-editor
-                  date-value="CashCtrl.Payment.details.date"
-                  validation-trigger="CashVoucherForm.$submitted"
-                  max-date="CashCtrl.timestamp">
-                </bh-date-editor>
+                <!-- not allowed for cash payment - convention -->
+                <div class="alert alert-info" ng-if="CashCtrl.Payment.messages.isNonCashPatient">
+                  <span class="text-center" translate>DEBTOR_GROUP.CONVENTION.CANNOT_PAY</span>
+                  <strong class="text-center">{{CashCtrl.Payment.messages.patientConventionName}}</strong>
+                </div>
 
                 <!-- allowed for cash payment -->
-                <section ng-if="!CashCtrl.Payment.messages.isNonCashPatient">
+                <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
+                  <bh-date-editor
+                    date-value="CashCtrl.Payment.details.date"
+                    validation-trigger="CashVoucherForm.$submitted"
+                    max-date="CashCtrl.timestamp">
+                  </bh-date-editor>
+
                   <!-- currency selection -->
                   <bh-currency-select
                     currency-id="CashCtrl.Payment.details.currency_id"
@@ -192,16 +198,7 @@
                     model="CashCtrl.Payment.details.amount"
                     validation-trigger="CashVoucherForm.$submitted">
                   </bh-currency-input>
-                </section>
-
-                <!-- not allowed for cash payment - convention -->
-                <section ng-if="CashCtrl.Payment.messages.isNonCashPatient">
-                  <div class="alert alert-info">
-                    <h3 class="text-center">{{CashCtrl.Payment.messages.patientName}}</h3>
-                    <h3 class="text-center" translate>PATIENT_RECORDS.IS_COVERED_BY</h3>
-                    <h2 class="text-center">{{CashCtrl.Payment.messages.patientConventionName}}</h3>
-                  </div>
-                </section>
+                </fieldset>
 
                 <div class="form-group text-right">
 

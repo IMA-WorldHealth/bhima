@@ -11,7 +11,7 @@ angular.module('bhima.components')
       label             : '@?',
       required          : '<?',
       validationTrigger : '<',
-      filter            : '<',
+      filter            : '<?',
     },
   });
 

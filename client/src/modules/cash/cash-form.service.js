@@ -3,10 +3,9 @@ angular.module('bhima.services')
 
 CashFormService.$inject = [
   'appcache', 'SessionService', 'PatientService', 'ExchangeRateService',
-  'DebtorGroupService', 'DebtorService',
 ];
 
-function CashFormService(AppCache, Session, Patients, Exchange, DebtorGroup, Debtors) {
+function CashFormService(AppCache, Session, Patients, Exchange) {
 
   // sets the default payment type is an invoice payment
   var DEFAULT_PAYMENT_TYPE = 0;
