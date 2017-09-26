@@ -3,26 +3,25 @@ angular.module('bhima.controllers')
 
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService',
-  'SearchFilterFormatService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants',
+  'uiGridConstants', '$translate', 'StockModalService','LanguageService', 'SessionService',
+  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService'
 ];
 
 /**
- * Stock movements Controller
- * This module is a registry page for stock movements
+ * Stock Inventory Controller
+ * This module is a registry page for stock inventories
  */
-function StockInventoriesController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Session, Grouping, bhConstants) {
+function StockInventoriesController(
+  Stock, Notify, uiGridConstants, $translate, Modal, Languages,
+  Session, Grouping, bhConstants, GridState, $state, Columns
+) {
   var vm = this;
+  var filterKey = 'inventory';
+  var stockInventoryFilters = Stock.filter.inventory;
+  var cacheKey = 'stock-inventory-grid';
+  var state;
+  var gridColumns;
 
-  // global variables
-  vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
-  vm.enterprise = Session.enterprise;
-
-  // grid columns
   var columns = [
     { field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
@@ -40,9 +39,7 @@ function StockInventoriesController(Stock, Notify,
     { field            : 'quantity',
       displayName      : 'STOCK.QUANTITY',
       headerCellFilter : 'translate',
-      aggregationType  : uiGridConstants.aggregationTypes.sum,
-      cellClass        : 'text-right',
-      footerCellClass  : 'text-right',
+      cellClass        : 'text-right'
     },
 
     { field            : 'unit_type',
@@ -102,24 +99,47 @@ function StockInventoriesController(Stock, Notify,
       cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html' },
   ];
 
-  // options for the UI grid
+  vm.enterprise = Session.enterprise;
+  vm.gridApi = {};  
+
   vm.gridOptions = {
     appScopeProvider  : vm,
     enableColumnMenus : false,
     columnDefs        : columns,
     enableSorting     : true,
-    showColumnFooter  : true,
     fastWatch         : true,
     flatEntityAccess  : true,
+    onRegisterApi : onRegisterApi,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+  vm.saveGridState = state.saveGridState;
 
-  // expose to the view
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
+
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  // expose view logic
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
-  vm.setStatusFlag = setStatusFlag;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
+  // vm.setStatusFlag = setStatusFlag;
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the inventories registry's columns.
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  }
 
   function setStatusFlag(item) {
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_SOLD_OUT;
@@ -131,49 +151,60 @@ function StockInventoriesController(Stock, Notify,
 
   // on remove one filter
   function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
-  }
+    Stock.removeFilter(filterKey, key);
 
-  // clear all filters
-  function clearFilters() {
-    SearchFilterFormat.clearFilters(reload);
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockInventoryFilters.formatView();
+
+    return load(stockInventoryFilters.formatHTTP(true));
   }
 
   // load stock lots in the grid
   function load(filters) {
+    vm.hasError = false;
     vm.loading = true;
 
-    Stock.inventories.read(null, filters).then(function (rows) {
-      vm.loading = false;
+    Stock.inventories.read(null, filters)
+      .then(function (rows) {
+        // set status flags
+        rows.forEach(function (item) {
+          setStatusFlag(item);
+        });
 
-      // set status flags
-      rows.forEach(function (item) {
-        setStatusFlag(item);
+        vm.gridOptions.data = rows;
+
+        vm.grouping.unfoldAllGroups();
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
       });
-
-      vm.gridOptions.data = rows;
-
-      vm.grouping.unfoldAllGroups();
-    })
-    .catch(Notify.handleError);
   }
 
-  // search modal
+  // open a modal to let user filtering data
   function search() {
-    Modal.openSearchInventories()
-    .then(function (filters) {
-      if (!filters) { return; }
-      reload(filters);
-    })
-    .catch(Notify.handleError);
+    var filtersSnapshot = stockInventoryFilters.formatHTTP();
+
+    Modal.openSearchInventories(filtersSnapshot)
+    .then(function (changes) {
+      stockInventoryFilters.replaceFilters(changes);
+      Stock.cacheFilters(filterKey);
+      vm.latestViewFilters = stockInventoryFilters.formatView();
+      
+      return load(stockInventoryFilters.formatHTTP(true));
+    });
   }
 
-  // reload
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
-    load(filters.identifiers);
+  function startup (){
+    if ($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      stockMovementFilters.replaceFilters(changes);
+      Stock.cacheFilters(filterKey);
+    }
+
+    load(stockInventoryFilters.formatHTTP(true));
+    vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
-  load();
+  startup();
 }
