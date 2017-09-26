@@ -182,4 +182,3 @@ BEGIN
   CALL PostVoucher(voucher_uuid);
 
 END $$
-

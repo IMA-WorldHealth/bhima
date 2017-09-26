@@ -102,17 +102,9 @@ function createStock(req, res, next) {
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
 
-  // An array of common info, to send to the store procedure in order to insert to the posting journal
-  const commonInfos = [
-    db.bid(document.uuid), document.date,
-    req.session.enterprise.id, req.session.project.id,
-    req.session.enterprise.currency_id, document.user,
-  ];
-
-
-  // writting all records relative to the movement in the posting journal table
-  transaction.addQuery('CALL PostPurchase(?)', [commonInfos]);
-
+  transaction.addQuery('CALL PurchaseToVoucher(?)', [params.los[0].origin_uuid]);
+  transaction.addQuery('CALL PurchaseItemToVoucherItem(?)', [db.bid(document.uuid)]);
+  
   // transaction - movement reference
   transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
 
