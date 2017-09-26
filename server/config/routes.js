@@ -191,6 +191,8 @@ exports.configure = function configure(app) {
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
+  app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
+
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
 

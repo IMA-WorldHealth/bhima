@@ -19,6 +19,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
   service.openTransactionEditModal = openTransactionEditModal;
   service.mapTransactionIdsToRecordUuids = mapTransactionIdsToRecordUuids;
   service.commentPostingJournal = commentPostingJournal;
+  service.getTransactionEditHistory = getTransactionEditHistory;
 
   /**
    * Standard API read method, as this will be used to drive the journal grids
@@ -204,7 +205,14 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
 
   // updating the posting journal by adding comments in transactions
   function commentPostingJournal(params) {
-    return service.$http.put(URL.concat('comments'), { 'params' : params })
+    return service.$http.put(URL.concat('comments'), { params : params })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  // load the edit history of a particular transaction
+  function getTransactionEditHistory(uuid) {
+    var url = '/transactions/:uuid/history'.replace(':uuid', uuid);
+    return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
 

@@ -4,6 +4,7 @@
     "REMOVE_ROW" : "Supprimer Ligne(s)",
     "ROWS" : "Ligne(s)",
     "SAVE_TRANSACTION_SUCCESS" : "La transaction etait enregistré avec succés",
+    "HAS_PREVIOUS_EDITS" : "Dernière édition par {{ user }} le {{ date }}",
     "JUSTIFICATION" : "Justification",
     "REFRESH" : "Rafraichir",
     "SAVE_TRANSACTION" : "Sauvegarder la transaction",

@@ -3,11 +3,12 @@ angular.module('bhima.controllers')
 
 JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance',
-  'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util',
+  'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
 ];
 
 function JournalEditTransactionController(
-  Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants, uuid, util
+  Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
+  uuid, util, moment
 ) {
   var gridApi = {};
   var vm = this;
@@ -23,7 +24,6 @@ function JournalEditTransactionController(
   var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
   var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
   var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
-  var ERROR_NEGATIVE_VALUES = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_VALUES'
   var ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
 
   var footerTemplate =
@@ -120,6 +120,24 @@ function JournalEditTransactionController(
       vm.transactionTypes = new Store({ identifier : 'id' });
       vm.transactionTypes.setData(typeResults);
     });
+
+  // this is completely optional - it is just for decoration and interest.
+  Journal.getTransactionEditHistory(transactionUuid)
+    .then(function (editHistory) {
+      var hasPreviousEdits = editHistory.length > 0;
+      var mostRecentEdit;
+      vm.hasPreviousEdits = hasPreviousEdits;
+
+      if (hasPreviousEdits) {
+        mostRecentEdit = editHistory.pop();
+
+        vm.lastEditValues = {
+          user : mostRecentEdit.display_name,
+          date : moment(mostRecentEdit.timestamp).format('DD/MM/YYYY'),
+        };
+      }
+    });
+
 
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)

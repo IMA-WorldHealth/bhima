@@ -35,7 +35,7 @@ exports.reverse = reverse;
 exports.find = find;
 exports.buildTransactionQuery = buildTransactionQuery;
 
-// exports.getTransactionEditHistory = getTransactionEditHistory;
+exports.getTransactionEditHistory = getTransactionEditHistory;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
@@ -541,6 +541,27 @@ function getTransactionDate(changedRows = {}, oldRows) {
     .filter(row => row.trans_date)
     .map(row => row.trans_date)
     .pop();
+}
+
+/**
+ * @function getTransactionEditHistory
+ *
+ * @description
+ * A lightweight function to scan the transaction_history and check if
+ * a transaction has previously been edited.  If so, it pulls out the user
+ * that edited it and return that record to the client.
+ */
+function getTransactionEditHistory(req, res, next) {
+  const sql = `
+    SELECT u.display_name, timestamp FROM transaction_history
+    JOIN user AS u ON u.id = transaction_history.user_id
+    WHERE record_uuid = ?;
+  `;
+
+  db.exec(sql, [db.bid(req.params.uuid)])
+    .then(record => res.status(200).json(record))
+    .catch(next)
+    .done();
 }
 
 
