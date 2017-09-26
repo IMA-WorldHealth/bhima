@@ -1926,3 +1926,20 @@ CREATE TABLE `stock_consumption` (
   KEY `depot_uuid` (`depot_uuid`),
   KEY `period_id` (`period_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*
+  The transaction_history table stores the editing history of transactions that
+  have gone through the posting process.  The record_uuid should be the same
+  record_uuid as that found in the posting_journal/general_ledger.
+*/
+CREATE TABLE `transaction_history` (
+  `uuid`  BINARY(16) NOT NULL,
+  `record_uuid`      BINARY(16) NOT NULL,
+  `timestamp`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `record_uuid` (`record_uuid`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
