@@ -101,17 +101,13 @@ function CashFormService(AppCache, Session, Patients, Exchange, DebtorGroup, Deb
         var patientAccountBalance = balance * -1;
         self.messages.hasPositiveAccountBalance = patientAccountBalance > 0;
         self.messages.patientAccountBalance = patientAccountBalance;
-        return Debtors.read(patient.debtor_uuid);
-      })
-      .then(function (debtor) {
-        return DebtorGroup.read(debtor.group_uuid);
-      })
-      .then(function (debtorGroup) {
-        if (debtorGroup.is_convention) {
+
+        if (patient.is_convention) {
           self.messages.isNonCashPatient = true;
           self.messages.patientName = ''.concat('[', patient.reference, '] ', patient.display_name);
-          self.messages.patientConventionName = debtorGroup.name;
+          self.messages.patientConventionName = patient.debtor_group_name;
         }
+
         self.digest();
       });
   };
