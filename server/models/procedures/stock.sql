@@ -38,7 +38,7 @@ BEGIN
   SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
 
   INSERT INTO `document_map` (uuid, text)
-  VALUES (documentUuid, CONCAT('MVT.', reference))
+  VALUES (documentUuid, CONCAT('SM.', reference))
   ON DUPLICATE KEY UPDATE uuid = uuid;
 END $$
 
