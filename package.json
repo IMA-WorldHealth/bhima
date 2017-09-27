@@ -18,7 +18,9 @@
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
     "watch": "./node_modules/.bin/gulp watch-client",
-    "release": "./node_modules/.bin/standard-version"
+    "release": "./node_modules/.bin/standard-version",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -55,7 +57,7 @@
     "express": "^4.13.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.4",
-    "json2xls":"^0.1.2",
+    "json2xls": "^0.1.2",
     "gulp-merge-json": "^1.1.0",
     "helmet": "^3.8.0",
     "ioredis": "^3.1.2",
@@ -71,7 +73,8 @@
     "stream-to-promise": "^2.2.0",
     "use-strict": "^1.0.1",
     "winston": "^2.1.1",
-    "wkhtmltopdf": "^0.3.3"
+    "wkhtmltopdf": "^0.3.3",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "bower": "^1.8.0",
@@ -117,5 +120,6 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "snyk": true
 }
