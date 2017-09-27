@@ -66,8 +66,8 @@ function InvoiceRegistrySearch() {
     page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by debtor group "First Test Debtor Group" to get three results', () => {
-    const NUM_MATCHING = 3;
+  it('filters by debtor group "First Test Debtor Group" to get five results', () => {
+    const NUM_MATCHING = 5;
 
     components.debtorGroupSelect.set('First Test Debtor Group');
     modal.submit();
@@ -76,7 +76,7 @@ function InvoiceRegistrySearch() {
   });
 
 
-  it('filters by user "Super User" should return three results', () => {
+  it('filters by user "Super User" should return five results', () => {
     const NUM_MATCHING = 5;
 
     modal.setUser('Super User');

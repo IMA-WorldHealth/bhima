@@ -3,16 +3,19 @@ angular.module('bhima.controllers')
 
 ConventionPaymentKitController.$inject = [
   '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'CashboxService',
-  'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService'
+  'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes, Session, bhConstants, $translate, ToolKits) {
+function ConventionPaymentKitController(
+  Instance, DebtorGroup, Notify, Cashboxes,
+  Session, bhConstants, $translate, ToolKits) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   // global variables
+  vm.debtorGroupFilter = { is_convention : 1 };
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
 
@@ -29,13 +32,6 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
     selectGroupInvoices(vm.convention);
   }
 
-  // load conventions
-  DebtorGroup.read()
-    .then(function (list) {
-      vm.conventionGroupList = list;
-    })
-    .catch(Notify.handleError);
-
   // load cashboxes
   Cashboxes.read(null, { detailed : 1 })
     .then(function (cashboxes) {
@@ -45,9 +41,9 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
 
   // get debtor group invoices
   function selectGroupInvoices(convention) {
+    vm.loading = true;
     DebtorGroup.invoices(convention.uuid, { is_convention : 1 })
       .then(function (invoices) {
-
         // total amount
         var total = invoices.reduce(aggregate, 0);
 
@@ -57,7 +53,13 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(total.toFixed(MAX_DECIMAL_PRECISION));
       })
-      .catch(Notify.handleError);
+      .catch(function (err) {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // generate transaction rows
@@ -160,11 +162,14 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashboxes
 
   // submission
   function submit(form) {
+    var selected;
+    var bundle;
+
     if (form.$invalid) { return; }
 
-    var selected = vm.gridApi.selection.getSelectedRows();
+    selected = vm.gridApi.selection.getSelectedRows();
 
-    var bundle = generateTransactionRows({
+    bundle = generateTransactionRows({
       cashbox    : vm.cashbox,
       convention : vm.convention,
       invoices   : selected,

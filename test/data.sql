@@ -256,7 +256,7 @@ INSERT INTO `patient_group` VALUES
   (HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da22'),1,NULL,'Test Patient Group 3','Test Patient Group 2 Note','2016-03-12 08:44:23');
 
 INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
-  (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Patient/2/Patient'),
+  (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient');
 
 INSERT INTO `patient` VALUES

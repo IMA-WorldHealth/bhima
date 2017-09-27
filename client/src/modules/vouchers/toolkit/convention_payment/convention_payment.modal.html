@@ -38,6 +38,7 @@
       debtor-group-uuid="ToolCtrl.convention"
       name="convention"
       label="FORM.LABELS.CONVENTION"
+      filter="ToolCtrl.debtorGroupFilter"
       on-select-callback = "ToolCtrl.onSelectDebtor(debtorGroup)">
     </bh-debtor-group-select>
 
@@ -51,6 +52,12 @@
         ui-grid-auto-resize
         ui-grid-resize-columns
         ui-grid-selection>
+
+        <bh-grid-loading-indicator
+          loading-state="ToolCtrl.loading"
+          empty-state="ToolCtrl.gridOptions.data.length === 0"
+          error-state="ToolCtrl.hasError">
+        </bh-grid-loading-indicator>
       </div>
     </div>
 

@@ -143,6 +143,8 @@ function receipt(req, res, next) {
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
 
+      invoiceResponse.recipient.hasConventionCoverage = invoiceResponse.recipient.is_convention;
+
       if (invoiceResponse.creditNote) {
         invoiceResponse.isCreditNoted = true;
         invoiceResponse.creditNoteReference = invoiceResponse.creditNote.reference;
