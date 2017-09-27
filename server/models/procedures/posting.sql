@@ -108,4 +108,3 @@ BEGIN
     sm.document_uuid = document_uuid
   GROUP BY inv.uuid;
 END $$
-DELIMITER ;
