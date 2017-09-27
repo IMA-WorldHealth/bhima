@@ -195,7 +195,6 @@ exports.configure = function configure(app) {
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
-
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
@@ -320,8 +319,6 @@ exports.configure = function configure(app) {
 
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
-
-  // route for invoice Report
 
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);

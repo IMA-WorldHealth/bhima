@@ -14,9 +14,9 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 // IF no client_timestamp is passed with the request, the server's timestamp is used
 // IF a client_timestamp is passed the client timestamp is used
 // const PERIODS = {
-  // today : () => { return { start : moment().toDate(), end : moment().toDate() } },
-  // week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
-  // month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
+// today : () => { return { start : moment().toDate(), end : moment().toDate() } },
+// week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
+// month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
 // };
 /**
  * @class FilterParser
@@ -280,7 +280,7 @@ class FilterParser {
 
       if (this._parseUuids) {
         // check to see if key contains the text uuid - if it does and parseUuids has
-        // not been supressed, automatically parse the value as binary
+        // not been suppressed, automatically parse the value as binary
         if (key.includes(DEFAULT_UUID_PARTIAL_KEY)) {
           valueString = 'HUID(?)';
         }

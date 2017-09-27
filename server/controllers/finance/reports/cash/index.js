@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Cash Reports
@@ -91,7 +90,14 @@ function receipt(req, res, next) {
       ]);
     })
     .spread((user, patient, enterprise, invoices, totalInvoices) => {
-      _.assign(data, { user, patient, enterprise, invoices, totalInvoices });
+      _.assign(data, {
+        user,
+        patient,
+        enterprise,
+        invoices,
+        totalInvoices,
+      });
+
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
     .then((exchange) => {
@@ -176,7 +182,7 @@ function report(req, res, next) {
   const data = {};
   let uuids;
 
-  CashPayments.listPayment(query)
+  CashPayments.find(query)
     .then(rows => {
       data.rows = rows;
 
