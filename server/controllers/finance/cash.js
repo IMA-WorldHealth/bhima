@@ -50,9 +50,6 @@ exports.create = cashCreate;
 /** modifies previous cash payments */
 exports.update = update;
 
-/** searches for a cash payment's uuid by their human-readable reference */
-exports.reference = reference;
-
 /** lookup a cash payment by it's uuid */
 exports.lookup = lookup;
 
@@ -96,7 +93,7 @@ function lookup(id) {
       }
 
       // store the record for return
-      record = rows[0];
+      [record] = rows;
 
       return db.exec(cashItemsRecordSql, bid);
     })
@@ -123,11 +120,11 @@ function lookup(id) {
  */
 function read(req, res, next) {
   listPayment(req.query)
-   .then((rows) => {
-     res.status(200).json(rows);
-   })
-   .catch(next)
-   .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -240,37 +237,13 @@ function update(req, res, next) {
   // if checks pass, we are free to continue with our updates to the db
   lookup(req.params.uuid)
 
-      // if we get here, we know we have a cash record by this UUID.
-      // we can try to update it.
+    // if we get here, we know we have a cash record by this UUID.
+    // we can try to update it.
     .then(() => db.exec(sql, [req.body, db.bid(req.params.uuid)]))
     .then(() => lookup(req.params.uuid))
     .then((record) => {
       // all updates completed successfully, return full object to client
       res.status(200).json(record);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * GET /cash/references/:reference
- * retrieves cash payment uuids from a reference string (e.g. HBB123)
- */
-function reference(req, res, next) {
-  // alias the reference
-  var ref = req.params.reference;
-
-  const sql = `
-    SELECT BUID(c.uuid) AS uuid FROM (
-      SELECT cash.uuid
-      FROM cash JOIN project ON cash.project_id = project.id
-    )c WHERE c.reference = ?;
-  `;
-
-  db.one(sql, [ref], ref, 'cash')
-    .then((payment) => {
-      // references should be unique - return the first one
-      res.status(200).json(payment);
     })
     .catch(next)
     .done();

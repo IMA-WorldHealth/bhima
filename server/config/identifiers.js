@@ -2,7 +2,7 @@
  * @overview identifiers
  *
  * @description
- * This file contains the identifier mapping for each entity for which bhima
+ * This file contains the identifier mapping for each entity for which BHIMA
  * generates a receipt.  It provides an identifier that is templated into the
  * human readable ID on HTTP requests to provide more context than the simple
  * {project_id}.{increment} schema previously used.
@@ -35,7 +35,7 @@ module.exports = {
     key          : 'PA',
     table        : 'patient',
     documentPath : '/reports/finance/financialPatient/',
-    redirectPath : '/#/patients/?',
+    redirectPath : '/#!/patients/?',
   },
   DOCUMENT : {
     key : 'DO',

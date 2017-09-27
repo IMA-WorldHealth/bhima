@@ -5,9 +5,8 @@
  * This file initializes the links between route controllers and the express
  * HTTP server.
  *
- * @todo Pass authenticate and authorize middleware down through
- * controllers, allowing for modules to subscribe to different
- * levels of authority
+ * @todo Pass authenticate and authorize middleware down through controllers,
+ * allowing for modules to subscribe to different levels of authority
  *
  * @requires winston
  * @requires uploader
@@ -46,7 +45,6 @@ const diagnoses = require('../controllers/medical/diagnoses');
 const employees = require('../controllers/payroll/employees');
 const employeeReports = require('../controllers/payroll/reports');
 
-
 // stock and inventory routes
 const inventory = require('../controllers/inventory');
 const depots = require('../controllers/inventory/depots');
@@ -83,6 +81,7 @@ const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
+const transactions = require('../controllers/finance/transactions');
 
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
@@ -192,7 +191,7 @@ exports.configure = function configure(app) {
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
-  //   app.delete('/transactions/:uuid', transactions.deleteTransaction);
+  app.delete('/transactions/:uuid', transactions.deleteTransaction);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
@@ -478,7 +477,6 @@ exports.configure = function configure(app) {
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
-  app.get('/cash/references/:reference', cash.reference);
   app.get('/cash/checkin/:invoiceUuid', cash.checkInvoicePayment);
 
   // Enterprises api
