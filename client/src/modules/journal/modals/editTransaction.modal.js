@@ -269,6 +269,20 @@ function JournalEditTransactionController(
     return { uuid : uid };
   }
 
+  // this function removes the human readable references if they have changed.
+  // it instead substitutes with NULL-ing the underlying columns
+  function pruneHumanReadableReferences(row) {
+    if (row.hrEntity === '') {
+      row.entity_uuid = null;
+      delete row.hrEntity;
+    }
+
+    if (row.hrReference === '') {
+      row.reference_uuid = null;
+      delete row.hrReference;
+    }
+  }
+
   vm.saveTransaction = function saveTransaction() {
     var noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
 
@@ -285,6 +299,7 @@ function JournalEditTransactionController(
       return;
     }
 
+
     // building object to conform to legacy API
     // @FIXME(sfount) update journal service API for human readable interface
     var transactionRequest = {
@@ -293,14 +308,18 @@ function JournalEditTransactionController(
       removedRows : removedRows.map(mapRowUuids),
     };
 
-
     // reset error validation
     vm.validation.errored = false;
     vm.validation.message = null;
     vm.saving = true;
 
+    var safeChanges = angular.copy(changes);
 
-    Journal.saveChanges(transactionRequest, changes)
+    // prune off the human readable references, submitting only raw data to the
+    // server
+    angular.forEach(safeChanges, pruneHumanReadableReferences);
+
+    Journal.saveChanges(transactionRequest, safeChanges)
       .then(function (resultUpdatedTransaction) {
         var transaction = new Store({ identifier : 'uuid' });
 
