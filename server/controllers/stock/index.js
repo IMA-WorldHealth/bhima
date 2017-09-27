@@ -121,6 +121,77 @@ function createStock(req, res, next) {
     .done();
 }
 
+
+/**
+ * POST /stock/integration
+ * create a new integration entry
+ */
+function createIntegration(req, res, next) {
+  const transaction = db.transaction();
+  const params = req.body;
+  const identifier = uuid.v4();
+  const documentUuid = uuid.v4();
+
+  const integration = {
+    uuid: db.bid(identifier),
+    project_id: req.session.project.id,
+    description: params.movement.description || 'INTEGRATION',
+    date: new Date(params.movement.date),
+  };
+  const sql = `INSERT INTO integration SET ?`;
+
+  transaction.addQuery(sql, [integration]);
+
+  params.lots.forEach((lot) => {
+    let lotUuid = uuid.v4();
+
+    // adding a lot insertion query into the transaction
+    transaction.addQuery(`INSERT INTO lot SET ?`, {
+      uuid: db.bid(lotUuid),
+      label: lot.label,
+      initial_quantity: lot.quantity,
+      quantity: lot.quantity,
+      unit_cost: lot.unit_cost,
+      expiration_date: new Date(lot.expiration_date),
+      inventory_uuid: db.bid(lot.inventory_uuid),
+      origin_uuid: db.bid(identifier),
+      delay: 0,
+    });
+
+    // adding a movement insertion query into the transaction
+    transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
+      uuid: db.bid(uuid.v4()),
+      lot_uuid: db.bid(lotUuid),
+      depot_uuid: db.bid(params.movement.depot_uuid),
+      document_uuid: db.bid(documentUuid),
+      flux_id: params.movement.flux_id,
+      date: new Date(params.movement.date),
+      quantity: lot.quantity,
+      unit_cost: lot.unit_cost,
+      is_exit: 0,
+      user_id: params.movement.user_id,
+      description: params.movement.description,
+    });
+  });
+
+  const voucherUuid = db.bid(uuid.v4());
+
+  transaction.addQuery('CALL IntegrationToVoucher(?)', [[ voucherUuid, integration.uuid ]]);
+  transaction.addQuery('CALL IntegrationToVoucherItem(?)', [db.bid(documentUuid)]);
+  transaction.addQuery('CALL PostVoucher(?)', [voucherUuid]);
+
+  // transaction - movement reference
+  transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
+
+  // execute all operations as one transaction
+  transaction.execute()
+    .then(() => {
+      res.status(201).json({ uuid: documentUuid });
+    })
+    .catch(next)
+    .done();
+}
+
 /**
  * POST /stock/movement
  * Create a new stock movement

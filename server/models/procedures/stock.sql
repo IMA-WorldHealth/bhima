@@ -142,7 +142,6 @@ BEGIN
     voucher_type_id, voucher_description, voucher_amount
   );
 
-
   -- handle voucher items via cursor
   OPEN stage_stock_movement_cursor;
 
