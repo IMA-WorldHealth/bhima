@@ -35,6 +35,8 @@ exports.reverse = reverse;
 exports.find = find;
 exports.buildTransactionQuery = buildTransactionQuery;
 
+exports.getTransactionEditHistory = getTransactionEditHistory;
+
 exports.editTransaction = editTransaction;
 exports.count = count;
 exports.commentPostingJournal = commentPostingJournal;
@@ -200,9 +202,10 @@ function getTransaction(req, res, next) {
 // @TODO(sfount) move edit transaction code to separate server controller - split editing process
 //               up into smaller self contained methods
 function editTransaction(req, res, next) {
-  const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?';
-  const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?';
-  const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?';
+  const REMOVE_JOURNAL_ROW = 'DELETE FROM posting_journal WHERE uuid = ?;';
+  const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?;';
+  const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?;';
+  const UPDATE_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
 
   const transaction = db.transaction();
   const recordUuid = req.params.record_uuid;
@@ -274,6 +277,17 @@ function editTransaction(req, res, next) {
         db.convert(row, ['entity_uuid']);
         transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uid)]);
       });
+
+      // record the transaction history once the transaction has been updated.
+      const row = _transactionToEdit[0];
+      const transactionHistory = {
+        uuid : db.bid(uuid.v4()),
+        record_uuid : db.bid(row.record_uuid),
+        user_id : req.session.user.id,
+      };
+
+      transaction.addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
+
       return transaction.execute();
     })
     .then(() => {
@@ -283,7 +297,8 @@ function editTransaction(req, res, next) {
     .then((updatedRows) => {
       res.status(200).json(updatedRows);
     })
-    .catch(next);
+    .catch(next)
+    .done();
 
   // 1. make changes with update methods ('SET ?') etc.
   // 2. run changes through trial balance
@@ -527,6 +542,28 @@ function getTransactionDate(changedRows = {}, oldRows) {
     .map(row => row.trans_date)
     .pop();
 }
+
+/**
+ * @function getTransactionEditHistory
+ *
+ * @description
+ * A lightweight function to scan the transaction_history and check if
+ * a transaction has previously been edited.  If so, it pulls out the user
+ * that edited it and return that record to the client.
+ */
+function getTransactionEditHistory(req, res, next) {
+  const sql = `
+    SELECT u.display_name, timestamp FROM transaction_history
+    JOIN user AS u ON u.id = transaction_history.user_id
+    WHERE record_uuid = ?;
+  `;
+
+  db.exec(sql, [db.bid(req.params.uuid)])
+    .then(record => res.status(200).json(record))
+    .catch(next)
+    .done();
+}
+
 
 /**
  * PUT /journal/comments

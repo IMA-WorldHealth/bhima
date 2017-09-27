@@ -5,6 +5,7 @@
     "ROWS" : "Row(s)",
     "EDITING" : "Editing",
     "NO_TRANSACTION_TYPE" : "No assigned transaction type",
+    "HAS_PREVIOUS_EDITS" : "Last edit by {{ user }} on {{ date }}",
     "JUSTIFICATION" : "Justification",
     "REFRESH" : "Refresh",
     "SAVE_TRANSACTION" : "Save Transaction",

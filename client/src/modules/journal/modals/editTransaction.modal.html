@@ -1,11 +1,12 @@
 <div class="modal-header">
-  <ol class="headercrumb">
+  <ol class="headercrumb clearfix">
     <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
     <li class="title" translate>{{ModalCtrl.shared.trans_id}}</li>
     <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
     <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
   </ol>
 </div>
+
 <div class="modal-body">
   <!-- warn user that standard users cannot edit posted transactions -->
   <div class="alert alert-warning pad-alert" ng-if="ModalCtrl.validation.blockedPostedTransactionEdit">
@@ -13,101 +14,107 @@
   </div>
 
   <!-- Record information -->
-    <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
+  <div style="border : 1px solid #c4c4c4; padding : 5px; margin-bottom : 10px;">
 
-      <div class="row" ng-if="ModalCtrl.loadingTransaction">
-        <div class="col-xs-12 text-center">
-          <span class="fa fa-circle-o-notch fa-spin"></span>
+    <div class="row" ng-if="ModalCtrl.loadingTransaction">
+      <div class="col-xs-12 text-center">
+        <span class="fa fa-circle-o-notch fa-spin"></span>
+      </div>
+    </div>
+    <div class="row" ng-if="ModalCtrl.setupComplete">
+      <form class="form-horizontal">
+        <div class="col-xs-6">
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RECORD</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.PROJECT</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TRANSACTION_ID</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="row" ng-if="ModalCtrl.setupComplete">
-        <form class="form-horizontal">
-          <div class="col-xs-6">
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RECORD</label>
-              <div class="col-sm-9">
-                <p class="form-control-static">{{ModalCtrl.shared.hrRecord}}</p>
-              </div>
+        <div class="col-xs-6">
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TYPE</label>
+            <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
+              <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.origin_id).text || '-'}}</p>
             </div>
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.PROJECT</label>
-              <div class="col-sm-9">
-                <p class="form-control-static">{{ModalCtrl.shared.project_name}}</p>
-              </div>
+            <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
+              <select
+                ng-model="ModalCtrl.shared.origin_id"
+                ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
+                ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data"
+                class="form-control">
+                <option disabled value="" translate>POSTING_JOURNAL.NO_TRANSACTION_TYPE</option>
+              </select>
             </div>
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TRANSACTION_ID</label>
-              <div class="col-sm-9">
-                <p class="form-control-static">{{ModalCtrl.shared.trans_id}}</p>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RESPONSIBLE</label>
+            <div class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.DATE</label>
+            <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
+              <p class="form-control-static">{{ModalCtrl.shared.trans_date | date}}</p>
+            </div>
+            <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
+              <div class="input-group">
+              <input
+                uib-datepicker-popup="dd/MM/yyyy"
+                ng-model="ModalCtrl.shared.trans_date"
+                ng-change="ModalCtrl.handleTransactionDateChange(ModalCtrl.shared.trans_date)"
+                is-open="ModalCtrl.dateEditorOpen"
+                type="text"
+                class="form-control"></input>
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
+              </span>
               </div>
             </div>
           </div>
-          <div class="col-xs-6">
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TYPE</label>
-              <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
-                <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.origin_id).text || '-'}}</p>
-              </div>
-              <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
-                <select
-                  ng-model="ModalCtrl.shared.origin_id"
-                  ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
-                  ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data"
-                  class="form-control">
-                  <option disabled value="" translate>POSTING_JOURNAL.NO_TRANSACTION_TYPE</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.RESPONSIBLE</label>
-              <div class="col-sm-9">
-                <p class="form-control-static">{{ModalCtrl.shared.display_name}}</p>
-              </div>
-            </div>
-            <div class="form-group-sm">
-              <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.DATE</label>
-              <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
-                <p class="form-control-static">{{ModalCtrl.shared.trans_date | date}}</p>
-              </div>
-              <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
-                <div class="input-group">
-                <input
-                  uib-datepicker-popup="dd/MM/yyyy"
-                  ng-model="ModalCtrl.shared.trans_date"
-                  ng-change="ModalCtrl.handleTransactionDateChange(ModalCtrl.shared.trans_date)"
-                  is-open="ModalCtrl.dateEditorOpen"
-                  type="text"
-                  class="form-control"></input>
-                <span class="input-group-btn">
-                  <button class="btn btn-default btn-sm" ng-click="ModalCtrl.openDateEditor()"><span class="fa fa-calendar"></span></button>
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <div class="alert alert-danger pad-alert" id="validation-errored-alert" ng-if="ModalCtrl.validation.errored">
-      <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
-    </div>
+  <div class="alert alert-danger pad-alert" id="validation-errored-alert" ng-if="ModalCtrl.validation.errored">
+    <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
+  </div>
 
-    <!-- Transaction row edit utilities -->
-    <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
-      <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
-      <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate data-method="delete">POSTING_JOURNAL.REMOVE_ROW</button>
-    </div>
-    <div style="height : 230px" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
-      <bh-grid-loading-indicator
-        loading-state="ModalCtrl.loadingTransaction"
-        empty-state="ModalCtrl.gridOptions.data.length === 0"
-        error-state="ModalCtrl.hasError">
-      </bh-grid-loading-indicator>
-    </div>
+  <!-- Transaction row edit utilities -->
+  <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
+    <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
+    <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate data-method="delete">POSTING_JOURNAL.REMOVE_ROW</button>
+  </div>
+  <div style="height : 230px" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
+    <bh-grid-loading-indicator
+      loading-state="ModalCtrl.loadingTransaction"
+      empty-state="ModalCtrl.gridOptions.data.length === 0"
+      error-state="ModalCtrl.hasError">
+    </bh-grid-loading-indicator>
+  </div>
 </div>
 
-<div class="modal-footer">
+<div class="modal-footer clearfix">
+  <!-- informational: this record has been edited x times  -->
+  <span ng-if="ModalCtrl.hasPreviousEdits" class="text-muted pull-left" style="margin-top:5px;">
+    <i class="fa fa-info-circle"></i>
+    <span translate translate-values="ModalCtrl.lastEditValues">POSTING_JOURNAL.HAS_PREVIOUS_EDITS</span>
+  </span>
+
   <button class="btn btn-default" data-method="cancel" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
   <bh-loading-button ng-if="!ModalCtrl.readOnly" disabled="!ModalCtrl.setupComplete" loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
     <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
