@@ -168,7 +168,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     // To prevent calling the validation function when selecting the transaction type before selecting accounts
     var hasNullAccounts = (uniqueAccountsArray.length === 0);
 
-    if(!hasNullAccounts) {
+    if (!hasNullAccounts) {
       var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
       if (!hasUniqueAccounts) {
         err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
@@ -180,7 +180,10 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
         err = ERROR_SINGLE_ROW_TRANSACTION;
       }
 
-      var hasBalancedDebitsAndCredits = (this.totals.debit === this.totals.credit);
+      // validate that total debit equals to total credit
+      var totalDebit = Number(this.totals.debit).toFixed(4);
+      var totalCredit = Number(this.totals.credit).toFixed(4);
+      var hasBalancedDebitsAndCredits = (totalDebit === totalCredit);
       if (!hasBalancedDebitsAndCredits) {
         err = ERROR_IMBALANCED_TRANSACTION;
       }

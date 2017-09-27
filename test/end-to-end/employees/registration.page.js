@@ -8,7 +8,7 @@
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-class RegistrationPage {    
+class RegistrationPage {
     //simulate the create employee button click
      createEmployee () {
         FU.buttons.submit();
@@ -28,12 +28,12 @@ class RegistrationPage {
     setSex (sex){
         const position = sex === 'M' ? 0 : 1;
         FU.radio('EmployeeCtrl.employee.sex', position);
-    } 
+    }
 
     // set number of spouse
     setNumberSpouse (nbSpouse){
         FU.input('EmployeeCtrl.employee.nb_spouse', nbSpouse);
-    } 
+    }
 
     // set number of spouse
     setNumberChild (nbEnfant){
@@ -87,7 +87,7 @@ class RegistrationPage {
 
     // set creditor group
     setCreditorGroup (cg){
-        FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);        
+        FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
     }
 
     // set bank
@@ -102,14 +102,14 @@ class RegistrationPage {
 
     // set origin location
     setOriginLocation(locations){
-        components.locationSelect.set(locations, 'origin-location-id');    
+        components.locationSelect.set(locations, 'origin-location-id');
     }
 
     // set current location
     setCurrentLocation(locations){
-        components.locationSelect.set(locations, 'current-location-id');    
+        components.locationSelect.set(locations, 'current-location-id');
     }
-    
+
     isEmpoyeeCreated (resp){
         return FU.exists(by.id('receipt-confirm-created'), resp);
     }
@@ -126,7 +126,6 @@ class RegistrationPage {
     }
 
     noRequiredFieldOk(){
-        FU.validation.ok('EmployeeCtrl.employee.locked');
         FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
         FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
         FU.validation.ok('EmployeeCtrl.employee.phone');

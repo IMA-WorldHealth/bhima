@@ -59,7 +59,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
       .then(function (patient) {
         vm.Invoice.setPatient(patient);
-        return Patients.balance(patient.debtor_uuid);
+        return Patients.balance(patient.uuid);
       })
       .then(function (balance) {
         vm.patientBalance = balance;

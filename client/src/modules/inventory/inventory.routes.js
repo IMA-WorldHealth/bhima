@@ -6,7 +6,6 @@ angular.module('bhima.routes')
         views : {
           '' : {
             templateUrl : 'modules/inventory/configuration/configuration.html',
-            controller : 'InventoryConfigurationController as InventoryCtrl',
           },
           'groups@inventoryConfiguration' : {
             templateUrl : 'modules/inventory/configuration/groups/groups.html',
@@ -45,17 +44,11 @@ angular.module('bhima.routes')
         url : '/:uuid',
         params : {
           uuid : { squash : true, value : null },
-          created : false,  // default for transitioning from child states
-          updated : false,  // default for transitioning from child states
-          filters : null,
+          created : false, // default for transitioning from child states
+          updated : false, // default for transitioning from child states
+          filters : [],
         },
       });
-      // @TODO IMPLEMENT THEM
-      // .state('/inventory/types',  {
-      //   url : '/inventory/types',
-      //   controller : 'InventoryTypesController as InventoryCtrl',
-      //   templateUrl : 'modules/inventory/types/types.html'
-      // })
   }]);
 
 
@@ -67,11 +60,10 @@ function closeModal($uibModalStack) {
 function onEnterFactory(stateType) {
   var isCreateState = (stateType === 'create');
 
-  return function onEnter ($state, Modal) {
+  return function onEnter($state, Modal) {
     var instance = Modal.openInventoryListActions();
     instance
       .then(function (uuid) {
-
         var params = { uuid : uuid };
 
         if (isCreateState) {

@@ -1,7 +1,4 @@
-<form
-  name="ModalForm"
-  ng-submit="ModalCtrl.submit(ModalForm)"
-  novalidate>
+<form name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm)" novalidate>
 
   <div class="modal-header">
     <ol class="headercrumb">
@@ -10,106 +7,109 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body search-modal">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
+        <div class="tab-body">
 
-    <fieldset>
-      <div class="form-group">
-        <label class="control-label" translate>
-          FORM.LABELS.GROUP
-        </label>
-        <bh-clear on-clear="ModalCtrl.clear('group_uuid')"></bh-clear>
+          <div class="form-group">
+            <label class="control-label" translate>
+              FORM.LABELS.GROUP
+            </label>
+            <bh-clear on-clear="ModalCtrl.clear('group_uuid')"></bh-clear>
 
-        <!-- @todo make data driven selects components to handle loading and error states -->
-        <ui-select
-          name="group_uuid"
-          ng-model="ModalCtrl.params.group_uuid">
-          <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-          <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.inventoryGroups | filter:$select.search | orderBy:'name') track by group.uuid">
-            <span ng-bind-html="group.name | highlight:$select.search"></span>
-          </ui-select-choices>
-        </ui-select>
+            <!-- @todo make data driven selects components to handle loading and error states -->
+            <ui-select
+              name="group_uuid"
+              ng-model="ModalCtrl.searchQueries.group_uuid">
+              <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.inventoryGroups | filter:$select.search | orderBy:'name')">
+                <span ng-bind-html="group.name | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
 
-      </div>
+          </div>
 
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.text.$invalid }">
-        <label class="control-label" translate>
-          FORM.LABELS.LABEL
-        </label>
-        <bh-clear on-clear="ModalCtrl.clear('text')"></bh-clear>
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.text.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.LABEL
+            </label>
+            <bh-clear on-clear="ModalCtrl.clear('text')"></bh-clear>
 
-        <input type="text" class="form-control" name="text" ng-model="ModalCtrl.params.text">
-        <div class="help-block" ng-messages="ModalForm.text.$error" ng-show="ModalForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            <input type="text" class="form-control" name="text" ng-model="ModalCtrl.searchQueries.text">
+            <div class="help-block" ng-messages="ModalForm.text.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.code.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.CODE
+            </label>
+            <bh-clear on-clear="ModalCtrl.clear('code')"></bh-clear>
+
+            <input type="text" class="form-control" name="code" ng-model="ModalCtrl.searchQueries.code">
+            <div class="help-block" ng-messages="ModalForm.code.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.price.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.UNIT_PRICE
+            </label>
+            <bh-clear on-clear="ModalCtrl.clear('price')"></bh-clear>
+
+            <input type="number" class="form-control" name="price" ng-model="ModalCtrl.searchQueries.price">
+            <div class="help-block" ng-messages="ModalForm.price.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.type_id.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.TYPE</label>
+            <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
+            <select
+              class="form-control"
+              name="type_id"
+              ng-model="ModalCtrl.searchQueries.type_id"
+              ng-options="type.id as type.text for type in ModalCtrl.types">
+              <option value="" translate>FORM.SELECT.INVENTORY_TYPE</option>
+            </select>
+            <div class="help-block" ng-messages="ModalForm.type_id.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="radio" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
+            <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
+
+            <label class="radio-inline">
+              <input type="radio" value='1' name="consumable" ng-model="ModalCtrl.searchQueries.consumable">
+              <span translate>FORM.LABELS.CONSUMABLE</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" value='0' name="consumable" ng-model="ModalCtrl.searchQueries.consumable">
+              <span translate>FORM.LABELS.UNCONSUMABLE</span>
+            </label>
+          </div>
         </div>
-      </div>
+      </uib-tab>
 
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.code.$invalid }">
-        <label class="control-label" translate>
-          FORM.LABELS.CODE
-        </label>
-        <bh-clear on-clear="ModalCtrl.clear('code')"></bh-clear>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
 
-        <input type="text" class="form-control" name="code" ng-model="ModalCtrl.params.code">
-        <div class="help-block" ng-messages="ModalForm.code.$error" ng-show="ModalForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
         </div>
-      </div>
-
-
-
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.price.$invalid }">
-        <label class="control-label" translate>
-          FORM.LABELS.UNIT_PRICE
-        </label>
-        <bh-clear on-clear="ModalCtrl.clear('price')"></bh-clear>
-
-        <input type="number" class="form-control" name="price" ng-model="ModalCtrl.params.price">
-        <div class="help-block" ng-messages="ModalForm.price.$error" ng-show="ModalForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
-      </div>
-
-
-
-    <div class="form-group"
-      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.type_id.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.TYPE</label>
-      <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
-      <select
-        class="form-control"
-        name="type_id"
-        ng-model="ModalCtrl.params.type_id"
-        ng-options="type.id as type.text for type in ModalCtrl.types"
-        >
-        <option value=""  translate>FORM.SELECT.INVENTORY_TYPE</option>
-      </select>
-      <div class="help-block" ng-messages="ModalForm.type_id.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
-
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
-         <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
-
-         <input type="radio" value='1' name="consumable" ng-model="ModalCtrl.params.consumable"/>
-
-         <label class="control-label" translate>
-          FORM.LABELS.CONSUMABLE
-        </label>
-
-        <br/>
-
-        <input type="radio" value='0' name="consumable" ng-model="ModalCtrl.params.consumable"/>
-
-        <label class="control-label" translate>
-          FORM.LABELS.UNCONSUMABLE
-        </label>
-
-
-        </div>
-
-    </fieldset>
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">

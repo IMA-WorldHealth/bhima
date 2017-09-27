@@ -58,19 +58,17 @@
           <i class="fa fa-filter"></i>
         </button>
 
-        <a
-          class="btn btn-default text-capitalize"
-          ui-sref="inventory.create"
-          data-method="create">
-          <i class="fa fa-plus"></i> <span translate>INVENTORY.ADD_METADATA</span>
+        <a class="btn btn-default text-capitalize" ui-sref="inventory.create" data-method="create">
+          <i class="fa fa-plus"></i> <span class="hidden-xs" translate>INVENTORY.ADD_METADATA</span>
         </a>
 
         <button
           ng-click="InventoryCtrl.research()"
+          type="button"
           data-method="research"
           class="btn btn-default"
           id="research">
-          <i class="fa fa-search"></i> <span translate>FORM.BUTTONS.SEARCH</span>
+          <i class="fa fa-search"></i> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
     </div>
@@ -78,9 +76,8 @@
   </div>
 </div>
 
-<div class="flex-util bh-filter-bar" ng-if="InventoryCtrl.hasCustomFilters">
+<div class="flex-util bh-filter-bar">
   <bh-filters
-    style="max-width:90%"
     filters="InventoryCtrl.latestViewFilters"
     on-remove-filter="InventoryCtrl.onRemoveFilter(filter)">
   </bh-filters>
@@ -104,7 +101,6 @@
         empty-state="InventoryCtrl.gridOptions.data.length === 0"
         error-state="InventoryCtrl.hasError">
       </bh-grid-loading-indicator>
-
     </div>
   </div>
 </div>

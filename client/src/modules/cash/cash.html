@@ -61,135 +61,144 @@
                   required="true">
                 </bh-find-patient>
 
-                <bh-date-editor
-                  date-value="CashCtrl.Payment.details.date"
-                  validation-trigger="CashVoucherForm.$submitted"
-                  max-date="CashCtrl.timestamp">
-                </bh-date-editor>
-
-                <!-- currency selection -->
-                <bh-currency-select
-                  currency-id="CashCtrl.Payment.details.currency_id"
-                  validation-trigger="CashVoucherForm.$submitted"
-                  on-change="CashCtrl.Payment.setCurrency(currency)"
-                  disable-ids="CashCtrl.disabledCurrencyIds"
-                  cashbox-id="CashCtrl.cashbox.id">
-                </bh-currency-select>
-
-                <!-- determine if we are creating a caution or an invoice payment -->
-                <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
-                  <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
-                  <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="1" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="1" required>
-                    <span translate>FORM.LABELS.CAUTION</span>
-                  </label>
-                  <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="0" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="0" required>
-                    <span translate>FORM.LABELS.INVOICE</span>
-                  </label>
-
-                  <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
+                <!-- not allowed for cash payment - convention -->
+                <div class="alert alert-info" ng-if="CashCtrl.Payment.messages.isNonCashPatient">
+                  <span class="text-center" translate>DEBTOR_GROUP.CONVENTION.CANNOT_PAY</span>
+                  <strong class="text-center">{{CashCtrl.Payment.messages.patientConventionName}}</strong>
                 </div>
 
-                <!--
-                  if payment type is not a caution, add in components to show payments against previous invoices
-                -->
-                <div ng-if="!CashCtrl.Payment.isCaution()">
+                <!-- allowed for cash payment -->
+                <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
+                  <bh-date-editor
+                    date-value="CashCtrl.Payment.details.date"
+                    validation-trigger="CashVoucherForm.$submitted"
+                    max-date="CashCtrl.timestamp">
+                  </bh-date-editor>
+
+                  <!-- currency selection -->
+                  <bh-currency-select
+                    currency-id="CashCtrl.Payment.details.currency_id"
+                    validation-trigger="CashVoucherForm.$submitted"
+                    on-change="CashCtrl.Payment.setCurrency(currency)"
+                    disable-ids="CashCtrl.disabledCurrencyIds"
+                    cashbox-id="CashCtrl.cashbox.id">
+                  </bh-currency-select>
+
+                  <!-- determine if we are creating a caution or an invoice payment -->
+                  <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
+                    <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
+                    <label class="radio-inline">
+                      <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="1" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="1" required>
+                      <span translate>FORM.LABELS.CAUTION</span>
+                    </label>
+                    <label class="radio-inline">
+                      <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="0" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="0" required>
+                      <span translate>FORM.LABELS.INVOICE</span>
+                    </label>
+
+                    <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+
                   <!--
-                    display a table of selected invoices the patient will be billed for.
+                    if payment type is not a caution, add in components to show payments against previous invoices
                   -->
-                  <table class="table table-condensed" ng-show="CashCtrl.Payment.details.invoices.length > 0">
-                    <thead>
-                      <tr>
-                        <th style="width: 25%;" translate>TABLE.COLUMNS.REFERENCE</th>
-                        <th style="width: 50%;" translate>TABLE.COLUMNS.DATE</th>
-                        <th style="width: 25%;" class="text-right" translate>TABLE.COLUMNS.AMOUNT</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <div ng-if="!CashCtrl.Payment.isCaution()">
+                    <!--
+                      display a table of selected invoices the patient will be billed for.
+                    -->
+                    <table class="table table-condensed" ng-show="CashCtrl.Payment.details.invoices.length > 0">
+                      <thead>
+                        <tr>
+                          <th style="width: 25%;" translate>TABLE.COLUMNS.REFERENCE</th>
+                          <th style="width: 50%;" translate>TABLE.COLUMNS.DATE</th>
+                          <th style="width: 25%;" class="text-right" translate>TABLE.COLUMNS.AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
 
-                      <!-- show a list of previous invoices to pay again -->
-                      <tr ng-repeat="invoice in CashCtrl.Payment.details.invoices | orderBy:'date'">
-                        <td>{{ invoice.reference }}</td>
-                        <td>{{ invoice.date | date }}</td>
-                        <td class="text-right">{{ invoice.balance | currency:CashCtrl.enterprise.currency_id }}</td>
-                      </tr>
-                    </tbody>
+                        <!-- show a list of previous invoices to pay again -->
+                        <tr ng-repeat="invoice in CashCtrl.Payment.details.invoices | orderBy:'date'">
+                          <td>{{ invoice.reference }}</td>
+                          <td>{{ invoice.date | date }}</td>
+                          <td class="text-right">{{ invoice.balance | currency:CashCtrl.enterprise.currency_id }}</td>
+                        </tr>
+                      </tbody>
 
-                    <!-- total rows -->
-                    <tfoot>
+                      <!-- total rows -->
+                      <tfoot>
 
-                      <!-- only show the sum if we have more rows than 1 -->
-                      <tr ng-show="CashCtrl.Payment.details.invoices.length > 1">
-                        <td colspan="2" class="text-right"><u translate>TABLE.COLUMNS.TOTAL</u></td>
-                        <td class="text-right">{{ CashCtrl.Payment.totals.enterpriseCurrencyTotal | currency:CashCtrl.enterprise.currency_id }}</td>
-                      </tr>
+                        <!-- only show the sum if we have more rows than 1 -->
+                        <tr ng-show="CashCtrl.Payment.details.invoices.length > 1">
+                          <td colspan="2" class="text-right"><u translate>TABLE.COLUMNS.TOTAL</u></td>
+                          <td class="text-right">{{ CashCtrl.Payment.totals.enterpriseCurrencyTotal | currency:CashCtrl.enterprise.currency_id }}</td>
+                        </tr>
 
-                      <!-- only show this segment if using a foreign currency -->
-                      <tr>
-                        <td colspan="2" class="text-right"><b translate>TABLE.COLUMNS.EXCHANGE_RATE</b></td>
-                        <td class="text-right">
-                          <span ng-hide="CashCtrl.Payment.isInEnterpriseCurrency()">
-                            {{ CashCtrl.Payment.totals.currentExchangeRate | currency:CashCtrl.Payment.details.currency_id }}
-                          </span>
-                          <span ng-show="CashCtrl.Payment.isInEnterpriseCurrency()">
-                            ---
-                          </span>
-                        </td>
-                      </tr>
+                        <!-- only show this segment if using a foreign currency -->
+                        <tr>
+                          <td colspan="2" class="text-right"><b translate>TABLE.COLUMNS.EXCHANGE_RATE</b></td>
+                          <td class="text-right">
+                            <span ng-hide="CashCtrl.Payment.isInEnterpriseCurrency()">
+                              {{ CashCtrl.Payment.totals.currentExchangeRate | currency:CashCtrl.Payment.details.currency_id }}
+                            </span>
+                            <span ng-show="CashCtrl.Payment.isInEnterpriseCurrency()">
+                              ---
+                            </span>
+                          </td>
+                        </tr>
 
-                      <!-- show a nice total row of what the payer owes today -->
-                      <tr>
-                        <th colspan="2" class="text-right" translate>TABLE.COLUMNS.TOTAL</th>
-                        <td class="text-right">{{ CashCtrl.Payment.totals.foreignCurrencyTotal | currency:CashCtrl.Payment.details.currency_id }}</td>
-                      </tr>
-                    </tfoot>
-                  </table>
+                        <!-- show a nice total row of what the payer owes today -->
+                        <tr>
+                          <th colspan="2" class="text-right" translate>TABLE.COLUMNS.TOTAL</th>
+                          <td class="text-right">{{ CashCtrl.Payment.totals.foreignCurrencyTotal | currency:CashCtrl.Payment.details.currency_id }}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
 
-                  <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button" data-open-invoices-btn>
-                    <span class="fa fa-plus-circle"></span> <span translate>FORM.BUTTONS.SELECT_INVOICES</span>
-                  </button>
+                    <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button" data-open-invoices-btn>
+                      <span class="fa fa-plus-circle"></span> <span translate>FORM.BUTTONS.SELECT_INVOICES</span>
+                    </button>
 
-                  <!-- show informational message if there are not invoice selected -->
-                  <p ng-if="CashCtrl.Payment.details.invoices.length === 0" class="text-primary" style="padding-top: 15px;">
-                    <span class="fa fa-info-circle"></span> <span translate>CASH.VOUCHER.CASHBOXES.NO_INVOICES_ASSIGNED</span>
-                  </p>
-                </div>
-
-                <!-- todo ... style hacks -->
-                <div class="form-group" style="padding-top: 15px;"
-                  ng-class="{'has-error' : CashVoucherForm.$submitted && CashVoucherForm.notes.$invalid }">
-                  <label class="control-label" translate>FORM.LABELS.NOTES</label>
-                  <textarea
-                    ng-model="CashCtrl.Payment.details.description"
-                    name="notes"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate}}..."
-                    class="form-control"
-                    rows="4">
-                  </textarea>
-                  <div class="help-block" ng-messages="CashVoucherForm.notes.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    <!-- show informational message if there are not invoice selected -->
+                    <p ng-if="CashCtrl.Payment.details.invoices.length === 0" class="text-primary" style="padding-top: 15px;">
+                      <span class="fa fa-info-circle"></span> <span translate>CASH.VOUCHER.CASHBOXES.NO_INVOICES_ASSIGNED</span>
+                    </p>
                   </div>
-                </div>
 
-                <div class="form-group" ng-if="CashCtrl.Payment.messages.hasPositiveAccountBalance">
-                  <div class="alert alert-info">
-                    <i class="fa fa-info-circle"></i> <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
-                    {{ CashCtrl.Payment.messages.patientAccountBalance | currency:CashCtrl.enterprise.currency_id }}
+                  <!-- todo ... style hacks -->
+                  <div class="form-group" style="padding-top: 15px;"
+                    ng-class="{'has-error' : CashVoucherForm.$submitted && CashVoucherForm.notes.$invalid }">
+                    <label class="control-label" translate>FORM.LABELS.NOTES</label>
+                    <textarea
+                      ng-model="CashCtrl.Payment.details.description"
+                      name="notes"
+                      placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate}}..."
+                      class="form-control"
+                      rows="4">
+                    </textarea>
+                    <div class="help-block" ng-messages="CashVoucherForm.notes.$error" ng-show="CashVoucherForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
                   </div>
-                </div>
 
-                <hr />
+                  <div class="form-group" ng-if="CashCtrl.Payment.messages.hasPositiveAccountBalance">
+                    <div class="alert alert-info">
+                      <i class="fa fa-info-circle"></i> <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
+                      {{ CashCtrl.Payment.messages.patientAccountBalance | currency:CashCtrl.enterprise.currency_id }}
+                    </div>
+                  </div>
 
-                <!-- use the currency input component for currency validation-->
-                <bh-currency-input
-                  data-payment-currency-input
-                  currency-id="CashCtrl.Payment.details.currency_id"
-                  model="CashCtrl.Payment.details.amount"
-                  validation-trigger="CashVoucherForm.$submitted">
-                </bh-currency-input>
+                  <hr />
+
+                  <!-- use the currency input component for currency validation-->
+                  <bh-currency-input
+                    data-payment-currency-input
+                    currency-id="CashCtrl.Payment.details.currency_id"
+                    model="CashCtrl.Payment.details.amount"
+                    validation-trigger="CashVoucherForm.$submitted">
+                  </bh-currency-input>
+                </fieldset>
 
                 <div class="form-group text-right">
 
@@ -203,7 +212,7 @@
                     <span translate>FORM.BUTTONS.CLEAR</span>
                   </button>
 
-                  <bh-loading-button loading-state="CashVoucherForm.$loading">
+                  <bh-loading-button loading-state="CashVoucherForm.$loading" disabled="CashCtrl.Payment.messages.isNonCashPatient">
                     <span translate>FORM.BUTTONS.SUBMIT</span>
                   </bh-loading-button>
                 </div>

@@ -30,6 +30,7 @@ exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
 exports.getPeriodByFiscal = getPeriodByFiscal;
+exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 
 /**
  * @method lookupFiscalYear
@@ -618,7 +619,10 @@ function closing(req, res, next) {
     })
     .then((rows) => {
       const queryUpdateFiscal = rows.pop();
-      if (!queryUpdateFiscal.changedRows) {
+
+      // Note: changedRows is generated from the server message.
+      // It is not correctly parsed and set in multi-langual environments.
+      if (!queryUpdateFiscal.affectedRows) {
         throw new BadRequest('FISCAL.FAILURE_CLOSING', 'Failure occurs during the closing of the fiscal year');
       }
       res.status(200).json({ id });
@@ -647,4 +651,22 @@ function getPeriodByFiscal(fiscalYearId) {
   `;
 
   return db.exec(sql, [fiscalYearId]);
+}
+
+/**
+ * @method lookupFiscalYearByDate
+ *
+ * @description
+ * This function returns a single record from the fiscal year table matching
+ *
+ */
+function lookupFiscalYearByDate(transDate) {
+  const sql = `
+    SELECT p.fiscal_year_id, p.id, f.locked, f.note, f.label
+    FROM period AS p
+    JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
+    WHERE DATE(p.start_date) <= DATE(?) AND DATE(p.end_date) >= DATE(?);
+  `;
+
+  return db.one(sql, [transDate, transDate], transDate, 'fiscal year');
 }

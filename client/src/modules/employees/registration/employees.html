@@ -20,6 +20,9 @@
               <div class="panel-heading" translate>EMPLOYEE.EMPLOYEE_DETAILS</div>
               <div class="panel-body">
                 <div class="form-horizontal" ng-form="DetailForm">
+                  <fieldset>
+                    <label translate>EMPLOYEE.EMPLOYEE_DETAILS</label>
+
                   <!-- Employee names  -->
                   <div
                     class="form-group"
@@ -35,7 +38,7 @@
                         autocomplete="off"
                         required>
                       <div class="help-block" ng-messages="DetailForm.display_name.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
                   </div>
@@ -143,29 +146,7 @@
                     </div>
                   </div>
 
-                  <!-- Employee Hospital File Number -->
-                  <div
-                    class="form-group has-feedback"
-                    ng-class="{'has-error' : DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted || DetailForm.hospitalNumber.$error.unique}">
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR</label>
-                    <div class="col-md-9">
-                      <input
-                        name="hospitalNumber"
-                        class="form-control"
-                        ng-model="EmployeeCtrl.employee.hospital_no"
-                        bh-unique="/patients/hospital_number"
-                        ng-maxlength="EmployeeCtrl.length20"
-                        autocomplete="off"
-                        required>
-                      <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
-                      <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-
-                      <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
-                        <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
-                      </div>
-                    </div>
-                  </div>
 
                   <!-- Employee creditor group-->
                   <div class="form-group"
@@ -197,6 +178,36 @@
                     </div>
                   </div>
 
+
+                  </fieldset>
+                  <hr/>
+                  <fieldset>
+                    <label translate><u>PATIENT_REG.PATIENT_DETAILS</u></label>
+
+                     <!-- Employee Hospital File Number -->
+                  <div
+                    class="form-group has-feedback"
+                    ng-class="{'has-error' : (DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted) || DetailForm.hospitalNumber.$error.unique}">
+
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR</label>
+                    <div class="col-md-9">
+                      <input
+                        name="hospitalNumber"
+                        class="form-control"
+                        ng-model="EmployeeCtrl.employee.hospital_no"
+                        bh-unique="/patients/hospital_number"
+                        ng-maxlength="EmployeeCtrl.length20"
+                        autocomplete="off"
+                        required>
+                      <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+                      <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+
+                      <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
+                        <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Employee debtor group-->
                   <div class="row">
                     <div class="col-md-1 col-md-offset-1">
@@ -209,6 +220,8 @@
                       </bh-debtor-group-select>
                     </div>
                   </div>
+
+
 
                   <!-- Employee location -->
                   <div class="row">
@@ -233,14 +246,17 @@
                       </bh-location-select>
                     </div>
                   </div>
+
+                  </fieldset>
                 </div>
-                <!-- submit button-->
+
+              </div>
+               <!-- submit button-->
                 <div class="panel-footer text-right">
                   <bh-loading-button loading-state="EmployeeRegistrationForm.$loading">
                     <span translate>FORM.BUTTONS.REGISTER_EMPLOYEE</span>
                   </bh-loading-button>
                 </div>
-              </div>
             </div>
           </div>
           <div class="col-md-5">
@@ -474,7 +490,7 @@
                     </div>
                   </div>
 
-                  <!-- Employee locked state-->
+                  <!-- Employee locked state
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
                     <label class="control-label">
@@ -487,6 +503,7 @@
                         <span translate>FORM.LABELS.LOCKED</span>
                     </label>
                   </div>
+                  -->
                 </div>
               </div>
             </div>

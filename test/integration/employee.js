@@ -10,8 +10,8 @@ const helpers = require('./helpers');
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
-  const numEmployees = 1; 
-  
+  const numEmployees = 1;
+
   // custom dates
   let embaucheDate  = new Date('2016-01-01');
   let dob1 = new Date('1987-04-17');
@@ -36,7 +36,7 @@ describe('(/employees) the employees API endpoint', function () {
     service_id : 1,
     hospital_no : 'TP30',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',    
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
   };
@@ -169,9 +169,9 @@ describe('(/employees) the employees API endpoint', function () {
       .query(conditions)
       .then(function (res) {
         var expected = [
-          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
+          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account',
           'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
-          'grade_id', 'basic_salary', 'service_id', 
+          'grade_id', 'basic_salary', 'service_id',
           'creditor_uuid', 'locked'
         ];
 

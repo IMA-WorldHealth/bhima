@@ -28,11 +28,15 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // Filter service
   var StockLotFilters = new Filters();
   var StockMovementFilters = new Filters();
+  var StockInventoryFilters = new Filters();
+
   var filterMovementCache = new AppCache('stock-movement-filters');
   var filterLotCache = new AppCache('stock-lot-filters');
+  var filterInventoryCache = new AppCache('stock-inventory-filters');
 
   StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
   StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
+  StockInventoryFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
@@ -54,6 +58,12 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' },
   ]);
 
+  StockInventoryFilters.registerCustomFilters([
+    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'status', label : 'STOCK.STATUS.LABEL' },
+  ]);
+
 
   if (filterLotCache.filters) {
     StockLotFilters.loadCache(filterLotCache.filters);
@@ -63,20 +73,27 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     StockMovementFilters.loadCache(filterMovementCache.filters);
   }
 
+  if (filterInventoryCache.filters) {
+    StockInventoryFilters.loadCache(filterInventoryCache.filters);
+  }
+
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignLotDefaultFilters();
   assignMovementDefaultFilters();
+  assignInventoryDefaultFilters();
 
   // creating an object of filter to avoid method duplication
   var stockFilter = {
     lot : StockLotFilters,
     movement : StockMovementFilters,
+    inventory : StockInventoryFilters
   };
 
   // creating an object of filter object to avoid method duplication
   var filterCache = {
     lot : filterLotCache,
     movement : filterMovementCache,
+    inventory : filterInventoryCache
   };
 
   function assignLotDefaultFilters() {
@@ -112,6 +129,24 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
       StockMovementFilters.assignFilter('limit', 100);
+    }
+  }
+
+  function assignInventoryDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      inventories.util.arrayIncludes(assignedKeys, ['period']);
+
+    if (!periodDefined) {
+      StockInventoryFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      StockInventoryFilters.assignFilter('limit', 100);
     }
   }
 

@@ -63,8 +63,8 @@ function PatientRegistrySearch() {
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find three patient with Debtor Group "Second Test Debtor Group"`, () => {
-    const NUM_MATCHING = 3;
+  it(`should find two patients with Debtor Group "Second Test Debtor Group"`, () => {
+    const NUM_MATCHING = 2;
 
     components.debtorGroupSelect.set('Second Test Debtor Group');
     FU.modal.submit();

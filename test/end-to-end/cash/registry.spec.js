@@ -10,6 +10,7 @@ describe('Payments Registry', CashPaymentsRegistryTests);
 function CashPaymentsRegistryTests() {
   const PAYMENT_INSIDE_REGISTRY = 3;
   const PAYMENT_PRIMARY_CASHBOX = 0;
+  const DEBTOR_GROUP = 'First Test Debtor Group';
   let modal;
   let filters;
 
@@ -72,8 +73,8 @@ function CashPaymentsRegistryTests() {
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });
 
-  it('finds all payments for creditor group Second Test Debtor Group', () => {
-    components.debtorGroupSelect.set('Second Test Debtor Group');
+  it(`finds all payments for debtor group: ${DEBTOR_GROUP}`, () => {
+    components.debtorGroupSelect.set(DEBTOR_GROUP);
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });

@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <ol class="headercrumb" class="clearfix">
+    <li class="static"><span translate>POSTING_JOURNAL.TITLE</span></li>
+    <li class="title">
+      <span translate>POSTING_JOURNAL.TRIAL_BALANCE.TITLE</span>
+
+      <span class="badge badge-primary" translate>
+        POSTING_JOURNAL.TRIAL_BALANCE.OVERVIEW
+      </span>
+    </li>
+
+    <span class="badge badge-danger" ng-show="TrialBalanceCtrl.showErrorMessage">
+      <strong>
+        <i class="fa fa-times-circle-o"></i>
+        <span translate translate-values="{ numErrors : TrialBalanceCtrl.numErrors }">POSTING_JOURNAL.TRIAL_BALANCE.HAS_ERRORS</span>
+      </strong>
+    </span>
+
+    <span class="badge badge-success" ng-show="TrialBalanceCtrl.showSuccessMessage">
+      <strong>
+        <i class="fa fa-check-circle-o"></i>
+        <span translate>POSTING_JOURNAL.TRIAL_BALANCE.IS_BALANCED</span>
+      </strong>
+    </span>
+
+    <a href id="export" class="pull-right" ng-click="TrialBalanceCtrl.export()">
+      <i class="fa fa-file-excel-o"></i> <span translate>POSTING_JOURNAL.TRIAL_BALANCE.EXPORT</span>
+    </a>
+
+    <span class="ui-grid-exporter-csv-link">&nbsp</span>
+  </ol>
+</div>
+
+<div class="modal-body">
+  <div ui-view="modal-body"></div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-method="cancel" ui-sref="journal">
+    <span translate>FORM.BUTTONS.CANCEL</span>
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    ng-class="{ 'btn-danger' : TrialBalanceCtrl.showErrorMessage }"
+    ng-disabled="TrialBalanceCtrl.showErrorMessage || TrialBalanceCtrl.isLoading"
+    ng-click="TrialBalanceCtrl.submit()"
+    data-method="submit">
+
+    <span ng-show="TrialBalanceCtrl.isLoading">
+      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>FORM.INFO.LOADING</span>
+    </span>
+
+    <span ng-hide="TrialBalanceCtrl.isLoading" translate>
+      FORM.BUTTONS.SUBMIT
+    </span>
+  </button>
+</div>

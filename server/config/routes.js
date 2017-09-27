@@ -84,7 +84,7 @@ const financialPatient = require('../controllers/finance/patient');
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
-//looking up an entity by it reference
+// looking up an entity by it reference
 const refenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
@@ -176,21 +176,22 @@ exports.configure = function configure(app) {
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
 
+  // API for trial balance
+  app.post('/journal/trialbalance', trialBalance.runTrialBalance);
+  app.post('/journal/transactions', trialBalance.postToGeneralLedger);
+
+  // API for journal
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
-
-
+  app.put('/journal/comments', journal.commentPostingJournal);
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
-  // API for trial balance
-  app.post('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
-  app.post('/trial_balance/checks', trialBalance.checkTransactions);
-  app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
+  app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
@@ -207,7 +208,6 @@ exports.configure = function configure(app) {
   // Period routes
   app.get('/periods', fiscalPeriod.list);
 
-
   /* load a user's tree */
   app.get('/tree', tree.generate);
 
@@ -215,7 +215,6 @@ exports.configure = function configure(app) {
   app.get('/snis/healthZones', snis.healthZones);
 
   // Employee management
-  app.get('/employee_list/', employees.list);
   app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
@@ -351,7 +350,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
-  app.get('/reports/finance/posted_journal', financeReports.journal.postedReport);
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
