@@ -85,7 +85,7 @@ const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 
 // looking up an entity by it reference
-const refenceLookup = require('../lib/referenceLookup');
+const referenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -192,6 +192,7 @@ exports.configure = function configure(app) {
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
+  //   app.delete('/transactions/:uuid', transactions.deleteTransaction);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
@@ -316,7 +317,7 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
   // interface for linking entities, it renders a report for a particular entity
-  app.get('/refenceLookup/:codeRef/:language', refenceLookup.getEntity);
+  app.get('/referenceLookup/:codeRef/:language', referenceLookup.getEntity);
 
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
