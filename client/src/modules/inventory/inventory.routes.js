@@ -6,7 +6,6 @@ angular.module('bhima.routes')
         views : {
           '' : {
             templateUrl : 'modules/inventory/configuration/configuration.html',
-            controller : 'InventoryConfigurationController as InventoryCtrl',
           },
           'groups@inventoryConfiguration' : {
             templateUrl : 'modules/inventory/configuration/groups/groups.html',
@@ -61,11 +60,10 @@ function closeModal($uibModalStack) {
 function onEnterFactory(stateType) {
   var isCreateState = (stateType === 'create');
 
-  return function onEnter ($state, Modal) {
+  return function onEnter($state, Modal) {
     var instance = Modal.openInventoryListActions();
     instance
       .then(function (uuid) {
-
         var params = { uuid : uuid };
 
         if (isCreateState) {
