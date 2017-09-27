@@ -287,3 +287,9 @@ input[type=number] {-moz-appearance: textfield;}
   box-shadow : 0px 2px 4px -4px black;
   z-index : 1000;
 }
+
+/* hack to get ui-selects to overflow over bootstrap's modals with */
+/* append-to-body="true" */
+body > .ui-select-bootstrap.open {
+  z-index: 1100;
+}

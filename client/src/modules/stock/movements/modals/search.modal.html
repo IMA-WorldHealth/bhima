@@ -11,7 +11,7 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body" style="padding:0;">
     <uib-tabset>
       <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
@@ -60,7 +60,7 @@
             <label class="control-label" translate>STOCK.FLUX</label>
             <bh-clear on-clear="$ctrl.clearFluxIds()"></bh-clear>
 
-            <ui-select multiple name="inventory" ng-model="$ctrl.selectedFluxes">
+            <ui-select multiple name="inventory" ng-model="$ctrl.selectedFluxes" append-to-body="true">
               <ui-select-match>
                 <span translate>{{$item.label}}</span>
               </ui-select-match>
