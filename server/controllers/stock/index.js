@@ -202,7 +202,7 @@ function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
-  if (isDistributable) {
+  if (parameters.is_exit && isDistributable) {
     const projectId = metadata.project.id;
     const currencyId = metadata.enterprise.currency_id;
     const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];

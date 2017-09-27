@@ -77,6 +77,10 @@ BEGIN
 	DECLARE v_document_uuid BINARY(16);
 	DECLARE v_is_exit TINYINT(1);
 
+  -- transaction type 
+  DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
+  DECLARE STOCK_ENTRY_TYPE SMALLINT(5) DEFAULT 14;
+
 
   -- the cursor 
   DECLARE v_finished INTEGER DEFAULT 0;
@@ -107,9 +111,14 @@ BEGIN
   SET voucher_project_id = (SELECT project_id FROM stage_stock_movement LIMIT 1);
   SET voucher_currency_id = (SELECT currency_id FROM stage_stock_movement LIMIT 1);
   SET voucher_user_id = (SELECT user_id FROM stage_stock_movement LIMIT 1);
-  SET voucher_type_id = NULL;
   SET voucher_description = (SELECT description FROM stage_stock_movement LIMIT 1);
   SET voucher_amount = (SELECT SUM(unit_cost * quantity) FROM stage_stock_movement);
+
+  IF (isExit = 1) THEN 
+    SET voucher_type_id = STOCK_EXIT_TYPE;
+  ELSE
+    SET voucher_type_id = STOCK_ENTRY_TYPE;
+  END IF;
 
   -- insert into voucher
   INSERT INTO voucher (uuid, date, project_id, currency_id, user_id, type_id, description, amount) VALUES (
