@@ -17,6 +17,7 @@ function StockMovementsController(Stock, Notify,
   var vm = this;
   var filterKey = 'movement';
   var stockMovementFilters = Stock.filter.movement;
+
   var cacheKey = 'movements-grid';
   var state;
   var gridColumns;
@@ -248,11 +249,14 @@ function StockMovementsController(Stock, Notify,
 
     Modal.openSearchMovements(filtersSnapshot)
       .then(function (changes) {
+        // if there is no change , customer filters should not change
+        if (!changes) { return; }
+
         stockMovementFilters.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
         vm.latestViewFilters = stockMovementFilters.formatView();
-
         return load(stockMovementFilters.formatHTTP(true));
+
       });
   }
 

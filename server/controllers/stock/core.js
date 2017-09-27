@@ -61,17 +61,17 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
   const params = parameters;
   const sql = sqlQuery || `
-        SELECT 
+        SELECT
           BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
           l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
           i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
           dm.text AS documentReference
-        FROM lot l 
-        JOIN inventory i ON i.uuid = l.inventory_uuid 
-        JOIN inventory_unit iu ON iu.id = i.unit_id 
-        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE} 
+        FROM lot l
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN inventory_unit iu ON iu.id = i.unit_id
+        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-        JOIN depot d ON d.uuid = m.depot_uuid 
+        JOIN depot d ON d.uuid = m.depot_uuid
     `;
   db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
 
@@ -87,7 +87,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
-  filters.equals('flux_id', 'flux_id', 'm');
+  filters.equals('flux_id', 'flux_id', 'm', true);
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
@@ -150,11 +150,11 @@ function getLotsDepot(depotUuid, params, finalClause) {
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
             dm.text AS documentReference
-        FROM stock_movement m 
+        FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN inventory_unit iu ON iu.id = i.unit_id 
-        JOIN depot d ON d.uuid = m.depot_uuid 
+        JOIN inventory_unit iu ON iu.id = i.unit_id
+        JOIN depot d ON d.uuid = m.depot_uuid
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
@@ -194,22 +194,22 @@ function getLotsMovements(depotUuid, params) {
   }
 
   const sql = `
-        SELECT 
-          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description, 
+        SELECT
+          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description,
           d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
           l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
           BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
           BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
-          m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost, 
+          m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
           f.label AS flux_label, i.delay,
           iu.text AS unit_type,
           dm.text AS documentReference
-        FROM stock_movement m 
+        FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN inventory i ON i.uuid = l.inventory_uuid 
-        JOIN inventory_unit iu ON iu.id = i.unit_id 
-        JOIN depot d ON d.uuid = m.depot_uuid 
-        JOIN flux f ON f.id = m.flux_id 
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN inventory_unit iu ON iu.id = i.unit_id
+        JOIN depot d ON d.uuid = m.depot_uuid
+        JOIN flux f ON f.id = m.flux_id
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
@@ -237,9 +237,9 @@ function getLotsOrigins(depotUuid, params) {
             BUID(m.document_uuid) AS document_uuid, m.flux_id,
             iu.text AS unit_type,
             dm.text AS documentReference
-        FROM lot l 
-        JOIN inventory i ON i.uuid = l.inventory_uuid 
-        JOIN inventory_unit iu ON iu.id = i.unit_id 
+        FROM lot l
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN inventory_unit iu ON iu.id = i.unit_id
         JOIN (
           SELECT
             p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference,
@@ -411,11 +411,11 @@ function getInventoryQuantityAndConsumption(params) {
         i.avg_consumption, i.purchase_interval, i.delay,
         iu.text AS unit_type,
         dm.text AS documentReference
-    FROM stock_movement m 
+    FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id 
-    JOIN depot d ON d.uuid = m.depot_uuid 
+    JOIN inventory_unit iu ON iu.id = i.unit_id
+    JOIN depot d ON d.uuid = m.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
@@ -468,11 +468,11 @@ function getInventoryMovements(params) {
         l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
         i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
         dm.text AS documentReference
-    FROM stock_movement m 
+    FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id 
-    JOIN depot d ON d.uuid = m.depot_uuid 
+    JOIN inventory_unit iu ON iu.id = i.unit_id
+    JOIN depot d ON d.uuid = m.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 

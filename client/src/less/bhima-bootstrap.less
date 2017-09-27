@@ -302,6 +302,12 @@ input[type=number] {-moz-appearance: textfield;}
   z-index : 1000;
 }
 
+/* hack to get ui-selects to overflow over bootstrap's modals with */
+/* append-to-body="true" */
+body > .ui-select-bootstrap.open {
+  z-index: 1100;
+}
+
 .ui-grid-exporter-csv-link {
   display : none;
 }

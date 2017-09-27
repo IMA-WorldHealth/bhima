@@ -15,8 +15,10 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   ];
 
   vm.filters = data;
+
   vm.searchQueries = {};
   vm.defaultQueries = {};
+  vm.selectedFluxes = vm.filters.flux_id || [];
 
   // load flux
   Flux.read()
@@ -67,10 +69,16 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.clear = function clear(key) {
     delete vm.searchQueries[key];
   };
+  vm.clearFluxIds = function () {
+    delete vm.selectedFluxes;
+  };
 
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit() {
+    // fill flux_id in the seach query
+    vm.searchQueries.flux_id = vm.selectedFluxes;
+
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {

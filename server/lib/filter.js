@@ -146,12 +146,19 @@ class FilterParser {
     }
   }
 
-  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias, isArray) {
     const tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
       const valueString = '?';
-      const preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
+      let preparedStatement = '';
+
+      if (isArray) { // search in a list of values, example : where id in (1,2,3)
+        preparedStatement = `${tableString}${columnAlias} in (${valueString})`;
+      } else { // seach equals one value , example : where id = 2
+        preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
+      }
+
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];
