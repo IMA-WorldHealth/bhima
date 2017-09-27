@@ -15,7 +15,7 @@ EmployeeRegistryModalController.$inject = [
  */
 function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhConstants, moment, Services, Store, util, filters) {
   var vm = this;
-  var changes = new Store({identifier : 'key'});
+  var changes = new Store({ identifier : 'key' });
 
   vm.filters = filters;
   vm.searchQueries = {};
@@ -60,7 +60,7 @@ function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhCon
   // clears search parameters.  Custom logic if a date is used so that we can
   // clear two properties.
   function clear(key) {
-     delete vm.searchQueries[key];
+    delete vm.searchQueries[key];
   }
 
   // dismiss the modal
@@ -71,7 +71,7 @@ function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhCon
   // returns the parameters to the parent controller
   function submit(form) {
     if (form.$invalid) { return; }
-    
+
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
@@ -82,4 +82,13 @@ function EmployeeRegistryModalController(ModalInstance, Functions, Grades, bhCon
     var loggedChanges = changes.getAll();
     return ModalInstance.close(loggedChanges);
   }
+
+
+   // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
+  };
 }

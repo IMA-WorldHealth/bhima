@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   'EmployeeService', 'NotifyService',
   'util', 'ReceiptModal', 'uiGridConstants',
-  'GridColumnService', 'bhConstants', 'FilterService'
+  'GridColumnService', 'bhConstants', 'FilterService',
 ];
 
 /**
@@ -43,6 +43,7 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.NAME',
       headerCellFilter : 'translate',
+      sort: { direction: uiGridConstants.ASC, priority: 1 },
     },
     { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
@@ -51,13 +52,15 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'dob',
       displayName      : 'TABLE.COLUMNS.DOB',
       headerCellFilter : 'translate',
-      type             : 'date',  
+      type             : 'date',
+      cellFilter : 'date:'.concat(bhConstants.dates.format),
     },
     { field            : 'date_embauche',
       displayName      : 'FORM.LABELS.DATE_EMBAUCHE',
       headerCellFilter : 'translate',
       type             : 'date',
-      visible          : false  
+      visible          : false,
+      cellFilter : 'date:'.concat(bhConstants.dates.format),
     },
     { field            : 'text',
       displayName      : 'TABLE.COLUMNS.GRADE',
@@ -88,32 +91,32 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'bank_account',
       displayName      : 'FORM.LABELS.BANK_ACCOUNT',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'adresse',
       displayName      : 'FORM.LABELS.ADDRESS',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'phone',
       displayName      : 'FORM.LABELS.PHONE',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'email',
-      displayName      : 'FORM.LABELS.PHONE',
+      displayName      : 'FORM.LABELS.EMAIL',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'fonction_txt',
       displayName      : 'FORM.LABELS.FUNCTION',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'service_name',
       displayName      : 'FORM.LABELS.SERVICE',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { name          : 'actions',
       displayName   : '',

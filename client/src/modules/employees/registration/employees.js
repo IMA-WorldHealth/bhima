@@ -12,6 +12,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   var vm = this;
   vm.enterprise = Session.enterprise;
 
+
   // Expose lenths from util
   vm.length20 = util.length20;
 
@@ -24,13 +25,17 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Expose employee to the scope
   vm.employee = {};
 
+  // default location
+  vm.employee.origin_location_id = Session.enterprise.location_id;
+  vm.employee.current_location_id = Session.enterprise.location_id;
+
   // Expose methods to the scope
   vm.submit = submit;
 
   // Set up page elements data (debtor select data)
   vm.onSelectDebtor =  function onSelectDebtor(debtorGroup) {
     vm.employee.debtor_group_uuid = debtorGroup.uuid;
-  }
+  };
 
   // Loading Grades
   Grades.read(null, { detailed : 1 }).then(function (data) {
