@@ -46,7 +46,7 @@ CREATE PROCEDURE CreateStageStockMovement (
   IN documentUuid BINARY(16),
   IN isExit TINYINT(1),
   IN projectId SMALLINT(5),
-  IN currencyId SMALLINT(5),
+  IN currencyId SMALLINT(5)
 )
 BEGIN
   DECLARE `no_stock_movement_stage` TINYINT(1) DEFAULT 0;
@@ -92,7 +92,7 @@ CREATE PROCEDURE PostStockMovement (
   IN documentUuid BINARY(16),
   IN isExit TINYINT(1),
   IN projectId SMALLINT(5),
-  IN currencyId SMALLINT(5),
+  IN currencyId SMALLINT(5)
 )
 BEGIN
   -- voucher
@@ -120,7 +120,18 @@ BEGIN
   DECLARE stage_stock_movement_cursor CURSOR FOR SELECT stock_account, cogs_account, unit_cost, quantity, document_uuid, is_exit FROM stage_stock_movement;
 
   -- temporarise the stock movement
-  CALL CreateStageStockMovement(documentUuid, isExit, projectId, currencyId);
+  CREATE TEMPORARY TABLE stage_stock_movement (
+      SELECT 
+        projectId as project_id, currencyId as currency_id,
+        m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
+        ig.cogs_account, ig.stock_account 
+      FROM stock_movement m  
+      JOIN lot l ON l.uuid = m.lot_uuid 
+      JOIN inventory i ON i.uuid = l.inventory_uuid 
+      JOIN inventory_group ig 
+        ON ig.uuid = i.group_uuid AND (ig.stock_account IS NOT NULL AND ig.cogs_account IS NOT NULL) 
+      WHERE m.document_uuid = documentUuid AND m.is_exit = isExit
+    );
 
   -- define voucher variables
   SET voucher_uuid = (SELECT HUID(UUID()));
