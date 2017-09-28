@@ -53,7 +53,7 @@ class FilterParser {
     this._limitKey = options.limitKey || DEFAULT_LIMIT_KEY;
     this._order = '';
     this._parseUuids = _.isUndefined(options.parseUuids) ? true : options.parseUuids;
-    this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? true : options.autoParseStatements;
+    this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? false : options.autoParseStatements;
     this._group = '';
   }
 
