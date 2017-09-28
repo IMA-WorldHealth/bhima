@@ -165,8 +165,10 @@ function normalMovement(document, params, metadata) {
   const parameters = params;
 
   const isDistributable = !!(
-    parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE
+    (parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE) && parameters.is_exit
   );
+
+  const isStockExit = !!((isDistributable || parameters.flux_id === core.flux.TO_LOSS) && parameters.is_exit);
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
@@ -190,8 +192,8 @@ function normalMovement(document, params, metadata) {
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
 
-    // track distribution to patient
-    if (parameters.is_exit && isDistributable) {
+    // track distribution to patient and service
+    if (isDistributable) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
       ];
@@ -202,7 +204,7 @@ function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
-  if (parameters.is_exit && isDistributable) {
+  if (isStockExit) {
     const projectId = metadata.project.id;
     const currencyId = metadata.enterprise.currency_id;
     const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];

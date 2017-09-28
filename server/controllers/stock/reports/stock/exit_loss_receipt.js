@@ -28,13 +28,14 @@ function stockExitLossReceipt(req, res, next) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+      dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid 
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 

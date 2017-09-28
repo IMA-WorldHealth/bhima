@@ -95,13 +95,13 @@ function stockMovementType(id) {
     4  : { key : 'FROM_PATIENT', path : '' },
     5  : { key : 'FROM_SERVICE', path : '' },
     6  : { key : 'FROM_DONATION', path : 'entry_donation' },
-    7  : { key : 'FROM_LOSS', path : '' },
+    7  : { key : 'FROM_LOSS', path : 'entry_loss' },
     8  : { key : 'TO_OTHER_DEPOT', path : 'exit_depot' },
     9  : { key : 'TO_PATIENT', path : 'exit_patient' },
     10 : { key : 'TO_SERVICE', path : 'exit_service' },
-    13 : { key : 'TO_LOSS', path : 'exit_loss' },
-    14 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
-    15 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
+    11 : { key : 'TO_LOSS', path : 'exit_loss' },
+    12 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
+    13 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
   };
   return flux[id];
 }
