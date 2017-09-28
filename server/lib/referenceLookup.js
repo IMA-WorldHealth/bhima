@@ -26,6 +26,25 @@ function getEntity(req, res, next) {
   const reference = codeRef[2];
   const documentDefinition = identifiersIndex[code];
 
+  // hack: handle special case of stock movements
+  const STOCK_MOVEMENT_PREFIX = 'SM';
+  const fluxId = codeRef[1];
+
+  if (code === STOCK_MOVEMENT_PREFIX) {
+    const type = stockMovementType(fluxId);
+    const queryDocument = `SELECT BUID(uuid) as uuid FROM document_map WHERE text = ?`;
+
+    return db.one(queryDocument, [req.params.codeRef])
+      .then(entity => {
+        const uuid = entity.uuid;
+        const path = ''.concat('/receipts/stock/', type.path, '/');
+        const url = `${path}${uuid}?lang=${language}&renderer=pdf`;
+        res.redirect(url);
+      })
+      .catch(next)
+      .done();
+  }
+
   // consider corner cases to gaurd against infinite redirects
   if (!documentDefinition) {
     throw new BadRequest(`Invalid document type provided - '${code}'`);
@@ -57,5 +76,33 @@ function indexIdentifiers() {
   _.forEach(identifiers, (entity) => {
     identifiersIndex[entity.key] = entity;
   });
+}
+
+// hack: handle special case of stock movements
+function stockMovementType(id) {
+  /**
+   * Stock Receipt API
+   * /receipts/stock/{{name}}/:document_uuid
+   *
+   * the {{name}} is what we define for example in { key : 'FROM_PURCHASE', path :'entry_purchase' },
+   *
+   * empty {{name}} means that there is no API entry for this name.
+   */
+  const flux = {
+    1  : { key : 'FROM_PURCHASE', path : 'entry_purchase' },
+    2  : { key : 'FROM_OTHER_DEPOT', path : 'entry_depot' },
+    3  : { key : 'FROM_ADJUSTMENT', path : 'adjustment' },
+    4  : { key : 'FROM_PATIENT', path : '' },
+    5  : { key : 'FROM_SERVICE', path : '' },
+    6  : { key : 'FROM_DONATION', path : 'entry_donation' },
+    7  : { key : 'FROM_LOSS', path : '' },
+    8  : { key : 'TO_OTHER_DEPOT', path : 'exit_depot' },
+    9  : { key : 'TO_PATIENT', path : 'exit_patient' },
+    10 : { key : 'TO_SERVICE', path : 'exit_service' },
+    13 : { key : 'TO_LOSS', path : 'exit_loss' },
+    14 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
+    15 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
+  };
+  return flux[id];
 }
 

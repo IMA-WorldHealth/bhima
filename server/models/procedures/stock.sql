@@ -34,11 +34,13 @@ CREATE PROCEDURE ComputeMovementReference (
 )
 BEGIN
   DECLARE reference INT(11);
+  DECLARE flux INT(11);
 
   SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
+  SET flux = (SELECT flux_id FROM stock_movement WHERE document_uuid = documentUuid LIMIT 1);
 
   INSERT INTO `document_map` (uuid, text)
-  VALUES (documentUuid, CONCAT('SM.', reference))
+  VALUES (documentUuid, CONCAT_WS('.', 'SM', flux, reference))
   ON DUPLICATE KEY UPDATE uuid = uuid;
 END $$
 
