@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', '$translate', 'GridExportService',
-  'GridStateService', 'GridSelectionService', 'TrialBalanceService',
+  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer',
 ];
 
 /**
@@ -31,7 +31,7 @@ JournalController.$inject = [
 function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
-  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance
+  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance, $httpParamSerializer
 ) {
   var sorting;
   var grouping;
@@ -358,15 +358,22 @@ function JournalController(
   }
 
   // display the journal printable report of selected transactions
-  vm.openJournalReport = function openJournalReport() {
+  vm.openJournalReport = function openJournalReport(type) {
     var url = '/reports/finance/journal';
-    var params = formatExportParameters('pdf');
-
+    var params = formatExportParameters(type);
     if (!params) { return; }
-
-    Modal.openReports({ url : url, params : params });
+    Modal.openReports({ url: url, params: params });
   };
 
+  vm.downloadExcel = function () {
+    var filterOpts = Journal.filters.formatHTTP();
+    var defaultOpts = { renderer : 'xlsx', lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  }
   // export data into csv file
   vm.exportFile = function exportFile() {
     exportation.run();
