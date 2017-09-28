@@ -102,7 +102,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 function buildTransactionQuery(options, posted) {
   db.convert(options, ['uuid', 'record_uuid', 'uuids']);
 
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
 
   const table = posted ? 'general_ledger' : 'posting_journal';
 

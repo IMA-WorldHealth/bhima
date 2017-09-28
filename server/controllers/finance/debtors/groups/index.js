@@ -221,6 +221,9 @@ function list(req, res, next) {
 
   const filters = new FilterParser(req.query);
 
+  filters.equals('locked', 'locked', 'debtor_group');
+  filters.equals('is_convention', 'is_convention', 'debtor_group');
+
   filters.setOrder('ORDER BY debtor_group.name');
   filters.setGroup('GROUP BY debtor_group.uuid');
 

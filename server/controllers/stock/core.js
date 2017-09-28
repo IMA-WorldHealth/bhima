@@ -75,7 +75,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
     `;
   db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
 
-  const filters = new FilterParser(params, { autoParseStatements : false });
+  const filters = new FilterParser(params);
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');

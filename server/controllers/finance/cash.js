@@ -137,7 +137,7 @@ function read(req, res, next) {
 function listPayment(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['debtor_uuid', 'debtor_group_uuid']);
-  const filters = new FilterParser(options, { tableAlias : 'cash', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'cash' });
 
   const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,

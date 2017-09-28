@@ -37,7 +37,7 @@ exports.getlistAccounts = getlistAccounts;
  * return all items in the general ledger
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'gl' });
 
   const sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,

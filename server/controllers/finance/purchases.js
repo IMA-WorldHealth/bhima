@@ -264,7 +264,7 @@ function search(req, res, next) {
 function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['supplier_uuid']);
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
 
   // default purchase date
   filters.period('period', 'date');

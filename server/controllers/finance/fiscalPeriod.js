@@ -56,7 +56,7 @@ function find(options) {
       MONTH(p.start_date) AS month_number, YEAR(p.start_date) AS year_number
     FROM period AS p `;
 
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
   filters.equals('fiscal_year_id', 'fiscal_year_id', 'p');
   filters.equals('id', 'id', 'p');
   const exludePeriods = options.excludeExtremityPeriod === 'true';
