@@ -4,6 +4,7 @@ const _ = require('lodash');
 // module dependencies
 const db = require('../lib/db');
 const identifiers = require('../config/identifiers');
+const stockCommon = require('../controllers/stock/reports/common');
 const BadRequest = require('../lib/errors/BadRequest');
 
 exports.getEntity = getEntity;
@@ -26,18 +27,18 @@ function getEntity(req, res, next) {
   const reference = codeRef[2];
   const documentDefinition = identifiersIndex[code];
 
-  // hack: handle special case of stock movements
+  // handle stock movement reference
   const STOCK_MOVEMENT_PREFIX = 'SM';
   const fluxId = codeRef[1];
 
   if (code === STOCK_MOVEMENT_PREFIX) {
-    const type = stockMovementType(fluxId);
+    const type = getStockMovementType(fluxId);
     const queryDocument = `SELECT BUID(uuid) as uuid FROM document_map WHERE text = ?`;
 
     return db.one(queryDocument, [req.params.codeRef])
       .then(entity => {
         const uuid = entity.uuid;
-        const path = ''.concat('/receipts/stock/', type.path, '/');
+        const path = `/receipts/stock/${type.path}/`;
         const url = `${path}${uuid}?lang=${language}&renderer=pdf`;
         res.redirect(url);
       })
@@ -78,31 +79,8 @@ function indexIdentifiers() {
   });
 }
 
-// hack: handle special case of stock movements
-function stockMovementType(id) {
-  /**
-   * Stock Receipt API
-   * /receipts/stock/{{name}}/:document_uuid
-   *
-   * the {{name}} is what we define for example in { key : 'FROM_PURCHASE', path :'entry_purchase' },
-   *
-   * empty {{name}} means that there is no API entry for this name.
-   */
-  const flux = {
-    1  : { key : 'FROM_PURCHASE', path : 'entry_purchase' },
-    2  : { key : 'FROM_OTHER_DEPOT', path : 'entry_depot' },
-    3  : { key : 'FROM_ADJUSTMENT', path : 'adjustment' },
-    4  : { key : 'FROM_PATIENT', path : '' },
-    5  : { key : 'FROM_SERVICE', path : '' },
-    6  : { key : 'FROM_DONATION', path : 'entry_donation' },
-    7  : { key : 'FROM_LOSS', path : 'entry_loss' },
-    8  : { key : 'TO_OTHER_DEPOT', path : 'exit_depot' },
-    9  : { key : 'TO_PATIENT', path : 'exit_patient' },
-    10 : { key : 'TO_SERVICE', path : 'exit_service' },
-    11 : { key : 'TO_LOSS', path : 'exit_loss' },
-    12 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
-    13 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
-  };
-  return flux[id];
+// get stock movement type
+function getStockMovementType(id) {
+  return stockCommon.stockFluxReceipt[id];
 }
 
