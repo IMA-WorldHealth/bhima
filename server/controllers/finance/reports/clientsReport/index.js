@@ -224,7 +224,7 @@ function escapeItems(list) {
 
 // computes the client balances using the period total's table
 function getClientBalancesFromPeriodTotal(options, isInitial) {
-  const filterParser = new FilterParser(options, { tableAlias : 'dg', autoParseStatements : false });
+  const filterParser = new FilterParser(options, { tableAlias : 'dg' });
 
   const sql = `
     SELECT
@@ -269,7 +269,7 @@ function getClientBalancesFromPeriodTotal(options, isInitial) {
 
 // computes the client balances using the general ledger's table
 function getClientBalancesFromGeneralLedger(options) {
-  const filterParser = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
+  const filterParser = new FilterParser(options, { tableAlias : 'gl' });
   const sql = `
     SELECT
       ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 

@@ -110,7 +110,7 @@ function lookupVoucher(vUuid) {
 function find(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'v', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'v' });
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   let typeIds = [];
 

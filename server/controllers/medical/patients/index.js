@@ -376,7 +376,7 @@ function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'p', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'p' });
   const sql = patientEntityQuery(options.detailed);
 
   filters.equals('debtor_uuid');

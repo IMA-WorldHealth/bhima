@@ -405,7 +405,7 @@ function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'employee', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'employee' });
 
   filters.fullText('display_name');
   filters.dateFrom('dateEmbaucheFrom', 'date_embauche');

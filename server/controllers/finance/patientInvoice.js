@@ -198,7 +198,7 @@ function find(options) {
     'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid',
   ]);
 
-  const filters = new FilterParser(options, { tableAlias : 'invoice', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'invoice' });
 
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
