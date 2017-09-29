@@ -14,6 +14,7 @@
             "CONNECTION": "Connexion",
             "CSV_EXPORT": "Exporter en CSV",
             "DELETE": "Supprimer",
+            "DELETE_RECORD": "Supprimer Enregistrement",
             "DISMISS": "Rejeter",
             "EDIT": "Editer",
             "EDIT_PERMISSIONS": "Editer permission",
@@ -154,7 +155,8 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture",
             "UNPOSTED_TRANSACTION": "Transactions non-posté ne sont pas affichées",
             "TRANSACTIONS": "Transactions",
-            "ROWS": "enregistrements"
+            "ROWS": "enregistrements",
+            "DELETE_RECORD_SUCCESS": "Supprimèe la transaction avec succès."
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",
