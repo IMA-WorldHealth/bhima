@@ -135,6 +135,30 @@ const pdfOptions = {
   footerFontSize : '8',
 };
 
+/**
+ * Stock Receipt API
+ * /receipts/stock/{{name}}/:document_uuid
+ *
+ * the {{name}} is what we define for example in { key : 'FROM_PURCHASE', path :'entry_purchase' },
+ *
+ * empty {{name}} means that there is no API entry for this name.
+ */
+const stockFluxReceipt = {
+  1  : { key : 'FROM_PURCHASE', path : 'entry_purchase' },
+  2  : { key : 'FROM_OTHER_DEPOT', path : 'entry_depot' },
+  3  : { key : 'FROM_ADJUSTMENT', path : 'adjustment' },
+  4  : { key : 'FROM_PATIENT', path : '' },
+  5  : { key : 'FROM_SERVICE', path : '' },
+  6  : { key : 'FROM_DONATION', path : 'entry_donation' },
+  7  : { key : 'FROM_LOSS', path : 'entry_loss' },
+  8  : { key : 'TO_OTHER_DEPOT', path : 'exit_depot' },
+  9  : { key : 'TO_PATIENT', path : 'exit_patient' },
+  10 : { key : 'TO_SERVICE', path : 'exit_service' },
+  11 : { key : 'TO_LOSS', path : 'exit_loss' },
+  12 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
+  13 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
+};
+
 // Exports
 exports._ = _;
 
@@ -143,6 +167,7 @@ exports.db = db;
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;
 exports.NotFound = NotFound;
+exports.stockFluxReceipt = stockFluxReceipt;
 
 exports.formatFilters = formatFilters;
 exports.identifiers = identifiers;

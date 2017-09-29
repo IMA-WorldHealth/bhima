@@ -138,9 +138,14 @@ function createMovement(req, res, next) {
     user : req.session.user.id,
   };
 
+  const metadata = {
+    project : req.session.project,
+    enterprise : req.session.enterprise,
+  };
+
   const process = (params.from_depot && params.to_depot) ? depotMovement : normalMovement;
 
-  process(document, params)
+  process(document, params, metadata)
     .then(() => {
       res.status(201).json({ uuid : document.uuid });
     })
@@ -152,13 +157,18 @@ function createMovement(req, res, next) {
  * @function normalMovement
  * @description there are only lines for IN or OUT
  */
-function normalMovement(document, params) {
+function normalMovement(document, params, metadata) {
   let createMovementQuery;
   let createMovementObject;
-  let isDistributable;
 
   const transaction = db.transaction();
   const parameters = params;
+
+  const isDistributable = !!(
+    (parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE) && parameters.is_exit
+  );
+
+  const isStockExit = !!((isDistributable || parameters.flux_id === core.flux.TO_LOSS) && parameters.is_exit);
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
@@ -182,10 +192,8 @@ function normalMovement(document, params) {
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
 
-    isDistributable = !!(parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE);
-
-    // track distribution to patient
-    if (parameters.is_exit && isDistributable) {
+    // track distribution to patient and service
+    if (isDistributable) {
       const consumptionParams = [
         db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
       ];
@@ -195,6 +203,13 @@ function normalMovement(document, params) {
     // transaction - movement reference
     transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
+
+  if (isStockExit) {
+    const projectId = metadata.project.id;
+    const currencyId = metadata.enterprise.currency_id;
+    const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
+    transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
+  }
 
   return transaction.execute();
 }
@@ -353,7 +368,7 @@ function createIntegration(req, res, next) {
   transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
-    let lotUuid = uuid.v4();
+    const lotUuid = uuid.v4();
 
     // adding a lot insertion query into the transaction
     transaction.addQuery(`INSERT INTO lot SET ?`, {
@@ -385,20 +400,20 @@ function createIntegration(req, res, next) {
   });
 
     // An arry of common info, to send to the store procedure in order to insert to the posting journal
-    const commonInfos = [ 
-      db.bid(documentUuid),
-      new Date(params.movement.date),
-      req.session.enterprise.id,
-      req.session.project.id,
-      req.session.enterprise.currency_id,
-      req.session.user.id
-    ];
+  const commonInfos = [
+    db.bid(documentUuid),
+    new Date(params.movement.date),
+    req.session.enterprise.id,
+    req.session.project.id,
+    req.session.enterprise.currency_id,
+    req.session.user.id,
+  ];
 
     // writting all records relative to the movement in the posting journal table
-    transaction.addQuery('CALL PostIntegration(?)', [commonInfos]);
+  transaction.addQuery('CALL PostIntegration(?)', [commonInfos]);
 
     // transaction - movement reference
-    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
+  transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
 
   // execute all operations as one transaction
   transaction.execute()

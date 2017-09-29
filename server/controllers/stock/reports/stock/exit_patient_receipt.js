@@ -28,7 +28,7 @@ function stockExitPatientReceipt(req, res, next) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, p.display_name AS patient_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+      dm.text AS document_reference,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference, p.hospital_no,
       l.label, l.expiration_date, d.text AS depot_name
     FROM stock_movement m
@@ -38,6 +38,7 @@ function stockExitPatientReceipt(req, res, next) {
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
+    JOIN document_map dm ON dm.uuid = m.document_uuid 
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 

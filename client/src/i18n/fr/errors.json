@@ -1,6 +1,7 @@
 {"ERRORS":{"BAD_DATE_INTERVAL":"Mauvais interval de date",
 "BAD_REQUEST":"Vous n'etes pas authorisé à faire cette operation",
 "ERR_INTERNET_DISCONNECTED":"Vous n'êtes pas connecté à un réseau.",
+"MISSING_INVENTORY_ACCOUNTS":"Certains articles séléctionnés n'ont pas de compte de stock ou de variation de stock associés",
 "NO_EXCHANGE_RATE":"Aucun taux de change defini pour aujourd'hui!",
 "NOT_ALLOWED":"Vous n'etes pas authorisé à faire cette action",
 "NOT_FOUND":"Cet enregistrement n'a pas pu être trouvé",

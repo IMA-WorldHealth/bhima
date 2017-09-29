@@ -4,6 +4,7 @@ const _ = require('lodash');
 // module dependencies
 const db = require('../lib/db');
 const identifiers = require('../config/identifiers');
+const stockCommon = require('../controllers/stock/reports/common');
 const BadRequest = require('../lib/errors/BadRequest');
 
 exports.getEntity = getEntity;
@@ -25,6 +26,25 @@ function getEntity(req, res, next) {
   const projectName = codeRef[1];
   const reference = codeRef[2];
   const documentDefinition = identifiersIndex[code];
+
+  // handle stock movement reference
+  const STOCK_MOVEMENT_PREFIX = 'SM';
+  const fluxId = codeRef[1];
+
+  if (code === STOCK_MOVEMENT_PREFIX) {
+    const type = getStockMovementType(fluxId);
+    const queryDocument = `SELECT BUID(uuid) as uuid FROM document_map WHERE text = ?`;
+
+    return db.one(queryDocument, [req.params.codeRef])
+      .then(entity => {
+        const uuid = entity.uuid;
+        const path = `/receipts/stock/${type.path}/`;
+        const url = `${path}${uuid}?lang=${language}&renderer=pdf`;
+        res.redirect(url);
+      })
+      .catch(next)
+      .done();
+  }
 
   // consider corner cases to gaurd against infinite redirects
   if (!documentDefinition) {
@@ -57,5 +77,10 @@ function indexIdentifiers() {
   _.forEach(identifiers, (entity) => {
     identifiersIndex[entity.key] = entity;
   });
+}
+
+// get stock movement type
+function getStockMovementType(id) {
+  return stockCommon.stockFluxReceipt[id];
 }
 
