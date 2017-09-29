@@ -1,6 +1,7 @@
 {"ERRORS":{"BAD_DATE_INTERVAL":"Bad date interval",
 "BAD_REQUEST":"You are not allowed to perform this operation",
 "ERR_INTERNET_DISCONNECTED":"You are not connected to the network.",
+"MISSING_INVENTORY_ACCOUNTS":"Some selected inventories doesn't have stock accounts associated",
 "NO_EXCHANGE_RATE":"No Exchange rate defined",
 "NOT_ALLOWED":"You are not allowed to perform this action",
 "NOT_FOUND":"This record could not be found",

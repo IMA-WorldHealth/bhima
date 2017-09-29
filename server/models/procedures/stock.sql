@@ -83,15 +83,33 @@ BEGIN
   DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
   DECLARE STOCK_ENTRY_TYPE SMALLINT(5) DEFAULT 14;
 
-
-  -- the cursor 
+  -- variables for checking invalid accounts
+  DECLARE ERR_INVALID_INVENTORY_ACCOUNTS CONDITION FOR SQLSTATE '45006';
+  DECLARE v_has_invalid_accounts SMALLINT(5);
+  
+  -- cursor declaration
   DECLARE v_finished INTEGER DEFAULT 0;
   
   DECLARE stage_stock_movement_cursor CURSOR FOR 
   	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit 
 	FROM stage_stock_movement as temp;
   
+  -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
+
+  -- Check that every inventory has a stock account and a variation account 
+  -- if they do not, the transaction will be Unbalanced, so the operation will not continue
+  SELECT COUNT(l.uuid) 
+    INTO v_has_invalid_accounts
+  FROM stock_movement AS sm
+  JOIN lot l ON l.uuid = sm.lot_uuid
+  JOIN inventory i ON i.uuid = l.inventory_uuid
+  JOIN inventory_group ig ON ig.uuid = i.group_uuid
+  WHERE ig.stock_account IS NULL AND ig.cogs_account IS NULL AND sm.document_uuid = documentUuid AND sm.is_exit = isExit;
+
+  IF (v_has_invalid_accounts > 0) THEN 
+    SIGNAL ERR_INVALID_INVENTORY_ACCOUNTS SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
+  END IF;
 
   -- temporarise the stock movement
   CREATE TEMPORARY TABLE stage_stock_movement (
@@ -108,13 +126,9 @@ BEGIN
     );
 
   -- define voucher variables
-  SET voucher_uuid = (SELECT HUID(UUID()));
-  SET voucher_date = (SELECT date FROM stage_stock_movement LIMIT 1);
-  SET voucher_project_id = (SELECT project_id FROM stage_stock_movement LIMIT 1);
-  SET voucher_currency_id = (SELECT currency_id FROM stage_stock_movement LIMIT 1);
-  SET voucher_user_id = (SELECT user_id FROM stage_stock_movement LIMIT 1);
-  SET voucher_description = (SELECT description FROM stage_stock_movement LIMIT 1);
-  SET voucher_amount = (SELECT SUM(unit_cost * quantity) FROM stage_stock_movement);
+  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity) 
+    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount 
+  FROM stage_stock_movement;
 
   IF (isExit = 1) THEN 
     SET voucher_type_id = STOCK_EXIT_TYPE;
