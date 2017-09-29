@@ -340,6 +340,11 @@ INSERT INTO `patient_group_subsidy` VALUES
 INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
+-- exchange rate for the current date
+INSERT INTO `exchange_rate` VALUES
+  (1,1,1,900.0000, DATE('2016-01-01')),
+  (2,1,1,930.0000, NOW());
+
 -- voucher sample data
 SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
@@ -359,6 +364,11 @@ INSERT INTO `voucher_item` VALUES
   (HUID(UUID()), 3627, 300, 0, @third_voucher, HUID(UUID()), HUID(UUID())),
   (HUID(UUID()), 3628, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
 
+-- post voucher data to the general ledger
+CALL PostVoucher(@first_voucher);
+CALL PostVoucher(@second_voucher);
+CALL PostVoucher(@third_voucher);
+
 -- patient invoices
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
@@ -372,37 +382,26 @@ INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
   (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
 
--- caution payment
+CALL PostInvoice(@first_invoice);
+CALL PostInvoice(@second_invoice);
+
+-- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
 
 -- @todo Make sure this is in the posting_journal
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
 
-INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,201601,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  -- vouchers data
-  (HUID(UUID()),1,1,201601,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS5','2016-02-08 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS5','2016-02-08 17:04:27',@third_voucher,'unique',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS6','2017-04-07 09:18:00',@fourth_voucher, 'description x',3641,1000.0000,0.0000,1000.0000,0.0000,2,NULL,NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,201601,'TRANS6','2017-04-07 09:18:00',@fourth_voucher,'description x',3643,0.0000,1000.0000,0.0000,1000.0000,2,NULL,NULL,NULL,1,2,1,NULL);
+
+INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
+  (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 10, @first_invoice);
+
+CALL PostCash(@cash_payment);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
   (1,'Zone Sante A','Territoire A','Province A'),
   (2,'Zone Sante B','Territoire B','Province B');
-
--- exchange rate for the current date
-INSERT INTO `exchange_rate` VALUES
-  (1,1,1,900.0000, DATE('2016-01-01')),
-  (2,1,1,930.0000, NOW());
 
 INSERT INTO `employee` VALUES
   (1,'E1','Dedrick Kitamuka Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03','kinshasa','0896611111','my@email.com',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'));
@@ -439,6 +438,8 @@ INSERT INTO `depot` VALUES
   (@depot_uuid, 'Depot Principal', 1, 1),
   (@second_depot_uuid, 'Depot Secondaire', 1, 0);
 
+-- TODO : As soon as the stored Procedure for Stock accounting landed, stock movement records should be posted also
+
 -- stock lots
 INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`) VALUES
   (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 100, 1.2000, '2019-04-30', HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
@@ -456,8 +457,3 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 1),
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
-
--- general ledger data
-INSERT INTO `general_ledger` VALUES
-  (HUID('6b2b8aa9-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, DATE_FORMAT(NOW(), '%Y%m'), 'TPB10', CURRENT_DATE(), HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3631, 25.0000, 0.0000, 25.0000, 0.0000, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), '', NULL, 11, 1, NULL, NULL),
-  (HUID('6b2b9882-3ff3-11e7-b0b2-507b9dd6e004'), 1, 3, DATE_FORMAT(NOW(), '%Y%m'), 'TPB11', CURRENT_DATE(), HUID('3b2754c2-969f-4767-8a10-bb0bca06a370'), 'Facture a Test 2 Patient (PA.TPA.2) pour 1 items dans le service Administration. ', 3642, 0.0000, 25.0000, 0.0000, 25.0000, 2, '', '', NULL, 11, 1, NULL, NULL);
