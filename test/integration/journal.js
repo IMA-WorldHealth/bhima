@@ -8,7 +8,7 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
-  const NUM_ROW_ALL_RECORDS = 13;
+  const NUM_ROW_ALL_RECORDS = 15;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal returns a set of records', () =>
@@ -41,13 +41,13 @@ describe('(/journal) API endpoint', () => {
 });
 
 function SearchTests() {
-  const description = 'unique';
-  const account_id = 3628;
+  const description = 'Some cool description';
+  const account_id = 3626;
   const amount = 100;
-  const DISTINCT_TRANSACTIONS = 6;
+  const DISTINCT_TRANSACTIONS = 7;
 
-  it(`GET /journal?description=${description} should match one record`, () => {
-    const NUM_MATCHES = 1;
+  it(`GET /journal?description=${description} should match two records`, () => {
+    const NUM_MATCHES = 2;
     return agent.get('/journal')
       .query({ description })
       .then((res) => {

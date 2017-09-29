@@ -33,6 +33,7 @@ function validateTransactions(transactions) {
 
 exports.runTrialBalance = function runTrialBalance(req, res, next) {
   const transactions = req.body.transactions;
+  console.log('transactions **', transactions);
 
   try {
     validateTransactions(transactions);

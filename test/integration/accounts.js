@@ -27,7 +27,7 @@ describe('(/accounts) Accounts', function () {
 
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
-  var balanceAccountId = 3631;
+  var balanceAccountId = 3627;
 
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
@@ -124,9 +124,9 @@ describe('(/accounts) Accounts', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
-        expect(res.body.debit).to.equal(125);
+        expect(res.body.debit).to.equal(600);
         expect(res.body.credit).to.equal(0);
-        expect(res.body.balance).to.equal(25);
+        expect(res.body.balance).to.equal(100);
       })
       .catch(helpers.handler);
   });

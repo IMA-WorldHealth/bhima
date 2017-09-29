@@ -7,7 +7,7 @@ describe('(/journal/transactions) API endpoint', function () {
     '8fefadec-c036-48ce-bc4e-e307d1301960',
   ];
 
-  const NUM_ROW_ALL_RECORDS = 6;
+  const NUM_ROW_ALL_RECORDS = 2;
 
   it('POST /journal/transactions will post data to the General Ledger', function () {
     return agent.post('/journal/transactions')

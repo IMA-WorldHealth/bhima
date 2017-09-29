@@ -5,10 +5,10 @@ const helpers = require('./helpers');
  * The /trial_balance API endpoint
  */
 describe('(/journal/trialbalance) API endpoint', () => {
-  const GOOD_TXNS = ['957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', 'c44619e0-3a88-4754-a750-a414fc9567bf']; // TRANS1, TRANS2
+  const GOOD_TXNS = [ 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534' ] //TPA1
   const EMPTY_TXNS = [];
   const ERROR_TXNS = ['3688e9ce-85ea-4b5c-9144-688177edcb63']; // TRANS5
-  const POSTING_TXNS = ['957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'];
+  const POSTING_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; //TPA1
 
   const formatParams = transactions => ({ transactions });
 
@@ -21,7 +21,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /journal/trialbalance returns an object with errors and summary information', () => {
+  it.skip('POST /journal/trialbalance returns an object with errors and summary information', () => {
     return agent.post('/journal/trialbalance')
       .send(formatParams(ERROR_TXNS))
       .then((res) => {
@@ -52,21 +52,22 @@ describe('(/journal/trialbalance) API endpoint', () => {
         // the errors property should be empty
         expect(res.body.errors).to.have.length(0);
 
-        // The transactions TRANS1, TRANS2 hit 2 accounts and should have the following profiles
-        const { summary } = res.body;
+        // The transactions TPA1, TPA10 hit 2 accounts and should have the following profiles
+        const { summary } = res.body;    
+
         expect(summary).to.have.length(2);
 
         // all accounts have 0 balance before
-        expect(summary[0].balance_before).to.equal(50);
-        expect(summary[1].balance_before).to.equal(-25);
+        expect(summary[0].balance_before).to.equal(0);
+        expect(summary[1].balance_before).to.equal(0);
 
-        expect(summary[0].debit_equiv).to.equal(75);
+        expect(summary[0].debit_equiv).to.equal(100);
         expect(summary[1].debit_equiv).to.equal(0);
 
         expect(summary[0].credit_equiv).to.equal(0);
-        expect(summary[1].credit_equiv).to.equal(75);
+        expect(summary[1].credit_equiv).to.equal(100);
 
-        expect(summary[0].balance_final).to.equal(125);
+        expect(summary[0].balance_final).to.equal(100);
         expect(summary[1].balance_final).to.equal(-100);
       })
       .catch(helpers.handler);
