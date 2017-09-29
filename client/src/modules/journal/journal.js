@@ -503,7 +503,6 @@ function JournalController(
   // runs on startup
   function startup() {
     var hasStateFilters = $state.params.filters.length > 0;
-
     if (hasStateFilters) {
       Journal.filters.replaceFiltersFromState($state.params.filters);
       Journal.cacheFilters();

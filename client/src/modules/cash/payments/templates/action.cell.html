@@ -34,5 +34,12 @@
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>
       </a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="viewInvoice" ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}]})" href>
+        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
+
   </ul>
 </div>

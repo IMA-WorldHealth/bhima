@@ -14,5 +14,10 @@
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
       </a>
     </li>
+    <li>
+      <a data-method="viewVoucher" ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}]})" href>
+        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
   </ul>
 </div>
