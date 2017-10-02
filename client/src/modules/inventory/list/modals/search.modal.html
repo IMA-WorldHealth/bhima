@@ -94,6 +94,20 @@
               <span translate>FORM.LABELS.UNCONSUMABLE</span>
             </label>
           </div>
+
+          <div class="radio" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.locked.$invalid }">
+            <bh-clear on-clear="ModalCtrl.clear('locked')"></bh-clear>
+
+            <label class="radio-inline">
+              <input type="radio" value='1' name="locked" ng-model="ModalCtrl.searchQueries.locked">
+              <span translate>FORM.LABELS.LOCKED</span>
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" value='0' name="locked" ng-model="ModalCtrl.searchQueries.locked">
+              <span translate>FORM.LABELS.UNLOCKED</span>
+            </label>
+          </div>
         </div>
       </uib-tab>
 

@@ -48,6 +48,7 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
     { key : 'group_uuid', label : 'FORM.LABELS.GROUP' },
     { key : 'code', label : 'FORM.LABELS.CODE' },
     { key : 'consumable', label : 'FORM.LABELS.CONSUMABLE' },
+    { key : 'locked', label : 'FORM.LABELS.LOCKED' },
     { key : 'text', label : 'FORM.LABELS.LABEL' },
     { key : 'type_id', label : 'FORM.LABELS.TYPE' },
     { key : 'price', label : 'FORM.LABELS.PRICE' },
