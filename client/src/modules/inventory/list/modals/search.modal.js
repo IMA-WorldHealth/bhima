@@ -18,7 +18,7 @@ function InventorySearchModalController(ModalInstance, Notify, filters, Inventor
 
   // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
   var searchQueryOptions = [
-    'code', 'group_uuid', 'consumable', 'label', 'type_id', 'price',
+    'code', 'group_uuid', 'consumable', 'locked', 'label', 'type_id', 'price',
   ];
 
   var changes = new Store({ identifier : 'key' });

@@ -341,6 +341,7 @@
             "LAST_PAGE": "Last Page Visited",
             "LOCATION_REGISTER": "Location Register",
             "LOCKED": "Locked",
+            "UNLOCKED": "Unlocked",
             "LOGIN": "Login",
             "LOSS_ACCOUNT": "Loss Account",
             "LIMIT": "Limit",

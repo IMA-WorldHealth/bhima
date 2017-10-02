@@ -855,6 +855,7 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
+  `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` INT(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delai de livraison',
   `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Consommation moyenne' ,
   `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Intervalle de commande' ,
