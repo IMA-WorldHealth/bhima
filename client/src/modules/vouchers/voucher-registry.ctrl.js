@@ -116,6 +116,9 @@ function VoucherController(
   function search() {
     var filtersSnapshot = Vouchers.filters.formatHTTP();
 
+    // Keep the last filters made during the last search and keeps the display in a readable format
+    filtersSnapshot.lastViewFilters = vm.latestViewFilters.customFilters
+
     Vouchers.openSearchModal(filtersSnapshot)
       .then(function (changes) {
         Vouchers.filters.replaceFilters(changes);

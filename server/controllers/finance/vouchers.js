@@ -115,7 +115,7 @@ function find(options) {
   let typeIds = [];
 
   if (options.type_ids) {
-    typeIds = typeIds.concat(options.type_ids);
+    typeIds = options.type_ids.toString();
   }
 
   const sql = `
@@ -144,7 +144,7 @@ function find(options) {
   // @todo - could this be improved
   filters.custom('entity_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE entity_uuid = ?)');
 
-  filters.custom('type_ids', 'v.type_id IN (?)', typeIds);
+  filters.custom('type_ids', `v.type_id IN (${typeIds})`, typeIds);
 
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');

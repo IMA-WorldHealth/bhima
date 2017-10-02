@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util',
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util', 'TransactionTypeService', '$translate',
 ];
 
 /**
@@ -13,7 +13,7 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util, TransactionTypes, $translate) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   var searchQueryOptions = [
@@ -24,9 +24,23 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
+  vm.displayLabel = {};  
+  vm.typeText = '/';
+
+  var lastViewFilters = vm.filters.lastViewFilters;
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // load all Transaction types
+  TransactionTypes.read()
+    .then(function (types) {
+      types.forEach(function (item) {
+        item.typeText = $translate.instant(item.text);
+      });
+      vm.transactionTypes = types;
+    })
+    .catch(Notify.handleError);
 
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
@@ -38,8 +52,18 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
+    vm.displayLabel.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
+
+  // Set displayLabel if the filters user is defined
+  if (filters.user_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'user_id') {
+        vm.displayLabel.user_id = filter._displayValue;
+      }
+    });
+  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -74,8 +98,21 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
-      if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+      if (angular.isDefined(value)) {        
+        if (key === 'type_ids') {
+          value.forEach(function (typeId) { 
+            vm.transactionTypes.forEach(function (type) {
+              if (typeId === type.id) {
+                vm.typeText += type.typeText + ' / ';
+              }
+            });
+          });
+          changes.post({ key : key, value : value, displayValue : vm.typeText });
+        } else if (vm.displayLabel[key]) {
+          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
+        } else {
+          changes.post({ key : key, value : value }); 
+        }
       }
     });
 
