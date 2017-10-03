@@ -6,7 +6,7 @@ const GU = require('../shared/GridUtils');
 const VoucherRegistrySearch = require('./vouchers.search');
 
 describe('Voucher Registry', function () {
-  const numVouchers = 16;
+  const numVouchers = 18;
   const gridId = 'voucher-grid';
 
   before(() => helpers.navigate('vouchers'));
