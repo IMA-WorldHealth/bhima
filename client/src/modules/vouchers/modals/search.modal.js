@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util', 'TransactionTypeService', '$translate',
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util', 
+  'TransactionTypeService', '$translate', 'VoucherService',
 ];
 
 /**
@@ -13,7 +14,8 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util, TransactionTypes, $translate) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util, 
+  TransactionTypes, $translate, Vouchers) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   var searchQueryOptions = [
@@ -21,14 +23,16 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
   ];
 
   vm.filters = filters;
+  // searchQueries is the same id:value pair
   vm.searchQueries = {};
+
   vm.defaultQueries = {};
 
-  vm.displayLabel = {};  
-  vm.typeText = '/';
+  var lastViewFilters = Vouchers.filters.formatView().customFilters;
 
-  var lastViewFilters = vm.filters.lastViewFilters;
-
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+  
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
@@ -48,19 +52,39 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
     vm.searchQueries.type_ids = transactionTypes;
+    var typeText = '/';
+
+    transactionTypes.forEach(function (typeId) {
+      vm.transactionTypes.forEach(function (type) {
+        if (typeId === type.id) {
+          typeText += type.typeText + ' / ';
+        }
+      });
+    });
+
+    displayValues.type_ids = typeText;
   };
+
+  // Set displayLabel if the filters user is defined
+  if (filters.type_ids) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'type_ids') {
+        displayValues.type_ids = filter._displayValue;
+      }
+    });
+  }
 
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.displayLabel.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
   };
 
   // Set displayLabel if the filters user is defined
   if (filters.user_id) {
     lastViewFilters.forEach(function (filter) {
       if (filter._key === 'user_id') {
-        vm.displayLabel.user_id = filter._displayValue;
+        displayValues.user_id = filter._displayValue;
       }
     });
   }
@@ -98,22 +122,11 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
-      if (angular.isDefined(value)) {        
-        if (key === 'type_ids') {
-          value.forEach(function (typeId) { 
-            vm.transactionTypes.forEach(function (type) {
-              if (typeId === type.id) {
-                vm.typeText += type.typeText + ' / ';
-              }
-            });
-          });
-          changes.post({ key : key, value : value, displayValue : vm.typeText });
-        } else if (vm.displayLabel[key]) {
-          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
-        } else {
-          changes.post({ key : key, value : value }); 
-        }
-      }
+      if (angular.isDefined(value)) {
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
     var loggedChanges = changes.getAll();
