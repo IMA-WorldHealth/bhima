@@ -431,6 +431,7 @@ function JournalController(
 
     Journal.openSearchModal(filtersSnapshot)
       .then(function (changes) {
+
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();
@@ -505,9 +506,7 @@ function JournalController(
     var hasStateFilters = $state.params.filters.length > 0;
     if (hasStateFilters) {
       Journal.filters.replaceFiltersFromState($state.params.filters);
-      Journal.cacheFilters();
     }
-
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }
