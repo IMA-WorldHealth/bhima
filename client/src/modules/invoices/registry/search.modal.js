@@ -18,23 +18,19 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
   vm.filters = filters;
 
   vm.defaultQueries = {};
+  vm.displayLabel = {};
+
+  var lastViewFilters = vm.filters.lastViewFilters;  
 
   // assign default limit filter
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
 
-  // Set up page elements data (debtor select data)
-  vm.onSelectDebtor = onSelectDebtor;
-
-  function onSelectDebtor(debtorGroup) {
-    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
-  }    
-
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = [
-    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed',
+    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed', 'service_id', 'debtor_group_uuid',
   ];
 
   // assign already defined custom filters to searchQueries object
@@ -49,10 +45,33 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
     })
     .catch(Notify.handleError);
 
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
+    vm.displayLabel.debtor_group_uuid = debtorGroup.name;
+    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
+  };
+
+  if (filters.debtor_group_uuid) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'debtor_group_uuid') {
+        vm.displayLabel.debtor_group_uuid = filter._displayValue;
+      }
+    });
+  } 
+
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
+    vm.displayLabel.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
+
+  if (filters.user_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'user_id') {
+        vm.displayLabel.user_id = filter._displayValue;
+      }
+    });
+  } 
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -81,10 +100,22 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        if (key === 'service_id') {
+          vm.services.forEach(function (service) {
+            if (service.id === value) {
+              vm.serviceName = service.name;
+            }
+          });
+
+          changes.post({ key : key, value : value, displayValue : vm.serviceName });
+        } else if (vm.displayLabel[key]) {
+          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
+        } else {
+          changes.post({ key : key, value : value });
+        }
       }
     });
-
+    
     var loggedChanges = changes.getAll();
 
     // return values to the Invoice Registry Controller
