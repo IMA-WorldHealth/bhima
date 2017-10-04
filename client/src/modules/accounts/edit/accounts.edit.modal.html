@@ -56,17 +56,19 @@
 
     <!-- TODO(@jniles): can this just use ng-options? -->
     <div class="form-group"
-         ng-class="{'has-error' : (AccountForm.type_id.$invalid && AccountForm.$submitted) || AccountEditCtrl.invalidTitleAccount}">
+         ng-class="{'has-error' : (AccountForm.type_id.$invalid && AccountForm.$submitted) || AccountEditCtrl.invalidTitleAccount}">         
       <label class="control-label" translate>FORM.LABELS.ACCOUNT_TYPE</label>
       <select
         class="form-control"
         ng-model="AccountEditCtrl.account.type_id"
         ng-change="AccountEditCtrl.titleChangedValidation(AccountEditCtrl.account.type_id)"
         name="type_id"
+        ng-disabled="!AccountEditCtrl.isCreateState"
         required>
         <option value="" disabled translate>FORM.SELECT.ACCOUNT_TYPE</option>
         <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}" translate>{{entry.translation_key}}</option>
       </select>
+
 
       <div class="help-block" ng-if="AccountEditCtrl.invalidTitleAccount">
         <span translate>ACCOUNT.TYPE_CHANGE_BLOCKED</span>
