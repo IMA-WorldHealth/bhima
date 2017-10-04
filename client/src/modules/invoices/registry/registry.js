@@ -139,8 +139,6 @@ function InvoiceRegistryController(
   // search and filter data in Invoice Registry
   function search() {
     var filtersSnapshot = Invoices.filters.formatHTTP();
-    // Keep the last filters made during the last search and keeps the display in a readable format
-    filtersSnapshot.lastViewFilters = vm.latestViewFilters.customFilters;
 
     Invoices.openSearchModal(filtersSnapshot)
       .then(function (changes) {

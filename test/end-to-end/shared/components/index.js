@@ -34,4 +34,5 @@ module.exports = {
   stockEntryExitType          : require('./bhStockEntryExitType'),
   cashboxSelect               : require('./bhCashBoxSelect'),
   addItem                     : require('./bhAddItem'),
+  serviceSelect               : require('./bhServiceSelect'),
 };

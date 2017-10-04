@@ -50,17 +50,12 @@
           </div>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service_id.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.SERVICE</label>
+        <bh-service-select
+          service-id="$ctrl.searchQueries.service_id"
+          name="service_id"
+          on-select-callback="$ctrl.onSelectService(service)">
           <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
-          <select
-            class="form-control"
-            name="service_id"
-            ng-model="$ctrl.searchQueries.service_id"
-            ng-options="service.id as service.name for service in $ctrl.services | orderBy:'name'">
-            <option value="" disabled translate>FORM.SELECT.SERVICE</option>
-          </select>
-        </div>
+        </bh-service-select>
 
         <bh-debtor-group-select
           debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"

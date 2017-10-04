@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('InvoiceRegistrySearchModalController', InvoiceRegistrySearchModalController);
 
 InvoiceRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'ServiceService', 'filters', 'NotifyService', 'Store', 'PeriodService', 'util'
+  '$uibModalInstance', 'filters', 'NotifyService', 'Store', 'PeriodService', 'util', 'PatientInvoiceService',
 ];
 
 /**
@@ -12,15 +12,17 @@ InvoiceRegistrySearchModalController.$inject = [
  * This controller is responsible to collecting data from the search form and modifying
  * the underlying filters before passing them back to the parent controller.
  */
-function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, Notify, Store, Periods, util) {
+function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, Store, Periods, util, Invoices) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
 
   vm.defaultQueries = {};
-  vm.displayLabel = {};
 
-  var lastViewFilters = vm.filters.lastViewFilters;  
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+
+  var lastViewFilters = Invoices.filters.formatView().customFilters;  
 
   // assign default limit filter
   if (filters.limit) {
@@ -39,39 +41,47 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
   // set controller data
   vm.cancel = ModalInstance.close;
 
-  Services.read()
-    .then(function (services) {
-      vm.services = services;
-    })
-    .catch(Notify.handleError);
-
   // Set up page elements data (debtor select data)
   vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
-    vm.displayLabel.debtor_group_uuid = debtorGroup.name;
+    displayValues.debtor_group_uuid = debtorGroup.name;
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   };
 
   if (filters.debtor_group_uuid) {
     lastViewFilters.forEach(function (filter) {
       if (filter._key === 'debtor_group_uuid') {
-        vm.displayLabel.debtor_group_uuid = filter._displayValue;
+        displayValues.debtor_group_uuid = filter._displayValue;
       }
     });
   } 
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.displayLabel.user_id = user.display_name;
+    displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
 
   if (filters.user_id) {
     lastViewFilters.forEach(function (filter) {
       if (filter._key === 'user_id') {
-        vm.displayLabel.user_id = filter._displayValue;
+        displayValues.user_id = filter._displayValue;
       }
     });
-  } 
+  }
+
+  // custom filter service_id - assign the value to the searchQueries object
+  vm.onSelectService = function onSelectService(service) {
+    displayValues.service_id = service.name;
+    vm.searchQueries.service_id = service.id;
+  };
+
+  if (filters.service_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'service_id') {
+        displayValues.service_id = filter._displayValue;
+      }
+    });
+  }
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -100,19 +110,9 @@ function InvoiceRegistrySearchModalController(ModalInstance, Services, filters, 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        if (key === 'service_id') {
-          vm.services.forEach(function (service) {
-            if (service.id === value) {
-              vm.serviceName = service.name;
-            }
-          });
-
-          changes.post({ key : key, value : value, displayValue : vm.serviceName });
-        } else if (vm.displayLabel[key]) {
-          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
-        } else {
-          changes.post({ key : key, value : value });
-        }
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
     
