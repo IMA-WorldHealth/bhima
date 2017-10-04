@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 JournalSearchModalController.$inject = [
   '$uibModalInstance', 'NotifyService',
   'Store', 'filters', 'options', 'PeriodService', '$translate',
-  'AccountService', 'util', 'TransactionTypeService', 'JournalService',
+  'util', 'TransactionTypeService', 'JournalService',
 ];
 
 function JournalSearchModalController(Instance, Notify,
   Store, filters, options, Periods, $translate,
-  Account, util, TransactionTypes, Journal) {
+  util, TransactionTypes, Journal) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -34,19 +34,6 @@ function JournalSearchModalController(Instance, Notify,
 
   window.search = vm.searchQueries;
 
-  /**
-   * hasDefaultAccount is used to set a default account selection behavior
-   * if the search modal need to set account selection in default query panel we can send it
-   * as parameters
-   * @example
-   * <pre>
-   * Config.openSearchModal(filters, { hasDefaultAccount : true })
-   * </pre>
-   */
-  if (options.hasDefaultAccount) {
-    vm.hasDefaultAccount = true;
-  }
-
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
@@ -56,15 +43,6 @@ function JournalSearchModalController(Instance, Notify,
   if (filters.account_id) {
     vm.defaultQueries.account_id = filters.account_id;
   }
-
-  Account.read()
-    .then(function (accounts) {
-      vm.hrAccounts = accounts.reduce(function (aggregate, account) {
-        aggregate[account.id] = String(account.number).concat(' - ', account.label);
-        return aggregate;
-      }, {});
-    })
-    .catch(Notify.handleError);
 
   // load all Transaction types
   TransactionTypes.read()
@@ -80,7 +58,17 @@ function JournalSearchModalController(Instance, Notify,
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
     vm.searchQueries.account_id = account.id;
+    displayValues.account_id = String(account.number).concat(' - ', account.label);
   };
+
+  // Set displayLabel if the filters account is defined
+  if (filters.account_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'account_id') {
+        displayValues.account_id = filter._displayValue;
+      }
+    });
+  }
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {

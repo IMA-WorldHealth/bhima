@@ -3,8 +3,8 @@
 const FU = require('../FormUtils');
 
 module.exports = {
-  selector : '[bh-transaction-type]',
-  set      : function set(type, id) {
+  selector : '[bh-project-select]',
+  set      : function set(project, id) {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);
 
@@ -12,6 +12,6 @@ module.exports = {
     // ngModelOptions updateOn 'blur' for every input
     target.click();
 
-    FU.uiSelect('$ctrl.typeId', type, target);
+    FU.uiSelect('$ctrl.typeId', project, target);
   },
 };
