@@ -1,6 +1,7 @@
 {
   "TRANSACTIONS": {
     "VERIFIED_TRANSACTIONS": "Transactions Postées",
+    "VIEW_TRANSACTIONS" : "Voir les transactions",
     "INCLUDE_POSTED_TRANSACTIONS_DETAIL": "Inclure les transactions affichées dans la recherche",
     "INCLUDE_POSTED_TRANSACTIONS_SHORT": "Transactions Postées",
     "SINGLE_ACCOUNT_TRANSACTION" : "Cette transaction contient un seul compte.  Veuillez sélectionner plusieurs comptes pour compléter la transaction.",
