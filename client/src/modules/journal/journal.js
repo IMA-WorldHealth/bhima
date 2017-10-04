@@ -436,9 +436,6 @@ function JournalController(
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = Journal.filters.formatHTTP();
 
-    // Keep the last filters made during the last search and keeps the display in a readable format
-    filtersSnapshot.lastViewFilters = vm.latestViewFilters.customFilters
-
     Journal.openSearchModal(filtersSnapshot)
       .then(function (changes) {
 

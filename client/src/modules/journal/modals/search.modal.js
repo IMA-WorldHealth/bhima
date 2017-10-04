@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService',
-  'Store', 'filters', 'options', 'PeriodService', 'VoucherService', '$translate',
-  'AccountService', 'util',
+  '$uibModalInstance', 'NotifyService',
+  'Store', 'filters', 'options', 'PeriodService', '$translate',
+  'AccountService', 'util', 'TransactionTypeService', 'JournalService',
 ];
 
-function JournalSearchModalController(Instance, Projects, Notify,
-  Store, filters, options, Periods, Vouchers, $translate,
-  Account, util) {
+function JournalSearchModalController(Instance, Notify,
+  Store, filters, options, Periods, $translate,
+  Account, util, TransactionTypes, Journal) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -19,13 +19,15 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
   vm.defaultQueries = {};
-  vm.displayLabel = {};
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
 
-  var lastViewFilters = vm.filters.lastViewFilters || '';
+  var lastViewFilters = Journal.filters.formatView().customFilters;
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -64,19 +66,13 @@ function JournalSearchModalController(Instance, Projects, Notify,
     })
     .catch(Notify.handleError);
 
-  Projects.read()
-    .then(function (projects) {
-      vm.projects = projects;
-    })
-    .catch(Notify.handleError);
-
-  // format voucher types and bind to the view
-  Vouchers.transactionType()
-    .then(function (list) {
-      vm.types = list.data.map(function (item) {
-        item.hrText = $translate.instant(item.text);
-        return item;
+  // load all Transaction types
+  TransactionTypes.read()
+    .then(function (types) {
+      types.forEach(function (item) {
+        item.typeText = $translate.instant(item.text);
       });
+      vm.transactionTypes = types;
     })
     .catch(Notify.handleError);
 
@@ -89,14 +85,29 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
-    vm.displayLabel.user_id = user.display_name;
+    displayValues.user_id = user.display_name;
   };
 
   // Set displayLabel if the filters user is defined
   if (filters.user_id) {
     lastViewFilters.forEach(function (filter) {
       if (filter._key === 'user_id') {
-        vm.displayLabel.user_id = filter._displayValue;
+        displayValues.user_id = filter._displayValue;
+      }
+    });
+  }
+
+  // custom filter project_id - assign the value to the searchQueries object
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.searchQueries.project_id = project.id;
+    displayValues.project_id = project.name;
+  };
+
+  // Set displayLabel if the filters project is defined
+  if (filters.project_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'project_id') {
+        displayValues.project_id = filter._displayValue;
       }
     });
   }
@@ -111,20 +122,29 @@ function JournalSearchModalController(Instance, Projects, Notify,
   };
 
   // custom filter origin_id - assign the value to the searchQueries object
-  vm.onSelectOrigin = function onSelectOrigin(type) {
-    vm.displayLabel.origin_id = type.hrText;
-    vm.searchQueries.origin_id = type.id;
+  vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
+    vm.searchQueries.origin_id = transactionTypes;
+    var typeText = '/';
+
+    transactionTypes.forEach(function (typeId) {
+      vm.transactionTypes.forEach(function (type) {
+        if (typeId === type.id) {
+          typeText += type.typeText + ' / ';
+        }
+      });
+    });
+
+    displayValues.origin_id = typeText;
   };
 
-  // Set displayLabel if the filters origin is defined
-  if (filters.origin_id) {    
+  // Set displayLabel if the filters origin_id is defined
+  if (filters.origin_id) {
     lastViewFilters.forEach(function (filter) {
       if (filter._key === 'origin_id') {
-        vm.displayLabel.origin_id = filter._displayValue;
-      }    
+        displayValues.origin_id = filter._displayValue;
+      }
     });
   }
-
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -146,21 +166,10 @@ function JournalSearchModalController(Instance, Projects, Notify,
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        if (key === 'account_id') {
-          changes.post({ key : key, value : value, displayValue : vm.hrAccounts[value] });
-        } else if (vm.displayLabel[key]) {
-          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
-        } else if (key === 'project_id') {
-          vm.projects.forEach(function (project) {
-            if (project.id === value) {
-              vm.projectName = project.name;
-            }
-          });
-          changes.post({ key : key, value : value, displayValue : vm.projectName });
-        } else {
-          changes.post({ key : key, value : value });
-        }
-      }
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
     var loggedChanges = changes.getAll();

@@ -51,12 +51,10 @@
           </bh-account-select>
         </div>
 
-        <bh-transaction-type
-          type-id="ModalCtrl.searchQueries.origin_id"
-          name="origin_id"
-          on-select-callback="ModalCtrl.onSelectOrigin(type)">
-          <bh-clear on-clear="ModalCtrl.clear('origin_id')"></bh-clear>
-        </bh-transaction-type>
+        <bh-transaction-type-select
+          on-change="ModalCtrl.onTransactionTypesChange(transactionTypes)"
+          transaction-type-ids="ModalCtrl.searchQueries.origin_id">
+        </bh-transaction-type-select>        
 
         <!-- description fuzzy search -->
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
@@ -82,21 +80,12 @@
           <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
         </bh-user-select>
 
-
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.PROJECT</label>
+        <bh-project-select
+          project-id="ModalCtrl.searchQueries.project_id"
+          name="project_id"
+          on-select-callback="ModalCtrl.onSelectProject(project)">
           <bh-clear on-clear="ModalCtrl.clear('project_id')"></bh-clear>
-          <select
-            class="form-control"
-            name="project_id"
-            ng-model="ModalCtrl.searchQueries.project_id"
-            ng-options="project.id as project.name for project in ModalCtrl.projects">
-            <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
-          </select>
-          <div class="help-block" ng-messages="ModalForm.project_id.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
+        </bh-project-select>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
           <label class="control-label" translate>FORM.LABELS.AMOUNT</label>
