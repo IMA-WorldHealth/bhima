@@ -5,6 +5,8 @@
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
+
+    <ng-transclude></ng-transclude>
     <ui-select name="cashbox_id" 
       ng-model="$ctrl.cashboxId"
       on-select="$ctrl.onSelect($item, $model)" required>

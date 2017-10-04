@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 SearchCashPaymentModalController.$inject = [
-  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util',
+  'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util', 'CashService', 'CurrencyService',
 ];
 
 /**
@@ -13,20 +13,24 @@ SearchCashPaymentModalController.$inject = [
  * POJO and are attached to the view.  They are modified here and returned to the parent controller
  * as a POJO.
  */
-function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util) {
+function SearchCashPaymentModalController(Notify, Instance, filters, Store, Periods, util, Cash, Currencies) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = [
-    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed',
+    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed', 'debtor_group_uuid',
   ];
-
 
   vm.filters = filters;
 
   vm.searchQueries = {};
   vm.defaultQueries = {};
+
+  var lastViewFilters = Cash.filters.formatView().customFilters;
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -42,21 +46,78 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
   vm.onSelectDebtor = onSelectDebtor;
 
   function onSelectDebtor(debtorGroup) {
+    displayValues.debtor_group_uuid = debtorGroup.name;
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   }
 
-  // cashboxes
-  Cashboxes.read()
-    .then(function (list) {
-      vm.cashboxes = list;
+  // Set displayLabel if the filters debtorGroup is defined
+  if (filters.debtor_group_uuid) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'debtor_group_uuid') {
+        displayValues.debtor_group_uuid = filter._displayValue;
+      }
+    });
+  }
+
+  // load all the available currencies
+  Currencies.read()
+    .then(function (currencies) {
+      // cache a label for faster view rendering
+      currencies.forEach(function (currency) {
+        currency.label = Currencies.format(currency.id);
+      });
+
+      vm.currencies = currencies;
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError);   
+
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
+    displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
 
+  // Set displayLabel if the filters user is defined
+  if (filters.user_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'user_id') {
+        displayValues.user_id = filter._displayValue;
+      }
+    });
+  }  
+
+  // custom filter cashbox_id - assign the value to the searchQueries object
+  vm.onSelectCashbox = function onSelectCashbox(cashbox) {
+    displayValues.cashbox_id = cashbox.hrlabel;
+    vm.searchQueries.cashbox_id = cashbox.id;
+  };
+
+  // Set displayLabel if the filters cashbox is defined
+  if (filters.cashbox_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'cashbox_id') {
+        displayValues.cashbox_id = filter._displayValue;
+      }
+    });
+  }  
+
+  vm.setCurrency = function setCurrency(currencyId) {
+    vm.currencies.forEach(function (currency) {
+      if (currency.id === currencyId) {
+        displayValues.currency_id = currency.label;
+      }
+    });
+  };
+
+  // Set displayLabel if the filters currency is defined
+  if (filters.currency_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'currency_id') {
+        displayValues.currency_id = filter._displayValue;
+      }
+    });
+  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -86,8 +147,10 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
-      }
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
     var loggedChanges = changes.getAll();
