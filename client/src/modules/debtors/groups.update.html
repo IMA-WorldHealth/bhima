@@ -23,9 +23,19 @@
 
           <div
             class="form-group has-feedback"
-            ng-class="{'has-error' : debtorGroup.color.$invalid && debtorGroup.$submitted}">
+            ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
             <label class="control-label" translate>FORM.LABELS.COLOR</label>
-            <input name="color" id="title-color" type="color" ng-model="GroupUpdateCtrl.group.color" class="form-control" ng-value="GroupUpdateCtrl.group.color">
+
+            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
+              <ui-select-match placeholder="Pick one...">
+                <i class="fa fa-circle" style="color: {{$select.selected.value}}; font-sze:14px"></i>
+                &nbsp;<span translate>{{$select.selected.name}}</span>
+              </ui-select-match>
+              <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
+                <div>
+                  <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i>&nbsp; <span translate>{{val.name}} </span> </span>
+                </div>
+              </ui-select>
           </div>
 
           <bh-account-select
@@ -135,10 +145,10 @@
             <p translate>DEBTOR_GROUP.CONVENTION.DESCRIPTION</p>
             <div class="checkbox">
               <label>
-                <input 
+                <input
                   type="checkbox"
                   name="is_convention"
-                  ng-model="GroupUpdateCtrl.group.is_convention" 
+                  ng-model="GroupUpdateCtrl.group.is_convention"
                   ng-true-value="1"
                   ng-false-value="0">
                 <span translate>DEBTOR_GROUP.CONVENTION.TITLE</span>
@@ -160,7 +170,7 @@
 
                 <!-- Only show if the subsidies option is unchecked -->
                 <p ng-if="GroupUpdateCtrl.group.apply_subsidies===false" class="text-info">
-                  <span class="glyphicon glyphicon-info-sign"></span> 
+                  <span class="glyphicon glyphicon-info-sign"></span>
                   <span translate>DEBTOR_GROUP.POLICIES.SUBSIDIES.INFO</span>
                 </p>
                 <div class="checkbox">
@@ -175,7 +185,7 @@
               <div class="col-md-12">
                 <h5><b translate>DEBTOR_GROUP.POLICIES.DISCOUNTS.TITLE</b></h5>
                 <p ng-if="GroupUpdateCtrl.group.apply_discounts===false" class="text-info">
-                  <span class="fa fa-info-circle" aria-hidden="true"></span> 
+                  <span class="fa fa-info-circle" aria-hidden="true"></span>
                   <span translate>DEBTOR_GROUP.POLICIES.DISCOUNTS.INFO</span>
                 </p>
                 <div class="checkbox">
@@ -215,7 +225,7 @@
               <label translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE</label>
 
               <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.billingServices.length === 0">
-                <i class="fa fa-info-circle"></i>  
+                <i class="fa fa-info-circle"></i>
                 <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY</span>
               </p>
               <ul>

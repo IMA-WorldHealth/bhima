@@ -28,9 +28,7 @@ describe('Debtor Groups Management', function () {
 
     FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
 
-    // Fix me : What is the best way to use color picker with protractor
-    var colorInput = element(by.model("GroupUpdateCtrl.group.color"));
-    colorInput.sendKeys("#ff0000");
+    FU.uiSelect('GroupUpdateCtrl.group.color', "Jaune");
 
     components.accountSelect.set('47001');
     FU.input('GroupUpdateCtrl.group.max_credit', '1200');

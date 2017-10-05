@@ -23,6 +23,8 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     billingServices : false,
   };
 
+  vm.colors = DebtorGroups.colors;
+
   vm.$loading = true;
   vm.$loaded = false;
   vm.onSelectAccountCallback = onSelectAccount;
