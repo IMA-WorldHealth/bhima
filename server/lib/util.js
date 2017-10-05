@@ -104,15 +104,17 @@ function resolveObject(object) {
  * Accepts an object of key/value pairs. Returns the same object with all values
  * that are dates converted to a standard format.
  */
-function dateFormatter(Rows, dateFormat) {
+function dateFormatter(rows, dateFormat) {
   const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
-  return Rows.map(function (element) {
-    Object.keys(element).forEach(function (currentKey) {
-      if (_.isDate(element[currentKey])) {
-        element[currentKey] = moment(element[currentKey]).format(DATE_FORMAT);
+
+  _.forEach(rows, function (element) {
+    _.forEach(element, function (value, key) {
+      if (_.isDate(element[key])) {
+        element[key] = moment(element[key]).format(DATE_FORMAT);
       }
-    }, this);
-    return element;
+    });
   });
 
+  return rows;
 }
+

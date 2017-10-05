@@ -358,9 +358,9 @@ function JournalController(
   }
 
   // display the journal printable report of selected transactions
-  vm.openJournalReport = function openJournalReport(type) {
+  vm.openJournalReport = function openJournalReport() {
     var url = '/reports/finance/journal';
-    var params = formatExportParameters(type);
+    var params = formatExportParameters('pdf');
     if (!params) { return; }
     Modal.openReports({ url: url, params: params });
   };
