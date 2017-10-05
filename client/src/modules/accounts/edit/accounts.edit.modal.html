@@ -49,21 +49,22 @@
 
     <!-- @TODO Re-disable account type editing after accounts are stable -->
     <!-- Account type read only -->
-    <!-- <div ng-if="!AccountEditCtrl.isCreateState" class="form-group"> -->
-      <!-- <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label> -->
-      <!-- <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p> -->
-    <!-- </div> -->
+     <div ng-if="!AccountEditCtrl.isCreateState" class="form-group">
+       <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label> 
+       <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static" translate>{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id)}}</p> 
+    </div> 
 
     <!-- TODO(@jniles): can this just use ng-options? -->
-    <div class="form-group"
-         ng-class="{'has-error' : (AccountForm.type_id.$invalid && AccountForm.$submitted) || AccountEditCtrl.invalidTitleAccount}">         
+    <div 
+        class="form-group"
+        ng-if="AccountEditCtrl.isCreateState"
+        ng-class="{'has-error' : (AccountForm.type_id.$invalid && AccountForm.$submitted) || AccountEditCtrl.invalidTitleAccount}">         
       <label class="control-label" translate>FORM.LABELS.ACCOUNT_TYPE</label>
       <select
         class="form-control"
         ng-model="AccountEditCtrl.account.type_id"
         ng-change="AccountEditCtrl.titleChangedValidation(AccountEditCtrl.account.type_id)"
-        name="type_id"
-        ng-disabled="!AccountEditCtrl.isCreateState"
+        name="type_id"        
         required>
         <option value="" disabled translate>FORM.SELECT.ACCOUNT_TYPE</option>
         <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}" translate>{{entry.translation_key}}</option>
