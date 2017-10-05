@@ -29,6 +29,12 @@ function JournalSearchModalController(Instance, Notify,
 
   var lastViewFilters = Journal.filters.formatView().customFilters;
 
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
@@ -74,44 +80,17 @@ function JournalSearchModalController(Instance, Notify,
     displayValues.account_id = String(account.number).concat(' - ', account.label);
   };
 
-  // Set displayLabel if the filters account is defined
-  if (filters.account_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'account_id') {
-        displayValues.account_id = filter._displayValue;
-      }
-    });
-  }
-
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
     displayValues.user_id = user.display_name;
   };
 
-  // Set displayLabel if the filters user is defined
-  if (filters.user_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'user_id') {
-        displayValues.user_id = filter._displayValue;
-      }
-    });
-  }
-
   // custom filter project_id - assign the value to the searchQueries object
   vm.onSelectProject = function onSelectProject(project) {
     vm.searchQueries.project_id = project.id;
     displayValues.project_id = project.name;
   };
-
-  // Set displayLabel if the filters project is defined
-  if (filters.project_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'project_id') {
-        displayValues.project_id = filter._displayValue;
-      }
-    });
-  }
 
   // deafult filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -138,15 +117,6 @@ function JournalSearchModalController(Instance, Notify,
     displayValues.origin_id = typeText;
   };
 
-  // Set displayLabel if the filters origin_id is defined
-  if (filters.origin_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'origin_id') {
-        displayValues.origin_id = filter._displayValue;
-      }
-    });
-  }
-
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
@@ -168,12 +138,14 @@ function JournalSearchModalController(Instance, Notify,
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || value;
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
         changes.post({ key: key, value: value, displayValue: displayValue });
        }
     });
 
     var loggedChanges = changes.getAll();
+
+    console.log('changes', loggedChanges);
 
     // return values to the JournalController
     return Instance.close(loggedChanges);
