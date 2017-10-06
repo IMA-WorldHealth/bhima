@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistryModalController.$inject = [
   '$uibModalInstance', 'filters',
-  'bhConstants', 'moment', 'Store', 'util', 'PeriodService'
+  'bhConstants', 'moment', 'Store', 'util', 'PeriodService', 'PatientService',
 ];
 
 /**
@@ -14,7 +14,7 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the filters inject.
  */
-function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods) {
+function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods, Patients) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
@@ -22,6 +22,9 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   vm.today = new Date();
   vm.defaultQueries = {};
   vm.searchQueries = {};
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
 
   // assign default limit filter
   if (filters.limit) {
@@ -37,6 +40,15 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
+  var lastViewFilters = Patients.filters.formatView().customFilters;
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});
+
+
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
@@ -44,15 +56,18 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
 
   vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
+    displayValues.debtor_group_uuid = debtorGroup.name;
   };
 
   vm.onSelectPatientGroup = function onSelectPatientGroup(patientGroup) {
     vm.searchQueries.patient_group_uuid = patientGroup.uuid;
+    displayValues.patient_group_uuid = patientGroup.name;
   };
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;  
   };
 
   // default filter limit - directly write to changes list
@@ -78,7 +93,9 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
 
