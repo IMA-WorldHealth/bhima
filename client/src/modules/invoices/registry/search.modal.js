@@ -23,6 +23,13 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
   var displayValues = {};
 
   var lastViewFilters = Invoices.filters.formatView().customFilters;  
+  
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});
+
 
   // assign default limit filter
   if (filters.limit) {
@@ -47,41 +54,17 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   };
 
-  if (filters.debtor_group_uuid) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'debtor_group_uuid') {
-        displayValues.debtor_group_uuid = filter._displayValue;
-      }
-    });
-  } 
-
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
 
-  if (filters.user_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'user_id') {
-        displayValues.user_id = filter._displayValue;
-      }
-    });
-  }
-
   // custom filter service_id - assign the value to the searchQueries object
   vm.onSelectService = function onSelectService(service) {
     displayValues.service_id = service.name;
     vm.searchQueries.service_id = service.id;
   };
-
-  if (filters.service_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'service_id') {
-        displayValues.service_id = filter._displayValue;
-      }
-    });
-  }
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -111,7 +94,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || value;
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
         changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
