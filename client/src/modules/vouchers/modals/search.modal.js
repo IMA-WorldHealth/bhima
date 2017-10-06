@@ -30,6 +30,12 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
   var lastViewFilters = Vouchers.filters.formatView().customFilters;
 
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});  
+
   // displayValues will be an id:displayValue pair
   var displayValues = {};
   
@@ -65,29 +71,11 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
     displayValues.type_ids = typeText;
   };
 
-  // Set displayLabel if the filters user is defined
-  if (filters.type_ids) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'type_ids') {
-        displayValues.type_ids = filter._displayValue;
-      }
-    });
-  }
-
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
     displayValues.user_id = user.display_name;
   };
-
-  // Set displayLabel if the filters user is defined
-  if (filters.user_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'user_id') {
-        displayValues.user_id = filter._displayValue;
-      }
-    });
-  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -124,7 +112,7 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || value;
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
         changes.post({ key: key, value: value, displayValue: displayValue });
        }
     });
