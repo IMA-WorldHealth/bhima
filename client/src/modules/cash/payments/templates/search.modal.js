@@ -29,6 +29,12 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
   var lastViewFilters = Cash.filters.formatView().customFilters;
 
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});  
+
   // displayValues will be an id:displayValue pair
   var displayValues = {};
 
@@ -50,15 +56,6 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   }
 
-  // Set displayLabel if the filters debtorGroup is defined
-  if (filters.debtor_group_uuid) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'debtor_group_uuid') {
-        displayValues.debtor_group_uuid = filter._displayValue;
-      }
-    });
-  }
-
   // load all the available currencies
   Currencies.read()
     .then(function (currencies) {
@@ -78,29 +75,11 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     vm.searchQueries.user_id = user.id;
   };
 
-  // Set displayLabel if the filters user is defined
-  if (filters.user_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'user_id') {
-        displayValues.user_id = filter._displayValue;
-      }
-    });
-  }  
-
   // custom filter cashbox_id - assign the value to the searchQueries object
   vm.onSelectCashbox = function onSelectCashbox(cashbox) {
     displayValues.cashbox_id = cashbox.hrlabel;
     vm.searchQueries.cashbox_id = cashbox.id;
   };
-
-  // Set displayLabel if the filters cashbox is defined
-  if (filters.cashbox_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'cashbox_id') {
-        displayValues.cashbox_id = filter._displayValue;
-      }
-    });
-  }  
 
   vm.setCurrency = function setCurrency(currencyId) {
     vm.currencies.forEach(function (currency) {
@@ -109,15 +88,6 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
       }
     });
   };
-
-  // Set displayLabel if the filters currency is defined
-  if (filters.currency_id) {
-    lastViewFilters.forEach(function (filter) {
-      if (filter._key === 'currency_id') {
-        displayValues.currency_id = filter._displayValue;
-      }
-    });
-  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -148,7 +118,7 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || value;
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
         changes.post({ key: key, value: value, displayValue: displayValue });
        }
     });
