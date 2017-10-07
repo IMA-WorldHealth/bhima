@@ -10,6 +10,7 @@ const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 const Journal = require('../../journal');
+const util = require('../../../../lib/util');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/journal/report.handlebars';
 
@@ -57,7 +58,13 @@ function postingJournalExport(req, res, next) {
       return report.render({ rows, totals });
     })
     .then((result) => {
-      res.set(result.headers).send(result.report);
+
+      if (result.headers.type === 'xlsx') {
+        res.xls(result.headers.filename, util.dateFormatter(result.report.rows));
+      } else {
+        res.set(result.headers).send(result.report);
+      }
+
     })
     .catch(next)
     .done();

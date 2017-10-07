@@ -10,11 +10,12 @@
 
 const _ = require('lodash');
 const q = require('q');
+const moment = require('moment');
 
 /** The query string conditions builder */
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
-
+exports.dateFormatter = dateFormatter;
 exports.resolveObject = resolveObject;
 
 /**
@@ -95,3 +96,25 @@ function resolveObject(object) {
       return settled;
     });
 }
+
+/**
+ * @method dateFormatter
+ *
+ * @description
+ * Accepts an object of key/value pairs. Returns the same object with all values
+ * that are dates converted to a standard format.
+ */
+function dateFormatter(rows, dateFormat) {
+  const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
+
+  _.forEach(rows, function (element) {
+    _.forEach(element, function (value, key) {
+      if (_.isDate(element[key])) {
+        element[key] = moment(element[key]).format(DATE_FORMAT);
+      }
+    });
+  });
+
+  return rows;
+}
+
