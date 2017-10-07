@@ -60,7 +60,7 @@ function InvoiceRegistrySearch() {
   it('filters by service "Administration" to get three results', () => {
     const NUM_MATCHING = 3;
 
-    modal.setService('Administration');
+    components.serviceSelect.set('Administration');
     modal.submit();
 
     page.expectNumberOfGridRows(NUM_MATCHING);

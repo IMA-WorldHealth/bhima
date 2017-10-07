@@ -1,0 +1,24 @@
+<div bh-service-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : ServiceForm.$$parent.$submitted && ServiceForm.service_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.SERVICE
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="service_id" 
+      ng-model="$ctrl.serviceId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="service.id as service in $ctrl.services | filter: { 'name': $select.search }">
+        <span ng-bind-html="service.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="ServiceForm.service_id.$error" ng-show="ServiceForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
