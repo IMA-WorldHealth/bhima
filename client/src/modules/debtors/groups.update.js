@@ -26,6 +26,9 @@ function DebtorGroupsUpdateController(
   vm.cancel = cancel;
   vm.deleteGroup = deleteGroup;
 
+  vm.colors = DebtorGroups.colors;
+
+
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;

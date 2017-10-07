@@ -2,7 +2,7 @@ angular.module('bhima.components')
   .component('bhCashboxSelect', {
     templateUrl : 'modules/templates/bhCashboxSelect.tmpl.html',
     controller  : CashboxSelectController,
-    // transclude  : true,
+    transclude  : true,
     bindings    : {
       cashboxId         : '<',
       disable           : '<?',

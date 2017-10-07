@@ -31,20 +31,12 @@
           </div>
 
           <!-- cashbox -->
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.CASHBOX
-            </label>
+          <bh-cashbox-select
+            cashbox-id = "$ctrl.searchQueries.cashbox_id"
+            name = "cashbox_id"
+            on-select-callback = "$ctrl.onSelectCashbox(cashbox)">
             <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
-            <ui-select name="cashbox" ng-model="$ctrl.searchQueries.cashbox_id">
-              <ui-select-match>
-                <span>{{$select.selected.label}}</span>
-              </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in $ctrl.cashboxes | filter:$select.search track by cashbox.id">
-                <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-          </div>
+          </bh-cashbox-select>
 
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
@@ -69,6 +61,7 @@
 
           <bh-currency-select
             currency-id="$ctrl.searchQueries.currency_id"
+            on-change="$ctrl.setCurrency(currency)"
             validation-trigger="CashVoucherForm.$submitted">
             <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
           </bh-currency-select>
