@@ -204,7 +204,8 @@ function CashPaymentRegistryController(
     gridColumns.openConfigurationModal();
   }
 
-  // this function deletes the
+  // this function deletes the cash payment and associated transactions from
+  // the database
   function deleteCashPayment(entity) {
     Cash.remove(entity.uuid)
       .then(function () {

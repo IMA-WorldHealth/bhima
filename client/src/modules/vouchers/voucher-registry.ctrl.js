@@ -39,6 +39,7 @@ function VoucherController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
   vm.download = Vouchers.download;
+  vm.deleteVoucher = deleteVoucher;
 
   vm.loading = false;
 
@@ -231,6 +232,19 @@ function VoucherController(
   function clearGridState() {
     state.clearGridState();
     $state.reload();
+  }
+
+  // this function deletes the voucher from the database
+  function deleteVoucher(entity) {
+    Vouchers.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Vouchers.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

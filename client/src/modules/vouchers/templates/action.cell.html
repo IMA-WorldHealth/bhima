@@ -4,7 +4,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-action="{{ rowRenderIndex}}" uib-dropdown-menu>
     <li>
       <a href
         data-method="receipt"
@@ -14,8 +14,18 @@
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
       </a>
     </li>
+    <li class="divider"></li>
     <li>
-      <a data-method="viewVoucher" ui-sref="journal({ filters : [{ key : 'period', value : 'allTime' },{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}; { key : 'includeNonPosted', value : '1' }]})" href>
+      <a href data-method="delete" ng-click="grid.appScope.deleteVoucher(row.entity)">
+        <span class="text-danger"><span class="fa fa-file-text-o"></span> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a
+        data-method="viewVoucher"
+        ui-sref="journal({ filters : [{ key : 'period', value : 'allTime' },{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'includeNonPosted', value : 1 }]})"
+        href>
         <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
       </a>
     </li>

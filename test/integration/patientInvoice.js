@@ -16,8 +16,6 @@ describe('(/invoices) Patient Invoices', function () {
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  const TO_DELETE_UUID = 'c44619e0-3a88-4754-a750-a414fc9567bf';
-
   // run the 'BillingScenarios' test suite
   describe('(POST /invoices)', BillingScenarios);
 
@@ -363,6 +361,7 @@ function BillingScenarios() {
       .catch(helpers.handler);
   });
 
+  const TO_DELETE_UUID = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   it('DELETE /transactions/:uuid deletes an invoice', () => {
     return agent.delete(`/transactions/${TO_DELETE_UUID}`)
       .then(res => {
