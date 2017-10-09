@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
 .controller('PurchaseOrderController', PurchaseOrderController);
 
 PurchaseOrderController.$inject = [
-  'PurchaseOrderService', 'PurchaseOrderForm', 'SupplierService', 'NotifyService',
+  'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants'
 ];
 
 
-function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util, Receipts, bhConstants) {
+function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util, Receipts, bhConstants) {
   var vm = this;
 
   // create a new purchase order form
@@ -19,13 +19,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
   vm.loagingState = false;
+  vm.setSupplier = setSupplier;
 
-  // make sure we have all the suppliers we need.
-  Suppliers.read()
-  .then(function (suppliers) {
-    vm.suppliers = suppliers;
-  })
-  .catch(Notify.handleError);
+  function setSupplier (supplier) {
+    vm.supplier = supplier;
+    vm.order.setSupplier(supplier);
+  }
 
   // grid options for the purchase order grid
   var gridOptions = {
@@ -102,17 +101,13 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
       });
   }
 
-  // fired whenever an input in the grid is changed.
-  function handleChange() {
-    vm.order.digest();
-    vm.order.validate();
-  }
-
   // clears the module, resetting it
+  //TODO : Choose a better name for a starting method
   function clear(form) {
-
     // remove the data
     delete vm.supplier;
+    delete vm.order.details.supplier_uuid;
+
     vm.order.setup();
 
     // if the form was passed in, reset the validation
@@ -127,7 +122,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.addItems = addItems;
   vm.submit = submit;
   vm.clear = clear;
-  vm.handleChange = handleChange;
 
   // trigger the module start
   clear();
