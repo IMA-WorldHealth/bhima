@@ -2,35 +2,33 @@ angular.module('bhima.controllers')
   .controller('EmployeeRegistryController', EmployeeRegistryController);
 
 EmployeeRegistryController.$inject = [
-  'EmployeeService', 'NotifyService',
-  'util', 'ReceiptModal', 'uiGridConstants',
-  'GridColumnService', 'bhConstants', 'FilterService',
-];
+  '$state', 'EmployeeService', 'NotifyService', 'AppCache',
+  'util', 'ReceiptModal', 'uiGridConstants', '$translate',
+  'GridColumnService', 'GridSortingService', 'bhConstants',
+  'GridStateService', 'LanguageService', 'ExportService'];
 
 /**
  * Employee Registry Controller
  *
  * This module is responsible for the management of Employe Registry.
  */
-function EmployeeRegistryController(Employees, Notify,
-  util, Receipts, uiGridConstants,
-  Columns, bhConstants, Filters) {
+function EmployeeRegistryController($state, Employees, Notify, AppCache,
+  util, Receipts, uiGridConstants, $translate,
+  Columns, Sorting, bhConstants, GridState, Languages, Export) {
   var vm = this;
 
-  var filter = new Filters();
-  vm.filter = filter;
-  vm.filtersFmt = [];
-
   var cacheKey = 'EmployeeRegistry';
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  var cache = AppCache(cacheKey);
+  var state;
 
   vm.search = search;
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.openPatientCard = openPatientCard;
-  vm.filterBarHeight = {};
+  vm.employeesCard = employeesCard;
   vm.openColumnConfiguration = openColumnConfiguration;
+  vm.gridApi = {};
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.download = Employees.download;
 
-  // track if module is making a HTTP request for employees
+  // track if module is making a HTTP request for employeess
   vm.loading = false;
 
   var columnDefs = [
@@ -45,6 +43,11 @@ function EmployeeRegistryController(Employees, Notify,
       headerCellFilter : 'translate',
       sort: { direction: uiGridConstants.ASC, priority: 1 },
     },
+    { field            : 'is_medical',
+      displayName      : 'FORM.LABELS.MEDICAL_STAFF',
+      headerCellFilter : 'translate',
+      cellTemplate     : '/modules/employees/templates/medical.cell.html',
+    },    
     { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
       headerCellFilter : 'translate',
@@ -118,28 +121,31 @@ function EmployeeRegistryController(Employees, Notify,
       headerCellFilter : 'translate',
       visible          : false
     },
-    { field            : 'is_medical',
-      displayName      : 'FORM.LABELS.MEDICAL_STAFF',
-      headerCellFilter : 'translate',
-      visible          : false,
-      cellTemplate     : '/modules/employees/templates/medical.cell.html',
-    },    
     { name          : 'actions',
       displayName   : '',
       cellTemplate  : '/modules/employees/templates/action.cell.html'
     }
   ];
 
+  /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider  : vm,
     showColumnFooter  : true,
+    enableSorting     : true,
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
-    columnDefs        : columnDefs
+    columnDefs        : columnDefs,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
 
   // error handler
   function handler(error) {
@@ -158,7 +164,7 @@ function EmployeeRegistryController(Employees, Notify,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // hook the returned patients up to the grid.
+    // hook the returned employeess up to the grid.
     Employees.read(null, parameters)
       .then(function (employees) {
           employees.forEach(function (employee) {
@@ -174,36 +180,29 @@ function EmployeeRegistryController(Employees, Notify,
       });
   }
 
-  // search and filter data in employee Registry
   function search() {
     var filtersSnapshot = Employees.filters.formatHTTP();
 
     Employees.openSearchModal(filtersSnapshot)
-      .then(function (parameters) {
-        // no parameters means the modal was dismissed.
-        if (!parameters) { return; }
+      .then(function (changes) {
+        Employees.filters.replaceFilters(changes);
 
-        Employees.filters.replaceFilters(parameters);
         Employees.cacheFilters();
         vm.latestViewFilters = Employees.filters.formatView();
-
         return load(Employees.filters.formatHTTP(true));
-      })
-      .catch(handler);
-  }
-
-  function openColumnConfiguration() {
-    columnConfig.openConfigurationModal();
+      });
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
     Employees.removeFilter(key);
-
     Employees.cacheFilters();
     vm.latestViewFilters = Employees.filters.formatView();
-
     return load(Employees.filters.formatHTTP(true));
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   // toggles the loading indicator on or off
@@ -211,13 +210,19 @@ function EmployeeRegistryController(Employees, Notify,
     vm.loading = !vm.loading;
   }
 
-  // employee patient card
-  function openPatientCard(uuid) {
+  // employee card
+  function employeesCard(uuid) {
     Receipts.patient(uuid);
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    if($state.params.filters) {
+      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
+      Employees.filters.replaceFilters(changes);
+      Employees.cacheFilters();
+    }
+
     load(Employees.filters.formatHTTP(true));
     vm.latestViewFilters = Employees.filters.formatView();
   }
