@@ -36,7 +36,7 @@ describe('Inventory Configuration', () => {
   const updateType = { text : '[E2E] Inventory Type updated' };
 
   // inventory unit
-  const unit = { text : '[E2E] Inventory Unit' };
+  const unit = { text : '[E2E] Inventory Unit', abbr : 'IUE2E' };
   const updateUnit = { text : '[E2E] Inventory Unit updated' };
 
   describe('Groups', () => {
@@ -108,19 +108,20 @@ describe('Inventory Configuration', () => {
     it('Successfully creates a new inventory unit', () => {
       element(by.css('[data-create-unit]')).click();
       FU.input('$ctrl.session.text', unit.text);
+      FU.input('$ctrl.session.abbr', unit.abbr);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
     it('Successfully updates an existing inventory unit', () => {
-      element(by.css('[data-edit-unit="' + unit.text +'"]')).click();
+      element(by.css('[data-edit-unit="' + unit.abbr +'"]')).click();
       FU.input('$ctrl.session.text', updateUnit.text);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
     it('Successfully deletes an existing inventory unit', () => {
-      element(by.css('[data-delete-unit="' + updateUnit.text +'"]')).click();
+      element(by.css('[data-delete-unit="' + updateUnit.abbr +'"]')).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });

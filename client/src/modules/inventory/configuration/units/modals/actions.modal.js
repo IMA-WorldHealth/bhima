@@ -49,6 +49,7 @@ function InventoryUnitActionsModalController(InventoryUnit, Notify, Instance, Da
   /** format data to data structure in the db */
   function cleanForSubmit(session) {
     return {
+      abbr : session.abbr,
       text : session.text
     };
   }

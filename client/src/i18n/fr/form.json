@@ -525,6 +525,7 @@
             "PROJECT_NAME": "le nom du projet"
         },
         "PLACEHOLDERS": {
+            "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Entrer le compte",
             "CASHBOX": "Entrer la caisse",
             "CODE": "Entrer le code",
