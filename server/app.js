@@ -20,7 +20,8 @@
  * @license GPL-2.0
  * @copyright IMA World Health 2016
  */
-// json2xls haldles an error in strict mode so we require it before
+
+// json2xls handles an error in strict mode so we require it before
 const json2xls = require('json2xls');
 
 require('use-strict');

@@ -27,7 +27,6 @@ describe('(/cash) Cash Payments', () => {
       .catch(helpers.handler);
   });
 
-  // attempt to delete a cash payment
   it('DELETE /transactions/:uuid deletes a cash payment', () => {
     return agent.delete(`/transactions/${TO_DELETE_UUID}`)
       .then(res => {
