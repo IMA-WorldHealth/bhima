@@ -145,8 +145,6 @@ function JournalSearchModalController(Instance, Notify,
 
     var loggedChanges = changes.getAll();
 
-    console.log('changes', loggedChanges);
-
     // return values to the JournalController
     return Instance.close(loggedChanges);
   };
