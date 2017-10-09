@@ -17,16 +17,15 @@ const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const Cash = require('./cash');
-
-// const Invoices = require('./patientInvoice');
-// const Vouchers = require('./vouchers');
+const Invoices = require('./patientInvoice');
+const Vouchers = require('./vouchers');
 
 // this wraps up the safe deletion methods.
 // TODO(@jniles) - move these to the `indentifiers` as suggested by @sfount
 const safeDeletionMethods = {
   CP : Cash.safelyDeleteCashPayment,
-  //  IV : Invoices.safelyDeleteInvoice, TODO(@jniles)
-  // VO : Vouchers.safelyDeleteVoucher, TODO(@jniles)
+  IV : Invoices.safelyDeleteInvoice,
+  VO : Vouchers.safelyDeleteVoucher,
 };
 
 exports.deleteTransaction = deleteTransaction;
@@ -131,7 +130,7 @@ function deleteTransaction(req, res, next) {
       // TODO(@jniles) - i18n
       const isPosted = transaction[0].posted;
       if (isPosted) {
-        throw new BadRequest('This transaction is already posted');
+        throw new BadRequest('This transaction is already posted.');
       }
 
       // check if the transaction has references elsewhere
@@ -141,7 +140,7 @@ function deleteTransaction(req, res, next) {
       // TODO(@jniles) - i18n
       const isReferenced = references.length > 0;
       if (isReferenced) {
-        throw new BadRequest('This transaction is referenced');
+        throw new BadRequest('This transaction is referenced.');
       }
 
       const documentMapText = transaction[0].identifier;
@@ -158,4 +157,3 @@ function deleteTransaction(req, res, next) {
     .catch(next)
     .done();
 }
-

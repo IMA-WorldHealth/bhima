@@ -16,6 +16,8 @@ describe('(/invoices) Patient Invoices', function () {
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
+  const TO_DELETE_UUID = 'c44619e0-3a88-4754-a750-a414fc9567bf';
+
   // run the 'BillingScenarios' test suite
   describe('(POST /invoices)', BillingScenarios);
 
@@ -357,6 +359,18 @@ function BillingScenarios() {
         // this is the cost ($80.29) - 50% ($40.145) of subsidy
         expect(invoice.cost).to.equal(40.145);
         expect(invoice.items).to.have.length(3);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /transactions/:uuid deletes an invoice', () => {
+    return agent.delete(`/transactions/${TO_DELETE_UUID}`)
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/invoices/${TO_DELETE_UUID}`);
+      })
+      .then(res => {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
