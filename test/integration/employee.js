@@ -34,6 +34,7 @@ describe('(/employees) the employees API endpoint', function () {
     fonction_id : 1,
     locked : 0,
     service_id : 1,
+    is_medical : 0,
     hospital_no : 'TP30',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
     debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
@@ -56,6 +57,7 @@ describe('(/employees) the employees API endpoint', function () {
     email : 'me@info.com',
     fonction_id : 1,
     service_id : 1,
+    is_medical : 0,
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
     debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };

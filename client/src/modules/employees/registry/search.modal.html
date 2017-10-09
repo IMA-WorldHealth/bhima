@@ -118,6 +118,26 @@
               </option>
             </select>
           </div>
+
+          <div class="radio">
+            <p class="control-label">
+              <strong translate>FORM.LABELS.MEDICAL_NONMEDICAL_STAFF</strong>
+              <bh-clear on-clear="ModalCtrl.clear('is_medical')"></bh-clear>
+            </p>
+
+            <label>
+              <input type="radio" name="is_medical" id="male" value="1" ng-model="ModalCtrl.searchQueries.is_medical">
+              <span translate>FORM.LABELS.MEDICAL_STAFF</span>
+            </label>
+          </div>
+
+          <div class="radio">
+            <label>
+              <input type="radio" name="sex" id="female" value="0" ng-model="ModalCtrl.searchQueries.is_medical">
+              <span translate>FORM.LABELS.NONMEDICAL_STAFF</span>
+            </label>
+          </div>
+
         </fieldset>
         <fieldset>
           <legend translate>FORM.LABELS.DOB</legend>

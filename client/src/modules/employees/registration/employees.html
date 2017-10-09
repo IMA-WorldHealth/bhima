@@ -377,7 +377,21 @@
                     </div>
                   </div>
 
-                   <!-- Employee phone -->
+                  <!-- Employee Medical Or Non-Medical -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.is_medical.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.IS_MEDICAL_STAFF</label>
+                    <div class="col-md-9">
+                      <input type="checkbox" name="is_medical" ng-true-value="1" ng-false-value="0" ng-model="EmployeeCtrl.employee.is_medical">
+                      <div class="help-block" ng-messages="DetailForm.email.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee phone -->
                   <div
                     class="form-group"
                     ng-class="{'has-error' : DetailForm.phone.$invalid && EmployeeRegistrationForm.$submitted}">

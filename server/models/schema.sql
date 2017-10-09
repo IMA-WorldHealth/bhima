@@ -628,6 +628,7 @@ CREATE TABLE `employee` (
   `creditor_uuid` BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
+  `is_medical`    TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `employee_1` (`code`),
   KEY `fonction_id` (`fonction_id`),

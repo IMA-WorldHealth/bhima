@@ -52,6 +52,7 @@ describe('Employees', () => {
     registrationPage.setNumberChild(employee.nb_enfant);
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
+    registrationPage.setIsMedical();
     registrationPage.setEmail(employee.email);
     registrationPage.setAddress(employee.adresse);
     registrationPage.setBank(employee.bank);

@@ -118,6 +118,12 @@ function EmployeeRegistryController(Employees, Notify,
       headerCellFilter : 'translate',
       visible          : false
     },
+    { field            : 'is_medical',
+      displayName      : 'FORM.LABELS.MEDICAL_STAFF',
+      headerCellFilter : 'translate',
+      visible          : false,
+      cellTemplate     : '/modules/employees/templates/medical.cell.html',
+    },    
     { name          : 'actions',
       displayName   : '',
       cellTemplate  : '/modules/employees/templates/action.cell.html'
