@@ -345,11 +345,6 @@ INSERT INTO `patient_group_subsidy` VALUES
 INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
--- exchange rate for the current date
-INSERT INTO `exchange_rate` VALUES
-  (1,1,1,900.0000, DATE('2016-01-01')),
-  (2,1,1,930.0000, NOW());
-
 -- voucher sample data
 SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
@@ -398,14 +393,11 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
   (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
--- FIXME(@jniles): this is kind of a hack
-CALL PostCash(@cash_payment_2);
-
-
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
   (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 10, @first_invoice);
 
 CALL PostCash(@cash_payment);
+CALL PostCash(@cash_payment_2);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
