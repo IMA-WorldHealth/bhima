@@ -924,9 +924,11 @@ DROP TABLE IF EXISTS `inventory_unit`;
 
 CREATE TABLE `inventory_unit` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
+  `abbr` varchar(10) NOT NULL,
+  `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `inventory_unit_1` (`text`)
+  UNIQUE KEY `inventory_unit_1` (`text`),
+  UNIQUE KEY `inventory_unit_2` (`abbr`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
