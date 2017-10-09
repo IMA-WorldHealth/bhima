@@ -37,7 +37,7 @@ describe('Inventory Configuration', () => {
 
   // inventory unit
   const unit = { text : '[E2E] Inventory Unit', abbr : 'IUE2E' };
-  const updateUnit = { text : '[E2E] Inventory Unit updated' };
+  const updateUnit = { text : '[E2E] Inventory Unit updated', abbr : 'IUu' };
 
   describe('Groups', () => {
     // navigate to the page
@@ -116,6 +116,7 @@ describe('Inventory Configuration', () => {
     it('Successfully updates an existing inventory unit', () => {
       element(by.css('[data-edit-unit="' + unit.abbr +'"]')).click();
       FU.input('$ctrl.session.text', updateUnit.text);
+      FU.input('$ctrl.session.abbr', updateUnit.abbr);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
