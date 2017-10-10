@@ -1,12 +1,8 @@
 /* global browser, element, by */
-const chai = require('chai');
-
-const expect = chai.expect;
+const { expect } = require('chai');
 
 // import testing utilities
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
@@ -213,6 +209,8 @@ describe('Cash Payments', () => {
   });
 
   describe('Cash Transfer ', CashTransfer);
+
+  describe('Credit Notes', CreditNoteTests);
 });
 
 
@@ -248,6 +246,37 @@ function CashTransfer() {
     $('[data-action="close"]').click();
 
     // make sure we have a success notification shown
+    components.notification.hasSuccess();
+  });
+}
+
+const SearchModal = require('../shared/search.page');
+const GridRow = require('../shared/GridRow');
+
+function CreditNoteTests() {
+  before(() => helpers.navigate('#/payments'));
+
+  it('cancels a payment with a credit note', () => {
+    const row = new GridRow('CP.TPA.3');
+    row.dropdown().click();
+    row.reverse().click();
+
+    FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  it('deletes a cash payment from the database', () => {
+    SearchModal.open();
+    const modal = new SearchModal('cash-payment-search');
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    modal.setLimit(1000);
+    modal.submit();
+
+    const row = new GridRow('CP.TPA.4');
+    row.dropdown().click();
+    row.remove().click();
     components.notification.hasSuccess();
   });
 }

@@ -16,20 +16,25 @@ describe('Invoice Registry', () => {
   describe('Search', Search);
 
   it('shows the proof of the invoice correctly', () => {
-    page.clickOnMethod(0, 'invoiceReceipt');
+    page.openReceipt('IV.TPA.2');
     FU.exists(by.css('[data-modal="receipt"]'), true);
     FU.modal.close();
   });
 
-  it('Credit Note for reverse any transaction in the posting_journal', () => {
-    page.clickOnMethod(0, 'createCreditNote');
+  it('can be reversed via a credit note', () => {
+    page.reverse('IV.TPA.1');
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();
   });
 
-  it('shows the proof of the credit note correctly', () => {
-    page.clickOnMethod(0, 'creditNoteReceipt');
+  it('shows the receipt for the credit note', () => {
+    page.openCreditNoteReceipt('IV.TPA.1');
     FU.modal.close();
+  });
+
+  it('deletes an invoice', () => {
+    page.remove('IV.TPA.3');
+    components.notification.hasSuccess();
   });
 });

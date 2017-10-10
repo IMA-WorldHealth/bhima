@@ -378,7 +378,7 @@ SET @fourth_voucher = HUID('8fefadec-c036-48ce-bc4e-e307d1301960');
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
   (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55'),
   (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14'),
-  (1,3,@third_invoice,5.1300,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-02-02 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-7 14:31:14');
+  (1,3,@third_invoice,5.1300,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-02 09:34:35','TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-02 09:31:14');
 
 INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),

@@ -8,13 +8,13 @@ const components = require('../shared/components');
 describe('Payments Registry', CashPaymentsRegistryTests);
 
 function CashPaymentsRegistryTests() {
-  const PAYMENT_INSIDE_REGISTRY = 4;
+  const PAYMENT_INSIDE_REGISTRY = 3;
   const PAYMENT_PRIMARY_CASHBOX = 0;
   const DEBTOR_GROUP = 'First Test Debtor Group';
   let modal;
   let filters;
 
-  before(() => helpers.navigate('#/payments'));
+  before(() => helpers.navigate('!#/payments'));
 
   beforeEach(() => {
     SearchModal.open();
@@ -41,6 +41,7 @@ function CashPaymentsRegistryTests() {
     modal.submit();
     GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
+
 
   it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, () => {
     modal.switchToDefaultFilterTab();

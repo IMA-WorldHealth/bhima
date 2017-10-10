@@ -19,9 +19,8 @@ function InvoiceRegistrySearch() {
     filters.resetFilters();
   });
 
-  it('filters 3 invoice for today', () => {
-    const DEFAULT_INVOICES_FOR_TODAY = 3;
-
+  const DEFAULT_INVOICES_FOR_TODAY = 3;
+  it(`filters ${DEFAULT_INVOICES_FOR_TODAY} invoice for today`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
@@ -29,9 +28,8 @@ function InvoiceRegistrySearch() {
     page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
   });
 
-  it('filters 5 invoices for all time', () => {
-    const DEFAULT_INVOICES_FOR_ALL_TIME = 5;
-
+  const DEFAULT_INVOICES_FOR_ALL_TIME = 5;
+  it(`filters ${DEFAULT_INVOICES_FOR_ALL_TIME} invoices for all time`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
@@ -66,23 +64,21 @@ function InvoiceRegistrySearch() {
     page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by debtor group "First Test Debtor Group" to get five results', () => {
-    const NUM_MATCHING = 5;
-
+  const DEBTOR_GROUP_INVOICES = 5;
+  it(`filters by debtor group "First Test Debtor Group" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
     components.debtorGroupSelect.set('First Test Debtor Group');
     modal.submit();
 
-    page.expectNumberOfGridRows(NUM_MATCHING);
+    page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);
   });
 
 
-  it('filters by user "Super User" should return five results', () => {
-    const NUM_MATCHING = 5;
-
+  const SUPER_USER_INVOICES = 5;
+  it(`filters by user "Super User" should return ${SUPER_USER_INVOICES} results`, () => {
     modal.setUser('Super User');
     modal.submit();
 
-    page.expectNumberOfGridRows(NUM_MATCHING);
+    page.expectNumberOfGridRows(SUPER_USER_INVOICES);
   });
 }
 

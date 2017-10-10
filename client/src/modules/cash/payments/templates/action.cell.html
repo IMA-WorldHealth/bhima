@@ -1,37 +1,41 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.reference }}">
   <a href uib-dropdown-toggle>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span data-action="open-dropdown-menu" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ row.entity.reference }}"  class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}"class="dropdown-menu-right" uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a href data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
       </a>
     </li>
+
     <li class="divider"></li>
+
+    <!-- view linked records -->
     <li>
-      <a ui-sref="patientRegistry({ filters : { key : 'display_name', value : row.entity.patientName }})" data-method="viewPatient" href>
+      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : { key : 'display_name', value : row.entity.patientName }})">
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
       </a>
     </li>
     <li ng-show="!row.entity.is_caution">
-      <a data-method="viewInvoice" ui-sref="invoiceRegistry({ filters : { key : 'cash_uuid', value : row.entity.uuid }})" href>
+      <a data-method="view-invoice"  href ui-sref="invoiceRegistry({ filters : { key : 'cash_uuid', value : row.entity.uuid }})">
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>
       </a>
     </li>
     <li>
-      <a data-method="viewTransactions" ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})" href>
+      <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})">
         <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
       </a>
     </li>
+
     <li class="divider"></li>
+
+    <!-- reverse or remove records -->
     <li>
-      <a href
-        data-method="cancel"
-        ng-click="grid.appScope.cancelCash(row.entity)"
-        ng-hide="row.entity._hasCreditNote">
+      <a data-method="reverse-record" href ng-click="grid.appScope.cancelCash(row.entity)" ng-hide="row.entity._hasCreditNote">
         <span class="text-danger"><i class="fa fa-clone"></i> <span translate>TABLE.COLUMNS.CANCEL_CASH</span></span>
       </a>
 
@@ -41,9 +45,7 @@
     </li>
 
     <li ng-hide="row.entity._hasCreditNote">
-      <a href
-        data-method="delete"
-        ng-click="grid.appScope.deleteCashPayment(row.entity)">
+      <a data-method="delete-record" href ng-click="grid.appScope.deleteCashPayment(row.entity)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>
     </li>
