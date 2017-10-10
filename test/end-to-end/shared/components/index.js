@@ -35,4 +35,6 @@ module.exports = {
   cashboxSelect               : require('./bhCashBoxSelect'),
   addItem                     : require('./bhAddItem'),
   serviceSelect               : require('./bhServiceSelect'),
+  inventoryGroupSelect        : require('./bhInventoryGroupSelect'),
+  inventoryTypeSelect         : require('./bhInventoryTypeSelect'),
 };

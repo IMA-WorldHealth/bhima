@@ -12,23 +12,12 @@
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
 
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.GROUP
-            </label>
+          <bh-inventory-group-select
+            group-uuid="ModalCtrl.searchQueries.group_uuid"
+            name="group_uuid"
+            on-select-callback="ModalCtrl.onSelectGroup(group)">
             <bh-clear on-clear="ModalCtrl.clear('group_uuid')"></bh-clear>
-
-            <!-- @todo make data driven selects components to handle loading and error states -->
-            <ui-select
-              name="group_uuid"
-              ng-model="ModalCtrl.searchQueries.group_uuid">
-              <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="group.uuid as group in (ModalCtrl.inventoryGroups | filter:$select.search | orderBy:'name')">
-                <span ng-bind-html="group.name | highlight:$select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-
-          </div>
+          </bh-inventory-group-select>
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.text.$invalid }">
             <label class="control-label" translate>
@@ -66,20 +55,12 @@
             </div>
           </div>
 
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.type_id.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.TYPE</label>
+          <bh-inventory-type-select
+            type-id="ModalCtrl.searchQueries.type_id"
+            name="type_id"
+            on-select-callback="ModalCtrl.onSelectType(type)">
             <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
-            <select
-              class="form-control"
-              name="type_id"
-              ng-model="ModalCtrl.searchQueries.type_id"
-              ng-options="type.id as type.text for type in ModalCtrl.types">
-              <option value="" translate>FORM.SELECT.INVENTORY_TYPE</option>
-            </select>
-            <div class="help-block" ng-messages="ModalForm.type_id.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
+          </bh-inventory-type-select>
 
           <div class="radio" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
             <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
