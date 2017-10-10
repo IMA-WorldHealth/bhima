@@ -25,12 +25,12 @@ function details(identifier) {
 
 /** create new inventory unit */
 function create(record) {
-  const sql = 'INSERT INTO inventory_unit (text) VALUES (?);';
+  const sql = 'INSERT INTO inventory_unit (abbr, text) VALUES (?, ?);';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
-  return db.exec(sql, [record.text])
+  return db.exec(sql, [record.abbr, record.text])
     .then(row => row.insertId);
 }
 
@@ -56,6 +56,6 @@ function remove(id) {
  * @param {number} id - the unit id is optional
  */
 function getUnits(id) {
-  const sql = `SELECT id, text FROM inventory_unit ${id ? ' WHERE id = ?;' : ';'}`;
+  const sql = `SELECT id, abbr, text FROM inventory_unit ${id ? ' WHERE id = ?;' : ';'}`;
   return db.exec(sql, [id]);
 }
