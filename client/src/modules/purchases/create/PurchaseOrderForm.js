@@ -40,7 +40,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.inventory = new Pool({ identifier: 'uuid', data : [] });
 
     // set up the inventory
-    Inventory.read()
+    Inventory.read(null, { locked : 0 })
       .then(function (data) {
         this.inventory.initialize('uuid', data);
       }.bind(this));

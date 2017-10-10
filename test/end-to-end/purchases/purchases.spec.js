@@ -22,7 +22,7 @@ describe('Purchase Orders', () => {
     const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('Test Supplier');    
     FU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
     components.dateEditor.set(new Date('2016-03-03'));
 
@@ -46,7 +46,7 @@ describe('Purchase Orders', () => {
     const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('Test Supplier');
     FU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
     components.dateEditor.set(new Date('2016-03-05'));
 
@@ -104,7 +104,7 @@ describe('Purchase Orders', () => {
     page.btns.clear.click();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('Test Supplier');
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
     components.dateEditor.set(new Date('2016-03-01'));
 
