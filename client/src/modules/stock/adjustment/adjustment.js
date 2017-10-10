@@ -41,62 +41,77 @@ function StockAdjustmentController(
   vm.checkValidity = checkValidity;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
+  vm.handleAdjustmentOption = handleAdjustmentOption;
 
   // grid columns
   var columns = [
-    { field        : 'status',
-      width        : 25,
-      displayName  : '',
-      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html' },
+    {
+      field: 'status',
+      width: 25,
+      displayName: '',
+      cellTemplate: 'modules/stock/exit/templates/status.tmpl.html'
+    },
 
-    { field            : 'code',
-      width            : 120,
-      displayName      : 'TABLE.COLUMNS.CODE',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/exit/templates/code.tmpl.html' },
+    {
+      field: 'code',
+      width: 120,
+      displayName: 'TABLE.COLUMNS.CODE',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/exit/templates/code.tmpl.html'
+    },
 
-    { field            : 'description',
-      displayName      : 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/exit/templates/description.tmpl.html' },
+    {
+      field: 'description',
+      displayName: 'TABLE.COLUMNS.DESCRIPTION',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/exit/templates/description.tmpl.html'
+    },
 
-    { field            : 'lot',
-      width            : 150,
-      displayName      : 'TABLE.COLUMNS.LOT',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/exit/templates/lot.tmpl.html' },
+    {
+      field: 'lot',
+      width: 150,
+      displayName: 'TABLE.COLUMNS.LOT',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/exit/templates/lot.tmpl.html'
+    },
 
-    { field               : 'quantity',
-      width               : 150,
-      displayName         : 'TABLE.COLUMNS.QUANTITY',
-      headerCellFilter    : 'translate',
-      cellTemplate        : 'modules/stock/adjustment/templates/quantity.tmpl.html',
-      treeAggregationType : uiGridGroupingConstants.aggregation.SUM },
+    {
+      field: 'quantity',
+      width: 150,
+      displayName: 'TABLE.COLUMNS.QUANTITY',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/adjustment/templates/quantity.tmpl.html',
+      treeAggregationType: uiGridGroupingConstants.aggregation.SUM
+    },
 
-    { field            : 'available_lot',
-      width            : 150,
-      displayName      : 'TABLE.COLUMNS.AVAILABLE',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/exit/templates/available.tmpl.html' },
+    {
+      field: 'available_lot',
+      width: 150,
+      displayName: 'TABLE.COLUMNS.AVAILABLE',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/exit/templates/available.tmpl.html'
+    },
 
-    { field            : 'expiration_date',
-      width            : 150,
-      displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/exit/templates/expiration.tmpl.html' },
+    {
+      field: 'expiration_date',
+      width: 150,
+      displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/exit/templates/expiration.tmpl.html'
+    },
 
-      { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
+    { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
   ];
 
   // grid options
   vm.gridOptions = {
-    appScopeProvider  : vm,
-    enableSorting     : false,
-    enableColumnMenus : false,
-    columnDefs        : columns,
-    data              : vm.Stock.store.data,
-    fastWatch         : true,
-    flatEntityAccess  : true,
+    appScopeProvider: vm,
+    enableSorting: false,
+    enableColumnMenus: false,
+    columnDefs: columns,
+    data: vm.Stock.store.data,
+    fastWatch: true,
+    flatEntityAccess: true,
   };
 
   // add items
@@ -109,6 +124,14 @@ function StockAdjustmentController(
   function removeItem(item) {
     vm.Stock.removeItem(item.index);
     checkValidity();
+  }
+
+  function handleAdjustmentOption() {
+    if (vm.adjustmentOption === 'increase') {
+      vm.adjustmentType = 'FORM.LABELS.INCREASE';
+    } else if (vm.adjustmentOption === 'decrease') {
+      vm.adjustmentType = 'FORM.LABELS.DECREASE';
+    }
   }
 
   // configure item
@@ -131,8 +154,8 @@ function StockAdjustmentController(
 
   function startup() {
     vm.movement = {
-      date : new Date(),
-      entity : {},
+      date: new Date(),
+      entity: {},
     };
 
     vm.depot = cache.depot;
@@ -172,28 +195,30 @@ function StockAdjustmentController(
     if (form.$invalid || !vm.adjustmentOption) { return; }
 
     if (vm.adjustmentOption === 'increase') {
+      vm.adjustmentType = 'FORM.LABELS.INCREASE';
       isExit = 0;
       fluxId = bhConstants.flux.FROM_ADJUSTMENT;
     } else if (vm.adjustmentOption === 'decrease') {
+      vm.adjustmentType = 'FORM.LABELS.DECREASE';
       isExit = 1;
       fluxId = bhConstants.flux.TO_ADJUSTMENT;
     }
 
     var movement = {
-      depot_uuid  : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
-      date        : vm.movement.date,
-      description : vm.movement.description,
-      is_exit     : isExit,
-      flux_id     : fluxId,
-      user_id     : Session.user.id,
+      depot_uuid: vm.depot.uuid,
+      entity_uuid: vm.movement.entity.uuid,
+      date: vm.movement.date,
+      description: vm.movement.description,
+      is_exit: isExit,
+      flux_id: fluxId,
+      user_id: Session.user.id,
     };
 
     var lots = vm.Stock.store.data.map(function (row) {
       return {
-        uuid      : row.lot.uuid,
-        quantity  : row.quantity,
-        unit_cost : row.lot.unit_cost,
+        uuid: row.lot.uuid,
+        quantity: row.quantity,
+        unit_cost: row.lot.unit_cost,
       };
     });
 
