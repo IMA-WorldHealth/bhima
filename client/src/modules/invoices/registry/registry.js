@@ -34,6 +34,7 @@ function InvoiceRegistryController(
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
   vm.download = Invoices.download;
+  vm.deleteInvoice = deleteInvoice;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -215,6 +216,18 @@ function InvoiceRegistryController(
         } else {
           openModal(invoice);
         }
+      })
+      .catch(Notify.handleError);
+  }
+
+  function deleteInvoice(entity) {
+    Invoices.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Invoices.filters.formatHTTP(true));
       })
       .catch(Notify.handleError);
   }

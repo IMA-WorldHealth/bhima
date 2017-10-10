@@ -112,7 +112,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Employee Registry
 (62, 1),
 
--- subsidie Management
+-- subsidy Management
 (82, 1),
 
 --  Cashbox Management
@@ -372,18 +372,22 @@ CALL PostVoucher(@third_voucher);
 -- patient invoices
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
+SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
 SET @fourth_voucher = HUID('8fefadec-c036-48ce-bc4e-e307d1301960');
 
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
   (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55'),
-  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14');
+  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14'),
+  (1,3,@third_invoice,5.1300,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-02-02 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-7 14:31:14');
 
 INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
-  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
+  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000),
+  (@third_invoice,HUID('ffb0330d-7d46-4204-b29d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,5.13,5.13,0.0000,5.130000);
 
 CALL PostInvoice(@first_invoice);
 CALL PostInvoice(@second_invoice);
+CALL PostInvoice(@third_invoice);
 
 -- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');

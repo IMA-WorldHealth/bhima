@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -16,7 +16,7 @@ describe('(/debtors) The /debtors API', function () {
   it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
     return agent.get(`/debtors/${debtorUuid}/invoices`)
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
@@ -24,7 +24,7 @@ describe('(/debtors) The /debtors API', function () {
   it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalanced invoices of a given debtor', function () {
     return agent.get(`/debtors/${debtorUuid}/invoices?balanced=0`)
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

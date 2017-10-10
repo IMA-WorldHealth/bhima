@@ -194,7 +194,7 @@ function VoucherService(
    * @method remove
    *
    * @description
-   * This function removes a voucher  from the database via the transaction
+   * This function removes a voucher from the database via the transaction
    * delete route.
    */
   function remove(uuid) {
