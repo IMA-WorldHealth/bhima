@@ -40,6 +40,8 @@ describe('Inventory List', () => {
 
   const metadataSearch = {
     label : 'First',
+    group : 'Test inventory group',
+    type  : 'Article',    
   };
 
   it('successfully creates a new inventory item (metadata)', () => {
@@ -85,6 +87,19 @@ describe('Inventory List', () => {
 
     GU.expectRowCount('inventoryListGrid', 1);
   });
+
+
+  // demonstrates that filtering works
+  it(`should find three Inventory with Group "${metadataSearch.group}" and Type "${metadataSearch.type}"`, () => {
+    element(by.id('research')).click();
+
+    components.inventoryGroupSelect.set(metadataSearch.group);
+    components.inventoryTypeSelect.set(metadataSearch.type);
+    FU.modal.submit();
+
+    GU.expectRowCount('inventoryListGrid', 3);
+  });
+
 
   it('dont creates a new inventory item (metadata) for invalid data', () => {
     FU.buttons.create();
