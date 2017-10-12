@@ -130,7 +130,7 @@ function deleteTransaction(req, res, next) {
       // TODO(@jniles) - i18n
       const isPosted = transaction[0].posted;
       if (isPosted) {
-        throw new BadRequest('This transaction is already posted.');
+        throw new BadRequest('This transaction is already posted.', 'TRANSACTIONS.ERRORS.TRANSACTION_POSTED');
       }
 
       // check if the transaction has references elsewhere
@@ -140,7 +140,7 @@ function deleteTransaction(req, res, next) {
       // TODO(@jniles) - i18n
       const isReferenced = references.length > 0;
       if (isReferenced) {
-        throw new BadRequest('This transaction is referenced.');
+        throw new BadRequest('This transaction is referenced.', 'TRANSACTIONS.ERRORS.TRANSACTION_REFERENCED');
       }
 
       const documentMapText = transaction[0].identifier;

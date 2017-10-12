@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService',
+  'GridColumnService', 'GridStateService', 'ModalService',
 ];
 
 /**
@@ -15,9 +15,8 @@ CashPaymentRegistryController.$inject = [
  * print and search utilities for the registry.`j
  */
 function CashPaymentRegistryController(
-  Cash, bhConstants, Notify, Session, uiGridConstants,
-  Receipt, Modal, Sorting, $state, Filters, Columns,
-  GridState
+  Cash, bhConstants, Notify, Session, uiGridConstants, Receipt, Modal, Sorting,
+  $state, Filters, Columns, GridState, Modals
 ) {
   var vm = this;
 
@@ -204,9 +203,7 @@ function CashPaymentRegistryController(
     gridColumns.openConfigurationModal();
   }
 
-  // this function deletes the cash payment and associated transactions from
-  // the database
-  function deleteCashPayment(entity) {
+  function remove(entity) {
     Cash.remove(entity.uuid)
       .then(function () {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
@@ -216,6 +213,15 @@ function CashPaymentRegistryController(
         load(Cash.filters.formatHTTP(true));
       })
       .catch(Notify.handleError);
+  }
+
+  // this function deletes the cash payment and associated transactions from
+  // the database
+  function deleteCashPayment(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   startup();

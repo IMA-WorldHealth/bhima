@@ -1,5 +1,6 @@
 const helpers = require('../shared/helpers');
 const GU = require('../shared/GridUtils');
+const FU = require('../shared/FormUtils');
 const VoucherRegistrySearch = require('./vouchers.search');
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
@@ -20,6 +21,10 @@ describe('Voucher Registry', () => {
     const row = new GridRow('VO.TPA.1');
     row.dropdown().click();
     row.remove().click();
+
+    // accept the confirm modal
+    FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 });

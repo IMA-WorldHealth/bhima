@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 VoucherController.$inject = [
-  'VoucherService', 'NotifyService', 'uiGridGroupingConstants', 'TransactionTypeService',
-  'uiGridConstants', 'bhConstants', 'ReceiptModal', 'GridSortingService', 'GridColumnService',
-  'GridStateService', '$state',
+  'VoucherService', 'NotifyService', 'uiGridGroupingConstants',
+  'TransactionTypeService', 'uiGridConstants', 'bhConstants', 'ReceiptModal',
+  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
+  'ModalService',
 ];
 
 /**
@@ -17,8 +18,8 @@ VoucherController.$inject = [
  * reordering, and many more features.
  */
 function VoucherController(
-  Vouchers, Notify, uiGridGroupingConstants, TransactionTypes,
-  uiGridConstants, bhConstants, Receipts, Sorting, Columns, GridState, $state
+  Vouchers, Notify, uiGridGroupingConstants, TransactionTypes, uiGridConstants,
+  bhConstants, Receipts, Sorting, Columns, GridState, $state, Modals
 ) {
   var vm = this;
 
@@ -234,8 +235,7 @@ function VoucherController(
     $state.reload();
   }
 
-  // this function deletes the voucher from the database
-  function deleteVoucher(entity) {
+  function remove(entity) {
     Vouchers.remove(entity.uuid)
       .then(function () {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
@@ -245,6 +245,14 @@ function VoucherController(
         load(Vouchers.filters.formatHTTP(true));
       })
       .catch(Notify.handleError);
+  }
+
+  // this function deletes the voucher from the database
+  function deleteVoucher(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   startup();

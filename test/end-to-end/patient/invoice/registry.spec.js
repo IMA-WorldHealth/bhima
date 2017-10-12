@@ -35,6 +35,10 @@ describe('Invoice Registry', () => {
 
   it('deletes an invoice', () => {
     page.remove('IV.TPA.3');
+
+    // accept the confirm modal
+    FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 });

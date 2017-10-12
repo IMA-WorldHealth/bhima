@@ -5,6 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
+  'ModalService'
 ];
 
 /**
@@ -14,7 +15,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state
+  ModalService, Cash, Sorting, Columns, GridState, $state, Modals
 ) {
   var vm = this;
 
@@ -220,7 +221,7 @@ function InvoiceRegistryController(
       .catch(Notify.handleError);
   }
 
-  function deleteInvoice(entity) {
+  function remove(entity) {
     Invoices.remove(entity.uuid)
       .then(function () {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
@@ -230,6 +231,14 @@ function InvoiceRegistryController(
         load(Invoices.filters.formatHTTP(true));
       })
       .catch(Notify.handleError);
+  }
+
+  // check if it is okay to remove the entity.
+  function deleteInvoice(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   // fire up the module

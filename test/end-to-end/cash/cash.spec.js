@@ -277,6 +277,10 @@ function CreditNoteTests() {
     const row = new GridRow('CP.TPA.4');
     row.dropdown().click();
     row.remove().click();
+
+    // accept the confirm modal
+    FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 }
