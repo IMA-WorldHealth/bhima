@@ -48,26 +48,20 @@
               <strong translate>FORM.LABELS.STATUS</strong>
             </p>
 
-            <div class="checkbox" style="display : inline-block; padding-right:5px;">
-              <label>
-                <input type="checkbox" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0"> 
-                <span translate>PURCHASES.STATUS.CONFIRMED</span>
-              </label>
-            </div>
+            <label class="radio-inline">
+              <input type="radio" id="is_confirmed" name="state" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0">
+              <span translate>PURCHASES.STATUS.CONFIRMED</span>
+            </label>
 
-            <div class="checkbox" style="display : inline-block; padding-right:5px;">
-              <label>
-                <input type="checkbox" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
-                <span translate>PURCHASES.STATUS.RECEIVED</span>
-              </label>
-            </div>
+            <label class="radio-inline">
+              <input type="radio" id="is_received" name="state" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
+              <span translate>PURCHASES.STATUS.RECEIVED</span>
+            </label>
 
-            <div class="checkbox" style="display : inline-block; padding-right:5px;">
-              <label>
-                <input type="checkbox" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
-                <span translate>PURCHASES.STATUS.CANCELLED</span>
-              </label>
-            </div>
+            <label class="radio-inline">
+              <input type="radio" id="is_cancelled" name="state" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
+              <span translate>PURCHASES.STATUS.CANCELLED</span>
+            </label>
           </div>
         </div>
       </uib-tab>

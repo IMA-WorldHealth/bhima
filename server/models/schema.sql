@@ -1397,19 +1397,18 @@ CREATE TABLE `purchase` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `payment_method`  TEXT,
   `note`            TEXT,
-  `is_confirmed`    TINYINT(1) DEFAULT 0,
-  `is_received`              TINYINT(1) DEFAULT 0,
-  `is_partially_received`    TINYINT(1) DEFAULT 0,
-  `is_cancelled`    TINYINT(1) DEFAULT 0,
+  `status_id`       TINYINT(3) UNSIGNED NOT NULL,   
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
   KEY `reference` (`reference`),
   KEY `supplier_uuid` (`supplier_uuid`),
   KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `purchase_item`;
@@ -1427,6 +1426,15 @@ CREATE TABLE `purchase_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `purchase_status`;
+
+CREATE TABLE `purchase_status` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `text` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `purchase_status` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `reference`;

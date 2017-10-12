@@ -422,7 +422,7 @@ UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c299557
 
 SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
 INSERT INTO `purchase` VALUES
-  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL, 0, 0, 0, 0);
+  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL, 1);
 
 INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
@@ -431,7 +431,7 @@ INSERT INTO `purchase_item` VALUES
 -- confirmed purchase order
 SET @purchase = HUID('8027d1c8-dd68-4686-9f4c-8860f856f8ba');
 INSERT INTO `purchase` VALUES
-  (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2017-03-29'), CURRENT_TIMESTAMP, 1, NULL, 'Purchase Order Confirmed', 1, 0, 0, 0);
+  (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2017-03-29'), CURRENT_TIMESTAMP, 1, NULL, 'Purchase Order Confirmed', 2);
 
 INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 1000, 0.05, (1000 * 0.05));

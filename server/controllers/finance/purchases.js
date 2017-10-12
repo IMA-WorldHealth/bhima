@@ -94,7 +94,7 @@ function lookupPurchaseOrder(uid) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
-      p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
+      p.status_id
     FROM purchase AS p
     JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -271,9 +271,7 @@ function find(options) {
   filters.dateFrom('custion_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
-  filters.equals('is_confirmed');
-  filters.equals('is_received');
-  filters.equals('is_cancelled');
+  filters.equals('status_id');
   filters.equals('supplier_uuid', 'uuid', 's');
 
   const sql = `
@@ -281,7 +279,7 @@ function find(options) {
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
+        p.status_id
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
