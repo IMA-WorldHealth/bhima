@@ -25,6 +25,7 @@ exports.projects = require('./projects');
 // expose API routes
 exports.list = list;
 exports.detail = detail;
+exports.exists = exists;
 exports.create = create;
 exports.update = update;
 exports.delete = remove;
@@ -48,7 +49,7 @@ function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated 
+      user.active, user.last_login AS lastLogin, user.deactivated
     FROM user WHERE user.id = ?;
   `;
 
@@ -119,6 +120,17 @@ function detail(req, res, next) {
   lookupUser(req.params.id)
   .then((data) => {
     res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+}
+
+function exists(req, res, next) {
+  const sql='SELECT count(id) as nbr FROM user WHERE username=?';
+
+  db.one (sql,req.params.username)
+  .then((data) => {
+    res.send(data.nbr !== 0);
   })
   .catch(next)
   .done();

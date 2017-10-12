@@ -9,4 +9,6 @@
 "UPDATED":"Modifie avec succes",
 "CREATE":"Creer",
 "UPDATE":"Editer",
-"CREATED":"Creee avec succes"}}
+"CREATED":"Creee avec succes",
+"PASSWORDPOLICY":"Pour se conformer à notre politique de mot de passe fort, le mot de passe doit avoir plus de 7 caractères contentant au moins un caractère spécial (ex.: @, #) , un ou plusiers chiffres ansi que les lettres majuscules et miniscules"
+}}

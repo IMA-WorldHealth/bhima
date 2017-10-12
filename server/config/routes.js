@@ -438,6 +438,7 @@ exports.configure = function configure(app) {
   app.get('/users', users.list);
   app.post('/users', users.create);
   app.get('/users/:id', users.detail);
+  app.get('/users/:username/exists', users.exists);
   app.put('/users/:id', users.update);
   app.delete('/users/:id', users.delete);
   app.get('/users/:id/projects', users.projects.list);
