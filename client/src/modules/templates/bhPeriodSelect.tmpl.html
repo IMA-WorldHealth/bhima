@@ -74,7 +74,7 @@
             is-open="$ctrl.dateFromIsOpen"
             show-button-bar="false"
             ng-model="$ctrl.customSelection.from"
-            ng-change="$ctrl.onChange"
+            ng-change="$ctrl.customPeriodChanges()"
             ng-required="$ctrl.required">
             <span class="input-group-btn">
               <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
@@ -98,7 +98,7 @@
           is-open="$ctrl.dateToIsOpen"
           show-button-bar="false"
           ng-model="$ctrl.customSelection.to"
-          ng-change="$ctrl.onChange"
+          ng-change="$ctrl.customPeriodChanges()"
           ng-required="$ctrl.required"
           >
           <span class="input-group-btn">
