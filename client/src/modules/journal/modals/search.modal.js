@@ -34,6 +34,19 @@ function JournalSearchModalController(Instance, Notify,
 
   window.search = vm.searchQueries;
 
+  /**
+   * hasDefaultAccount is used to set a default account selection behavior
+   * if the search modal need to set account selection in default query panel we can send it
+   * as parameters
+   * @example
+   * <pre>
+   * Config.openSearchModal(filters, { hasDefaultAccount : true })
+   * </pre>
+   */
+  if (options.hasDefaultAccount) {
+    vm.hasDefaultAccount = true;
+  }
+  
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;

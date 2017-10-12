@@ -37,4 +37,5 @@ module.exports = {
   serviceSelect               : require('./bhServiceSelect'),
   inventoryGroupSelect        : require('./bhInventoryGroupSelect'),
   inventoryTypeSelect         : require('./bhInventoryTypeSelect'),
+  projectSelect               : require('./bhProjectSelect'),
 };
