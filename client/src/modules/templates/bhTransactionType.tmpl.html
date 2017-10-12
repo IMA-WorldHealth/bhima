@@ -1,0 +1,24 @@
+<div ng-form="{{ $ctrl.name }}" bh-transaction-type ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : TypeForm.$$parent.$submitted && TypeForm.type_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.TRANSACTION_TYPE
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="type_id" 
+      ng-model="$ctrl.typeId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}"><span>{{$select.selected.hrText}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'hrText': $select.search }">
+        <span ng-bind-html="type.hrText | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="TypeForm.type_id.$error" ng-show="TypeForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

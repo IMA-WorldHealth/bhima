@@ -19,10 +19,13 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
   vm.defaultQueries = {};
+  vm.displayLabel = {};
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
+
+  var lastViewFilters = vm.filters.lastViewFilters || '';
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -86,7 +89,17 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
+    vm.displayLabel.user_id = user.display_name;
   };
+
+  // Set displayLabel if the filters user is defined
+  if (filters.user_id) {
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'user_id') {
+        vm.displayLabel.user_id = filter._displayValue;
+      }
+    });
+  }
 
   // deafult filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -96,6 +109,22 @@ function JournalSearchModalController(Instance, Projects, Notify,
       changes.post(filterChange);
     });
   };
+
+  // custom filter origin_id - assign the value to the searchQueries object
+  vm.onSelectOrigin = function onSelectOrigin(type) {
+    vm.displayLabel.origin_id = type.hrText;
+    vm.searchQueries.origin_id = type.id;
+  };
+
+  // Set displayLabel if the filters origin is defined
+  if (filters.origin_id) {    
+    lastViewFilters.forEach(function (filter) {
+      if (filter._key === 'origin_id') {
+        vm.displayLabel.origin_id = filter._displayValue;
+      }    
+    });
+  }
+
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -119,6 +148,15 @@ function JournalSearchModalController(Instance, Projects, Notify,
       if (angular.isDefined(value)) {
         if (key === 'account_id') {
           changes.post({ key : key, value : value, displayValue : vm.hrAccounts[value] });
+        } else if (vm.displayLabel[key]) {
+          changes.post({ key : key, value : value, displayValue : vm.displayLabel[key] });
+        } else if (key === 'project_id') {
+          vm.projects.forEach(function (project) {
+            if (project.id === value) {
+              vm.projectName = project.name;
+            }
+          });
+          changes.post({ key : key, value : value, displayValue : vm.projectName });
         } else {
           changes.post({ key : key, value : value });
         }
