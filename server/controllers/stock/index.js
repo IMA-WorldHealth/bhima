@@ -266,12 +266,10 @@ function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
-  if (isStockExit) {
-    const projectId = metadata.project.id;
-    const currencyId = metadata.enterprise.currency_id;
-    const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
-    transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
-  }
+  const projectId = metadata.project.id;
+  const currencyId = metadata.enterprise.currency_id;
+  const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
+  transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
 
   return transaction.execute();
 }

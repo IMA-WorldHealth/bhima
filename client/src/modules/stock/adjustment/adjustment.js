@@ -195,11 +195,9 @@ function StockAdjustmentController(
     if (form.$invalid || !vm.adjustmentOption) { return; }
 
     if (vm.adjustmentOption === 'increase') {
-      vm.adjustmentType = 'FORM.LABELS.INCREASE';
       isExit = 0;
       fluxId = bhConstants.flux.FROM_ADJUSTMENT;
     } else if (vm.adjustmentOption === 'decrease') {
-      vm.adjustmentType = 'FORM.LABELS.DECREASE';
       isExit = 1;
       fluxId = bhConstants.flux.TO_ADJUSTMENT;
     }
@@ -231,6 +229,7 @@ function StockAdjustmentController(
       })
       .catch(Notify.handleError);
   }
+  
   function changeDepot() {
     return Depots.openSelectionModal(vm.depot)
       .then(function (depot) {
