@@ -16,6 +16,8 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
 
+const shared = require('./shared');
+
 const entityIdentifier = identifiers.INVOICE.key;
 const CREDIT_NOTE_ID = 10;
 
@@ -303,14 +305,17 @@ function safelyDeleteInvoice(guid) {
     DELETE FROM document_map WHERE uuid = ?;
   `;
 
-  const binaryUuid = db.bid(guid);
-  const transaction = db.transaction();
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
 
-  transaction
-    .addQuery(DELETE_TRANSACTION, binaryUuid)
-    .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
-    .addQuery(DELETE_INVOICE, binaryUuid)
-    .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_INVOICE, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
-  return transaction.execute();
+      return transaction.execute();
+    });
 }

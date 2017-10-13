@@ -67,7 +67,7 @@
         },
         "DIALOGS": {
             "CONFIRM_ACTION": "Confirmez vous cette action ?",
-            "CONFIRMATION_NEEDED" : "Confirmation Nécessaire",
+            "CONFIRMATION_NEEDED" : "Confirmation Requise",
             "CONFIRM_ACTIVATION": "Voulez vous vraiment activer les droits d'accès de cet utilisateur",
             "CONFIRM_CREDIT_NOTE": "La facture dont vous voulez annuler a déjà été payée, voulez-vous vraiment annuler cette facture ",
             "CONFIRM_DEACTIVATION": "Voulez vous vraiment blocker les droits d'accès de cet utilisateur",
@@ -157,7 +157,7 @@
             "UNPOSTED_TRANSACTION": "Transactions non-posté ne sont pas affichées",
             "TRANSACTIONS": "Transactions",
             "ROWS": "enregistrements",
-            "DELETE_RECORD_SUCCESS": "Supprimèe la transaction avec succès."
+            "DELETE_RECORD_SUCCESS": "Suppression de la transaction avec succès."
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",

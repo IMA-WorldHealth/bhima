@@ -40,7 +40,7 @@ function VoucherController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
   vm.download = Vouchers.download;
-  vm.deleteVoucher = deleteVoucher;
+  vm.deleteVoucher = deleteVoucherWithConfirmation;
 
   vm.loading = false;
 
@@ -248,7 +248,7 @@ function VoucherController(
   }
 
   // this function deletes the voucher from the database
-  function deleteVoucher(entity) {
+  function deleteVoucherWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(function (isOk) {
         if (isOk) { remove(entity); }

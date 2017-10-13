@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-
 const _ = require('lodash');
 const uuid = require('node-uuid');
 
@@ -25,6 +24,8 @@ const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
+
+const shared = require('./shared');
 
 const entityIdentifier = identifiers.VOUCHER.key;
 
@@ -260,14 +261,17 @@ function safelyDeleteVoucher(guid) {
     DELETE FROM document_map WHERE uuid = ?;
   `;
 
-  const binaryUuid = db.bid(guid);
-  const transaction = db.transaction();
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
 
-  transaction
-    .addQuery(DELETE_TRANSACTION, binaryUuid)
-    .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
-    .addQuery(DELETE_VOUCHER, binaryUuid)
-    .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_VOUCHER, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
-  return transaction.execute();
+      return transaction.execute();
+    });
 }

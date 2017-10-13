@@ -35,7 +35,7 @@ function InvoiceRegistryController(
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
   vm.download = Invoices.download;
-  vm.deleteInvoice = deleteInvoice;
+  vm.deleteInvoice = deleteInvoiceWithConfirmation;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -190,13 +190,13 @@ function InvoiceRegistryController(
     $state.reload();
   };
 
- // Call the opening of Modal
+  // Call the opening of Modal
   function openModal(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (success) {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load(vm.filters);
+          load(vm.filters);
         }
       })
       .catch(Notify.handleError);
@@ -234,7 +234,7 @@ function InvoiceRegistryController(
   }
 
   // check if it is okay to remove the entity.
-  function deleteInvoice(entity) {
+  function deleteInvoiceWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(function (isOk) {
         if (isOk) { remove(entity); }

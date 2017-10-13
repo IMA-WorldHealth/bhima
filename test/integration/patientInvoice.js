@@ -11,6 +11,7 @@ describe('(/invoices) Patient Invoices', function () {
   /* total number of invoices in the database */
   const numInvoices = 3;
   const numCreatedInvoices = 3;
+  const numDeletedInvoices = 1;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
@@ -68,7 +69,7 @@ describe('(/invoices) Patient Invoices', function () {
     it('GET /invoices/ should return all invoices if no query string provided', function () {
       return agent.get('/invoices')
         .then((res) => {
-          helpers.api.listed(res, numInvoices + numCreatedInvoices - 1);
+          helpers.api.listed(res, numInvoices + numCreatedInvoices - numDeletedInvoices);
         })
         .catch(helpers.handler);
     });

@@ -44,7 +44,7 @@ function CashPaymentRegistryController(
   vm.cancelCash = cancelCash;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
-  vm.deleteCashPayment = deleteCashPayment;
+  vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
   vm.download = Cash.download;
 
   columnDefs = [{
@@ -217,7 +217,7 @@ function CashPaymentRegistryController(
 
   // this function deletes the cash payment and associated transactions from
   // the database
-  function deleteCashPayment(entity) {
+  function deleteCashPaymentWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(function (isOk) {
         if (isOk) { remove(entity); }

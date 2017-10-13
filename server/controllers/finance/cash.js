@@ -29,6 +29,10 @@ const { BadRequest, NotFound } = require('../../lib/errors');
 const identifiers = require('../../config/identifiers');
 const cashCreate = require('./cash.create');
 
+// shared transaction methods
+// TODO(@jniles) - find a better name
+const shared = require('./shared');
+
 exports.detail = detail;
 exports.read = read;
 exports.create = cashCreate;
@@ -282,14 +286,17 @@ function safelyDeleteCashPayment(uuid) {
     DELETE FROM document_map WHERE uuid = ?;
   `;
 
-  const binaryUuid = db.bid(uuid);
-  const transaction = db.transaction();
+  return shared.isRemovableTransaction(uuid)
+    .then(() => {
+      const binaryUuid = db.bid(uuid);
+      const transaction = db.transaction();
 
-  transaction
-    .addQuery(DELETE_TRANSACTION, binaryUuid)
-    .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
-    .addQuery(DELETE_CASH_PAYMENT, binaryUuid)
-    .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_CASH_PAYMENT, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
-  return transaction.execute();
+      return transaction.execute();
+    });
 }
