@@ -28,14 +28,14 @@ function stockAdjustmentReceipt(req, res, next) {
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid, m.is_exit,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
-      u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
+      u.display_name AS user_display_name, dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name
     FROM stock_movement m
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
+    JOIN user u ON u.id = m.user_id    
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
