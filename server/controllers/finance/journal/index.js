@@ -106,6 +106,12 @@ function buildTransactionQuery(options, posted) {
 
   const table = posted ? 'general_ledger' : 'posting_journal';
 
+  let typeIds = [];
+
+  if (options.origin_id) {
+    typeIds = typeIds.concat(options.origin_id);
+  }
+
   const sql = `
     SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
@@ -138,8 +144,9 @@ function buildTransactionQuery(options, posted) {
   filters.equals('account_id');
   filters.equals('project_id');
   filters.equals('trans_id');
-  filters.equals('origin_id');
   filters.equals('record_uuid');
+
+  filters.custom('origin_id', 'p.origin_id IN (?)', [typeIds]);
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);

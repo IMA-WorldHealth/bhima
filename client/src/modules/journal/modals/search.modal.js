@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService',
-  'Store', 'filters', 'options', 'PeriodService', 'VoucherService', '$translate',
-  'AccountService', 'util',
+  '$uibModalInstance', 'NotifyService',
+  'Store', 'filters', 'options', 'PeriodService', '$translate',
+  'util', 'TransactionTypeService', 'JournalService',
 ];
 
-function JournalSearchModalController(Instance, Projects, Notify,
-  Store, filters, options, Periods, Vouchers, $translate,
-  Account, util) {
+function JournalSearchModalController(Instance, Notify,
+  Store, filters, options, Periods, $translate,
+  util, TransactionTypes, Journal) {
   var vm = this;
 
   var changes = new Store({ identifier : 'key' });
@@ -20,9 +20,20 @@ function JournalSearchModalController(Instance, Projects, Notify,
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
+
+  var lastViewFilters = Journal.filters.formatView().customFilters;
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -41,7 +52,7 @@ function JournalSearchModalController(Instance, Projects, Notify,
   if (options.hasDefaultAccount) {
     vm.hasDefaultAccount = true;
   }
-
+  
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
@@ -52,28 +63,13 @@ function JournalSearchModalController(Instance, Projects, Notify,
     vm.defaultQueries.account_id = filters.account_id;
   }
 
-  Account.read()
-    .then(function (accounts) {
-      vm.hrAccounts = accounts.reduce(function (aggregate, account) {
-        aggregate[account.id] = String(account.number).concat(' - ', account.label);
-        return aggregate;
-      }, {});
-    })
-    .catch(Notify.handleError);
-
-  Projects.read()
-    .then(function (projects) {
-      vm.projects = projects;
-    })
-    .catch(Notify.handleError);
-
-  // format voucher types and bind to the view
-  Vouchers.transactionType()
-    .then(function (list) {
-      vm.types = list.data.map(function (item) {
-        item.hrText = $translate.instant(item.text);
-        return item;
+  // load all Transaction types
+  TransactionTypes.read()
+    .then(function (types) {
+      types.forEach(function (item) {
+        item.typeText = $translate.instant(item.text);
       });
+      vm.transactionTypes = types;
     })
     .catch(Notify.handleError);
 
@@ -81,11 +77,19 @@ function JournalSearchModalController(Instance, Projects, Notify,
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
     vm.searchQueries.account_id = account.id;
+    displayValues.account_id = String(account.number).concat(' - ', account.label);
   };
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
+  };
+
+  // custom filter project_id - assign the value to the searchQueries object
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.searchQueries.project_id = project.id;
+    displayValues.project_id = project.name;
   };
 
   // deafult filter period - directly write to changes list
@@ -95,6 +99,22 @@ function JournalSearchModalController(Instance, Projects, Notify,
     periodFilters.forEach(function (filterChange) {
       changes.post(filterChange);
     });
+  };
+
+  // custom filter origin_id - assign the value to the searchQueries object
+  vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
+    vm.searchQueries.origin_id = transactionTypes;
+    var typeText = '/';
+
+    transactionTypes.forEach(function (typeId) {
+      vm.transactionTypes.forEach(function (type) {
+        if (typeId === type.id) {
+          typeText += type.typeText + ' / ';
+        }
+      });
+    });
+
+    displayValues.origin_id = typeText;
   };
 
   // default filter limit - directly write to changes list
@@ -117,12 +137,10 @@ function JournalSearchModalController(Instance, Projects, Notify,
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        if (key === 'account_id') {
-          changes.post({ key : key, value : value, displayValue : vm.hrAccounts[value] });
-        } else {
-          changes.post({ key : key, value : value });
-        }
-      }
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
     var loggedChanges = changes.getAll();
