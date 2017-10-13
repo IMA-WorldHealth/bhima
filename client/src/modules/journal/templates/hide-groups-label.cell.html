@@ -1,3 +1,3 @@
 <div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">
-  {{COL_FIELD CUSTOM_FILTERS}}
+  <a ui-sref="journal({ filters : [{ 'key' :'trans_id', 'value' :COL_FIELD CUSTOM_FILTERS}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : '1' }]})">{{COL_FIELD CUSTOM_FILTERS}}</a>
 </div>
