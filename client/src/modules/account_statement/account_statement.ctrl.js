@@ -141,11 +141,12 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
     { field                : 'hrEntity',
       displayName          : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter     : 'translate',
-      editableCellTemplate : '/modules/journal/templates/entity.edit.html',
+      cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
       visible              : true },
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
+      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
       headerCellFilter : 'translate',
       visible          : true },
 
