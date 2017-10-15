@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -7,7 +5,7 @@ helpers.configure(chai);
 
 const ReportClientsPage = require('./clients_report.page');
 
-describe('Clients report ::', () => {
+describe('Clients Report', () => {
   let Page;
   const key = 'clients_report';
 
@@ -16,20 +14,19 @@ describe('Clients report ::', () => {
     end_date : '31/12/2016',
     clients : ['First Test Debtor Group'],
     report_name : 'Clients Report Saved by E2E',
-    renderer : 'PDF'
+    renderer : 'PDF',
   };
 
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportClientsPage(key);
-    browser.refresh();    
   });
 
   it('preview a new clients report', () => {
     Page.showClientsReportPreview(dataset.start_date, dataset.end_date);
   });
 
-  it('close the previewed report', () => { 
+  it('close the previewed report', () => {
     Page.closeClientsReportPreview();
   });
 

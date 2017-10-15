@@ -1,5 +1,3 @@
-/* global browser */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -20,7 +18,6 @@ describe('Open Debtors Report', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportOpenDebtorsPage(key);
-    browser.refresh();
   });
 
   it(`preview a new Open Debtors report - order by ${dataset.order}`, () => {

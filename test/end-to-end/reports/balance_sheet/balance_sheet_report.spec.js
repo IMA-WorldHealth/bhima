@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -7,7 +5,7 @@ helpers.configure(chai);
 
 const ReportBalanceSheetPage = require('./balance_sheet_report.page');
 
-describe('BalanceSheets report ::', () => {
+describe('Balance Sheet Report', () => {
   let Page;
   const key = 'balance_sheet_report';
 
@@ -21,7 +19,6 @@ describe('BalanceSheets report ::', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportBalanceSheetPage(key);
-    browser.refresh();    
   });
 
   it('preview a new balanceSheet report', () => {
