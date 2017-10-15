@@ -1,16 +1,19 @@
 angular.module('bhima.services')
-.service('AccountStatementService', AccountStatementService);
+  .service('AccountStatementService', AccountStatementService);
 
-// DI
 AccountStatementService.$inject = [
-  '$uibModal', '$http', 'util',
-  'AppCache', 'FilterService', 'PeriodService',
+  '$uibModal', '$http', 'util', 'AppCache', 'FilterService', 'PeriodService',
+  'bhConstants',
 ];
 
 /**
- * AccountStatementService
+ * @overview AccountStatementService
+ *
+ * @description
+ * This service powers the backend for the Account Statement report, giving an
+ * overview of all accounts by period for the entire fiscal year.
  */
-function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods) {
+function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods, bhConstants) {
   var service = this;
   var baseUrl = '/general_ledger/';
   var filterCache = new AppCache('account-statement-filters');
@@ -54,13 +57,11 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods)
   service.cacheFilters = cacheFilters;
   service.loadCachedFilters = loadCachedFilters;
 
-  // default filtes will always be applied
+  // default filters will always be applied
+  accountStatementFilters.registerDefaultFilters(bhConstants.defaultFilters);
   accountStatementFilters.registerDefaultFilters([
     { key : 'account_id', label : 'TABLE.COLUMNS.ACCOUNT' },
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  ]);
 
   // custom filters can be optionally applied
   accountStatementFilters.registerCustomFilters([

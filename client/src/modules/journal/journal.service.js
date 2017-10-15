@@ -1,14 +1,19 @@
 angular.module('bhima.services')
   .service('JournalService', JournalService);
 
-// Dependencies injection
-JournalService.$inject = [ 'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService', '$uibModal'];
+JournalService.$inject = [
+  'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService',
+  '$uibModal', 'bhConstants',
+];
 
 /**
  * Journal Service
- * This service is responsible of all process with the posting journal
+ *
+ * @description
+ * This service is responsible for powering the Posting/Posted Journal grid.  It
+ * also includes methods to open associated modals.
  */
-function JournalService(Api, AppCache, Filters, Periods, Modal) {
+function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
   var URL = '/journal/';
   var service = new Api(URL);
 
@@ -73,7 +78,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
 
   function sanitiseNewRows(rows) {
     rows.data.forEach(function (row) {
-
       // delete view data required by journal grid
       delete row.transaction;
       delete row.hrRecord;
@@ -91,26 +95,21 @@ function JournalService(Api, AppCache, Filters, Periods, Modal) {
 
   service.filters = journalFilters;
 
-  // default filtes will always be applied
-  journalFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
-    // { key : 'transactions', label : 'FORM.LABELS.TRANSACTIONS', defaultValue : true },
+  // default filters will always be applied
+  journalFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
-      { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
-      { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
-      { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-      { key : 'user_id', label : 'FORM.LABELS.USER' },
-      { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
-      { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
-      { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
-      { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-      { key : 'includeNonPosted', label : 'TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_SHORT' },
-      { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key : 'trans_id', label : 'FORM.LABELS.TRANS_ID' },
+    { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
+    { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+    { key : 'includeNonPosted', label : 'TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_SHORT' },
+    { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
   if (filterCache.filters) {
     // load cached filter definition if it exists

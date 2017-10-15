@@ -1,9 +1,10 @@
 angular.module('bhima.services')
-.service('PurchaseOrderService', PurchaseOrderService);
+  .service('PurchaseOrderService', PurchaseOrderService);
 
 PurchaseOrderService.$inject = [
-  '$http', 'util', '$uibModal', 'FilterService', 'appcache', 'PeriodService', 'PrototypeApiService', 
-  '$httpParamSerializer', 'LanguageService'
+  '$http', 'util', '$uibModal', 'FilterService', 'appcache', 'PeriodService',
+  'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
+  'bhConstants',
 ];
 
 /**
@@ -13,15 +14,16 @@ PurchaseOrderService.$inject = [
  * @description
  * Connects client controllers with the purchase order backend.
  */
-function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods, Api, 
-  $httpParamSerializer, Languages) {
-  
+function PurchaseOrderService(
+  $http, util, $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
+  Languages, bhConstants
+) {
   var baseUrl = '/purchases/';
   var service = new Api(baseUrl);
 
   var purchaseFilters = new Filters();
   var filterCache = new AppCache('purchases-filters');
-    
+
   service.filters = purchaseFilters;
   service.openSearchModal = openSearchModal;
 
@@ -34,18 +36,13 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
   service.stockBalance = stockBalance;
   service.purchaseState = purchaseState;
 
-
-  purchaseFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date', comparitor : '>'},
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date', comparitor: '<'},
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  purchaseFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   purchaseFilters.registerCustomFilters([
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'user_id', label: 'FORM.LABELS.USER' },
-    { key : 'supplier_uuid', label: 'FORM.LABELS.SUPPLIER' },  
-    { key : 'status_id', label: 'PURCHASES.ORDER' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'supplier_uuid', label : 'FORM.LABELS.SUPPLIER' },
+    { key : 'status_id', label : 'PURCHASES.ORDER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
   ]);
 
@@ -94,7 +91,6 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
    * Preprocesses purchase order data for submission to the server
    */
   function create(data) {
-
     // loop through the items ensuring that they are properly formatted for
     // inserting into the database.  We only want to send minimal information
     // to the server.
@@ -128,36 +124,6 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
     return Api.read.call(service, url);
   }
 
-  /* ----------------------------------------------------------------- */
-  /** Utility Methods */
-  /* ----------------------------------------------------------------- */
-  function formatGroupOptions(groupFormOptions) {
-    var groupUuids = Object.keys(groupFormOptions);
-
-    var formatted = groupUuids.filter(function (groupUuid) {
-
-      // Filter out UUIDs without a true subscription
-      return groupFormOptions[groupUuid];
-    });
-
-    return {
-      assignments : formatted
-    };
-  }
-
-  /**
-   * Combine and return the purchase entity with a service/attribute - returns a
-   * correctly formatted path.
-   *
-   * @param   {String} path   Entity path (e.g 'services')
-   * @param   {String} uuid   UUID of purchase to format services request
-   * @return  {String}        Formatted URL for purchase service
-   */
-  function purchaseAttributePath(path, purchaseUuid) {
-    var root = '/purchases/';
-    return root.concat(purchaseUuid, '/', path);
-  }
-
   /**
    * @method openSearchModal
    *
@@ -167,22 +133,22 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
    */
   function openSearchModal(params) {
     return $uibModal.open({
-      templateUrl: 'modules/purchases/modals/search.tmpl.html',
-      size: 'md',
-      keyboard: false,
-      animation: false,
-      backdrop: 'static',
-      controller: 'SearchPurchaseOrderModalController as $ctrl',
+      templateUrl : 'modules/purchases/modals/search.tmpl.html',
+      size : 'md',
+      keyboard : false,
+      animation : false,
+      backdrop : 'static',
+      controller : 'SearchPurchaseOrderModalController as $ctrl',
       resolve : {
-        params : function paramsProvider() { return params; }
-      }
+        params : function paramsProvider() { return params; },
+      },
     }).result;
   }
 
   function download(type) {
     var filterOpts = purchaseFilters.formatHTTP();
     var defaultOpts = { renderer : type, lang : Languages.key };
-    
+
     // combine options
     var options = angular.merge(defaultOpts, filterOpts);
 

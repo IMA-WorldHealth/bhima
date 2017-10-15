@@ -1,9 +1,7 @@
 angular.module('bhima.services')
   .service('FilterService', FilterService);
 
-FilterService.$inject = ['Store'];
-
-function FilterService(Store) {
+function FilterService() {
   function FilterList() {
     // initialise internal state
     this._defaultFilters = [];
@@ -34,10 +32,11 @@ function FilterService(Store) {
       if (filterDefinition.defaultValue) {
         filter.setValue(filterDefinition.defaultValue);
       }
+
       return filter;
     });
 
-    // udpate index
+    // update index
     this._indexList(this._filterIndex, formattedFilters);
     this._defaultFilters = this._defaultFilters.concat(formattedFilters);
   };
@@ -49,7 +48,7 @@ function FilterService(Store) {
       return filter;
     });
 
-    // udpate index
+    // update index
     this._indexList(this._filterIndex, formattedFilters);
     this._customFilters = this._customFilters.concat(formattedFilters);
   };
@@ -156,7 +155,7 @@ function FilterService(Store) {
 
     Object.keys(this._filterIndex).forEach(function (key) {
       var filter = this._filterIndex[key];
-      
+
       if (filter._value !== null && filter._value !== undefined && filter._value.length !== '') {
         filtered.push(angular.copy(filter));
       }

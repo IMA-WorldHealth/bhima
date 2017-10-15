@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'TransactionTypeStoreService', '$uibModal', 'FilterService',
-  'PeriodService', 'LanguageService', '$httpParamSerializer', 'appcache',
+  'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
+  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
+  'appcache', 'bhConstants',
 ];
 
 /**
@@ -15,8 +16,8 @@ VoucherService.$inject = [
  * includes some utilities that are useful for voucher pages.
  */
 function VoucherService(
-  Api, $http, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache
+  Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
+  $httpParamSerializer, AppCache, bhConstants
 ) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
@@ -37,11 +38,7 @@ function VoucherService(
   service.loadCachedFilters = loadCachedFilters;
   service.download = download;
 
-  voucherFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', comparitor : '>', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', comparitor : '<', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  voucherFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   voucherFilters.registerCustomFilters([
     { key : 'user_id', label : 'FORM.LABELS.USER' },
@@ -50,7 +47,7 @@ function VoucherService(
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
-    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },    
+    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
     { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 
@@ -148,7 +145,7 @@ function VoucherService(
    * debits and credits switched.
    */
   function reverse(creditNote) {
-    return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+    return service.$http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
       .then(service.util.unwrapHttpResponse);
   }
 
