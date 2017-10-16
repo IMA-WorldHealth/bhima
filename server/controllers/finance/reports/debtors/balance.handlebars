@@ -1,0 +1,46 @@
+{{> head title="REPORT.AGED_DEBTORS.TITLE"}}
+
+<body>
+  <main class="container">
+    {{> header }}
+
+    <h3 class="text-center text-uppercase">
+      <strong>{{translate "REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT"}}</strong>
+    </h3>
+
+    <h5 class="text-center">
+      <strong>
+        <span class="text-capitalize"> {{ fiscalLabel }}</span>
+      </strong>
+    </h5>
+
+    <section>
+      <table class="table table-condensed table-report table-bordered">
+        <thead>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            <th>{{translate "TABLE.COLUMNS.ACCOUNT"}}</th>
+            <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th>{{translate "REPORT.OPENING_BALANCE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.DEBIT"}}</th>
+            <th>{{translate "TABLE.COLUMNS.CREDIT"}}</th>
+            <th>{{translate "REPORT.CLOSING_BALANCE"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- print a row for each debtor account-->
+          {{#each rows}}
+            <tr>
+              <td>{{this.account}}</td>
+              <td>{{this.name}}</td>
+              <td class="text-right">{{currency this.openingBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency this.debit  metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency this.credit  metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency this.closingBalance  metadata.enterprise.currency_id}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>

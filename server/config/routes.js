@@ -83,6 +83,8 @@ const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 const transactions = require('../controllers/finance/transactions');
 
+var reportDebtor = require('../controllers/finance/reports/debtors/debtorAccountBalance');
+
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
@@ -363,8 +365,8 @@ exports.configure = function configure(app) {
   app.get('/reports/archive/:uuid', report.sendArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
+  app.get('/reports/debtorAccountBalence/:fiscalYearId', reportDebtor.debtorAccountBalance);
   app.get('/dashboard/debtors', dashboardDebtors.getReport);
-
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
   app.get('/patients/groups/:uuid', patientGroups.detail);

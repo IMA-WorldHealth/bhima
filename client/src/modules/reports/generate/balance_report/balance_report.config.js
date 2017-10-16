@@ -24,7 +24,6 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.preview = function preview(form) {
     var options;
-
     if (form.$invalid) { return 0; }
 
     options = {

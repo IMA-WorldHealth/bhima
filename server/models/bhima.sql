@@ -71,7 +71,8 @@ INSERT INTO unit VALUES
   (171, 'Balance Sheet Statement', 'TREE.BALANCE_SHEET', 'Balance Sheet Module', 144, '/modules/reports/balance_sheet_report/', '/reports/balance_sheet_report'),
   (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
-  (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file');
+  (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
+  (183, 'Client debtor accounts balence', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client debtor accounts balence', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -104,7 +105,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
   (12, 'cash_report', 'REPORT.CASH_REPORT'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
-  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT');
+  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
+  (15, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT');
 
 
 -- Supported Languages

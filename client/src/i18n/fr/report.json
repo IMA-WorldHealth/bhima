@@ -129,6 +129,7 @@
       "OPTIONS":"Options",
       "PREVIEW":"Aperçu",
       "VIEW_ARCHIVE":"Archives"
-    }
+    },
+      "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
   }
 }

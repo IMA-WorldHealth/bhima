@@ -126,6 +126,6 @@
       "OPTIONS": "Options",
       "PREVIEW": "Preview",
       "VIEW_ARCHIVE": "Archives"
-    }
-  }
-}
+    },
+    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Client debtors accounts balance report"
+  }}

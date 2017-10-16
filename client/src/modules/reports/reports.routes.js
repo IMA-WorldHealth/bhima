@@ -17,6 +17,7 @@ angular.module('bhima.routes')
       'cashflowByService',
       'aged_creditors',
       'cashflow',
+      'debtorBalanceReport'
     ];
 
     $stateProvider
@@ -39,6 +40,7 @@ angular.module('bhima.routes')
         templateUrl : 'modules/reports/archive.html',
         params : { key : { squash : true, value : null } },
       });
+
 
     SUPPORTED_REPORTS.forEach(function (key) {
       $stateProvider.state('reportsBase.'.concat(key), {
