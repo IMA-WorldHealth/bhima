@@ -66,4 +66,17 @@ describe('Employees Registry', () => {
     employeeRegistryPage.clearFilter();
     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
   });
+
+  it('should find Search for employees belonging to Service Administration, to funtion Infirmier and Grade 1.1', () => {
+    employeeRegistryPage.search();
+
+    searchModalPage.selectService('Administration');
+    searchModalPage.selectFonction('Infirmier');
+    searchModalPage.selectGrade('1.1');        
+    searchModalPage.submit();
+
+    employeeRegistryPage.employeeCount(1, `The number of filtered employee should be 1`);
+    employeeRegistryPage.clearFilter();
+  });
+
 });

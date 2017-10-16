@@ -66,58 +66,26 @@
             </label>
           </div>
 
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.GRADE
-            </label>
-
+          <bh-grade-select
+            grade-uuid="ModalCtrl.searchQueries.grade_id"
+            name="grade_uuid"
+            on-select-callback="ModalCtrl.onSelectGrade(grade)">
             <bh-clear on-clear="ModalCtrl.clear('grade_id')"></bh-clear>
-            <!-- @todo make data driven selects components to handle loading and error states -->
-            <select
-              class="form-control"
-              name="grade"
-              ng-options="grade.uuid as grade.text for grade in ModalCtrl.grades"
-              ng-model="ModalCtrl.searchQueries.grade_id">
-              <option disabled value="" translate>
-                FORM.SELECT.GRADE
-              </option>
-            </select>
-          </div>
+          </bh-grade-select>
 
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.FUNCTION
-            </label>
+          <bh-fonction-select
+            fonction-id="ModalCtrl.searchQueries.fonction_id"
+            name="fonction_id"
+            on-select-callback="ModalCtrl.onSelectFonction(fonction)">
             <bh-clear on-clear="ModalCtrl.clear('fonction_id')"></bh-clear>
-            <!-- @todo make data driven selects components to handle loading and error states -->
-            <select
-              class="form-control"
-              name="function"
-              ng-options="f.id as f.fonction_txt for f in ModalCtrl.functions"
-              ng-model="ModalCtrl.searchQueries.fonction_id">
-              <option disabled value="" translate>
-                FORM.SELECT.FUNCTION
-              </option>
-            </select>
-          </div>
+          </bh-fonction-select>
 
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.SERVICE
-            </label>
-
+          <bh-service-select
+            service-id="ModalCtrl.searchQueries.service_id"
+            name="service_id"
+            on-select-callback="ModalCtrl.onSelectService(service)">
             <bh-clear on-clear="ModalCtrl.clear('service_id')"></bh-clear>
-            <!-- @todo make data driven selects components to handle loading and error states -->
-            <select
-              class="form-control"
-              name="service"
-              ng-options="service.id as service.name for service in ModalCtrl.services"
-              ng-model="ModalCtrl.searchQueries.service_id">
-              <option disabled value="" translate>
-                FORM.SELECT.SERVICE
-              </option>
-            </select>
-          </div>
+          </bh-service-select>
 
           <div class="radio">
             <p class="control-label">

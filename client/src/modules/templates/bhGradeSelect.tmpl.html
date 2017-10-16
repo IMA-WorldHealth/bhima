@@ -1,0 +1,24 @@
+<div bh-grade-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : GradeForm.$$parent.$submitted && GradeForm.grade_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.GRADE
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="grade_uuid" 
+      ng-model="$ctrl.gradeUuid"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}"><span>{{$select.selected.text}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="grade.uuid as grade in $ctrl.grades | filter: { 'text': $select.search }">
+        <span ng-bind-html="grade.text | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="GradeForm.grade_uuid.$error" ng-show="GradeForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
