@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService',
+  'GridColumnService', 'GridStateService', 'ModalService',
 ];
 
 /**
@@ -15,13 +15,12 @@ CashPaymentRegistryController.$inject = [
  * print and search utilities for the registry.`j
  */
 function CashPaymentRegistryController(
-  Cash, bhConstants, Notify, Session, uiGridConstants,
-  Receipt, Modal, Sorting, $state, Filters, Columns,
-  GridState
+  Cash, bhConstants, Notify, Session, uiGridConstants, Receipt, Modal, Sorting,
+  $state, Filters, Columns, GridState, Modals
 ) {
   var vm = this;
 
-  // Background color for make the difference between the valid and cancel paiement
+  // background color for make the difference between the valid and canceled payment
   var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
   var regularBackgroundColor = { 'background-color' : 'none' };
   var cacheKey = 'payment-grid';
@@ -45,6 +44,7 @@ function CashPaymentRegistryController(
   vm.cancelCash = cancelCash;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
+  vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
   vm.download = Cash.download;
 
   columnDefs = [{
@@ -115,7 +115,7 @@ function CashPaymentRegistryController(
   function clearGridState() {
     state.clearGridState();
     $state.reload();
-  };
+  }
 
   function handleError(error) {
     vm.hasError = true;
@@ -128,7 +128,7 @@ function CashPaymentRegistryController(
     Modal.openSearchCashPayment(filtersSnapshot)
       .then(function (changes) {
         Cash.filters.replaceFilters(changes);
-        
+
         Cash.cacheFilters();
         vm.latestViewFilters = Cash.filters.formatView();
 
@@ -201,6 +201,27 @@ function CashPaymentRegistryController(
   // the visibility of the cash registry's columns.
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
+  }
+
+  function remove(entity) {
+    Cash.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Cash.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
+  }
+
+  // this function deletes the cash payment and associated transactions from
+  // the database
+  function deleteCashPaymentWithConfirmation(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   startup();

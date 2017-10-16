@@ -19,8 +19,8 @@ module.exports = VoucherRegistrySearch;
 
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
-  const NUM_VOUCHERS = 18;
-  const NUM_USER_RECORDS = 18;
+  const NUM_VOUCHERS = 17;
+  const NUM_USER_RECORDS = 17;
   const NUM_DESCRIPTION_RECORDS = 2;
   const NUM_TRANSACTION_TYPE_RECORD = 1;
   const transactionTypes = ['Autres Depenses']
@@ -44,7 +44,7 @@ function VoucherRegistrySearch() {
 
   it('filters vouchers by clicking the month button', () => {
     modal.switchToDefaultFilterTab();
-    // set the filters to month    
+    // set the filters to month
     modal.setPeriod('month');
     modal.submit();
 

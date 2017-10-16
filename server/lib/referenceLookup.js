@@ -20,7 +20,7 @@ indexIdentifiers();
 // The table name is variable, it can be :invoice, cash or voucher
 function getEntity(req, res, next) {
   const codeRef = req.params.codeRef.split('.');
-  const language = req.params.language;
+  const { language } = req.params;
 
   const code = codeRef[0];
   const projectName = codeRef[1];
@@ -64,7 +64,7 @@ function getEntity(req, res, next) {
   // search for full UUID
   db.one(query, [projectName, reference])
     .then((entity) => {
-      const uuid = entity.uuid;
+      const { uuid } = entity;
       const url = `${documentDefinition.documentPath}${uuid}?lang=${language}&renderer=pdf`;
 
       res.redirect(url);

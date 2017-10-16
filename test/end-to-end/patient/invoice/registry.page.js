@@ -1,40 +1,47 @@
-/* global by */
-const chai = require('chai');
 const GU = require('../../shared/GridUtils');
-
-const expect = chai.expect;
-
-const RECEIPT_COLUMN_NUMBER = 6;
+const GridRow = require('../../shared/GridRow');
 
 class InvoiceRegistryPage {
   constructor() {
     this.gridId = 'invoice-registry';
+    this.grid = GU.getGrid(this.gridId);
   }
 
   getInvoiceNumber() {
     return GU.getRows(this.gridId).count();
   }
 
-  /**
-   * @param {number} n the index of the row
-   * @param {string} actionType invoiceReceipt|creditNoteReceipt|createCreditNote
-   */
-  clickOnMethod(n, actionType) {
-    // get the proper cell
-    const cell = GU.getCell(this.gridId, n, RECEIPT_COLUMN_NUMBER);
-
-    // click the dropdown toggle
-    cell.element(by.css('[uib-dropdown-toggle]')).click();
-
-    // find the correct list and select the correct method
-    $(`[data-list="${n}"]`).$(`[data-method="${actionType}"]`).click();
-  }
-
   // asserts that the grid has a certain number of rows
   expectNumberOfGridRows(number) {
-    expect(this.getInvoiceNumber(),
+    GU.expectRowCount(
+      this.gridId,
+      number,
       `Expected Invoice Registry's ui-grid row count to be ${number}.`
-    ).to.eventually.equal(number);
+    );
+  }
+
+  openReceipt(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.receipt().click();
+  }
+
+  openCreditNoteReceipt(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.openReverseReceipt().click();
+  }
+
+  reverse(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.reverse().click();
+  }
+
+  remove(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.remove().click();
   }
 }
 

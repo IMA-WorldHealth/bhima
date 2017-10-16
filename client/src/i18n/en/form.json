@@ -14,6 +14,7 @@
             "CONNECTION": "Connexion",
             "CSV_EXPORT": "Export CSV",
             "DELETE": "Delete",
+            "DELETE_RECORD": "Delete Record",
             "DISMISS": "Dismiss",
             "EDIT": "Edit",
             "EDIT_PERMISSIONS": "Permission",
@@ -66,6 +67,7 @@
         },
         "DIALOGS": {
             "CONFIRM_ACTION": "Do you confirm this action?",
+            "CONFIRMATION_NEEDED" : "Confirmation Needed",
             "CONFIRM_ACTIVATION": "Do you really want to allow this user's system access",
             "CONFIRM_CREDIT_NOTE": "The invoice you want to cancel already paid, would you want to cancel this bill",
             "CONFIRM_DEACTIVATION": "Do you really want to revoked this user's system access",
@@ -154,7 +156,8 @@
             "UPDATE_SUCCESS": "Updated successfully",
             "UPLOAD_PICTURE_FAILED": "The selected file is not an picture",
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
-            "VIEW_CLOSING_BALANCE": "View Closing Balance"
+            "VIEW_CLOSING_BALANCE": "View Closing Balance",
+            "DELETE_RECORD_SUCCESS": "Successfully deleted the record."
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",

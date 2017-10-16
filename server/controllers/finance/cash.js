@@ -1,77 +1,58 @@
-
 /**
  * Cash Controller
  *
- *
  * This controller is responsible for processing cash payments for patients. The
- * payments can either be against an previous invoice (invoice payment) or a future
- * invoice (cautionary payment).
+ * payments can either be against an previous invoice (invoice payment) or a
+ * future invoice (cautionary payment).
  *
  * In order to reduce the burden of accounting on the user, the user will first
  * select a cashbox which implicitly bundles in cash accounts for all supported
  * currencies.  The API accepts a cashbox ID during cash payment creation and
  * looks up the correct account based on the cashbox_id + currency.
- *
  * @module finance/cash
  *
- * @requires node-uuid
  * @requires lib/db
- * @requires cash.create
+ * @requires lib/filters
+ * @requires lib/barcode
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
+ * @requires config/identifiers
+ * @requires cash.create
  */
 
 const _ = require('lodash');
 
 const db = require('../../lib/db');
-
-const NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
-
-const identifiers = require('../../config/identifiers');
 const barcode = require('../../lib/barcode');
-
 const FilterParser = require('../../lib/filter');
-
+const { BadRequest, NotFound } = require('../../lib/errors');
+const identifiers = require('../../config/identifiers');
 const cashCreate = require('./cash.create');
 
-const entityIdentifier = identifiers.CASH_PAYMENT.key;
+// shared transaction methods
+// TODO(@jniles) - find a better name
+const shared = require('./shared');
 
-/** retrieves the details of a cash payment */
 exports.detail = detail;
-
-/** retrieves a list of all cash payments */
-/** search cash payment by filtering */
 exports.read = read;
-
-/** creates cash payments */
 exports.create = cashCreate;
-
-/** modifies previous cash payments */
 exports.update = update;
-
-/** searches for a cash payment's uuid by their human-readable reference */
-exports.reference = reference;
-
-/** lookup a cash payment by it's uuid */
 exports.lookup = lookup;
-
-/** list all cash payment */
-exports.listPayment = listPayment;
-
-/** checkInvoicePayment if the invoice is paid */
+exports.find = find;
 exports.checkInvoicePayment = checkInvoicePayment;
+exports.safelyDeleteCashPayment = safelyDeleteCashPayment;
 
+const CASH_KEY = identifiers.CASH_PAYMENT.key;
 
 // looks up a single cash record and associated cash_items
-function lookup(id) {
-  const bid = db.bid(id);
+function lookup(uuid) {
+  const bid = db.bid(uuid);
 
   let record;
 
   const cashRecordSql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
+      CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id
     FROM cash JOIN project ON cash.project_id = project.id
@@ -92,11 +73,11 @@ function lookup(id) {
   return db.exec(cashRecordSql, [bid])
     .then((rows) => {
       if (!rows.length) {
-        throw new NotFound(`No cash record by uuid: ${id}`);
+        throw new NotFound(`No cash record by uuid: ${uuid}`);
       }
 
       // store the record for return
-      record = rows[0];
+      [record] = rows;
 
       return db.exec(cashItemsRecordSql, bid);
     })
@@ -104,7 +85,7 @@ function lookup(id) {
       // bind the cash items to the "items" property and return
       record.items = rows;
 
-      record.barcode = barcode.generate(entityIdentifier, record.uuid);
+      record.barcode = barcode.generate(CASH_KEY, record.uuid);
       return record;
     });
 }
@@ -122,26 +103,32 @@ function lookup(id) {
  * @returns {Array} payments - an array of { uuid, reference, date } JSONs
  */
 function read(req, res, next) {
-  listPayment(req.query)
-   .then((rows) => {
-     res.status(200).json(rows);
-   })
-   .catch(next)
-   .done();
+  find(req.query)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
- * @method listPayment
- * @description list all payment made
+ * @method find
+ *
+ * @description
+ * This method uses the FilterParser library to compose a query matching the
+ * query parameters passed in via the options object.
+ *
+ * @param {Object} options - a series of key/value pairs to be used for
+ *    filtering the cash table.
  */
-function listPayment(options) {
-  // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['debtor_uuid', 'debtor_group_uuid']);
+function find(options) {
+  // ensure expected options are parsed appropriately as binary
+  db.convert(options, ['debtor_uuid', 'debtor_group_uuid', 'invoice_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'cash' });
 
   const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
+      CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.reversed,
       d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, p.display_name AS patientName
@@ -165,7 +152,7 @@ function listPayment(options) {
   filters.equals('reversed');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
 
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) = ?`;
+  const referenceStatement = `CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
   const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
@@ -176,7 +163,7 @@ function listPayment(options) {
 
   filters.custom(
     'invoice_uuid',
-    'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = HUID(?))'
+    'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = ?)'
   );
 
   const query = filters.applyQuery(sql);
@@ -189,13 +176,12 @@ function listPayment(options) {
  * @method detail
  *
  * @description
+ * Get the details of a particular cash payment.  Expects a uuid.
  * GET /cash/:uuid
- *
- * Get the details of a particular cash payment.
  */
 function detail(req, res, next) {
   lookup(req.params.uuid)
-    .then((record) => {
+    .then(record => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -240,8 +226,8 @@ function update(req, res, next) {
   // if checks pass, we are free to continue with our updates to the db
   lookup(req.params.uuid)
 
-      // if we get here, we know we have a cash record by this UUID.
-      // we can try to update it.
+    // if we get here, we know we have a cash record by this UUID.
+    // we can try to update it.
     .then(() => db.exec(sql, [req.body, db.bid(req.params.uuid)]))
     .then(() => lookup(req.params.uuid))
     .then((record) => {
@@ -253,32 +239,11 @@ function update(req, res, next) {
 }
 
 /**
- * GET /cash/references/:reference
- * retrieves cash payment uuids from a reference string (e.g. HBB123)
- */
-function reference(req, res, next) {
-  // alias the reference
-  var ref = req.params.reference;
-
-  const sql = `
-    SELECT BUID(c.uuid) AS uuid FROM (
-      SELECT cash.uuid
-      FROM cash JOIN project ON cash.project_id = project.id
-    )c WHERE c.reference = ?;
-  `;
-
-  db.one(sql, [ref], ref, 'cash')
-    .then((payment) => {
-      // references should be unique - return the first one
-      res.status(200).json(payment);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
  * GET /cash/:checkin/:invoiceUuid
  * Check if the invoice is paid
+ * TODO(@jniles) - this should use a more intelligent system to see if an
+ * invoice is referenced ... probably by scanning the ledgers for any
+ * referencing transactions.
  */
 function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
@@ -295,4 +260,43 @@ function checkInvoicePayment(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * @function safelyDeleteCashPayment
+ *
+ * @description
+ * This function deletes the cash payment from the system.  It assumes that
+ * checks have already been made for referencing transactions.
+ */
+function safelyDeleteCashPayment(uuid) {
+  const DELETE_TRANSACTION = `
+    DELETE FROM posting_journal WHERE record_uuid = ?;
+  `;
+
+  const DELETE_CASH_PAYMENT = `
+    DELETE FROM cash WHERE uuid = ?;
+  `;
+
+  const DELETE_TRANSACTION_HISTORY = `
+    DELETE FROM transaction_history WHERE record_uuid = ?;
+  `;
+
+  const DELETE_DOCUMENT_MAP = `
+    DELETE FROM document_map WHERE uuid = ?;
+  `;
+
+  return shared.isRemovableTransaction(uuid)
+    .then(() => {
+      const binaryUuid = db.bid(uuid);
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_CASH_PAYMENT, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+
+      return transaction.execute();
+    });
 }

@@ -1,13 +1,10 @@
 /**
  * Patient Invoice API Controller
  *
- *@module controllers/finance/patientInvoice
+ * @module controllers/finance/patientInvoice
  *
- * @todo (required) major bug - Invoice items are entered based on order or attributes sent from client
- *      this doesn't seem to be consistent as of 2.X
- * @todo GET /invoices/patient/:uuid - retrieve all patient invoices for a specific patient
- *    - should this be /patients/:uuid/invoices?
- * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
+ * @todo Factor in subsidies, this depends on price lists and
+ * billing services infrastructure
  */
 
 const uuid = require('node-uuid');
@@ -18,6 +15,8 @@ const FilterParser = require('../../lib/filter');
 const BadRequest = require('../../lib/errors/BadRequest');
 const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
+
+const shared = require('./shared');
 
 const entityIdentifier = identifiers.INVOICE.key;
 const CREDIT_NOTE_ID = 10;
@@ -36,6 +35,8 @@ exports.create = create;
 exports.lookupInvoice = lookupInvoice;
 
 exports.find = find;
+
+exports.safelyDeleteInvoice = safelyDeleteInvoice;
 
 /** find the balance on an invoice due the particular debtor */
 exports.balance = balance;
@@ -170,16 +171,14 @@ function detail(req, res, next) {
 }
 
 function create(req, res, next) {
-  const invoice = req.body.invoice;
+  const { invoice } = req.body;
   invoice.user_id = req.session.user.id;
 
   const hasInvoiceItems = (invoice.items && invoice.items.length > 0);
 
   // detect missing items early and respond with an error
   if (!hasInvoiceItems) {
-    next(
-      new BadRequest(`An invoice must be submitted with invoice items.`)
-    );
+    next(new BadRequest(`An invoice must be submitted with invoice items.`));
     return;
   }
 
@@ -232,7 +231,8 @@ function find(options) {
   );
 
   filters.custom(
-   'inventory_uuid', 'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)'
+    'inventory_uuid',
+    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)'
   );
 
   filters.period('period', 'date');
@@ -278,5 +278,44 @@ function lookupInvoiceCreditNote(invoiceUuid) {
       // db.one throw a critical error when there is not any record
       // and it must be handled
       return null;
+    });
+}
+
+/**
+ * @function safelyDeleteInvoice
+ *
+ * @description
+ * This function deletes the invoice from the system.  It assumes that
+ * checks have already been made for referencing transactions.
+ */
+function safelyDeleteInvoice(guid) {
+  const DELETE_TRANSACTION = `
+    DELETE FROM posting_journal WHERE record_uuid = ?;
+  `;
+
+  const DELETE_INVOICE = `
+    DELETE FROM invoice WHERE uuid = ?;
+  `;
+
+  const DELETE_TRANSACTION_HISTORY = `
+    DELETE FROM transaction_history WHERE record_uuid = ?;
+  `;
+
+  const DELETE_DOCUMENT_MAP = `
+    DELETE FROM document_map WHERE uuid = ?;
+  `;
+
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_INVOICE, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+
+      return transaction.execute();
     });
 }

@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-
 const _ = require('lodash');
 const uuid = require('node-uuid');
 
@@ -25,6 +24,8 @@ const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
+
+const shared = require('./shared');
 
 const entityIdentifier = identifiers.VOUCHER.key;
 
@@ -39,6 +40,7 @@ exports.create = create;
 
 exports.find = find;
 exports.lookupVoucher = lookupVoucher;
+exports.safelyDeleteVoucher = safelyDeleteVoucher;
 
 /**
  * GET /vouchers
@@ -165,7 +167,7 @@ function find(options) {
  */
 function create(req, res, next) {
   // alias both the voucher and the voucher items
-  const voucher = req.body.voucher;
+  const { voucher } = req.body;
   let items = req.body.voucher.items || [];
 
   // a voucher without two items doesn't make any sense in double-entry
@@ -174,8 +176,7 @@ function create(req, res, next) {
   if (items.length < 2) {
     next(
       new BadRequest(
-        `Expected there to be at least two items, but only received
-        ${items.length} items.`
+        `Expected there to be at least two items, but only received ${items.length} items.`
       )
     );
 
@@ -212,7 +213,8 @@ function create(req, res, next) {
   });
 
   // map items into an array of arrays
-  items = _.map(items,
+  items = _.map(
+    items,
     util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid')
   );
 
@@ -224,11 +226,52 @@ function create(req, res, next) {
     .addQuery('INSERT INTO voucher SET ?', [voucher])
     .addQuery(
       'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
-      [items])
+      [items]
+    )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))
     .catch(next)
     .done();
+}
+
+
+/**
+ * @function safelyDeleteVoucher
+ *
+ * @description
+ * This function deletes a voucher from the system.  It assumes that
+ * checks have already been made for referencing transactions.
+ */
+function safelyDeleteVoucher(guid) {
+  const DELETE_TRANSACTION = `
+    DELETE FROM posting_journal WHERE record_uuid = ?;
+  `;
+
+  const DELETE_VOUCHER = `
+    DELETE FROM voucher WHERE uuid = ?;
+  `;
+
+  const DELETE_TRANSACTION_HISTORY = `
+    DELETE FROM transaction_history WHERE record_uuid = ?;
+  `;
+
+  const DELETE_DOCUMENT_MAP = `
+    DELETE FROM document_map WHERE uuid = ?;
+  `;
+
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_VOUCHER, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+
+      return transaction.execute();
+    });
 }

@@ -1,5 +1,4 @@
 /* global expect, agent */
-'use strict';
 
 const helpers = require('./helpers');
 
@@ -10,8 +9,9 @@ const helpers = require('./helpers');
 /* The /invoices API endpoint */
 describe('(/invoices) Patient Invoices', function () {
   /* total number of invoices in the database */
-  const numInvoices = 2;
+  const numInvoices = 3;
   const numCreatedInvoices = 3;
+  const numDeletedInvoices = 1;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
@@ -69,7 +69,7 @@ describe('(/invoices) Patient Invoices', function () {
     it('GET /invoices/ should return all invoices if no query string provided', function () {
       return agent.get('/invoices')
         .then((res) => {
-          helpers.api.listed(res, numInvoices + numCreatedInvoices);
+          helpers.api.listed(res, numInvoices + numCreatedInvoices - numDeletedInvoices);
         })
         .catch(helpers.handler);
     });
@@ -133,8 +133,6 @@ describe('(/invoices) Patient Invoices', function () {
  * API is bullet-proof.
  */
 function BillingScenarios() {
-  'use strict';
-
   /*
    * A simple invoice that should be posted without issue.  This demonstrates
    * that the POST /invoices route works as intended for the simple invoicing of
@@ -150,7 +148,7 @@ function BillingScenarios() {
    */
   const simpleInvoice = {
     date : new Date(),
-    cost : 35.14,  // this cost should be calculated by the server (see test).
+    cost : 35.14, // this cost should be calculated by the server (see test).
     description : 'A Simple Invoice of two items costing $35.14',
     service_id : helpers.data.ADMIN_SERVICE,
     debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
@@ -357,6 +355,19 @@ function BillingScenarios() {
         // this is the cost ($80.29) - 50% ($40.145) of subsidy
         expect(invoice.cost).to.equal(40.145);
         expect(invoice.items).to.have.length(3);
+      })
+      .catch(helpers.handler);
+  });
+
+  const TO_DELETE_UUID = 'f24619e0-3a88-4784-a750-a414fc9567bf';
+  it('DELETE /transactions/:uuid deletes an invoice', () => {
+    return agent.delete(`/transactions/${TO_DELETE_UUID}`)
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/invoices/${TO_DELETE_UUID}`);
+      })
+      .then(res => {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

@@ -14,7 +14,7 @@ function CashPaymentsRegistryTests() {
   let modal;
   let filters;
 
-  before(() => helpers.navigate('#/payments'));
+  before(() => helpers.navigate('!#/payments'));
 
   beforeEach(() => {
     SearchModal.open();
@@ -42,7 +42,8 @@ function CashPaymentsRegistryTests() {
     GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
-  it('finds three payments for all time', () => {
+
+  it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();

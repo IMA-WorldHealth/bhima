@@ -14,23 +14,23 @@ INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B
 
 -- Accounts
 INSERT INTO `account` VALUES
-  (3626,4,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
+  (3626,6,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
   (3627,3,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
   (3628,3,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
-  (3629,4,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
-  (3630,3,1,41001,'Test Debtor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
-  (3631,3,1,41002,'Test Debtor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3635,3,1,41003,'Test Debtor Accounts3',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3636,4,1,46000,'Test Inventory Accounts',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3637,3,1,46001,'First Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
-  (3638,3,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3639,4,1,57000,'Test Income Accounts',0,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3640,3,1,57003,'Test Gain Account',3639,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3641,4,1,67000,'Test Expense Accounts',0,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3642,3,1,67003,'Test Loss Account',3641,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3643,3,1,42001,'Test Creditor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3644,3,1,42002,'Test Creditor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3645,3,1,42003,'Test Creditor Accounts3',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1);
+  (3629,6,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
+  (3630,1,1,41001,'Test Debtor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
+  (3631,1,1,41002,'Test Debtor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3635,1,1,41003,'Test Debtor Accounts3',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3636,6,1,46000,'Test Inventory Accounts',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3637,1,1,46001,'First Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
+  (3638,1,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3639,6,1,57000,'Test Income Accounts',0,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3640,1,1,57003,'Test Gain Account',3639,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3641,6,1,67000,'Test Expense Accounts',0,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3642,5,1,67003,'Test Loss Account',3641,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3643,1,1,42001,'Test Creditor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3644,1,1,42002,'Test Creditor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3645,1,1,42003,'Test Creditor Accounts3',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1);
 
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
@@ -112,7 +112,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Employee Registry
 (62, 1),
 
--- subsidie Management
+-- subsidy Management
 (82, 1),
 
 --  Cashbox Management
@@ -225,6 +225,11 @@ CALL CreateFiscalYear(1, @fiscalYear2016, 1, 'Test Fiscal Year 2017', 12, DATE('
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1), (4, 4, 1);
+
+-- exchange rate for the current date
+INSERT INTO `exchange_rate` VALUES
+  (1,1,1,900.0000, DATE('2016-01-01')),
+  (2,1,1,930.0000, NOW());
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),
@@ -340,11 +345,6 @@ INSERT INTO `patient_group_subsidy` VALUES
 INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
--- exchange rate for the current date
-INSERT INTO `exchange_rate` VALUES
-  (1,1,1,900.0000, DATE('2016-01-01')),
-  (2,1,1,930.0000, NOW());
-
 -- voucher sample data
 SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
@@ -372,31 +372,36 @@ CALL PostVoucher(@third_voucher);
 -- patient invoices
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
+SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
 SET @fourth_voucher = HUID('8fefadec-c036-48ce-bc4e-e307d1301960');
 
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
   (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55'),
-  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14');
+  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14'),
+  (1,3,@third_invoice,5.1300,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-02 09:34:35','TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-02 09:31:14');
 
 INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
-  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
+  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000),
+  (@third_invoice,HUID('ffb0330d-7d46-4204-b29d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,5.13,5.13,0.0000,5.130000);
 
 CALL PostInvoice(@first_invoice);
 CALL PostInvoice(@second_invoice);
+CALL PostInvoice(@third_invoice);
 
 -- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
+SET @cash_payment_2 = HUID('2e1332b7-3e23-411e-527d-42ac585ff517');
 
--- @todo Make sure this is in the posting_journal
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
-  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
-
+  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
+  (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
   (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 10, @first_invoice);
 
 CALL PostCash(@cash_payment);
+CALL PostCash(@cash_payment_2);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES

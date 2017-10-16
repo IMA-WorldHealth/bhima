@@ -5,9 +5,8 @@
  * This file initializes the links between route controllers and the express
  * HTTP server.
  *
- * @todo Pass authenticate and authorize middleware down through
- * controllers, allowing for modules to subscribe to different
- * levels of authority
+ * @todo Pass authenticate and authorize middleware down through controllers,
+ * allowing for modules to subscribe to different levels of authority
  *
  * @requires winston
  * @requires uploader
@@ -46,7 +45,6 @@ const diagnoses = require('../controllers/medical/diagnoses');
 const employees = require('../controllers/payroll/employees');
 const employeeReports = require('../controllers/payroll/reports');
 
-
 // stock and inventory routes
 const inventory = require('../controllers/inventory');
 const depots = require('../controllers/inventory/depots');
@@ -83,9 +81,10 @@ const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
+const transactions = require('../controllers/finance/transactions');
 
 // looking up an entity by it reference
-const refenceLookup = require('../lib/referenceLookup');
+const referenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -192,10 +191,10 @@ exports.configure = function configure(app) {
   app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
+  app.delete('/transactions/:uuid', transactions.deleteTransaction);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
-
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
@@ -316,12 +315,10 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 
   // interface for linking entities, it renders a report for a particular entity
-  app.get('/refenceLookup/:codeRef/:language', refenceLookup.getEntity);
+  app.get('/referenceLookup/:codeRef/:language', referenceLookup.getEntity);
 
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
-
-  // route for invoice Report
 
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
@@ -477,7 +474,6 @@ exports.configure = function configure(app) {
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
-  app.get('/cash/references/:reference', cash.reference);
   app.get('/cash/checkin/:invoiceUuid', cash.checkInvoicePayment);
 
   // Enterprises api

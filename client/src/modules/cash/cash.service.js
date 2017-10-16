@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
-  'FilterService', 'appcache', 'PeriodService', 'LanguageService', '$httpParamSerializer',
+  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService',
+  'moment', '$translate', 'FilterService', 'appcache', 'PeriodService',
+  'LanguageService', '$httpParamSerializer',
 ];
 
 /**
@@ -13,7 +14,10 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods, Languages, $httpParamSerializer) {
+function CashService(
+  Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods,
+  Languages, $httpParamSerializer
+) {
   var service = new Api('/cash/');
   var urlCheckin = '/cash/checkin/';
 
@@ -22,6 +26,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
 
   // custom methods
   service.create = create;
+  service.remove = remove;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatCashDescription = formatCashDescription;
   service.openCancelCashModal = openCancelCashModal;
@@ -96,6 +101,19 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
       patientReference  : patient.reference,
       amount            : payment.amount,
     });
+  }
+
+  /**
+   * @method remove
+   *
+   * @description
+   * This function removes a cash payment from the database via the transaction
+   * delete route.
+   */
+  function remove(uuid) {
+    var url = '/transactions/'.concat(uuid);
+    return service.$http.delete(url)
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**

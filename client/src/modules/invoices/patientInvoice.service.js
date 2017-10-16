@@ -25,6 +25,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
   service.openCreditNoteModal = openCreditNoteModal;
   service.balance = balance;
   service.filters = invoiceFilters;
+  service.remove = remove;
 
   /**
    * @method create
@@ -189,7 +190,18 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     return $httpParamSerializer(options);
   };
 
-
+  /**
+   * @method remove
+   *
+   * @description
+   * This function removes an invoice from the database via the transaction
+   * delete route.
+   */
+  function remove(uuid) {
+    var url = '/transactions/'.concat(uuid);
+    return service.$http.delete(url)
+      .then(service.util.unwrapHttpResponse);
+  }
 
   return service;
 }

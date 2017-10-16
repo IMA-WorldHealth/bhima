@@ -5,6 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
+  'ModalService'
 ];
 
 /**
@@ -14,7 +15,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state
+  ModalService, Cash, Sorting, Columns, GridState, $state, Modals
 ) {
   var vm = this;
 
@@ -34,6 +35,7 @@ function InvoiceRegistryController(
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
   vm.download = Invoices.download;
+  vm.deleteInvoice = deleteInvoiceWithConfirmation;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -188,13 +190,13 @@ function InvoiceRegistryController(
     $state.reload();
   };
 
- // Call the opening of Modal
+  // Call the opening of Modal
   function openModal(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (success) {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load(vm.filters);
+          load(vm.filters);
         }
       })
       .catch(Notify.handleError);
@@ -217,6 +219,26 @@ function InvoiceRegistryController(
         }
       })
       .catch(Notify.handleError);
+  }
+
+  function remove(entity) {
+    Invoices.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Invoices.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
+  }
+
+  // check if it is okay to remove the entity.
+  function deleteInvoiceWithConfirmation(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   // fire up the module
