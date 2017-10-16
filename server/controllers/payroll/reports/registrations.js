@@ -62,15 +62,14 @@ function formatFilters(qs) {
  * GET /reports/payroll/employees
  */
 function build(req, res, next) {
-  const options = _.extend(req.query, { csvKey : 'employees' });
-  let report;
+  const options = _.clone(req.query);
 
-  // for now ReportManager will translate any key provided for filename as well as add a uniform timestamp
-  options.filename = 'EMPLOYEE.TITLE';
+  _.extend(options, { filename : 'EMPLOYEE.TITLE', csvKey : 'employees', orientation : 'landscape' });
+
+  let report;
 
   // set up the report with report manager
   try {
-    options.orientation = 'landscape';
     report = new ReportManager(TEMPLATE, req.session, options);
     delete options.orientation;
   } catch (e) {
@@ -85,9 +84,9 @@ function build(req, res, next) {
 
   const sql =
   `SELECT 
-    COUNT(employee.id) AS numEmployees, SUM(sexe = 'F') AS numFemales, 
-    ROUND(SUM(sexe = 'F') / COUNT(employee.id) * 100) AS percentFemales, 
-    SUM(sexe = 'M') AS numMales, ROUND(SUM(sexe = 'M') / COUNT(employee.id) * 100) AS percentMales
+    COUNT(employee.id) AS numEmployees, SUM(sex = 'F') AS numFemales, 
+    ROUND(SUM(sex = 'F') / COUNT(employee.id) * 100) AS percentFemales, 
+    SUM(sex = 'M') AS numMales, ROUND(SUM(sex = 'M') / COUNT(employee.id) * 100) AS percentMales
   FROM 
     employee
   WHERE 

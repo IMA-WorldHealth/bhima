@@ -65,6 +65,11 @@ class RegistrationPage {
         FU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
     }
 
+    // set Medical Staff
+    setIsMedical (){
+        element(by.model('EmployeeCtrl.employee.is_medical')).click();
+    }
+
     // set email
     setEmail (email){
         FU.input('EmployeeCtrl.employee.email', email);

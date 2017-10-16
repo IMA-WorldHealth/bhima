@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('EmployeeService', EmployeeService);
 
-EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 'appcache'];
+EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 'appcache', 'LanguageService', '$httpParamSerializer'];
 
 /**
  * @class EmployeeService
@@ -10,7 +10,7 @@ EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 
  * @description
  * Encapsulates common requests to the /employees/ URL.
  */
-function EmployeeService(Filters, $uibModal, Api, AppCache) {
+function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpParamSerializer) {
   var service = new Api('/employees/');
   var employeeFilters = new Filters();
   var filterCache = new AppCache('employee-filters');
@@ -21,6 +21,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache) {
   service.employeeFilters = employeeFilters;
   service.loadCachedFilters = loadCachedFilters;
   service.cacheFilters = cacheFilters;
+  service.download = download;  
 
   employeeFilters.registerDefaultFilters([{ key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
@@ -34,7 +35,8 @@ function EmployeeService(Filters, $uibModal, Api, AppCache) {
       { key : 'dateEmbaucheTo', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor: '<', valueFilter:'date' },
       { key : 'grade_id', label : 'FORM.LABELS.GRADE' },
       { key : 'fonction_id', label : 'FORM.LABELS.FUNCTION' },
-      { key : 'service_id', label : 'FORM.LABELS.SERVICE' }
+      { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
+      { key : 'is_medical', label : 'FORM.LABELS.MEDICAL_STAFF' }
     ]); 
   
   if (filterCache.filters) {
@@ -88,6 +90,17 @@ function EmployeeService(Filters, $uibModal, Api, AppCache) {
       }
     }).result;
   }
+
+  function download(type) {
+    var filterOpts = employeeFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+    
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  }  
 
   return service;
 }

@@ -131,7 +131,7 @@ function lookupEmployee(id) {
       employee.id, employee.code AS code_employee, employee.display_name, employee.sex, 
       employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
-      employee.locked, grade.text, grade.basic_salary,
+      employee.locked, employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
       employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
@@ -216,6 +216,7 @@ function update(req, res, next) {
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
     code : employee.code,
+    is_medical : employee.is_medical
   };
 
   const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
@@ -388,7 +389,7 @@ function find(options) {
       employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      employee.daily_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
@@ -417,6 +418,7 @@ function find(options) {
   filters.equals('service_id', 'service_id', 'employee');
   filters.equals('fonction_id', 'fonction_id', 'employee');
   filters.equals('grade_id', 'grade_id', 'employee');
+  filters.equals('is_medical', 'is_medical', 'employee');
 
   // @TODO Support ordering query
   filters.setOrder('ORDER BY employee.display_name DESC');
@@ -424,6 +426,6 @@ function find(options) {
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
-

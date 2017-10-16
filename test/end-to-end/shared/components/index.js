@@ -38,4 +38,6 @@ module.exports = {
   inventoryGroupSelect        : require('./bhInventoryGroupSelect'),
   inventoryTypeSelect         : require('./bhInventoryTypeSelect'),
   projectSelect               : require('./bhProjectSelect'),
+  fonctionSelect              : require('./bhFonctionSelect'),
+  gradeSelect                 : require('./bhGradeSelect'),    
 };
