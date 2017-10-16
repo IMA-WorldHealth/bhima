@@ -38,6 +38,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.input.tmpl.html' },
 
       { field            : 'quantity',
+        type             : 'number',
         width            : 150,
         displayName      : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
@@ -47,6 +48,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         cellTemplate     : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html' },
 
       { field            : 'expiration_date',
+        type             : 'date', 
         width            : 150,
         displayName      : 'TABLE.COLUMNS.EXPIRATION_DATE',
         headerCellFilter : 'translate',
@@ -109,6 +111,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   // remove lot
   function removeLot(index) {
     vm.gridOptions.data.splice(index, 1);
+    validLots();
   }
 
   // handle date change
