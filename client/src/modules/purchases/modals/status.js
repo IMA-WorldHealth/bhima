@@ -18,17 +18,14 @@ function PurchaseOrderStatusModalController(Instance, Notify, PurchaseOrder, Dat
   vm.isStored = vm.purchase.status_id === 3 || vm.purchase.status_id === 4;
 
   // submit the choice 
-  function submit(status) {
+  function submit() {
     var data = { status_id : vm.status };
-    updateOrder(vm.purchase.uuid, data);
-  }
-
-  // update the purchase order 
-  function updateOrder(uuid, params) {
-    PurchaseOrder.update(uuid, params)
+    
+    PurchaseOrder.update(vm.purchase.uuid, data)
     .then(function () {
         Instance.close();
     })
     .catch(Notify.handleError);
   }
+
 }
