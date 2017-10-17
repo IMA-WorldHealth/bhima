@@ -52,14 +52,10 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    */
   StockForm.prototype.addItems = function addItems(n) {
     var elt;
-    // var idx;
-    // var self = this;
 
     // will repeat will n > 0
     while (n--) {
       elt = new StockItem();
-      // idx = this.store.data.length;
-      // elt.index = idx ? idx + 1 : idx;
       elt.index = this.store.data.length;
       this.store.post(elt);
     }
