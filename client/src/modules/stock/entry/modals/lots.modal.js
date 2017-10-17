@@ -9,6 +9,8 @@ StockDefineLotsModalController.$inject = [
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
   var vm = this;
 
+  console.log('received Data', Data);
+
   // globals
   vm.inventory = { lots: [] };
   vm.gridApi = {};

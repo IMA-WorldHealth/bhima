@@ -31,7 +31,8 @@ function StockEntryController(
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
 
-  vm.Stock = new StockForm('StockEntry');
+  vm.stockForm = new StockForm('StockEntry');
+  console.log('our stock form object : ', vm.stockForm);
   vm.movement = {};
 
   // bind methods
@@ -43,7 +44,7 @@ function StockEntryController(
   vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.selectEntryType = selectEntryType;
-  vm.configureItem = configureItem;
+  vm.setInitialized = setInitialized;
   vm.setLots = setLots;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
@@ -87,7 +88,7 @@ function StockEntryController(
 
       { field : 'actions', width : 25, cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html' },
     ],
-    data             : vm.Stock.store.data,
+    data             : vm.stockForm.store.data,
     fastWatch        : true,
     flatEntityAccess : true,
   };
@@ -103,26 +104,26 @@ function StockEntryController(
     vm.entryOption = entryType && entryType.label !== 'purchase';
   }
 
-  // configure items
-  function configureItem(item) {
+  // set initialized to true on the item
+  function setInitialized(item) {
     item._initialised = true;
   }
 
   // add items
   function addItems(n) {
-    vm.Stock.addItems(n);
+    vm.stockForm.addItems(n);
     hasValidInput();
   }
 
   // remove item
   function removeItem(item) {
-    vm.Stock.removeItem(item.index);
+    vm.stockForm.removeItem(item.index);
     hasValidInput();
   }
 
   function setupStock() {
-    vm.Stock.setup();
-    vm.Stock.store.clear();
+    vm.stockForm.setup();
+    vm.stockForm.store.clear();
   }
 
   // init actions
@@ -158,6 +159,7 @@ function StockEntryController(
   // ============================ Modals ================================
   // find purchase
   function findPurchase() {
+
     initSelectedEntity();
 
     StockModal.openFindPurchase()
@@ -169,7 +171,7 @@ function StockEntryController(
           instance : purchase[0],
         };
 
-        setSelectedEntity(purchase[0]);
+        setSelectedEntity(vm.movement.instance);
         populate(purchase);
       })
       .catch(Notify.handleError);
@@ -206,12 +208,16 @@ function StockEntryController(
   }
 
   // populate the grid
-  function populate(items) {
+  function populate(items) {    
     if (!items.length) { return; }
 
-    vm.Stock.addItems(items.length);
+    // clear the store before adding new items
 
-    vm.Stock.store.data.forEach(function (item, index) {
+    vm.stockForm.store.clear();    
+
+    vm.stockForm.addItems(items.length);
+
+    vm.stockForm.store.data.forEach(function (item, index) {
       item.inventory = inventoryStore.get(items[index].inventory_uuid);
       item.unit_cost = items[index].unit_price || items[index].unit_cost;
       item.quantity = items[index].balance || items[index].quantity;
@@ -219,8 +225,10 @@ function StockEntryController(
       item.lot_uuid = items[index].uuid;
       item.lot = items[index].label;
       item.expiration_date = items[index].expiration_date;
-      configureItem(item);
+      setInitialized(item);
     });
+
+    console.log('here is the list of items', vm.stockForm.store.data);
   }
 
   function initSelectedEntity(description) {
@@ -252,7 +260,7 @@ function StockEntryController(
 
   // validation
   function hasValidInput() {
-    return vm.Stock.store.data.every(function (line) {
+    return vm.stockForm.store.data.every(function (line) {
       return line.lots.length > 0;
     });
   }
@@ -274,7 +282,7 @@ function StockEntryController(
       user_id     : Session.user.id,
     };
 
-    movement.lots = processLotsFromStore(vm.Stock.store.data, vm.movement.entity.uuid);
+    movement.lots = processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     Stock.stocks.create(movement)
       .then(function (document) {
@@ -282,7 +290,7 @@ function StockEntryController(
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
       .then(function () {
-        vm.Stock.store.clear();
+        vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
       })
@@ -326,13 +334,13 @@ function StockEntryController(
     };
     
     var entry = {
-      lots : processLotsFromStore(vm.Stock.store.data, movement.entity_uuid),
+      lots : processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
       movement : movement
     }
 
     Stock.integration.create(entry)
     .then(function (document) {
-      vm.Stock.store.clear();
+      vm.stockForm.store.clear();
       vm.movement = {};
       ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
     })
@@ -357,11 +365,11 @@ function StockEntryController(
 
       TODO: add a donor management module
     */
-    movement.lots = processLotsFromStore(vm.Stock.store.data, Uuid());
+    movement.lots = processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
       .then(function (document) {
-        vm.Stock.store.clear();
+        vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
       })
@@ -380,7 +388,7 @@ function StockEntryController(
       user_id : Session.user.id,
     };
 
-    var lots = vm.Stock.store.data.map(function (row) {
+    var lots = vm.stockForm.store.data.map(function (row) {
       return {
         uuid : row.lot_uuid,
         quantity : row.lots[0].quantity,
@@ -392,7 +400,7 @@ function StockEntryController(
 
     return Stock.movements.create(movement)
       .then(function (document) {
-        vm.Stock.store.clear();
+        vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
