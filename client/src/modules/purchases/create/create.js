@@ -80,6 +80,9 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
       return;
     }
 
+    // Set Waiting confirmation like default Purchase Order Status
+    vm.order.details.status_id = 1;
+
     // copy the purchase order object into something that can be sent to the server
     var order = angular.copy(vm.order.details);
     order.items = angular.copy(vm.order.store.data);

@@ -39,35 +39,13 @@
         </thead>
         <tbody>
           {{#each rows}}
-            <tr>
+            <tr class="text-right">
               <td>{{reference}}</td>
-              <td class="text-right">{{date date}}</td>
+              <td>{{date date}}</td>
               <td>{{author}}</td>
               <td>{{note}}</td>
-              <td class="text-right">{{currency cost currency_id}}</td>
-              <td>
-                <strong>
-                  {{#if isPartiallyRecieved}}
-                    {{translate 'PURCHASES.STATUS.PARTIALLY_RECEIVED'}}
-                  {{/if}}
-
-                  {{#if isReceived}}
-                    {{translate 'PURCHASES.STATUS.RECEIVED'}}
-                  {{/if}}
-
-                  {{#if isConfirmed}}
-                    {{translate 'PURCHASES.STATUS.CONFIRMED'}}
-                  {{/if}}
-
-                  {{#if isWaitingConfirmation}}
-                    {{translate 'PURCHASES.STATUS.WAITING_CONFIRMATION'}}
-                  {{/if}}
-
-                  {{#if is_cancelled}}
-                    {{translate 'PURCHASES.STATUS.CANCELLED'}}
-                  {{/if}}
-                </strong>
-              </td>
+              <td>{{currency cost currency_id}}</td>
+              <td><strong>{{translate status}} </strong></td>
             </tr>
           {{else}}
             {{> emptyTable columns=6}}

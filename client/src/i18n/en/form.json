@@ -606,6 +606,7 @@
             "SERVICE": "Select a Service",
             "SEX": "Select a Sex",
             "SOURCE": "Select source",
+            "STATUS": "Select status",
             "SUPPLIER": "Supplier",
             "TRANSACTION_TYPE": "Select a transaction type",
             "TRANSFER_TYPE": "Select a Transfer type",
