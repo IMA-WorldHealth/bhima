@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchPurchaseOrderModalController.$inject = [
   '$uibModalInstance', 'params', 'Store', 
-  'util', 'PeriodService', 'NotifyService'
+  'util', 'PeriodService', 'NotifyService', 'PurchaseOrderService', '$translate',
 ];
 
 /**
@@ -15,7 +15,7 @@ SearchPurchaseOrderModalController.$inject = [
  * search functionality on the Purchase Order registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, Periods, Notify) {
+function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, Periods, Notify, PurchaseOrder, $translate) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   vm.filters = params;
@@ -27,8 +27,29 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
   var searchQueryOptions = [
-    'reference', 'user_id', 'supplier_uuid', 'defaultPeriod', 'is_confirmed', 'is_received', 'is_cancelled'
+    'reference', 'user_id', 'supplier_uuid', 'defaultPeriod', 'status_id'
   ];
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+
+  var lastViewFilters = PurchaseOrder.filters.formatView().customFilters;
+
+  // load all Purchase status
+  PurchaseOrder.purchaseState()
+    .then(function (status) {
+      status.forEach(function (item) {
+        item.plainText = $translate.instant(item.text);
+      });
+      vm.purchaseStatus = status;
+    })
+    .catch(Notify.handleError);
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});  
 
   // assign already defined custom params to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(params, searchQueryOptions);
@@ -45,12 +66,30 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
 
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
+    displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
 
   // custom filter supplier_uuid - assign the value to the params object
   vm.onSelectSupplier = function onSelectSupplier(supplier) {
+    displayValues.supplier_uuid = supplier.display_name;
     vm.searchQueries.supplier_uuid = supplier.uuid;
+  };
+
+
+  vm.onPurchaseStatusChange = function onPurchaseStatusChange(purchaseStatus) {
+    vm.searchQueries.status_id = purchaseStatus;
+    var statusText = '/';
+
+    purchaseStatus.forEach(function (statusId) {
+      vm.purchaseStatus.forEach(function (status) {
+        if (statusId === status.id) {
+          statusText += status.plainText + ' / ';
+        }
+      });
+    });
+
+    displayValues.status_id = statusText;
   };
 
   // default filter limit - directly write to changes list
@@ -72,11 +111,12 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
 
   // returns the parameters to the parent controller
   function submit(form) {
-
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
 

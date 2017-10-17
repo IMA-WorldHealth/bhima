@@ -40,4 +40,5 @@ module.exports = {
   projectSelect               : require('./bhProjectSelect'),
   fonctionSelect              : require('./bhFonctionSelect'),
   gradeSelect                 : require('./bhGradeSelect'),    
+  purchaseStatusSelect        : require('./bhPurchaseStatusSelect'),
 };

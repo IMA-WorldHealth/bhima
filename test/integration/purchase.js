@@ -18,6 +18,7 @@ describe('(/purchases) Purchases', () => {
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
     user_id       : 2,
+    status_id     : 1,
     items         : [{
       inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity       : 200,
@@ -33,7 +34,7 @@ describe('(/purchases) Purchases', () => {
 
   const responseKeys = [
     'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note',
-    'is_confirmed', 'is_received', 'is_cancelled',
+    'status_id',
   ];
 
   it('POST /purchases should create a new purchase order', () => {

@@ -27,9 +27,10 @@ function formatFilters(qs) {
     { field : 'reference', displayName : 'FORM.LABELS.REFERENCE' },
     { field : 'user_id', displayName : 'FORM.LABELS.USER' },
     { field : 'supplier_uuid', displayName : 'FORM.LABELS.SUPPLIER' },
-    { field : 'is_confirmed', displayName : 'PURCHASES.STATUS.CONFIRMED' },
+    { field : 'is_confirmed', displayName : 'PURCHASES.ORDER' },
     { field : 'is_received', displayName : 'PURCHASES.STATUS.RECEIVED' },
     { field : 'is_cancelled', displayName : 'PURCHASES.STATUS.CANCELLED' },
+    { field : 'status_id', displayName : 'PURCHASES.ORDER' },
     { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD' },
     { field : 'custom_period_start', displayName : 'PERIODS.START', isDate : true, comparitor : '>' },
     { field : 'custom_period_end', displayName : 'PERIODS.END', isDate : true, comparitor : '<' },
@@ -78,13 +79,6 @@ function report(req, res, next) {
 
   Purchases.find(query)
     .then(rows => {
-      rows.forEach((row) => {
-        row.isPartiallyRecieved = (row.is_received && row.is_partially_received && !row.is_cancelled);
-        row.isReceived = (row.is_confirmed && !row.is_partially_received && row.is_received && !row.is_cancelled);
-        row.isConfirmed = (row.is_confirmed && !row.is_partially_received && !row.is_received && !row.is_cancelled);
-        row.isWaitingConfirmation = (!row.is_confirmed && !row.is_cancelled);
-      });
-
       data.rows = rows;
       return reportInstance.render(data);
     })

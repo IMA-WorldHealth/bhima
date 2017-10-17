@@ -43,26 +43,10 @@
           </bh-user-select>
 
           <!-- status -->
-          <div class="form-group">
-            <p class="control-label" style="margin-bottom:5px;">
-              <strong translate>FORM.LABELS.STATUS</strong>
-            </p>
-
-            <label class="radio-inline">
-              <input type="radio" id="is_confirmed" name="state" ng-model="$ctrl.searchQueries.is_confirmed" ng-true-value="1" ng-false-value="0">
-              <span translate>PURCHASES.STATUS.CONFIRMED</span>
-            </label>
-
-            <label class="radio-inline">
-              <input type="radio" id="is_received" name="state" ng-model="$ctrl.searchQueries.is_received" ng-true-value="1" ng-false-value="0">
-              <span translate>PURCHASES.STATUS.RECEIVED</span>
-            </label>
-
-            <label class="radio-inline">
-              <input type="radio" id="is_cancelled" name="state" ng-model="$ctrl.searchQueries.is_cancelled" ng-true-value="1" ng-false-value="0">
-              <span translate>PURCHASES.STATUS.CANCELLED</span>
-            </label>
-          </div>
+          <bh-purchase-status-select
+            on-change="$ctrl.onPurchaseStatusChange(purchaseStatus)"
+            status-id="$ctrl.searchQueries.status_id">
+          </bh-purchase-status-select>
         </div>
       </uib-tab>
 

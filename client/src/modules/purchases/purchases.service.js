@@ -32,6 +32,7 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
   service.create = create;
   service.stockStatus = stockStatus;
   service.stockBalance = stockBalance;
+  service.purchaseState = purchaseState;
 
 
   purchaseFilters.registerDefaultFilters([
@@ -44,9 +45,7 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label: 'FORM.LABELS.USER' },
     { key : 'supplier_uuid', label: 'FORM.LABELS.SUPPLIER' },  
-    { key : 'is_confirmed', label: 'PURCHASES.STATUS.CONFIRMED' },
-    { key : 'is_received', label: 'PURCHASES.STATUS.RECEIVED' },
-    { key : 'is_cancelled', label: 'PURCHASES.STATUS.CANCELLED' },
+    { key : 'status_id', label: 'PURCHASES.ORDER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
   ]);
 
@@ -121,6 +120,11 @@ function PurchaseOrderService($http, util, $uibModal, Filters, AppCache, Periods
 
   function stockBalance(id) {
     var url = ''.concat(id, '/stock_balance');
+    return Api.read.call(service, url);
+  }
+
+  function purchaseState() {
+    var url = ''.concat('purchaseState');
     return Api.read.call(service, url);
   }
 
