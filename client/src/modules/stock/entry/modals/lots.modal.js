@@ -74,6 +74,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.cancel = cancel;
   vm.addLot = addLot;
   vm.checkLine = checkLine
+  vm.checkAll = checkAll;
   vm.removeLot = removeLot;
 
   function init() {

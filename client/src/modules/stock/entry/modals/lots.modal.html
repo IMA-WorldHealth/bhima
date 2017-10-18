@@ -25,7 +25,7 @@
         type="number" 
         ng-model="$ctrl.stockLine.quantity" 
         ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-        ng-change="$ctrl.handleChange($ctrl.stockLine)"
+        ng-change="$ctrl.checkAll()"
         min="0">
     </div>
 

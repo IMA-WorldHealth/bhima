@@ -36,6 +36,7 @@ function StockEntryController(
   vm.removeItem = removeItem;
   vm.selectEntryType = selectEntryType;
   vm.setInitialized = setInitialized;
+  vm.buildStockLine = buildStockLine;
   vm.setLots = setLots;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
@@ -174,10 +175,10 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  // ============================ Modals ================================
-  // find purchase
+  // pop up  a modal to let user find a purchase order
   function findPurchase() {
-    initSelectedEntity('Stock Entry Purchase');
+    var description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
+    initSelectedEntity(description);
 
     StockModal.openFindPurchase()
       .then(function (purchase) {
@@ -196,7 +197,8 @@ function StockEntryController(
 
   // find transfer
   function findTransfer() {
-    initSelectedEntity();
+    var description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
+    initSelectedEntity(description);
 
     StockModal.openFindTansfer({ depot_uuid: vm.depot.uuid })
       .then(function (transfers) {
@@ -208,8 +210,8 @@ function StockEntryController(
         };
 
         vm.reference = transfers[0].documentReference;
-        vm.movement.description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
         populate(transfers);
+        vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
   }
@@ -240,10 +242,20 @@ function StockEntryController(
       item.code = inventory.code;
       item.inventory_uuid = inventory.uuid;
       item.label = inventory.label;
-      item.unit_cost = items[index].unit_price;
+      item.unit_cost = items[index].unit_price || items[index].unit_cost; // transfer comes with unit_cost
       item.quantity = items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
+
+      if(vm.movement.entity.type === 'transfer_reception') {
+        item.lots.push({
+          isValid: true,
+          lot : items[index].label,
+          quantity : item.quantity,
+          expiration_date : new Date(items[index].expiration_date),
+          uuid : items[index].uuid,
+        });
+      }
 
       setInitialized(item);
     });
@@ -299,6 +311,7 @@ function StockEntryController(
     return data.reduce(function (current, line) {
       return line.lots.map(function (lot) {
         return {
+          uuid : lot.uuid || null,
           label: lot.lot,
           initial_quantity: lot.quantity,
           quantity: lot.quantity,
@@ -345,7 +358,7 @@ function StockEntryController(
       date: vm.movement.date,
       description: vm.movement.description,
       flux_id: bhConstants.flux.FROM_INTEGRATION,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     var entry = {
@@ -369,7 +382,7 @@ function StockEntryController(
       date: vm.movement.date,
       description: vm.movement.description,
       flux_id: bhConstants.flux.FROM_DONATION,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     /*
@@ -379,7 +392,7 @@ function StockEntryController(
 
       TODO: add a donor management module
     */
-    movement.lots = processLotsFromStore(vm.stockForm.store.data, Uuid());
+    movement.lots = processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid);
 
     return Stock.stocks.create(movement)
       .then(function (document) {
@@ -397,20 +410,12 @@ function StockEntryController(
       to_depot: vm.depot.uuid,
       document_uuid: vm.movement.entity.instance.document_uuid,
       date: vm.movement.date,
-      description: vm.movement.entity.instance.description,
+      description: vm.movement.description,
       isExit: false,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(function (row) {
-      return {
-        uuid: row.lot_uuid,
-        quantity: row.lots[0].quantity,
-        unit_cost: row.unit_cost,
-      };
-    });
-
-    movement.lots = lots;
+    movement.lots = processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
       .then(function (document) {
@@ -427,6 +432,17 @@ function StockEntryController(
         vm.depot = depot;
         cache.depot = vm.depot;
       });
+  }
+
+  function buildStockLine(line) {
+    var inventory = inventoryStore.get(line.inventory_uuid);
+    line.code = inventory.code;
+    line.label = inventory.label;
+    line.unit_cost = inventory.price;
+    line.quantity = 0;
+    line.cost = line.quantity * line.unit_cost;
+    line.expiration_date = new Date();
+    setInitialized(line);
   }
 
   startup();
