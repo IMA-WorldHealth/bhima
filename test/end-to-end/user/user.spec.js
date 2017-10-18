@@ -36,7 +36,7 @@ describe('User Management Page', function () {
     login : 'Login test edit',
     email : 'test_edit@bhima.org',
     project : 'Test Project C',
-    password : 'testtestedit'
+    password : 'testtestedit1233@D'
   };
   const userCount = 4;
 
