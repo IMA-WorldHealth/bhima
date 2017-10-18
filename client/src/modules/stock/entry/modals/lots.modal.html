@@ -75,15 +75,22 @@
       </div>
     </div>
 
-    <p ng-if="$ctrl.maxLotReached" class="alert alert-warning" style="margin: 5px 0px;">
-      <i class="fa fa-warning"></i> 
-      <span translate>FORM.INFO.MAX_LOT_REACHED</span>
-    </p>
+    <div ng-if="!$ctrl.isAllValid">
+      <div ng-if="!$ctrl.isLotExist" class="alert alert-warning">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.WARNINGS.NO_LOT</span>
+      </div>
 
-    <p ng-if="!$ctrl.globalValidity" class="alert alert-danger" style="margin: 5px 0px;">
-      <div><i class="fa fa-warning"></i><span ng-if="!$ctrl.localCondition" translate>{{ $ctrl.errorLocal }}</span></div>
-      <div><i class="fa fa-warning"></i><span ng-if="!$ctrl.globalCondition" translate>{{ $ctrl.errorGlobal }}</span></div>
-    </p>
+      <div ng-if="!$ctrl.isEveryLineCorrect" class="alert alert-danger">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.ERRORS.STOCK_LINE</span>
+      </div>
+
+      <div ng-if="!$ctrl.isQuantityCorrect" class="alert alert-danger">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.ERRORS.LOT_QUANTITY</span>
+      </div>
+    </div>
 
   </div>
 

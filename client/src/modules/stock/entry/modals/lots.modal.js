@@ -10,7 +10,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   var vm = this;
 
   vm.enterprise = Session.enterprise;
-  vm.stockLine = Data.inventory;
+  vm.stockLine = Data.stockLine;
   vm.entryType = Data.entry_type;
   vm.gridApi = {};
 
@@ -70,17 +70,18 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   };
 
   // exposing method to the view
-  // vm.submit = submit;
-  // vm.cancel = cancel;
+  vm.submit = submit;
+  vm.cancel = cancel;
   vm.addLot = addLot;
   vm.checkLine = checkLine
-  // vm.removeLot = removeLot;
-  // vm.handleChange = handleChange;
-  // vm.onDateChangeCallback = onDateChangeCallback;
+  vm.removeLot = removeLot;
 
   function init() {
     if (!vm.stockLine.lots.length) {
       addLot();
+    } else {
+      // if there is at least one lot already, then check only
+      checkAll();
     }
   }
 
@@ -93,20 +94,6 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     });
 
     checkAll();
-
-
-
-    // if (vm.remainingQuantity <= 0 && vm.entryType !== 'integration') {
-    //   vm.maxLotReached = true;
-    //   return;
-    // }
-    // 
-
-    //  if it is a transfer reception, so force the validation on the single element
-    // if (vm.entryType === 'transfer_reception') {
-    //   handleChange(vm.gridOptions.data[0]);
-    // }
-
   }
 
   function onRegisterApi(api) {
@@ -114,25 +101,19 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function checkAll() {
-    var localCondition = vm.stockLine.lots.every(function (lot) {
+    vm.isLotExist = vm.stockLine.lots.length > 0;
+
+    vm.isEveryLineCorrect = vm.stockLine.lots.every(function (lot) {
       return lot.isValid === true;
     });
 
-    var sum = vm.stockLine.lots.reduce(function (x, y) {
-      return x.quantity + y.quantity;
-    });
+    vm.sum = vm.stockLine.lots.reduce(function (x, y) {
+      return x + y.quantity;
+    }, 0);
 
-    var globalCondition = sum <= vm.stockLine.quantity;
+    vm.isQuantityCorrect = vm.sum <= vm.stockLine.quantity;
 
-    vm.globalValidity = localCondition && globalCondition;
-
-    if (!localCondition) {
-      vm.errorLocal = 'STOCK.ERRORS.LINE_ERROR';
-    }
-
-    if (!globalCondition) {
-      vm.errorGlobal = 'STOCK.ERRORS.LINE_ERROR';
-    }
+    vm.isAllValid = vm.isEveryLineCorrect && vm.isQuantityCorrect && vm.isLotExist;
   }
 
   function checkLine(line, date) {
@@ -140,64 +121,31 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
     var isPosterior = new Date(line.expiration_date).getTime() >= new Date().getTime();
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
+
+    checkAll();
+  }
+
+  function cancel() {
+    Instance.dismiss();
+  }
+
+  function removeLot(index) {
+    vm.stockLine.lots.splice(index, 1);
+    checkAll();
+  }
+
+
+
+  function submit(detailsForm) {
+    if (vm.isAllValid) {
+      Instance.close({ lots: vm.stockLine.lots, quantity: vm.sum });
+    }
   }
 
   init();
 }
 
 
-
-
-
-
-
-
-
-
-
-
-  // // function removeLot(index) {
-  // //   vm.gridOptions.data.splice(index, 1);
-  // //   validLots();
-  // // }
-
-  // // function onDateChangeCallback(date, inventory) {
-  // //   inventory.expiration_date = date;
-  // //   // notify date change
-  // //   handleChange(inventory);
-  // // }
-
-
-  // // function validLots() {
-  // //   return vm.gridOptions.data.every(function (item) {
-  // //     return item.is_valid === true;
-  // //   });
-  // // }
-
-  // // function submit(detailsForm) {
-  // //   // This structure check if there are empty field
-  // //   if (detailsForm.$invalid) {
-  // //     vm.submitError = true;
-  // //     vm.errorText = vm.error ? vm.error : 'FORM.ERRORS.RECORD_ERROR';
-
-  // //     return;
-  // //   } else {
-  // //     vm.submitError = false;
-  // //     // If the form is still at this level the only remaining reason is the expiration date
-
-  // //     if (!validLots()) {
-  // //       vm.submitError = vm.error ? vm.error : false;
-
-  // //       return;
-  // //     }
-  // //   }
-
-  // //   Instance.close({ lots: vm.gridOptions.data, quantity: vm.sum });
-  // // }
-
-  // // function cancel() {
-  // //   Instance.dismiss();
-  // // }
 
   // // function sumQuantity(current, previous) {
   // //   return previous.quantity + current;
@@ -206,4 +154,3 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   // // // determine if the inventory quantity and cost should be editable or not.
   // // vm.hasEditableInventory = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
 
-  // init();

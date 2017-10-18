@@ -261,29 +261,27 @@ function StockEntryController(
     vm.displayName = uniformEntity.displayName;
   }
 
-  // ============================ lots management ===========================
-  function setLots(inventory) {
+  function setLots(stockLine) {
     StockModal.openDefineLots({
-      inventory: inventory,
+      stockLine: stockLine,
       entry_type: vm.movement.entry_type,
     })
-      .then(function (row) {
+      .then(function (res) {
         if (!row) { return; }
-        inventory.lots = row.lots;
-        inventory.givenQuantity = row.quantity;
-        vm.hasValidInput = hasValidInput();
+        stockLine.lots = res.lots;
+        stockLine.givenQuantity = row.quantity;
+        // vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
   }
 
   // validation
-  function hasValidInput() {
-    return vm.stockForm.store.data.every(function (line) {
-      return line.lots.length > 0;
-    });
-  }
+  // function hasValidInput() {
+  //   return vm.stockForm.store.data.every(function (line) {
+  //     return line.lots.length > 0;
+  //   });
+  // }
 
-  // ================================ submit ================================
   function submit(form) {
     if (form.$invalid) { return; }
     mapEntry[vm.movement.entry_type].submit();
