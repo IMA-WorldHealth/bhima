@@ -49,6 +49,11 @@ class GridRow {
   openReverseReceipt() {
     return this.menu.$('[data-method="reverse-receipt"]');
   }
+
+  goToVoucher() {
+    return this.menu.$('[data-method="view-voucher"]');
+  }
+
 }
 
 module.exports = GridRow;

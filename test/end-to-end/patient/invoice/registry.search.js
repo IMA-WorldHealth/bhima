@@ -19,7 +19,7 @@ function InvoiceRegistrySearch() {
     filters.resetFilters();
   });
 
-  const DEFAULT_INVOICES_FOR_TODAY = 3;
+  const DEFAULT_INVOICES_FOR_TODAY = 4;
   it(`filters ${DEFAULT_INVOICES_FOR_TODAY} invoice for today`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
