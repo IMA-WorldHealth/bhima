@@ -267,35 +267,59 @@ function StockEntryController(
       entry_type: vm.movement.entry_type,
     })
       .then(function (res) {
-        if (!row) { return; }
+        if (!res) { return; }
         stockLine.lots = res.lots;
-        stockLine.givenQuantity = row.quantity;
-        // vm.hasValidInput = hasValidInput();
+        stockLine.givenQuantity = res.quantity;
+        vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
   }
 
   // validation
-  // function hasValidInput() {
-  //   return vm.stockForm.store.data.every(function (line) {
-  //     return line.lots.length > 0;
-  //   });
-  // }
+  function hasValidInput() {
+    return vm.stockForm.store.data.every(function (line) {
+      return line.lots.length > 0;
+    });
+  }
 
   function submit(form) {
     if (form.$invalid) { return; }
     mapEntry[vm.movement.entry_type].submit();
   }
+  /**
+   * @function processLotsFromStore
+   *
+   * @description
+   * This function loops through the store's contents mapping them into a flat array
+   * of lots.
+   *
+   * @returns {Array} - lots in an array.
+   */
+  function processLotsFromStore(data, uuid) {
+    return data.reduce(function (current, line) {
+      return line.lots.map(function (lot) {
+        return {
+          label: lot.lot,
+          initial_quantity: lot.quantity,
+          quantity: lot.quantity,
+          unit_cost: line.unit_cost,
+          expiration_date: lot.expiration_date,
+          inventory_uuid: line.inventory_uuid,
+          origin_uuid: uuid,
+        };
+      }).concat(current);
+    }, []);
+  }
 
-  // submit purchase
   function submitPurchase() {
+
     var movement = {
       depot_uuid: vm.depot.uuid,
       entity_uuid: vm.movement.entity.uuid,
       date: vm.movement.date,
       description: vm.movement.description,
       flux_id: bhConstants.flux.FROM_PURCHASE,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     movement.lots = processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
@@ -313,32 +337,7 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  /**
-   * @function processLotsFromStore
-   *
-   * @description
-   * This function loops through the store's contents mapping them into a flat array
-   * of lots.
-   *
-   * @returns {Array} - lots in an array.
-   */
-  function processLotsFromStore(data, uuid) {
-    return data.reduce(function (current, previous) {
-      return previous.lots.map(function (lot) {
-        return {
-          label: lot.lot,
-          initial_quantity: lot.quantity,
-          quantity: lot.quantity,
-          unit_cost: previous.unit_cost,
-          expiration_date: lot.expiration_date,
-          inventory_uuid: previous.inventory.uuid,
-          origin_uuid: uuid,
-        };
-      }).concat(current);
-    }, []);
-  }
 
-  // submit integration
   function submitIntegration() {
     var movement = {
       depot_uuid: vm.depot.uuid,
@@ -363,7 +362,6 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  // submit donation
   function submitDonation() {
     var movement = {
       depot_uuid: vm.depot.uuid,

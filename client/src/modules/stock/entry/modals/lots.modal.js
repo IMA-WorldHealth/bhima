@@ -121,6 +121,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
     var isPosterior = new Date(line.expiration_date).getTime() >= new Date().getTime();
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
 
     checkAll();
   }
@@ -134,8 +135,6 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     checkAll();
   }
 
-
-
   function submit(detailsForm) {
     if (vm.isAllValid) {
       Instance.close({ lots: vm.stockLine.lots, quantity: vm.sum });
@@ -144,12 +143,6 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   init();
 }
-
-
-
-  // // function sumQuantity(current, previous) {
-  // //   return previous.quantity + current;
-  // // }
 
   // // // determine if the inventory quantity and cost should be editable or not.
   // // vm.hasEditableInventory = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
