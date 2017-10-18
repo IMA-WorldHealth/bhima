@@ -1955,3 +1955,18 @@ CREATE TABLE `transaction_history` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `depot_permission`;
+
+CREATE TABLE `depot_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `depot_uuid`  BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
+  KEY `user_id` (`user_id`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
