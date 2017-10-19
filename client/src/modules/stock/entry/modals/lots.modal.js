@@ -13,6 +13,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.stockLine = Data.stockLine;
   vm.entryType = Data.entry_type;
   vm.gridApi = {};
+  vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
 
   vm.gridOptions = {
     appScopeProvider: vm,
@@ -77,6 +78,10 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.checkAll = checkAll;
   vm.removeLot = removeLot;
 
+  function sumLot(x, y) {
+    return x + y.quantity;
+  }
+
   function init() {
     if (!vm.stockLine.lots.length) {
       addLot();
@@ -102,25 +107,23 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function checkAll() {
-    vm.isLotExist = vm.stockLine.lots.length > 0;
+    vm.hasNoLot = !vm.stockLine.lots.length > 0;
 
-    vm.isEveryLineCorrect = vm.stockLine.lots.every(function (lot) {
-      return lot.isValid === true;
+    vm.isSomeLineIncorrect = vm.stockLine.lots.some(function (lot) {
+      return lot.isValid === false;
     });
 
-    vm.sum = vm.stockLine.lots.reduce(function (x, y) {
-      return x + y.quantity;
-    }, 0);
+    vm.sum = vm.stockLine.lots.reduce(sumLot, 0);
 
-    vm.isQuantityCorrect = vm.sum <= vm.stockLine.quantity;
+    vm.isQuantityIncorrect = vm.sum > vm.stockLine.quantity;
 
-    vm.isAllValid = vm.isEveryLineCorrect && vm.isQuantityCorrect && vm.isLotExist;
+    vm.hasInvalidEntries = vm.isSomeLineIncorrect || vm.isQuantityIncorrect || vm.hasNoLot;
   }
 
   function checkLine(line, date) {
     if (date) { line.expiration_date = date; }
 
-    var isPosterior = new Date(line.expiration_date).getTime() >= new Date().getTime();
+    var isPosterior = new Date(line.expiration_date) >= new Date();
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
 
@@ -137,14 +140,10 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function submit(detailsForm) {
-    if (vm.isAllValid) {
+    if (!vm.hasInvalidEntries) {
       Instance.close({ lots: vm.stockLine.lots, quantity: vm.sum });
     }
   }
 
   init();
 }
-
-  // // // determine if the inventory quantity and cost should be editable or not.
-  // // vm.hasEditableInventory = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
-

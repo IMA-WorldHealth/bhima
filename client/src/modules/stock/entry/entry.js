@@ -135,7 +135,7 @@ function StockEntryController(
   }
 
   /**
-   * The first function to ba called, it init : 
+   * The first function to be called, it init : 
    * - A list of inventories
    * - An object dor a movement
    * - A depot from the cache or give possiblity of choosing one if not set
@@ -298,31 +298,6 @@ function StockEntryController(
     if (form.$invalid) { return; }
     mapEntry[vm.movement.entry_type].submit();
   }
-  /**
-   * @function processLotsFromStore
-   *
-   * @description
-   * This function loops through the store's contents mapping them into a flat array
-   * of lots.
-   *
-   * @returns {Array} - lots in an array.
-   */
-  function processLotsFromStore(data, uuid) {
-    return data.reduce(function (current, line) {
-      return line.lots.map(function (lot) {
-        return {
-          uuid : lot.uuid || null,
-          label: lot.lot,
-          initial_quantity: lot.quantity,
-          quantity: lot.quantity,
-          unit_cost: line.unit_cost,
-          expiration_date: lot.expiration_date,
-          inventory_uuid: line.inventory_uuid,
-          origin_uuid: uuid,
-        };
-      }).concat(current);
-    }, []);
-  }
 
   function submitPurchase() {
 
@@ -335,7 +310,7 @@ function StockEntryController(
       user_id: vm.stockForm.details.user_id,
     };
 
-    movement.lots = processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
+    movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     Stock.stocks.create(movement)
       .then(function (document) {
@@ -362,7 +337,7 @@ function StockEntryController(
     };
 
     var entry = {
-      lots: processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
+      lots: Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
       movement: movement
     }
 
@@ -392,7 +367,7 @@ function StockEntryController(
 
       TODO: add a donor management module
     */
-    movement.lots = processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid);
+    movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
       .then(function (document) {
@@ -415,7 +390,7 @@ function StockEntryController(
       user_id: vm.stockForm.details.user_id,
     };
 
-    movement.lots = processLotsFromStore(vm.stockForm.store.data, null);
+    movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
       .then(function (document) {

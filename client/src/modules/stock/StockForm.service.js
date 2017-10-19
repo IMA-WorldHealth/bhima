@@ -25,7 +25,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
 
     this.cache = AppCache(cacheKey);
     this.details = {};
-    this.store = new Store({ identifier: 'index', data: [] });
+    this.store = new Store({ data: [] });
   }
 
   /**
@@ -56,7 +56,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
     // will repeat will n > 0
     while (n--) {
       elt = new StockItem();
-      elt.index = this.store.data.length;
+      elt.id = this.store.data.length;
       this.store.post(elt);
     }
   };

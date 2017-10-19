@@ -7,7 +7,7 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
       <li class="static" translate>STOCK.ENTRY</li>
-      <li class="title">{{ $ctrl.inventory.inventory.label }}</li>
+      <li class="title">{{ $ctrl.stockLine.label }}</li>
     </ol>
   </div>
 
@@ -32,22 +32,21 @@
     <div class="form-group">
       <label translate>STOCK.UNIT_COST</label>
 
-      <div ng-if="!$ctrl.hasEditableInventory">
+      <div ng-if="!$ctrl.isCostEditable">
         <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.enterprise.currencyLabel }} </span>
       </div>
 
-      <div ng-if="$ctrl.hasEditableInventory" class="input-group">
+      <div ng-if="$ctrl.isCostEditable" class="input-group">
         <input  
           class="form-control" 
           type="number" 
           ng-model="$ctrl.stockLine.unit_cost"
-          ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-          ng-change="$ctrl.handleChange($ctrl.stockLine)">
+          ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}">
         <span class="input-group-addon">{{ $ctrl.enterprise.currencySymbol }}</span>
       </div>
     </div>
 
-    <!-- No need of defining lot label if it a transfer reception -->
+    <!-- No need of defining lot label if it is a transfer reception -->
     <div class="text-right" style="margin-bottom: 5px;"> 
       <button type="button"
         data-add-lot
@@ -75,18 +74,18 @@
       </div>
     </div>
 
-    <div ng-if="!$ctrl.isAllValid">
-      <div ng-if="!$ctrl.isLotExist" class="alert alert-warning">
+    <div ng-if="$ctrl.hasInvalidEntries">
+      <div ng-if="$ctrl.hasNoLot" class="alert alert-warning">
         <i class="fa fa-warning"></i> 
         <span translate>FORM.WARNINGS.NO_LOT</span>
       </div>
 
-      <div ng-if="!$ctrl.isEveryLineCorrect" class="alert alert-danger">
+      <div ng-if="$ctrl.isSomeLineIncorrect" class="alert alert-danger">
         <i class="fa fa-warning"></i> 
         <span translate>FORM.ERRORS.STOCK_LINE</span>
       </div>
 
-      <div ng-if="!$ctrl.isQuantityCorrect" class="alert alert-danger">
+      <div ng-if="$ctrl.isQuantityIncorrect" class="alert alert-danger">
         <i class="fa fa-warning"></i> 
         <span translate>FORM.ERRORS.LOT_QUANTITY</span>
       </div>
