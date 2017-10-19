@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PatientInvoiceService.$inject = [
   '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService',
+  '$httpParamSerializer', 'LanguageService', 'bhConstants',
 ];
 
 /**
@@ -14,7 +14,10 @@ PatientInvoiceService.$inject = [
  * This service wraps the /invoices URL and all CRUD on the underlying tables
  * takes place through this service.
  */
-function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer, Languages) {
+function PatientInvoiceService(
+  Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
+  Languages, bhConstants
+) {
   var service = new Api('/invoices/');
 
   var invoiceFilters = new Filters();
@@ -118,11 +121,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     }, true).result;
   }
 
-  invoiceFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date', comparitor : '>' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date', comparitor : '<' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  invoiceFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   invoiceFilters.registerCustomFilters([
     { key : 'service_id', label : 'FORM.LABELS.SERVICE' },

@@ -4,7 +4,7 @@ angular.module('bhima.services')
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService',
   'moment', '$translate', 'FilterService', 'appcache', 'PeriodService',
-  'LanguageService', '$httpParamSerializer',
+  'LanguageService', '$httpParamSerializer', 'bhConstants',
 ];
 
 /**
@@ -16,7 +16,7 @@ CashService.$inject = [
  */
 function CashService(
   Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods,
-  Languages, $httpParamSerializer
+  Languages, $httpParamSerializer, bhConstants
 ) {
   var service = new Api('/cash/');
   var urlCheckin = '/cash/checkin/';
@@ -142,11 +142,7 @@ function CashService(
     return disabledCurrencyIds;
   }
 
-  cashFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date', comparitor : '>' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date', comparitor : '<' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  cashFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   cashFilters.registerCustomFilters([
     { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
