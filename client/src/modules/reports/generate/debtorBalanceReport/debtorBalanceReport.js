@@ -7,17 +7,19 @@ DebtorBalanceReportController.$inject = [
 
 function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
   var vm = this;
-  var cache = new AppCache('configure_debtorAccountBalence');
-  var reportUrl = 'reports/debtorAccountBalence';
+  var cache = new AppCache('configure_debtorAccountBalance');
+  var reportUrl = 'reports/debtorAccountBalance';
 
   vm.reportDetails = {};
+  vm.fiscalYear_id = '';
   var _url = '';
 
-  vm.onSelectFiscal = function (fiscal) {
+  vm.onSelectFiscal = function(fiscal) {
     _url = reportUrl + '/' + fiscal;
-  }
+  };
 
   vm.requestSaveAs = function requestSaveAs() {
+
     var options = {
       url : _url,
       report : reportData,

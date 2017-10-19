@@ -24,6 +24,7 @@ module.exports = {
   userSelect     : require('./bhUserSelect'),
   reportSource   : require('./bhReportSource'),
   fiscalPeriodSelect          : require('./bhFiscalPeriodSelect'),
+  fiscalYearSelect          : require('./bhFiscalYearSelect'),
   debtorGroupSelect           : require('./bhDebtorGroupSelect'),
   multipleDebtorGroupSelect   : require('./bhMultipleDebtorGroupSelect'),
   depotSelect                 : require('./bhDepotSelect'),

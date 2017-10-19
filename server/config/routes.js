@@ -365,7 +365,7 @@ exports.configure = function configure(app) {
   app.get('/reports/archive/:uuid', report.sendArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
-  app.get('/reports/debtorAccountBalence/:fiscalYearId', reportDebtor.debtorAccountBalance);
+  app.get('/reports/debtorAccountBalance/:fiscalYearId', reportDebtor.debtorAccountBalance);
   app.get('/dashboard/debtors', dashboardDebtors.getReport);
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
