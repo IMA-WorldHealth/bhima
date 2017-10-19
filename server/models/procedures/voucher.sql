@@ -92,6 +92,13 @@ BEGIN
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 
+  -- update the "amount" with the sum of the voucher_items.  We could choose either
+  -- debits or credits to sum here ... they should be equivalent.
+  UPDATE voucher SET amount = (
+    SELECT SUM(vi.debit) FROM (
+      SELECT * FROM voucher_item) AS vi WHERE vi.voucher_uuid = voucher.uuid
+    ) WHERE voucher.uuid = voucher_uuid;
+
   -- make sure we update the invoice with the fact that it got reversed.
   IF isInvoice THEN
     UPDATE invoice SET reversed = 1 WHERE invoice.uuid = uuid;
