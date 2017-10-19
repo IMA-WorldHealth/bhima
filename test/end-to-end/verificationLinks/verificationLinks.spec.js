@@ -48,4 +48,26 @@ describe('Check Inter-Registry Links', () => {
     element.all(by.css('[data-method="invoice"]')).get(3).click();
     GU.expectRowCount('invoice-registry', 2);
   });
+
+  it('Checks the link between Invoice Registry -> Voucher Registry', () => {
+    helpers.navigate('#!/invoices');
+    filters.resetFilters();
+    const row = new GridRow('IV.TPA.2');
+    row.dropdown().click();
+    row.goToVoucher().click();
+
+    GU.expectRowCount('voucher-grid', 1);
+  });
+
+  it('Checks the link between Cash Registry -> Voucher Registry', () => {
+    helpers.navigate('#!/payments');
+    filters.resetFilters();
+    const row = new GridRow('CP.TPA.1');
+    row.dropdown().click();
+    row.goToVoucher().click();
+
+    GU.expectRowCount('voucher-grid', 1);
+    filters.resetFilters();
+  });
+
 });

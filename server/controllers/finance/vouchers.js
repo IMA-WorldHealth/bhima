@@ -110,7 +110,7 @@ function lookupVoucher(vUuid) {
 }
 
 function find(options) {
-  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid']);
+  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
   const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
@@ -151,11 +151,16 @@ function find(options) {
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
+  filters.custom('invoice_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
+
+  filters.custom('cash_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
+
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 

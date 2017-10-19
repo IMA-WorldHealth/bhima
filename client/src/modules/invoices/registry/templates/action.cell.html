@@ -22,10 +22,16 @@
       </a>
     </li>
     <li>
-      <a data-method="view-payment" href ui-sref="cashRegistry({ filters : { key : 'invoice_uuid', value : row.entity.uuid }})">
+      <a data-method="view-payment" href ui-sref="cashRegistry({ filters : { key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }})">
         <span class="fa fa-money"></span> <span translate>REPORT.VIEW_PAYMENTS</span>
       </a>
     </li>
+    <li>
+      <a data-method="view-voucher"  href ui-sref="vouchers({ filters : [{ key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_VOUCHER</span>
+      </a>
+    </li>
+
     <li>
       <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})">
         <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>

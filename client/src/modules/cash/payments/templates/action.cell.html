@@ -21,10 +21,16 @@
       </a>
     </li>
     <li ng-show="!row.entity.is_caution">
-      <a data-method="view-invoice"  href ui-sref="invoiceRegistry({ filters : { key : 'cash_uuid', value : row.entity.uuid }})">
+      <a data-method="view-invoice" href ui-sref="invoiceRegistry({ filters : { key : 'cash_uuid', value : row.entity.uuid, displayValue: row.entity.reference }})">
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>
       </a>
     </li>
+    <li>
+      <a data-method="view-voucher" href ui-sref="vouchers({ filters : [{ key : 'cash_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_VOUCHER</span>
+      </a>
+    </li>
+
     <li>
       <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})">
         <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>

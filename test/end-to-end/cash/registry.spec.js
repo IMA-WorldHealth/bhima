@@ -26,8 +26,8 @@ function CashPaymentsRegistryTests() {
     filters.resetFilters();
   });
 
-  it('finds only one payment for today', () => {
-    const DEFAULT_PAYMENTS_FOR_TODAY = 1;
+  it('finds only two payment for today', () => {
+    const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
@@ -35,7 +35,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds one payments for this last year', () => {
-    const DEFAULT_PAYMENTS_FOR_TODAY = 1;
+    const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('year');
     modal.submit();

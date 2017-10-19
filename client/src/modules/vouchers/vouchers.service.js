@@ -49,6 +49,8 @@ function VoucherService(
     { key : 'reversed', label : 'FORM.INFO.ANNULLED' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
+    { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
+    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },    
     { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 

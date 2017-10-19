@@ -345,30 +345,6 @@ INSERT INTO `patient_group_subsidy` VALUES
 INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
--- voucher sample data
-SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
-SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
-SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
-
-INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, description, user_id, type_id) VALUES
-  (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1, 1),
-  (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, NULL),
-  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, NULL);
-
--- voucher items sample data
-INSERT INTO `voucher_item` VALUES
-  (HUID(UUID()), 3627, 100, 0, @first_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 100, @first_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3627, 200, 0, @second_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 200, @second_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3627, 300, 0, @third_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
-
--- post voucher data to the general ledger
-CALL PostVoucher(@first_voucher);
-CALL PostVoucher(@second_voucher);
-CALL PostVoucher(@third_voucher);
-
 -- patient invoices
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
@@ -376,7 +352,7 @@ SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
 SET @fourth_voucher = HUID('8fefadec-c036-48ce-bc4e-e307d1301960');
 
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
-  (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55'),
+  (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1, NOW(),'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
   (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14'),
   (1,3,@third_invoice,5.1300,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-02 09:34:35','TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-02 09:31:14');
 
@@ -394,7 +370,7 @@ SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
 SET @cash_payment_2 = HUID('2e1332b7-3e23-411e-527d-42ac585ff517');
 
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
-  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
+  (@cash_payment, 1, 1, NOW(), HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
   (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
@@ -402,6 +378,32 @@ INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
 
 CALL PostCash(@cash_payment);
 CALL PostCash(@cash_payment_2);
+
+
+-- voucher sample data
+SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
+SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
+SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
+
+INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, description, user_id, type_id) VALUES
+  (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1, 1),
+  (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, NULL),
+  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, NULL);
+
+-- voucher items sample data
+INSERT INTO `voucher_item` VALUES
+  (HUID(UUID()), 3627, 100, 0, @first_voucher, @first_invoice, HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 100, @first_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 200, 0, @second_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 200, @second_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 300, 0, @third_voucher, @cash_payment, HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
+
+-- post voucher data to the general ledger
+CALL PostVoucher(@first_voucher);
+CALL PostVoucher(@second_voucher);
+CALL PostVoucher(@third_voucher);
+
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
