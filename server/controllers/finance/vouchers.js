@@ -109,6 +109,14 @@ function lookupVoucher(vUuid) {
     });
 }
 
+// NOTE(@jniles) - this is used to find references for both vouchers and credit notes.
+const REFERENCE_SQL = `
+  v.uuid IN (
+    SELECT DISTINCT voucher.uuid FROM voucher JOIN voucher_item
+      ON voucher.uuid = voucher_item.voucher_uuid
+    WHERE voucher_item.document_uuid = ? OR voucher.reference_uuid = ?
+  )`;
+
 function find(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
@@ -151,9 +159,8 @@ function find(options) {
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
-  filters.custom('invoice_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
-
-  filters.custom('cash_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
+  filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
+  filters.custom('cash_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
