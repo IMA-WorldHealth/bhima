@@ -160,7 +160,7 @@ function find(options) {
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
   filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
-  filters.custom('cash_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
+  filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
@@ -302,11 +302,15 @@ function safelyDeleteVoucher(guid) {
 
       transaction
         .addQuery(DELETE_TRANSACTION, binaryUuid)
-        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
-        .addQuery(DELETE_VOUCHER, binaryUuid)
-        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid)
+
+        // note that we have to delete the toggles before removing the voucher
+        // wholesale.
         .addQuery(TOGGLE_INVOICE_REVERSAL, binaryUuid)
-        .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid);
+        .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid)
+
+        .addQuery(DELETE_VOUCHER, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
       return transaction.execute();
     });
