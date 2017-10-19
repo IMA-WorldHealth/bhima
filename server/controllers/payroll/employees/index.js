@@ -130,7 +130,7 @@ function lookupEmployee(id) {
     SELECT 
       employee.id, employee.code AS code_employee, employee.display_name, employee.sex, 
       employee.dob, employee.date_embauche, employee.service_id,
-      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
+      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
@@ -139,7 +139,7 @@ function lookupEmployee(id) {
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
-      JOIN grade ON employee.grade_id = grade.uuid
+      JOIN grade ON employee.grade_uuid = grade.uuid
       LEFT JOIN fonction ON employee.fonction_id = fonction.id
       JOIN patient ON patient.uuid = employee.patient_uuid
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
@@ -175,7 +175,7 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   const employee = db.convert(req.body, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
   ]);
 
   if (employee.dob) {
@@ -206,7 +206,7 @@ function update(req, res, next) {
     service_id : employee.service_id,
     nb_spouse : employee.nb_spouse,
     nb_enfant : employee.nb_enfant,
-    grade_id : employee.grade_id,
+    grade_uuid : employee.grade_uuid,
     locked : employee.locked,
     fonction_id : employee.fonction_id,
     phone : employee.phone,
@@ -268,7 +268,7 @@ function create(req, res, next) {
 
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
-    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
     'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
   ]);
 
@@ -327,7 +327,7 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(results => {
-      // @todo - why is this not a UUID, but grade_id is a uuid?
+      // @todo - why is this not a UUID, but grade_uuid is a uuid?
       const employeeId = results[3].insertId;
 
       topic.publish(topic.channels.ADMIN, {
@@ -386,7 +386,7 @@ function find(options) {
     `SELECT 
       employee.id, employee.code AS code, employee.display_name, employee.sex, 
       employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
-      employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
+      employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
       employee.daily_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
@@ -395,7 +395,7 @@ function find(options) {
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
       service.name as service_name
     FROM employee
-     JOIN grade ON employee.grade_id = grade.uuid
+     JOIN grade ON employee.grade_uuid = grade.uuid
      LEFT JOIN fonction ON employee.fonction_id = fonction.id
      JOIN patient ON patient.uuid = employee.patient_uuid
      JOIN debtor ON patient.debtor_uuid = debtor.uuid
@@ -404,7 +404,7 @@ function find(options) {
      LEFT JOIN service ON service.id = employee.service_id
   `;
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['grade_id', 'creditor_uuid', 'patient_uuid']);
+  db.convert(options, ['grade_uuid', 'creditor_uuid', 'patient_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'employee' });
 
@@ -417,7 +417,7 @@ function find(options) {
   filters.equals('code', 'code', 'employee');
   filters.equals('service_id', 'service_id', 'employee');
   filters.equals('fonction_id', 'fonction_id', 'employee');
-  filters.equals('grade_id', 'grade_id', 'employee');
+  filters.equals('grade_uuid', 'grade_uuid', 'employee');
   filters.equals('is_medical', 'is_medical', 'employee');
 
   // @TODO Support ordering query

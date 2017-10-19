@@ -46,7 +46,7 @@ const filters = [
   { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
   { field : 'dateEmbaucheFrom', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '>', isDate : true },
   { field : 'dateEmbaucheTo', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '<', isDate : true },
-  { field : 'grade_id', displayName : 'FORM.LABELS.GRADE' },
+  { field : 'grade_uuid', displayName : 'FORM.LABELS.GRADE' },
   { field : 'fonction_id', displayName : 'FORM.LABELS.FUNCTION' },
   { field : 'type_ids', displayName : 'FORM.LABELS.TRANSACTION_TYPE' },
 

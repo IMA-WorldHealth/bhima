@@ -57,7 +57,7 @@ class RegistrationPage {
 
     // set grade
     setGrade (grade){
-        FU.uiSelect('EmployeeCtrl.employee.grade_id', grade);
+        FU.uiSelect('EmployeeCtrl.employee.grade_uuid', grade);
     }
 
     // set fonction
@@ -123,7 +123,7 @@ class RegistrationPage {
         FU.validation.error('EmployeeCtrl.employee.display_name');
         FU.validation.error('EmployeeCtrl.employee.sex');
         FU.validation.error('EmployeeCtrl.employee.code');
-        FU.validation.error('EmployeeCtrl.employee.grade_id');
+        FU.validation.error('EmployeeCtrl.employee.grade_uuid');
         FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
         FU.validation.error('$ctrl.debtorGroupUuid');
         FU.validation.error('EmployeeCtrl.employee.dob');
