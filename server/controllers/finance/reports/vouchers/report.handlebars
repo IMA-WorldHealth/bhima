@@ -10,15 +10,13 @@
 
       <!-- page title  -->
       <h2 class="text-center text-uppercase">
-        {{translate 'VOUCHERS.GLOBAL.REPORT'}} <br />
-        <small>
-          {{#if dateFrom}} {{date dateFrom}} - {{/if}}
-          {{#if dateTo}} {{date dateTo}} {{/if}}
-        </small>
+        {{translate 'VOUCHERS.GLOBAL.REPORT'}}
       </h2>
 
+      <!-- filters  -->
+      {{> filterbar filters=filters }}
+
       <!-- list of data  -->
-      <!-- voucher info  -->
       <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
