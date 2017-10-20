@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -7,7 +5,7 @@ helpers.configure(chai);
 
 const ReportIncomeExpensePage = require('./income_expense.page');
 
-describe('Income Expense report ::', () => {
+describe('Income Expense Report', () => {
   let Page;
   const key = 'income_expense';
 
@@ -23,7 +21,6 @@ describe('Income Expense report ::', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportIncomeExpensePage(key);
-    browser.refresh();
   });
 
   it('preview a new income expense report', () => {
@@ -35,7 +32,14 @@ describe('Income Expense report ::', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveIncomeExpenseReport(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type, dataset.report_name, dataset.renderer);
+    Page.saveIncomeExpenseReport(
+      dataset.fiscal_id,
+      dataset.periodFrom_id,
+      dataset.periodTo_id,
+      dataset.type,
+      dataset.report_name,
+      dataset.renderer
+    );
   });
 
   it('report has been saved into archive', () => {

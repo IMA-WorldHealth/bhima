@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -7,7 +5,7 @@ helpers.configure(chai);
 
 const ReportDebtorsPage = require('./aged_debtors.page');
 
-describe('Aged Debtors Report ::', () => {
+describe('Aged Debtors Report', () => {
   let Page;
   const key = 'aged_debtors';
 
@@ -23,7 +21,6 @@ describe('Aged Debtors Report ::', () => {
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportDebtorsPage(key);
-    browser.refresh();
   });
 
   it('preview a new Aged Debtors Report', () => {

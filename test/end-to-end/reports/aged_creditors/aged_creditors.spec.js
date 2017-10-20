@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -7,7 +5,7 @@ helpers.configure(chai);
 
 const ReportCreditorsPage = require('./aged_creditors.page');
 
-describe('Aged Creditors Report ::', () => {
+describe('Aged Creditors Report', () => {
   let Page;
   const key = 'aged_creditors';
 
@@ -18,12 +16,11 @@ describe('Aged Creditors Report ::', () => {
     renderer : 'PDF',
     period_1 : 'juin 2016',
     period_2 : 'mai 2015',
-  };  
+  };
 
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportCreditorsPage(key);
-    browser.refresh();
   });
 
   it('preview a new Aged Creditors Report', () => {
