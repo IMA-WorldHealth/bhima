@@ -39,29 +39,29 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   StockInventoryFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
-    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
-    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
-    { key : 'label', label : 'STOCK.LOT' },
-    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date' },
-    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date' },
+    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
+    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key: 'label', label: 'STOCK.LOT' },
+    { key: 'entry_date_from', label: 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter: 'date' },
+    { key: 'entry_date_to', label: 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter: 'date' },
+    { key: 'expiration_date_from', label: 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter: 'date' },
+    { key: 'expiration_date_to', label: 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter: 'date' },
   ]);
 
   StockMovementFilters.registerCustomFilters([
-    { key : 'is_exit', label : 'STOCK.OUTPUT'},
-    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
-    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
-    { key : 'label', label : 'STOCK.LOT' },
-    { key : 'flux_id', label : 'STOCK.FLUX'},
-    { key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor: '>', valueFilter : 'date' },
-    { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor: '<', valueFilter : 'date' },
+    { key: 'is_exit', label: 'STOCK.OUTPUT' },
+    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
+    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key: 'label', label: 'STOCK.LOT' },
+    { key: 'flux_id', label: 'STOCK.FLUX' },
+    { key: 'dateFrom', label: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
+    { key: 'dateTo', label: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
   ]);
 
   StockInventoryFilters.registerCustomFilters([
-    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
-    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
-    { key : 'status', label : 'STOCK.STATUS.LABEL' },
+    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
+    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
+    { key: 'status', label: 'STOCK.STATUS.LABEL' },
   ]);
 
 
@@ -84,16 +84,16 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   // creating an object of filter to avoid method duplication
   var stockFilter = {
-    lot : StockLotFilters,
-    movement : StockMovementFilters,
-    inventory : StockInventoryFilters
+    lot: StockLotFilters,
+    movement: StockMovementFilters,
+    inventory: StockInventoryFilters
   };
 
   // creating an object of filter object to avoid method duplication
   var filterCache = {
-    lot : filterLotCache,
-    movement : filterMovementCache,
-    inventory : filterInventoryCache
+    lot: filterLotCache,
+    movement: filterMovementCache,
+    inventory: filterInventoryCache
   };
 
   function assignLotDefaultFilters() {
@@ -166,7 +166,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // downloads a type of report based on the
   function download(filterKey, type) {
     var filterOpts = stockFilter[filterKey].formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    var defaultOpts = { renderer: type, lang: Languages.key };
 
     // combine options
     var options = angular.merge(defaultOpts, filterOpts);
@@ -190,21 +190,48 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       }
     });
 
-    return { reference : entity.reference || '', displayName : entity.displayName || '' };
+    return { reference: entity.reference || '', displayName: entity.displayName || '' };
+  }
+
+  /**
+   * @function processLotsFromStore
+   *
+   * @description
+   * This function loops through the store's contents mapping them into a flat array
+   * of lots.
+   *
+   * @returns {Array} - lots in an array.
+ */
+  function processLotsFromStore(data, uuid) {
+    return data.reduce(function (current, line) {
+      return line.lots.map(function (lot) {
+        return {
+          uuid: lot.uuid || null,
+          label: lot.lot,
+          initial_quantity: lot.quantity,
+          quantity: lot.quantity,
+          unit_cost: line.unit_cost,
+          expiration_date: lot.expiration_date,
+          inventory_uuid: line.inventory_uuid,
+          origin_uuid: uuid,
+        };
+      }).concat(current);
+    }, []);
   }
 
   return {
-    stocks       : stocks,
-    lots         : lots,
-    movements    : movements,
-    inventories  : inventories,
-    integration  : integration,
-    transfers    : transfers,
-    filter       : stockFilter,
-    cacheFilters : cacheFilters,
-    removeFilter : removeFilter,
-    loadCachedFilters : loadCachedFilters,
-    download : download,
-    uniformSelectedEntity : uniformSelectedEntity,
+    stocks: stocks,
+    lots: lots,
+    movements: movements,
+    inventories: inventories,
+    integration: integration,
+    transfers: transfers,
+    filter: stockFilter,
+    cacheFilters: cacheFilters,
+    removeFilter: removeFilter,
+    loadCachedFilters: loadCachedFilters,
+    download: download,
+    uniformSelectedEntity: uniformSelectedEntity,
+    processLotsFromStore : processLotsFromStore,    
   };
 }

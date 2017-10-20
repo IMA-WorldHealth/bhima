@@ -120,11 +120,11 @@ function updateInventoryItems(req, res, next) {
 
 
 /**
-* GET /inventory/metadata/
-* Returns a description all inventory items in the inventory table.
-* Returns a description the inventory items filter by params.
-*
-* @function searchInventoryItems
+  * GET /inventory/metadata/
+  * Returns a description all inventory items in the inventory table.
+  * Returns a description the inventory items filter by params.
+  *
+  * @function searchInventoryItems
 */
 function getInventoryItems(req, res, next) {
   const params = req.query;

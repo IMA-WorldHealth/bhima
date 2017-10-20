@@ -64,6 +64,7 @@
     "ORIGINS"         : "Lots Origins",
     "ORIGIN_DOCUMENT" : "Origin Document",
     "PATIENT_DISTRIBUTION" : "Patient Distribution",
+    "PURCHASE_DESCRIPTION" : "Purchaser order description",
     "SERVICE_DISTRIBUTION" : "Service Distribution",
     "DEPOT_DISTRIBUTION" : "Depot Distribution",
     "LOSS_DISTRIBUTION" : "Stock Loss",

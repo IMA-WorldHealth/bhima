@@ -64,6 +64,7 @@
     "ORIGINS"         : "Origines des lots",
     "ORIGIN_DOCUMENT" : "Document de l'origine",
     "PATIENT_DISTRIBUTION" : "Distribution au Patient",
+    "PURCHASE_DESCRIPTION" : "Description pour order d'achat",
     "SERVICE_DISTRIBUTION" : "Distribution au Service",
     "DEPOT_DISTRIBUTION" : "Distribution au depot",
     "LOSS_DISTRIBUTION" : "Perte de Stock",

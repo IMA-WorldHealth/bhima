@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('StockFormService', StockFormService);
+  .service('StockFormService', StockFormService);
 
 StockFormService.$inject = [
   'StockItemService', 'Store', 'AppCache', 'SessionService',
@@ -25,7 +25,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
 
     this.cache = AppCache(cacheKey);
     this.details = {};
-    this.store = new Store({ identifier: 'index', data: [] });
+    this.store = new Store({ data: [] });
   }
 
   /**
@@ -36,10 +36,10 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    * two lines are always present in the form.
    */
   StockForm.prototype.setup = function setup() {
-    var self = this;
-    self.details = {};
-    self.details.date = new Date();
-    self.details.user_id = Session.user.id;
+    this.details = {
+      date: new Date(),
+      user_id: Session.user.id
+    };
   };
 
   /**
@@ -52,12 +52,11 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    */
   StockForm.prototype.addItems = function addItems(n) {
     var elt;
-    var idx;
-    var self = this;
+
+    // will repeat will n > 0
     while (n--) {
       elt = new StockItem();
-      idx = self.store.data.length;
-      elt.index = idx ? idx + 1 : idx;
+      elt.id = this.store.data.length;
       this.store.post(elt);
     }
   };
@@ -120,7 +119,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    * @description
    * Checks to see if the invoice has cached items to recover.
    */
-  StockForm.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+  StockForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
   };
 

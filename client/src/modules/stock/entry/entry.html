@@ -37,7 +37,7 @@
 <div class="flex-content">
   <div class="container-fluid">
 
-    <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
+    <form name="StockEntryForm" bh-submit="StockCtrl.submit(StockEntryForm)" novalidate>
 
     <!-- activator -->
     <div class="row">
@@ -60,7 +60,7 @@
 
         <!-- note -->
         <div class="form-group"
-          ng-class="{ 'has-error' : StockForm.$submitted && StockForm.description.$invalid }">
+          ng-class="{ 'has-error' : StockEntryForm.$submitted && StockEntryForm.description.$invalid }">
           <label class="control-label">
             <span translate>FORM.LABELS.DESCRIPTION</span>
           </label>
@@ -72,7 +72,7 @@
             ng-maxlength="StockCtrl.maxLength"
             required>
           </textarea>
-          <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
+          <div class="help-block" ng-messages="StockEntryForm.description.$error" ng-show="StockEntryForm.$submitted">
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
           </div>
         </div>
@@ -113,7 +113,7 @@
     <div class="row" style="margin-top: 5px;">
       <div class="col-xs-6 col-xs-offset-6">
         <div class="text-right">
-          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
+          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockEntryForm)" type="button" translate>
             FORM.BUTTONS.SUSPEND
           </button>
 

@@ -74,7 +74,7 @@ function StockEntryPage() {
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.
-    FU.input('row.entity.inventory', code, itemCell);
+    FU.input('row.entity.inventory_uuid', code, itemCell);
 
     // the typeahead should be open - use an id to click the right item
     element(by.id(`inv-code-${code}`)).click();
@@ -103,11 +103,11 @@ function StockEntryPage() {
     let expirationDateCell;
 
     if (inventoryQuantity) {
-      FU.input('$ctrl.inventory.quantity', inventoryQuantity);
+      FU.input('$ctrl.stockLine.quantity', inventoryQuantity);
     }
 
     if (inventoryUnitCost) {
-      FU.input('$ctrl.inventory.unit_cost', inventoryUnitCost);
+      FU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
     }
 
     lotsArray.forEach((lot, index) => {
