@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Invoice Reports
@@ -6,60 +5,31 @@
  * @description
  * This module contains the functionality to generate invoice reports and
  * receipts.
- *
  */
 
 const _ = require('lodash');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const Purchases = require('../../purchases');
+const shared = require('../shared');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/purchases/report.handlebars';
 
 exports.report = report;
 
-// translation key mappings for dynamic filters
-// Basically, to show a pretty filter bar, this will translate URL query params
-// into human-readable text to be placed in the report, showing the properties
-// filtered on.
-function formatFilters(qs) {
-  const columns = [
-    { field : 'reference', displayName : 'FORM.LABELS.REFERENCE' },
-    { field : 'user_id', displayName : 'FORM.LABELS.USER' },
-    { field : 'supplier_uuid', displayName : 'FORM.LABELS.SUPPLIER' },
-    { field : 'is_confirmed', displayName : 'PURCHASES.ORDER' },
-    { field : 'is_received', displayName : 'PURCHASES.STATUS.RECEIVED' },
-    { field : 'is_cancelled', displayName : 'PURCHASES.STATUS.CANCELLED' },
-    { field : 'status_id', displayName : 'PURCHASES.ORDER' },
-    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD' },
-    { field : 'custom_period_start', displayName : 'PERIODS.START', isDate : true, comparitor : '>' },
-    { field : 'custom_period_end', displayName : 'PERIODS.END', isDate : true, comparitor : '<' },
-    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
-  ];
-
-  return columns.filter(column => {
-    const value = qs[column.field];
-
-    if (!_.isUndefined(value)) {
-      column.value = value;
-      return true;
-    }
-    return false;
-  });
-}
-
 
 /**
  * @function report
- * @desc build a report for Purchace Registry report of metadata
- * @param {array} data Purchase Registry report of metadata
- * @return {object} promise
+ *
+ * @description
+ * Build a report for Purchase Registry report of metadata
+ *
  */
 function report(req, res, next) {
   let reportInstance;
 
   const query = _.clone(req.query);
-  const filters = formatFilters(req.query);
+  const filters = shared.formatFilters(req.query);
 
   _.extend(query, {
     filename : 'TREE.PURCHASE_REGISTRY',

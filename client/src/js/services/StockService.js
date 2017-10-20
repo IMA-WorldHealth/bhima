@@ -232,6 +232,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     loadCachedFilters: loadCachedFilters,
     download: download,
     uniformSelectedEntity: uniformSelectedEntity,
-    processLotsFromStore : processLotsFromStore,    
+    processLotsFromStore : processLotsFromStore,
   };
 }
