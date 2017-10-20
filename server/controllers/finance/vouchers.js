@@ -109,6 +109,14 @@ function lookupVoucher(vUuid) {
     });
 }
 
+// NOTE(@jniles) - this is used to find references for both vouchers and credit notes.
+const REFERENCE_SQL = `
+  v.uuid IN (
+    SELECT DISTINCT voucher.uuid FROM voucher JOIN voucher_item
+      ON voucher.uuid = voucher_item.voucher_uuid
+    WHERE voucher_item.document_uuid = ? OR voucher.reference_uuid = ?
+  )`;
+
 function find(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
@@ -151,9 +159,8 @@ function find(options) {
   // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
 
-  filters.custom('invoice_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
-
-  filters.custom('cash_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE document_uuid = ?)');
+  filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
+  filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
@@ -246,8 +253,11 @@ function create(req, res, next) {
  * @function safelyDeleteVoucher
  *
  * @description
- * This function deletes a voucher from the system.  It assumes that
- * checks have already been made for referencing transactions.
+ * This function deletes a voucher from the system.  The method first checks
+ * that a transaction can be deleted using the shared transaction library.
+ * After removing the voucher, it also updates and "reversal" flags if necessary
+ * to ensure that cash payments and invoices do not maintain broken links to
+ * vouchers that have been deleted.
  */
 function safelyDeleteVoucher(guid) {
   const DELETE_TRANSACTION = `
@@ -266,6 +276,25 @@ function safelyDeleteVoucher(guid) {
     DELETE FROM document_map WHERE uuid = ?;
   `;
 
+  // NOTE(@jniles) - this is a naive way of undoing reversals.  If no value is
+  // matched, nothing happens.  This can be improved in the future by first
+  // checking if the voucher's transaction_type is a reversal type, and then
+  // performing or skipping this step based on that result.
+
+  const TOGGLE_INVOICE_REVERSAL = `
+    UPDATE invoice
+      JOIN voucher ON invoice.uuid = voucher.reference_uuid
+      SET invoice.reversed = 0
+      WHERE voucher.uuid = ?;
+  `;
+
+  const TOGGLE_CASH_REVERSAL = `
+    UPDATE cash
+      JOIN voucher ON cash.uuid = voucher.reference_uuid
+      SET cash.reversed = 0
+      WHERE voucher.uuid = ?;
+  `;
+
   return shared.isRemovableTransaction(guid)
     .then(() => {
       const binaryUuid = db.bid(guid);
@@ -273,8 +302,14 @@ function safelyDeleteVoucher(guid) {
 
       transaction
         .addQuery(DELETE_TRANSACTION, binaryUuid)
-        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+
+        // note that we have to delete the toggles before removing the voucher
+        // wholesale.
+        .addQuery(TOGGLE_INVOICE_REVERSAL, binaryUuid)
+        .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid)
+
         .addQuery(DELETE_VOUCHER, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
         .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
       return transaction.execute();
