@@ -11,7 +11,7 @@ angular.module('bhima.components')
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
-      validationTrigger:  '<?',
+      validationTrigger :  '<?',
     },
   });
 
