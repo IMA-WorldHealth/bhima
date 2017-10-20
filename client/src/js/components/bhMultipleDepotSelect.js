@@ -3,9 +3,10 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhMultipleDepotSelect.tmpl.html',
     controller  : MultipleDepotSelectController,
     bindings    : { 
-      label            : '@?',
-      onChange         : '&',
-      formName         : '@?'
+      depotsUuids     : '<',
+      label           : '@?',
+      onChange        : '&',
+      formName        : '@?'
     },
   });
 
@@ -30,6 +31,9 @@ function MultipleDepotSelectController(Depots, Notify) {
     // default for form name
     $ctrl.formName = $ctrl.formName || 'DepotForm';
 
+    // init the model
+    $ctrl.depotsUuids = $ctrl.depotsUuids || [];
+
     // load all Depot
     Depots.read()
       .then(function (depots) {
@@ -37,6 +41,7 @@ function MultipleDepotSelectController(Depots, Notify) {
       })
       .catch(Notify.handleError);
   };
+
 
   // fires the onChange bound to the component boundary
   $ctrl.handleChange = function (models) {

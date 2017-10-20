@@ -2,6 +2,7 @@
 "ADD_USER":"Ajouter utilisateur",
 "DESCRIPTION":"Module de gestion des utilisateur et leurs droits",
 "PERMISSIONS":"Permissions",
+"SET_DEPOT":"Assignation des gestionnaires des dépôts",
 "SET_PASSWORD":"Definir mot de passe",
 "SUPER":"super utilisateur",
 "TITLE":"Utilisateur et droits",

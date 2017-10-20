@@ -15,6 +15,12 @@
         <i class="fa fa-key"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span>
       </a>
     </li>
+    <li>
+      <a data-method="permission" ng-click="grid.appScope.depotManagement(row.entity)" href>
+        <i class="fa fa-cubes"></i> <span translate>FORM.BUTTONS.DEPOSIT_MANAGEMENT</span>
+      </a>
+    </li>
+
     <li class="divider"></li>
     <li ng-if="!row.entity.deactivated">
       <a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
