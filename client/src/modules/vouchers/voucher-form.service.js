@@ -113,10 +113,10 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   VoucherForm.prototype.validate = function validate() {
     var items = this.store.data;
 
+    var err;
+
     // calculate the totals for the data
     this.totals = calculateItemTotals(items);
-
-    var err;
 
     // this array will store unique accounts
     var uniqueAccountsArray = [];
@@ -221,11 +221,15 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
   VoucherForm.prototype.configureRow = function configureRow(row) {
     row.configure(row);
-    this.validate();
   };
 
   VoucherForm.prototype.description = function description(key, options) {
     this.details.description = $translate.instant(key, options);
+  };
+
+  // set account on row
+  VoucherForm.prototype.setAccountOnRow = function setAccountOnRow(row, accountId) {
+    row.configure({ account_id : accountId });
   };
 
   /**
@@ -283,7 +287,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     this.clear();
 
     var form = this;
-    var n = rows.length;
 
     rows.forEach(function (row) {
       form.addItems(1);

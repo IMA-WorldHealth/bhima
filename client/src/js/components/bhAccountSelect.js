@@ -11,7 +11,7 @@ angular.module('bhima.components')
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
-      validationTrigger:  '<',
+      validationTrigger :  '<?',
     },
   });
 
@@ -33,7 +33,7 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   var CACHE_TIMEOUT = 3000;
 
   // fired at the beginning of the account select
-  $ctrl.$onInit = function () {
+  $ctrl.$onInit = function $onInit() {
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
@@ -49,8 +49,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
 
-    //parent from summitted
-    $ctrl.validationTrigger=false;
+    // parent form submitted
+    $ctrl.validationTrigger = $ctrl.validationTrigger || false;
 
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
@@ -90,11 +90,9 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // loads accounts from the server
   function loadHttpAccounts() {
-
     // load accounts
     Accounts.read()
       .then(function (elements) {
-
         // bind the accounts to the controller
         var accounts = Accounts.order(elements);
 
@@ -105,10 +103,10 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
         $ctrl.accounts = accounts;
 
         // writes the accounts into localstorage
-        //cacheAccounts($ctrl.accounts);
+        // cacheAccounts($ctrl.accounts);
 
         // set the timeout for removing cached accounts
-        //$timeout(removeCachedAccounts, CACHE_TIMEOUT);
+        // $timeout(removeCachedAccounts, CACHE_TIMEOUT);
       });
   }
 
@@ -119,7 +117,7 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   }
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = function onSelect($item) {
     $ctrl.onSelectCallback({ account : $item });
 
     // alias the AccountForm name so that we can find it via filterFormElements

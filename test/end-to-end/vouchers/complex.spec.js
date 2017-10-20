@@ -6,10 +6,10 @@ const ComplexVoucherPage = require('./complex.page');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 
-describe('Complex Vouchers', function () {
+describe('Complex Vouchers', () => {
   before(() => helpers.navigate('vouchers/complex'));
 
-  it('creates a complex voucher', () => {
+  it('creates a complex voucher', function () {
     const page = new ComplexVoucherPage();
 
     // set a new timeout to avoid warnings
@@ -17,19 +17,31 @@ describe('Complex Vouchers', function () {
 
     /*
      * the voucher we will use in this page
-     * NOTA: the Test Capital One is a financial account which involve that we
+     * NOTE: the Test Capital One is a financial account which involve that we
      * specify the transfer type
      */
     const voucher = {
       date        : new Date(),
       description : 'Complex voucher test e2e',
       rows        : [
-        { account : 'Test Debtor Accounts1', debit : 18, credit : 0, entity: { type : 'D', name : 'Patient/2/Patient' } },
-        { account : 'Test Capital One', debit : 0, credit : 8, reference : { type : 'voucher', index: 0 } },
-        { account : 'Test Capital Two', debit : 0, credit : 5, reference : { type : 'voucher', index: 2 } },
-        { account : 'First Test Item Account', debit : 0, credit : 5, reference : { type : 'voucher', index: 1 } },
-        { account : 'Test Capital One', debit : 7, credit : 0, entity: { type : 'C', name : 'Fournisseur' } },
-        { account : 'Test Capital Two', debit : 0, credit : 7, reference : { type : 'patient-invoice', index: 1 } },
+        {
+          account : 'Test Debtor Accounts1', debit : 18, credit : 0, entity : { type : 'D', name : 'Patient/2/Patient' },
+        },
+        {
+          account : 'Test Capital One', debit : 0, credit : 8, reference : { type : 'voucher', index : 0 },
+        },
+        {
+          account : 'Test Capital Two', debit : 0, credit : 5, reference : { type : 'voucher', index : 2 },
+        },
+        {
+          account : 'First Test Item Account', debit : 0, credit : 5, reference : { type : 'voucher', index : 1 },
+        },
+        {
+          account : 'Test Capital One', debit : 7, credit : 0, entity : { type : 'C', name : 'Fournisseur' },
+        },
+        {
+          account : 'Test Capital Two', debit : 0, credit : 7, reference : { type : 'patient-invoice', index : 1 },
+        },
       ],
     };
 
@@ -91,8 +103,12 @@ describe('Complex Vouchers', function () {
       date        : new Date(),
       description : 'Complex voucher test e2e',
       rows        : [
-        { account : 'Test Debtor Accounts1', debit : 17, credit : 0, entity: { type : 'D', name : 'Patient/2/Patient' } },
-        { account : 'Test Capital One', debit : 0, credit : 17, reference : { type : 'voucher', index: 0 } },
+        {
+          account : 'Test Debtor Accounts1', debit : 17, credit : 0, entity : { type : 'D', name : 'Patient/2/Patient' },
+        },
+        {
+          account : 'Test Capital One', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
+        },
       ],
     };
 
@@ -127,13 +143,15 @@ describe('Complex Vouchers', function () {
   });
 
   it('Convention import invoices and payment via the tool', () => {
+    const page = new ComplexVoucherPage();
+
     const detail = {
       tool            : 'Convention - Paiement factures',
       cashbox         : '$',
       convention      : 'Second Test',
       invoices        : [0, 1],
       description     : 'Convention payment with journal voucher',
-      transactionType : 'Convention',
+      // transactionType : 'Convention',
     };
 
     // click on the convention tool
@@ -152,7 +170,7 @@ describe('Complex Vouchers', function () {
     FU.modal.submit();
 
     // description
-    FU.input('ComplexVoucherCtrl.Voucher.details.description', detail.description);
+    page.description(detail.description);
 
     // submit voucher
     FU.buttons.submit();
@@ -165,11 +183,13 @@ describe('Complex Vouchers', function () {
   });
 
   it('Support Patient Invoices by an Account via the tool', () => {
+    const page = new ComplexVoucherPage();
+
     const detail = {
       tool          : 'Prise en Charge',
       accountNumber : 42002,
       patientName   : 'Test 2',
-      description   : 'Patient support invoices',
+      description   : 'Patient Support invoices',
       invoices      : [0, 1],
     };
 
@@ -189,7 +209,7 @@ describe('Complex Vouchers', function () {
     FU.modal.submit();
 
     // description
-    FU.input('ComplexVoucherCtrl.Voucher.details.description', detail.description);
+    page.description(detail.description);
 
     // submit voucher
     FU.buttons.submit();

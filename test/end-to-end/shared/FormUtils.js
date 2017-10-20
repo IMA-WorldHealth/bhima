@@ -144,6 +144,29 @@ module.exports = {
   },
 
   /**
+   * @method typeaheadAppended
+   *
+   * @description
+   * Selects an option from the ui-select dropdown
+   * which have the `append-to-body` option set to true
+   *
+   * @param {String} model - the ng-model target to select
+   * @param {String} label - the text of the option element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @returns {Element} - a protractor option element
+   */
+  typeaheadAppended: function typeaheadAppended(model, label, anchor) {
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+
+    // type into the <input> element the searchable value
+    this.input('$ctrl.account', label, anchor || $('body'));
+
+    // select the item of the dropdown menu matching the label
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', label));
+    option.click();
+  },
+
+  /**
    * @method uiSelect
    *
    * @description

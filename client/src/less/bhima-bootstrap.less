@@ -385,3 +385,12 @@ body > .ui-select-bootstrap.open {
   background: green;
   width: 100%;
 }
+
+/* hack to get ui-grid to stop coloring inputs */
+div.ui-grid-cell .form-group input.form-control.ng-invalid {
+  border : 1px solid #ccc;
+}
+
+div.ui-grid-cell .form-group.has-error input.ng-invalid {
+  border : 1px solid #fc8f8f;
+}

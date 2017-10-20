@@ -174,9 +174,9 @@ function ComplexJournalVoucherController(
   }
 
   /** Get the selected currency symbol */
-  function currencySymbol(currency_id) {
-    if (!currency_id) { return; }
-    return Currencies.symbol(currency_id);
+  function currencySymbol(currencyId) {
+    if (!currencyId) { return ''; }
+    return Currencies.symbol(currencyId);
   }
 
   /** run the module on startup and refresh */
@@ -251,20 +251,21 @@ function ComplexJournalVoucherController(
 
   /** submit data */
   function submit(form) {
+    var valid;
+    var voucher;
+
     // stop submission if the form is invalid
     if (form.$invalid) {
-      Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');
-      return;
+      return Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');
     }
 
-    var valid = vm.Voucher.validate();
+    valid = vm.Voucher.validate();
 
     if (!valid) {
-      Notify.danger(vm.Voucher._error);
-      return;
+      return Notify.danger(vm.Voucher._error);
     }
 
-    var voucher = vm.Voucher.details;
+    voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)

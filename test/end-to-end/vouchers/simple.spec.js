@@ -4,8 +4,6 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
 describe('Simple Vouchers', function () {
-  'use strict';
-
   before(() => helpers.navigate('#/vouchers/simple'));
 
   /*
@@ -15,16 +13,15 @@ describe('Simple Vouchers', function () {
   */
 
   const voucher = {
-    date: new Date(),
-    type: 'Transfer',
-    toAccount: 'Test Debtor Group Account',
-    fromAccount: 'First Test Item Account',
-    description: 'Awesome description',
-    amount: 100.12
+    date : new Date(),
+    type : 'Transfer',
+    toAccount : 'Test Debtor Group Account',
+    fromAccount : 'First Test Item Account',
+    description : 'Awesome description',
+    amount : 100.12,
   };
 
   it('can create a simple voucher', function () {
-
     // configure the date to yesterday
     components.dateEditor.set(voucher.date);
 
