@@ -35,14 +35,15 @@ describe('Account Statement Core', () => {
     AccountStatement.expectRowCount(0);
   });
 
-  it.skip(`comment the rows for account ${sample.account} with ${sample.comment}`, () => {
-    // select the first row
-    AccountStatement.selectRow(0);
+  // skip throw error : Test `title` should be a "string" but "function" was given instead.
+  // it.skip(`comment the rows for account ${sample.account} with ${sample.comment}`, () => {
+  //   // select the first row
+  //   AccountStatement.selectRow(0);
 
-    // comment the first row with `custom`
-    AccountStatement.comment(sample.comment);
+  //   // comment the first row with `custom`
+  //   AccountStatement.comment(sample.comment);
 
-    // check if we have `custom` as comment in the first row
-    AccountStatement.cellValueMatch(0, 8, sample.comment);
-  });
+  //   // check if we have `custom` as comment in the first row
+  //   AccountStatement.cellValueMatch(0, 8, sample.comment);
+  // });
 });

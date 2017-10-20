@@ -35,6 +35,7 @@
     "EXIT_PATIENT"    : "Exit to a patient",
     "EXIT_SERVICE"    : "Exit to a service",
     "EXIT_LOSS"       : "Loss",
+    "EXIT_INDIVIDIOUS" : "Exit to Individious",
     "FILE"            : "Stock File",
     "FLUX"            : "Reason",
     "FROM"            : "From",

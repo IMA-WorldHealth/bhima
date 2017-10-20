@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'ModalService', 'NotifyService',
+  '$state', 'DepotService', 'ModalService', 'NotifyService', 'AppCache',
 ];
 
-function DepotModalController($state, Depots, ModalService, Notify) {
+function DepotModalController($state, Depots, ModalService, Notify, AppCache) {
   var vm = this;
 
   vm.depot = $state.params.depot;
@@ -18,6 +18,13 @@ function DepotModalController($state, Depots, ModalService, Notify) {
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
     var promise;
+
+    var stockEntryCache = new AppCache('StockEntry');
+    var stockExitCache = new AppCache('StockExit');
+
+    // remove depot from caches
+    delete stockEntryCache.depot;
+    delete stockExitCache.depot;
 
     if (depotForm.$invalid || depotForm.$pristine) { return 0; }
 

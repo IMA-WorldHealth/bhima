@@ -576,6 +576,14 @@ CREATE TABLE `depot` (
   `text` VARCHAR(50) NOT NULL,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_purchase` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_donation` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_integration` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_debtor` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_service` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_loss` tinyint(1) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1397,7 +1405,7 @@ CREATE TABLE `purchase` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `payment_method`  TEXT,
   `note`            TEXT,
-  `status_id`       TINYINT(3) UNSIGNED NOT NULL,
+  `status_id`       TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,   
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),

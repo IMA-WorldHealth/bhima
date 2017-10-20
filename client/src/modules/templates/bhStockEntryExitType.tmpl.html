@@ -1,4 +1,4 @@
-<div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="type in $ctrl.entryExitTypeList | filter:{isEntry : $ctrl.isEntry}">
+<div ng-if="type.allowed" class="col-md-3 col-sm-6 col-xs-12" ng-repeat="type in $ctrl.entryExitTypeList | filter:{isEntry : $ctrl.isEntry}">
     <button 
         id="entry-exit-type-{{type.label}}" 
         class="btn-block panel panel-default segment" 

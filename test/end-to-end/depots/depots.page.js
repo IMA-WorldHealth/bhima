@@ -65,6 +65,18 @@ class DepotPage {
         const { rowIndex } = indices;
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
         FU.input('DepotModalCtrl.depot.text', newDepotText);
+
+        // entry/exit permissions
+        element(by.css('[name="allow_entry_purchase"]')).click();
+        element(by.css('[name="allow_entry_integration"]')).click();
+        element(by.css('[name="allow_entry_donation"]')).click();
+        element(by.css('[name="allow_entry_transfer"]')).click();
+        element(by.css('[name="allow_exit_debtor"]')).click();
+        element(by.css('[name="allow_exit_service"]')).click();
+        element(by.css('[name="allow_exit_transfer"]')).click();
+        element(by.css('[name="allow_exit_loss"]')).click();
+
+
         FU.buttons.submit();
         components.notification.hasSuccess();
       });

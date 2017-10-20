@@ -89,8 +89,10 @@ function update(req, res, next) {
 
   db.exec(query, [req.body, uid])
   .then(() => {
-    const sql =
-      `SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse
+    const sql = `
+      SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
+        allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+        allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
       FROM depot WHERE uuid = ?`;
     return db.exec(sql, [uid]);
   })
@@ -116,8 +118,11 @@ function list(req, res, next) {
 
   const filters = new FilterParser(options, { tableAlias : 'depot' });
 
-  var sql =`
-    SELECT BUID(uuid) as uuid, text, is_warehouse
+  const sql = `
+  SELECT 
+    BUID(uuid) as uuid, text, is_warehouse,
+    allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+    allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
     FROM depot
   `;
 
@@ -148,8 +153,11 @@ function list(req, res, next) {
 function detail(req, res, next) {
   var uid = db.bid(req.params.uuid);
 
-  var sql =
-    `SELECT BUID(d.uuid) as uuid, d.text, d.is_warehouse
+  var sql = `
+    SELECT 
+      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+      allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 

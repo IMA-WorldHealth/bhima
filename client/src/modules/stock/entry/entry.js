@@ -339,7 +339,7 @@ function StockEntryController(
     var entry = {
       lots: Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
       movement: movement
-    }
+    };
 
     Stock.integration.create(entry)
       .then(function (document) {
