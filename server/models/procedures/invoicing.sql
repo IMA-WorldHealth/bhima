@@ -1,3 +1,18 @@
+/*
+  This file contains code for creating and posting invoices made to patients.
+
+  NOTE
+  The rationale behind the Stage* procedures is to interface between JS and
+  SQL.  Every stage method sets up a temporary table that can be used by other
+  methods.  As temporary tables, they are scoped to the current connection,
+  meaning that all other methods _must_ be called in the same database
+  transaction.  Once the connection terminates, the tables are cleaned up.
+*/
+
+
+/*
+  Prepare the record to be written to the `invoice` table.
+*/
 CREATE PROCEDURE StageInvoice(
   IN date DATETIME,
   IN cost DECIMAL(19, 4) UNSIGNED,
@@ -10,20 +25,28 @@ CREATE PROCEDURE StageInvoice(
 )
 BEGIN
   -- verify if invoice stage already exists within this connection, if the
-  -- stage already exists simply write to it, otherwise create it select into it
+  -- stage already exists simply write to it, otherwise create and select into
+  -- it
   DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
   SELECT NULL FROM `stage_invoice` LIMIT 0;
 
   IF (`no_invoice_stage` = 1) THEN
-    CREATE TEMPORARY TABLE stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
+    CREATE TEMPORARY TABLE stage_invoice (
+      SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date,
+        description
+    );
   ELSE
-    INSERT INTO stage_invoice
-    (SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description);
+    INSERT INTO stage_invoice (
+      SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date,
+        description
+    );
   END IF;
 END $$
 
+/*
+  Prepare record(s) to be written to the `invoice_item` table.
+*/
 CREATE PROCEDURE StageInvoiceItem(
   IN uuid BINARY(16),
   IN inventory_uuid BINARY(16),
@@ -41,14 +64,19 @@ BEGIN
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_item_stage` = 1;
   SELECT NULL FROM `stage_invoice_item` LIMIT 0;
 
+  -- tables does not exist - create and enter data
   IF (`no_invoice_item_stage` = 1) THEN
-    -- tables does not exist - create and enter data
-    CREATE TEMPORARY TABLE stage_invoice_item
-      (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+    CREATE TEMPORARY TABLE stage_invoice_item (
+      SELECT uuid, inventory_uuid, quantity, transaction_price, inventory_price,
+        debit, credit, invoice_uuid
+    );
+
+  -- table exists - only enter data
   ELSE
-    -- table exists - only enter data
-    INSERT INTO stage_invoice_item
-      (SELECT uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+    INSERT INTO stage_invoice_item (
+      SELECT uuid, inventory_uuid, quantity, transaction_price, inventory_price,
+        debit, credit, invoice_uuid
+    );
   END IF;
 END $$
 
@@ -59,9 +87,7 @@ CREATE PROCEDURE StageBillingService(
 )
 BEGIN
   CALL VerifyBillingServiceStageTable();
-
-   INSERT INTO stage_billing_service
-  (SELECT id, invoice_uuid);
+  INSERT INTO stage_billing_service (SELECT id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -70,9 +96,7 @@ CREATE PROCEDURE StageSubsidy(
 )
 BEGIN
   CALL VerifySubsidyStageTable();
-
-  INSERT INTO stage_subsidy
-  (SELECT id, invoice_uuid);
+  INSERT INTO stage_subsidy (SELECT id, invoice_uuid);
 END $$
 
 -- create a temporary staging table for the subsidies, this is done via a helper
@@ -80,13 +104,36 @@ END $$
 -- optional entity that may or may not have been called for staging)
 CREATE PROCEDURE VerifySubsidyStageTable()
 BEGIN
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_subsidy (
+    id INTEGER,
+    invoice_uuid BINARY(16)
+  );
 END $$
 
 CREATE PROCEDURE VerifyBillingServiceStageTable()
 BEGIN
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (
+    id INTEGER,
+    invoice_uuid BINARY(16)
+  );
 END $$
+
+/*
+  CALL WriteInvoice(uuid)
+
+  DESCRIPTION
+  This procedure takes all staged records and begins to compose the invoice from
+  them.  Keep in mind:
+    1) Billing Services place percentage increase on the invoice in proportion
+      to the base invoice cost.
+    2) Subsidies place a percentage reduction on the invoice in proportion to
+      the invoice cost.
+    3) Billing Services are applied first, then Subsidies are applied to the
+      adjusted invoice amount.
+
+  The final value of this algorithm is recorded in the invoices table as the
+  cost of the invoice.  In the posting journal, the invoice...
+*/
 
 CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
@@ -101,48 +148,82 @@ BEGIN
 
   -- ensure that all optional entities have staging tables available, it is
   -- possible that the invoice has not invoked methods to stage subsidies and
-  -- billing services if they are not relevant - this makes sure the tables exist
-  -- for queries within this method
+  -- billing services if they are not relevant - this makes sure the tables
+  -- exist for queries within this method.
   CALL VerifySubsidyStageTable();
   CALL VerifyBillingServiceStageTable();
 
   -- invoice details
-  INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description)
+  INSERT INTO invoice (
+    project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description
+  )
   SELECT * FROM stage_invoice WHERE stage_invoice.uuid = uuid;
 
   -- invoice item details
-  INSERT INTO invoice_item (uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid)
+  INSERT INTO invoice_item (
+    uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit,
+    credit, invoice_uuid
+  )
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
 
-  -- Total cost of all invoice items
-  SET items_cost = (SELECT SUM(credit) as cost FROM invoice_item where invoice_uuid = uuid);
+  -- Total cost of all invoice items.  This is important to determine how much
+  -- the billing services
+  SET items_cost = (
+    SELECT SUM(credit) as cost FROM invoice_item where invoice_uuid = uuid
+  );
 
   -- calculate billing services based on total item cost
   INSERT INTO invoice_billing_service (invoice_uuid, value, billing_service_id)
   SELECT uuid, (billing_service.value / 100) * items_cost, billing_service.id
-  FROM billing_service WHERE id in (SELECT id FROM stage_billing_service where invoice_uuid = uuid);
+  FROM billing_service WHERE id in (
+    SELECT id FROM stage_billing_service where invoice_uuid = uuid
+  );
 
   -- total cost of all invoice items and billing services
-  SET billing_services_cost = (SELECT IFNULL(SUM(value), 0) AS value from invoice_billing_service WHERE invoice_uuid = uuid);
+  SET billing_services_cost = (
+    SELECT IFNULL(SUM(value), 0) AS value
+    FROM invoice_billing_service
+    WHERE invoice_uuid = uuid
+  );
+
+  -- cost so far to the debtor
   SET total_cost_to_debtor = items_cost + billing_services_cost;
 
   -- calculate subsidy cost based on total cost to debtor
   INSERT INTO invoice_subsidy (invoice_uuid, value, subsidy_id)
   SELECT uuid, (subsidy.value / 100) * total_cost_to_debtor, subsidy.id
-  FROM subsidy WHERE id in (SELECT id FROM stage_subsidy where invoice_uuid = uuid);
+  FROM subsidy WHERE id in (
+    SELECT id FROM stage_subsidy where invoice_uuid = uuid
+  );
 
   -- calculate final value debtor must pay based on subsidised costs
-  SET total_subsidy_cost = (SELECT IFNULL(SUM(value), 0) AS value from invoice_subsidy WHERE invoice_uuid = uuid);
+  SET total_subsidy_cost = (
+    SELECT IFNULL(SUM(value), 0) AS value
+    FROM invoice_subsidy
+    WHERE invoice_uuid = uuid
+  );
+
   SET total_subsidised_cost = total_cost_to_debtor - total_subsidy_cost;
 
   -- update relevant fields to represent final costs
-  UPDATE invoice SET cost = total_subsidised_cost
-  WHERE invoice.uuid = uuid;
+  UPDATE invoice SET cost = total_subsidised_cost WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  SELECT items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
+  SELECT items_cost, billing_services_cost, total_cost_to_debtor,
+    total_subsidy_cost, total_subsidised_cost;
 END $$
 
+
+/*
+  CALL PostInvoice(uuid);
+
+  DESCRIPTION
+  This procedure is called after an invoice is created and written into the
+  `invoice` and `invoice_item` tables.  This procedure sets up the initial
+  variable definitions before copying rows from the invoice tables into the
+  posting journal.  It also performs basic checks for data integrity - that
+  every account is properly defined.
+*/
 CREATE PROCEDURE PostInvoice(
   IN uuid binary(16)
 )
@@ -169,13 +250,20 @@ BEGIN
   -- populate initial values specifically for this invoice
   SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
     INTO date, enterprise_id, project_id, currency_id
-  FROM invoice join project join enterprise on invoice.project_id = project.id AND project.enterprise_id = enterprise.id
+  FROM invoice JOIN project JOIN enterprise ON
+    invoice.project_id = project.id AND
+    project.enterprise_id = enterprise.id
   WHERE invoice.uuid = uuid;
 
   -- populate core set-up values
-  CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+  CALL PostingSetupUtil(
+    date, enterprise_id, project_id, currency_id, current_fiscal_year_id,
+    current_period_id, current_exchange_rate, enterprise_currency_id,
+    transaction_id, gain_account_id, loss_account_id
+  );
 
-  -- Check that all invoice items have sales accounts - if they do not the transaction will be imbalanced
+  -- Check that all invoice items have sales accounts - if they do not the
+  -- transaction will be unbalanced and the account_id will be NULL
   SELECT COUNT(invoice_item.uuid)
     INTO verify_invalid_accounts
   FROM invoice JOIN invoice_item JOIN inventory JOIN inventory_group
@@ -187,10 +275,15 @@ BEGIN
 
   IF verify_invalid_accounts > 0 THEN
     SIGNAL InvalidSalesAccounts
-    SET MESSAGE_TEXT = 'A NULL sales account has been found for an inventory item in this invoice.';
+    SET MESSAGE_TEXT =
+      'A NULL sales account has been found for an inventory item in this invoice.';
   END IF;
 
-  CALL CopyInvoiceToPostingJournal(uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id, currency_id);
+  -- now that we are sure that we have all error handled, lets go into the
+  CALL CopyInvoiceToPostingJournal(
+    uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id,
+    currency_id
+  );
 END $$
 
 
@@ -210,12 +303,15 @@ CREATE PROCEDURE PostingSetupUtil(
 BEGIN
   SET current_fiscal_year_id = (
     SELECT id FROM fiscal_year AS fy
-    WHERE date BETWEEN fy.start_date AND DATE(ADDDATE(fy.start_date, INTERVAL fy.number_of_months MONTH)) AND fy.enterprise_id = enterprise_id
+    WHERE date BETWEEN fy.start_date
+      AND DATE(ADDDATE(fy.start_date, INTERVAL fy.number_of_months MONTH))
+      AND fy.enterprise_id = enterprise_id
   );
 
   SET current_period_id = (
     SELECT id FROM period AS p
-    WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
+    WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date)
+      AND p.fiscal_year_id = current_fiscal_year_id
   );
 
   SELECT e.gain_account_id, e.loss_account_id, e.currency_id
@@ -224,12 +320,18 @@ BEGIN
 
   -- this uses the currency id passed in as a dependency
   SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
-  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
+  SET current_exchange_rate = (
+    SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate)
+  );
 
+  -- get the transaction id from the GenerateTransactionId function
   SET transaction_id = GenerateTransactionId(project_id);
 
   -- error handling
-  CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
+  CALL PostingJournalErrorHandler(
+    enterprise_id, project_id, current_fiscal_year_id,
+    current_period_id, current_exchange_rate, date
+  );
 END $$
 
 -- detects MySQL Posting Journal Errors

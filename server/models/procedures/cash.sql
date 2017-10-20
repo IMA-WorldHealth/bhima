@@ -1,12 +1,158 @@
--- Handles the Cash Table's Rounding
--- CREATE PROCEDURE HandleCashRounding(
---   uuid BINARY(16),
---   enterpriseCurrencyId INT,
---   exchange DECIMAL
--- )
--- BEGIN
---
--- Post Cash Payments
+/*
+
+--------
+OVERVIEW
+--------
+
+This procedures file contains all the procedures related to paying cash
+payments.  Please be sure to read the SCENARIOS section in detail to understand
+the multiple scenarios that can occur and how the application handles them. They
+should clarify the "why" questions while the code itself documents "how".
+
+---------
+SCENARIOS
+---------
+
+For all the following scenarios, please consider a world with two currencies A
+and B.  The enterprise supports both currencies A and B. A's minimum monetary
+unit is 50, and B's minimum monetary unit is .25.  The enterprise's base
+currency is A.  Amounts expressed in "A" will be written 100.00A, and amounts
+express in "B" will be written 100.00B.
+
+
+PREPAYMENTS (SINGLE CURRENCY)
+-----------------------------
+The application allows for debtors to pre-pay into a cashbox, called a caution
+payment.  Often, patients will need to provide some sort of guarantee or down
+payment before an expensive operation will be performed.  In this case, the
+money goes directly into the cashbox as a credit to the patient's account.
+
+Consider the following scenario:
+
+A debtor would like an expensive operation performed.  To prove the debtor has
+the required capital, the enterprise requires a down payment of 500A.  The
+debtor goes to the cash window to deposit their 500A.
+
+The following two lines will be written in a transaction:
+ 1. A 500A debit against the cashbox (putting money into it).
+ 2. A 500A credit to the debtor (increasing their account w/ the enterprise)
+
+
+PREPAYMENTS (MULTI-CURRENCY)
+----------------------------
+Consider the following scenario:
+
+Suppose the exchange rate is 1000A to 1B.
+
+The debtor would like an expensive operation performed.  The enterprise requires
+that the debtor pay 10000A as a down payment.  The debtor chooses to pay in
+currency B at the cash window.  They will pay (10000A * (1B / 1000A)) = 10B.
+
+The debtor provides 10B as payment.  The application will record the following:
+ 1. A 10000A debit against the cashbox (representing 10B put into it)
+ 2. A 10000A credit for the debtor.
+
+In the metadata of the transaction, it is recorded that the debtor actually paid
+in B a value of 10B.  However, from the enterprise's perspective, they paid the
+equivalent in currency A.
+
+PAYING A SINGLE INVOICE
+-----------------------
+Consider the following scenario:
+
+A debtor is invoiced for a product 750A, with an exchange rate of 1000A to 1B.
+If they choose to pay the invoice that day in currency B, they will be required
+to pay 0.75B.
+
+They go to the window to pay in currency B.  They pay 0.75B.  The following
+transaction is recorded:
+ 1. A 750A debit against the cashbox account
+ 2. A 750 credit against the debtor and their invoice.
+
+As above, the fact they paid with currency B is recorded as metadata.
+
+
+PAYING A SINGLE INVOICE (WITH LAG)
+----------------------------------
+Consider the following scenario:
+
+A debtor is invoiced for a product 750A, with an exchange rate of 1000A to 1B.
+If they choose to pay the invoice that day in currency B, they will be required
+to pay .75B.
+
+However, they instead return on a later date, when the exchange rate has jumped
+to 1100A to 1B.  Now, if they choose to pay the invoice on that day, they will
+be required to pay (750A * (1B / 1100A)) = 0.68B.  This is not a value they can
+produce with a minimum monetary unit of 0.25B.
+
+We can round down to 0.50B (a loss to the enterprise of 0.19B) or round up to
+0.75B (a gain to the enterprise of 0.7B).  Since rounding up is the smallest
+difference (put another way: the closest to the real price), the system will
+round up.
+
+The debtor pays into the system 0.75B, but their invoice was only for 0.68B.
+The system will write a single transaction that balances the debtor's invoice
+and puts the extra 0.7B in a gain account.  This gain account is defined in the
+enterprise table's `gain_account_id`.  The resulting transaction will consist of
+three lines:
+ 1. A debit of 0.75B against the cashbox account.
+ 2. A credit of 0.68B to the debtor for their invoice.
+ 3. A credit of 0.7B against the gain account.
+
+NOTE: the values above are expressed in currency B for simplicity.  Since the
+enterprise is run in currency A, all those values will be converted into
+currency A with the exchange rate on the day it was paid.  In this case, 1100A
+to 1B.
+
+
+PAYING MULTIPLE INVOICES (WITH LAG)
+-----------------------------------
+The above scenario is a reasonable simple case:  The debtor is paying a single
+invoice.  However, the scenario is made more complicated if they choose to pay
+multiple invoices.
+
+Suppose that our debtor is paying two invoices, for 750A and 450A.  The exchange
+rate is still 1100A to 1B.  We calculate their total debt to be:
+(750A + 450A) * (1B/1100A) = 1.09B
+
+Each invoice would be:
+750A * (1B/1100A) = 0.681B
+450A * (1B/1100A) = 0.409B
+
+Since we can only pay B in increments of 0.25, we can round down to 1B or up to
+1.25B.  The application will choose 1B, as it is the closest to the sum of the
+two invoices, resulting in a loss of 0.09B (99A) to the enterprise.
+
+It is important to realize that, though the debtor is paying 0.09B less than the
+total value of their invoice, they are paying their bill in full.  They should
+not have a debt remaining with the enterprise after this transaction. Therefore,
+our algorithm will need to produce 0.09B from somewhere to complete the value of
+both invoices the debtor is paying.  We take the 0.09B from the enterprise's
+loss account, found in the enterprise table, in the column loss_account_id.
+
+The debtor pays 1B, even though the total of their invoices was 1.09B.  The
+application will write a single transaction that consists of 4 lines:
+ 1. A debit of 1B against the cashbox account.
+ 2. A credit of 0.681B against the first invoice of the debtor
+ 3. A credit of 0.409B against the second invoice of the debtor
+ 4. A debit of 0.09B against the loss account.
+
+At the end of this procedure, the debtor will have equalized all their debts,
+and the loss account will have made up the difference to ensure that every
+invoice was correctly balanced.
+*/
+
+
+/*
+CALL PostCash()
+
+DESCRIPTION
+This procedure is called after values are already written to the cash table.  It
+is responsible for checking if a cash payment is a prepayment (caution) and
+writing the transaction lines.  It also contains the algorithm for cycling
+through all the invoices, crediting each one the appropriate amount and writing
+the remaining balance to the gain or loss account.
+*/
 CREATE PROCEDURE PostCash(
   IN cashUuid binary(16)
 )
@@ -25,6 +171,8 @@ BEGIN
   DECLARE currentPeriodId MEDIUMINT(8) UNSIGNED;
   DECLARE currentExchangeRate DECIMAL(19, 8);
   DECLARE transactionId VARCHAR(100);
+
+  -- variables to be set from the enterprise settings
   DECLARE gain_account_id INT UNSIGNED;
   DECLARE loss_account_id INT UNSIGNED;
 
@@ -220,6 +368,15 @@ BEGIN
   END IF;
 END $$
 
+
+/*
+StageCash()
+
+DESCRIPTION
+This procedure exists solely to transfer data between JS and SQL. Since JS is
+dynamically typed, but SQL is static, we have to define the order and types of
+each variable below.  It is called at the beginning of the posting process.
+*/
 CREATE PROCEDURE StageCash(
   IN amount DECIMAL(19,4) UNSIGNED,
   IN currency_id TINYINT(3),
@@ -250,6 +407,16 @@ BEGIN
   END IF;
 END $$
 
+
+/*
+StageCashItem()
+
+DESCRIPTION
+This procedure exists solely to transfer data between JS and SQL. Since JS is
+dynamically typed, but SQL is static, we have to define the order and types of
+each variable below.  Like StageCash() it is called for each cash_item at the
+beginning of the posting process, after StageCash().
+*/
 CREATE PROCEDURE StageCashItem(
   IN uuid BINARY(16),
   IN cash_uuid BINARY(16),
@@ -268,12 +435,19 @@ BEGIN
       SELECT uuid, cash_uuid, invoice_uuid;
 
   ELSE
-    INSERT INTO stage_cash_item
-      (SELECT uuid, cash_uuid, invoice_uuid);
+    INSERT INTO stage_cash_item (SELECT uuid, cash_uuid, invoice_uuid);
   END IF;
 END $$
 
--- This makes sure the temporary tables exist before using them
+
+/*
+VerifyCashTemporaryTables()
+
+DESCRIPTION
+This procedure creates the temporary tables for cash payments in case they do
+not exist.  It is used internally to avoid errors about tables not existing or
+strange JOINs against nonexistent tables.
+*/
 CREATE PROCEDURE VerifyCashTemporaryTables()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
@@ -294,7 +468,14 @@ BEGIN
   );
 END $$
 
--- This calculates the amount due on previous invoices based on what is being paid
+/*
+CalculateCashInvoiceBalances()
+
+DESCRIPTION
+Gathers all invoices that the cash payment is attempting to pay and computes
+their current balances.  This ensures that all the cash payments will be able
+to correctly allocate the total payment to each invoice.
+*/
 CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
 )
@@ -366,10 +547,22 @@ BEGIN
 END $$
 
 /*
-  WriteCashItems
+WriteCashItems()
 
-  Allocates cash payment to invoices, making sure that the debtor does not
-  overpay the invoice amounts.
+DESCRIPTION
+Loops through all the cash payments, writing them to disk in the cash_items
+table.  In order to determine what value to assign each invoice, the
+CalculateCashInvoiceBalances() procedures should be called before this method to
+ensure that the current balances of previous invoices are known.  Only once the
+up to date balances are known can allocation be performed and payments assigned
+to each invoice.
+
+NOTE
+This procedure also blocks a debtor from overpaying an invoice.  An overpayment
+is defined as having a value greater than the sum of all invoices they are
+attempting to pay, plus the min currency monetary unit.  Put another way, the
+difference between the payment amount and the total cost of all invoices should
+not be greater than the min monetary unit.
 */
 CREATE PROCEDURE WriteCashItems(
   IN cashUuid BINARY(16)
@@ -456,11 +649,18 @@ BEGIN
   END LOOP allocateCashPayments;
 END $$
 
+
+/*
+WriteCash()
+
+DESCRIPTION
+This procedure simply copies the cash values out of the staging tables and
+writes them to the cash table.
+*/
 CREATE PROCEDURE WriteCash(
   IN cashUuid BINARY(16)
 )
 BEGIN
-
   -- cash details
   INSERT INTO cash (uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
     SELECT * FROM stage_cash WHERE stage_cash.uuid = cashUuid;
