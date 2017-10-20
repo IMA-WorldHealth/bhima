@@ -6,7 +6,7 @@ const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 describe('Voucher Registry', function () {
-  const numVouchers = 20;
+  const NUM_VOUCHERS = 20;
   const gridId = 'voucher-grid';
 
   before(() => helpers.navigate('vouchers'));
