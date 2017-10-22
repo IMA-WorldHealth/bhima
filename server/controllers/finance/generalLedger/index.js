@@ -62,7 +62,6 @@ function list(req, res, next) {
  */
 function listAccounts(req, res, next) {
   let currentDate = new Date();
-  let results;
 
   Fiscal.getPeriodCurrent(currentDate)
   .then((rows) => {
@@ -102,7 +101,7 @@ function getlistAccounts(periodsId) {
   const sql =
     `SELECT aggregator.id, aggregator.number, aggregator.label,
       IF(aggregator.balance >= 0, aggregator.balance, 0) AS debtor_balance,
-      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance
+      IF(aggregator.balance < 0, -1 * aggregator.balance, 0) AS creditor_balance, aggregator.balance
       ${headSql}
     FROM (
       SELECT SUM(gl.debit_equiv - gl.credit_equiv) AS balance,

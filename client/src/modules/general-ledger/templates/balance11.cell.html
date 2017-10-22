@@ -1,8 +1,5 @@
 <div class="ui-grid-cell-contents text-right">
-  <div ng-show="row.entity.balance11 >= 0" style="border-left: 5px solid cyan;">
-      {{ row.entity.balance11 | currency: grid.appScope.enterprise.currency_id }}
-  </div>
-  <div ng-show="row.entity.balance11 < 0" style="border-left: 5px solid orange;">
+  <div ng-show="row.entity.balance11" >
       {{ row.entity.balance11 | currency: grid.appScope.enterprise.currency_id }}
   </div>
 </div>
