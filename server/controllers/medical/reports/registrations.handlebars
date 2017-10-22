@@ -6,19 +6,7 @@
 
   <h3 class="text-center">{{translate "PATIENT_REG.PAGE_TITLE"}}</h3>
 
-  <p class="pills">
-    {{#each filters}}
-      <span class="label label-primary text-capitalize">
-        <i class="fa fa-filter"></i> {{translate this.displayName}}
-
-        {{#if this.comparitor}} {{this.comparitor}}
-        {{else}}: {{/if}}
-
-        {{#if this.isDate}} {{date this.value}}
-        {{else}} {{translate this.value}} {{/if}}
-      </span>
-    {{/each}}
-  </p>
+  {{> filterbar filters=filters }}
 
   <section style="size: 0.75em;">
     <table class="table table-condensed table-bordered ">

@@ -18,47 +18,10 @@ const moment = require('moment');
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 
-const PeriodService = require('../../../lib/period');
 const Patients = require('../patients');
+const shared = require('../../finance/reports/shared');
 
 const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars';
-
-// translation key mappings for dynamic filters
-// Basically, to show a pretty filter bar, this will translate URL query params
-// into human-readable text to be placed in the report, showing the properties
-// filtered on.
-function formatFilters(qs) {
-  const columns = [
-    { field : 'name', displayName : 'FORM.LABELS.NAME' },
-    { field : 'sex', displayName : 'FORM.LABELS.GENDER' },
-    { field : 'hospital_no', displayName : 'FORM.LABELS.HOSPITAL_NO' },
-    { field : 'reference', displayName : 'FORM.LABELS.REFERENCE' },
-    { field : 'dateBirthFrom', displayName : 'FORM.LABELS.DOB', comparitor : '>', isDate : true },
-    { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
-    { field : 'dateRegistrationFrom', displayName : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '>', isDate : true },
-    { field : 'dateRegistrationTo', displayName : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '<', isDate : true },
-    { field : 'debtor_group_uuid', displayName : 'FORM.LABELS.DEBTOR_GROUP' },
-    { field : 'patient_group_uuid', displayName : 'PATIENT_GROUP.PATIENT_GROUP' },
-    { field : 'user_id', displayName : 'FORM.LABELS.USER' },
-    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
-    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
-  ];
-
-  return columns.filter(column => {
-    const value = qs[column.field];
-
-    if (!_.isUndefined(value)) {
-      if (column.isPeriod) {
-        const service = new PeriodService(new Date());
-        column.value = service.periods[value].translateKey;
-      } else {
-        column.value = value;
-      }
-      return true;
-    }
-    return false;
-  });
-}
 
 /**
  * @method build
@@ -86,7 +49,8 @@ function build(req, res, next) {
     return;
   }
 
-  const filters = formatFilters(options);
+  const filters = shared.formatFilters(options);
+
   // enforce detailed columns
   options.detailed = 1;
 

@@ -1,9 +1,4 @@
-/* global browser, element, by */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
+/* global element, by */
 
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
@@ -21,7 +16,7 @@ class CreditorsReportPage {
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
     }
-    
+
     this.page.preview();
   }
 

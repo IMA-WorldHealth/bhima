@@ -23,10 +23,10 @@ const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 function prices(req, res, next) {
   const params = req.query.params ? JSON.parse(req.query.params) : {};
 
-  if (params && params.group_uuid) { params.group_uuid = db.bid(params.group_uuid); }
+  db.convert(params, ['uuid', 'group_uuid']);
 
   const filters = new FilterParser(params);
-  const qs = _.extend(req.query, { csvKey : 'debtors' });
+  const qs = _.extend(req.query, { csvKey : 'groups' });
   const metadata = _.clone(req.session);
 
   let report;
@@ -43,7 +43,7 @@ function prices(req, res, next) {
       inventory.price, inventory_group.name AS groupName, inventory_type.text AS typeName
     FROM inventory
       JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid
-      JOIN inventory_type ON inventory.type_id = inventory_type.id 
+      JOIN inventory_type ON inventory.type_id = inventory_type.id
   `;
 
   filters.fullText('text', 'text', 'inventory');
