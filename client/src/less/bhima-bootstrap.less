@@ -247,6 +247,40 @@ input[type=number] {-moz-appearance: textfield;}
   margin-left: 0;
 }
 
+/* New Label Outline styles */
+/* src: https://codepen.io/uimax/pen/ZpENPG */
+
+.label.label-outlined {
+  border-width: 1px;
+  border-style: solid;
+  background-color: transparent;
+}
+
+.label.label-outlined.label-primary {
+  border-color: @label-primary-bg;
+  color: @brand-primary;
+}
+
+.label.label-outlined.label-danger {
+  border-color: @label-danger-bg;
+  color: @state-danger-text;
+}
+
+.label.label-outlined.label-info {
+  border-color: @label-info-bg;
+  color: @state-info-text;
+}
+
+.label.label-outlined.label-warning {
+  border-color: @label-warning-bg;
+  color: @state-warning-text;
+}
+
+.label.label-outlined.label-success {
+  border-color: @label-success-bg;
+  color: @state-success-text;
+}
+
 /*  flash for newly edited or created rows */
 @keyframes highlight-flash {
   from { background: @btn-info-bg; }

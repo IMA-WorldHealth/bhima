@@ -14,6 +14,7 @@
 const _ = require('lodash');
 const util = require('../../../../lib/util');
 
+const shared = require('../shared');
 const Moment = require('moment');
 
 const db = require('../../../../lib/db');
@@ -43,6 +44,8 @@ function report(req, res, next) {
   let reportInstance;
 
   const query = _.clone(req.query);
+  const filters = shared.formatFilters(query);
+
   _.extend(query, {
     filename : 'INVOICE_REGISTRY.TITLE',
     csvKey : 'rows',
@@ -71,7 +74,7 @@ function report(req, res, next) {
     WHERE invoice.uuid IN (?);
   `;
 
-  const data = {};
+  const data = { filters };
 
   Invoices.find(query)
     .then(rows => {

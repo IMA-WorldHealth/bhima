@@ -1,7 +1,6 @@
 {{> head title="INVOICE_REGISTRY.TITLE"}}
 
 <body>
-
   {{> header}}
 
   <!-- body  -->
@@ -12,6 +11,8 @@
       <h2 class="text-center text-capitalize">
         {{translate 'INVOICE_REGISTRY.TITLE'}}
       </h2>
+
+      {{> filterbar filters=filters }}
 
       <!-- invoices listed  -->
       <table class="table table-condensed table-bordered table-striped">

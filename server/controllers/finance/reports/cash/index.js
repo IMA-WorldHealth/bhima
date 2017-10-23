@@ -14,6 +14,7 @@ const _ = require('lodash');
 const q = require('q');
 const Moment = require('moment');
 
+const shared = require('../shared');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const pdf = require('../../../../lib/renderers/pdf');
@@ -142,6 +143,8 @@ function receipt(req, res, next) {
 function report(req, res, next) {
   let reportInstance;
   const query = _.clone(req.query);
+  const filters = shared.formatFilters(req.query);
+
   _.extend(query, {
     filename : 'TREE.CASH_PAYMENT_REGISTRY',
     csvKey : 'rows',
@@ -179,7 +182,7 @@ function report(req, res, next) {
     GROUP BY currency_id;
   `;
 
-  const data = {};
+  const data = { filters };
   let uuids;
 
   CashPayments.find(query)
