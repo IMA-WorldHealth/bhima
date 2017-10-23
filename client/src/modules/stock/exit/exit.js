@@ -144,7 +144,7 @@ function StockExitController(
 
   // remove item
   function removeItem(item) {
-    vm.stockForm.removeItem(item.index);
+    vm.stockForm.removeItem(item.id);
     checkValidity();
   }
 
@@ -199,8 +199,6 @@ function StockExitController(
     vm.validForSubmit = (lotsExists && vm.stockForm.store.data.length);
   }
 
-  // ============================ Modals ================================
-  // find patient
   function findPatient() {
     StockModal.openFindPatient()
       .then(function (patient) {
