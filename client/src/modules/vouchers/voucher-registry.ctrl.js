@@ -195,12 +195,8 @@ function VoucherController(
 
   // initialize module
   function startup() {
-    var changes;
-
     if ($state.params.filters.length) {
-      changes = angular.copy($state.params.filters);
-
-      Vouchers.filters.replaceFilters(changes);
+      Vouchers.filters.replaceFiltersFromState($state.params.filters);
       Vouchers.cacheFilters();
     }
 

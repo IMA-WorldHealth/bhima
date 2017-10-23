@@ -4,19 +4,21 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   '$state', 'EmployeeService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', 'GridColumnService', 'bhConstants',
-  'GridStateService', 'LanguageService', 'ExportService'];
+  'GridStateService',
+];
 
 /**
  * Employee Registry Controller
  *
  * This module is responsible for the management of Employe Registry.
  */
-function EmployeeRegistryController($state, Employees, Notify, AppCache,
-  util, Receipts, uiGridConstants, Columns, bhConstants, GridState, Languages, Export) {
+function EmployeeRegistryController(
+  $state, Employees, Notify, AppCache, util, Receipts, uiGridConstants, Columns,
+  bhConstants, GridState
+) {
   var vm = this;
 
   var cacheKey = 'EmployeeRegistry';
-  var cache = AppCache(cacheKey);
   var state;
 
   vm.search = search;
@@ -45,7 +47,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
       displayName      : 'FORM.LABELS.MEDICAL_STAFF',
       headerCellFilter : 'translate',
       cellTemplate     : '/modules/employees/templates/medical.cell.html',
-    },    
+    },
     { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
       headerCellFilter : 'translate',
@@ -121,8 +123,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     },
     { name          : 'actions',
       displayName   : '',
-      cellTemplate  : '/modules/employees/templates/action.cell.html'
-    }
+      cellTemplate  : '/modules/employees/templates/action.cell.html',
+    },
   ];
 
   /** TODO manage column : last_transaction */
@@ -143,7 +145,7 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }
+  };
 
   // error handler
   function handler(error) {
@@ -165,12 +167,12 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
     // hook the returned employeess up to the grid.
     Employees.read(null, parameters)
       .then(function (employees) {
-          employees.forEach(function (employee) {
-            employee.employeeAge = util.getMomentAge(employee.dob, 'years');
-          });
+        employees.forEach(function (employee) {
+          employee.employeeAge = util.getMomentAge(employee.dob, 'years');
+        });
 
-          // put data in the grid
-          vm.uiGridOptions.data = employees;
+        // put data in the grid
+        vm.uiGridOptions.data = employees;
       })
       .catch(handler)
       .finally(function () {
@@ -215,9 +217,8 @@ function EmployeeRegistryController($state, Employees, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    if($state.params.filters) {
-      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      Employees.filters.replaceFilters(changes);
+    if ($state.params.filters.length) {
+      Employees.filters.replaceFiltersFromState($state.params.filters);
       Employees.cacheFilters();
     }
 

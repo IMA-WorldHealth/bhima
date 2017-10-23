@@ -1,6 +1,5 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
-
     $stateProvider
       .state('patientsRegister', {
         url         : '/patients/register',
@@ -24,7 +23,9 @@ angular.module('bhima.routes')
         url         : '/patients',
         controller  : 'PatientRegistryController as PatientRegistryCtrl',
         templateUrl : '/modules/patients/registry/registry.html',
-        params      : { filters: null },
+        params      : {
+          filters: [],
+        },
       })
       .state('patientGroups', {
         url         : '/patients/groups',

@@ -5,18 +5,27 @@ angular.module('bhima.routes')
         url         : '/stock/lots',
         controller  : 'StockLotsController as StockLotsCtrl',
         templateUrl : 'modules/stock/lots/registry.html',
+        params : {
+          filters : [],
+        },
       })
 
       .state('stockMovements', {
         url         : '/stock/movements',
         controller  : 'StockMovementsController as StockCtrl',
         templateUrl : 'modules/stock/movements/registry.html',
+        params : {
+          filters : [],
+        },
       })
 
       .state('stockInventories', {
         url         : '/stock/inventories',
         controller  : 'StockInventoriesController as StockCtrl',
         templateUrl : 'modules/stock/inventories/registry.html',
+        params : {
+          filters : [],
+        },
       })
 
       .state('stockExit', {

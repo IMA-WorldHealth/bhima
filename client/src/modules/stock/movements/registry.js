@@ -255,8 +255,7 @@ function StockMovementsController(Stock, Notify,
         stockMovementFilters.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
         vm.latestViewFilters = stockMovementFilters.formatView();
-        return load(stockMovementFilters.formatHTTP(true));
-
+        load(stockMovementFilters.formatHTTP(true));
       });
   }
 
@@ -267,9 +266,8 @@ function StockMovementsController(Stock, Notify,
 
   // initialize module
   function startup() {
-    if ($state.params.filters) {
-      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      stockMovementFilters.replaceFilters(changes);
+    if ($state.params.filters.length) {
+      stockMovementFilters.replaceFiltersFromState($state.params.filters);
       Stock.cacheFilters(filterKey);
     }
 

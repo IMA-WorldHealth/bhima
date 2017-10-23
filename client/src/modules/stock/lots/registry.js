@@ -121,10 +121,8 @@ function StockLotsController(Stock, Notify,
 
   // initialize module
   function startup() {
-
-    if($state.params.filters) {
-      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      stockLotFilters.replaceFilters(changes);
+    if ($state.params.filters.length) {
+      stockLotFilters.replaceFiltersFromState($state.params.filters);
       Stock.cacheFilters(filterKey);
     }
 
