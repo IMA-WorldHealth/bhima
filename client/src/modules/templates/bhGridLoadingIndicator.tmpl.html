@@ -8,7 +8,7 @@
   <!-- indicate that there is no data for the requested query -->
   <div class="msg" ng-show="!$ctrl.loadingState && $ctrl.emptyState">
     <span class="text-info">
-      <span class="fa fa-info-circle"></span> <span translate>TABLE.COLUMNS.EMPTY</span>
+      <span class="fa fa-info-circle"></span> <span translate>{{ $ctrl.messageState || 'TABLE.COLUMNS.EMPTY' }}</span>
     </span>
   </div>
 </div>

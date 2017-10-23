@@ -4,6 +4,7 @@ angular.module('bhima.components')
     loadingState : '<',
     emptyState   : '<',
     errorState   : '<',
+    messageState : '<?',
   },
   templateUrl : 'modules/templates/bhGridLoadingIndicator.tmpl.html',
 });

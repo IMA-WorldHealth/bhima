@@ -16,6 +16,7 @@
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
+    "EMPTY"           : "Pas de stock trouvé",
     "ENTRY"           : "Entrée de stock",
     "ENTRY_DATE"      : "Date d'entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",

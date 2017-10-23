@@ -118,6 +118,12 @@
         style="height: 300px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns>
+        <bh-grid-loading-indicator
+          loading-state="StockCtrl.loading"
+          empty-state="StockCtrl.selectableInventories.length === 0"
+          error-state="StockCtrl.hasError"
+          message-state="StockCtrl.message">
+        </bh-grid-loading-indicator>
       </div>
 
       <!-- footer -->

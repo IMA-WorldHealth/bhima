@@ -39,90 +39,74 @@
 
     <form name="StockEntryForm" bh-submit="StockCtrl.submit(StockEntryForm)" novalidate>
 
-    <!-- activator -->
-    <div class="row">
-      <bh-stock-entry-exit-type
-        on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)"
-        reference="StockCtrl.reference"
-        display-name="StockCtrl.displayName"
-        is-entry="true">
-      </bh-stock-entry-exit-type>
-    </div>
+      <!-- activator -->
+      <div class="row">
+        <bh-stock-entry-exit-type on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)" reference="StockCtrl.reference"
+          display-name="StockCtrl.displayName" is-entry="true">
+          </bh-stock-entry-exit-type>
+      </div>
 
-    <!-- date and note -->
-    <div class="row">
-      <div class="col-md-6 col-xs-12">
-        <!-- date -->
-        <bh-date-editor
-          date-value="StockCtrl.movement.date"
-          max-date="StockCtrl.timestamp" >
-        </bh-date-editor>
+      <!-- date and note -->
+      <div class="row">
+        <div class="col-md-6 col-xs-12">
+          <!-- date -->
+          <bh-date-editor date-value="StockCtrl.movement.date" max-date="StockCtrl.timestamp">
+          </bh-date-editor>
 
-        <!-- note -->
-        <div class="form-group"
-          ng-class="{ 'has-error' : StockEntryForm.$submitted && StockEntryForm.description.$invalid }">
-          <label class="control-label">
+          <!-- note -->
+          <div class="form-group" ng-class="{ 'has-error' : StockEntryForm.$submitted && StockEntryForm.description.$invalid }">
+            <label class="control-label">
             <span translate>FORM.LABELS.DESCRIPTION</span>
           </label>
-          <textarea
-            class="form-control"
-            name="description"
-            ng-model="StockCtrl.movement.description"
-            placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
-            ng-maxlength="StockCtrl.maxLength"
-            required>
-          </textarea>
-          <div class="help-block" ng-messages="StockEntryForm.description.$error" ng-show="StockEntryForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            <textarea class="form-control" name="description" ng-model="StockCtrl.movement.description" placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              ng-maxlength="StockCtrl.maxLength" required>
+              </textarea>
+              <div class="help-block" ng-messages="StockEntryForm.description.$error" ng-show="StockEntryForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- add and recovery -->
-    <div class="row" style="padding-bottom : 5px;">
-      <div class="col-xs-12">
+      <!-- add and recovery -->
+      <div class="row" style="padding-bottom : 5px;">
+        <div class="col-xs-12">
 
-        <!-- info -->
-        <p
-          style="padding-top : 10px;"
-          class="text-info"
-          ng-show="!StockCtrl.movement.entry_type">
-          <span class="fa fa-info-circle"></span>
-          <span translate>FORM.INFO.NO_SOURCE</span>
-        </p>
+          <!-- info -->
+          <p style="padding-top : 10px;" class="text-info" ng-show="!StockCtrl.movement.entry_type">
+            <span class="fa fa-info-circle"></span>
+            <span translate>FORM.INFO.NO_SOURCE</span>
+          </p>
 
-        <!-- "Add number of grid rows" input-group -->
-        <bh-add-item
-          disable = "StockCtrl.entryOption"
-          callback = "StockCtrl.addItems(numItem)">
-        </bh-add-item>
+          <!-- "Add number of grid rows" input-group -->
+          <bh-add-item disable="StockCtrl.entryOption" callback="StockCtrl.addItems(numItem)">
+          </bh-add-item>
 
+        </div>
       </div>
-    </div>
 
-    <!-- grid -->
-    <div id="stock-entry-grid"
-      ui-grid="StockCtrl.gridOptions"
-      style="height: 300px; width: 100%;"
-      ui-grid-auto-resize
-      ui-grid-resize-columns>
-    </div>
+      <!-- grid -->
+      <div 
+        id="stock-entry-grid"
+        ui-grid="StockCtrl.gridOptions"
+        style="height: 300px; width: 100%;"
+        ui-grid-auto-resize ui-grid-resize-columns>
+      </div>
 
-    <!-- footer -->
-    <div class="row" style="margin-top: 5px;">
-      <div class="col-xs-6 col-xs-offset-6">
-        <div class="text-right">
-          <button class="btn btn-default" ng-click="StockCtrl.suspend(StockEntryForm)" type="button" translate>
+      <!-- footer -->
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-xs-6 col-xs-offset-6">
+          <div class="text-right">
+            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockEntryForm)" type="button" translate>
             FORM.BUTTONS.SUSPEND
           </button>
 
-          <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.hasValidInput">
-            <span translate>FORM.BUTTONS.SUBMIT</span>
-          </bh-loading-button>
+            <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.hasValidInput">
+              <span translate>FORM.BUTTONS.SUBMIT</span>
+            </bh-loading-button>
+          </div>
         </div>
       </div>
-    </div>
     </form>
   </div>
 </div>
