@@ -7,7 +7,8 @@
         ng-model="$ctrl.depotsUuids"
         on-select="$ctrl.handleChange($ctrl.depotsUuids)"
         on-remove="$ctrl.handleChange($ctrl.depotsUuids)"
-        close-on-select="false">
+        close-on-select="false"
+        append-to-body="true">
           <ui-select-match placeholder="{{ 'FORM.SELECT.DEPOT' | translate }}">
             <span>{{$item.text}}</span>
           </ui-select-match>
