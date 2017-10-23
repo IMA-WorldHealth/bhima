@@ -19,8 +19,8 @@ module.exports = VoucherRegistrySearch;
 
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
-  const NUM_VOUCHERS = 17;
-  const NUM_USER_RECORDS = 17;
+  const NUM_VOUCHERS = 19;
+  const NUM_USER_RECORDS = 19;
   const NUM_DESCRIPTION_RECORDS = 2;
   const NUM_TRANSACTION_TYPE_RECORD = 1;
   const transactionTypes = ['Autres Depenses'];
