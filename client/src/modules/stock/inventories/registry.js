@@ -100,7 +100,7 @@ function StockInventoriesController(
   ];
 
   vm.enterprise = Session.enterprise;
-  vm.gridApi = {};  
+  vm.gridApi = {};
 
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -186,19 +186,18 @@ function StockInventoriesController(
     var filtersSnapshot = stockInventoryFilters.formatHTTP();
 
     Modal.openSearchInventories(filtersSnapshot)
-    .then(function (changes) {
-      stockInventoryFilters.replaceFilters(changes);
-      Stock.cacheFilters(filterKey);
-      vm.latestViewFilters = stockInventoryFilters.formatView();
-      
-      return load(stockInventoryFilters.formatHTTP(true));
-    });
+      .then(function (changes) {
+        stockInventoryFilters.replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = stockInventoryFilters.formatView();
+
+        load(stockInventoryFilters.formatHTTP(true));
+      });
   }
 
-  function startup (){
-    if ($state.params.filters) {
-      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      stockMovementFilters.replaceFilters(changes);
+  function startup() {
+    if ($state.params.filters.length) {
+      stockInventoryFilters.replaceFiltersFromState($state.params.filters);
       Stock.cacheFilters(filterKey);
     }
 

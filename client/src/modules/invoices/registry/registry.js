@@ -123,19 +123,20 @@ function InvoiceRegistryController(
     request = Invoices.read(null, filters);
 
     // hook the returned patients up to the grid.
-    request.then(function (invoices) {
-      invoices.forEach(function (invoice) {
-        invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
-        invoice._is_cancelled = invoice.reversed;
-      });
+    request
+      .then(function (invoices) {
+        invoices.forEach(function (invoice) {
+          invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
+          invoice._is_cancelled = invoice.reversed;
+        });
 
-      // put data in the grid
-      vm.uiGridOptions.data = invoices;
-    })
-    .catch(handler)
-    .finally(function () {
-      toggleLoadingIndicator();
-    });
+        // put data in the grid
+        vm.uiGridOptions.data = invoices;
+      })
+      .catch(handler)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
   }
 
   // search and filter data in Invoice Registry
@@ -163,11 +164,8 @@ function InvoiceRegistryController(
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    if ($state.params.filters) {
-      // Fix me, generate change dynamically
-      var change = [{ key : $state.params.filters.key, value : $state.params.filters.value, displayValue : $state.params.filters.displayValue }];
-
-      Invoices.filters.replaceFilters(change);
+    if ($state.params.filters.length) {
+      Invoices.filters.replaceFiltersFromState($state.params.filters);
       Invoices.cacheFilters();
     }
 

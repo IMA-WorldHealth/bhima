@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryListController.$inject = [
-  'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService', '$state', 'FilterService',
-  'appcache', 'GridColumnService', 'GridStateService', 'GridExportService', 'LanguageService',
-  'SessionService',
+  'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService',
+  '$state', 'FilterService', 'appcache', 'GridColumnService', 'GridStateService',
+  'GridExportService', 'LanguageService', 'SessionService',
 ];
 
 /**
@@ -181,15 +181,14 @@ function InventoryListController(
 
   function startup() {
     // if parameters are passed through the $state object, use them.
-    if ($state.params.filters.length > 0) {
-      Inventory.filters.replaceFilters($state.params.filters);
+    if ($state.params.filters.length) {
+      Inventory.filters.replaceFiltersFromState($state.params.filters);
     }
 
     load(Inventory.filters.formatHTTP(true));
     vm.latestViewFilters = Inventory.filters.formatView();
 
     // load the cached inline filter state
-    vm.filterEnabled = cache.filterEnabled || false;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
   }
 

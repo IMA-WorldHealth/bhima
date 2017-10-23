@@ -134,18 +134,19 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     var request = Patients.read(null, filters);
 
     // hook the returned patients up to the grid.
-    request.then(function (patients) {
-      patients.forEach(function (patient) {
-        patient.patientAge = util.getMomentAge(patient.dob, 'years');
-      });
+    request
+    .then(function (patients) {
+        patients.forEach(function (patient) {
+          patient.patientAge = util.getMomentAge(patient.dob, 'years');
+        });
 
-      // put data in the grid
-      vm.uiGridOptions.data = patients;
-    })
-    .catch(handler)
-    .finally(function () {
-      toggleLoadingIndicator();
-    });
+        // put data in the grid
+        vm.uiGridOptions.data = patients;
+      })
+      .catch(handler)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
   }
 
   function search() {
@@ -185,9 +186,8 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
-    if($state.params.filters) {
-      var changes = [{ key : $state.params.filters.key, value : $state.params.filters.value }]
-      Patients.filters.replaceFilters(changes);
+    if ($state.params.filters.length) {
+      Patients.filters.replaceFiltersFromState($state.params.filters);
       Patients.cacheFilters();
     }
 

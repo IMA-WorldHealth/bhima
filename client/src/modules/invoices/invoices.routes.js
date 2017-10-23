@@ -6,8 +6,7 @@ angular.module('bhima.routes')
         controller  : 'InvoiceRegistryController as InvoiceRegistryCtrl',
         templateUrl : '/modules/invoices/registry/registry.html',
         params      : {
-          filters : null,
-          display : null,
+          filters : [],
         },
       })
       .state('patientInvoice', {
