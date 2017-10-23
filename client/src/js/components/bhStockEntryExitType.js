@@ -11,12 +11,12 @@ angular.module('bhima.components')
       },
     });
 
-StockEntryExitTypeController.$inject = [];
+StockEntryExitTypeController.$inject = ['StockEntryExitTypeService'];
 
 /**
  * Stock Entry Exit Type component
  */
-function StockEntryExitTypeController() {
+function StockEntryExitTypeController(StockEntryExitType) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -54,59 +54,11 @@ function StockEntryExitTypeController() {
     $ctrl.onEntryExitTypeSelectCallback({ type : type });
   };
 
-	// reload entry/exit types
+  // reload entry/exit types
   function reloadEntryExitTypes() {
     $ctrl.selectedEntryExitType = null;
     $ctrl.depot = $ctrl.depot || {};
 
-    $ctrl.entryExitTypeList = [
-      { label : 'patient',
-        labelKey : 'PATIENT_REG.ENTITY',
-        descriptionKey : 'STOCK.PATIENT_DISTRIBUTION',
-        isEntry : false,
-        allowed : $ctrl.depot.allow_exit_debtor },
-
-      { label : 'service',
-        labelKey : 'SERVICE.ENTITY',
-        descriptionKey : 'STOCK.SERVICE_DISTRIBUTION',
-        isEntry : false,
-        allowed : $ctrl.depot.allow_exit_service },
-
-      { label : 'depot',
-        labelKey : 'DEPOT.ENTITY',
-        descriptionKey : 'STOCK.DEPOT_DISTRIBUTION',
-        isEntry : false,
-        allowed : $ctrl.depot.allow_exit_transfer },
-
-      { label : 'loss',
-        labelKey : 'STOCK.EXIT_LOSS',
-        descriptionKey : 'STOCK.LOSS_DISTRIBUTION',
-        isEntry : false,
-        allowed : $ctrl.depot.allow_exit_loss },
-
-      { label : 'purchase',
-        labelKey : 'STOCK.ENTRY_PURCHASE',
-        descriptionKey : 'STOCK_FLUX.FROM_PURCHASE',
-        isEntry : true,
-        allowed : $ctrl.depot.allow_entry_purchase },
-
-      { label : 'integration',
-        labelKey : 'STOCK.INTEGRATION',
-        descriptionKey : 'STOCK_FLUX.FROM_INTEGRATION',
-        isEntry : true,
-        allowed : $ctrl.depot.allow_entry_integration },
-
-      { label : 'donation',
-        labelKey : 'STOCK.DONATION',
-        descriptionKey : 'STOCK_FLUX.FROM_DONATION',
-        isEntry : true,
-        allowed : $ctrl.depot.allow_entry_donation },
-
-      { label : 'transfer_reception',
-        labelKey : 'STOCK.RECEPTION_TRANSFER',
-        descriptionKey : 'STOCK_FLUX.FROM_TRANSFER',
-        isEntry : true,
-        allowed : $ctrl.depot.allow_entry_transfer },
-    ];
+    $ctrl.entryExitTypeList = StockEntryExitType.getAllowedTypes($ctrl.depot);
   }
 }
