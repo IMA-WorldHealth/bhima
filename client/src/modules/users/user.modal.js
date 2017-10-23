@@ -45,6 +45,10 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
     vm.user.projects = [];
   }
 
+  vm.onDepotChange = function onDepotChange(depots) {
+    vm.user.depots = depots;
+  };
+
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
     var promise;

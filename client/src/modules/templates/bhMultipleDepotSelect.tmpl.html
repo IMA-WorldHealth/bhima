@@ -1,0 +1,22 @@
+<div ng-form="$ctrl.formName" bh-multiple-depot-select>
+  <div class="form-group">
+    <label class="control-label" translate>{{$ctrl.label}}</label>
+    <span class="help-block" translate> FORM.INFO.USER_DEPOT </span>
+      <ui-select 
+        multiple
+        name="clients"
+        ng-model="$ctrl.selectedDepots"
+        on-select="$ctrl.handleChange($ctrl.selectedDepots)"
+        on-remove="$ctrl.handleChange($ctrl.selectedDepots)"
+        close-on-select="false">
+          <ui-select-match placeholder="{{ 'FORM.SELECT.DEPOT' | translate }}">
+            <span>{{$item.text}}</span>
+          </ui-select-match>
+
+          <ui-select-choices repeat="depot.uuid as depot in $ctrl.depots| filter:{text: $select.search}">
+            <span ng-bind-html="depot.text | highlight: $select.search"></span>
+          </ui-select-choices>
+      </ui-select>
+  </div>
+</div>
+

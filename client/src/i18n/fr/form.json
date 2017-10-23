@@ -157,7 +157,8 @@
             "UNPOSTED_TRANSACTION": "Transactions non-posté ne sont pas affichées",
             "TRANSACTIONS": "Transactions",
             "ROWS": "enregistrements",
-            "DELETE_RECORD_SUCCESS": "Suppression de la transaction avec succès."
+            "DELETE_RECORD_SUCCESS": "Suppression de la transaction avec succès.",
+            "USER_DEPOT": "L'assignation d'un Utilisateur à un dépôt n'est reservé qu'aux Gestionnaires des Stocks, gestionnaires des Pharmacies et autres"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",
@@ -251,7 +252,7 @@
             "DEFINE_UNTIL_DATE": "Définir une date limite",
             "DEBTOR_BALANCE_REMAINING": "Solde Restant du Débiteur",
             "DECREASE" : "Dimunition",
-            "DEPOT": "Depot",
+            "DEPOT": "Dépôt",
             "DESCRIPTION": "Description",
             "DETAILS": "Details",
             "DEFAULTS": "Filtres par défaut",
@@ -581,7 +582,7 @@
             "CREDITOR_GROUP": "Sélectionner Groupe de créditeurs",
             "DATE_INTERVAL": "Sélectionner un intervalle de date",
             "DEBTOR_GROUP": "Sélectionner Groupe de Débiteurs",
-            "DEPOT":"Sélectionner un depot",
+            "DEPOT":"Sélectionner un dépôt",
             "ENTERPRISE": "Sélectionner entreprise",
             "FISCAL_YEAR": "Sélectionner une annee fiscale",
             "FUNCTION": "Sélectionner une fonction",

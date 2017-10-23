@@ -67,6 +67,12 @@
       </div>
     </div>
 
+    <bh-multiple-depot-select
+      label="STOCK.DEPOT"
+      on-change="UserModalCtrl.onDepotChange(depots)">                
+    </bh-multiple-depot-select>
+    <hr />
+
     <div ng-if="!UserModalCtrl.isCreating" class="form-group">
       <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.editPassword()">
         <i class="fa fa-lock"></i> <span translate>FORM.BUTTONS.UPDATE_PASSWORD</span>
