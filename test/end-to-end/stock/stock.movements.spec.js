@@ -80,14 +80,14 @@ function StockMovementsRegistryTests() {
   });
 
   it('find by lots reasons for distribution to depot', () => {
-    modal.setMovementReason('Vers un depot');
+    modal.setMovementReason('Vers un dépôt');
     modal.submit();
     GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution from depot', () => {
     // from depot
-    modal.setMovementReason('En provenance d\'un depot');
+    modal.setMovementReason('En provenance d\'un dépôt');
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });

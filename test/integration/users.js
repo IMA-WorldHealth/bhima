@@ -230,7 +230,7 @@ describe('(/users) Users and Permissions', function () {
   // Reset depot permissions for user
   it('POST /users/:id/depots will reset user depots', function () {
     return agent.post('/users/' + newUser.id + '/depots')
-      .send({}) // just the root node
+      .send({})
       .then(function (res) {
         expect(res).to.have.status(201);
         return agent.get('/users/' + newUser.id + '/depots');
