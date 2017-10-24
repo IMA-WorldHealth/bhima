@@ -50,6 +50,7 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
   vm.edit = edit;
   vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
+  vm.depotManagement = depotManagement;
 
   function edit(user) {
     $state.go('users.edit', { id: user.id, creating: false });
@@ -57,6 +58,10 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
 
   function editPermissions(user) {
     $state.go('users.editPermission', { id: user.id });
+  }
+
+  function depotManagement(user) {
+    $state.go('users.depotManagement', { id: user.id });
   }
 
   function activatePermissions(user, value, message) {

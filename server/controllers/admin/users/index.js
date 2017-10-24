@@ -21,6 +21,7 @@ const Topic = require('../../../lib/topic');
 // expose submodules
 exports.permissions = require('./permissions');
 exports.projects = require('./projects');
+exports.depots = require('./depots');
 
 // expose API routes
 exports.list = list;

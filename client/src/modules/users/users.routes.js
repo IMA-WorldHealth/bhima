@@ -40,6 +40,14 @@ angular.module('bhima.routes')
         onEnter :['$uibModal', userPermissionModal],
         onExit : ['$uibModalStack', closeModal]
       })
+      .state('users.depotManagement', {
+        url : '/:id/depotManagement',
+        params : {
+          id : null
+        },
+        onEnter :['$uibModal', depotManagementModal],
+        onExit : ['$uibModalStack', closeModal]
+      })      
       .state('users.editPassword', {
         url : '/:id/edit/password',
         params : {
@@ -77,6 +85,16 @@ function userPasswordModal($modal) {
     backdrop : 'static',
     templateUrl: 'modules/users/UserEditPasswordModal.html',
     controller:  'UsersPasswordModalController as UsersPasswordModalCtrl'
+  });
+}
+
+function depotManagementModal($modal) {
+  $modal.open({
+    keyboard : false,
+    size : 'md',
+    backdrop : 'static',
+    templateUrl: 'modules/users/UserDepotManagementModal.html',
+    controller:  'UsersDepotManagementController as UsersDepotModalCtrl'
   });
 }
 

@@ -99,6 +99,22 @@ class DepotPage {
     components.modalAction.confirm();
     components.notification.hasError();
   }
+
+  /**
+  * select the User Depots
+  */
+  selectUserDepot(depots) {
+    components.multipleDepotSelect.set(depots);    
+  }
+
+  /**
+  * Submit button User Depot
+  */
+  submitUserDepot() {
+    FU.buttons.submit();
+    components.notification.hasSuccess();
+  }
+
 }
 
 module.exports = DepotPage;

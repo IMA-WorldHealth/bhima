@@ -11,18 +11,21 @@ angular.module('bhima.components')
     },
   });
 
-DepotSelectController.$inject = ['DepotService', 'NotifyService'];
+DepotSelectController.$inject = ['DepotService', 'NotifyService', 'SessionService'];
 
 /**
  * Depot selection component
  */
-function DepotSelectController(Depots, Notify) {
+function DepotSelectController(Depots, Notify, Session) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.loading = true;
 
-    Depots.read()
+    // download only the depots that the user has the management right
+    var userId = Session.user.id;    
+
+    Depots.read(null, {user_id : userId})
       .then(function (depots) {
         $ctrl.depots = depots;
       })

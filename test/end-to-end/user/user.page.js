@@ -48,6 +48,13 @@ function UserPage() {
   }
 
   /**
+   * simulte a link clicking on the grid to show depot dialog
+   **/
+  function editUserDepot(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'depot', 'users-grid');
+  }
+
+  /**
    * simulte a link clicking on the grid to show activation dialog
    **/
   function activateUser(n) {
@@ -58,6 +65,7 @@ function UserPage() {
   page.createUser = createUser;
   page.editUser = editUser;
   page.editUserPermission = editUserPermission;
+  page.editUserDepot = editUserDepot;
   page.activateUser = activateUser;
 }
 

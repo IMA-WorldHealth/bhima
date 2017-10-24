@@ -441,9 +441,14 @@ INSERT INTO `purchase_item` VALUES
 -- default depots
 SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
 SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");
+
 INSERT INTO `depot` VALUES
   (@depot_uuid, 'Depot Principal', 1, 1),
   (@second_depot_uuid, 'Depot Secondaire', 1, 0);
+
+-- Set Depot Management By User
+INSERT INTO depot_permission (id, user_id, depot_uuid) VALUES
+  (NULL, 1, @depot_uuid);
 
 -- TODO : As soon as the stored Procedure for Stock accounting landed, stock movement records should be posted also
 
