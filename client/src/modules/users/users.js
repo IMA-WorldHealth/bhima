@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
-UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService'];
+UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'DropdownBehaviorService'];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, Users, Notify, Modal) {
+function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
   var vm = this;
 
   // options for the UI grid
@@ -31,6 +31,8 @@ function UsersController($state, Users, Notify, Modal) {
   vm.edit = edit;
   vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
+  //caret behavior
+  vm.dropdownBehavior = DropdownBehavior.setPosition;
 
   function edit(user) {
     $state.go('users.edit', { id: user.id, creating: false });
@@ -82,6 +84,7 @@ function UsersController($state, Users, Notify, Modal) {
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
+
 
   loadGrid();
 }
