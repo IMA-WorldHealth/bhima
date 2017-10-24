@@ -161,7 +161,6 @@ function StockExitController(
     // setting params for grid loading state
     vm.loading = true;
     vm.hasError = false;
-    vm.message = 'STOCK.EMPTY';
 
     vm.movement = {
       date: new Date(),
@@ -178,7 +177,6 @@ function StockExitController(
   }
 
   function loadInventories(depot) {
-    // var givenDepot = depot || vm.depot;
     setupStock();
     Stock.inventories.read(null, { depot_uuid: depot.uuid })
       .then(function (inventories) {
