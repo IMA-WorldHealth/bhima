@@ -22,16 +22,7 @@ function StockExitController(
   StockModal, uiGridGroupingConstants, $translate, AppCache
 ) {
   var vm = this;
-  var mapExit = {
-    patient: { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
-    service: { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
-    depot: { description: 'STOCK.EXIT_DEPOT', find: findDepot, submit: submitDepot },
-    loss: { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
-  };
 
-  var cache = new AppCache('StockExit');
-
-  vm.util = util;
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
 
@@ -47,8 +38,16 @@ function StockExitController(
   vm.selectExitType = selectExitType;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
+  vm.checkValidity = checkValidity;
+  
 
-  // grid options
+  var cache = new AppCache('StockExit');
+  var mapExit = {
+    patient: { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
+    service: { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
+    depot: { description: 'STOCK.EXIT_DEPOT', find: findDepot, submit: submitDepot },
+    loss: { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
+  };
   var gridOptions = {
     appScopeProvider: vm,
     enableSorting: false,
@@ -121,13 +120,12 @@ function StockExitController(
     flatEntityAccess: true,
   };
 
+  // exposing the grid options to the view
   vm.gridOptions = gridOptions;
-  vm.checkValidity = checkValidity;
 
   function selectExitType(exitType) {
     vm.movement.exit_type = exitType.label;
     mapExit[exitType.label].find();
-    // FIXME: textarea default value must be translated in the view
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
   }
 
@@ -263,7 +261,6 @@ function StockExitController(
     vm.displayName = uniformEntity.displayName;
   }
 
-  // ================================ submit ================================
   function submit(form) {
     if (form.$invalid) { return; }
     mapExit[vm.movement.exit_type].submit()
@@ -286,7 +283,7 @@ function StockExitController(
       description: vm.movement.description,
       is_exit: 1,
       flux_id: bhConstants.flux.TO_PATIENT,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     var lots = vm.stockForm.store.data.map(function (row) {
@@ -317,7 +314,7 @@ function StockExitController(
       description: vm.movement.description,
       is_exit: 1,
       flux_id: bhConstants.flux.TO_SERVICE,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     var lots = vm.stockForm.store.data.map(function (row) {
@@ -348,7 +345,7 @@ function StockExitController(
       date: vm.movement.date,
       description: vm.movement.description,
       isExit: true,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     var lots = vm.stockForm.store.data.map(function (row) {
@@ -379,7 +376,7 @@ function StockExitController(
       description: vm.movement.description,
       is_exit: 1,
       flux_id: bhConstants.flux.TO_LOSS,
-      user_id: Session.user.id,
+      user_id: vm.stockForm.details.user_id,
     };
 
     var lots = vm.stockForm.store.data.map(function (row) {
