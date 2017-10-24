@@ -35,32 +35,43 @@
           <div class="form-group">
               <p class="control-label" style="margin-bottom:5px;">
                 <strong translate>FORM.LABELS.STATUS</strong>
+                <bh-clear on-clear="$ctrl.clear('status')"></bh-clear>
               </p>
 
-              <label class="radio-inline">
-                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'sold_out'">
-                <span translate>STOCK.STATUS.SOLD_OUT</span>
-              </label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'sold_out'">
+                  <span translate>STOCK.STATUS.SOLD_OUT</span>
+                </label>
+              </div>
 
-              <label class="radio-inline">
-                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'in_stock'">
-                <span translate>STOCK.STATUS.IN_STOCK</span>
-              </label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'in_stock'">
+                  <span translate>STOCK.STATUS.IN_STOCK</span>
+                </label>
+              </div>
 
-              <label class="radio-inline">
-                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'security_reached'">
-                <span translate>STOCK.STATUS.SECURITY</span>
-              </label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'security_reached'">
+                  <span translate>STOCK.STATUS.SECURITY</span>
+                </label>
+              </div>
 
-              <label class="radio-inline">
-                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'minimum_reached'">
-                <span translate>STOCK.STATUS.MINIMUM</span>
-              </label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'minimum_reached'">
+                  <span translate>STOCK.STATUS.MINIMUM</span>
+                </label>
+              </div>
 
-              <label class="radio-inline">
-                <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'over_maximum'">
-                <span translate>STOCK.STATUS.OVER_MAX</span>
-              </label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'over_maximum'">
+                  <span translate>STOCK.STATUS.OVER_MAX</span>
+                </label>
+              </div>  
           </div>
         </div>
       </uib-tab>

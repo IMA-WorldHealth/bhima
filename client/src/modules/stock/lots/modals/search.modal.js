@@ -4,10 +4,10 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchLotsModalController.$inject = [
   'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance', 'PeriodService'
+  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService'
 ];
 
-function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods) {
+function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods, Stock) {
 
   var vm = this;
   var changes = new Store({ identifier: 'key' });
@@ -21,6 +21,9 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     'entry_date_to', 'expiration_date_from', 'expiration_date_to'
   ];
 
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};  
+
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     var periodFilters = Periods.processFilterChanges(period);
@@ -30,14 +33,24 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     });
   };
 
+  var lastViewFilters = Stock.filter.lot.formatView().customFilters;
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});  
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
+    displayValues.depot_uuid = depot.text;
   };
 
   // custom filter inventory_uuid - assign the value to the params object
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
+    displayValues.inventory_uuid = inventory.label;
   };
 
   // assign already defined custom filters to searchQueries object
@@ -67,7 +80,9 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key: key, value: value });
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
 

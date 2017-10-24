@@ -6,6 +6,7 @@ const bhInventorySelect = require('../shared/components/bhInventorySelect');
 const bhDateInterval = require('../shared/components/bhDateInterval');
 const bhTransactionTypeSelect = require('../shared/components/bhTransactionTypeSelect');
 const bhSupplierSelect = require('../shared/components/bhSupplierSelect');
+const bhFluxSelect = require('../shared/components/bhFluxSelect');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -86,10 +87,6 @@ class SearchModal {
     FU.radio('$ctrl.searchQueries.is_exit', value);
   }
 
-  setMovementReason(reason) {
-    FU.uiSelect('$ctrl.selectedFluxes', reason);
-  }
-
   /*
    NOTE:
    Since these modules are shared between all search forms, please make sure you always use
@@ -152,6 +149,10 @@ class SearchModal {
 
   close() {
     this.element.$('[data-method="submit"').click();
+  }
+
+  setMovementReason(flux) {
+    bhFluxSelect.set(flux);
   }
 
   submit() {
