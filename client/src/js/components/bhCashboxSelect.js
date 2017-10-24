@@ -53,4 +53,4 @@ function CashboxSelectController(Cashbox, Notify) {
   $ctrl.onSelect = function ($item) {
     $ctrl.onSelectCallback({ cashbox : $item });
   };
-}    
+}

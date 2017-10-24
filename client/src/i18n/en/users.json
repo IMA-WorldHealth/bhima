@@ -6,6 +6,7 @@
 "PERMISSIONS":"Permissions",
 "SET_PASSWORD":"Set Password",
 "SET_DEPOT":"Depot's permissions to Users",
+"SET_CASHBOX":"Cashboxes permissions to Users",
 "SUPER":"Super User",
 "TITLE":"Users and Permissions Management",
 "UPDATING_USER":"Edits a user's metadata",

@@ -6,6 +6,7 @@
             "BACK": "Back",
             "CANCEL": "Cancel",
             "CANCEL_EDIT": "Cancel Edit",
+            "CASHBOX_MANAGEMENT" : "Cashboxes Management",
             "CLEAR": "Clear",
             "CLOSE": "Close",
             "CONFIGURE": "Configure",
@@ -163,7 +164,8 @@
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
             "VIEW_CLOSING_BALANCE": "View Closing Balance",
             "DELETE_RECORD_SUCCESS": "Successfully deleted the record.",
-            "USER_DEPOT": "These are the depots that you have permission for manage"
+            "USER_DEPOT": "These are the depots that you have permission for manage",
+            "USER_CASHBOX": "These are the cashboxes that you have permission for manage"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",

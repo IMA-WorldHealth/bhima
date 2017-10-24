@@ -6,6 +6,7 @@
             "BACK": "Précédent",
             "CANCEL": "Annuler",
             "CANCEL_EDIT": "Annuler Modifier",
+            "CASHBOX_MANAGEMENT" : "Gestion des Caisses",
             "CLEAR": "Effacer",
             "CLOSE": "Fermer",
             "CONFIGURE": "Configurer",
@@ -163,7 +164,8 @@
             "TRANSACTIONS": "Transactions",
             "ROWS": "enregistrements",
             "DELETE_RECORD_SUCCESS": "Suppression de la transaction avec succès.",
-            "USER_DEPOT": "Voici les dépôts dont vous avez la permission de gérer"
+            "USER_DEPOT": "Voici les dépôts dont vous avez la permission de gérer",
+            "USER_CASHBOX": "Voici les caisses dont vous avez la permission de gérer"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",

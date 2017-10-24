@@ -444,6 +444,8 @@ exports.configure = function configure(app) {
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.put('/users/:id/password', users.password);
+  app.get('/users/:id/cashboxes', users.cashboxes.list);
+  app.post('/users/:id/cashboxes', users.cashboxes.create);
 
   // projects controller
   app.get('/projects/:id', projects.detail);
