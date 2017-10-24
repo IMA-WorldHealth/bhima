@@ -219,6 +219,20 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     }, []);
   }
 
+    /** Get label for purchase Status */
+  function statusLabelMap(status) {
+    var keys = {
+      sold_out          : 'STOCK.STATUS.SOLD_OUT',
+      in_stock          : 'STOCK.STATUS.IN_STOCK',
+      security_reached  : 'STOCK.STATUS.SECURITY',
+      minimum_reached   : 'STOCK.STATUS.MINIMUM',
+      over_maximum      : 'STOCK.STATUS.OVER_MAX',    
+    };
+    
+    return keys[status];
+  }
+
+
   return {
     stocks: stocks,
     lots: lots,
@@ -233,5 +247,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     download: download,
     uniformSelectedEntity: uniformSelectedEntity,
     processLotsFromStore : processLotsFromStore,
+    statusLabelMap: statusLabelMap,
   };
 }

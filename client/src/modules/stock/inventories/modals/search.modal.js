@@ -75,17 +75,7 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
   vm.submit = function submit() {
     // Set the label of status Value
     if (vm.searchQueries.status) {
-      if (vm.searchQueries.status === 'sold_out') {
-        displayValues.status = 'STOCK.STATUS.SOLD_OUT';
-      } else if (vm.searchQueries.status === 'in_stock') {
-        displayValues.status = 'STOCK.STATUS.IN_STOCK';
-      } else if (vm.searchQueries.status === 'security_reached') {
-        displayValues.status = 'STOCK.STATUS.SECURITY';
-      } else if (vm.searchQueries.status === 'minimum_reached') {
-        displayValues.status = 'STOCK.STATUS.MINIMUM';
-      } else if (vm.searchQueries.status === 'over_maximum') {
-        displayValues.status = 'STOCK.STATUS.OVER_MAX';
-      } 
+      displayValues.status = Stock.statusLabelMap(vm.searchQueries.status);
     }
 
     // push all searchQuery values into the changes array to be applied

@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : FluxSelectController,
     bindings    : {
       onChange : '&',
-      fluxId : '<?',
+      fluxIds : '<?',
       label : '@?',
       required : '<?',
       validationTrigger : '<?',
@@ -30,7 +30,7 @@ function FluxSelectController(Flux, Notify, $translate) {
     $ctrl.onChange = $ctrl.onChange || angular.noop;
 
     // init the model
-    $ctrl.selectedFlux = $ctrl.fluxId || [];
+    $ctrl.selectedFlux = $ctrl.fluxIds || [];
 
     // load all Flux
     Flux.read()

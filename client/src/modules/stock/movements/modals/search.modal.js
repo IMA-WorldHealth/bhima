@@ -66,9 +66,9 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
     vm.searchQueries.flux_id = flux;
     var typeText = '/';
 
-    flux.forEach(function (fluxId) {
+    flux.forEach(function (fluxIds) {
       vm.fluxes.forEach(function (flux) {
-        if (fluxId === flux.id) {
+        if (fluxIds === flux.id) {
           typeText += flux.label + ' / ';
         }
       });
