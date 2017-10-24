@@ -15,7 +15,7 @@
             "CSV_EXPORT": "Exporter en CSV",
             "DELETE": "Supprimer",
             "DELETE_RECORD": "Supprimer Enregistrement",
-            "DEPOSIT_MANAGEMENT": "Gestion des dépôts",
+            "DEPOT_MANAGEMENT": "Gestion des dépôts",
             "DISMISS": "Rejeter",
             "EDIT": "Editer",
             "EDIT_PERMISSIONS": "Editer permission",
@@ -159,7 +159,7 @@
             "TRANSACTIONS": "Transactions",
             "ROWS": "enregistrements",
             "DELETE_RECORD_SUCCESS": "Suppression de la transaction avec succès.",
-            "USER_DEPOT": "L'assignation d'un Utilisateur à un dépôt n'est reservé qu'aux Gestionnaires des Stocks, gestionnaires des Pharmacies et autres"
+            "USER_DEPOT": "Voici les dépôts dont vous avez la permission de gérer"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",

@@ -15,7 +15,7 @@
             "CSV_EXPORT": "Export CSV",
             "DELETE": "Delete",
             "DELETE_RECORD": "Delete Record",
-            "DEPOSIT_MANAGEMENT": "Deposit Management",
+            "DEPOT_MANAGEMENT": "Depots Management",
             "DISMISS": "Dismiss",
             "EDIT": "Edit",
             "EDIT_PERMISSIONS": "Permission",
@@ -159,7 +159,7 @@
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
             "VIEW_CLOSING_BALANCE": "View Closing Balance",
             "DELETE_RECORD_SUCCESS": "Successfully deleted the record.",
-            "USER_DEPOT": "The assignment of a User to a depot is reserved only to the Inventory Manager, Pharmacy Manager and other"
+            "USER_DEPOT": "These are the depots that you have permission for manage"
         },
         "LABELS": {
             "ABBREVIATION": "Abbreviation",
