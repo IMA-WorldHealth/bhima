@@ -1,0 +1,21 @@
+<div class="row" style="padding-bottom: 1rem;">
+  <div class="col-xs-12">
+    <a href ui-sref="TrialBalanceOverview" class="text-primary">
+      <strong>
+        <i class="fa fa-info-circle"></i> <span translate>POSTING_JOURNAL.TRIAL_BALANCE.RETURN_TO_OVERVIEW</span>
+      </strong>
+    </a>
+  </div>
+</div>
+
+<div
+  id="error-grid"
+  ui-grid="ErrorsCtrl.gridOptions"
+  ui-grid-resize-columns
+  ui-grid-auto-resize>
+  <bh-grid-loading-indicator
+    loading-state="ErrorsCtrl.loading"
+    empty-state="ErrorsCtrl.gridOptions.data.length === 0"
+    error-state="ErrorsCtrl.hasError">
+  </bh-grid-loading-indicator>
+</div>

@@ -1,14 +1,23 @@
 angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
-UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'DropdownBehaviorService'];
+UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'DropdownBehaviorService', 'uiGridConstants'];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
+function UsersController($state, Users, Notify, Modal, DropdownBehavior, uiGridConstants) {
   var vm = this;
+  vm.gridApi = {};
+  vm.filterEnabled = false;
+  vm.toggleFilter = toggleFilter;
+
+  // this function selectively applies the muted cell classes to
+  // disabled user entities
+  function muteDisabledCells(grid, row, col, rowRenderIndex, colRenderIndex) {
+    if (row.entity.deactivated) { return 'text-muted strike'; }
+  }
 
   // options for the UI grid
   vm.gridOptions = {
@@ -17,15 +26,25 @@ function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
+    onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'display_name', name : 'Display Name' },
-      { field : 'username', name : 'User Name', cellTemplate: '/modules/users/templates/user.name.cell.html' },
-      { name : 'action', displayName : '', cellTemplate: '/modules/users/templates/grid/action.cell.html', enableSorting : false }
+      { field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true },
+      { field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering  : true },
+      { field : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false, enableFiltering  : false },
     ],
   };
 
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
   // the user object that is either edited or created
   vm.user = {};
+
+  function toggleFilter() {
+    vm.gridOptions.enableFiltering = vm.filterEnabled = !vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   // bind methods
   vm.edit = edit;
@@ -33,6 +52,7 @@ function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
   vm.activatePermissions = activatePermissions;
   //caret behavior
   vm.dropdownBehavior = DropdownBehavior.setPosition;
+  vm.depotManagement = depotManagement;
 
   function edit(user) {
     $state.go('users.edit', { id: user.id, creating: false });
@@ -42,9 +62,13 @@ function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
     $state.go('users.editPermission', { id: user.id });
   }
 
-  function activatePermissions(user, value, message){
+  function depotManagement(user) {
+    $state.go('users.depotManagement', { id: user.id });
+  }
+
+  function activatePermissions(user, value, message) {
     vm.user.deactivated = value;
-    
+
     Modal.confirm(message)
       .then(function (confirmResponse) {
         if (!confirmResponse) {
@@ -54,11 +78,11 @@ function UsersController($state, Users, Notify, Modal, DropdownBehavior) {
         // user has confirmed activation or deactivation of debtor group
         return Users.update(user.id, vm.user)
           .then(function () {
-            Notify.success("USERS.UPDATED");
-            $state.go('users.list', null, {reload : true});
+            Notify.success('USERS.UPDATED');
+            $state.go('users.list', null, { reload : true });
           })
           .catch(Notify.handleError);
-      });    
+      });
   }
 
   function handleError(error) {

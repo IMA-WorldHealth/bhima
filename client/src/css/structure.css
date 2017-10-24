@@ -908,6 +908,9 @@ a[disabled] {
 
 .filter-list {
   display : inline-block;
+
+  /* Remove large bottom margin offsetting filter bars */
+  margin-bottom : 5px;
 }
 
 .filter-list > li {
@@ -920,4 +923,8 @@ a[disabled] {
 
 .strike {
   text-decoration : line-through;
+}
+
+.dropdown-menu { 
+  z-index : 9999;
 }

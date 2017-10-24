@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
 .controller('PurchaseOrderController', PurchaseOrderController);
 
 PurchaseOrderController.$inject = [
-  'PurchaseOrderService', 'PurchaseOrderForm', 'SupplierService', 'NotifyService',
+  'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants'
 ];
 
 
-function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util, Receipts, bhConstants) {
+function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util, Receipts, bhConstants) {
   var vm = this;
 
   // create a new purchase order form
@@ -18,13 +18,13 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
+  vm.loagingState = false;
+  vm.setSupplier = setSupplier;
 
-  // make sure we have all the suppliers we need.
-  Suppliers.read()
-  .then(function (suppliers) {
-    vm.suppliers = suppliers;
-  })
-  .catch(Notify.handleError);
+  function setSupplier (supplier) {
+    vm.supplier = supplier;
+    vm.order.setSupplier(supplier);
+  }
 
   // grid options for the purchase order grid
   var gridOptions = {
@@ -80,10 +80,15 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
       return;
     }
 
+    // Set Waiting confirmation like default Purchase Order Status
+    vm.order.details.status_id = 1;
+
     // copy the purchase order object into something that can be sent to the server
     var order = angular.copy(vm.order.details);
     order.items = angular.copy(vm.order.store.data);
-    
+
+    vm.loadingState = true;
+
     return Purchases.create(order)
       .then(function (res) {
 
@@ -93,20 +98,19 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
         // reset the module
         clear(form);
       })
-      .catch(Notify.handleError);
-  }
-
-  // fired whenever an input in the grid is changed.
-  function handleChange() {
-    vm.order.digest();
-    vm.order.validate();
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loadingState = false;
+      });
   }
 
   // clears the module, resetting it
+  //TODO : Choose a better name for a starting method
   function clear(form) {
-
     // remove the data
     delete vm.supplier;
+    delete vm.order.details.supplier_uuid;
+
     vm.order.setup();
 
     // if the form was passed in, reset the validation
@@ -121,7 +125,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
   vm.addItems = addItems;
   vm.submit = submit;
   vm.clear = clear;
-  vm.handleChange = handleChange;
 
   // trigger the module start
   clear();

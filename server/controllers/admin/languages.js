@@ -21,7 +21,7 @@ function list(req, res, next) {
   `;
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)

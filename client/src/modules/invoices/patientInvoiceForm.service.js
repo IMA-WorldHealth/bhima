@@ -102,7 +102,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
       }.bind(this));
 
     // set up the inventory
-    Inventory.read(null, { detailed: 1 })
+    Inventory.read(null, { detailed: 1, locked : 0 })
       .then(function (data) {
 
         // make sure both the label and code is searchable

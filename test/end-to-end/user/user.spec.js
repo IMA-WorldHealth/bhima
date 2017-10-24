@@ -28,15 +28,15 @@ describe('User Management Page', function () {
     login : 'Login test',
     email : 'test@bhima.org',
     project : 'Test Project A',
-    password : 'testtest',
-    passwordConfirm : 'testtest'
+    password : 'testtest134@IMA',
+    passwordConfirm : 'testtest134@IMA'
   };
   const mockUserEdit = {
     userName : 'User test edit',
     login : 'Login test edit',
     email : 'test_edit@bhima.org',
     project : 'Test Project C',
-    password : 'testtestedit'
+    password : 'testtestedit1233@D'
   };
   const userCount = 4;
 
@@ -93,7 +93,7 @@ describe('User Management Page', function () {
   });
 
   it('Deactivate user system access successfully', function () {
-    userPage.activateUser(4);    
+    userPage.activateUser(4);
     // submit the confirmation modal
     FU.modal.submit();
 

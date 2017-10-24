@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('CashFormService', CashFormService);
 
 CashFormService.$inject = [
-  'appcache', 'SessionService', 'PatientService', 'ExchangeRateService'
+  'appcache', 'SessionService', 'PatientService', 'ExchangeRateService',
 ];
 
 function CashFormService(AppCache, Session, Patients, Exchange) {
@@ -95,13 +95,17 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
     this.patient = patient;
     this.details.debtor_uuid = patient.debtor_uuid;
 
-    return Patients.balance(patient.debtor_uuid)
+    return Patients.balance(patient.uuid)
       .then(function (balance) {
-
         var patientAccountBalance = balance * -1;
-
         self.messages.hasPositiveAccountBalance = patientAccountBalance > 0;
         self.messages.patientAccountBalance = patientAccountBalance;
+
+        if (patient.is_convention) {
+          self.messages.isNonCashPatient = true;
+          self.messages.patientName = ''.concat('[', patient.reference, '] ', patient.display_name);
+          self.messages.patientConventionName = patient.debtor_group_name;
+        }
 
         self.digest();
       });

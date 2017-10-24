@@ -14,9 +14,9 @@
 @ima-light-orange:    #fdba64;
 @ima-light-blue:      #6fbdee;
 
-/** @todo move all structure code into less with configurable variables */
-/**
- * Application structure variables - these widths are used to determine how much
+@ima-purple : #7859BF;
+
+/** @todo move all structure code into less with configurable variables */ /** * Application structure variables - these widths are used to determine how much
  * space the tree navigation takes up in its `expanded` and `collapsed` states.
  */
 @expanded-offset:  260px;
@@ -124,6 +124,11 @@ input[type=number] {-moz-appearance: textfield;}
  */
 .pad-bottom {
   padding-bottom : @grid-gutter-width / 2;
+}
+
+.label.label-emphasize{
+  background-color: @ima-purple;
+  color: #fff;
 }
 
 /* expert mode */
@@ -242,6 +247,40 @@ input[type=number] {-moz-appearance: textfield;}
   margin-left: 0;
 }
 
+/* New Label Outline styles */
+/* src: https://codepen.io/uimax/pen/ZpENPG */
+
+.label.label-outlined {
+  border-width: 1px;
+  border-style: solid;
+  background-color: transparent;
+}
+
+.label.label-outlined.label-primary {
+  border-color: @label-primary-bg;
+  color: @brand-primary;
+}
+
+.label.label-outlined.label-danger {
+  border-color: @label-danger-bg;
+  color: @state-danger-text;
+}
+
+.label.label-outlined.label-info {
+  border-color: @label-info-bg;
+  color: @state-info-text;
+}
+
+.label.label-outlined.label-warning {
+  border-color: @label-warning-bg;
+  color: @state-warning-text;
+}
+
+.label.label-outlined.label-success {
+  border-color: @label-success-bg;
+  color: @state-success-text;
+}
+
 /*  flash for newly edited or created rows */
 @keyframes highlight-flash {
   from { background: @btn-info-bg; }
@@ -264,8 +303,128 @@ input[type=number] {-moz-appearance: textfield;}
   animation-duration: 2s;
 }
 
+/* These classes need to be "!important" because ui-grid's header cell template */
+/* prioritizes its own classes over ours, for some reason */
+.ui-grid-header-cell-error {
+  background-color: @btn-danger-bg !important;
+  border-color: @btn-danger-border !important;
+  color: white;
+}
+
+.ui-grid-header-cell-primary{
+  background-color: @btn-primary-bg !important;
+  border-color: @btn-primary-border !important;
+  color: white;
+}
+
 /* large button as menu */
 .bg-ima-dark-blue { background: @ima-dark-blue; }
-.bg-ima-dark-blue .value, 
-.bg-ima-dark-blue .uilabel 
+.bg-ima-dark-blue .value,
+.bg-ima-dark-blue .uilabel
 { color: white !important; }
+
+/* experimental usage of the search-modal */
+.search-modal {
+  overflow : auto;
+  max-height:600px;
+  padding:0px;
+}
+
+/* this is included at the top of the modal */
+.search-modal-header {
+  box-shadow : 0px 2px 4px -4px black;
+  z-index : 1000;
+}
+
+/* hack to get ui-selects to overflow over bootstrap's modals with */
+/* append-to-body="true" */
+body > .ui-select-bootstrap.open {
+  z-index: 1100;
+}
+
+.ui-grid-exporter-csv-link {
+  display : none;
+}
+
+.pad-alert {
+  border-radius : 0px;
+  padding-left : 5px;
+  padding-right : 5px;
+  padding-top : 10px;
+  padding-bottom : 10px;
+  margin-bottom : 10px;
+}
+
+/**/
+.strength-meter {
+  position: relative;
+  height: 3px;
+  background: #DDD;
+  margin: 10px auto 20px;
+  border-radius: 3px;
+}
+
+.strength-meter:before,
+.strength-meter:after {
+  content: '';
+  height: inherit;
+  background: transparent;
+  display: block;
+  border-color: #FFF;
+  border-style: solid;
+  border-width: 0 5px 0 5px;
+  position: absolute;
+  width: 80px;
+  z-index: 10;
+}
+
+.strength-meter:before {
+  left: 70px;
+}
+
+.strength-meter:after {
+  right: 70px;
+}
+
+.strength-meter-fill {
+  background: transparent;
+  height: inherit;
+  position: absolute;
+  width: 0;
+  border-radius: inherit;
+  transition: width 0.5s ease-in-out, background 0.25s;
+}
+
+.strength-meter-fill[data-strength='0'] {
+  background: darkred;
+  width: 20%;
+}
+
+.strength-meter-fill[data-strength='1'] {
+  background: orangered;
+  width: 40%;
+}
+
+.strength-meter-fill[data-strength='2'] {
+  background: orange;
+  width: 60%;
+}
+
+.strength-meter-fill[data-strength='3'] {
+  background: yellowgreen;
+  width: 80%;
+}
+
+.strength-meter-fill[data-strength='4'] {
+  background: green;
+  width: 100%;
+}
+
+/* hack to get ui-grid to stop coloring inputs */
+div.ui-grid-cell .form-group input.form-control.ng-invalid {
+  border : 1px solid #ccc;
+}
+
+div.ui-grid-cell .form-group.has-error input.ng-invalid {
+  border : 1px solid #fc8f8f;
+}

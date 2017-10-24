@@ -13,7 +13,6 @@
 
 
 // module dependencies
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
@@ -38,7 +37,7 @@ exports.getlistAccounts = getlistAccounts;
  * return all items in the general ledger
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'gl' });
 
   const sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
@@ -101,9 +100,9 @@ function list(req, res, next) {
  * list accounts and their solds
  */
 function listAccounts(req, res, next) {
-  const currentDate = new Date();
+  const fiscalYearId = req.query.fiscal_year_id;
 
-  Fiscal.getPeriodCurrent(currentDate)
+  Fiscal.getPeriodByFiscal(fiscalYearId)
   .then((rows) => {
     return getlistAccounts(rows);
   })
@@ -125,13 +124,13 @@ function getlistAccounts(periodsId) {
   let signPlus = '';
 
   if (periodsId) {
-    periodsId.forEach(function (period) {
+    periodsId.forEach((period) => {
       headSql += `, balance${period.number}`;
 
       signPlus = period.number === 0 ? '' : '+';
       getBalance += `${signPlus} balance${period.number} `;
 
-      sqlCase += `, SUM(CASE 
+      sqlCase += `, SUM(CASE
           WHEN period_total.period_id = ${period.id} THEN period_total.debit - period_total.credit ELSE  0
         END) AS balance${period.number}
       `;
@@ -142,7 +141,7 @@ function getlistAccounts(periodsId) {
     `SELECT account.number, account.label, p.account_id AS id, ( ${getBalance}) AS balance ${headSql}
       FROM (
         SELECT period_total.account_id ${sqlCase}
-          FROM period_total GROUP BY period_total.account_id    
+          FROM period_total GROUP BY period_total.account_id
       ) AS p
       JOIN account ON account.id = p.account_id
       ORDER BY account.number ASC`;

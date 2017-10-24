@@ -4,18 +4,17 @@
 
   {{> header }}
 
-  <h3 class="text-center text-capitalize">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
-  <h4 class="text-center"><strong>{{ patient.reference }}</strong> | {{ patient.display_name }} </h4>
-  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}}: {{ patient.debtor_group_name }} </h4>
-  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}}: {{ patient.number }} </h4>
+  <h3 class="text-center text-uppercase"><strong>{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</strong></h3>
+  <h4 class="text-center"><strong>{{ patient.reference }} | {{ patient.display_name }}</strong></h4>
+  <h4 class="text-center"><strong>{{ patient.debtor_group_name }} ({{ patient.number }})</strong></h4>
 
   <section>
     <table class="table table-condensed table-bordered table-report">
       <thead>
-        <tr class="text-capitalize text-center" style="background-color: #ccc;" >
+        <tr class="text-capitalize text-center" style="background-color: #ddd;" >
           <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DOCUMENT_ID" }}</th>
-          <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
+          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DOCUMENT" }}</th>
+          <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
           <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
           <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.AMOUNT" }}</th>
           <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
@@ -27,7 +26,7 @@
             <td>{{date this.trans_date}}</td>
             <td class="text-right">{{this.document}}</td>
             <td class="text-right">{{this.trans_id}}</td>
-            <td>{{this.description}}</td>
+            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{this.description}}</td>
             <td class="text-right {{#if this.credit}}text-danger{{/if}}">
               {{#if this.credit}}
                 ({{currency this.credit ../metadata.enterprise.currency_id}})
@@ -41,7 +40,7 @@
           {{>emptyTable columns=5}}
         {{/each}}
       </tbody>
-      <tfoot style="background-color: #ededed;">
+      <tfoot style="background-color: #ddd;">
         <tr>
           <th colspan="5" class="text-right">{{translate "FORM.LABELS.TOTAL_BILLED" }}</th>
           <th class="text-right">

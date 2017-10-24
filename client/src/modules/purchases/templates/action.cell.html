@@ -1,0 +1,29 @@
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body>
+  <a href uib-dropdown-toggle>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+        <a
+          href
+          data-method="document"
+          ng-click="grid.appScope.getDocument(row.entity.uuid)"
+          data-edit-metadata="{{ row.entity.uuid }}">
+          <i class="fa fa-file-pdf-o"></i> <span translate>FORM.LABELS.DOCUMENT</span>          
+        </a>
+    </li>
+
+    <li>
+        <a
+          href
+          class="text-action"
+          ng-click="grid.appScope.editStatus(row.entity)"
+          data-edit-metadata="{{ row.entity.uuid }}"
+          data-method="edit">
+          <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+        </a>
+    </li>
+  </ul>
+</div>

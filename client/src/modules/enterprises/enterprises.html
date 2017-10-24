@@ -74,7 +74,7 @@
               </bh-account-select>
             </div>
 
-            <div class="panel-footer text-right">
+            <div class="panel-footer text-right" id="submission">
               <bh-loading-button loading-state="EnterpriseForm.$loading">
                 <span translate>FORM.BUTTONS.UPDATE</span>
               </bh-loading-button>
@@ -94,7 +94,7 @@
                 <label class="control-label" translate>
                   FORM.LABELS.PO_BOX
                 </label>
-                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
                 <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
@@ -114,7 +114,7 @@
                 <label class="control-label" translate>
                   FORM.LABELS.PHONE
                 </label>
-                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
@@ -125,10 +125,12 @@
                 location-uuid="EnterpriseCtrl.enterprise.location_id">
               </bh-location-select>
 
+              <p class="text-center text-info">
+                <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
+                  <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
+                </a>
+              </p>
 
-              <button class="btn btn-block btn-default" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)">
-                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.UPDATE</span>
-              </button>
             </div>
           </div>
         </form>

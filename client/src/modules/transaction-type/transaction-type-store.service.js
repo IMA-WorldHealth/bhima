@@ -1,7 +1,6 @@
 angular.module('bhima.services')
-.service('TransactionTypeStoreService', TransactionTypeStoreService);
+  .service('TransactionTypeStoreService', TransactionTypeStoreService);
 
-// dependencies injection
 TransactionTypeStoreService.$inject = ['$q', 'TransactionTypeService', 'Store'];
 
 /**
@@ -12,25 +11,24 @@ function TransactionTypeStoreService($q, TransactionType, Store) {
   var data = new Store();
   var initialLoad = true;
 
-  var request = TransactionType.read()
-    .then(function (result) {
-      data.setData(result);
-      initialLoad = false;
-      return data;
-    });
-
   service.load = transactionTypeStore;
   service.refresh = refresh;
 
   function refresh() {
     TransactionType.read()
-    .then(function (result) {
-      data.setData(result);
-    });
+      .then(function (result) {
+        data.setData(result);
+      });
   }
 
   function transactionTypeStore() {
+    var request = TransactionType.read()
+      .then(function (result) {
+        data.setData(result);
+        initialLoad = false;
+        return data;
+      });
+
     return initialLoad ? request : $q.resolve(data);
   }
-
 }

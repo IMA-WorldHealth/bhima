@@ -4,8 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
-  'uiGridGroupingConstants', 'LanguageService', 'appcache', 'ReceiptModal', 'ModalService',
-  'GridSortingService', '$state', 'FilterService',
+  'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
+  'GridColumnService', 'GridStateService', 'ModalService',
 ];
 
 /**
@@ -15,22 +15,23 @@ CashPaymentRegistryController.$inject = [
  * print and search utilities for the registry.`j
  */
 function CashPaymentRegistryController(
-  Cash, bhConstants, Notify, Session, uiGridConstants, uiGridGroupingConstants, Languages,
-  AppCache, Receipt, Modal, Sorting, $state, Filters
+  Cash, bhConstants, Notify, Session, uiGridConstants, Receipt, Modal, Sorting,
+  $state, Filters, Columns, GridState, Modals
 ) {
   var vm = this;
 
-  // Background color for make the difference between the valid and cancel paiement
+  // background color for make the difference between the valid and canceled payment
   var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
   var regularBackgroundColor = { 'background-color' : 'none' };
+  var cacheKey = 'payment-grid';
 
+  var gridColumns;
+  var columnDefs;
+  var state;
   var filter = new Filters();
-  vm.filter = filter;
 
+  vm.filter = filter;
   // global variables
-  // vm.filters = { lang: Languages.key };
-  vm.filtersFmt = [];
-  vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
 
@@ -41,31 +42,25 @@ function CashPaymentRegistryController(
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.cancelCash = cancelCash;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
+  vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
+  vm.download = Cash.download;
 
-  // grid default options
-  vm.gridOptions = {
-    appScopeProvider  : vm,
-    showColumnFooter  : true,
-    enableColumnMenus : false,
-    flatEntityAccess  : true,
-    fastWatch         : true,
-    enableFiltering   : vm.filterEnabled,
-    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
-  };
-
-  vm.gridOptions.columnDefs = [{
+  columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
     sortingAlgorithm : Sorting.algorithms.sortByReference,
-    cellTemplate : '/partials/cash/payments/templates/reference.html',
+    cellTemplate : '/modules/cash/payments/templates/reference.html',
   }, {
     field : 'date',
     displayName : 'TABLE.COLUMNS.DATE',
     headerCellFilter : 'translate',
     cellFilter : 'date:"mediumDate"',
+    type : 'date',
   }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.CLIENT',
@@ -84,7 +79,7 @@ function CashPaymentRegistryController(
     // @TODO(jniles): This is temporary, as it doesn't take into account USD payments
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    footerCellClass: 'text-right',
   }, {
     field : 'cashbox_label',
     displayName : 'TABLE.COLUMNS.CASHBOX',
@@ -100,6 +95,27 @@ function CashPaymentRegistryController(
     enableSorting : false,
     cellTemplate : 'modules/cash/payments/templates/action.cell.html',
   }];
+
+   // grid default options
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    showColumnFooter  : true,
+    enableColumnMenus : false,
+    flatEntityAccess  : true,
+    fastWatch         : true,
+    columnDefs        : columnDefs,
+    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
+  };
+
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+
+  // saves the grid's current configuration
+  vm.saveGridState = state.saveGridState;
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  }
 
   function handleError(error) {
     vm.hasError = true;
@@ -137,8 +153,9 @@ function CashPaymentRegistryController(
     toggleLoadingIndicator();
 
     var request = Cash.read(null, filters);
-    
-    request.then(function (rows) {
+
+    request
+      .then(function (rows) {
         rows.forEach(function (row) {
           var hasCreditNote = row.reversed;
           row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
@@ -153,7 +170,7 @@ function CashPaymentRegistryController(
       });
   }
 
- // Function for Cancel Cash cancel all Invoice
+  // Function for Cancel Cash cancel all Invoice
   function cancelCash(invoice) {
     Cash.openCancelCashModal(invoice)
       .then(function (success) {
@@ -168,8 +185,42 @@ function CashPaymentRegistryController(
   }
 
   function startup() {
+    if ($state.params.filters.length) {
+      Cash.filters.replaceFiltersFromState($state.params.filters);
+      Cash.cacheFilters();
+    }
+
+    vm.latestViewFilters = Cash.filters.formatView();
+
     load(Cash.filters.formatHTTP(true));
     vm.latestViewFilters = Cash.filters.formatView();
+  }
+
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the cash registry's columns.
+  function openColumnConfigModal() {
+    gridColumns.openConfigurationModal();
+  }
+
+  function remove(entity) {
+    Cash.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Cash.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
+  }
+
+  // this function deletes the cash payment and associated transactions from
+  // the database
+  function deleteCashPaymentWithConfirmation(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   startup();

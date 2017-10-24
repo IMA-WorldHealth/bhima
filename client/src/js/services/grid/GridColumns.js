@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout'
+  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout',
 ];
 
 /**
@@ -20,7 +20,6 @@ GridColumnService.$inject = [
  * @todo - investigate using ui-grid-saveState for caching the column
  */
 function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
-
   /** @const cache alias for this service */
   var serviceKey = '-Columns';
 
@@ -54,26 +53,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
         defaults[field] = column.visible;
       }
     });
-
-    // if there is a cache defined, load it into the current view
-    if (cache && Object.keys(cache).length > 0) {
-      this.setVisibleColumns(cache);
-    }
-  }
-
-  /**
-   * @method cacheColumnVisibility
-   *
-   * @description
-   * Called to cache the column selection whenever the selection is changed.
-   * This is a private method that is only called from `setVisibleColumns()`.
-   *
-   * @param {Object} columns - the column mapping to be stored in local storage.
-   *
-   * @private
-   */
-  function cacheColumnVisibility(columns) {
-    angular.merge(this.cache, columns);
   }
 
   /**
@@ -85,16 +64,8 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    * visibility selection for future page refreshes.
    */
   function Columns(gridOptions, cacheKey) {
-
-    // set up local storage for selected grid columns
-    if (cacheKey) {
-      this.cache = AppCache(cacheKey + serviceKey);
-    }
-
-
     // bind access to the gridOptions
     this.gridOptions = gridOptions;
-
     this.defaults = {};
 
     // bind the exposed grid API
@@ -127,12 +98,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
       }
     });
 
-    // store the selected columns in the cache
-    if (this.cache) {
-      cacheColumnVisibility.call(this, columns);
-    }
-
-
     // redraw the grid
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
@@ -148,33 +113,32 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
   Columns.prototype.hasEnoughColumns = function hasEnoughColumns(columns) {
     var grid = this.gridApi.grid;
     var visibleColumn = 0;
-    var defaultValueColumn = 3;
+    var defaultValueColumn = 1;
     var totalColumn = 0;
 
     angular.forEach(columns, function (visible, field) {
       var column = grid.getColumn(field);
-      
+
       /**
-        *This alternative structure checks if the first element of the grid is visible or not, 
-        *finally to reinitialize the number of column by default
+        *This alternative structure checks if selectionRowHeaderCol or treeBaseRowHeaderCol are visible or not,
+        *finally to incremente the number of column by default
       */
-      if((column.name === "treeBaseRowHeaderCol") && !visible){
-        defaultValueColumn--;
+
+      if ((column.name === 'selectionRowHeaderCol' || column.name === 'treeBaseRowHeaderCol') && visible) {
+        defaultValueColumn++;
       }
 
       if (visible) {
         visibleColumn++;
       }
-      
     });
 
-    // There are 'defaultValueColumn' elements that are initialized to true
-    if(visibleColumn > defaultValueColumn){
-      return true;
-    } else {
-      return false;
-    }
 
+    // There are 'defaultValueColumn' elements that are initialized to true
+    if (visibleColumn > defaultValueColumn) {
+      return true;
+    }
+    return false;
   };
 
 
@@ -229,14 +193,15 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    */
   Columns.prototype.openConfigurationModal = function openConfigurationModal() {
     var self = this;
-    return Modal.open({
-      templateUrl: 'modules/templates/modals/columnConfig.modal.html',
-      controller:  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
+    var modal = Modal.open({
+      templateUrl : 'modules/templates/modals/columnConfig.modal.html',
+      controller :  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
       size : 'lg',
       resolve : {
-        Columns : function columnsProvider() { return self; }
-      }
+        Columns : function columnsProvider() { return self; },
+      },
     });
+    return modal.result;
   };
 
   return Columns;

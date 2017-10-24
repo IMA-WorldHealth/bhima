@@ -1,7 +1,7 @@
 <div ng-form="{{ $ctrl.name }}" bh-account-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : AccountForm.$$parent.$submitted && AccountForm.account_id.$invalid }">
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && AccountForm.account_id.$invalid }">
 
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
@@ -26,7 +26,8 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="AccountForm.account_id.$error" ng-show="AccountForm.$$parent.$submitted">
+
+    <div class="help-block" ng-messages="AccountForm.account_id.$error" ng-show="$ctrl.validationTrigger &&  AccountForm.account_id.$invalid">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

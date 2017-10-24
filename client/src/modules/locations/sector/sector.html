@@ -85,7 +85,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading" translate> SECTOR.REGISTER </div>
           <div class="panel-body">
-            <form name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+            <form name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
@@ -145,7 +145,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading" translate> SECTOR.EDIT </div>
           <div class="panel-body">
-            <form name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+            <form name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select

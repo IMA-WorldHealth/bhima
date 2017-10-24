@@ -68,7 +68,7 @@ function renderPDF(context, template, options = {}) {
     .then((htmlStringResult) => {
       // pick options relevent to rendering PDFs
       const pdfOptions = _.pick(options, [
-        'pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom',
+        'pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'footerRight', 'footerFontSize',
       ]);
 
       // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility

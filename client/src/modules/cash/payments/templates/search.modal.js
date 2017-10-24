@@ -1,27 +1,42 @@
 angular.module('bhima.controllers')
   .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
-// dependencies injections
 SearchCashPaymentModalController.$inject = [
-  'CashboxService', 'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util',
+  'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService', 'util', 'CashService', 'CurrencyService',
 ];
 
 /**
  * Search Cash Payment controller
+ *
+ * @description
+ * This controller powers the Invoice Search modal.  Invoices are passed in from the registry as
+ * POJO and are attached to the view.  They are modified here and returned to the parent controller
+ * as a POJO.
  */
-function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, Store, Periods, util) {
+function SearchCashPaymentModalController(Notify, Instance, filters, Store, Periods, util, Cash, Currencies) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
+  // @TODO ideally these should be passed in when the modal is initialised
+  //       these are known when the filter service is defined
+  var searchQueryOptions = [
+    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed', 'debtor_group_uuid',
+  ];
+
   vm.filters = filters;
 
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // @TODO ideally these should be passed in when the modal is initialised
-  //       these are known when the filter service is defined
-  var searchQueryOptions = [
-    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed',
-  ];
+  var lastViewFilters = Cash.filters.formatView().customFilters;
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});  
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -33,18 +48,46 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
 
   vm.cancel = Instance.close;
 
-  // cashboxes
-  Cashboxes.read()
-    .then(function (list) {
-      vm.cashboxes = list;
+  // Set up page elements data (debtor select data)
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    displayValues.debtor_group_uuid = debtorGroup.name;
+    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
+  }
+
+  // load all the available currencies
+  Currencies.read()
+    .then(function (currencies) {
+      // cache a label for faster view rendering
+      currencies.forEach(function (currency) {
+        currency.label = Currencies.format(currency.id);
+      });
+
+      vm.currencies = currencies;
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError);   
+
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
+    displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
   };
 
+  // custom filter cashbox_id - assign the value to the searchQueries object
+  vm.onSelectCashbox = function onSelectCashbox(cashbox) {
+    displayValues.cashbox_id = cashbox.hrlabel;
+    vm.searchQueries.cashbox_id = cashbox.id;
+  };
+
+  vm.setCurrency = function setCurrency(currencyId) {
+    vm.currencies.forEach(function (currency) {
+      if (currency.id === currencyId) {
+        displayValues.currency_id = currency.label;
+      }
+    });
+  };
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -74,8 +117,10 @@ function SearchCashPaymentModalController(Cashboxes, Notify, Instance, filters, 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
-      }
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
     var loggedChanges = changes.getAll();

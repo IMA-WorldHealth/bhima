@@ -3,10 +3,12 @@ angular.module('bhima.controllers')
 .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
-  'PriceListService', '$uibModal', 'InventoryService', 'ModalService', 'util', 'NotifyService'
+  'PriceListService', '$uibModal', 'InventoryService',
+  'ModalService', 'util', 'NotifyService', 'appcache',
 ];
 
-function PriceListController(PriceListService, $uibModal, Inventory, ModalService, util, Notify) {
+function PriceListController(PriceListService, $uibModal, Inventory,
+   ModalService, util, Notify, AppCache) {
   var vm = this;
   vm.view = 'default';
 
@@ -22,6 +24,9 @@ function PriceListController(PriceListService, $uibModal, Inventory, ModalServic
 
   vm.length250 = util.length250;
   vm.maxLength = util.maxTextLength;
+
+  // Here we create a cache, all items in the list will be in it
+  var cache = new AppCache('selectedItems');
 
   // fired on startup
   function startup() {
@@ -140,6 +145,10 @@ function PriceListController(PriceListService, $uibModal, Inventory, ModalServic
 
   // Add pricelist Item in a  modal
   function addItem() {
+
+    // let stock items int our cache, we will use it in the modal
+    cache.items = vm.pricelistItems;
+
     return $uibModal.open({
       templateUrl : 'modules/prices/modal.html',
       controller : 'PriceListModalController as ModalCtrl',

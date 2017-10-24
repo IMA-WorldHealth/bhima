@@ -2,16 +2,20 @@
  * @overview identifiers
  *
  * @description
- * This file contains the identifier mapping for each entity for which bhima
+ * This file contains the identifier mapping for each entity for which BHIMA
  * generates a receipt.  It provides an identifier that is templated into the
  * human readable ID on HTTP requests to provide more context than the simple
  * {project_id}.{increment} schema previously used.
+ *
+ * documentPath - server side route for generating the entities document
+ * redirectPath - direct to client side entity representation
  */
 
 module.exports = {
   VOUCHER : {
     key   : 'VO',
     table : 'voucher',
+    documentPath : '/reports/finance/vouchers/',
   },
   EMPLOYEE : {
     key   : 'EM',
@@ -20,15 +24,18 @@ module.exports = {
   INVOICE : {
     key   : 'IV',
     table : 'invoice',
+    documentPath : '/reports/finance/invoices/',
   },
   CASH_PAYMENT : {
     key   : 'CP',
     table : 'cash',
+    documentPath : '/reports/finance/cash/',
   },
   PATIENT : {
     key          : 'PA',
     table        : 'patient',
-    redirectPath : '/#/patients/?',
+    documentPath : '/reports/finance/financialPatient/',
+    redirectPath : '/#!/patients/?',
   },
   DOCUMENT : {
     key : 'DO',
@@ -41,6 +48,8 @@ module.exports = {
   },
   STOCK_MOVEMENT : {
     key : 'SM',
+    table : 'stock_movement',
+    redirectPath : '/#/stock/movements',
   },
   STOCK_LOT : {
     key : 'SL',

@@ -6,30 +6,26 @@ PurchaseOrderStatusModalController.$inject = [
 ];
 
 function PurchaseOrderStatusModalController(Instance, Notify, PurchaseOrder, Data) {
-    var vm = this;
+  var vm = this;
 
-    // global variables 
-    vm.purchase = Data;
+  // global variables 
+  vm.purchase = Data;
 
-    vm.status = vm.purchase.is_confirmed ? 'confirmed' : 'not_confirmed';
+  // expose to view 
+  vm.close = Instance.close;
+  vm.submit = submit;
 
-    // expose to view 
-    vm.close = Instance.close;
-    vm.submit = submit;
+  vm.isStored = vm.purchase.status_id === 3 || vm.purchase.status_id === 4;
 
-    // submit the choice 
-    function submit(status) {
-        var confirmed = status === 'confirmed' ? 1 : 0;
-        var data = { is_confirmed: confirmed , is_cancelled: vm.purchase.is_cancelled };
-        updateOrder(vm.purchase.uuid, data);
-    }
+  // submit the choice 
+  function submit() {
+    var data = { status_id : vm.status };
+    
+    PurchaseOrder.update(vm.purchase.uuid, data)
+    .then(function () {
+        Instance.close();
+    })
+    .catch(Notify.handleError);
+  }
 
-    // update the purchase order 
-    function updateOrder(uuid, params) {
-        PurchaseOrder.update(uuid, params)
-        .then(function () {
-            Instance.close();
-        })
-        .catch(Notify.handleError);
-    }
 }

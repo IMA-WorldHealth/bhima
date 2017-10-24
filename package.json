@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -8,6 +8,7 @@
     "dev": "NODE_ENV=development ./node_modules/.bin/gulp build && cd bin && NODE_ENV=development node server/app.js",
     "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
+    "test:reports": "./sh/report-tests.sh",
     "test:ends": "./sh/test-ends.sh",
     "test:lint": "./sh/lint.sh",
     "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
@@ -17,7 +18,9 @@
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
     "watch": "./node_modules/.bin/gulp watch-client",
-    "release": "./node_modules/.bin/standard-version"
+    "release": "./node_modules/.bin/standard-version",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -33,55 +36,65 @@
   "author": "IMA World Health",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/IMA-WorldHealth/bhima/issues"
+    "url": "https://github.com/IMA-WorldHealth/bhima-2.X/issues"
   },
+  "maintainers": [
+    "jniles",
+    "sfount",
+    "lomamech",
+    "mbayopanda",
+    "dedrickenc",
+    "jeremielodi"
+  ],
   "dependencies": {
     "accounting-js": "^1.1.1",
     "body-parser": "^1.15.0",
     "bower-npm-resolver": "^0.7.0",
-    "compression": "^1.5.2",
+    "compression": "^1.7.0",
     "connect-redis": "^3.0.2",
     "dot": "^1.0.3",
     "dotenv": "^4.0.0",
     "express": "^4.13.3",
     "express-handlebars": "^3.0.0",
-    "express-session": "^1.14.1",
-    "gulp-merge-json": "^1.0.0",
-    "helmet": "^3.1.0",
-    "ioredis": "^3.0.0",
+    "express-session": "^1.15.4",
+    "gulp-merge-json": "^1.1.0",
+    "helmet": "^3.8.0",
+    "ioredis": "^3.1.2",
     "json-2-csv": "^2.1.0",
+    "json2xls": "^0.1.2",
     "lodash": "^4.16.2",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
     "morgan": "^1.6.1",
     "multer": "^1.1.0",
-    "mysql": "^2.9.0",
+    "mysql": "^2.14.0",
     "node-uuid": "^1.4.7",
     "q": "~1.5.0",
+    "snyk": "^1.41.1",
     "stream-to-promise": "^2.2.0",
     "use-strict": "^1.0.1",
     "winston": "^2.1.1",
     "wkhtmltopdf": "^0.3.3"
   },
   "devDependencies": {
-    "bower": "^1.7.7",
-    "chai": "^3.4.0",
-    "chai-as-promised": "^6.0.0",
-    "chai-datetime": "^1.4.0",
+    "bower": "^1.8.2",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.0",
+    "chai-datetime": "^1.5.0",
     "chai-http": "^1.0.0",
     "chai-spies": "^0.7.1",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^3.15.0",
-    "eslint-config-airbnb-base": "^11.1.0",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-import": "^2.7.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssnano": "^2.1.1",
     "gulp-if": "^2.0.0",
     "gulp-iife": "^0.3.0",
-    "gulp-less": "^3.0.3",
-    "gulp-rev": "^7.1.2",
+    "gulp-less": "^3.3.2",
+    "gulp-rev": "^8.0.0",
     "gulp-rev-replace": "^0.4.3",
     "gulp-template": "^4.0.0",
     "gulp-uglify": "^3.0.0",
@@ -89,15 +102,15 @@
     "karma": "^1.1.2",
     "karma-chai": "^0.1.0",
     "karma-chai-spies": "^0.1.4",
-    "karma-chrome-launcher": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.2.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
-    "mocha": "^3.0.0",
+    "mocha": "^4.0.0",
     "mochawesome-screenshots": "^1.4.1",
     "protractor": "^5.0.0",
     "pump": "^1.0.1",
     "rimraf": "^2.5.4",
-    "standard-version": "^4.0.0"
+    "standard-version": "^4.2.0"
   },
   "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
   "directories": {
@@ -107,5 +120,6 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "snyk": true
 }

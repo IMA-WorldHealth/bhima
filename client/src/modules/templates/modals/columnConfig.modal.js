@@ -49,7 +49,7 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
 
   function checkVisible(){
     var columnNumber = Columns.hasEnoughColumns(vm.map);
-    vm.hasTooFewColumns = !columnNumber ? true : false; 
+    vm.hasTooFewColumns = !columnNumber ? true : false;
 
   }
 

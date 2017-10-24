@@ -95,7 +95,7 @@
       <!-- the balance only makes sense to show if the debtor is paying an invoice -->
       {{#unless payment.is_caution}}
         <tr>
-          <th colspan="2">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}}</th>
+          <th colspan="2">{{translate "FORM.LABELS.DEBTOR_BALANCE_REMAINING"}}</th>
           <th class="text-right">{{currency debtorTotalBalance enterprise.currency_id}}</th>
         </tr>
       {{/unless }}

@@ -33,11 +33,13 @@ describe('(/inventory) The Inventory HTTP API', () => {
   };
 
   let inventoryUnit = {
-    text : '[Test] Comprimés'
+    text : '[Test] Comprimés',
+    abbr : 'TC'
   };
 
   let updateUnit = {
-    text : '[Test] Gellule'
+    text : '[Test] Gellule',
+    abbr : 'TG'
   };
 
   // ========================== inventory groups ==============================

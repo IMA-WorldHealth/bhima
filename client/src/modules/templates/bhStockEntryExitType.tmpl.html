@@ -1,0 +1,26 @@
+<div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="type in $ctrl.entryExitTypeList | filter:{isEntry : $ctrl.isEntry}">
+    <button 
+        id="entry-exit-type-{{type.label}}" 
+        class="btn-block panel panel-default segment" 
+        type="button" 
+        ng-class="{'bg-ima-dark-blue': type.label === $ctrl.selectedEntryExitType.label}"
+        ng-click="$ctrl.selectEntryExitType(type)">
+            <div class="panel-body text-center text-ellipsis">
+                <div class="ui lg ima-blue statistic">
+                    <div class="value" translate>
+                        {{type.labelKey}}
+                    </div>
+                    <div>
+                        <div class="uilabel">
+                            <span ng-hide="($ctrl.reference || $ctrl.displayName) && type.label === $ctrl.selectedEntryExitType.label" translate>
+                                {{type.descriptionKey}}
+                            </span>
+                            <span ng-show="($ctrl.reference || $ctrl.displayName) && type.label === $ctrl.selectedEntryExitType.label">
+                                {{$ctrl.display()}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </button>
+</div>

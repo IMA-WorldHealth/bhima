@@ -1,0 +1,113 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.STOCK.TITLE</h3>
+      <p class="text-info" translate>REPORT.STOCK.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+
+        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+
+          <!-- choose date until  -->
+          <bh-date-editor
+            label="FORM.LABELS.UNTIL_DATE"
+            date-value="ReportConfigCtrl.dateTo">
+          </bh-date-editor>
+
+          <!-- delay -->
+          <div class="form-group col-xs-12 col-sm-6"
+            ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.delay.$invalid }">
+
+            <label class="control-label" translate>FORM.LABELS.DELAY</label>
+            <div class="input-group">
+              <input class="form-control" type="number" bh-integer name="delay" ng-model="ReportConfigCtrl.delay">
+              <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
+            </div>
+
+            <div class="help-block" ng-messages="ConfigForm.delay.$error" ng-show="ConfigForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- purchase interval -->
+          <div class="form-group col-xs-12 col-sm-6"
+            ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.purchase_interval.$invalid }">
+
+            <label class="control-label" translate>FORM.LABELS.PURCHASE_INTERVAL</label>
+            <div class="input-group">
+              <input class="form-control" type="number" bh-integer name="purchase_interval" ng-model="ReportConfigCtrl.purchaseInterval">
+              <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
+            </div>
+
+            <div class="help-block" ng-messages="ConfigForm.purchase_interval.$error" ng-show="ConfigForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="clearfix"></div>
+
+          <!-- depot options -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneDepot">
+              <span translate>REPORT.STOCK.ONE_DEPOT</span>
+            </label>
+          </div>
+
+          <!-- select depot -->
+          <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
+            <bh-depot-select
+              depot-uuid="ReportConfigCtrl.depot.uuid"
+              on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+              required="true"
+              validate-trigger="ConfigForm.$submitted">
+              <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
+            </bh-depot-select>
+          </div>
+
+          <!-- inventory options -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneInventory">
+              <span translate>REPORT.STOCK.ONE_INVENTORY</span>
+            </label>
+          </div>
+
+          <!-- select inventory -->
+          <div ng-if="!!ReportConfigCtrl.chooseOneInventory">
+            <!-- select inventory -->
+            <bh-inventory-select
+              inventory-uuid="ReportConfigCtrl.inventory.uuid"
+              on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
+              required="true"
+              validate-trigger="ConfigForm.$submitted">
+              <bh-clear on-clear="ReportConfigCtrl.clear('inventory')"></bh-clear>
+            </bh-inventory-select>
+          </div>
+
+          <!-- preview -->
+          <bh-loading-button loading-state="ConfigForm.$loading">
+            <span translate>REPORT.UTIL.PREVIEW</span>
+          </bh-loading-button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

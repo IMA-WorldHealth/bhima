@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -27,7 +27,7 @@ describe('(/accounts) Accounts', function () {
 
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
-  var balanceAccountId = 3631;
+  var balanceAccountId = 3627;
 
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
@@ -104,17 +104,17 @@ describe('(/accounts) Accounts', function () {
   });
 
   it('GET /accounts/:id/balance returns an object with zero as balance, debit and credit', function () {
-   return agent.get(`/accounts/${FETCHABLE_ACCOUNT_ID}/balance`)
-    .then(function (res){
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
-      expect(res.body).to.not.be.empty;
-      expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
-      expect(res.body.debit).to.equal(0);
-      expect(res.body.credit).to.equal(0);
-      expect(res.body.balance).to.equal(0);
-    })
-    .catch(helpers.handler);
+    return agent.get(`/accounts/${FETCHABLE_ACCOUNT_ID}/balance`)
+      .then(function (res){
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
+        expect(res.body.debit).to.equal(0);
+        expect(res.body.credit).to.equal(0);
+        expect(res.body.balance).to.equal(0);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /accounts/:id/balance?journal=1 returns the balance of a provided account_id, scans the journal also', function () {
@@ -124,9 +124,9 @@ describe('(/accounts) Accounts', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
-        expect(res.body.debit).to.equal(125);
+        expect(res.body.debit).to.equal(600);
         expect(res.body.credit).to.equal(0);
-        expect(res.body.balance).to.equal(25);
+        expect(res.body.balance).to.equal(100);
       })
       .catch(helpers.handler);
   });
@@ -168,7 +168,7 @@ describe('(/accounts) Accounts', function () {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
-  }); 
+  });
 
   it('DELETE /accounts/:id Deletes the newly added account', function () {
     return agent.delete('/accounts/'+ newAccount.id)
@@ -181,7 +181,7 @@ describe('(/accounts) Accounts', function () {
   it('DELETE /accounts/:id Imprevent the deletion Of Account Parent Who have Children ', function () {
     return agent.delete('/accounts/'+ FETCHABLE_ACCOUNT_ID)
       .then(function (res) {
-        expect(res).to.have.status(400);        
+        expect(res).to.have.status(400);
        })
       .catch(helpers.handler);
   });

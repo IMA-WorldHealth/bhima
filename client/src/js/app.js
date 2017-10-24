@@ -1,12 +1,12 @@
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
-  'bhima.components', 'bhima.routes', 'ui.bootstrap',
+  'bhima.components', 'bhima.routes', 'bhima.constants', 'ui.bootstrap',
   'pascalprecht.translate', 'ngStorage', 'chart.js',
-  'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
+  'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.saveState',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
-  'angularMoment', 'ngMessages',
+  'ui.grid.expandable', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
   'ui.router.state.events',
 ]);
@@ -36,7 +36,6 @@ function localeConfig(tmhDynamicLocaleProvider) {
 
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
-
   var loginStateRegexp = /#!\/login$/;
   var rootStateRegexp = /#!\/$|\/$|#!$/;
 
@@ -60,11 +59,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // to the login page.
     } else if (!isLoggedIn && !isLoginState) {
       event.preventDefault();
-
-      if (!isRootState) {
-        Notify.warn('AUTH.UNAUTHENTICATED');
-      }
-
       $state.go('login');
     }
 
@@ -93,8 +87,10 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
       next.name.indexOf('403') !== -1
     );
 
-    // pass through to error state
-    if (isErrorState) {
+    var isSettingsState = next.name.indexOf('settings') !== -1;
+
+    // pass through to error state or settings state
+    if (isErrorState || isSettingsState) {
       return;
     }
 
@@ -132,119 +128,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
 function localStorageConfig($localStorageProvider) {
   var PREFIX = 'bhima-';
   $localStorageProvider.setKeyPrefix(PREFIX);
-}
-
-/**
- * @todo some of these constants are system standards, others should be
- * populated according to the enterprise configuration
- */
-function constantConfig() {
-  var UTIL_BAR_HEIGHT = '106px';
-  var JOURNAL_UTIL_HEIGHT = '150px';
-
-  return {
-    accounts : {
-      ROOT  : 0,
-      TITLE : 4,
-    },
-    purchase : {
-      GRID_HEIGHT : 200,
-      TITLE       : 4,
-    },
-    settings : {
-      CONTACT_EMAIL : 'developers@imaworldhealth.org',
-    },
-    dates : {
-      minDOB : new Date('1900-01-01'),
-      format : 'dd/MM/yyyy',
-      formatDB : 'YYYY-MM-DD',
-    },
-    yearOptions : {
-      format         : 'yyyy',
-      datepickerMode : 'year',
-      minMode        : 'year',
-    },
-    dayOptions : {
-      format         : 'dd/MM/yyyy',
-      datepickerMode : 'day',
-      minMode        : 'day',
-    },
-    lengths : {
-      maxTextLength   : 1000,
-      minDecimalValue : 0.0001,
-    },
-    grid : {
-      ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_ERROR_FLAG     : '_error',
-      FILTER_BAR_HEIGHT  : { height: 'calc(100vh - 105px)' },
-    },
-    transactions : {
-      ROW_EDIT_FLAG      : '_edit',
-      ROW_HIGHLIGHT_FLAG : '_highlight',
-      ROW_INVALID_FLAG   : '_invalid',
-    },
-    barcodes : {
-      LENGTH : 10,
-    },
-    transactionType : {
-      GENERIC_INCOME     : 1,
-      CASH_PAYMENT       : 2,
-      CONVENTION_PAYMENT : 3,
-      SUPPORT_INCOME     : 4,
-      TRANSFER           : 5,
-      GENERIC_EXPENSE    : 6,
-      SALARY_PAYMENT     : 7,
-      CASH_RETURN        : 8,
-      PURCHASES          : 9,
-      CREDIT_NOTE        : 10,
-      INVOICING          : 11,
-      INCOME             : 'income',
-      EXPENSE            : 'expense',
-      OTHER              : 'other',
-    },
-    flux : {
-      FROM_PURCHASE    : 1,
-      FROM_OTHER_DEPOT : 2,
-      FROM_ADJUSTMENT  : 3,
-      FROM_PATIENT     : 4,
-      FROM_SERVICE     : 5,
-      FROM_DONATION    : 6,
-      FROM_LOSS        : 7,
-      TO_OTHER_DEPOT   : 8,
-      TO_PATIENT       : 9,
-      TO_SERVICE       : 10,
-      TO_LOSS          : 11,
-      TO_ADJUSTMENT    : 12,
-      FROM_INTEGRATION : 13,
-    },
-    stockStatus : {
-      IS_SOLD_OUT          : 'sold_out',
-      IS_IN_STOCK          : 'in_stock',
-      HAS_SECURITY_WARNING : 'security_reached',
-      HAS_MINIMUM_WARNING  : 'minimum_reached',
-      HAS_OVERAGE_WARNING  : 'over_maximum',
-    },
-    reports : {
-      AGED_DEBTOR    : 'AGED_DEBTOR',
-      CASHFLOW       : 'CASHFLOW',
-      INCOME_EXPENSE : 'INCOME_EXPENSE',
-    },
-    precision : {
-      MAX_DECIMAL_PRECISION : 4,
-    },
-    utilBar : {
-      height               : UTIL_BAR_HEIGHT,
-      expandedHeightStyle  : { height: 'calc(100vh - '.concat(UTIL_BAR_HEIGHT, ')') },
-      journalHeightStyle   : { height: 'calc(100vh - '.concat(JOURNAL_UTIL_HEIGHT, ')') },
-      collapsedHeightStyle : {},
-    },
-    identifiers : {
-      PATIENT : {
-        key   : 'PA',
-        table : 'patient',
-      },
-    },
-  };
 }
 
 /**
@@ -293,16 +176,14 @@ function compileConfig($compileProvider) {
 /**
  * Configure global properties about ui-select
  */
-function uiSelectConfig(uiSelectConfig) {
-  uiSelectConfig.theme = 'bootstrap';
+function uiSelectConfig(config) {
+  config.theme = 'bootstrap';
 }
 
 // TODO - remove this
 function qConfig($qProvider) {
   $qProvider.errorOnUnhandledRejections(false);
 }
-
-bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
 bhima.config(['$urlMatcherFactoryProvider', bhimaConfig]);
@@ -316,4 +197,6 @@ bhima.config(['$compileProvider', compileConfig]);
 bhima.config(['$qProvider', qConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);
+bhima.run([
+  '$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig,
+]);

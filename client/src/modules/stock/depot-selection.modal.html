@@ -1,0 +1,72 @@
+<div class="modal-header" data-depot-selection-modal>
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.DEPOTS</li>
+    <li class="title" translate>DEPOT.MODAL.SELECTION</li>
+  </ol>
+</div>
+
+<div class="modal-body">
+
+  <!-- link to depots page if depots not found -->
+  <p class="text-info">
+    <i class="fa fa-question-circle-o"></i>
+    <span translate>DEPOT.MODAL.NO_DEPOTS</span>
+
+    <a href ui-sref="depots.create">
+      <i class="fa fa-link"></i> <span translate>DEPOT.ADD_DEPOT</span>
+    </a>
+  </p>
+
+  <div uib-alert class="alert-warning" ng-if="$ctrl.hasNoDefaultDepot">
+    <p>
+      <strong> <i class="fa fa-warning"></i> <span translate>DEPOT.MODAL.NO_DEFAULT_DEPOT</span></strong>
+      <br />
+      <span translate>DEPOT.MODAL.SELECTION_EXPLANATION</span>
+      <strong><a ui-sref="depots.create"><b><span translate>DEPOT.ADD_DEPOT</span></b></a></strong>.
+    </p>
+  </div>
+
+
+  <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
+
+  <!-- list of depots -->
+  <ul class="list-group">
+    <li
+      class="list-group-item"
+      ng-repeat="depot in $ctrl.depots track by depot.uuid"
+      ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
+      ng-click="$ctrl.selectDepot(depot.uuid)"
+      style="cursor:pointer;">
+
+      <span id="depot-{{ depot.uuid }}">
+        <i class="fa fa-inbox"></i> {{ depot.text }}
+      </span>
+
+      <span ng-show="$ctrl.depot.uuid === depot.uuid" class="badge">
+        <i class="fa fa-check"></i>
+      </span>
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button
+    data-method="cancel"
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.cancel()"
+    ng-disabled="!$ctrl.hasSelectedDepot()"
+    translate>
+    FORM.BUTTONS.CANCEL
+  </button>
+
+  <button
+    type="button"
+    data-method="submit"
+    class="btn btn-primary"
+    ng-disabled="!$ctrl.hasSelectedDepot()"
+    ng-click="$ctrl.submit()"
+    translate>
+    FORM.BUTTONS.SUBMIT
+  </button>
+</div>

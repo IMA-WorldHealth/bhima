@@ -17,7 +17,6 @@
             <form
               name="CreateForm"
               bh-submit="CashCtrl.submit(CreateForm)"
-              bh-form-defaults
               novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
@@ -90,7 +89,6 @@
               <form
                 name="UpdateForm"
                 bh-submit="CashCtrl.submit(UpdateForm)"
-                bh-form-defaults
                 novalidate>
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                   <label class="control-label">

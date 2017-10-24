@@ -4,6 +4,9 @@
 .idea/*
 *~
 
+# ignore lock file until it works with npm < version 5
+package-lock.json
+
 # ignore all compressed files
 *.gz, *.xz, *.zip
 
@@ -29,4 +32,11 @@ test/artifacts/
 
 # ignore visual studio files
 .vscode/*
+nbproject/*
+
+# ignore netbeans files
+nbproject/
+
+# ignore istanbul generated folders
+.nyc_output/
 

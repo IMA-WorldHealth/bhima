@@ -21,6 +21,9 @@
  * @copyright IMA World Health 2016
  */
 
+// json2xls handles an error in strict mode so we require it before
+const json2xls = require('json2xls');
+
 require('use-strict');
 
 const http = require('http');
@@ -29,6 +32,11 @@ const winston = require('winston');
 const dotEnv = require('dotenv');
 
 const app = express();
+/*
+  * json2xls middelware , help to send xlsx file as http response
+  *example : res.xls('data.xlsx', jsonArray);
+*/
+app.use(json2xls.middleware);
 
 /**
  * @function configureEnvironmentVariables

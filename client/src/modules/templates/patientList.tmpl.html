@@ -1,5 +1,6 @@
 <a href>
-  <span style="display:inline-block; min-width:64px;">[{{ match.model.reference }}]</span>
+<i class="fa fa-circle" style="color: {{ match.model.color }}"></i>
+  <span style="display:inline-block; min-width:64px;">[{{ match.model.reference }}] </span>
   <!-- <span>{{ match.model.label }}</span> -->
   <span ng-bind-html="match.model.display_name | uibTypeaheadHighlight:query"></span>
 </a>

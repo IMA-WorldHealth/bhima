@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <form name="ClosingAccountForm" ng-submit="FiscalCBCtrl.submit(ClosingAccountForm)" novalidate>
+
+      <div class="panel panel-primary">
+
+        <!-- heading  -->
+        <div class="panel-heading" style="display: flex; justify-content: space-between;">
+          <span>
+            <span translate>FISCAL.CLOSING_BALANCE</span> <strong>{{ FiscalCBCtrl.fiscal.label }}</strong>
+          </span>
+
+          <span class="text-action" ng-click="FiscalCBCtrl.toggleAccountFilter()">
+            <span translate>FORM.BUTTONS.SEARCH</span> <i class="fa fa-search"></i>
+          </span>
+        </div>
+
+        <!-- body  -->
+        <section>
+          <div
+            id="account-balance-grid"
+            style="height : 600px;"
+            ui-grid="FiscalCBCtrl.gridOptions">
+          </div>
+        </section>
+      </div>
+    </form>
+  </div>
+</div>

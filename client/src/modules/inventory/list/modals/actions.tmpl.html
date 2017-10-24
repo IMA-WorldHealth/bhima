@@ -1,4 +1,4 @@
-<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" bh-form-defaults novalidate>
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>FORM.LABELS.INVENTORY</li>
@@ -47,6 +47,13 @@
       <label>
         <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
         <span translate>FORM.LABELS.CONSUMABLE</span>
+      </label>
+    </div>
+
+    <div class="checkbox" ng-if="$ctrl.isUpdateState">
+      <label>
+        <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.locked">
+        <span translate>FORM.LABELS.LOCKED</span>
       </label>
     </div>
 

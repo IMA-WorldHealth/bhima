@@ -21,10 +21,12 @@ const Topic = require('../../../lib/topic');
 // expose submodules
 exports.permissions = require('./permissions');
 exports.projects = require('./projects');
+exports.depots = require('./depots');
 
 // expose API routes
 exports.list = list;
 exports.detail = detail;
+exports.exists = exists;
 exports.create = create;
 exports.update = update;
 exports.delete = remove;
@@ -48,12 +50,12 @@ function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated 
+      user.active, user.last_login AS lastLogin, user.deactivated
     FROM user WHERE user.id = ?;
   `;
 
   return db.exec(sql, [id])
-    .then(function (rows) {
+    .then((rows) => {
       if (!rows.length) {
         throw new NotFound(`Could not find an user with id ${id}`);
       }
@@ -94,7 +96,7 @@ function list(req, res, next) {
       user.username, user.deactivated FROM user;`;
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -117,8 +119,19 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupUser(req.params.id)
-  .then(function (data) {
+  .then((data) => {
     res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+}
+
+function exists(req, res, next) {
+  const sql='SELECT count(id) as nbr FROM user WHERE username=?';
+
+  db.one (sql,req.params.username)
+  .then((data) => {
+    res.send(data.nbr !== 0);
   })
   .catch(next)
   .done();
@@ -149,7 +162,7 @@ function create(req, res, next) {
   `;
 
   db.exec(sql, [data.username, data.password, data.email, data.display_name])
-  .then(function (row) {
+  .then((row) => {
     // retain the insert id
     userId = row.insertId;
 
@@ -159,7 +172,7 @@ function create(req, res, next) {
 
     return db.exec(sql, [projects]);
   })
-  .then(function () {
+  .then(() => {
     Topic.publish(Topic.channels.ADMIN, {
       event : Topic.events.CREATE,
       entity : Topic.entities.USER,
@@ -233,7 +246,7 @@ function update(req, res, next) {
 
   transaction.execute()
   .then(() => lookupUser(req.params.id))
-  .then(function (result) {
+  .then((result) => {
     Topic.publish(Topic.channels.ADMIN, {
       event : Topic.events.UPDATE,
       entity : Topic.entities.USER,
@@ -263,7 +276,7 @@ function password(req, res, next) {
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(() => lookupUser(req.params.id))
-  .then(function (data) {
+  .then((data) => {
     res.status(200).json(data);
   })
   .catch(next)
@@ -283,7 +296,7 @@ function remove(req, res, next) {
   const sql = `DELETE FROM user WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
-  .then(function (row) {
+  .then((row) => {
     if (row.affectedRows === 0) {
       throw new NotFound(`Could not find a user with id ${req.params.id}`);
     }

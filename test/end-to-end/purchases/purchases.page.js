@@ -4,6 +4,7 @@
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/gridTestUtils.spec.js');
+const addItem = require('../shared/components/bhAddItem');
 
 function PurchaseOrderPage() {
   const page = this;
@@ -24,8 +25,7 @@ function PurchaseOrderPage() {
 
   // adds n rows to the grid
   page.addRows = function addRows(n) {
-    FU.input('PurchaseCtrl.itemIncrement', n);
-    btns.add.click();
+    addItem.set(n);
   };
 
   // returns n rows

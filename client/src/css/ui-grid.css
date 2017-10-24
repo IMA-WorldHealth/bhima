@@ -48,9 +48,21 @@
   height : calc(100vh - 65px);
 }
 
+/* this is full height minus the header crumb and filters*/
+.grid-full-height-with-filters {
+  width:  100%;
+  height : calc(100vh - 106px);
+}
+
+
 .grid-journal {
   width : 100%;
   height : calc(100vh - 108px);
+}
+
+.grid-journal-alert {
+  width : 100%;
+  height : calc(100vh - 150px);
 }
 
 .grid-util-journal {
@@ -82,3 +94,4 @@
   color: white;
   background-color: blue;
 }
+

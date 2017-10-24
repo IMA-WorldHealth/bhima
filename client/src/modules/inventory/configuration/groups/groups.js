@@ -18,12 +18,6 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   vm.created = false;
   vm.updated = false;
 
-  /** paths in the headercrumb */
-  vm.bcPaths = [
-    { label : 'TREE.INVENTORY' },
-    { label : 'TREE.INVENTORY_GROUP' }
-  ];
-
   // expose to the view
   vm.editInventoryGroup = editInventoryGroup;
   vm.addInventoryGroup = addInventoryGroup;
@@ -84,10 +78,10 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
     // initializes inventory group list with associate accounts
     Account.read()
-    .then(handleAccountList)
-    .then(readInventoryGroup)
-    .then(handleGroupList)
-    .catch(Notify.handleError);
+      .then(handleAccountList)
+      .then(readInventoryGroup)
+      .then(handleGroupList)
+      .catch(Notify.handleError);
 
     // handle the list of accounts
     function handleAccountList(list) {

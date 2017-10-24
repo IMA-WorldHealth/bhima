@@ -32,7 +32,7 @@ function list(req, res, next) {
   `;
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -53,7 +53,7 @@ function detail(req, res, next) {
   `;
 
   db.exec(sql, [db.bid(req.params.uuid)])
-  .then(function (rows) {
+  .then((rows) => {
     if (!rows.length) {
       throw new NotFound(
         `Could not find creditor with uuid ${req.params.uuid}.`

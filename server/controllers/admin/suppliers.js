@@ -47,7 +47,7 @@ function list(req, res, next) {
   }
 
   db.exec(sql, params)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -64,7 +64,7 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupSupplier(req.params.uuid)
-  .then(function (record) {
+  .then((record) => {
     res.status(200).json(record);
   })
   .catch(next)
@@ -105,7 +105,7 @@ function create(req, res, next) {
     .addQuery(writeSupplierQuery, [data]);
 
   transaction.execute()
-    .then(function () {
+    .then(() => {
       Topic.publish(Topic.channels.INVENTORY, {
         event : Topic.events.CREATE,
         entity : Topic.entities.SUPPLIER,
@@ -195,7 +195,7 @@ function search(req, res, next) {
   }
 
   db.exec(sql, [req.query.display_name])
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)

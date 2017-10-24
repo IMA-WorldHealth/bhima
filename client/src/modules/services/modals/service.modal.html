@@ -1,0 +1,36 @@
+<form name="ServiceForm" bh-submit="ServiceModalCtrl.submit(ServiceForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="ServiceModalCtrl.isCreating" class="title">
+      <span translate>SERVICE.ADD_SERVICE</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!ServiceModalCtrl.isCreating" class="title">
+      <span translate>SERVICE.EDIT_SERVICE</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : ServiceForm.$submitted && ServiceForm.name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.SERVICE</label>
+      <input name="name" ng-model="ServiceModalCtrl.service.name" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="ServiceForm.name.$error" ng-show="ServiceForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="ServiceModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ServiceForm.$loading">
+      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

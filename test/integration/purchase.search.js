@@ -29,7 +29,7 @@ function PurchaseOrderSearch() {
   });
 
   // TODO - implement limit query
-  it.skip('GET /purchases/search?limit=1 returns a single purchase order', () => {
+  it('GET /purchases/search?limit=1 returns a single purchase order', () => {
     const options = { limit: 1 };
     return SendHTTPQuery(options, 1);
   });

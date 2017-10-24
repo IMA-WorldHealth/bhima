@@ -1,6 +1,6 @@
-<div>
-  <strong>
-    <span translate>FORM.INFO.SHOWING</span>
-    {{ grid.appScope.numberCurrentGridTransactions }} / {{ grid.appScope.numberTotalSystemTransactions }} <span translate>FORM.INFO.UNPOSTED_TRANSACTION</span>
-  </strong>
+<div class="ui-grid-cell-contents">
+  <span>({{grid.rows.length}} <span translate>FORM.INFO.ROWS</span>)</span>
+  <span style="color : #FDBA64" class="fa fa-circle"></span> {{grid.appScope.rowsDetails.totalPosted}} <span translate>FORM.LABELS.POSTED_TRANSACTIONS</span>
+  <span style="color : #6FBDEE" class="fa fa-circle"></span> {{grid.appScope.rowsDetails.totalNonPosted}} <span translate>FORM.LABELS.NON_POSTED_TRANSACTIONS</span>
+  <span><b><span class="fa fa-eye-slash"></span> {{grid.appScope.rowsDetails.remainingSystemTransactions}} <span translate>FORM.INFO.UNPOSTED_TRANSACTION</span></b></span>
 </div>

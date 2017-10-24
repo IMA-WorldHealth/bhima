@@ -2,7 +2,6 @@
   name="ModalForm"
   ng-submit="ModalCtrl.submit(ModalForm)"
   data-modal="journal-search"
-  bh-form-defaults
   novalidate>
 
   <div class="modal-header">
@@ -18,6 +17,16 @@
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}">
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
+
+        <div class="form-group">
+          <label class="control-label" translate>TRANSACTIONS.VERIFIED_TRANSACTIONS</label>
+          <bh-clear on-clear="ModalCtrl.clear('includeNonPosted')"></bh-clear>
+          <div class="checkbox">
+            <label>
+              <input ng-model="ModalCtrl.searchQueries.includeNonPosted" ng-true-value="1" ng-false-value="0" type="checkbox"> <span translate>TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_DETAIL</span>
+            </label>
+          </div>
+        </div>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
           <label class="control-label" translate>
@@ -42,20 +51,10 @@
           </bh-account-select>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.transaction_type.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.TRANSACTION_TYPE</label>
-          <bh-clear on-clear="ModalCtrl.clear('origin_id')"></bh-clear>
-          <select
-            class="form-control"
-            name="transaction_type"
-            ng-model="ModalCtrl.searchQueries.origin_id"
-            ng-options="transaction_type.id as transaction_type.hrText for transaction_type in ModalCtrl.types">
-            <option disabled="disabled" value="" translate>FORM.SELECT.TYPE</option>
-          </select>
-          <div class="help-block" ng-messages="ModalForm.transaction_type.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
+        <bh-transaction-type-select
+          on-change="ModalCtrl.onTransactionTypesChange(transactionTypes)"
+          transaction-type-ids="ModalCtrl.searchQueries.origin_id">
+        </bh-transaction-type-select>        
 
         <!-- description fuzzy search -->
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
@@ -81,21 +80,12 @@
           <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
         </bh-user-select>
 
-
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.project_id.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.PROJECT</label>
+        <bh-project-select
+          project-id="ModalCtrl.searchQueries.project_id"
+          name="project_id"
+          on-select-callback="ModalCtrl.onSelectProject(project)">
           <bh-clear on-clear="ModalCtrl.clear('project_id')"></bh-clear>
-          <select
-            class="form-control"
-            name="project_id"
-            ng-model="ModalCtrl.searchQueries.project_id"
-            ng-options="project.id as project.name for project in ModalCtrl.projects">
-            <option disabled="disabled" value="" translate>FORM.SELECT.PROJECT</option>
-          </select>
-          <div class="help-block" ng-messages="ModalForm.project_id.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
+        </bh-project-select>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.amount.$invalid }">
           <label class="control-label" translate>FORM.LABELS.AMOUNT</label>

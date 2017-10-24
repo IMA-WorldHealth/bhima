@@ -18,7 +18,7 @@ describe('Pool', function () {
 
   it('#constructor() runs with sane defaults', () => {
     let pool = new Pool();
-    expect(pool).to.be.defined;
+    expect(pool).to.exist;
     expect(pool.available.identifier).to.equal('id');
     expect(pool.available.data).to.have.length(0);
 

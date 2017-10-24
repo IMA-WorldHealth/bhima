@@ -1,69 +1,93 @@
 angular.module('bhima.controllers')
-.controller('SearchMovementsModalController', SearchMovementsModalController);
+  .controller('SearchMovementsModalController', SearchMovementsModalController);
 
-// dependencies injections
 SearchMovementsModalController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', '$uibModalInstance', 
-  'SearchFilterFormatService', 'FluxService', '$translate'
+  'data', 'NotifyService', '$uibModalInstance', 'FluxService',
+  '$translate', 'PeriodService', 'Store', 'util',
 ];
 
-function SearchMovementsModalController(Depots, Inventory, Notify, Instance, SearchFilterFormat, Flux, $translate) {
+function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util) {
   var vm = this;
+  var changes = new Store({ identifier : 'key' });
 
-  // gloabal variables 
-  var noMissingDatePart;
+  var searchQueryOptions = [
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo',
+  ];
 
-  // global methods
-  vm.validate = validate;
-  vm.cancel = Instance.close;
-  vm.submit = submit;
+  vm.filters = data;
 
-  // init 
-  init();
+  vm.searchQueries = {};
+  vm.defaultQueries = {};
+  vm.selectedFluxes = vm.filters.flux_id || [];
 
-  // load depots 
-  Depots.read()
-  .then(function (depots) {
-      vm.depots = depots;
-  })
-  .catch(Notify.handleError);
-
-  // load inventories 
-  Inventory.read()
-  .then(function (inventories) {
-      vm.inventories = inventories;
-  })
-  .catch(Notify.handleError);
-
-  // load flux 
+  // load flux
   Flux.read()
-  .then(function (rows) {
+    .then(function (rows) {
       vm.fluxes = rows.map(function (row) {
         row.label = $translate.instant(row.label);
         return row;
       });
-  })
-  .catch(Notify.handleError);
+    })
+    .catch(Notify.handleError);
 
-  function init() {
-    vm.bundle = { 
-      dateFrom: new Date(),
-      dateTo: new Date(),
-    };
-    validate();
+  // default filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
+  };
+
+  // custom filter depot_uuid - assign the value to the params object
+  vm.onSelectDepot = function onSelectDepot(depot) {
+    vm.searchQueries.depot_uuid = depot.uuid;
+  };
+
+  // custom filter inventory_uuid - assign the value to the params object
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    vm.searchQueries.inventory_uuid = inventory.uuid;
+  };
+
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
+
+  if (data.limit) {
+    vm.defaultQueries.limit = data.limit;
   }
 
-  function submit() {
-    if (!vm.bundle.dateFrom && !vm.bundle.dateTo) {
-      delete vm.bundle.dateFrom;
-      delete vm.bundle.dateTo;
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
     }
-    var params = SearchFilterFormat.formatFilter(vm.bundle, true);
-    Instance.close(params);
-  }
+  };
 
-  function validate() {
-    noMissingDatePart = (vm.bundle.entry_date_from && vm.bundle.entry_date_to) || (!vm.bundle.entry_date_from && !vm.bundle.entry_date_to);
-    vm.validDateRange = noMissingDatePart ? true : false;
-  }
+  // deletes a filter from the custom filter object,
+  // this key will no longer be written to changes on exit
+  vm.clear = function clear(key) {
+    delete vm.searchQueries[key];
+  };
+  vm.clearFluxIds = function () {
+    delete vm.selectedFluxes;
+  };
+
+  vm.cancel = function cancel() { Instance.close(); };
+
+  vm.submit = function submit() {
+    // fill flux_id in the seach query
+    vm.searchQueries.flux_id = vm.selectedFluxes;
+
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      if (angular.isDefined(value)) {
+        changes.post({ key : key, value : value });
+      }
+    });
+
+    var loggedChanges = changes.getAll();
+
+    return Instance.close(loggedChanges);
+  };
 }

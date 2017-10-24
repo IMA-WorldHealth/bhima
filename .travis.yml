@@ -30,9 +30,13 @@ script:
 git:
   depth: 3
 
+#
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
 branches:
   except:
     # do not build any branches that have *.tmp in their name
     - /.*\.tmp$/
-
-

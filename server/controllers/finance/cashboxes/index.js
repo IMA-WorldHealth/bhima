@@ -39,7 +39,7 @@ function list(req, res, next) {
   const filters = new FilterParser(req.query);
 
   let sql =
-    'SELECT id, label, is_auxiliary FROM cash_box ';
+    'SELECT id, label, is_auxiliary, project_id FROM cash_box ';
 
   if (req.query.detailed === '1') {
     sql = `
@@ -140,7 +140,7 @@ function create(req, res, next) {
         id      : row.insertId,
       });
 
-      res.status(201).json({ id: row.insertId });
+      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();

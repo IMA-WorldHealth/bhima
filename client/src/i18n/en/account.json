@@ -50,7 +50,12 @@
       "INCOME":"Income",
       "EXPENSE":"Expense",
       "BALANCE":"Balance",
-      "TITLE":"Title"
+      "TITLE":"Title",
+      "ASSET":"Asset",
+      "LIABILITY":"Liability",
+      "EQUITY":"Equity",
+      "REVENUE":"Revenue",
+      "TIERS":"Tiers"
     }
   }
 }

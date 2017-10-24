@@ -39,8 +39,17 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
 echo "[build] test data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql &> /dev/null
 
+echo "[update] service uuid identifiers"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/service_uuid.sql &> /dev/null
+
+echo "[build] compute account class"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call ComputeAccountClass();" &> /dev/null
+
 echo "[build] recomputing mappings"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();" &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();" &> /dev/null
+
+echo "[build] recalculating period totals"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecalculatePeriodTotals();" &> /dev/null
 
 echo "[/build]"

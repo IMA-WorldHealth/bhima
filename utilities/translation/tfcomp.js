@@ -55,7 +55,7 @@ jsonFiles.forEach(function (jsonFile) {
   // Report items in french translation but missing from english translation
   if (enMissList.length > 0) {
     errMsg += '\nMissing from ' + jsonFile.en + ': \n';
-    enMIssList.sort();
+    enMissList.sort();
     errMsg += enMissList.join('\n');
     errMsg += '\n\n';
   }

@@ -85,18 +85,6 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     var gridApi = this.gridApi;
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-
-    // determine that this selection is a header row
-    if (angular.isDefined(rowChanged.treeLevel) && rowChanged.treeLevel > -1) {
-
-      var children = gridApi.treeBase.getRowChildren(rowChanged);
-      children.forEach(function (child) {
-
-        // determine if we should we be selected or deselecting
-        var select = rowChanged.isSelected ? gridApi.selection.selectRow : gridApi.selection.unSelectRow;
-        select(child.entity);
-      });
-    }
   }
 
   function handleBatchSelection() {
@@ -109,7 +97,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     gridRows.forEach(function (row) {
       var parentRow = row.treeNode.parentRow;
 
-      if (isUnusedParentRow(parentRow)) {
+      if (parentRow && isUnusedParentRow(parentRow)) {
         parentRow.isSelected = true;
         parents[parentRow.uid] = parentRow;
         selectedGroupHeaders = parents;
@@ -124,7 +112,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     }
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-
+  
+    // @FIXME(sfount) why is the data change notify ever called?
     gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
 
     // this function identifies parent rows that we haven't seen yet

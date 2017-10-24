@@ -1,0 +1,25 @@
+<div ng-form="SupplierForm" bh-supplier-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validateTrigger && SupplierForm.supplier_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+        name="supplier_uuid" 
+        ng-model="$ctrl.supplierUuid"
+        on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.SUPPLIER' | translate }}">{{$select.selected.display_name}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="supplier.uuid as supplier in $ctrl.suppliers | filter: { 'display_name': $select.search }">
+        <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="SupplierForm.supplier_uuid.$error" ng-show="$ctrl.validateTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

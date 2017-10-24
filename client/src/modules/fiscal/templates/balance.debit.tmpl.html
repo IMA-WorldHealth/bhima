@@ -1,5 +1,6 @@
 <div class="ui-grid-cell-contents">
   <input
+    min="0"
     ng-hide="row.entity.type === 'title'"
     ng-disabled="!grid.appScope.editBalanceEnabled || grid.appScope.previousFiscalYearExist"
     ng-model="row.entity.debit"

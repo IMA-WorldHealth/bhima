@@ -14,9 +14,9 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 // IF no client_timestamp is passed with the request, the server's timestamp is used
 // IF a client_timestamp is passed the client timestamp is used
 // const PERIODS = {
-  // today : () => { return { start : moment().toDate(), end : moment().toDate() } },
-  // week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
-  // month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
+// today : () => { return { start : moment().toDate(), end : moment().toDate() } },
+// week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
+// month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
 // };
 /**
  * @class FilterParser
@@ -53,10 +53,9 @@ class FilterParser {
     this._limitKey = options.limitKey || DEFAULT_LIMIT_KEY;
     this._order = '';
     this._parseUuids = _.isUndefined(options.parseUuids) ? true : options.parseUuids;
-    this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? true : options.autoParseStatements;
+    this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? false : options.autoParseStatements;
     this._group = '';
   }
-
 
   /**
    * @method text
@@ -147,16 +146,19 @@ class FilterParser {
     }
   }
 
-  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
+  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias, isArray) {
     const tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {
-      let valueString = '?';
-      if (filterKey.includes(DEFAULT_UUID_PARTIAL_KEY)) {
-        valueString = 'HUID(?)';
+      const valueString = '?';
+      let preparedStatement = '';
+
+      if (isArray) { // search in a list of values, example : where id in (1,2,3)
+        preparedStatement = `${tableString}${columnAlias} in (${valueString})`;
+      } else { // seach equals one value , example : where id = 2
+        preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
       }
 
-      const preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
 
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];
@@ -278,7 +280,7 @@ class FilterParser {
 
       if (this._parseUuids) {
         // check to see if key contains the text uuid - if it does and parseUuids has
-        // not been supressed, automatically parse the value as binary
+        // not been suppressed, automatically parse the value as binary
         if (key.includes(DEFAULT_UUID_PARTIAL_KEY)) {
           valueString = 'HUID(?)';
         }

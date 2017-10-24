@@ -44,7 +44,7 @@
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
                   </a>
-                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : { patient_group_uuid : group.uuid } })">
+                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({ filters : [{ key : 'patient_group_uuid', value : group.uuid, displayValue: group.name }]})">
                     <span class="fa fa-list"></span> <span translate> FORM.LABELS.PATIENT_LIST </span>
                   </a>
                 </td>
@@ -76,7 +76,7 @@
             </div>
 
             <div class="panel-body">
-              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" bh-form-defaults novalidate data-create-form>
+              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate data-create-form>
 
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                   <label class="control-label" translate>
@@ -116,7 +116,7 @@
 
                 <div class="form-group">
                   <bh-loading-button loading-state="CreateForm.$loading">
-                    <span translate> FORM.BUTTONS.SUBMIT <
+                    <span translate>FORM.BUTTONS.SUBMIT</span>
                   </bh-loading-button>
                   <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel" translate>
                     FORM.BUTTONS.CANCEL
@@ -136,7 +136,7 @@
             </div>
 
             <div class="panel-body">
-              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" bh-form-defaults novalidate data-update-form>
+              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate data-update-form>
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                   <label class="control-label" translate>
                     FORM.LABELS.NAME

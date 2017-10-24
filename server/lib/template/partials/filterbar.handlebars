@@ -1,0 +1,15 @@
+{{#if filters}}
+  <p class="pills">
+    {{#each filters}}
+      <span class="label label-outlined text-capitalize" style="border-color: #000; color: #000;">
+        {{translate this.displayName}}
+
+        {{#if this.comparitor}} {{this.comparitor}}
+        {{else}}: {{/if}}
+
+        {{#if this.isDate}} {{date this.value}}
+        {{else}} {{translate this.value}} {{/if}}
+      </span>
+    {{/each}}
+  </p>
+{{/if}}

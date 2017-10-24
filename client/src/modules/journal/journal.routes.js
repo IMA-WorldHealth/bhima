@@ -1,31 +1,22 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
-
     $stateProvider
       .state('journal', {
         url         : '/journal',
         controller  : 'JournalController as JournalCtrl',
-        templateUrl : 'modules/journal/journal.html'
+        templateUrl : 'modules/journal/journal.html',
+        params : {
+          filters : [],
+          scrollTo : null,
+        },
       })
-      .state('postedJournal', {
-        url         : '/journal/posted',
-        controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
-        templateUrl : 'modules/general-ledger/general-ledger.html',
-      })
-      .state('journalPrint', {
-        controller  : 'journal.print',
-        templateUrl : 'modules/journal/print.html'
-      })
-      .state('journalVoucher', {
-        controller  : 'JournalVoucherController as JournalVoucherCtrl',
-        templateUrl : 'modules/journal/voucher/voucher.html'
-      })
-      .state('journalModal', {
+      .state('TrialBalanceModal', {
         parent  : 'journal',
         onEnter : ['$state', '$uibModal', function ($state, Modal) {
           Modal.open({
             size        : 'lg',
-            templateUrl : 'modules/journal/modals/trialBalanceStructure.html',
+            controller  : 'TrialBalanceController as TrialBalanceCtrl',
+            templateUrl : 'modules/journal/trial-balance/structure.html',
             keyboard    : false,
             backdrop    : 'static',
           });
@@ -34,70 +25,22 @@ angular.module('bhima.routes')
           ModalStack.dismissAll();
         }],
       })
-      .state('trialBalanceMain',{
-        parent : 'journalModal',
-        params : {
-          records : null
-        },
-        data : {
-          checkingData : null,
-          checked : null
-        },
+      .state('TrialBalanceOverview', {
+        parent : 'TrialBalanceModal',
         views : {
-          'modal-header@' : {
-            templateUrl : 'modules/journal/modals/trialBalanceMain.header.html'
-          },
           'modal-body@' : {
-            controller : 'TrialBalanceMainBodyController as TrialBalanceMainBodyCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceMain.body.html'
+            controller : 'TrialBalanceOverviewController as OverviewCtrl',
+            templateUrl : 'modules/journal/trial-balance/overview.html',
           },
-          'modal-footer@' : {
-            controller : 'TrialBalanceMainFooterController as TrialBalanceMainFooterCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceMain.footer.html'
-          }
-        }
+        },
       })
-      .state('trialBalanceDetail',{
-        parent : 'journalModal',
-        params : {
-          lines : null,
-          feedBack : null,
-          records : null, //original selected data from the journal
-          errors : null
-        },
+      .state('TrialBalanceErrors', {
+        parent : 'TrialBalanceModal',
         views : {
-          'modal-header@' : {
-            templateUrl : 'modules/journal/modals/trialBalanceDetail.header.html'
-          },
           'modal-body@' : {
-            controller : 'TrialBalanceDetailBodyController as TrialBalanceDetailBodyCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceDetail.body.html'
+            controller : 'TrialBalanceErrorsController as ErrorsCtrl',
+            templateUrl : 'modules/journal/trial-balance/errors.html',
           },
-          'modal-footer@' : {
-            controller : 'TrialBalanceDetailFooterController as TrialBalanceFooterDetailCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceDetail.footer.html'
-          }
-        }
-      })
-      .state('trialBalanceErrors',{
-        parent : 'journalModal',
-        params : {
-          lines : null,
-          feedBack : null,
-          records : null
         },
-        views : {
-          'modal-header@' : {
-            templateUrl : 'modules/journal/modals/trialBalanceError.header.html'
-          },
-          'modal-body@' : {
-            controller : 'TrialBalanceErrorBodyController as TrialBalanceErrorBodyCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceError.body.html'
-          },
-          'modal-footer@' : {
-            controller : 'TrialBalanceErrorFooterController as TrialBalanceErrorFooterCtrl',
-            templateUrl : 'modules/journal/modals/trialBalanceError.footer.html'
-          }
-        }
       });
   }]);

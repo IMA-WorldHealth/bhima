@@ -12,70 +12,86 @@ describe('(/prices ) Price List', function () {
   const emptyPriceList = {
     uuid : 'da4be62a-4310-4088-97a4-57c14cab49c8',
     label : 'Test Empty Price List',
-    description : 'A price list without items attached yet.'
+    description : 'A price list without items attached yet.',
   };
 
   const priceListItems = [{
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Test $11 reduction on an item',
     is_percentage : false,
-    value : 10
+    value : 10,
   }, {
     inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
     label : 'Test 13% reduction on an item',
     is_percentage : true,
-    value : 12
+    value : 12,
   }];
+  const floatPriceListItems = [
+    {
+      inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      label : 'float item value',
+      is_percentage : false,
+      value : 3.14,
+    },
+  ];
 
   const priceListItems2 = [{
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Test $20 reduction on an item',
     is_percentage : false,
-    value : 10
+    value : 10,
   }, {
     inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
     label : 'Test 25% reduction on an item',
     is_percentage : true,
-    value : 12
+    value : 12,
   }];
 
   const priceListItemsWithDuplicates = [{
     inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
     label : 'Duplicate Label',
     is_percentage : false,
-    value : 10
+    value : 10,
   }, {
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Duplicate Label',
     is_percentage : false,
-    value : 10
+    value : 10,
   }];
 
   const complexPriceList = {
     label : 'Test Price List w/ Two Items',
     description : 'A price list with two items attached.',
-    items : priceListItems
+    items : priceListItems,
   };
 
   const invalidPriceList = {
     label : 'An invalid price list',
-    items :[{
-      inventory_uuid : null,
-      label : 'You cannot have a null inventory uuid, if you were wondering...',
-      is_percentage : false,
-      value : 1.2
-    }]
+    items :[
+      {
+        inventory_uuid : null,
+        label : 'You cannot have a null inventory uuid, if you were wondering...',
+        is_percentage : false,
+        value : 1.2,
+      },
+    ],
+  };
+
+  const somePriceListWithFloatValues = {
+    label : 'Test Price List w/ Floats',
+    description : 'A price list with float values',
+    items : floatPriceListItems,
   };
 
   const duplicatesPriceList = {
     uuid : uuid.v4(),
     label : 'This list contains duplicate labels',
     description : 'The list has a tone of items.',
-    items : priceListItemsWithDuplicates
+    items : priceListItemsWithDuplicates,
   };
 
   const responseKeys = [
-    'uuid', 'label', 'description', 'created_at', 'updated_at', 'items'
+    'uuid', 'label', 'description', 'created_at', 'updated_at', 'items',
   ];
 
   it('GET /prices returns only one default record', function () {
@@ -86,7 +102,7 @@ describe('(/prices ) Price List', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /prices/unknownId returns a 404 error', function () {
+  it('GET /prices/unknown Id returns a 404 error', function () {
     return agent.get('/prices/unknownId')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -201,6 +217,25 @@ describe('(/prices ) Price List', function () {
       })
       .catch(helpers.handler);
   });
+
+
+  it('POST /price will register a float as a price list item', () => {
+    return agent.post('/prices')
+    .send({ list : somePriceListWithFloatValues })
+    .then(res => {
+      // assert that the records was successfully created
+      helpers.api.created(res);
+
+      // look up the record to make sure the price list's value is actually a float
+      return agent.get('/prices/'.concat(res.body.uuid));
+    })
+    .then(res => {
+       // ... do some checks ...
+      expect(res.body.items[0].value).to.equal(3.14);
+    })
+    .catch(helpers.handler);
+  });
+
 
   it('DELETE /prices/unknownid should return a 404 error.', function () {
     return agent.delete('/prices/unknownid')

@@ -7,8 +7,7 @@ angular.module('bhima.routes')
         controller  : 'CashPaymentRegistryController as CPRCtrl',
         templateUrl : 'modules/cash/payments/registry.html',
         params      : {
-          filters : null,
-          display : null,
+          filters : [],
         },
       })
 

@@ -13,16 +13,16 @@
  */
 angular.module('bhima.components')
   .component('bhDateInterval', {
-    templateUrl : '/modules/templates/bhDateInterval.tmpl.html',
-    controller : bhDateInterval,
-    bindings : {
-      validationTrigger : '<', // validation trigger action
-      dateFrom : '=',          // date from
-      dateTo : '=',            // date to
-      dateId : '@',            // date identifier
-      required : '<',          // true or false
-      onChange : '<',          // on change action
-      mode : '@'               // the date mode (day|month|year)
+    templateUrl: '/modules/templates/bhDateInterval.tmpl.html',
+    controller: bhDateInterval,
+    bindings: {
+      validationTrigger: '<', // validation trigger action
+      dateFrom: '=',          // date from
+      dateTo: '=',            // date to
+      dateId: '@',            // date identifier
+      required: '<',          // true or false
+      onChange: '<',          // on change action
+      mode: '@'               // the date mode (day|month|year)
     }
   });
 
@@ -95,9 +95,11 @@ function bhDateInterval(moment, bhConstants) {
     option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
     // set the default option according the mode
-    if (option > -1) {
+    if (option !== -1) {
       search(vm.options[option]);
       vm.pickerOptions = vm.mode;
+    } else {
+      search(vm.options[0]);
     }
 
     // set clean mode

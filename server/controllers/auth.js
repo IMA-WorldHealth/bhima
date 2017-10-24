@@ -69,16 +69,16 @@ function login(req, res, next) {
 
 
   db.exec(sql, [username, password, projectId])
-    .then(function (rows) {
+    .then((rows) => {
       param.connect = rows;
 
       return db.exec(sqlUser, [username, password]);
     })
-    .then(function (rows) {
+    .then((rows) => {
       param.user = rows;
       return db.exec(sqlPermission, [username, password]);
     })
-    .then(function (rows) {
+    .then((rows) => {
       param.permission = rows;
       const connect = param.connect.length;
       const permission = param.permission.length;

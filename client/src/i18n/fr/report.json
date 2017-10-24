@@ -1,15 +1,38 @@
 {
   "REPORT":{
+    "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Rapport du Compte",
-    "AGED_CREDITORS":"Balance agée des Créances",
-    "AGED_DEBTORS":{"TITLE":"Balance agée des clients"},
-    "BALANCE":"Rapport de la Balance",
+    "AGED_CREDITORS":{
+      "TITLE":"Balance agée des Créances",
+      "DESCRIPTION":"Ce rapport affiche toutes les créances par Créditeurs et par période"
+    },
+    "AGED_DEBTORS":{
+      "TITLE":"Balance agée des Conventionnés",
+      "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
+    },
+    "BY_ASC": "Par ordre croissant",
+    "BY_DESC": "Par ordre décroissant",
+    "BALANCE": "Rapport de la Balance",
+    "BALANCE_SHEET": {
+      "TITLE": "Bilan",
+      "DESCRIPTION": "Ce rapport affiche le bilan simplifié de l'entreprise",
+      "SHOW_EXPLOITATION": "Afficher les exploitations",
+      "DEBTOR_SOLD": "Debit",
+      "CREDITOR_SOLD": "Credit",
+      "EXPLOITATION_RESULT": "Resultat d'exploitation"
+    },
     "CASH_EXPENSE":"Depenses",
-    "CASHFLOW_BY_SERVICE":"Cashflow par Service",
-    "CASHFLOW":"Cashflow",
+    "CASHFLOW_BY_SERVICE": {
+      "TITLE" : "Rapports de flux de trésorerie par Service",
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
+    },
+    "CASHFLOW" : {
+      "TITLE":"Rapports de flux de trésorerie physique",
+      "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
+      "SHOW_WEEKLY_REPORT_HELP":"L'activation de cette option permettra de visualiser le rapport du cash flow par semaine"
+    },
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
-    "CLIENTS_REPORT":{"TITLE":"Rapport Clients", "CURRENT_MVT":"Mouvement Courant", "PREVIOUS_MVT":"Mouvement Precedent"},
     "CLOSING_BALANCE":"Balance à la cloture",
     "CONFIGURATION":"Configuration rapport",
     "DELETE":"Supprimer un rapport",
@@ -19,24 +42,93 @@
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
-    "OPEN_DEBTORS":{"TITLE":"Debiteurs Avec Dettes", "TREE":"Debiteurs Avec Dettes"},
-    "OPENING_BALANCE":"Balance d'ouverture",
-    "OVER_NINETY_DAYS":"Plus de 90 jours",
-    "PERIOD_START":"Debut",
-    "PERIOD_STOP":"Fin",
-    "PRODUCED_BY":"Produit par",
-    "PRODUCED_DATE":"Date de generation",
-    "PRODUCED_ON":"Produit le",
-    "REPORT_ACCOUNTS":"Rapport de comptes",
-    "SINCE":"Depuis",
-    "SIXTY_TO_NINETY_DAYS":"60 a 90 jours",
-    "THIRTY_TO_SIXTY_DAYS":"30 a 60 jours",
-    "VIEW_CREDIT_NOTE":"Voir la note de credit",
-    "VIEW_INVOICE":"Voir les factures",
-    "VIEW_PATIENT":"Voir le Patient",
-    "VIEW_PAYMENTS":"Voir les payments",
-    "VIEW_RECEIPT":"Voir le document",
-    "VIEW_RECEIPT":"Voir le document",
-    "ZERO_TO_THIRTY_DAYS":"Moins de 30 jours"
+    "OPEN_DEBTORS": {
+      "TITLE":"Débiteurs endettés",
+      "TREE":"Dettes des Débiteurs",
+      "DESCRIPTION": "Ce rapport liste les débiteurs et leurs dettes envers l'institution. Permet de trier les données à lister ainsi que de voir la dernière date de facturation et de paiement pour une analyse assez poussée. Les donnees peuvent être filtrées par date aussi.",
+      "SHOW_DATE_LIMIT" : "Limité par Date",
+      "DATE_LIMIT_HELP" : "La limite de la date ne fera que numériser les enregistrements de cette date au présent.",
+      "SHOW_DETAILED_VIEW" : "Inclure les colonnes pour les dernières dates de facturation et de paiement",
+      "SHOW_DETAILED_VIEW_HELP" : "L'activation de cette option comprendra la dernière date à laquelle le débiteur a payé et la dernière date où ils ont été facturés. Ceci est utile pour comprendre quand ils étaient à l'établissement. Cependant, cela rendra la requête plus lent.",
+      "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
+      "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
+    },
+    "OPENING_BALANCE": "Balance d'ouverture",
+    "ORDER": {
+      "LAST_TRANSACTION": "Date Dernière Transaction",
+      "PATIENT_NAME": "Nom du Patient",
+      "TOTAL_DEBT": "Total des Dettes"
+    },
+    "OVER_NINETY_DAYS": "Plus de 90 Jours",
+    "PERIOD_START": "Debut",
+    "PERIOD_STOP": "Fin",
+    "PRODUCED_BY": "Produit par",
+    "PRODUCED_DATE": "Date de generation",
+    "PRODUCED_ON": "Produit le",
+    "SINCE": "Depuis",
+    "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
+    "THIRTY_TO_SIXTY_DAYS": "30 a 60 jours",
+    "VIEW_CREDIT_NOTE": "Voir la note de credit",
+    "VIEW_INVOICE": "Voir les factures",
+    "VIEW_PATIENT": "Voir le Patient",
+    "VIEW_PAYMENTS": "Voir les payments",
+    "VIEW_RECEIPT": "Voir le document",
+    "VIEW_VOUCHER": "Voir les bordereaux",
+    "ZERO_TO_THIRTY_DAYS": "Moins de 30 jours",
+    "REPORT_ACCOUNTS": {
+      "TITLE": "Rapport de comptes",
+      "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
+      "WARN_MULTIPLE": "N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
+    },
+    "INCOME_EXPENSE_REPORT": {
+      "TITLE": "Rapport des Comptes d'exploitation",
+      "DESCRIPTION": "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+    },
+    "BALANCE_REPORT": {
+      "TITLE": "Rapport de la Balance des comptes",
+      "DESCRIPTION": "Ce rapport affiche la balance des comptes pour une période donnée"
+    },
+    "REPORT_INCOME_EXPENSE": {
+      "TITLE": "Rapport de recettes et depenses",
+      "DESCRIPTION": "Ce rapport affiche toutes les depenses et recettes de l'entreprise"
+    },
+    "CASH_REPORT": {
+      "TITLE": "Rapport de caisse",
+      "DESCRIPTION": "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
+    },
+    "CLIENTS_REPORT" : {
+      "TITLE" : "Rapport Clients",
+      "CURRENT_MVT" : "Mouvement Courant",
+      "PREVIOUS_MVT" : "Du debut Au :",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
+    },
+    "STOCK":{
+      "TITLE":"Rapport de stock",
+      "DESCRIPTION":"Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et etat",
+      "ALL_DEPOTS":"Tous les dépôts",
+      "ONE_DEPOT":"Un dépôt en particulier",
+      "ALL_INVENTORIES":"Tous les articles",
+      "ONE_INVENTORY":"Un article en particulier",
+      "INVENTORY_REPORT":"Fiche de stock",
+      "INVENTORY_REPORT_DESCRIPTION":"Ce rapport affiche montre les mouvements d'un article ainsi que son etat et sa valeur dans le stock",
+      "QUANTITY":"Quantité",
+      "UNIT_COST":"Cout Unitaire",
+      "VALUE":"Valeur",
+      "ENTRIES":"Entrées",
+      "EXITS":"Sorties",
+      "STOCKS":"Stocks"
+    },
+    "UTIL":{
+      "CANCEL_PREVIEW":"Fermer l'Aperçu",
+      "SAVE_AS":"Enregistrer sous",
+      "DOCUMENT_PREVIEW":"Aperçu du document",
+      "PDF":"PDF",
+      "CSV":"CSV",
+      "SAVE_SUCCESS":"Rapport enregistré avec succès",
+      "BACK":"Revenir en arriere",
+      "OPTIONS":"Options",
+      "PREVIEW":"Aperçu",
+      "VIEW_ARCHIVE":"Archives"
+    }
   }
 }

@@ -1,0 +1,133 @@
+{{> head title="TREE.CASH_REPORT" }}
+
+
+<div class="container">
+  {{> header}}
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TREE.CASH_REPORT'}}</strong>
+      </h3>
+      <h5 class="text-center text-uppercase">
+        {{ this.cashName}} ({{ this.cashCurrency}})
+      </h5>
+      <h6 class="text-center text-uppercase">
+        {{date this.dateFrom }} - {{date this.dateTo }}
+      </h6>
+
+      {{#if this.isEmpty}}
+        <div class="text-center">
+          {{translate 'FORM.INFO.NO_RECORDS_DATABASE'}}
+        </div>        
+      {{else}}
+        <div class="text-right">
+          <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{currency this.openingBalance metadata.enterprise.curency_id}}</strong>
+        </div>
+        {{#if (isIncomeViewable this.type_id)}}
+          <h6 class="text-center text-uppercase">
+            {{ translate 'REPORT.CASH_INCOME' }}
+          </h6>
+          <table class="table table-condensed table-report">
+            <thead>
+              <tr style="background-color:#ddd;">
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </th>              
+                <th style="width: 50%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>              
+              </tr>            
+            </thead>
+            <tbody>
+              {{#each this.entries}}
+                <tr>
+                  <td class="text-left">{{ trans_id }}</td>
+                  <td class="text-left">{{ date trans_date }}</td>              
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 500px;">
+                    {{ description }}
+                  </td>
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden;">
+                    {{ translate transactionType }}
+                  </td>
+                  <td class="text-left">{{ username }}</td>
+                  <td class="text-right">
+                    {{#if debit}}
+                      {{ currency debit ../metadata.enterprise.currency_id}}
+                    {{/if}}  
+                  </td>
+                </tr> 
+              {{/each}}
+            </tbody>
+            <tfoot>
+              <tr style="background-color:#ddd;">
+                <th class="text-right" colspan="6"> 
+                  {{ translate 'TABLE.COLUMNS.TOTAL' }} : {{ currency this.totalEntry metadata.enterprise.currency_id}}
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        {{/if}}
+        {{#if (isExpenseViewable this.type_id)}}
+          <h6 class="text-center text-uppercase">
+            {{ translate 'REPORT.CASH_EXPENSE' }}
+          </h6>
+          <table class="table table-condensed table-report">
+            <thead>
+              <tr style="background-color:#ddd;">
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </th>              
+                <th style="width: 50%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </th>
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </th>                            
+                <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </th>
+              </tr>            
+            </thead>
+            <tbody>
+              {{#each this.expenses}}
+                <tr>
+                  <td class="text-left">{{ trans_id }}</td>
+                  <td class="text-left">{{ date trans_date }}</td>              
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 500px;">
+                    {{ description }}
+                  </td>
+                  <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden;">
+                    {{ translate transactionType }}
+                  </td>
+                  <td class="text-left">{{ username }}</td>                                            
+                  <td class="text-right">
+                    {{#if credit}}
+                      {{ currency credit ../metadata.enterprise.currency_id}}
+                    {{/if}}
+                  </td>
+                </tr> 
+              {{/each}}
+            </tbody>
+            <tfoot>
+              <tr style="background-color:#ddd;">
+                <th class="text-right" colspan="6">
+                  {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency this.totalExpense metadata.enterprise.currency_id}}
+                </th>
+              </tr>
+              <tr>
+                <th colspan="4"><br/></th>
+              </tr>
+              {{#if (isResultViewable this.type_id)}}
+                <tr style="background-color:#ddd;">
+                  <th class="text-right" colspan="6">{{translate 'FORM.LABELS.INTERMEDIATE_BALANCE'}} : {{ currency this.intermediateTotal metadata.enterprise.currency_id}}</th>
+                </tr>
+
+                <tr>
+                  <th colspan="4"><br/></th>
+                </tr>
+                <tr style="background-color:#ddd;">
+                  <th class="text-right" colspan="6">{{translate 'FORM.LABELS.FINAL_BALANCE'}} : {{ currency this.finalTotal metadata.enterprise.currency_id}}</th>
+                </tr>
+              {{/if}}
+            </tfoot>
+          </table>
+         {{/if}}
+      {{/if}}        
+    </div>
+  </div>
+</div>

@@ -9,5 +9,6 @@
     "DESCRIPTION":"This module is responsible for cashbox management",
     "TITLE":"Cashbox Management",
     "NO_SUPPORTED_CURRENCIES":"This cashbox does not have any supported currencies.",
-    "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox."}
+    "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox."
+  }
 }

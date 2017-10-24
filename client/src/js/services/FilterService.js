@@ -1,21 +1,17 @@
 angular.module('bhima.services')
   .service('FilterService', FilterService);
 
-FilterService.$inject = ['Store'];
-
-function FilterService(Store) {
-
+function FilterService() {
   function FilterList() {
     // initialise internal state
     this._defaultFilters = [];
     this._customFilters = [];
-
     this._filterIndex = {};
   }
 
   FilterList.prototype.resetFilterState = function resetFilterState(key) {
     this._filterIndex[key].setValue(null, null);
-  }
+  };
 
   FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
     this._filterActiveFilters().forEach(function (filter) {
@@ -24,34 +20,35 @@ function FilterService(Store) {
         this.resetFilterState(filter._key);
       }
     }.bind(this));
-  }
+  };
 
   // @TODO registerDefaultFilter and registerCustomFilter could use the same underlying function
   //       with a toggle between the array to populate and the default value
   FilterList.prototype.registerDefaultFilters = function registerDefaultFilters(filterDefinitions) {
     var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter);
+      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
       filter.setDefault(true);
 
       if (filterDefinition.defaultValue) {
         filter.setValue(filterDefinition.defaultValue);
       }
+
       return filter;
     });
 
-    // udpate index
+    // update index
     this._indexList(this._filterIndex, formattedFilters);
     this._defaultFilters = this._defaultFilters.concat(formattedFilters);
   };
 
   FilterList.prototype.registerCustomFilters = function registerCustomFilters(filterDefinitions) {
     var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter);
+      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
       filter.setDefault(false);
       return filter;
     });
 
-    // udpate index
+    // update index
     this._indexList(this._filterIndex, formattedFilters);
     this._customFilters = this._customFilters.concat(formattedFilters);
   };
@@ -70,23 +67,29 @@ function FilterService(Store) {
   // ]
   FilterList.prototype.assignFilters = function assignFilters(valueList) {
     valueList.forEach(function (valueMap) {
-      this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue);
+      this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue, valueMap.comparitor);
     }.bind(this));
   };
 
   // alias for `assignFilters`, clears the currently active filters before
-  // calling the erferenced method
+  // calling the referenced method
   FilterList.prototype.replaceFilters = function replaceFilters(valueList) {
     this._resetCustomFilters();
     this.assignFilters(valueList);
   };
 
+  // uses angular.copy() to break references to old values
+  FilterList.prototype.replaceFiltersFromState = function replaceFiltersFromState(stateFilterList) {
+    var changes = angular.copy(stateFilterList);
+    this.replaceFilters(changes);
+  };
+
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) {  return filter._key });
+    var activeKeys = activeFilters.map(function (filter) { return filter._key; });
 
-    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1 }
+    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1; }
 
     // parse into two lists
     return {
@@ -153,7 +156,7 @@ function FilterService(Store) {
     Object.keys(this._filterIndex).forEach(function (key) {
       var filter = this._filterIndex[key];
 
-      if (filter._value) {
+      if (filter._value !== null && filter._value !== undefined && filter._value.length !== '') {
         filtered.push(angular.copy(filter));
       }
     }.bind(this));
@@ -167,11 +170,12 @@ function FilterService(Store) {
 
 // Filter class for storing filter information in a uniform way
 // @TODO add debug asserts to ensure that key and value are specified when required
-function Filter(key, label, valueFilter) {
+function Filter(key, label, valueFilter, comparitor) {
   // initialise internal state
   this._key = key;
   this._label = label;
   this._valueFilter = valueFilter;
+  this._comparitor = comparitor;
   this._value = null;
   this._isDefault = null;
   this._displayValue = null;

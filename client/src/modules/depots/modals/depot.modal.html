@@ -1,0 +1,48 @@
+<form name="DepotForm" bh-submit="DepotModalCtrl.submit(DepotForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="DepotModalCtrl.isCreating" class="title">
+      <span translate>DEPOT.ADD_DEPOT</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!DepotModalCtrl.isCreating" class="title">
+      <span translate>DEPOT.EDIT_DEPOT</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.text.$invalid }">
+      <label class="control-label" translate>DEPOT.LABEL</label>
+      <input name="text" ng-model="DepotModalCtrl.depot.text" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="DepotForm.text.$error" ng-show="DepotForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          name="is_warehouse"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="DepotModalCtrl.depot.is_warehouse">
+        <span translate>DEPOT.WAREHOUSE</span>
+      </label>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="DepotModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="DepotForm.$loading">
+      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

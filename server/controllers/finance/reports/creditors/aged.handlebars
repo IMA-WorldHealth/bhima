@@ -4,19 +4,19 @@
   <main class="container">
     {{> header }}
 
-    <h3 class="text-center">
-      {{translate "REPORT.AGED_CREDITORS"}}
+    <h3 class="text-center text-uppercase">
+      <strong>{{translate "REPORT.AGED_CREDITORS.TITLE"}}</strong>
     </h3>
 
-    <h4 class="text-center">
-      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_DATE"}}</span> {{date this.timestamp }}
-    </h4>
+    <h5 class="text-center">
+      <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span> <span class="text-capitalize"> {{date dateUntil "MMMM YYYY"}} </span>
+    </h5>
 
     <!-- margin is the cell size -->
     <section>
-      <table class="table table-condensed table-report">
+      <table class="table table-condensed table-report table-bordered">
         <thead>
-          <tr class="text-capitalize">
+          <tr class="text-capitalize" style="background-color: #ddd;">
             <th class="text-center">{{translate "TABLE.COLUMNS.NAME"}}</th>
             <th class="text-center" style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
             <th class="text-center">{{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}</th>
@@ -61,7 +61,7 @@
         </tbody>
         {{#if aggregates}}
           <tfoot>
-            <tr>
+            <tr style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
               <th class="text-right">{{currency aggregates.thirty metadata.enterprise.currency_id}}</th>
               <th class="text-right">{{currency aggregates.sixty metadata.enterprise.currency_id}}</th>

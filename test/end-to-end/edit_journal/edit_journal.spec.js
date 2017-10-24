@@ -11,125 +11,106 @@ describe('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
+  const editingGridId = 'transaction-edit-grid';
+
   // simulates a double click
   const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
 
   before(() => helpers.navigate(path));
 
   it('edits a transaction change an account', () => {
-    // click the "grouping" button
-    FU.buttons.grouping();
-    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const accountNumberCell = GU.getCellName(gridId, 1, 4);
+    GU.selectRow(gridId, 0);
+    FU.buttons.edit();
+
+    const accountNumberCell = GU.getCell(editingGridId, 0, 1);
     doubleClick(accountNumberCell);
+    FU.typeahead('accountInputValue', '1100');
 
-    FU.typeahead('accountInputValue', '1100', accountNumberCell);
-    element.all(by.css('[data-method="save"]')).click();
-
+    FU.buttons.submit();
     components.notification.hasSuccess();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
   });
 
+  function editInput(rowIndex, columnIndex, value) {
+    const cell = GU.getCell(editingGridId, rowIndex, columnIndex);
+    // clear old clicks and focus the cell
+    cell.click();
+    // open the editing pane
+    doubleClick(cell);
+    cell.element(by.css('input')).clear().sendKeys(value);
+  }
 
-  it('edits a transaction change value of Debit and Credit', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="fa fa-edit"]')).get(0).click();
-    const debitCell = GU.getCellName(gridId, 1, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(150);
 
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(150);
+  it('edits a transaction change value of debit and credit', () => {
+    GU.selectRow(gridId, 0);
+    FU.buttons.edit();
 
-    element.all(by.css('[data-method="save"]')).click();
+    // change the first row (index 0), debit and credit inputs (index 2 and 3)
+    editInput(0, 2, 100);
+    editInput(0, 3, 0);
 
+    editInput(1, 2, 0);
+    editInput(1, 3, 100);
+
+    FU.buttons.submit();
+    FU.exists(by.id('validation-errored-alert'), false);
     components.notification.hasSuccess();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
   });
 
   // Test for validation
-  it('Preventing a single-line transaction', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  it('prevents a single line transaction', () => {
+    GU.selectRow(gridId, 0);
+    FU.buttons.edit();
 
-    element.all(by.css('[class="ui-grid-selection-row-header-buttons ui-grid-icon-ok ng-scope"]')).get(3).click();
+    GU.selectRow(editingGridId, 0);
+    FU.buttons.delete();
+    FU.buttons.submit();
 
-    element.all(by.css('[data-method="delete"]')).click();
-    element.all(by.css('[data-method="save"]')).click();
+    FU.exists(by.id('validation-errored-alert'), true);
 
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    // element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.cancel();
   });
 
-  it('Preventing unbalanced transaction', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  it('prevents an unbalanced transaction', () => {
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 3, 6);
+    editInput(0, 2, 100);
+    editInput(0, 3, 0);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(100);
+    editInput(1, 2, 0);
+    editInput(1, 3, 50);
 
-    browser.actions().mouseMove(creditCell).doubleClick().perform();
-    creditCell.element(by.css('input')).sendKeys(50);
+    FU.buttons.submit();
 
-    element.all(by.css('[data-method="save"]')).click();
+    FU.exists(by.id('validation-errored-alert'), true);
 
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.cancel();
   });
 
-  it('Preventing transaction who have debit and Credit null', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  it('preventing transaction who have debit and credit null', () => {
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
+    editInput(0, 2, 0);
+    editInput(0, 3, 0);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(0);
+    editInput(1, 2, 0);
+    editInput(1, 3, 0);
 
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(0);
-
-    element.all(by.css('[data-method="save"]')).click();
-
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.submit();
+    FU.exists(by.id('validation-errored-alert'), true);
+    FU.buttons.cancel();
   });
 
-  it('Preventing transaction who was debited and Credited in a same line', () => {
-    FU.buttons.grouping();
-    element.all(by.css('[class="ui-grid-icon-plus-squared"]')).get(1).click();
-    element.all(by.css('[class="fa fa-edit"]')).get(1).click();
+  it('preventing transaction who was debited and credited in a same line', () => {
+    FU.buttons.edit();
 
-    const debitCell = GU.getCellName(gridId, 2, 5);
-    const creditCell = GU.getCellName(gridId, 2, 6);
+    editInput(0, 2, 10);
+    editInput(0, 3, 10);
 
-    doubleClick(debitCell);
-    debitCell.element(by.css('input')).sendKeys(50);
+    editInput(1, 2, 10);
+    editInput(1, 3, 0);
 
-    doubleClick(creditCell);
-    creditCell.element(by.css('input')).sendKeys(50);
-
-    element.all(by.css('[data-method="save"]')).click();
-
-    components.notification.hasWarn();
-    element.all(by.css('[data-method="cancel"]')).click();
-    element.all(by.css('[class="ui-grid-icon-minus-squared"]')).get(0).click();
-    FU.buttons.grouping();
+    FU.buttons.submit();
+    FU.exists(by.id('validation-errored-alert'), true);
+    FU.buttons.cancel();
   });
 });

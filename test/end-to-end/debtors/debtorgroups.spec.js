@@ -27,6 +27,9 @@ describe('Debtor Groups Management', function () {
     FU.buttons.create();
 
     FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
+
+    FU.uiSelect('GroupUpdateCtrl.group.color', "Jaune");
+
     components.accountSelect.set('47001');
     FU.input('GroupUpdateCtrl.group.max_credit', '1200');
     FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');

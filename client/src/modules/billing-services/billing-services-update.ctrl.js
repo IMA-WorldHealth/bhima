@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesUpdateController', BillingServicesUpdateController);
 
 BillingServicesUpdateController.$inject = [
-  '$state', 'BillingServicesService', '$uibModalInstance', 'util',
+  '$state', 'BillingServicesService', '$uibModalInstance', 'util', 'appcache'
 ];
 
 /**
@@ -12,8 +12,15 @@ BillingServicesUpdateController.$inject = [
  * Importantly, both this controller and the BillingServicesUpdateController
  * use the same template, billing-services/form.html.
  */
-function BillingServicesUpdateController($state, BillingServices, ModalInstance, util) {
+function BillingServicesUpdateController($state, BillingServices, ModalInstance, util, AppCache) {
   var vm = this;
+  var cache = AppCache('BillingServices');
+
+  if($state.params.id){
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }  
 
   // the form title is defined in the JS to allow us to reuse templates
   vm.title = 'BILLING_SERVICES.FORM.UPDATE';
@@ -42,7 +49,7 @@ function BillingServicesUpdateController($state, BillingServices, ModalInstance,
   function startup() {
 
     // load the billing service by id
-    BillingServices.read($state.params.id)
+    BillingServices.read(vm.stateParams.id)
       .then(function (service) {
 
         // set the label to the label of the fetched service
@@ -75,7 +82,7 @@ function BillingServicesUpdateController($state, BillingServices, ModalInstance,
     }
 
      // submit data to the server
-    return BillingServices.update($state.params.id, vm.model)
+    return BillingServices.update(vm.stateParams.id, vm.model)
       .then(function (data) {
         ModalInstance.close(data.id);
       })

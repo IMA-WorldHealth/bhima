@@ -53,7 +53,7 @@ function lookupDebtorGroup(uid) {
   const sql = `
     SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
-      apply_subsidies, apply_discounts, apply_billing_services
+      apply_subsidies, apply_discounts, apply_billing_services, color
     FROM debtor_group
     WHERE uuid = ?;
   `;
@@ -130,8 +130,8 @@ function create(req, res, next) {
   data.uuid = db.bid(data.uuid || uuid.v4());
 
   db.exec(sql, data)
-    .then(function () {
-      res.status(201).json({ uuid: uuid.unparse(data.uuid) });
+    .then(() => {
+      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
     })
     .catch(next)
     .done();
@@ -164,7 +164,7 @@ function update(req, res, next) {
 
       return lookupDebtorGroup(req.params.uuid);
     })
-    .then(function (group) {
+    .then((group) => {
       res.status(200).json(group);
     })
     .catch(next)
@@ -205,20 +205,24 @@ function list(req, res, next) {
      * (SELECT COUNT(uuid) from debtor where group_uuid = debtor_group.uuid) as total_debtors
      */
     sql = `
-      SELECT BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id, BUID(debtor_group.location_id) as location_id, 
-        debtor_group.phone, debtor_group.email, debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
-        BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at, debtor_group.apply_subsidies, debtor_group.apply_discounts, 
-        debtor_group.apply_billing_services, COUNT(debtor.uuid) as total_debtors, account.number AS account_number
+      SELECT BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id,
+        BUID(debtor_group.location_id) as location_id, debtor_group.phone, debtor_group.email,
+        debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
+        BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at,
+        debtor_group.apply_subsidies, debtor_group.apply_discounts, debtor_group.apply_billing_services,
+        COUNT(debtor.uuid) as total_debtors, account.number AS account_number, color
       FROM debtor_group
       JOIN account ON account.id =  debtor_group.account_id
-      LEFT JOIN debtor
-      ON debtor.group_uuid = debtor_group.uuid
+      LEFT JOIN debtor ON debtor.group_uuid = debtor_group.uuid
     `;
 
     delete req.query.detailed;
   }
 
   const filters = new FilterParser(req.query);
+
+  filters.equals('locked', 'locked', 'debtor_group');
+  filters.equals('is_convention', 'is_convention', 'debtor_group');
 
   filters.setOrder('ORDER BY debtor_group.name');
   filters.setGroup('GROUP BY debtor_group.uuid');
@@ -233,11 +237,12 @@ function list(req, res, next) {
 }
 
 /**
- * GET /debtor_groups/{:uuid}/invoices?balanced=1
+ * GET /debtor_groups/:uuid/invoices?balanced=1
  *
  * @function invoices
  *
- * @description This function is responsible for getting all invoices of a specified debtor group
+ * @description
+ * This function is responsible for getting all invoices of a specified debtor group.
  *
  */
 function invoices(req, res, next) {
@@ -280,7 +285,7 @@ function loadInvoices(params) {
   let sqlInvoices = `
     SELECT BUID(i.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, i.reference) AS reference,
       SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit - credit) AS balance, BUID(entity_uuid) AS entity_uuid,
-      i.date
+      i.date, entity_map.text AS entityReference
     FROM (
       SELECT record_uuid AS uuid, trans_date AS date, debit_equiv AS debit, credit_equiv AS credit,
         entity_uuid, invoice.reference, invoice.project_id
@@ -309,6 +314,7 @@ function loadInvoices(params) {
       WHERE entity_uuid IN (?) AND invoice.reversed <> 1
     ) AS i
     JOIN project ON i.project_id = project.id
+    JOIN entity_map ON i.entity_uuid = entity_map.uuid
     WHERE i.uuid NOT IN (
       SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
     )

@@ -1,0 +1,25 @@
+<div ng-form="PatientGroupForm" bh-patient-group-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validateTrigger && PatientGroupForm.patientGroup_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+        name="patientGroup_uuid" 
+        ng-model="$ctrl.patientGroupUuid"
+        on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PATIENT_GROUP' | translate }}">{{$select.selected.name}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="patientGroup.uuid as patientGroup in $ctrl.patientGroups | filter: { 'name': $select.search }">
+        <span ng-bind-html="patientGroup.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="PatientGroupForm.patientGroup_uuid.$error" ng-show="$ctrl.validateTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -104,7 +104,6 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
-
   /**
    * Invokes a purchase order receipt
    *
@@ -321,7 +320,7 @@ function ReceiptModal(Modal, Receipts) {
    */
   function stockExitDepotReceipt(documentUuid, notifyCreated) {
     var opts = { title : 'STOCK.RECEIPT.EXIT_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
-    var promise = Receipts.stockExitDepotReceipt(documentUuid, { renderer: opts.renderer });
+    var promise = Receipts.stockExitDepotReceipt(documentUuid, {renderer : opts.renderer});
     return ReceiptFactory(promise, opts);
   }
 
@@ -332,7 +331,7 @@ function ReceiptModal(Modal, Receipts) {
    */
   function stockEntryDepotReceipt(documentUuid, notifyCreated) {
     var opts = { title : 'STOCK.RECEIPT.ENTRY_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
-    var promise = Receipts.stockEntryDepotReceipt(documentUuid, { renderer: opts.renderer });
+    var promise = Receipts.stockEntryDepotReceipt(documentUuid, {renderer: opts.renderer});
     return ReceiptFactory(promise, opts);
   }
 

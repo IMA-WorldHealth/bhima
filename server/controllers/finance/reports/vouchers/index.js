@@ -8,6 +8,7 @@
  */
 
 const _ = require('lodash');
+const shared = require('../shared');
 const ReportManager = require('../../../../lib/ReportManager');
 const Vouchers = require('../../vouchers');
 const pdf = require('../../../../lib/renderers/pdf');
@@ -86,7 +87,14 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
   const options = _.clone(req.query);
-  _.extend(options, { csvKey : 'rows', filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape' });
+  const filters = shared.formatFilters(options);
+  _.extend(options, {
+    csvKey : 'rows',
+    filename : 'VOUCHERS.GLOBAL.REPORT',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
 
   let reportInstance;
 
@@ -97,14 +105,11 @@ function report(req, res, next) {
     return next(e);
   }
 
-  return Vouchers.find(options)
-    .then((vouchers) => {
-      const data = {
-        rows     : vouchers,
-        dateFrom : req.query.dateFrom,
-        dateTo   : req.query.dateTo,
-      };
+  const data = { filters };
 
+  return Vouchers.find(options)
+    .then(rows => {
+      _.extend(data, { rows });
       return reportInstance.render(data);
     })
     .then((result) => {

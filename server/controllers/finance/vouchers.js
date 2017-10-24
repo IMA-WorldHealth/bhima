@@ -15,7 +15,6 @@
  * @requires lib/errors/BadRequest
  */
 
-
 const _ = require('lodash');
 const uuid = require('node-uuid');
 
@@ -25,6 +24,8 @@ const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
+
+const shared = require('./shared');
 
 const entityIdentifier = identifiers.VOUCHER.key;
 
@@ -39,6 +40,7 @@ exports.create = create;
 
 exports.find = find;
 exports.lookupVoucher = lookupVoucher;
+exports.safelyDeleteVoucher = safelyDeleteVoucher;
 
 /**
  * GET /vouchers
@@ -107,11 +109,28 @@ function lookupVoucher(vUuid) {
     });
 }
 
+// NOTE(@jniles) - this is used to find references for both vouchers and credit notes.
+const REFERENCE_SQL = `
+  v.uuid IN (
+    SELECT DISTINCT voucher.uuid FROM voucher JOIN voucher_item
+      ON voucher.uuid = voucher_item.voucher_uuid
+    WHERE voucher_item.document_uuid = ? OR voucher.reference_uuid = ?
+  )`;
+
 function find(options) {
+  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
+
   const filters = new FilterParser(options, { tableAlias : 'v' });
+  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
+  let typeIds = [];
+
+  if (options.type_ids) {
+    typeIds = typeIds.concat(options.type_ids);
+  }
 
   const sql = `
-    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+    SELECT
+      BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
       BUID(v.reference_uuid) AS reference_uuid
@@ -123,23 +142,32 @@ function find(options) {
 
   delete options.detailed;
 
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
-  filters.period('defaultPeriod', 'date');
+  filters.period('period', 'date');
+  filters.dateFrom('custom_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
 
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
   filters.fullText('description');
 
   // @todo - could this be improved
+  filters.custom('entity_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE entity_uuid = ?)');
+
+  filters.custom('type_ids', 'v.type_id IN (?)', [typeIds]);
+
+  // @todo - could this be improved
   filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
+
+  filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
+  filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY v.date DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 
@@ -151,7 +179,7 @@ function find(options) {
  */
 function create(req, res, next) {
   // alias both the voucher and the voucher items
-  const voucher = req.body.voucher;
+  const { voucher } = req.body;
   let items = req.body.voucher.items || [];
 
   // a voucher without two items doesn't make any sense in double-entry
@@ -160,8 +188,7 @@ function create(req, res, next) {
   if (items.length < 2) {
     next(
       new BadRequest(
-        `Expected there to be at least two items, but only received
-        ${items.length} items.`
+        `Expected there to be at least two items, but only received ${items.length} items.`
       )
     );
 
@@ -198,7 +225,8 @@ function create(req, res, next) {
   });
 
   // map items into an array of arrays
-  items = _.map(items,
+  items = _.map(
+    items,
     util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid')
   );
 
@@ -210,11 +238,80 @@ function create(req, res, next) {
     .addQuery('INSERT INTO voucher SET ?', [voucher])
     .addQuery(
       'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
-      [items])
+      [items]
+    )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))
     .catch(next)
     .done();
+}
+
+
+/**
+ * @function safelyDeleteVoucher
+ *
+ * @description
+ * This function deletes a voucher from the system.  The method first checks
+ * that a transaction can be deleted using the shared transaction library.
+ * After removing the voucher, it also updates and "reversal" flags if necessary
+ * to ensure that cash payments and invoices do not maintain broken links to
+ * vouchers that have been deleted.
+ */
+function safelyDeleteVoucher(guid) {
+  const DELETE_TRANSACTION = `
+    DELETE FROM posting_journal WHERE record_uuid = ?;
+  `;
+
+  const DELETE_VOUCHER = `
+    DELETE FROM voucher WHERE uuid = ?;
+  `;
+
+  const DELETE_TRANSACTION_HISTORY = `
+    DELETE FROM transaction_history WHERE record_uuid = ?;
+  `;
+
+  const DELETE_DOCUMENT_MAP = `
+    DELETE FROM document_map WHERE uuid = ?;
+  `;
+
+  // NOTE(@jniles) - this is a naive way of undoing reversals.  If no value is
+  // matched, nothing happens.  This can be improved in the future by first
+  // checking if the voucher's transaction_type is a reversal type, and then
+  // performing or skipping this step based on that result.
+
+  const TOGGLE_INVOICE_REVERSAL = `
+    UPDATE invoice
+      JOIN voucher ON invoice.uuid = voucher.reference_uuid
+      SET invoice.reversed = 0
+      WHERE voucher.uuid = ?;
+  `;
+
+  const TOGGLE_CASH_REVERSAL = `
+    UPDATE cash
+      JOIN voucher ON cash.uuid = voucher.reference_uuid
+      SET cash.reversed = 0
+      WHERE voucher.uuid = ?;
+  `;
+
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+
+        // note that we have to delete the toggles before removing the voucher
+        // wholesale.
+        .addQuery(TOGGLE_INVOICE_REVERSAL, binaryUuid)
+        .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid)
+
+        .addQuery(DELETE_VOUCHER, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+
+      return transaction.execute();
+    });
 }

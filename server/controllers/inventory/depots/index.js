@@ -12,6 +12,7 @@ const uuid = require('node-uuid');
 const db = require('../../../lib/db');
 const distributions = require('./distributions');
 const NotFound = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
 
 /** expose depots routes */
 exports.list = list;
@@ -44,12 +45,15 @@ function create(req, res, next) {
   // prevent missing uuid by generating a new one
   req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
+  // enterprise for the depot
+  req.body.enterprise_id = req.session.enterprise.id;
+
   db.exec(query, [req.body])
-  .then(() => {
-    res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -107,12 +111,27 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  var sql =
-    `SELECT BUID(uuid) as uuid, text, is_warehouse
-    FROM depot
-    WHERE enterprise_id = ?;`;
+  const options = req.query;
+  options.enterprise_id = req.session.enterprise.id;
 
-  db.exec(sql, [req.session.enterprise.id])
+  const filters = new FilterParser(options, { tableAlias : 'depot' });
+
+  var sql =`
+    SELECT BUID(uuid) as uuid, text, is_warehouse
+    FROM depot
+  `;
+
+  filters.custom(
+    'user_id',
+    'depot.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
+  );
+
+  filters.equals('enterprise_id');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
   .then((rows) => {
     res.status(200).json(rows);
   })

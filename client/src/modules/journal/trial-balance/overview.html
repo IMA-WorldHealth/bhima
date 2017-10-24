@@ -1,0 +1,23 @@
+<div class="row" style="padding-bottom: 1rem;" ng-if="OverviewCtrl.showErrorLink">
+  <div class="col-xs-12">
+    <a href ui-sref="TrialBalanceErrors" class="text-danger">
+      <strong>
+        <i class="fa fa-exclamation-triangle"></i> <span translate>POSTING_JOURNAL.TRIAL_BALANCE.SHOW_ERRORS</span>
+      </strong>
+    </a>
+  </div>
+</div>
+
+<!-- TODO(@jniles): add ui-grid-expandable -->
+<div
+  id="overview-grid"
+  ui-grid="OverviewCtrl.gridOptions"
+  ui-grid-auto-resize
+  ui-grid-resize-columns
+  ui-grid-exporter>
+  <bh-grid-loading-indicator
+    loading-state="OverviewCtrl.loading"
+    empty-state="OverviewCtrl.gridOptions.data.length === 0"
+    error-state="OverviewCtrl.hasError">
+  </bh-grid-loading-indicator>
+</div>

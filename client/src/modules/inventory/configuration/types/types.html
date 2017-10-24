@@ -2,14 +2,14 @@
   <div class="panel-heading" style="display: flex; justify-content: space-between;">
     <span>
       <i class="fa fa-list"></i>
-      {{ 'INVENTORY.LIST_TYPE' | translate }} ({{ TypesCtrl.typeList.length }})
+      <span translate>INVENTORY.LIST_TYPE</span> ({{ TypesCtrl.typeList.length }})
     </span>
 
     <button
       ng-click="TypesCtrl.addInventoryType()"
       class="btn btn-default btn-sm"
-      type="button"
-      data-create-type><i class="fa fa-plus"></i>
+      type="button" data-create-type>
+      <i class="fa fa-plus"></i> <span translate>FORM.BUTTONS.ADD</span>
     </button>
   </div>
 
@@ -18,7 +18,7 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>{{ 'FORM.LABELS.LABEL' | translate }}</th>
+          <th translate>FORM.LABELS.LABEL</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
@@ -31,7 +31,7 @@
             <a style="cursor:pointer; text-decoration:none;"
               ng-click="TypesCtrl.editInventoryType(type.id)"
               data-edit-type="{{ type.text }}">
-              <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+              <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
             </a>
           </td>
           <td>
@@ -39,7 +39,7 @@
               ng-click="TypesCtrl.deleteInventoryType(type.id)"
               class="text-danger"
               data-delete-type="{{ type.text }}">
-              <i class="fa fa-remove"></i> {{ "FORM.BUTTONS.DELETE" | translate }}
+              <i class="fa fa-remove"></i> <span translate>FORM.BUTTONS.DELETE</span>
             </a>
           </td>
         </tr>

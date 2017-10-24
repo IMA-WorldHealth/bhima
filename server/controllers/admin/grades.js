@@ -31,7 +31,7 @@ function list(req, res, next) {
   }
 
   db.exec(sql)
-    .then(function (rows) {
+    .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -45,7 +45,7 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   lookupGrade(req.params.uuid)
-    .then(function (record) {
+    .then((record) => {
       res.status(200).json(record);
     })
     .catch(next)
@@ -55,17 +55,16 @@ function detail(req, res, next) {
 
 // POST /grade
 function create(req, res, next) {
-  var sql;
-  var data = req.body;
+  const data = req.body;
 
   // Provide UUID if the client has not specified
   data.uuid = db.bid(data.uuid || uuid.v4());
 
-  sql =
+  const sql =
     'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
-    .then(function () {
+    .then(() => {
       res.status(201).json({ uuid : uuid.unparse(data.uuid) });
     })
     .catch(next)
@@ -98,7 +97,7 @@ function del(req, res, next) {
     'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])
-  .then(function (row) {
+  .then((row) => {
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
       throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);

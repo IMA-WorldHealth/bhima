@@ -1,0 +1,74 @@
+{{> head title="REPORT.CLIENTS_REPORT.TITLE" }}
+
+<div class="container">
+
+  {{> header }}
+
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+          {{translate 'REPORT.CLIENTS_REPORT.TITLE'}}
+      </h2>
+      <br/>
+      
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th rowspan="2" class="text-center">{{ translate 'TABLE.COLUMNS.ACCOUNT' }}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.DESIGNATION' }}</th>
+            {{#if detailPrevious}}
+              <th colspan="2" class="text-center">{{ translate 'REPORT.CLIENTS_REPORT.PREVIOUS_MVT'}} {{date this.openningBalanceDate}}</th>
+              {{else}}
+              <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE_PREVIOUS' }}<br /> {{date this.openningBalanceDate}}</th>
+            {{/if}}
+            <th colspan="3" class="text-center">{{date this.dateFrom}} - {{date this.dateTo}}</th>
+            <th rowspan="2" class="text-center">{{ translate 'FORM.LABELS.BALANCE_FINAL' }}</th>
+          </tr>
+          <tr style="background-color:#ddd;">
+            {{#if detailPrevious}}
+              <th class="text-center">{{ translate 'FORM.LABELS.DEBIT' }}</th>
+              <th class="text-center">{{ translate 'FORM.LABELS.CREDIT' }}</th>
+            {{/if}}
+            <th class="text-center">{{ translate 'FORM.LABELS.DEBIT' }}</th>
+            <th class="text-center">{{ translate 'FORM.LABELS.CREDIT' }}</th>
+            <th class="text-center">{{ translate 'FORM.LABELS.BALANCE_INTERMEDIATE' }}</th>            
+          </tr>
+        </thead>
+        <tbody>
+          {{#each lines}}
+            <tr>
+              <td>{{this.accountNumber}}</td>
+              <td>{{this.name}}</td>
+              {{#if ../detailPrevious}}
+                <td class='text-right'> {{currency this.initDebit ../enterprise.currency_id}} </td>
+                <td class='text-right'> {{currency this.initCredit ../enterprise.currency_id}} </td>
+                {{else}}
+                <td class='text-right'> {{currency this.initBalance ../enterprise.currency_id}} </td>
+              {{/if}}
+              <td class='text-right'> {{currency this.debit ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.credit ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.currentBalance ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
+            </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="background-color:#ddd;">
+            <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
+            {{#if detailPrevious}}
+              <th class="text-right">{{currency totalInitDebit enterprise.currency_id}}</th>
+              <th class="text-right">{{currency totalInitCredit enterprise.currency_id}}</th>
+            {{else}}
+              <th class="text-right">{{currency totalInitBalance enterprise.currency_id}}</th>
+            {{/if}}
+            <th class="text-right">{{currency totalCurrentDebit enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentCredit enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentBalance enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalFinalBalance enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>    
+  </div>
+</div>

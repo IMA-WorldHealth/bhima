@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$translate',
-  'FilterService', 'appcache', 'PeriodService',
+  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService',
+  'moment', '$translate', 'FilterService', 'appcache', 'PeriodService',
+  'LanguageService', '$httpParamSerializer', 'bhConstants',
 ];
 
 /**
@@ -13,7 +14,10 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods) {
+function CashService(
+  Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods,
+  Languages, $httpParamSerializer, bhConstants
+) {
   var service = new Api('/cash/');
   var urlCheckin = '/cash/checkin/';
 
@@ -22,6 +26,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
 
   // custom methods
   service.create = create;
+  service.remove = remove;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatCashDescription = formatCashDescription;
   service.openCancelCashModal = openCancelCashModal;
@@ -99,6 +104,19 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
   }
 
   /**
+   * @method remove
+   *
+   * @description
+   * This function removes a cash payment from the database via the transaction
+   * delete route.
+   */
+  function remove(uuid) {
+    var url = '/transactions/'.concat(uuid);
+    return service.$http.delete(url)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
    * @method calculateDisabledIds
    *
    * @description
@@ -124,11 +142,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
     return disabledCurrencyIds;
   }
 
-  cashFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  cashFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   cashFilters.registerCustomFilters([
     { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
@@ -143,7 +157,7 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'invoiceReference', label : 'FORM.LABELS.INVOICE' },
-    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
+    { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' }]);
 
   if (filterCache.filters) {
@@ -183,6 +197,18 @@ function CashService(Modal, Api, Exchange, Session, moment, $translate, Filters,
 
   service.loadCachedFilters = function loadCachedFilters() {
     cashFilters.loadCache(filterCache.filters || {});
+  };
+
+  // downloads a the registry as a given type (pdf, csv)
+  service.download = function download(type) {
+    var filterOpts = cashFilters.formatHTTP();
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   };
 
   /**

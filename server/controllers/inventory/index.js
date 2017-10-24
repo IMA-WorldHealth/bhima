@@ -120,21 +120,17 @@ function updateInventoryItems(req, res, next) {
 
 
 /**
-* GET /inventory/metadata/
-* Returns a description all inventory items in the inventory table.
-* Returns a description the inventory items filter by params.
-*
-* @function searchInventoryItems
+  * GET /inventory/metadata/
+  * Returns a description all inventory items in the inventory table.
+  * Returns a description the inventory items filter by params.
+  *
+  * @function searchInventoryItems
 */
 function getInventoryItems(req, res, next) {
   const params = req.query;
 
   core.getItemsMetadata(params)
     .then((row) => {
-      if (!row.length) {
-        throw core.errors.NO_INVENTORY_ITEMS;
-      }
-
       res.status(200).json(row);
     })
     .catch((error) => {

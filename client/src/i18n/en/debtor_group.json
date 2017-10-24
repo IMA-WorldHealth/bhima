@@ -32,4 +32,9 @@
 "SUBSCRIBED":"Debtors subscribed",
 "UPDATED":"Debtor group record updated",
 "LOADING":"Fetching Debtor Group",
+"CONVENTION":{
+  "TITLE":"Convention",
+  "DESCRIPTION":"The invoices of debtors in this group will be covered by this debtor group's account. Patients belonging to this group will be blocked from paying for their bills at the cash window.",
+  "CANNOT_PAY":"This patient does not pay invoices. Its invoices are covered by"
+},
 "SUBSCRIPTIONS":"Subscriptions"}}

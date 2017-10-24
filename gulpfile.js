@@ -9,6 +9,14 @@
  * Make sure all CSS from vendors are gathered and compiled into a vendor minified
  * CSS file.
  */
+
+// Ubuntu on Windows workaround - network interface is invalid so return empty
+try {
+  require('os').networkInterfaces();
+} catch (e) {
+  require('os').networkInterfaces = () => ({});
+}
+
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const concat = require('gulp-concat');
@@ -181,7 +189,7 @@ gulp.task('client-compile-vendor', () =>
 // writes output to style.min.css
 gulp.task('client-compile-css', () =>
   gulp.src(paths.client.css)
-    .pipe(cssnano())
+    .pipe(cssnano({ zindex : false }))
     .pipe(concat('css/style.min.css'))
     .pipe(gulp.dest(CLIENT_FOLDER))
 );

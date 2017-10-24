@@ -1,29 +1,19 @@
 angular.module('bhima.controllers')
-.controller('GenericIncomeKitController', GenericIncomeKitController);
+  .controller('GenericIncomeKitController', GenericIncomeKitController);
 
-// DI definition
 GenericIncomeKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'CashboxService',
-  'data', 'AccountStoreService', 'bhConstants',
+  '$uibModalInstance', 'NotifyService', 'CashboxService', 'bhConstants', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
-function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStore, bhConstants) {
+function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
   var vm = this;
-
-  // global variables
-  vm.tool = Data;
 
   // expose to the view
   vm.close = Instance.close;
   vm.import = submit;
 
-  // accounts from store
-  AccountStore.accounts()
-    .then(function (data) {
-      vm.accounts = data;
-    })
-    .catch(Notify.handleError);
+  vm.onSelectAccountCallback = onSelectAccountCallback;
 
   // load cashboxes
   Cashbox.read(null, { detailed: 1 })
@@ -32,11 +22,17 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
     })
     .catch(Notify.handleError);
 
+
+  function onSelectAccountCallback(account) {
+    vm.account = account;
+  }
+
   // generate transaction rows
   function generateTransactionRows(params) {
     var rows = [];
-    var debitRow = generateRow();
-    var creditRow = generateRow();
+
+    var debitRow = ToolKits.getBlankVoucherRow();
+    var creditRow = ToolKits.getBlankVoucherRow();
 
     var cashboxAccountId = params.cashbox.account_id;
     var selectedAccountId = params.account.id;
@@ -56,17 +52,6 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
     return rows;
   }
 
-  // generate row element
-  function generateRow() {
-    return {
-      account_id     : undefined,
-      debit          : 0,
-      credit         : 0,
-      reference_uuid : undefined,
-      entity_uuid    : undefined
-    };
-  }
-
   // submission
   function submit(form) {
     if (form.$invalid) { return; }
@@ -79,7 +64,7 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, Data, AccountStor
     Instance.close({
       rows        : bundle,
       description : vm.description,
-      type_id     : bhConstants.transactionType.GENERIC_INCOME, // Generic Income ID
+      type_id     : bhConstants.transactionType.GENERIC_INCOME,
       currency_id : vm.cashbox.currency_id,
     });
   }

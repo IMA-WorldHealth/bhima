@@ -2,12 +2,19 @@ angular.module('bhima.controllers')
   .controller('UserPermissionModalController', UserPermissionModalController);
 
 UserPermissionModalController.$inject = [
-  '$translate', '$http', '$state', 'util', 'UserService', 'NodeTreeService', 'NotifyService'
+  '$translate', '$http', '$state', 'util', 'UserService', 'NodeTreeService', 'NotifyService', 'appcache', 'SessionService'
 ];
 
 
-function UserPermissionModalController($translate, $http, $state, util, Users, NT, Notify) {
+function UserPermissionModalController($translate, $http, $state, util, Users, NT, Notify, AppCache, SessionService) {
   var vm = this;
+  var cache = AppCache('UserPermission');
+
+  if($state.params.id){
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
 
   vm.user = {};   // the user object that is either edited or created
 
@@ -19,6 +26,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
   vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
   vm.toggleParents = toggleParents;
   vm.closeModal = closeModal;
+  vm.loading = true;
 
   // loads the permissions tree for a given user.
   function editPermissions(user) {
@@ -56,7 +64,10 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
 
         vm.units = units;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // used in the view to set permission's tree padding based on depth
@@ -120,6 +131,8 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
     return Users.updatePermissions(vm.user.id, permissions)
       .then(function () {
         Notify.success('USERS.UPDATED');
+        SessionService.reload();
+
         $state.go('users.list', null, {reload : true});
       })
       .catch(Notify.handleError);
@@ -129,7 +142,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
     $state.go('users.list');
   }
 
-  Users.read($state.params.id)
+  Users.read(vm.stateParams.id)
     .then(function (user) {
       vm.user = user;
       editPermissions(user);

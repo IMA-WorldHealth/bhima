@@ -7,8 +7,7 @@
  * @requires NotFound
  */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
 
 /** list currencies in the database */
 exports.list = function list(req, res, next) {
@@ -19,7 +18,7 @@ exports.list = function list(req, res, next) {
     ON currency.id = latest_rate.currency_id group by currency.id;`;
 
   db.exec(sql)
-  .then(function (rows) {
+  .then((rows) => {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -35,7 +34,7 @@ exports.detail = function detail(req, res, next) {
     WHERE c.id = ?;`;
 
   db.one(sql, [req.params.id])
-  .then(function (row) {
+  .then((row) => {
     res.status(200).json(row);
   })
   .catch(next)

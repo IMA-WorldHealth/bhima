@@ -1,6 +1,9 @@
 <div class="ui-grid-cell-contents">
   <span uib-dropdown dropdown-append-to-body>
-    <a href uib-dropdown-toggle translate>FORM.BUTTONS.ACTIONS</a>
+    <a href uib-dropdown-toggle>
+      <span translate>FORM.BUTTONS.ACTIONS</span>
+      <i class="fa fa-caret-down"></i>
+    </a>
     <ul class="dropdown-menu-right" uib-dropdown-menu>
       <li>
         <a href="/reports/archive/{{row.entity.uuid}}" download>

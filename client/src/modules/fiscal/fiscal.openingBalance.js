@@ -3,21 +3,23 @@ angular.module('bhima.controllers')
 
 FiscalOpeningBalanceController.$inject = [
   '$state', 'AccountService', 'AccountStoreService', 'FiscalService',
-  'NotifyService', 'util', 'moment', 'uiGridConstants'
+  'NotifyService', 'util', 'moment', 'uiGridConstants', 'SessionService',
 ];
 
 /**
  * This controller is responsible for handling the opening balance of the new fiscal year.
  */
-function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, Notify, util, moment, uiGridConstants) {
+function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
+  Notify, util, moment, uiGridConstants, Session) {
   var vm = this;
 
   var fiscalYearId = $state.params.id;
 
   // expose to the view
-  vm.editBalanceEnabled  = false;
-  vm.showAccountFilter   = false;
-  vm.toggleEditBalance   = toggleEditBalance;
+  vm.enterprise = Session.enterprise;
+  vm.editBalanceEnabled = false;
+  vm.showAccountFilter = false;
+  vm.toggleEditBalance = toggleEditBalance;
   vm.toggleAccountFilter = toggleAccountFilter;
   vm.submit = submit;
 
@@ -26,13 +28,12 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
   vm.gridApi = {};
 
   var columns = [
-    { field : 'number', displayName : '', cellClass : 'text-right', width : 100},
+    { field : 'number', displayName : '', cellClass : 'text-right', width : 100 },
     { field : 'label',
       displayName : 'FORM.LABELS.ACCOUNT',
       cellTemplate : '/modules/accounts/templates/grid.labelCell.tmpl.html',
       headerCellFilter : 'translate',
-      enableFiltering: true,
-      enableColumnMenu: false
+      enableFiltering : true,
     },
     { field : 'debit',
       displayName : 'FORM.LABELS.DEBIT',
@@ -40,8 +41,7 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
       headerCellFilter : 'translate',
       cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
       width : 200,
-      enableFiltering: false,
-      enableColumnMenu: false
+      enableFiltering : false,
     },
     { field : 'credit',
       displayName : 'FORM.LABELS.CREDIT',
@@ -49,9 +49,8 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
       headerCellFilter : 'translate',
       cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
       width : 200,
-      enableFiltering: false,
-      enableColumnMenu: false
-    }
+      enableFiltering : false,
+    },
   ];
 
   vm.gridOptions = {
@@ -62,59 +61,66 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
     enableColumnMenus : false,
     rowTemplate : '/modules/accounts/templates/grid.titleRow.tmpl.html',
     columnDefs : columns,
-    onRegisterApi : onRegisterApi
+    onRegisterApi : onRegisterApi,
   };
+
+  // init
+  init();
 
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
   }
 
-  // get fiscal year
-  Fiscal.read(fiscalYearId)
-  .then(function (fy) {
-    vm.fiscal = fy;
-    return fy.previous_fiscal_year_id;
-  })
-  .then(hasPrevious)
-  .catch(Notify.handleError);
+  // load fiscal year and periodic balance
+  function init() {
+    Fiscal.read(fiscalYearId)
+    .then(function (fy) {
+      vm.fiscal = fy;
+      $state.params.label = vm.fiscal.label;
+      return fy.previous_fiscal_year_id;
+    })
+    .then(hasPrevious)
+    .then(loadPeriodicBalance)
+    .catch(Notify.handleError);
+  }
 
-  // get account
-  Fiscal.periodicBalance({
-    id: fiscalYearId,
-    period_number: 0
-  })
-  .then(function (list) {
-    vm.accounts = list;
-    vm.gridOptions.data = Accounts.order(vm.accounts);
-  })
-  .catch(Notify.handleError);
+  // load periodic balance
+  function loadPeriodicBalance() {
+    return Fiscal.periodicBalance({
+      id : fiscalYearId,
+      period_number : 0,
+    })
+    .then(function (list) {
+      vm.accounts = list;
+      vm.balanced = hasBalancedAccount();
+      vm.gridOptions.data = Accounts.order(vm.accounts);
+    });
+  }
 
   /**
    * @function submit
+   * @description set the opening balance of the fiscal year
    */
-  function submit(form) {
+  function submit() {
     vm.balanced = hasBalancedAccount();
 
-    if (!vm.balanced && vm.hasPositive) {
+    if (!vm.previousFiscalYearExist && !vm.balanced) {
       Notify.danger('ACCOUNT.NOT_BALANCED');
-      return;
-    } else if (!vm.balanced && !vm.hasPositive) {
-      Notify.danger('ACCOUNT.NOT_POSITIVE');
       return;
     }
 
     // set the fiscal year opening balance
     Fiscal.setOpeningBalance({
-      id: fiscalYearId,
-      fiscal: vm.fiscal,
-      accounts: vm.accounts
+      id : fiscalYearId,
+      fiscal : vm.fiscal,
+      accounts : vm.accounts,
     })
     .then(function () {
       Notify.success(vm.previousFiscalYearExist ? 'FORM.INFO.IMPORT_SUCCESS' : 'FORM.INFO.SAVE_SUCCESS');
+      init();
     })
     .catch(Notify.handleError);
-
   }
 
   /**
@@ -143,25 +149,22 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
     var cleanAccounts = vm.accounts.filter(function (item) {
       return (item.debit !== 0 || item.credit !== 0);
     });
-    var debit = sumOf(cleanAccounts, 'debit');
-    var credit = sumOf(cleanAccounts, 'credit');
-    vm.hasPositive = (debit >= 0 && credit >= 0);
-    return (debit === credit) && vm.hasPositive;
+    vm.totalDebit = sumOf(cleanAccounts, 'debit').toFixed(2);
+    vm.totalCredit = sumOf(cleanAccounts, 'credit').toFixed(2);
+    return vm.totalDebit === vm.totalCredit;
   }
 
   /**
    * @function hasPrevious
    * check if the previous fiscal year exists
    */
-  function hasPrevious(previous_fiscal_year_id) {
+  function hasPrevious(previousFiscalYearId) {
+    if (!previousFiscalYearId) { return false; }
 
-    if (!previous_fiscal_year_id) { return false; }
-
-    return Fiscal.read(previous_fiscal_year_id)
+    return Fiscal.read(previousFiscalYearId)
     .then(function (fy) {
-      vm.previousFiscalYearExist = fy.id ? true : false;
-    })
-    .catch(Notify.handleError);
+      vm.previousFiscalYearExist = !!fy.id;
+    });
   }
 
   /**
@@ -175,5 +178,4 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
       return a + b[property];
     }, 0);
   }
-
 }

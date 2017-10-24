@@ -17,7 +17,6 @@ DebtorGroupController.$inject = [
  */
 function DebtorGroupController($state, DebtorGroups) {
   var vm = this;
-
   // pagination configuration
   /** @todo this should all be moved to a component */
   vm.pageSize = 10;
@@ -28,6 +27,7 @@ function DebtorGroupController($state, DebtorGroups) {
   vm.setOrder = setOrder;
 
   vm.state = $state;
+  vm.colors = DebtorGroups.colors;
 
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },

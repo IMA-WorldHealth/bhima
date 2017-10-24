@@ -18,6 +18,9 @@ angular.module('bhima.routes')
         url         : '/vouchers',
         controller  : 'VoucherController as VoucherCtrl',
         templateUrl : 'modules/vouchers/voucher-registry.html',
+        params : {
+          filters : [],
+        },
       })
 
       .state('simpleVouchers.barcode', {

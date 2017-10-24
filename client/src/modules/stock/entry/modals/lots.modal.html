@@ -1,48 +1,58 @@
 <form 
   name="FindForm"
   bh-submit="$ctrl.submit(FindForm)"
-  bh-form-defaults
   novalidate>
 
   <div class="modal-header">
-    <div class="headercrumb">
-      <i class="fa fa-tags"></i> 
-      <h3 style="margin: 0px;">{{ $ctrl.inventory.inventory.label }}</h3>
-    </div>
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="static" translate>STOCK.ENTRY</li>
+      <li class="title">{{ $ctrl.stockLine.label }}</li>
+    </ol>
   </div>
 
   <div class="modal-body clearfix">
     <div class="form-group">
-      <label translate>FORM.LABELS.GLOBAL_QUANTITY</label>
+      <label class="control-label" translate>FORM.LABELS.GLOBAL_QUANTITY</label>
+      
+      <div ng-if="$ctrl.entryType === 'purchase' || $ctrl.entryType === 'transfer_reception'">
+        <span class="form-control-static">{{ $ctrl.stockLine.quantity }}</span>
+      </div>
+
       <input 
-        ng-disabled="$ctrl.entryType === 'purchase'" 
+        ng-if="$ctrl.entryType !== 'purchase' && $ctrl.entryType !== 'transfer_reception'" 
         class="form-control" 
         type="number" 
-        ng-model="$ctrl.inventory.quantity" 
+        ng-model="$ctrl.stockLine.quantity" 
         ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-        ng-change="$ctrl.handleChange($ctrl.inventory)"
+        ng-change="$ctrl.checkAll()"
         min="0">
     </div>
 
     <div class="form-group">
       <label translate>STOCK.UNIT_COST</label>
-      <div class="input-group">
-        <input 
-          ng-disabled="$ctrl.entryType === 'purchase'" 
+
+      <div ng-if="!$ctrl.isCostEditable">
+        <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.enterprise.currencyLabel }} </span>
+      </div>
+
+      <div ng-if="$ctrl.isCostEditable" class="input-group">
+        <input  
           class="form-control" 
           type="number" 
-          ng-model="$ctrl.inventory.unit_cost"
-          ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-          ng-change="$ctrl.handleChange($ctrl.inventory)">
+          ng-model="$ctrl.stockLine.unit_cost"
+          ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}">
         <span class="input-group-addon">{{ $ctrl.enterprise.currencySymbol }}</span>
       </div>
     </div>
 
+    <!-- No need of defining lot label if it is a transfer reception -->
     <div class="text-right" style="margin-bottom: 5px;"> 
       <button type="button"
         data-add-lot
         ng-click="$ctrl.addLot()"
-        class="btn btn-default">
+        class="btn btn-default"
+        ng-disabled="$ctrl.entryType === 'transfer_reception'">
         <span class="fa fa-plus-circle"></span> 
         <span translate>FORM.LABELS.ADD</span>
       </button>
@@ -64,10 +74,23 @@
       </div>
     </div>
 
-    <p ng-if="$ctrl.maxLotReached" class="alert alert-warning" style="margin: 5px 0px;">
-      <i class="fa fa-warning"></i> 
-      <span translate>FORM.INFO.MAX_LOT_REACHED</span>
-    </p>
+    <div ng-if="$ctrl.hasInvalidEntries">
+      <div ng-if="$ctrl.hasNoLot" class="alert alert-warning">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.WARNINGS.NO_LOT</span>
+      </div>
+
+      <div ng-if="$ctrl.isSomeLineIncorrect" class="alert alert-danger">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.ERRORS.STOCK_LINE</span>
+      </div>
+
+      <div ng-if="$ctrl.isQuantityIncorrect" class="alert alert-danger">
+        <i class="fa fa-warning"></i> 
+        <span translate>FORM.ERRORS.LOT_QUANTITY</span>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">
