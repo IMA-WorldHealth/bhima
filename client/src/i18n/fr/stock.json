@@ -35,7 +35,7 @@
     "EXIT_PATIENT"    : "Distribution vers un patient",
     "EXIT_SERVICE"    : "Distribution vers un service",
     "EXIT_LOSS"       : "Perte",
-    "EXIT_INDIVIDIOUS" : "Distribution aux individus",
+    "EXIT_INDIVIDUAL" : "Distribution aux individus",
     "FILE"            : "Fiche de stock",
     "FLUX"            : "Raison",
     "FROM"            : "Provenance",

@@ -6,7 +6,7 @@ StockEntryExitTypeService.$inject = [];
 function StockEntryExitTypeService() {
   var $ctrl = this;
 
-  $ctrl.entryExitTypeList = [
+  var entryExitTypeList = [
     { label : 'patient',
       labelKey : 'PATIENT_REG.ENTITY',
       descriptionKey : 'STOCK.PATIENT_DISTRIBUTION',
@@ -77,8 +77,8 @@ function StockEntryExitTypeService() {
   function getAllowedTypes(depot) {
     if (!depot || !depot.uuid) { return []; }
 
-    return $ctrl.entryExitTypeList.map(function (item) {
-      item.allowed = depot[item.allowedKey];
+    return entryExitTypeList.map(function (item) {
+      item.isAllowed = depot[item.allowedKey];
       return item;
     });
   }
@@ -93,7 +93,7 @@ function StockEntryExitTypeService() {
    * @param {boolean} isEntry
    */
   function filterByEntry(isEntry) {
-    return $ctrl.entryExitTypeList.filter(function (item) {
+    return entryExitTypeList.filter(function (item) {
       return item.isEntry === isEntry;
     });
   }

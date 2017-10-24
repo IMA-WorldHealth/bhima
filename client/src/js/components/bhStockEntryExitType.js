@@ -25,8 +25,10 @@ function StockEntryExitTypeController(StockEntryExitType) {
     reloadEntryExitTypes();
   };
 
-  $ctrl.$onChanges = function onChanges() {
-    reloadEntryExitTypes();
+  $ctrl.$onChanges = function onChanges(changes) {
+    if (changes.depot) {
+      reloadEntryExitTypes();
+    }
   };
 
   $ctrl.display = function () {

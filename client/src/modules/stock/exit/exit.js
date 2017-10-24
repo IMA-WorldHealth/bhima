@@ -165,20 +165,22 @@ function StockExitController(
       entity : {},
     };
 
-    vm.depot = cache.depot;
-
     // make sure that the depot is loaded if it doesn't exist at startup.
-    if (vm.depot) {
-      setupStock();
-      loadInventories(vm.depot);
-      checkValidity();
+    if (cache.depotUuid) {
+      Depots.read(cache.depotUuid)
+      .then(function (depot) {
+        vm.depot = depot;
+        setupStock();
+        loadInventories(vm.depot);
+        checkValidity();
+      });
     } else {
       changeDepot()
-        .then(setupStock)
-        .then(function () {
-          loadInventories(vm.depot);
-          checkValidity();
-        });
+      .then(setupStock)
+      .then(function () {
+        loadInventories(vm.depot);
+        checkValidity();
+      });
     }
   }
 
@@ -408,7 +410,7 @@ function StockExitController(
     return Depots.openSelectionModal(vm.depot)
       .then(function (depot) {
         vm.depot = depot;
-        cache.depot = vm.depot;
+        cache.depotUuid = vm.depot.uuid;
       });
   }
 
