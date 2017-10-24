@@ -35,7 +35,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
   // these properties will be used to filter employee data form the client
   var searchQueryOptions = [
     'display_name', 'sex', 'code', 'dateBirthFrom', 'dateBirthTo', 'dateEmbaucheFrom',
-    'dateEmbaucheTo', 'grade_id', 'fonction_id', 'service_id', 'is_medical',
+    'dateEmbaucheTo', 'grade_uuid', 'fonction_id', 'service_id', 'is_medical',
   ];
 
   // assign already defined custom filters to searchQueries object
@@ -58,10 +58,10 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
     vm.searchQueries.service_id = service.id;
   };
 
-  // custom filter grade_id - assign the value to the searchQueries object
+  // custom filter grade_uuid - assign the value to the searchQueries object
   vm.onSelectGrade = function onSelectGrade(grade) {
-    displayValues.grade_id = grade.text;
-    vm.searchQueries.grade_id = grade.uuid;
+    displayValues.grade_uuid = grade.text;
+    vm.searchQueries.grade_uuid = grade.uuid;
   };
 
   // custom filter fonction_id - assign the value to the searchQueries object

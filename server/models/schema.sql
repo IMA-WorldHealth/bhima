@@ -614,7 +614,7 @@ CREATE TABLE `employee` (
   `sex`           VARCHAR(1) NOT NULL,
   `dob`           DATETIME NOT NULL,
   `date_embauche` DATETIME DEFAULT NULL,
-  `grade_id`      BINARY(16) NOT NULL,
+  `grade_uuid`      BINARY(16) NOT NULL,
   `nb_spouse`     INT(2) DEFAULT 0,
   `nb_enfant`     INT(3) DEFAULT 0,
   `daily_salary`  FLOAT DEFAULT 0,
@@ -634,12 +634,12 @@ CREATE TABLE `employee` (
   KEY `fonction_id` (`fonction_id`),
   KEY `service_id` (`service_id`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  KEY `grade_id` (`grade_id`),
+  KEY `grade_uuid` (`grade_uuid`),
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  FOREIGN KEY (`grade_id`) REFERENCES `grade` (`uuid`),
+  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

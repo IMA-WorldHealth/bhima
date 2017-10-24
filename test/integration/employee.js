@@ -26,7 +26,7 @@ describe('(/employees) the employees API endpoint', function () {
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
     daily_salary : 50,
     bank : 'BIAC',
     bank_account : '00-99-88-77',
@@ -50,7 +50,7 @@ describe('(/employees) the employees API endpoint', function () {
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
     daily_salary : 50,
     bank : 'BIAC',
     bank_account : '00-99-88-77',
@@ -173,7 +173,7 @@ describe('(/employees) the employees API endpoint', function () {
         var expected = [
           'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account',
           'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
-          'grade_id', 'basic_salary', 'service_id',
+          'grade_uuid', 'basic_salary', 'service_id',
           'creditor_uuid', 'locked'
         ];
 
