@@ -14,7 +14,8 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
   // bind the depot passed into the controller
   vm.depot = depot;
   vm.selectDepot = selectDepot;
-  vm.hasSelectedDepot = hasSelectedDepot;
+  vm.hasSelectedDepot = hasSelectedDepot; 
+  vm.isDepotRequired = Depots.isDepotRequired;
   vm.loading = false;
 
   // this is a toggle for a one-time message shown to the user if they do not have a cached depot.

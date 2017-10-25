@@ -23,7 +23,8 @@ function StockAdjustmentController(
 
   // TODO - merge all stock caches together so that the same depot is shared across all stock modules
   var cache = new AppCache('StockAdjustment');
-
+  //delete cache.depot;
+  
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
@@ -231,7 +232,11 @@ function StockAdjustmentController(
   }
   
   function changeDepot() {
-    return Depots.openSelectionModal(vm.depot)
+
+    // if requirement is true the modal cannot be canceled
+    var requirement = !cache.depot;
+  
+    return Depots.openSelectionModal(vm.depot, requirement)
       .then(function (depot) {
         vm.depot = depot;
         cache.depot = vm.depot;

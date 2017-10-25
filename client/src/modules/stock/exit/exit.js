@@ -42,6 +42,8 @@ function StockExitController(
   
 
   var cache = new AppCache('StockExit');
+  //delete cache.depotUuid;
+
   var mapExit = {
     patient: { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
     service: { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
@@ -407,7 +409,10 @@ function StockExitController(
   }
 
   function changeDepot() {
-    return Depots.openSelectionModal(vm.depot)
+    // if requirement is true the modal cannot be canceled
+    var requirement = !cache.depotUuid;
+
+    return Depots.openSelectionModal(vm.depot, requirement)
       .then(function (depot) {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;

@@ -55,7 +55,8 @@
     type="button"
     class="btn btn-default"
     ng-click="$ctrl.cancel()"
-    ng-disabled="!$ctrl.hasSelectedDepot()"
+
+    ng-disabled="$ctrl.isDepotRequired"
     translate>
     FORM.BUTTONS.CANCEL
   </button>
