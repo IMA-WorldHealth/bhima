@@ -20,13 +20,18 @@ function DepotService(Api, Modal) {
    * Opens the selection modal to allow a user to select a depot.
    *
    * @returns Promise - a promise containing the selected depot.
+   * 
+   * @param isDepotRequired helps to keep the modal displayed as long as no depot was submitted
    */
-  service.openSelectionModal = function openSelectionModal(depot) {
+  service.openSelectionModal = function openSelectionModal(depot, isDepotRequired) {
+    
+    service.isDepotRequired = isDepotRequired || false; 
     return Modal.open({
       controller : 'SelectDepotModalController as $ctrl',
       templateUrl : 'modules/stock/depot-selection.modal.html',
       resolve : {
         depot: function injectDepot() { return depot; },
+
       },
       backdrop : 'static',
       keyboard : false,
