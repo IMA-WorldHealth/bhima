@@ -50,6 +50,7 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
   vm.edit = edit;
   vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
+
   vm.depotManagement = depotManagement;
 
   function edit(user) {
@@ -106,6 +107,7 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
+
 
   loadGrid();
 }
