@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
-UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'DropdownBehaviorService', 'uiGridConstants'];
+UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants'];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, Users, Notify, Modal, DropdownBehavior, uiGridConstants) {
+function UsersController($state, Users, Notify, Modal, uiGridConstants) {
   var vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -50,8 +50,7 @@ function UsersController($state, Users, Notify, Modal, DropdownBehavior, uiGridC
   vm.edit = edit;
   vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
-  //caret behavior
-  vm.dropdownBehavior = DropdownBehavior.setPosition;
+
   vm.depotManagement = depotManagement;
 
   function edit(user) {
