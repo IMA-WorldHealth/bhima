@@ -36,7 +36,7 @@
 <div class="flex-content">
   <div class="container-fluid">
 
-    <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
+    <form name="StockExitForm" bh-submit="StockCtrl.submit(StockExitForm)" novalidate>
       <!-- destination -->
       <div class="row">
         <bh-stock-entry-exit-type
@@ -59,7 +59,7 @@
 
           <!-- note -->
           <div class="form-group"
-            ng-class="{ 'has-error' : StockForm.$submitted && StockForm.description.$invalid }">
+            ng-class="{ 'has-error' : StockExitForm.$submitted && StockExitForm.description.$invalid }">
             <label class="control-label">
               <span translate>FORM.LABELS.DESCRIPTION</span>
             </label>
@@ -71,7 +71,7 @@
               ng-maxlength="StockCtrl.maxLength"
               required>
             </textarea>
-            <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
+            <div class="help-block" ng-messages="StockExitForm.description.$error" ng-show="StockExitForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
@@ -119,13 +119,19 @@
         style="height: 300px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns>
+        <bh-grid-loading-indicator
+          loading-state="StockCtrl.loading"
+          empty-state="StockCtrl.selectableInventories.length === 0"
+          error-state="StockCtrl.hasError"
+          empty-state-message="STOCK.EMPTY">
+        </bh-grid-loading-indicator>
       </div>
 
       <!-- footer -->
       <div class="row" style="margin-top: 5px;">
         <div class="col-xs-6 col-xs-offset-6">
           <div class="text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockForm)" type="button" translate>
+            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockExitForm)" type="button" translate>
               FORM.BUTTONS.SUSPEND
             </button>
 
