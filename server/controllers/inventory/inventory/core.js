@@ -5,7 +5,7 @@
 * handling.
 */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
@@ -53,7 +53,8 @@ exports.errorHandler = errorHandler;
 */
 function createItemsMetadata(record, session) {
   record.enterprise_id = session.enterprise.id;
-  record.uuid = db.bid(record.uuid || uuid.v4());
+  const recordUuid = record.uuid || uuid();
+  record.uuid = db.bid(recordUuid);
   record.group_uuid = db.bid(record.group_uuid);
 
   const sql = 'INSERT INTO inventory SET ?;';
@@ -62,7 +63,7 @@ function createItemsMetadata(record, session) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record])
-  .then(() => uuid.unparse(record.uuid));
+    .then(() => recordUuid);
 }
 
 /**

@@ -19,7 +19,7 @@
  * @requires mkdirp
  * @requires multer
  * @requires winston
- * @requires node-uuid
+ * @requires uuid/v4
  *
  * @todo
  *  1) Ensure that a max-size is properly handled with error codes
@@ -30,7 +30,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
 const winston = require('winston');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 // configure the uploads directory based on global process variables
 const defaultDir = 'uploads';                     // note: this must be a relative path
@@ -74,7 +74,7 @@ function Uploader(prefix, fields) {
       mkdirp(folder, err => cb(err, folder));
     },
     filename : (req, file, cb) => {
-      const id = uuid.v4();
+      const id = uuid();
 
       // ensure that a link is passed to the req.file object
       file.link = `${directory}${id}`;

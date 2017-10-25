@@ -8,7 +8,7 @@
  *
  * @requires lodash
  * @requires lib/db
- * @requires lib/node-uuid
+ * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  * @requires Topic
@@ -16,7 +16,7 @@
 
 const _ = require('lodash');
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 const Topic = require('../../../lib/topic');
@@ -97,7 +97,7 @@ function update(req, res, next) {
   // inserted into the database
   const assignmentData = req.body.assignments.map(patientGroupId => {
     return [
-      db.bid(uuid.v4()),
+      db.bid(uuid()),
       patientId,
       db.bid(patientGroupId),
     ];

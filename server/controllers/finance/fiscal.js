@@ -11,7 +11,7 @@
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
@@ -528,7 +528,7 @@ function closing(req, res, next) {
       const transaction = db.transaction();
 
       voucher = {
-        uuid : db.bid(uuid.v4()),
+        uuid : db.bid(uuid()),
         date : fiscal.end_date,
         project_id : projectId,
         currency_id : currencyId,
@@ -538,7 +538,7 @@ function closing(req, res, next) {
         amount : 0, // not necessary
       };
 
-      const voucherDocumentUuid = db.bid(uuid.v4());
+      const voucherDocumentUuid = db.bid(uuid());
 
       // insert voucher
       transaction.addQuery('INSERT INTO voucher SET ?', voucher);
@@ -553,7 +553,7 @@ function closing(req, res, next) {
         const credit = value >= 0 ? 0 : Math.abs(value);
 
         const profitParams = [
-          db.bid(uuid.v4()),
+          db.bid(uuid()),
           item.id,
           debit,
           credit,
@@ -574,7 +574,7 @@ function closing(req, res, next) {
         const credit = value > 0 ? Math.abs(value) : 0;
 
         const chargeParams = [
-          db.bid(uuid.v4()),
+          db.bid(uuid()),
           item.id,
           debit,
           credit,
@@ -595,7 +595,7 @@ function closing(req, res, next) {
         const credit = value >= 0 ? Math.abs(value) : 0;
 
         const resultParams = [
-          db.bid(uuid.v4()),
+          db.bid(uuid()),
           accountId,
           debit,
           credit,

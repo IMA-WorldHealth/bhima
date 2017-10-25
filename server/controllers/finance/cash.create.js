@@ -1,5 +1,4 @@
-
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const _ = require('lodash');
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -25,7 +24,7 @@ function processCashItems(cashUuid, items) {
 
   items.map((item) => {
     item.cash_uuid = cashUuid;
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = item.uuid || uuid();
     return db.convert(item, ['uuid', 'invoice_uuid']);
   });
 
@@ -103,7 +102,8 @@ function create(req, res, next) {
   }
 
   // generate a UUID if it not provided.
-  const cashUuid = db.bid(data.uuid || uuid.v4());
+  const cashUuidString = data.uuid || uuid();
+  const cashUuid = db.bid(cashUuidString);
 
   // trust the server's session info over the client's
   data.project_id = req.session.project.id;
@@ -146,14 +146,14 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(cashUuid) });
+      res.status(201).json({ uuid : cashUuidString });
 
       Topic.publish(Topic.channels.FINANCE, {
         event   : Topic.events.CREATE,
         entity  : Topic.entities.PAYMENT,
         user_id : req.session.user.id,
         user    : req.session.user.display_name,
-        uuid    : uuid.unparse(cashUuid),
+        uuid    : cashUuidString,
       });
     })
     .catch(next)

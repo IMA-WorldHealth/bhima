@@ -8,7 +8,7 @@
  *
  * @requires q
  * @requires lodash
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires lib/db
  * @requires lib/filter
  * @requires lib/errors/NotFound
@@ -17,7 +17,7 @@
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 // module dependencies
 const db = require('../../../lib/db');
@@ -288,7 +288,7 @@ function editTransaction(req, res, next) {
       // record the transaction history once the transaction has been updated.
       const row = _transactionToEdit[0];
       const transactionHistory = {
-        uuid : db.bid(uuid.v4()),
+        uuid : db.bid(uuid()),
         record_uuid : db.bid(row.record_uuid),
         user_id : req.session.user.id,
       };
@@ -478,7 +478,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-  const voucherUuid = uuid.v4();
+  const voucherUuid = uuid();
   const recordUuid = db.bid(req.params.uuid);
   const params = [
     recordUuid,

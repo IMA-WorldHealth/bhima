@@ -8,7 +8,7 @@
 * @todo(jniles) - review this module
 */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 const distributions = require('./distributions');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -43,14 +43,15 @@ function create(req, res, next) {
   var query = 'INSERT INTO depot SET ?';
 
   // prevent missing uuid by generating a new one
-  req.body.uuid = db.bid(req.body.uuid || uuid.v4());
+  const depotUuid = req.body.uuid || uuid();
+  req.body.uuid = db.bid(depotUuid);
 
   // enterprise for the depot
   req.body.enterprise_id = req.session.enterprise.id;
 
   db.exec(query, [req.body])
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
+      res.status(201).json({ uuid : depotUuid });
     })
     .catch(next)
     .done();
@@ -67,11 +68,11 @@ function remove(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   db.exec(query, [uid])
-  .then(() => {
-    res.status(204).send({});
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -88,22 +89,22 @@ function update(req, res, next) {
   if (req.body.uuid) { delete req.body.uuid; }
 
   db.exec(query, [req.body, uid])
-  .then(() => {
-    const sql = `
-      SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
-        allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-        allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
-      FROM depot WHERE uuid = ?`;
-    return db.exec(sql, [uid]);
-  })
-  .then((rows) => {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
-    }
-    res.status(200).send(rows);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      const sql = `
+        SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
+          allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+          allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
+        FROM depot WHERE uuid = ?`;
+      return db.exec(sql, [uid]);
+    })
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound(`Could not find a depot with uuid ${req.params.uuid}`);
+      }
+      res.status(200).send(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -119,7 +120,7 @@ function list(req, res, next) {
   const filters = new FilterParser(options, { tableAlias : 'depot' });
 
   const sql = `
-  SELECT 
+  SELECT
     BUID(uuid) as uuid, text, is_warehouse,
     allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
     allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
@@ -154,7 +155,7 @@ function detail(req, res, next) {
   var uid = db.bid(req.params.uuid);
 
   var sql = `
-    SELECT 
+    SELECT
       BUID(d.uuid) as uuid, d.text, d.is_warehouse,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
@@ -352,31 +353,31 @@ function listAvailableLots(req, res, next) {
   const depot = req.params.depotId;
 
   const sql =
-    `SELECT 
-      unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, 
-      label, expiration_date 
+    `SELECT
+      unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code,
+      label, expiration_date
      FROM
      (
-       SELECT 
-        purchase_item.unit_price, stock.tracking_number, stock.lot_number, 
-        (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, 
-        stock.expiration_date 
+       SELECT
+        purchase_item.unit_price, stock.tracking_number, stock.lot_number,
+        (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label,
+        stock.expiration_date
        FROM
-        consumption JOIN stock ON consumption.tracking_number = stock.tracking_number 
-        JOIN 
-          inventory ON inventory.uuid = stock.inventory_uuid 
-        JOIN 
+        consumption JOIN stock ON consumption.tracking_number = stock.tracking_number
+        JOIN
+          inventory ON inventory.uuid = stock.inventory_uuid
+        JOIN
           purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
           purchase_item.inventory_uuid = stock.inventory_uuid
         WHERE consumption.canceled = 0 AND depot_uuid = ?
         UNION ALL
-       SELECT 
-        purchase_item.unit_price, stock.tracking_number, stock.lot_number, 
+       SELECT
+        purchase_item.unit_price, stock.tracking_number, stock.lot_number,
         (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-        inventory.code, inventory.text AS label, stock.expiration_date 
-       FROM movement 
-       JOIN stock ON movement.tracking_number = stock.tracking_number 
-       JOIN inventory ON inventory.uuid = stock.inventory_uuid 
+        inventory.code, inventory.text AS label, stock.expiration_date
+       FROM movement
+       JOIN stock ON movement.tracking_number = stock.tracking_number
+       JOIN inventory ON inventory.uuid = stock.inventory_uuid
        JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
         purchase_item.inventory_uuid = stock.inventory_uuid
        WHERE movement.depot_entry= ? OR movement.depot_exit= ?)
@@ -405,38 +406,38 @@ function detailAvailableLots(req, res, next) {
   const depot = req.params.depotId;
   const uid = req.params.uuid;
   const sql =
-    `SELECT 
-      tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date 
+    `SELECT
+      tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date
      FROM
       (
-        SELECT 
-          stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, 
-          inventory.code, stock.expiration_date 
-        FROM 
-          consumption 
-        JOIN stock ON consumption.tracking_number = stock.tracking_number 
+        SELECT
+          stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity,
+          inventory.code, stock.expiration_date
+        FROM
+          consumption
+        JOIN stock ON consumption.tracking_number = stock.tracking_number
         JOIN inventory ON inventory.uuid = stock.inventory_uuid
         WHERE consumption.canceled = 0 AND depot_uuid = ? AND inventory.uuid = ?
         UNION ALL
-      SELECT 
-        stock.tracking_number, stock.lot_number, 
+      SELECT
+        stock.tracking_number, stock.lot_number,
         (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-        inventory.code, stock.expiration_date 
-      FROM 
-        movement 
-      JOIN stock ON movement.tracking_number = stock.tracking_number 
-      JOIN inventory ON inventory.uuid = stock.inventory_uuid 
+        inventory.code, stock.expiration_date
+      FROM
+        movement
+      JOIN stock ON movement.tracking_number = stock.tracking_number
+      JOIN inventory ON inventory.uuid = stock.inventory_uuid
       WHERE (movement.depot_entry= ? OR movement.depot_exit= ?) AND inventory.uuid= ?)
     AS t GROUP BY tracking_number;`;
 
   return db.exec(sql, [depot, uid, depot, depot, depot, uid])
-  .then((rows) => {
-    // @TODO -- this should be in the WHERE/HAVING condition
-    var ans = rows.filter((item) => { return item.quantity > 0; });
-    res.status(200).json(ans);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      // @TODO -- this should be in the WHERE/HAVING condition
+      var ans = rows.filter((item) => { return item.quantity > 0; });
+      res.status(200).json(ans);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

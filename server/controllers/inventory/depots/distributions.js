@@ -16,7 +16,7 @@
 */
 
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const q = require('q');
 
 // @fixme remove this file

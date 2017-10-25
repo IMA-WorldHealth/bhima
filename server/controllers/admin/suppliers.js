@@ -8,7 +8,7 @@
 
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const Topic = require('../../lib/topic');
 
 function lookupSupplier(uid) {
@@ -84,10 +84,10 @@ function create(req, res, next) {
   const data = req.body;
 
   // provide uuid if the client has not specified
-  const recordUuid = data.uuid || uuid.v4();
+  const recordUuid = data.uuid || uuid();
   const transaction = db.transaction();
 
-  const creditorUuid = db.bid(uuid.v4());
+  const creditorUuid = db.bid(uuid());
   const creditorGroupUuid = db.bid(data.creditor_group_uuid);
 
   delete data.creditor_group_uuid;

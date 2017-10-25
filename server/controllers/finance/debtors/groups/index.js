@@ -8,13 +8,13 @@
 * @module finance/debtors/groups
 *
 * @requires q
-* @requires node-uuid
+* @requires uuid/v4
 * @requires lib/db
 * @requires lib/util
 * @requires lib/errors/NotFound
 */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../../lib/db');
 const NotFound = require('../../../../lib/errors/NotFound');
 const BadRequest = require('../../../../lib/errors/BadRequest');
@@ -127,11 +127,12 @@ function create(req, res, next) {
   const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
 
   // generate a uuid if one doesn't exist, and convert to binary
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  const recordUuid = data.uuid || uuid();
+  data.uuid = db.bid(recordUuid);
 
   db.exec(sql, data)
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+      res.status(201).json({ uuid : recordUuid });
     })
     .catch(next)
     .done();

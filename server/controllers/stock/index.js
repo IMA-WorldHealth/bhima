@@ -7,12 +7,12 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
- * @requires lib/node-uuid
+ * @requires lib/uuid/v4
  * @requires lib/db
  * @requires stock/core
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../lib/db');
 const core = require('./core');
 
@@ -43,7 +43,7 @@ function createStock(req, res, next) {
   const params = req.body;
   const transaction = db.transaction();
   const document = {
-    uuid: uuid.v4(),
+    uuid: uuid(),
     date: new Date(params.date),
     user: req.session.user.id,
     depot_uuid: params.depot_uuid,
@@ -66,7 +66,7 @@ function createStock(req, res, next) {
 
     // the lot object to insert
     createLotObject = {
-      uuid: db.bid(uuid.v4()),
+      uuid: db.bid(uuid()),
       label: lot.label,
       initial_quantity: lot.quantity,
       quantity: lot.quantity,
@@ -82,7 +82,7 @@ function createStock(req, res, next) {
 
     // the movement object to insert
     createMovementObject = {
-      uuid: db.bid(uuid.v4()),
+      uuid: db.bid(uuid()),
       lot_uuid: createLotObject.uuid,
       depot_uuid: db.bid(document.depot_uuid),
       document_uuid: db.bid(document.uuid),
@@ -126,8 +126,8 @@ function createStock(req, res, next) {
 function createIntegration(req, res, next) {
   const transaction = db.transaction();
   const params = req.body;
-  const identifier = uuid.v4();
-  const documentUuid = uuid.v4();
+  const identifier = uuid();
+  const documentUuid = uuid();
 
   const integration = {
     uuid: db.bid(identifier),
@@ -140,7 +140,7 @@ function createIntegration(req, res, next) {
   transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
-    let lotUuid = uuid.v4();
+    let lotUuid = uuid();
 
     // adding a lot insertion query into the transaction
     transaction.addQuery(`INSERT INTO lot SET ?`, {
@@ -157,7 +157,7 @@ function createIntegration(req, res, next) {
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
-      uuid: db.bid(uuid.v4()),
+      uuid: db.bid(uuid()),
       lot_uuid: db.bid(lotUuid),
       depot_uuid: db.bid(params.movement.depot_uuid),
       document_uuid: db.bid(documentUuid),
@@ -195,7 +195,7 @@ function createMovement(req, res, next) {
   const params = req.body;
 
   const document = {
-    uuid: params.document_uuid || uuid.v4(),
+    uuid: params.document_uuid || uuid(),
     date: new Date(params.date),
     user: req.session.user.id,
   };
@@ -237,7 +237,7 @@ function normalMovement(document, params, metadata) {
   parameters.lots.forEach((lot) => {
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
     createMovementObject = {
-      uuid: db.bid(uuid.v4()),
+      uuid: db.bid(uuid()),
       lot_uuid: db.bid(lot.uuid),
       depot_uuid: db.bid(parameters.depot_uuid),
       document_uuid: db.bid(document.uuid),
@@ -298,7 +298,7 @@ function depotMovement(document, params) {
       entity_uuid: entityUuid,
       is_exit: isExit,
       flux_id: fluxId,
-      uuid: db.bid(uuid.v4()),
+      uuid: db.bid(uuid()),
       lot_uuid: db.bid(lot.uuid),
       document_uuid: db.bid(document.uuid),
       quantity: lot.quantity,
