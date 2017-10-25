@@ -16,6 +16,7 @@
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
+    "EMPTY"           : "You do not have any stock in your depot",
     "ENTRY"           : "Stock Entry",
     "ENTRY_DATE"      : "Entry Date",
     "ENTRY_DOCUMENT"  : "Entry Document",
