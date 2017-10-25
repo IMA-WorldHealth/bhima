@@ -24,7 +24,8 @@ describe('(/users) Users and Permissions', function () {
     password : 'password',
   };
 
-  var depots = ["f9caeb16-1684-43c5-a6c4-47dbac1df296", "d4bb1452-e4fa-4742-a281-814140246877"];  
+  var depots = ["f9caeb16-1684-43c5-a6c4-47dbac1df296", "d4bb1452-e4fa-4742-a281-814140246877"];
+  var cashboxes = [1, 2, 3];
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')
@@ -230,10 +231,43 @@ describe('(/users) Users and Permissions', function () {
   // Reset depot permissions for user
   it('POST /users/:id/depots will reset user depots', function () {
     return agent.post('/users/' + newUser.id + '/depots')
-      .send({})
+      .send({depots : []})
       .then(function (res) {
         expect(res).to.have.status(201);
         return agent.get('/users/' + newUser.id + '/depots');
+      })
+      .then(function (res) {
+        helpers.api.listed(res, 0);
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+
+  // Add cashbox permissions for user
+  it('POST /users/:id/cashboxes will create user cashboxes', function () {
+    return agent.post('/users/' + newUser.id + '/cashboxes')
+      .send({cashboxes : cashboxes}) // just the root node
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get('/users/' + newUser.id + '/cashboxes');
+      })
+      .then(function (res) {
+        helpers.api.listed(res, 3);
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  // Reset cashbox permissions for user
+  it('POST /users/:id/cashboxes will reset user cashboxes', function () {
+    return agent.post('/users/' + newUser.id + '/cashboxes')
+      .send({cashboxes : []})
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get('/users/' + newUser.id + '/cashboxes');
       })
       .then(function (res) {
         helpers.api.listed(res, 0);
