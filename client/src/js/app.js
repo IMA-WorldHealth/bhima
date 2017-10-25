@@ -180,11 +180,6 @@ function uiSelectConfig(config) {
   config.theme = 'bootstrap';
 }
 
-// TODO - remove this
-function qConfig($qProvider) {
-  $qProvider.errorOnUnhandledRejections(false);
-}
-
 // configure services, providers, factories
 bhima.config(['$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
@@ -194,7 +189,6 @@ bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 bhima.config(['$compileProvider', compileConfig]);
-bhima.config(['$qProvider', qConfig]);
 
 // run the application
 bhima.run([
