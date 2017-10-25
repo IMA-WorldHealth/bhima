@@ -65,41 +65,39 @@ function StockMovementsRegistryTests() {
   });
 
   it('find by lots reasons for purchase order', () => {
-    // FIX ME: reasons must not depend on translations
-    // selection with `id` works but it is not completed
-    modal.setMovementReason('Commande d\'achat');
+    modal.setMovementReason(["Commande d'achat"]);
     modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to patient', () => {
     // to patient
-    modal.setMovementReason('Vers un patient');
+    modal.setMovementReason(['Vers un patient']);
     modal.submit();
     GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', () => {
-    modal.setMovementReason('Vers un dépôt');
+    modal.setMovementReason(['Vers un dépôt']);
     modal.submit();
     GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution from depot', () => {
     // from depot
-    modal.setMovementReason('En provenance d\'un dépôt');
+    modal.setMovementReason(['En provenance d\'un dépôt']);
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find by lots reasons for positive adjustement', () => {
-    modal.setMovementReason('Ajustement (Positif)');
+    modal.setMovementReason(['Ajustement (Positif)']);
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find by lots reasons for negative adjustement', () => {
-    modal.setMovementReason('Ajustement (Negatif)');
+    modal.setMovementReason(['Ajustement (Negatif)']);
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });

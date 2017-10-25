@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 SearchMovementsModalController.$inject = [
   'data', 'NotifyService', '$uibModalInstance', 'FluxService',
-  '$translate', 'PeriodService', 'Store', 'util',
+  '$translate', 'PeriodService', 'Store', 'util', 'StockService',
 ];
 
-function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util) {
+function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
 
@@ -18,7 +18,9 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
 
   vm.searchQueries = {};
   vm.defaultQueries = {};
-  vm.selectedFluxes = vm.filters.flux_id || [];
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};  
 
   // load flux
   Flux.read()
@@ -39,15 +41,42 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
     });
   };
 
+  var lastViewFilters = Stock.filter.movement.formatView().customFilters;
+
+  // map key to last display value for lookup in loggedChange
+  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+    object[filter._key] = filter.displayValue;
+    return object;
+  }, {});
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
+    displayValues.depot_uuid = depot.text;
   };
 
   // custom filter inventory_uuid - assign the value to the params object
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
+    displayValues.inventory_uuid = inventory.label;
   };
+
+  // custom filter flux_id - assign the value to the searchQueries object
+  vm.onFluxChange = function onFluxChange(flux) {
+    vm.searchQueries.flux_id = flux;
+    var typeText = '/';
+
+    flux.forEach(function (fluxIds) {
+      vm.fluxes.forEach(function (flux) {
+        if (fluxIds === flux.id) {
+          typeText += flux.label + ' / ';
+        }
+      });
+    });
+
+    displayValues.flux_id = typeText;
+  };
+
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
@@ -69,20 +98,16 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.clear = function clear(key) {
     delete vm.searchQueries[key];
   };
-  vm.clearFluxIds = function () {
-    delete vm.selectedFluxes;
-  };
 
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit() {
-    // fill flux_id in the seach query
-    vm.searchQueries.flux_id = vm.selectedFluxes;
-
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, function (value, key) {
       if (angular.isDefined(value)) {
-        changes.post({ key : key, value : value });
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
 
