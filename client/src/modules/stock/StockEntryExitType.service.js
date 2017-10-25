@@ -4,7 +4,7 @@ angular.module('bhima.services')
 StockEntryExitTypeService.$inject = [];
 
 function StockEntryExitTypeService() {
-  var $ctrl = this;
+  var service = this;
 
   var entryExitTypeList = [
     { label : 'patient',
@@ -56,13 +56,13 @@ function StockEntryExitTypeService() {
       allowedKey : 'allow_entry_transfer' },
   ];
 
-  $ctrl.getAllowedTypes = getAllowedTypes;
+  service.getAllowedTypes = getAllowedTypes;
 
-  $ctrl.getEntryTypeList = function getEntryTypeList() {
+  service.getEntryTypeList = function getEntryTypeList() {
     return filterByEntry(true);
   };
 
-  $ctrl.getExitTypeList = function getExitTypeList() {
+  service.getExitTypeList = function getExitTypeList() {
     return filterByEntry(false);
   };
 
