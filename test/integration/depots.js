@@ -33,6 +33,14 @@ describe('(/depots) The depots API ', () => {
     uuid : uuid.v4(),
     text : 'Edited Depot',
     is_warehouse : 1,
+    allow_entry_purchase : 1,
+    allow_entry_integration : 1,
+    allow_entry_donation : 1,
+    allow_entry_transfer : 1,
+    allow_exit_debtor : 1,
+    allow_exit_service : 1,
+    allow_exit_transfer : 1,
+    allow_exit_loss : 1,
   };
 
   // removable depot
@@ -82,6 +90,30 @@ describe('(/depots) The depots API ', () => {
       expect(res.body[0].text).to.be.equal(editDepot.text);
       expect(res.body[0].is_warehouse).to.exist;
       expect(res.body[0].is_warehouse).to.be.equal(editDepot.is_warehouse);
+
+      expect(res.body[0].allow_entry_purchase).to.exist;
+      expect(res.body[0].allow_entry_purchase).to.be.equal(editDepot.allow_entry_purchase);
+
+      expect(res.body[0].allow_entry_integration).to.exist;
+      expect(res.body[0].allow_entry_integration).to.be.equal(editDepot.allow_entry_integration);
+
+      expect(res.body[0].allow_entry_donation).to.exist;
+      expect(res.body[0].allow_entry_donation).to.be.equal(editDepot.allow_entry_donation);
+
+      expect(res.body[0].allow_entry_transfer).to.exist;
+      expect(res.body[0].allow_entry_transfer).to.be.equal(editDepot.allow_entry_transfer);
+
+      expect(res.body[0].allow_exit_debtor).to.exist;
+      expect(res.body[0].allow_exit_debtor).to.be.equal(editDepot.allow_exit_debtor);
+
+      expect(res.body[0].allow_exit_service).to.exist;
+      expect(res.body[0].allow_exit_service).to.be.equal(editDepot.allow_exit_service);
+
+      expect(res.body[0].allow_exit_transfer).to.exist;
+      expect(res.body[0].allow_exit_transfer).to.be.equal(editDepot.allow_exit_transfer);
+
+      expect(res.body[0].allow_exit_loss).to.exist;
+      expect(res.body[0].allow_exit_loss).to.be.equal(editDepot.allow_exit_loss);
     })
     .catch(helpers.handler);
   });

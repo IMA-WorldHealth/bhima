@@ -19,6 +19,7 @@
     "TITLE" : "Gestion des dépôts",
     "UPDATED" : "Dépôt mise à jour avec succès",
     "WAREHOUSE" : "Entrepôts",
+    "WAREHOUSE_INFO" : "Ce depot est en mesure d'approvisionner d'autres depots",
     "MODAL" : {
       "SELECTION" : "Selectionner Dépôt",
       "NO_DEPOTS" : "Est-ce qu'il n'y a pas des dépôts?",

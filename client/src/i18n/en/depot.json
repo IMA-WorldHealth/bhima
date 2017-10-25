@@ -19,6 +19,7 @@
     "TITLE" : "Depot Management",
     "UPDATED" : "Depot updated with success",
     "WAREHOUSE" : "Warehouse",
+    "WAREHOUSE_INFO" : "This depot can distribute to other depots",
     "MODAL" : {
       "SELECTION" : "Depot Selection",
       "NO_DEPOTS" : "Do not see any depots?",

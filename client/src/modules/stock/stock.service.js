@@ -1,10 +1,10 @@
 angular.module('bhima.services')
     .service('StockModalService', StockModalService);
 
-// dependencies injection 
+// dependencies injection
 StockModalService.$inject = [ '$uibModal' ];
 
-// service definition 
+// service definition
 function StockModalService(Modal) {
   var service = this;
 
