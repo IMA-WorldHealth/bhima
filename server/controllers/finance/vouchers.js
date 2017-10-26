@@ -95,7 +95,8 @@ function lookupVoucher(vUuid) {
     JOIN account a ON a.id = vi.account_id
     LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
     LEFT JOIN document_map ON document_map.uuid = vi.document_uuid
-    WHERE vi.voucher_uuid = ?;
+    WHERE vi.voucher_uuid = ?
+    ORDER BY vi.account_id DESC, vi.debit DESC, vi.credit ASC, entity_reference;
   `;
 
   return db.one(sql, [db.bid(vUuid)])
