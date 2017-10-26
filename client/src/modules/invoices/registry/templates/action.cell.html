@@ -8,7 +8,7 @@
   <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
-      <a data-method="receipt" href ng-click="grid.appScope.openReceiptModal(row.entity.uuid, false)">
+      <a data-method="receipt" href ng-click="grid.appScope.Receipts.invoice(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.VIEW_RECEIPT</span>
       </a>
     </li>

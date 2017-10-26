@@ -21,7 +21,7 @@ function bhReceiptController(ReceiptModal, $log) {
     // make sure the receipt type exists before it is clicked
     var hasCallbackFn = ReceiptModal[$ctrl.type];
     if (!hasCallbackFn) {
-      $log.warn('Warning: Cannot find '
+      $log.error('Warning: Cannot find '
         .concat($ctrl.type)
         .concat(' in ReceiptModalService.'));
     }

@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injection
 VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridGroupingConstants',
-  'TransactionTypeService', 'uiGridConstants', 'bhConstants', 'ReceiptModal',
+  'TransactionTypeService', 'uiGridConstants', 'bhConstants',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
   'ModalService',
 ];
@@ -19,7 +19,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridGroupingConstants, TransactionTypes, uiGridConstants,
-  bhConstants, Receipts, Sorting, Columns, GridState, $state, Modals
+  bhConstants, Sorting, Columns, GridState, $state, Modals
 ) {
   var vm = this;
 
@@ -110,8 +110,6 @@ function VoucherController(
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
 
-  // expose function
-  vm.showReceipt = showReceipt;
   vm.bhConstants = bhConstants;
 
   // search voucher
@@ -126,11 +124,6 @@ function VoucherController(
 
         return load(Vouchers.filters.formatHTTP(true));
       });
-  }
-
-  // showReceipt
-  function showReceipt(uuid) {
-    Receipts.voucher(uuid);
   }
 
   function load(filters) {

@@ -5,7 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService'
+  'ModalService', 'ReceiptModal',
 ];
 
 /**
@@ -15,7 +15,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state, Modals
+  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts
 ) {
   var vm = this;
 
@@ -29,13 +29,13 @@ function InvoiceRegistryController(
   var state;
 
   vm.search = search;
-  vm.openReceiptModal = Receipt.invoice;
   vm.creditNoteReceipt = Receipt.creditNote;
   vm.onRemoveFilter = onRemoveFilter;
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
   vm.download = Invoices.download;
   vm.deleteInvoice = deleteInvoiceWithConfirmation;
+  vm.Receipts = Receipts;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
