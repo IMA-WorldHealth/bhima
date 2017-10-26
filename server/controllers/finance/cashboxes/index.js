@@ -43,7 +43,7 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT cash_box_account_currency.id, label, account_id, is_auxiliary, transfer_account_id, symbol,
+      SELECT cash_box_account_currency.id, label, account_id, is_auxiliary, transfer_account_id, symbol, cash_box_id,
       cash_box_account_currency.currency_id
       FROM cash_box JOIN cash_box_account_currency ON
       cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON
@@ -53,6 +53,18 @@ function list(req, res, next) {
 
   filters.equals('project_id');
   filters.equals('is_auxiliary');
+
+  if (req.query.detailed === '1') {
+    filters.custom(
+      'user_id',
+      'cash_box_account_currency.cash_box_id IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?)'
+    );
+  } else {
+    filters.custom(
+      'user_id',
+      'cash_box.id IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?)'
+    );
+  }
 
   filters.setOrder('ORDER BY label');
 

@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('cash_reportController', CashReportConfigController);
 
 CashReportConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'CashboxService',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state'
 ];
 
-function CashReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Cashbox) {
+function CashReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   var vm = this;
   var cache = new AppCache('configure_cash_report');
   var reportUrl = 'reports/finance/cash_report';
@@ -24,16 +24,6 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
   ];
 
   checkCachedConfiguration();
-
-  Cashbox.read(null, { detailed: 1 })
-    .then(function (cashboxes) {
-      cashboxes.forEach(function (cashbox) {
-        cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
-      });
-
-      vm.cashboxes = cashboxes;
-    })
-    .catch(Notify.handleError);
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;

@@ -16,10 +16,10 @@
         append-to-body="true"
         ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}">
-        <span>{{ $item.hrlabel }}</span>
+        <span>{{ $item.label }}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter: { hrlabel : $select.search } | orderBy: 'hrlabel')">
-        <span ng-bind-html="cashbox.hrlabel | highlight:$select.search"></span>
+      <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter: { label : $select.search } | orderBy: 'label')">
+        <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 

@@ -16,12 +16,11 @@ describe('Depots Management', () => {
 
   const Page = new DepotPage();
   /**
-  /* The implementation of the E2E test of the assignment of a repository
-  /* to a user is added in the E2E test of the repository and not in the 
-  /* user test because the E2E test on the users runs after the repository test. 
+  /* The implementation of the E2E test of the assignment of a Depot
+  /* to a user is added in the E2E test of the Depot and not in the 
+  /* user test because the E2E test on the users runs after the Depot test. 
   */
   const userPage = new UserPage();
-  const userCreateUpdatePage = new UserCreateUpdatePage();
 
   const depot = {
     text : 'E2E_new_depot',

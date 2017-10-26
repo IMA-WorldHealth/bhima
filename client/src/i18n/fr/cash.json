@@ -26,7 +26,9 @@
       "CURRENT_PROJECT_CASHBOXES" : "Caisses pour ce Projet",
       "OTHER_PROJECT_CASHBOXES" : "Caisses pour tous Projets",
       "NO_OTHER_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour les autres projets.",
-      "NO_CURRENT_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour votre projet."
+	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "Il n'y a aucune caisses enregistrer pour les autres projets dont vous avez le droit d'accès.",
+      "NO_CURRENT_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour votre projet.",
+	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "Il n'y a aucune caisses dans votre projet dont vous avez le droit d'accès."
     },
     "TITLE":"Caisse Auxilliaire",
     "TRANSFER":{

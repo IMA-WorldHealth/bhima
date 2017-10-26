@@ -39,7 +39,11 @@
   </ul>
 
   <!-- show message if there are no cashboxes for current project -->
-  <p ng-if="!$ctrl.hasCurrentProjectCashboxes" translate>
+  <p ng-if="!$ctrl.hasCurrentProjectCashboxes && $ctrl.hasCurrentCashboxes" translate>
+    CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES_ACCESS
+  </p>
+
+  <p ng-if="!$ctrl.hasCurrentCashboxes" translate>
     CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES
   </p>
 
@@ -64,7 +68,12 @@
   </ul>
 
   <!-- show message if there are no cashboxes for current project -->
-  <p ng-if="!$ctrl.hasOtherProjectCashboxes" translate>
+  <p ng-if="!$ctrl.hasOtherProjectCashboxes && $ctrl.hasOtherCashboxes" translate>
+    CASH.SELECTION.NO_OTHER_PROJECT_CASHBOXES_ACCESS
+  </p>
+
+  <!-- show message if there are no cashboxes for current project -->
+  <p ng-if="!$ctrl.hasOtherCashboxes" translate>
     CASH.SELECTION.NO_OTHER_PROJECT_CASHBOXES
   </p>
 

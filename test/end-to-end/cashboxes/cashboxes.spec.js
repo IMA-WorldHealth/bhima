@@ -41,7 +41,7 @@ describe('Cashboxes', () => {
 
   it('successfully edits a cashbox', () => {
     // navigate to the update form for the second item
-    update(1);
+    update(3);
 
     FU.input('UpdateCtrl.box.label', 'New Cashbox Name');
     FU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
@@ -78,7 +78,7 @@ describe('Cashboxes', () => {
   it('rejects a missing account on the currency modal', () => {
     helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
-    update(3);
+    update(0);
 
     // get a locator for the currencies
     const USD = element(by.css('[data-currency-id="2"]'));

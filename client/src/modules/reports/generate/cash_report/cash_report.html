@@ -65,24 +65,11 @@
             </div>
 
             <!-- cashbox selection  -->
-            <div 
-                class="form-group"
-                ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
-                <label class="control-label">
-                    <i class="fa fa-briefcase"></i> <span translate>FORM.SELECT.CASHBOX</span>
-                </label>
-                <select
-                    class="form-control"
-                    name="cashbox"
-                    ng-model="ReportConfigCtrl.reportDetails.account_id"
-                    ng-options="cash.account_id as cash.hrlabel for cash in ReportConfigCtrl.cashboxes track by cash.id"
-                    required>
-                    <option value="" disabled>{{ "FORM.SELECT.CASHBOX" | translate }}</option>
-                </select>
-                <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-            </div>
+            <bh-cashbox-select
+              cashboxId = "ReportConfigCtrl.reportDetails.account_id"
+              name = "cashbox"
+              on-select-callback = "ReportConfigCtrl.onSelectCashbox(cashbox)">
+            </bh-cashbox-select>
 
             <!-- Date interval  -->
             <bh-date-interval

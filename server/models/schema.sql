@@ -1989,6 +1989,6 @@ CREATE TABLE `cashbox_permission` (
   UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
   KEY `user_id` (`user_id`),
   KEY `cashbox_id` (`cashbox_id`),
-  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box_account_currency` (`id`),
+  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

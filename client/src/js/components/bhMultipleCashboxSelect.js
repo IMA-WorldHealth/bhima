@@ -33,12 +33,8 @@ function MultipleCashboxSelectController(Cashbox, Notify) {
     $ctrl.cashboxesIds = $ctrl.cashboxesIds || [];
 
     // load all Cashbox
-    Cashbox.read(null, { detailed: 1 })
+    Cashbox.read()
       .then(function (cashboxes) {
-        cashboxes.forEach(function (cashbox) {
-          cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
-        });
-
         $ctrl.cashboxes = cashboxes;
       })
       .catch(Notify.handleError);
