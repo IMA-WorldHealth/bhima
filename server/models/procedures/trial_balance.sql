@@ -50,6 +50,15 @@ BEGIN
     WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date)
     GROUP BY pj.record_uuid;
 
+  -- check to make sure that the fiscal year is not closed
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+      JOIN fiscal_year ON pj.fiscal_year_id = fiscal_year.id
+    WHERE fiscal_year.locked <> 0
+    GROUP BY pj.record_uuid;
+
   -- check to make sure that all lines of a transaction have a description
   INSERT INTO stage_trial_balance_errors
     SELECT pj.record_uuid, pj.trans_id, 'POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION' AS code
