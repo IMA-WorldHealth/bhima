@@ -55,7 +55,7 @@ function UserPage() {
   }
 
   /**
-   * simulte a link clicking on the grid to show depot dialog
+   * simulte a link clicking on the grid to show cashbox dialog
    **/
   function editUserCashbox(n) {
     GA.clickOnMethod(n, actionLinkColumn, 'cashbox', 'users-grid');
