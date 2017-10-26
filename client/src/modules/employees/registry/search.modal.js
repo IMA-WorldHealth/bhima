@@ -81,6 +81,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
     ModalInstance.close();
   }
 
+
   // returns the parameters to the parent controller
   function submit(form) {
     if (form.$invalid) { return; }
@@ -90,7 +91,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
         var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        changes.post({ key: key, value: value, displayValue: value });
       }
     });
 

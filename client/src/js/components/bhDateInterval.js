@@ -37,6 +37,7 @@ function bhDateInterval(moment, bhConstants) {
   vm.search = search;
   vm.clear = clear;
 
+
   vm.$onInit = function $onInit() {
     vm.options = [
       { translateKey: 'FORM.LABELS.TODAY', fn: day, range: 'day' },
@@ -48,8 +49,6 @@ function bhDateInterval(moment, bhConstants) {
     vm.dateFormat = bhConstants.dayOptions.format;
 
     vm.pickerOptions = { showWeeks: false };
-
-    // start up the modal
     startup();
   };
 
@@ -79,6 +78,21 @@ function bhDateInterval(moment, bhConstants) {
     vm.dateTo = moment().endOf('year').toDate();
   }
 
+ 
+  function ajustDateType(myvar){
+    if(myvar instanceof Date || !myvar) { return myvar;}
+    return new Date(myvar);
+  }
+
+  function custom(){
+    if(vm.dateFrom){
+      vm.dateFrom  = ajustDateType(vm.dateFrom);
+    }
+    if(vm.dateTo){
+      vm.dateTo  = ajustDateType(vm.dateTo);
+    }
+  }
+
   function clear() {
     delete vm.dateFrom;
     delete vm.dateTo;
@@ -86,20 +100,15 @@ function bhDateInterval(moment, bhConstants) {
 
   function startup() {
     var option;
-
-    // set today as default date plage value
-    if (!vm.dateFrom && !vm.dateTo) {
-      search(vm.options[0]);
-    }
-
+    
     option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
     // set the default option according the mode
     if (option !== -1) {
       search(vm.options[option]);
       vm.pickerOptions = vm.mode;
-    } else {
-      search(vm.options[0]);
+    } else { 
+      custom();
     }
 
     // set clean mode
