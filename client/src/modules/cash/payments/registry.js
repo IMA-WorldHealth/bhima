@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
-  'ReceiptModal', 'ModalService', 'GridSortingService', '$state', 'FilterService',
+  'ModalService', 'GridSortingService', '$state', 'FilterService',
   'GridColumnService', 'GridStateService', 'ModalService',
 ];
 
@@ -15,8 +15,8 @@ CashPaymentRegistryController.$inject = [
  * print and search utilities for the registry.`j
  */
 function CashPaymentRegistryController(
-  Cash, bhConstants, Notify, Session, uiGridConstants, Receipt, Modal, Sorting,
-  $state, Filters, Columns, GridState, Modals
+  Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
+  Filters, Columns, GridState, Modals
 ) {
   var vm = this;
 
@@ -34,9 +34,6 @@ function CashPaymentRegistryController(
   // global variables
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
-
-  // bind the cash payments receipt
-  vm.openReceiptModal = Receipt.cash;
 
   // expose to the view
   vm.search = search;
@@ -79,7 +76,7 @@ function CashPaymentRegistryController(
     // @TODO(jniles): This is temporary, as it doesn't take into account USD payments
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
-    footerCellClass: 'text-right',
+    footerCellClass : 'text-right',
   }, {
     field : 'cashbox_label',
     displayName : 'TABLE.COLUMNS.CASHBOX',
