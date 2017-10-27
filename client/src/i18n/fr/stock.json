@@ -90,6 +90,7 @@
     "RECEPTION_DESCRIPTION" : "Reception de stock",
     "RECEPTION_INTEGRATION" : "Entrée de stock par intégration",
     "RECEPTION_DONATION" : "Entrée de stock en provenance d'une donation",
+    "REQUIRES_PO"     : "Nécessitant une commande d'achat",
     "RESPONSIBLE"     : "Gestionnaire du stock",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
