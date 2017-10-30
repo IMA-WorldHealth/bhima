@@ -1,8 +1,9 @@
 angular.module('bhima.controllers')
-.controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
+  .controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
 
 EmployeeRegistryModalController.$inject = [
-  '$uibModalInstance', 'bhConstants', 'moment', 'ServiceService', 'Store', 'util', 'filters', 'EmployeeService'
+  '$uibModalInstance', 'bhConstants', 'moment', 'ServiceService', 'Store',
+  'util', 'filters', 'EmployeeService',
 ];
 
 /**
@@ -22,10 +23,10 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
   vm.filters = filters;
   vm.searchQueries = {};
   vm.defaultQueries = {};
-  vm.today = new Date();
+  vm.formatHiringDates = formatHiringDates;
 
   var lastViewFilters = Employees.filters.formatView().customFilters;
-  
+
   // map key to last display value for lookup in loggedChange
   var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
     object[filter._key] = filter.displayValue;
@@ -50,7 +51,6 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
   vm.submit = submit;
   vm.cancel = cancel;
   vm.clear = clear;
-
 
   // custom filter service_id - assign the value to the searchQueries object
   vm.onSelectService = function onSelectService(service) {
@@ -81,6 +81,17 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
     ModalInstance.close();
   }
 
+  // stores the hiring dates in the display value
+  function formatHiringDates() {
+    if (vm.searchQueries.dateEmbaucheFrom) {
+      displayValues.dateEmbaucheFrom = vm.searchQueries.dateEmbaucheFrom;
+    }
+
+    if (vm.searchQueries.dateEmbaucheTo) {
+      displayValues.dateEmbaucheTo = vm.searchQueries.dateEmbaucheTo;
+    }
+  }
+
   // returns the parameters to the parent controller
   function submit(form) {
     if (form.$invalid) { return; }
@@ -90,7 +101,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
         var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        changes.post({ key : key, value : value, displayValue : displayValue });
       }
     });
 

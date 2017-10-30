@@ -7,7 +7,7 @@
  *
  * @example
  * ```html
- * <bh-date-interval date-from="$MyCtrl.dateFrom" date-to="$MyCtrl.dateTo" >
+ * <bh-date-interval date-from="$MyCtrl.dateFrom" date-to="$MyCtrl.dateTo">
  * </bh-date-interval>
  * ```
  */
@@ -15,15 +15,16 @@ angular.module('bhima.components')
   .component('bhDateInterval', {
     templateUrl: '/modules/templates/bhDateInterval.tmpl.html',
     controller: bhDateInterval,
-    bindings: {
-      validationTrigger: '<', // validation trigger action
-      dateFrom: '=',          // date from
-      dateTo: '=',            // date to
-      dateId: '@',            // date identifier
-      required: '<',          // true or false
-      onChange: '<',          // on change action
-      mode: '@'               // the date mode (day|month|year)
-    }
+    bindings : {
+      validationTrigger : '<', // validation trigger action
+      dateFrom : '=', // date from
+      dateTo : '=', // date to
+      dateId : '@?', // date identifier
+      required : '<?', // true or false
+      onChange : '<?', // on change action
+      label : '@?',
+      mode : '@?', // the date mode (day|month|year)
+    },
   });
 
 // dependencies injection
@@ -37,19 +38,20 @@ function bhDateInterval(moment, bhConstants) {
   vm.search = search;
   vm.clear = clear;
 
+
   vm.$onInit = function $onInit() {
     vm.options = [
-      { translateKey: 'FORM.LABELS.TODAY', fn: day, range: 'day' },
-      { translateKey: 'FORM.LABELS.THIS_WEEK', fn: week, range: 'week' },
-      { translateKey: 'FORM.LABELS.THIS_MONTH', fn: month, range: 'month' },
-      { translateKey: 'FORM.LABELS.THIS_YEAR', fn: year, range: 'year' },
+      { translateKey : 'FORM.LABELS.TODAY', fn : day, range : 'day' },
+      { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week, range : 'week' },
+      { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month, range : 'month' },
+      { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year, range : 'year' },
     ];
+
+    vm.label = vm.label || 'FORM.SELECT.DATE_INTERVAL';
 
     vm.dateFormat = bhConstants.dayOptions.format;
 
-    vm.pickerOptions = { showWeeks: false };
-
-    // start up the modal
+    vm.pickerOptions = { showWeeks : false };
     startup();
   };
 
@@ -79,6 +81,16 @@ function bhDateInterval(moment, bhConstants) {
     vm.dateTo = moment().endOf('year').toDate();
   }
 
+  function custom() {
+    if (vm.dateFrom) {
+      vm.dateFrom = new Date(vm.dateFrom);
+    }
+
+    if (vm.dateTo) {
+      vm.dateTo = new Date(vm.dateTo);
+    }
+  }
+
   function clear() {
     delete vm.dateFrom;
     delete vm.dateTo;
@@ -87,11 +99,6 @@ function bhDateInterval(moment, bhConstants) {
   function startup() {
     var option;
 
-    // set today as default date plage value
-    if (!vm.dateFrom && !vm.dateTo) {
-      search(vm.options[0]);
-    }
-
     option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
     // set the default option according the mode
@@ -99,7 +106,7 @@ function bhDateInterval(moment, bhConstants) {
       search(vm.options[option]);
       vm.pickerOptions = vm.mode;
     } else {
-      search(vm.options[0]);
+      custom();
     }
 
     // set clean mode
