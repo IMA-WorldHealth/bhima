@@ -25,14 +25,14 @@
 
     <li class="divider"></li>
     <li ng-if="!row.entity.deactivated">
-      <a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
+      <a data-method="deactivate" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
         <span class="text-danger">
           <i class="fa fa-lock"></i> <span translate>FORM.LABELS.DEACTIVATE</span>
         </span>
       </a>
     </li>
     <li ng-if="row.entity.deactivated">
-      <a data-method="activated" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
+      <a data-method="activate" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
         <span class="text-danger">
           <i class="fa fa-unlock"></i><span translate>FORM.LABELS.ACTIVATE</span>
         </span>

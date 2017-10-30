@@ -51,7 +51,7 @@ describe('Patient Record', () => {
   });
 
   it('admits a patient', () => {
-    const diagnosisLabel = 'dio';
+    const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
@@ -62,7 +62,7 @@ describe('Patient Record', () => {
   });
 
   it('dicharges a patient with a new diagnosis', () => {
-    const diagnosisLabel = 'iod';
+    const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);

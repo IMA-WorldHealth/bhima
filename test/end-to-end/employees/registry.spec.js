@@ -1,4 +1,3 @@
-/* global element, by, browser */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
@@ -25,7 +24,8 @@ describe('Employees Registry', () => {
 
   it('list all registered employees', () => {
     employeeRegistryPage.employeeCount(
-        employeeCount, `The number of registered employee should be ${employeeCount}`
+      employeeCount,
+      `The number of registered employee should be ${employeeCount}`
     );
   });
 
@@ -49,7 +49,7 @@ describe('Employees Registry', () => {
 
   it('should find no female employee registered in the last year.', () => {
     employeeRegistryPage.search();
-    searchModalPage.setDateRange('year');
+    searchModalPage.setRegistrationDateRange('year');
     searchModalPage.selectSex('female');
     searchModalPage.submit();
 
@@ -72,11 +72,10 @@ describe('Employees Registry', () => {
 
     searchModalPage.selectService('Administration');
     searchModalPage.selectFonction('Infirmier');
-    searchModalPage.selectGrade('1.1');        
+    searchModalPage.selectGrade('1.1');
     searchModalPage.submit();
 
     employeeRegistryPage.employeeCount(1, `The number of filtered employee should be 1`);
     employeeRegistryPage.clearFilter();
   });
-
 });

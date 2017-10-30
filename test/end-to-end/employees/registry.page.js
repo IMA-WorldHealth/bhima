@@ -1,9 +1,7 @@
-/* global element, by */
-
 /**
  * This class represents an employee registry page
  * behaviour so it is an employee page object
- **/
+ */
 
 const FU = require('../shared/FormUtils');
 const grid = require('../shared/GridUtils');
