@@ -1,11 +1,11 @@
 <ng-form name="DateIntervalForm" novalidate>
 
-  <div 
+  <div
     class="form-group"
     ng-class="{'has-error': $ctrl.validationTrigger && (DateIntervalForm.dateFrom.$invalid || DateIntervalForm.dateTo.$invalid)}"
     style="margin-bottom:0">
     <label class="control-label">
-      <span translate>FORM.SELECT.DATE_INTERVAL</span>
+      <span translate>{{ $ctrl.label }}</span>
       <span ng-if="$ctrl.selected" class="label label-warning" translate>{{ $ctrl.selected }}</span>
     </label>
   </div>
