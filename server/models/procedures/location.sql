@@ -1,5 +1,25 @@
--- this stored procedure merges two locations, deleting the first location_uuid after
--- all locations have been migrated.
+/*
+
+--------
+OVERVIEW
+--------
+
+This procedures file contains procedures to ensure data integrity.  It allows an
+administrator to merge two locations if they have database access. No clientside
+scripts currently access these procedures, but we may write a client interface
+in the future.
+*/
+
+
+/*
+CALL MergeLocations()
+
+DESCRIPTION
+This procedure merges two locations by changing all references to a single uuid.
+A "location" is synonymous with a village.uuid.  The first parameter is the
+village to remove, and the second is the new village uuid.  A user might want to
+do this when there are duplicated locations.
+*/
 CREATE PROCEDURE MergeLocations(
   IN beforeUuid BINARY(16),
   IN afterUuid BINARY(16)
