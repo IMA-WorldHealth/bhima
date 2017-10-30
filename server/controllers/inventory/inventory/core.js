@@ -8,7 +8,7 @@
 const uuid = require('node-uuid');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
-
+const _ = require('lodash');
 // this should be a const in future ES versions
 const errors = {
   MISSING_PARAMETERS : {
@@ -78,14 +78,22 @@ function updateItemsMetadata(record, identifier) {
   if (record.group_uuid) {
     record.group_uuid = db.bid(record.group_uuid);
   }
+ 
 
   const sql = 'UPDATE inventory SET ? WHERE uuid = ?;';
+  // if there is no property to update this query won't work
+
+  if (_.isEmpty(record)) { //there is no change, but user has submitted
+    return getItemsMetadataById(identifier);
+  }
+
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record, db.bid(identifier)])
-    .then(() => getItemsMetadataById(identifier));
+  .then(() => getItemsMetadataById(identifier));
+
 }
 
 /**

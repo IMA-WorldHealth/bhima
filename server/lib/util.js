@@ -16,8 +16,7 @@ const moment = require('moment');
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
-exports.resolveObject = resolveObject;
-
+exports.resolveObject = resolveObject; 
 /**
  * @function take
  *
@@ -117,4 +116,3 @@ function dateFormatter(rows, dateFormat) {
 
   return rows;
 }
-
