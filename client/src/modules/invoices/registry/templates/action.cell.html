@@ -5,7 +5,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.Receipts.invoice(row.entity.uuid)">
