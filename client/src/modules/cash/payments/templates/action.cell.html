@@ -4,7 +4,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{ row.entity.reference }}"class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}"class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a href data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">
