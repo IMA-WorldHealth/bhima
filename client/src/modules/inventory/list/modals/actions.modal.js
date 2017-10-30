@@ -44,9 +44,9 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
 
     // if no changes were made, simply dismiss the modal
     if (util.isEmptyObject(record)) {
-      cancel();
+      return cancel();
     }
-
+ 
     var promise = vm.isCreateState ?
       Inventory.create(record) :
       Inventory.update(vm.identifier, record);
