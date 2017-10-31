@@ -175,4 +175,14 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
     })
     .catch(helpers.handler);
   });
+
+  it('GET /cashboxes privileges for the current User On Each Auxiliary Cashboxes', function () {
+    return agent.get('/cashboxes/privileges')
+      .then(function (res) {
+        helpers.api.listed(res, numAuxCashboxes);
+        expect(res.body[0]).to.contain.keys('id', 'label', 'project_id', 'is_auxiliary', 'user_id');
+      })
+      .catch(helpers.handler);
+  });
+
 });
