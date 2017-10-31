@@ -29,6 +29,13 @@
               validation-trigger="ConfigForm.$submitted">
             </bh-report-period-select>
 
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.useMonthGrouping" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.LABELS.USE_MONTH_GROUPING</span>
+              </label>
+            </div>
+
             <!-- included Total Zeros  -->
             <div class="checkbox">
               <label>

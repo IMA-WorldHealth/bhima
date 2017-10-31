@@ -51,6 +51,20 @@ function age(dob) {
   return moment().diff(dob, 'years');
 }
 
+/**
+ * @method month
+ *
+ * @description
+ * This method provides the month name for a given date.
+ *
+ * @param {Date} value - the date value to be transformed
+ * @returns {String} - the month name in the chosen locale.
+ */
+function month(value) {
+  return moment(value).format('MMMM');
+}
+
 exports.date = date;
 exports.timestamp = timestamp;
+exports.month = month;
 exports.age = age;

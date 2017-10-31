@@ -20,10 +20,34 @@
           <tr class="text-capitalize text-center" style="background-color: #ddd;">
             <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
             <th style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
-            <th>{{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}</th>
-            <th>{{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}</th>
-            <th>{{translate "REPORT.SIXTY_TO_NINETY_DAYS"}}</th>
-            <th>{{translate "REPORT.OVER_NINETY_DAYS"}}</th>
+            <th>
+              {{#if useMonthGrouping}}
+                {{month firstMonth}}
+              {{else}}
+                {{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}
+              {{/if}}
+            </th>
+            <th>
+              {{#if useMonthGrouping}}
+                {{month secondMonth}}
+              {{else}}
+                {{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}
+              {{/if}}
+            </th>
+            <th>
+              {{#if useMonthGrouping}}
+                {{month thirdMonth}}
+              {{else}}
+                {{translate "REPORT.SIXTY_TO_NINETY_DAYS"}}
+              {{/if}}
+            </th>
+            <th>
+              {{#if useMonthGrouping}}
+                {{translate "REPORT.PREVIOUS_MONTHS"}}
+              {{else}}
+                {{translate "REPORT.OVER_NINETY_DAYS"}}
+              {{/if}}
+            </th>
             <th>{{translate "TABLE.COLUMNS.TOTAL"}}</th>
           </tr>
         </thead>
