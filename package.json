@@ -20,7 +20,8 @@
     "watch": "./node_modules/.bin/gulp watch-client",
     "release": "./node_modules/.bin/standard-version",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "clean-i18n": "node utilities/translation/clean.js"
   },
   "repository": {
     "type": "git",
@@ -84,6 +85,7 @@
     "chai-datetime": "^1.5.0",
     "chai-http": "^1.0.0",
     "chai-spies": "^0.7.1",
+    "cheerio": "^1.0.0-rc.2",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^4.3.0",
