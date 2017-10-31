@@ -100,7 +100,7 @@ function VoucherItemService(uuid, Constants, util) {
     // if invalid, set the error appropriately
     if (this._invalid) {
       if (!initialized) {
-        this._error = 'FORM.ERRORS.NOT_INITIALIZED';
+        this._error = 'FORM.ERRORS.NOT_CONFIGURED';
       } else if (!hasValidPrecision) {
         this._error = 'VOUCHERS.COMPLEX.ERROR_PRECISION';
       } else if (!hasSingleNumericValue) {
