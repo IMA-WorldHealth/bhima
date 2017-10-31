@@ -11,13 +11,13 @@
  * in the application.
  *
  * @requires db
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires BadRequest
  * @requires NotFound
  */
 
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const db = require('../../../lib/db');
 const Topic = require('../../../lib/topic');
@@ -68,21 +68,21 @@ function create(req, res, next) {
   });
 
   db.exec(sql, [records])
-  .then(() => {
-    // publish a patient update event
-    Topic.publish(Topic.channels.MEDICAL, {
-      event : Topic.events.UPDATE,
-      entity : Topic.entities.PATIENT,
-      user_id : req.session.user.id,
-      id : req.params.uuid,
-    });
+    .then(() => {
+      // publish a patient update event
+      Topic.publish(Topic.channels.MEDICAL, {
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.PATIENT,
+        user_id : req.session.user.id,
+        id : req.params.uuid,
+      });
 
-    res.status(201).json({
-      uuids : records.map(row => uuid.unparse(row[0])),
-    });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({
+        uuids : req.files.map(file => file.filename),
+      });
+    })
+    .catch(next)
+    .done();
 }
 
 

@@ -2,14 +2,14 @@
 'use strict';
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 describe('(/debtor_groups) The debtor groups API', function () {
   const numDebtorGroups = 7;
 
   const debtorGroup = {
     enterprise_id : 1,
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'New Debtor Group (Test)',
     account_id : 3638,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -45,7 +45,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
 
   const lockedGroup = {
     enterprise_id : 1,
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Locked Debtor Group (Test)',
     account_id : 3638,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -63,7 +63,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
 
   const conventionGroup = {
     enterprise_id : 1,
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Convention Debtor Group (Test)',
     account_id : 3638,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -81,7 +81,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
 
   const lockedConventionGroup = {
     enterprise_id : 1,
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Locked Convention Debtor Group (Test)',
     account_id : 3638,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',

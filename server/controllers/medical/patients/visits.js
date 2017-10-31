@@ -9,12 +9,12 @@
  * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
  * requests.
  *
- * @requires  node-uuid
+ * @requires  uuid/v4
  * @requires  lib/db
  * @requires  lib/errors/BadRequest
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -185,7 +185,7 @@ function listByPatient(req, res, next) {
 function admission(req, res, next) {
   const data = req.body;
 
-  const visitUuid = uuid.v4();
+  const visitUuid = uuid();
   data.uuid = db.bid(visitUuid);
   data.patient_uuid = req.params.uuid;
 

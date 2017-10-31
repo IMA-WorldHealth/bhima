@@ -1,7 +1,7 @@
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /*
  * The /creditors/groups API endpoint
@@ -13,7 +13,7 @@ describe('(/creditors/groups) Creditor Groups', function () {
   // creditor group we will add during this test suite.
   var creditorGroup = {
     enterprise_id : 1,
-    uuid          : uuid.v4(),
+    uuid          : uuid(),
     name          : 'Creditor Test',
     account_id    : 3645,
     locked        : 0

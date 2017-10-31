@@ -8,14 +8,14 @@
  * The /patient_groups HTTP API endpoint
  *
  * @requires db
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires NotFound
  * @requires Topic
  */
 
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const NotFound = require('../../lib/errors/NotFound');
 const Topic = require('../../lib/topic');
 
@@ -61,7 +61,7 @@ function create(req, res, next) {
   const sql = 'INSERT INTO patient_group SET ?';
 
   // provide UUID if the client has not specified
-  const uid = record.uuid || uuid.v4();
+  const uid = record.uuid || uuid();
   record.uuid = db.bid(uid);
 
   db.exec(sql, [record])

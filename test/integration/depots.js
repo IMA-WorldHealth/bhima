@@ -1,13 +1,13 @@
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 // The /depots API endpoint
 describe('(/depots) The depots API ', () => {
   // new depot object
   var newDepot = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     // the reference column is auto increment by a trigger
     text : 'New Depot',
     enterprise_id : 1,
@@ -30,7 +30,7 @@ describe('(/depots) The depots API ', () => {
 
   // update depot
   var editDepot = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     text : 'Edited Depot',
     is_warehouse : 1,
     allow_entry_purchase : 1,
@@ -45,7 +45,7 @@ describe('(/depots) The depots API ', () => {
 
   // removable depot
   var removableDepot = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     text : 'Removable Depot',
     enterprise_id : 1,
     is_warehouse : 1,

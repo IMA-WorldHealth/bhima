@@ -2,13 +2,13 @@
 'use strict';
 
 const helpers = require('./helpers');
-const uuid    = require('node-uuid');
+const uuid    = require('uuid/v4');
 
 describe('(/inventory) The Inventory HTTP API', () => {
   let inventoryList;
 
   let inventoryGroup = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     code : '10',
     name : 'Test Inventory Group 2',
     stock_account : 3635,
@@ -228,7 +228,7 @@ describe('(/inventory) The Inventory HTTP API', () => {
 
   // inventory list items
   let metadata = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article',
     price : 5,

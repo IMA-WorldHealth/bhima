@@ -12,7 +12,7 @@
  * into a prepared statement
  */
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const util = require('../../../lib/util');
 const _ = require('lodash');
 
@@ -47,7 +47,7 @@ module.exports = createInvoice;
  */
 function createInvoice(invoiceDetails) {
   const transaction = db.transaction();
-  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid.v4());
+  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
 
   const billingServices = processBillingServices(invoiceUuid, invoiceDetails.billingServices);
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
@@ -140,7 +140,7 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
 
   // make sure that invoice items have their uuids
   items.forEach((item) => {
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = db.bid(item.uuid || uuid());
     item.invoice_uuid = invoiceUuid;
 
     // should every item have an inventory uuid?

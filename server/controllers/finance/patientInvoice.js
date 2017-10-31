@@ -7,7 +7,7 @@
  * billing services infrastructure
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const identifiers = require('../../config/identifiers');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
@@ -182,10 +182,14 @@ function create(req, res, next) {
     return;
   }
 
+  // cache the uuid to avoid parsing later
+  const invoiceUuid = invoice.uuid || uuid();
+  invoice.uuid = invoiceUuid;
+
   const preparedTransaction = createInvoice(invoice);
   preparedTransaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(invoice.uuid) });
+      res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();

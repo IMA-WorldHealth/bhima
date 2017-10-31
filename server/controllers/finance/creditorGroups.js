@@ -6,7 +6,7 @@
  */
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 // GET /creditor_groups
 function lookupCreditorGroup(Uuid) {
@@ -68,7 +68,8 @@ function create(req, res, next) {
   const data = req.body;
 
   // provide UUID if the client has not specified
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  const creditorGroupUuid = data.uuid || uuid();
+  data.uuid = db.bid(creditorGroupUuid);
   data.enterprise_id = req.session.enterprise.id;
 
   const sql =
@@ -76,7 +77,7 @@ function create(req, res, next) {
 
   db.exec(sql, [data])
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+      res.status(201).json({ uuid : creditorGroupUuid });
     })
     .catch(next)
     .done();

@@ -1,7 +1,7 @@
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /*
  * The /prices API endpoint
@@ -84,7 +84,7 @@ describe('(/prices ) Price List', function () {
   };
 
   const duplicatesPriceList = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     label : 'This list contains duplicate labels',
     description : 'The list has a tone of items.',
     items : priceListItemsWithDuplicates,

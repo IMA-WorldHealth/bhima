@@ -17,7 +17,7 @@
  */
 
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const db = require('./../../../lib/db');
 const topic = require('../../../lib/topic');
@@ -261,9 +261,9 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
-  const patientID = uuid.v4();
-  data.creditor_uuid = uuid.v4();
-  data.debtor_uuid = uuid.v4();
+  const patientID = uuid();
+  data.creditor_uuid = uuid();
+  data.debtor_uuid = uuid();
   data.patient_uuid = patientID;
 
   // convert uuids to binary uuids as necessary

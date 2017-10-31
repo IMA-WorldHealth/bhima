@@ -2,7 +2,7 @@
 const q = require('q');
 const mysql = require('mysql');
 const winston = require('winston');
-const uuid = require('node-uuid');
+const uuidParse = require('uuid-parse');
 const Transaction = require('./transaction');
 
 const BadRequest = require('../errors/BadRequest');
@@ -20,12 +20,9 @@ const NotFound = require('../errors/NotFound');
  * @requires q
  * @requires mysql
  * @requires winston
- * @requires node-uuid
  * @requires Transaction
  */
 class DatabaseConnector {
-
-  /** @constructor */
   constructor() {
     const params = {
       host     : process.env.DB_HOST,
@@ -161,7 +158,7 @@ class DatabaseConnector {
       return hexUuid;
     }
 
-    return new Buffer(uuid.parse(hexUuid));
+    return new Buffer(uuidParse.parse(hexUuid));
   }
 
   /**
@@ -202,7 +199,7 @@ class DatabaseConnector {
       }
 
       // the key exists on the object and value is an array
-      if(data[key] && Array.isArray(data[key])) { 
+      if (data[key] && Array.isArray(data[key])) {
         // Every item should be converted to binary
         data[key] = data[key].map(this.bid);
       }
@@ -220,8 +217,6 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
-
-
 }
 
 module.exports = new DatabaseConnector();

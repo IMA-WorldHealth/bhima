@@ -16,7 +16,7 @@
 
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const Topic = require('../../lib/topic');
 
 exports.lookupVillage = lookupVillage;
@@ -299,7 +299,7 @@ exports.create = {};
  */
 exports.create.country = function createCountry(req, res, next) {
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  req.body.uuid = req.body.uuid || uuid();
 
   const sql =
     `INSERT INTO country (uuid, name) VALUES (?, ?);`;
@@ -334,7 +334,7 @@ exports.create.province = function createProvince(req, res, next) {
   ]);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
     'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
@@ -368,7 +368,7 @@ exports.create.sector = function createSector(req, res, next) {
   const data = db.convert(req.body, ['province_uuid']);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
     `INSERT INTO sector (uuid, name, province_uuid) VALUES (?);`;
@@ -401,7 +401,7 @@ exports.create.village = function createVillage(req, res, next) {
   const data = db.convert(req.body, ['sector_uuid']);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
     `INSERT INTO village (uuid, name, sector_uuid) VALUES (?);`;

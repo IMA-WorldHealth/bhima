@@ -3,7 +3,7 @@
 'use strict';
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const _ = require('lodash');
 
@@ -144,24 +144,24 @@ describe('(/locations) Locations Interface', function () {
   /* CREATE methods */
 
   const country = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Test Country'
   };
 
   const province = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Test Province',
     country_uuid : country.uuid
   };
 
   const sector = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Test Sector',
     province_uuid : province.uuid
   };
 
   const village = {
-    uuid: uuid.v4(),
+    uuid: uuid(),
     name: 'Test Village',
     sector_uuid: sector.uuid
   };
@@ -214,7 +214,7 @@ describe('(/locations) Locations Interface', function () {
   it('POST /locations/villages should create the same village name in a different sector', function () {
     let copy = _.clone(village);
     copy.sector_uuid = sectorUuid;
-    copy.uuid = uuid.v4();
+    copy.uuid = uuid();
 
     return agent.post('/locations/villages')
       .send(copy)

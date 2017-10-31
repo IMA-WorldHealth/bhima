@@ -13,7 +13,7 @@
  * @requires lodash
  * @requires lib/db
  * @requires lib/topic
- * @requires lib/node-uuid
+ * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  * @requires lib/barcode
@@ -32,7 +32,7 @@
 
 const _ = require('lodash');
 const q = require('q');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -90,8 +90,7 @@ exports.latestInvoice = latestInvoice;
 function create(req, res, next) {
   const createRequestData = req.body;
 
-  let medical = createRequestData.medical;
-  let finance = createRequestData.finance;
+  let { medical, finance } = createRequestData;
 
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
@@ -105,8 +104,10 @@ function create(req, res, next) {
   }
 
   // optionally allow client to specify UUID
-  finance.uuid = finance.uuid || uuid.v4();
-  medical.uuid = medical.uuid || uuid.v4();
+  const financeUuid = finance.uuid || uuid();
+  finance.uuid = financeUuid;
+  const medicalUuid = medical.uuid || uuid();
+  medical.uuid = medicalUuid;
 
   medical.user_id = req.session.user.id;
 
@@ -134,7 +135,7 @@ function create(req, res, next) {
   transaction.execute()
     .then(() => {
       res.status(201).json({
-        uuid : uuid.unparse(medical.uuid),
+        uuid : medicalUuid,
       });
 
       // publish a CREATE event on the medical channel
@@ -142,7 +143,7 @@ function create(req, res, next) {
         event   : topic.events.CREATE,
         entity  : topic.entities.PATIENT,
         user_id : req.session.user.id,
-        uuid    : uuid.unparse(medical.uuid),
+        uuid    : medicalUuid,
       });
     })
     .catch(next)

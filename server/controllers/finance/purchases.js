@@ -5,13 +5,13 @@
  * This module provides an API interface for the Purchase API, responsible for
  * making purchase orders and quotes.
  *
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires db
  * @requires NotFound
  * @requires BadRequest
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -69,7 +69,7 @@ function linkPurchaseItems(items, purchaseUuid) {
   // loop through each item, making sure we have escapes and orderings correct
   return items.map((item) => {
     // make sure that each item has a uuid by generate
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = db.bid(item.uuid || uuid());
     item.purchase_uuid = purchaseUuid;
     item.inventory_uuid = db.bid(item.inventory_uuid);
 
@@ -146,7 +146,7 @@ function create(req, res, next) {
   }
 
   // default to a new uuid if the client did not provide one
-  const puid = data.uuid || uuid.v4();
+  const puid = data.uuid || uuid();
   data.uuid = db.bid(puid);
 
   data = db.convert(data, ['supplier_uuid']);
