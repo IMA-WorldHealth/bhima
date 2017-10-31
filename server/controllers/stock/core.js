@@ -453,15 +453,17 @@ function getInventoryQuantityAndConsumption(params) {
     })
     .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
     .then((rows) => {
+      var filteredRows = rows;
+
       if (status) {
-        return rows.filter(row => row.status === status);
+        filteredRows = filteredRows.filter(row => row.status === status);
       }
 
-      if(require_po) {
-       return rows.filter(row => row.S_Q > 0);
+      if (require_po) {
+        filteredRows = filteredRows.filter(row => row.S_Q > 0);
       }
 
-      return rows;
+      return filteredRows;
     });
 }
 
