@@ -455,6 +455,10 @@ exports.configure = function configure(app) {
 
   // cashbox controller
   app.get('/cashboxes', cashboxes.list);
+
+  // cashbox privileges
+  app.get('/cashboxes/privileges', cashboxes.privileges);
+
   app.get('/cashboxes/:id', cashboxes.detail);
   app.post('/cashboxes', cashboxes.create);
   app.put('/cashboxes/:id', cashboxes.update);

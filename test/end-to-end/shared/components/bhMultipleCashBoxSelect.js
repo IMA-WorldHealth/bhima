@@ -11,7 +11,7 @@ module.exports = {
     target.click();
 
     cashboxes.forEach(function (cashboxes){
-    	FU.uiSelect('$ctrl.cashboxesIds', cashboxes);
+    	FU.uiSelect('$ctrl.cashboxIds', cashboxes);
     });
   },
 };

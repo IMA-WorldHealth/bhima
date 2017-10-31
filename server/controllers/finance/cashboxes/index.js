@@ -26,6 +26,7 @@ exports.create = create;
 exports.update = update;
 exports.delete = remove;
 exports.currencies = currencies;
+exports.privileges = privileges;
 
 /**
  * @method list
@@ -36,6 +37,10 @@ exports.currencies = currencies;
  * optional parameters:
  */
 function list(req, res, next) {
+  if (req.query.user_id) {
+    req.query.user_id = req.session.user.id;
+  }
+
   const filters = new FilterParser(req.query);
 
   let sql =
@@ -211,6 +216,42 @@ function remove(req, res, next) {
 
       res.sendStatus(204);
     })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method privileges
+ *
+ * @description
+ * GET /cashboxes/privileges
+ * List each user's privileges for each Cashbox
+ */
+function privileges(req, res, next) {
+  let user_id = req.session.user.id;
+  let is_auxiliary = 1;
+
+  let sql = `
+    SELECT userCashBox.id, userCashBox.label, userCashBox.project_id, userCashBox.is_auxiliary, userCashBox.user_id
+      FROM(
+        (
+          SELECT cash_box.id, cash_box.label, cash_box.project_id, cash_box.is_auxiliary, cashbox_permission.user_id
+          FROM cash_box
+          JOIN cashbox_permission ON bhima_test.cashbox_permission.cashbox_id = cash_box.id
+          WHERE cashbox_permission.user_id = ? AND cash_box.is_auxiliary = ?
+        )
+      UNION
+        (
+          SELECT cash_box.id, cash_box.label, cash_box.project_id, cash_box.is_auxiliary, NULL AS user_id
+          FROM cash_box
+          WHERE cash_box.id NOT IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?) AND cash_box.is_auxiliary = ?
+        )
+      ) AS userCashBox
+      ORDER BY userCashBox.label
+  `;
+
+  db.exec(sql, [user_id, is_auxiliary, user_id, is_auxiliary])
+    .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
 }

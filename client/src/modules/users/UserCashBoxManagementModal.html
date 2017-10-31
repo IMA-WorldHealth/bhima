@@ -12,17 +12,17 @@
 
 
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
-      <label class="control-label col-md-12" translate>FORM.LABELS.USERNAME</label>
-      <div class="col-md-12">
+      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+      <div>
         <h4><i> {{ UsersCashBoxModalCtrl.user.display_name }} </i></h4>
       </div>
     </div>
 
-    <span class="help-block" translate> FORM.INFO.USER_CASHBOX </span>
+    <span translate> FORM.INFO.USER_CASHBOX </span>
 
     <bh-multiple-cashbox-select
       on-change="UsersCashBoxModalCtrl.onCashBoxChange(cashboxes)"
-      cashboxes-ids="UsersCashBoxModalCtrl.cashboxes">
+      cashbox-ids="UsersCashBoxModalCtrl.cashboxes">
     </bh-multiple-cashbox-select>
 
   </div>

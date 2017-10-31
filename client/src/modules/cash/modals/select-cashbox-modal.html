@@ -20,7 +20,7 @@
   <label class="control-label" translate>CASH.SELECTION.CURRENT_PROJECT_CASHBOXES</label>
 
   <!-- list of cashboxes -->
-  <ul class="list-group" ng-if="$ctrl.hasCurrentProjectCashboxes">
+  <ul ng-if="$ctrl.hasCurrentProjectCashboxes" class="list-group">
     <li
       class="list-group-item"
       ng-repeat="cashbox in $ctrl.currentProjectCashboxes"
@@ -43,13 +43,12 @@
     CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES_ACCESS
   </p>
 
-  <p ng-if="!$ctrl.hasCurrentCashboxes" translate>
+  <p ng-if="!$ctrl.hasCurrentProjectCashboxes && !$ctrl.hasCurrentCashboxes" translate>
     CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES
   </p>
 
   <label class="control-label" translate>CASH.SELECTION.OTHER_PROJECT_CASHBOXES</label>
-
-  <ul class="list-group" ng-if="$ctrl.hasOtherProjectCashboxes">
+  <ul ng-if="$ctrl.hasOtherProjectCashboxes" class="list-group">
     <li
       class="list-group-item"
       ng-repeat="cashbox in $ctrl.otherProjectCashboxes"
@@ -67,13 +66,11 @@
     </li>
   </ul>
 
-  <!-- show message if there are no cashboxes for current project -->
   <p ng-if="!$ctrl.hasOtherProjectCashboxes && $ctrl.hasOtherCashboxes" translate>
     CASH.SELECTION.NO_OTHER_PROJECT_CASHBOXES_ACCESS
   </p>
 
-  <!-- show message if there are no cashboxes for current project -->
-  <p ng-if="!$ctrl.hasOtherCashboxes" translate>
+  <p ng-if="!$ctrl.hasOtherProjectCashboxes && !$ctrl.hasOtherCashboxes" translate>
     CASH.SELECTION.NO_OTHER_PROJECT_CASHBOXES
   </p>
 

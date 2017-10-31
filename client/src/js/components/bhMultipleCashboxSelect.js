@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : MultipleCashboxSelectController,
     bindings    : {
       onChange : '&',
-      cashboxesIds : '<?',
+      cashboxIds : '<?',
       label : '@?',
       required : '<?',
       validationTrigger : '<?',
@@ -27,10 +27,10 @@ function MultipleCashboxSelectController(Cashbox, Notify) {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CASHBOX';
 
     // fired when a Cashbox has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange || angular.noop;
+    $ctrl.onChange = $ctrl.onChange;
 
     // init the model
-    $ctrl.cashboxesIds = $ctrl.cashboxesIds || [];
+    $ctrl.cashboxIds = $ctrl.cashboxIds || [];
 
     // load all Cashbox
     Cashbox.read()

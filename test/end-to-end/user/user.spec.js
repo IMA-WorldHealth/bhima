@@ -40,6 +40,10 @@ describe('User Management Page', function () {
   };
   const userCount = 4;
 
+  const cashbox = { 
+    text : 'Test Aux Cashbox B'
+  };
+
   before(function () {
     return helpers.navigate(path);
   });
@@ -125,6 +129,15 @@ describe('User Management Page', function () {
 
     editPasswordPage.cancelEditing();
     userCreateUpdatePage.close();
+  });
+
+  it(`Set Cashbox ${cashbox.text} Manage Right to RegularUser `, () => {
+    userPage.editUserCashbox(1);
+    components.multipleCashBoxSelect.set([cashbox.text]);
+    
+    // submit the modal
+    FU.modal.submit();
+    components.notification.hasSuccess();
   });
 
   it('validates form on creation', function () {

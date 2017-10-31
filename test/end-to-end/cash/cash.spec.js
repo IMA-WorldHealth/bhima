@@ -35,18 +35,6 @@ describe('Cash Payments', () => {
   }
 
   describe('Cashbox Select Interface', () => {
-    it(`Set Cashbox ${cashboxC.text} Manage Right to RegularUser `, () => {
-      helpers.navigate(`${path}`);
-      helpers.navigate('#!/users');
-      
-      userPage.editUserCashbox(1);
-      components.multipleCashBoxSelect.set([cashboxC.text]);
-      
-      // submit the modal
-      FU.modal.submit();
-      components.notification.hasSuccess();    
-    });
-
     it('navigating to /cash/:unknown should send a notification error ', () => {
       // navigate to an invalid cashbox
       helpers.navigate(`${path}/unknown`);

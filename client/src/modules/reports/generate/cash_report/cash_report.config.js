@@ -44,6 +44,10 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
       .catch(Notify.handleError);
   };
 
+  vm.onSelectCashbox = function onSelectCashbox (cashbox) {
+    vm.reportDetails.account_id = cashbox.account_id; 
+  }
+
   vm.requestSaveAs = function requestSaveAs() {
     var options = {
       url : reportUrl,

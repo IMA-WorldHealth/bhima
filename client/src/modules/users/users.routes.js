@@ -49,7 +49,7 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal]
       })
       .state('users.cashBoxManagement', {
-        url : '/:id/cashBoxManagement',
+        url : '/:id/cashboxes',
         params : {
           id : null
         },

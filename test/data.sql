@@ -243,11 +243,11 @@ INSERT INTO `cash_box_account_currency` VALUES
   (4,2,2,3626,3627);
 
 -- Set Cashbox Management By User
-INSERT INTO cashbox_permission (id, user_id, cashbox_id) VALUES
-  (NULL, 1, 1),
-  (NULL, 1, 2),
-  (NULL, 1, 3),
-  (NULL, 2, 1);
+INSERT INTO cashbox_permission (user_id, cashbox_id) VALUES
+  (1, 1),
+  (1, 2),
+  (1, 3),
+  (2, 1);
 
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,3636,3636,3636);

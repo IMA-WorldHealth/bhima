@@ -15,19 +15,19 @@ angular.module('bhima.components')
   });
 
 CashboxSelectController.$inject = [
-  'CashboxService', 'NotifyService', 'SessionService'
+  'CashboxService', 'NotifyService',
 ];
 
 /**
  * Cashbox selection component
  *
  */
-function CashboxSelectController(Cashbox, Notify, Session) {
+function CashboxSelectController(Cashbox, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // fired when a Cashbox has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
+    $ctrl.onSelectCallback = $ctrl.onSelectCallback;
 
     // default for form name
     $ctrl.name = $ctrl.name || 'CashboxForm';
@@ -36,7 +36,7 @@ function CashboxSelectController(Cashbox, Notify, Session) {
     $ctrl.label = $ctrl.label || 'FORM.SELECT.CASHBOX';
 
     // load all Cashbox
-    Cashbox.read(null, { detailed: 1, user_id : Session.user.id })
+    Cashbox.read(null, { detailed: 1, user_id : true })
       .then(function (cashboxes) {
         cashboxes.forEach(function (cashbox) {
           cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;

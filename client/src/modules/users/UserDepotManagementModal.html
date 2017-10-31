@@ -12,13 +12,13 @@
 
 
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
-      <label class="control-label col-md-12" translate>FORM.LABELS.USERNAME</label>
-      <div class="col-md-12">
+      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+      <div>
         <h4><i> {{ UsersDepotModalCtrl.user.display_name }} </i></h4>
       </div>
     </div>
 
-    <span class="help-block" translate> FORM.INFO.USER_DEPOT </span>
+    <span translate> FORM.INFO.USER_DEPOT </span>
     <bh-multiple-depot-select
       label="STOCK.DEPOT"
       depots-uuids = "UsersDepotModalCtrl.depots"
