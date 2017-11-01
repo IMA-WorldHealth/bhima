@@ -10,7 +10,7 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
   var vm = this;
   var changes = new Store({identifier : 'key'});
   var searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'status',
+    'depot_uuid', 'inventory_uuid', 'status', 'require_po',
   ];
 
   vm.filters = data;

@@ -386,6 +386,7 @@ function getInventoryQuantityAndConsumption(params) {
   let status;
   let delay;
   let purchaseInterval;
+  let require_po;
 
   if (params.status) {
     status = params.status;
@@ -400,6 +401,11 @@ function getInventoryQuantityAndConsumption(params) {
   if (params.purchase_interval) {
     purchaseInterval = params.purchase_interval;
     delete params.purchase_interval;
+  }
+
+  if (params.require_po) {
+    require_po = params.require_po;
+    delete params.require_po;
   }
 
   const sql = `
@@ -447,10 +453,17 @@ function getInventoryQuantityAndConsumption(params) {
     })
     .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
     .then((rows) => {
+      var filteredRows = rows;
+
       if (status) {
-        return rows.filter(row => row.status === status);
+        filteredRows = filteredRows.filter(row => row.status === status);
       }
-      return rows;
+
+      if (require_po) {
+        filteredRows = filteredRows.filter(row => row.S_Q > 0);
+      }
+
+      return filteredRows;
     });
 }
 

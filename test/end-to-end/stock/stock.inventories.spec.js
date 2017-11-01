@@ -33,47 +33,70 @@ function StockInventoriesRegistryTests() {
     modal.setDepot('Depot Principal');
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    filters.resetFilters();
+
   });
 
   it('find inventory by name', () => {
     modal.setInventory('First Test Inventory Item');
     modal.submit();
-    // GU.expectRowCount(gridId, 2 + (2 * depotGroupingRow));
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 2);
+    filters.resetFilters();
   });
 
   it('find 0 inventory by state sold out', () => {
     FU.radio('$ctrl.searchQueries.status', 0);
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
+    filters.resetFilters();
   });
 
   it('find 0 inventory by state in stock', () => {
     FU.radio('$ctrl.searchQueries.status', 1);
     FU.modal.submit();
-    GU.expectRowCount(gridId, 0);    
+    GU.expectRowCount(gridId, 0);
+
+    filters.resetFilters();    
   });
 
   it('find 0 inventory by state (security reached)', () => {
     FU.radio('$ctrl.searchQueries.status', 2);
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
+
+    filters.resetFilters();
   });
 
-  it('find 2 inventories  by state plus one lne for grouping (minimum reached)', () => {
+  it('find 0 inventories  by state plus one lne for grouping (minimum reached)', () => {
     FU.radio('$ctrl.searchQueries.status', 3);
     FU.modal.submit();
     // GU.expectRowCount(gridId, 2 + (depotGroupingRow));
-    GU.expectRowCount(gridId, 0);    
+    GU.expectRowCount(gridId, 0);
+    filters.resetFilters();        
   });
 
-  it('find 2 inventories  by state plus one lne for grouping (over maximum)', () => {
+  it('find 4 inventories  by state plus one lne for grouping (over maximum)', () => {
     FU.radio('$ctrl.searchQueries.status', 4);
     FU.modal.submit();
+
     // GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
-    GU.expectRowCount(gridId, 0);
+    GU.expectRowCount(gridId, 4);
+    filters.resetFilters();    
   });
 
+  it('find 7 inventories For All time ', () => {
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    modal.submit();
+    GU.expectRowCount(gridId, 7);
+  });
+
+  it('find 3 inventories who Requires a purchase order', () => {
+    element(by.model('$ctrl.searchQueries.require_po')).click();
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 3);
+    filters.resetFilters();    
+  });
 }
 
 describe('Stock Inventory Registry', StockInventoriesRegistryTests);

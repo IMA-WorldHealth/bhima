@@ -90,6 +90,7 @@
     "RECEPTION_DESCRIPTION" : "Stock Reception",
     "RECEPTION_INTEGRATION" : "Stock Entry by Integration",
     "RECEPTION_DONATION" : "Stock Entry from a donation",
+    "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",

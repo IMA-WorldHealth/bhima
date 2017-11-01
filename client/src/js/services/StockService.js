@@ -62,6 +62,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
+    { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
   ]);
 
 
