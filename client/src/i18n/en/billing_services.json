@@ -1,13 +1,1 @@
-{
-    "BILLING_SERVICES": {
-        "BTN": {
-            "CREATE": "Create a Billing Service",
-            "DELETE": "Delete this Billing Service"
-        },
-        "FORM": {
-            "CREATE": "New Billing Service",
-            "UPDATE": "Updating Billing Service"
-        },
-        "TITLE": "Billing Services"
-    }
-}
+{"BILLING_SERVICES":{"BTN":{"CREATE":"Create a Billing Service","DELETE":"Delete this Billing Service"},"FORM":{"CREATE":"New Billing Service","UPDATE":"Updating Billing Service"},"TITLE":"Billing Services"}}
