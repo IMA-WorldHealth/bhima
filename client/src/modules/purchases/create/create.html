@@ -100,6 +100,19 @@
         <div class="row" style="padding-bottom : 5px;">
           <div class="col-xs-12">
 
+            <!-- "Optimal Purchase" button -->
+            <div class="btn-group pull-right" style="margin-left : 5px;">
+              <button
+                class="btn btn-default"
+                type="button"
+                ng-click="PurchaseCtrl.optimalPurchase()"
+                id="optimal_purchase"
+                ng-disabled="!PurchaseCtrl.supplier">
+                <i class="fa fa-shopping-cart"></i> 
+                <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span> 
+              </button>
+            </div>
+
             <!-- "Recover Items" button -->
             <div class="btn-group pull-right" role="group">
               <button
@@ -114,7 +127,7 @@
 
             <!-- "Add number of grid rows" input-group -->
             <bh-add-item
-              disable = "PurchaseCtrl.supplier"
+              disable = "PurchaseCtrl.supplier && !PurchaseCtrl.optimalPO"
               callback = "PurchaseCtrl.addItems(numItem)">
             </bh-add-item>
 
@@ -170,7 +183,7 @@
               class="text-danger"
               ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
               <span class="fa fa-exclamation-circle"></span>
-              <span translate>FORM.INFO.INVALID_ITEMS</span> 
+              <span translate>FORM.ERRORS.INVALID</span> 
             </p>
           </div>
         </div>

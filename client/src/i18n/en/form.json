@@ -36,6 +36,7 @@
             "NEW_REPORT": "Create new report",
             "NOT_CONFIGURED": "Not Configured",
             "OK": "OK",
+            "OPTIMAL_PURCHASE_ORDER" : "Optimal purchase order",
             "PDF_EXPORT": "Export PDF",
             "PRINT": "Print",
             "PRINT_FINANCIAL_ACT": "Print Financial Activity",
@@ -88,6 +89,7 @@
             "GENERIC": "The form contains errors.",
             "HAS_ERROR": "Contains an error",
             "HAS_ERRORS": "The form contains errors.  Please correct them and resubmit.",
+            "LOT_QUANTITY": "Lot Quantity",
             "MIN_CURRENCY_UNIT": "This value is too small for the selected currency.",
             "MISSING": "This form is missing required fields (marked in red).",
             "MISSING_CASHBOX_ID": "Missing Cashbox",
@@ -97,7 +99,8 @@
             "INVALID": "invalid data",
             "LOCKED_USER": "You are locked, contact the administrator of the System",
             "PERIOD_ORDER": "Period from should be before period to",
-            "PERIOD_DIFF_FISCAL": "Periods should be in the same fiscal year"
+            "PERIOD_DIFF_FISCAL": "Periods should be in the same fiscal year",
+            "STOCK_LINE": "Stock line"
         },
         "INFO": {
             "BY": "by",
@@ -130,6 +133,7 @@
             "NO_DESTINATION": "No destination defined",
             "NO_FILTERS_APPLIED": "No filters applied",
             "NO_INVOICES_SELECTED": "No invoices selected",
+            "NO_INVENTORY_PO" : "No product in Stock requires purchase order",
             "NO_RECIPIENT": "An invoice must have a recipient before assigning items.",
             "NO_SUPPLIER": "A purchase order must have a supplier before specifying items.",
             "NO_RECORDS_DATABASE": "There are no records in the database for this query",

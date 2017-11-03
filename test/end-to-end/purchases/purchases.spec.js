@@ -32,6 +32,12 @@ describe('Purchase Orders', () => {
     // add the following inventory item
     page.addInventoryItem(0, 'INV0');
 
+    // change the required quantities
+    page.adjustItemQuantity(0, 1);
+
+    // change the prices
+    page.adjustItemPrice(0, 25);
+
     // make sure the submit button is not disabled
     expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
 
@@ -119,4 +125,29 @@ describe('Purchase Orders', () => {
     // there should be a danger notification
     components.notification.hasDanger();
   });
+
+
+  it('Block selection if no products require a purchase order', () => {
+    const page = new PurchaseOrderPage();
+    page.btns.clear.click();
+
+    // prepare the page with default supplier, description, etc
+    components.supplierSelect.set('Test Supplier');
+    FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase');
+    components.dateEditor.set(new Date('2016-03-01'));
+
+    // set the 'on-purchase' delivery method parameter
+    $('#on-purchase').click();
+
+    // click on buttom Optimal Purchase
+    page.optimalPurchase();
+
+    // there should be a danger notification
+    components.notification.hasWarn();
+
+    // FIX ME : At this point in the E2E testing process, there is no product that requires a purchase order 
+        //because they E2E purchase order test precedes the outbound order
+    
+  });
+
 });

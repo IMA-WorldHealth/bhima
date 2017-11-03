@@ -54,11 +54,12 @@ function PurchaseOrderItemService(uuid) {
     var item = this;
 
     // ensure the numbers are valid in the invoice
+    // The Quantity and Unit Price must not be Zero
     var hasValidNumbers =
       angular.isNumber(item.quantity) &&
       angular.isNumber(item.unit_price) &&
       item.quantity > 0 &&
-      item.unit_price >= 0;
+      item.unit_price > 0;
 
     // the item is only initialised if it has an inventory item
     item._initialised = angular.isDefined(item.inventory_uuid);

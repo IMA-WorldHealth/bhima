@@ -230,6 +230,12 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // remove the item from the pool
     var inventoryItem = this.inventory.use(item.inventory_uuid);
 
+    /** 
+    * FIX ME or NEED Discussion, The Purchase Order must Used Purchase Price and not 
+    * Used Inventory Selling price
+    */
+    inventoryItem.price = 0;
+
     // configure the PurchaseOrderFormItem with the inventory values
     item.configure(inventoryItem);
 
