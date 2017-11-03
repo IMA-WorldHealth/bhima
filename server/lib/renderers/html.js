@@ -7,6 +7,7 @@
  */
 const util = require('../util');
 const hbs = require('../template');
+const moment = require('moment');
 const translateHelperFactory = require('../helpers/translate');
 
 const headers = {
@@ -27,6 +28,8 @@ function renderHTML(data, template, options = {}) {
   // load local language for momentjs if possible
   const languageDependency = `moment/locale/${options.lang}`;
   util.loadModuleIfExists(languageDependency);
+
+  moment.locale(options.lang);
 
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the

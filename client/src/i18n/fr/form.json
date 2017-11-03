@@ -496,6 +496,7 @@
             "UPDATE_GROUP_DEBTOR": "Mettre à jour le Groupe débiteur",
             "UPDATE_PATIENT_GROUP": "Mettre à jour les groupes de patients",
             "USE": "Utilisation",
+            "USE_MONTH_GROUPING": "Grouper par Mois",
             "USERNAME": "Nom de l'utilisateur",
             "USE_POS_RECEIPT": "Impression POS",
             "USE_SIMPLIFIED_CARD": "Utiliser une identité de patient simple",

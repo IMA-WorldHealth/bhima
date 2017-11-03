@@ -27,6 +27,7 @@ const presentation = require('./helpers/presentation');
 const hbs = exphbs.create({
   helpers : {
     date          : dates.date,
+    month         : dates.month,
     timestamp     : dates.timestamp,
     age           : dates.age,
     multiply      : math.multiply,

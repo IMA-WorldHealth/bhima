@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 ClientsReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData',
-  '$state', 'moment', 'bhConstants'
+  '$state', 'moment', 'bhConstants',
 ];
 
 function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment, bhContants) {
@@ -50,7 +50,7 @@ function ClientsReportConfigController($sce, Notify, SavedReports, AppCache, rep
     var sendDetails = sanitiseDateStrings(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
-      .then(function (result) {        
+      .then(function (result) {
         // update cached configuration
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);

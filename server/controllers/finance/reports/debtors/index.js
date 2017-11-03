@@ -17,6 +17,7 @@
 
 
 const _ = require('lodash');
+const moment = require('moment');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 
@@ -64,6 +65,7 @@ function queryContext(queryParams) {
   const params = queryParams || {};
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
+  const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
 
   // format the dates for MySQL escape
   const dates = _.fill(Array(5), new Date(params.date));
@@ -71,13 +73,26 @@ function queryContext(queryParams) {
   const data = {};
   const source = 'general_ledger';
 
+  const groupByMonthColumns = `
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) > 2, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+  `;
+
+  const groupByRangeColumns = `
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+  `;
+
+  const columns = useMonthGrouping ? groupByMonthColumns : groupByRangeColumns;
+
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      ${columns}
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
@@ -91,10 +106,7 @@ function queryContext(queryParams) {
   // aggregates the data above as totals into columns of 30, 60, 90, and >90
   const aggregateSql = `
     SELECT
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      ${columns}
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
@@ -106,10 +118,17 @@ function queryContext(queryParams) {
     .then(debtors => {
       data.debtors = debtors;
       data.dateUntil = params.date;
+
+      // this is specific to grouping by months
+      data.firstMonth = params.date;
+      data.secondMonth = moment(params.date).subtract(1, 'month');
+      data.thirdMonth = moment(params.date).subtract(2, 'month');
+
+      data.useMonthGrouping = useMonthGrouping;
       return db.exec(aggregateSql, dates);
     })
     .then(aggregates => {
-      data.aggregates = aggregates[0];
+      [data.aggregates] = aggregates;
       return data;
     });
 }
