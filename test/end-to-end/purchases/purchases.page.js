@@ -28,6 +28,11 @@ function PurchaseOrderPage() {
     addItem.set(n);
   };
 
+  // try to click the submit button 'Optimal Purchase Order'
+  page.optimalPurchase = function optimalPurchase(n) {
+    element(by.id(`optimal_purchase`)).click();
+  };
+
   // returns n rows
   page.getRows = function getRows() {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
