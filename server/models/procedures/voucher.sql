@@ -1,3 +1,41 @@
+/*
+
+--------
+OVERVIEW
+--------
+
+This procedures file contains all procedures for creating vouchers.  A "voucher"
+is a generic accounting document that can model essentially any transaction.
+Given their flexibility, they are expected to be a user's main method of
+creating non-standard transactions, such as recording generic payments or
+balancing accounts.  All transactions that are not an invoice or cash payment
+are modeled as vouchers.
+
+Unlike cash payments and invoices, where many additional calculations may need
+to take place prior to writing the transaction, vouchers alone have no
+additional preprocessing.  For this reason, they are missing the StageVoucher()
+and StageVoucherItem() methods.  The tables can be written to directly from JS.
+
+There is also a special facility for reversing transactions.  In double-entry
+accounting, to reverse a transaction, one only needs to flip the debits and
+credits of a previous transaction.  However, this does not capture the reason
+for which the transaction needed to be reversed.  To overcome this limitation,
+BHIMA implements ReverseTransaction(), which adds special text to the previous
+transaction's description, as well as points the voucher's "reference_uuid"
+column to the reversed transaction.  Despite a similar sounding name, the
+"reference_uuid" column is never written to the posting_journal.  It is used
+only for reference lookups on the voucher table.
+*/
+
+
+/*
+CALL PostVoucher();
+
+DESCRIPTION
+This function posts a voucher that has already been written to the vouchers
+table.  The route will convert currencies from the given currency into the
+enterprise currency directly as it writes the values into the posting_journal.
+*/
 CREATE PROCEDURE PostVoucher(
   IN uuid BINARY(16)
 )
@@ -45,6 +83,22 @@ BEGIN
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
 
+/*
+CALL ReverseTransaction()
+
+DESCRIPTION
+A unique procedure specifically for reversing cash payments or invoices.  It
+should not be called for vouchers.  The procedures will simply copy the previous
+transaction and create a voucher reversing the debits and credits of the
+transaction.  In double-entry accounting, this will effectively annul the last
+transaction.  Additionally, the voucher will store the uuid of the record that
+is being reversed in the "reference_uuid" column of the "voucher" table.  This
+enables filters to look up the reversing entry later for any cash payment or
+invoice.
+
+Once the procedure has finished, the corresponding cash or invoice record will
+have the "reversed" column set to "1".
+*/
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,

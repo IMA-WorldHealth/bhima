@@ -1,4 +1,59 @@
--- this writes transactions to a temporary table
+/*
+
+--------
+OVERVIEW
+--------
+
+This file contains the logic for safeguarding the general_ledger from invalid
+transaction by enforcing a series of checks, known as the Trial Balance.  The
+end result is 0 or more errors returned to the client as well as a preview of
+how the account balances will change once the data is transferred from the
+posting_journal to the general_ledger.
+
+Since much preprocessing is required, several temporary tables are used.  This
+allows the data to enter SQL as quickly as possible and leverage INDEXes, JOINs,
+and GROUP BYs as quickly as possible.
+
+---------
+SCENARIOS
+---------
+
+There are several reasons why a transaction might fail a trial balance check.
+We will discuss a few of them below:
+
+ADDING TO LOCKED FISCAL YEARS
+-----------------------------
+Once an accountant has approved of the end of year report, the previous fiscal
+year is generally locked and balance accounts are carried forward while income
+and expense accounts are zeroed out.  This operation ensures that the general
+ledger will remain faithful to the last audit.
+
+However, a user may potentially generate transactions for a previous fiscal
+year.  These transactions may not be malicious in intent - some unexpected prior
+invoices may need to be added after a year has been locked.  The Trial Balance
+will block these invoices from being posted, requiring that the accountant
+carefully review why these transactions.  If they are valid, the accountant may
+unlock the fiscal year and post them.
+
+
+LOCKED ACCOUNTS
+---------------
+An accountant may close down an account in the system for any reason - perhaps
+to remove a duplication, perhaps to indicate that a client will no longer be
+serviced by the hospital.  This operation can be achieved by locking the account
+in the accounts management page.  If there are pending transactions, these will
+be blocked from posting until a decision can be made about them.
+*/
+
+
+
+
+/*
+CALL StageTrialBalanceTransaction()
+
+DESCRIPTION
+Copies the transaction into a staging table to be quickly operated on.
+*/
 CREATE PROCEDURE StageTrialBalanceTransaction(
   IN record_uuid BINARY(16)
 )
@@ -8,7 +63,7 @@ BEGIN
 END $$
 
 /*
-TrialBalanceErrors()
+CALL TrialBalanceErrors()
 
 DESCRIPTION
 This stored procedure validates records that are used in the Trial Balance before they are posted
@@ -103,7 +158,7 @@ BEGIN
 END $$
 
 /*
-TrialBalanceSummary()
+CALL TrialBalanceSummary()
 
 DESCRIPTION
 This stored procedure produces the traditional Trial Balance table showing the account balances for any affected accounts
