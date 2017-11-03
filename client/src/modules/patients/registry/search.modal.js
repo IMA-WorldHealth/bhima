@@ -25,6 +25,7 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
 
   // displayValues will be an id:displayValue pair
   var displayValues = {};
+  var lastDisplayValues = Patients.filters.getDisplayValueMap();
 
   // assign default limit filter
   if (filters.limit) {
@@ -40,13 +41,6 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-  var lastViewFilters = Patients.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
 
 
   // bind methods
@@ -67,7 +61,7 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
-    displayValues.user_id = user.display_name;  
+    displayValues.user_id = user.display_name;
   };
 
   // default filter limit - directly write to changes list

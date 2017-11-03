@@ -21,15 +21,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
 
   // displayValues will be an id:displayValue pair
   var displayValues = {};
-
-  var lastViewFilters = Invoices.filters.formatView().customFilters;  
-  
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
-
+  var lastDisplayValues = Invoices.filters.getDisplayValueMap();
 
   // assign default limit filter
   if (filters.limit) {
@@ -98,7 +90,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
         changes.post({ key: key, value: value, displayValue: displayValue });
       }
     });
-    
+
     var loggedChanges = changes.getAll();
 
     // return values to the Invoice Registry Controller

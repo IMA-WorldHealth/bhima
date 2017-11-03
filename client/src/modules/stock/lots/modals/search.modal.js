@@ -22,7 +22,8 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
   ];
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};  
+  var displayValues = {};
+  var lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -32,14 +33,6 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
       changes.post(filterChange);
     });
   };
-
-  var lastViewFilters = Stock.filter.lot.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});  
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -68,7 +61,7 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     }
   };
 
-  // deletes a filter from the custom filter object, 
+  // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
     delete vm.searchQueries[key];
@@ -87,7 +80,7 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     });
 
     var loggedChanges = changes.getAll();
-    
+
     return Instance.close(loggedChanges);
   }
 }
