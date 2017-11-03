@@ -32,6 +32,12 @@ describe('Purchase Orders', () => {
     // add the following inventory item
     page.addInventoryItem(0, 'INV0');
 
+    // change the required quantities
+    page.adjustItemQuantity(0, 1);
+
+    // change the prices
+    page.adjustItemPrice(0, 25);
+
     // make sure the submit button is not disabled
     expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
 

@@ -36,6 +36,7 @@
             "NEW_REPORT": "Créer un nouveau rapport",
             "NOT_CONFIGURED": "Non configuree",
             "OK": "OK",
+            "OPTIMAL_PURCHASE_ORDER" : "Commande d'achat optimale",
             "PDF_EXPORT": "Exporter en PDF",
             "PRINT": "Imprimer",
             "PRINT_FINANCIAL_ACT": "Imprimer la situation financière",
@@ -88,6 +89,7 @@
             "GENERIC": "Le formulaire contient des erreurs",
             "HAS_ERROR": "Contiens une erreur",
             "HAS_ERRORS": "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",
+            "LOT_QUANTITY": "Quantité de Lot",
             "MIN_CURRENCY_UNIT": "Cette valeur est trop petite pour la monnaie choisie.",
             "MISSING": "Informations manquantes",
             "MISSING_CASHBOX_ID": "Caisse non definie",
@@ -97,7 +99,8 @@
             "INVALID": "Donnees Invalides",
             "LOCKED_USER": "Votre compte a ete bloque, contacter votre administrateur",
             "PERIOD_ORDER": "La periode du debut doit etre inferieur a celle de fin",
-            "PERIOD_DIFF_FISCAL": "Les perodes doivent appartenir a une meme annee fiscale"
+            "PERIOD_DIFF_FISCAL": "Les perodes doivent appartenir a une meme annee fiscale",
+            "STOCK_LINE": "Ligne de Stock"
         },
         "INFO": {
             "BY": "Par",
@@ -132,6 +135,7 @@
             "NO_INVOICES_SELECTED": "Aucune facture sélectionnée",
             "NO_RECIPIENT": "Une facture doit appartenir à une personne avant d'assigner les éléments.",
             "NO_RECORDS_DATABASE": "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
+            "NO_INVENTORY_PO" : "Aucun Article en Stock nécessite une commande d'achat",
             "NO_SUPPLIER": "Un ordre d'achat doit avoir un fournisseur avant de préciser les éléments.",
             "NUM_TRANSACTION": "Nombres des transactions",
             "OPERATION_SUCCESS": "Opération effectuée avec succès",
