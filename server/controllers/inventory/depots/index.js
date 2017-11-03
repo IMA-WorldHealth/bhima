@@ -115,6 +115,11 @@ function update(req, res, next) {
 */
 function list(req, res, next) {
   const options = req.query;
+
+  if (options.only_user) {
+    options.user_id = req.session.user.id;
+  }
+
   options.enterprise_id = req.session.enterprise.id;
 
   const filters = new FilterParser(options, { tableAlias : 'depot' });

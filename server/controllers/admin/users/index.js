@@ -22,6 +22,7 @@ const Topic = require('../../../lib/topic');
 exports.permissions = require('./permissions');
 exports.projects = require('./projects');
 exports.depots = require('./depots');
+exports.cashboxes = require('./cashboxes');
 
 // expose API routes
 exports.list = list;

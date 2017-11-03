@@ -43,4 +43,5 @@ module.exports = {
   purchaseStatusSelect        : require('./bhPurchaseStatusSelect'),
   multipleDepotSelect         : require('./bhMultipleDepotSelect'),
   fluxSelect                  : require('./bhFluxSelect'),
+  multipleCashBoxSelect       : require('./bhMultipleCashBoxSelect'),
 };

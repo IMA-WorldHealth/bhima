@@ -55,6 +55,13 @@ function UserPage() {
   }
 
   /**
+   * simulte a link clicking on the grid to show cashbox dialog
+   **/
+  function editUserCashbox(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'cashbox', 'users-grid');
+  }
+
+  /**
    * simulte a link clicking on the grid to show activation dialog
    **/
   function activateUser(n) {
@@ -66,6 +73,7 @@ function UserPage() {
   page.editUser = editUser;
   page.editUserPermission = editUserPermission;
   page.editUserDepot = editUserDepot;
+  page.editUserCashbox = editUserCashbox;
   page.activateUser = activateUser;
 }
 

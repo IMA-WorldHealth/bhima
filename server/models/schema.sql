@@ -1978,3 +1978,17 @@ CREATE TABLE `depot_permission` (
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cashbox_permission`;
+
+CREATE TABLE `cashbox_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
+  KEY `user_id` (`user_id`),
+  KEY `cashbox_id` (`cashbox_id`),
+  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

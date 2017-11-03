@@ -1,9 +1,9 @@
-<form name="UserForm" bh-submit="UsersDepotModalCtrl.submit(UserForm)" novalidate>
+<form name="UserForm" bh-submit="UsersCashBoxModalCtrl.submit(UserForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="title">
         <span translate>USERS.UPDATING_USER</span>
-        <label class="badge badge-warning" translate>USERS.SET_DEPOT</label>
+        <label class="badge badge-warning" translate>USERS.SET_CASHBOX</label>
       </li>
     </ol>
   </div>
@@ -14,21 +14,21 @@
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
       <label class="control-label" translate>FORM.LABELS.USERNAME</label>
       <div>
-        <h4><i> {{ UsersDepotModalCtrl.user.display_name }} </i></h4>
+        <h4><i> {{ UsersCashBoxModalCtrl.user.display_name }} </i></h4>
       </div>
     </div>
 
-    <span translate> FORM.INFO.USER_DEPOT </span>
-    <bh-multiple-depot-select
-      label="STOCK.DEPOT"
-      depots-uuids = "UsersDepotModalCtrl.depots"
-      on-change="UsersDepotModalCtrl.onDepotChange(depots)">            
-    </bh-multiple-depot-select>
+    <span translate> FORM.INFO.USER_CASHBOX </span>
+
+    <bh-multiple-cashbox-select
+      on-change="UsersCashBoxModalCtrl.onCashBoxChange(cashboxes)"
+      cashbox-ids="UsersCashBoxModalCtrl.cashboxes">
+    </bh-multiple-cashbox-select>
 
   </div>
 
   <div class="modal-footer">
-    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersDepotModalCtrl.closeModal()">
+    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersCashBoxModalCtrl.closeModal()">
       <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 

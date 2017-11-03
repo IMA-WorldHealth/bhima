@@ -444,6 +444,8 @@ exports.configure = function configure(app) {
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.put('/users/:id/password', users.password);
+  app.get('/users/:id/cashboxes', users.cashboxes.list);
+  app.post('/users/:id/cashboxes', users.cashboxes.create);
 
   // projects controller
   app.get('/projects/:id', projects.detail);
@@ -453,6 +455,10 @@ exports.configure = function configure(app) {
 
   // cashbox controller
   app.get('/cashboxes', cashboxes.list);
+
+  // cashbox privileges
+  app.get('/cashboxes/privileges', cashboxes.privileges);
+
   app.get('/cashboxes/:id', cashboxes.detail);
   app.post('/cashboxes', cashboxes.create);
   app.put('/cashboxes/:id', cashboxes.update);
