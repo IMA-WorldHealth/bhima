@@ -24,7 +24,7 @@ function DepotSelectController(Depots, Notify) {
 
     // download only the depots that the user has the management right
 
-    Depots.read(null, {user_id : true})
+    Depots.read(null, {only_user : true})
       .then(function (depots) {
         $ctrl.depots = depots;
       })

@@ -36,7 +36,7 @@ function CashboxSelectController(Cashbox, Notify) {
     $ctrl.label = $ctrl.label || 'FORM.SELECT.CASHBOX';
 
     // load all Cashbox
-    Cashbox.read(null, { detailed: 1, user_id : true })
+    Cashbox.read(null, { detailed: 1, only_user : true })
       .then(function (cashboxes) {
         cashboxes.forEach(function (cashbox) {
           cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;

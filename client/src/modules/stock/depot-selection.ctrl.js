@@ -2,13 +2,13 @@ angular.module('bhima.controllers')
   .controller('SelectDepotModalController', SelectDepotModalController);
 
 SelectDepotModalController.$inject = [
-  '$uibModalInstance', 'DepotService', 'NotifyService', 'depot', 'SessionService',
+  '$uibModalInstance', 'DepotService', 'NotifyService', 'depot',
 ];
 
 /**
  * This modal selects a depot from the list of all depots.
  */
-function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
+function SelectDepotModalController(Instance, Depots, Notify, depot) {
   var vm = this;
 
   // bind the depot passed into the controller
@@ -28,9 +28,7 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
   function startup() {
     toggleLoadingIndicator();
     // download only the depots that the user has the management right
-    var userId = Session.user.id;
-
-    Depots.read(null, {user_id : userId})
+    Depots.read(null, {only_user : true})
       .then(function (depots) {
         vm.depots = depots;
       })

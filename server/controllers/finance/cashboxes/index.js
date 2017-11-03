@@ -37,7 +37,7 @@ exports.privileges = privileges;
  * optional parameters:
  */
 function list(req, res, next) {
-  if (req.query.user_id) {
+  if (req.query.only_user) {
     req.query.user_id = req.session.user.id;
   }
 

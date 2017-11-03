@@ -115,7 +115,8 @@ function update(req, res, next) {
 */
 function list(req, res, next) {
   const options = req.query;
-  if (options.user_id) {
+
+  if (options.only_user) {
     options.user_id = req.session.user.id;
   }
 
