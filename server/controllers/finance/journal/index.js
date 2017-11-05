@@ -100,7 +100,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid', 'uuids']);
+  db.convert(options, ['uuid', 'record_uuid', 'uuids', 'record_uuids']);
 
   const filters = new FilterParser(options, { tableAlias : 'p' });
 
@@ -149,6 +149,7 @@ function buildTransactionQuery(options, posted) {
   filters.custom('origin_id', 'p.origin_id IN (?)', [typeIds]);
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
+  filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   return {
@@ -177,18 +178,44 @@ function find(options) {
   return naiveTransactionSearch(options, false);
 }
 
+function postProcessFullTransactions(rows, includeNonPosted) {
+  // get a list of unique record uuids
+  const records = rows
+    .map(row => row.record_uuid)
+    .filter((value, idx, arr) => arr.indexOf(value) === idx);
+
+  return find({ record_uuids : records, includeNonPosted });
+}
+
 /**
  * @method list
  *
  * @description
  * This function simply uses the find() method to filter the posting journal and
- * (optionally) the general ledger.
+ * (optionally) the general ledger.  If the "showFullTransactions" option is
+ * passed to the query string, the entire transaction matching the filter
+ * parameters will be shown.
  */
 function list(req, res, next) {
+  // cache this the "nonposted" query in case in case we need to look up the
+  // full transaction records.
+  const { includeNonPosted, showFullTransactions } = req.query;
   find(req.query)
-    .then((journalResults) => {
-      return res.status(200).send(journalResults);
+    .then(journalResults => {
+      const hasEmptyResults = journalResults.length === 0;
+
+      const hasFullTransactions = showFullTransactions &&
+        Boolean(Number(showFullTransactions));
+
+      // only do a second pass if we have data and have requested the full transaction
+      // records
+      if (!hasEmptyResults && hasFullTransactions) {
+        return postProcessFullTransactions(journalResults, includeNonPosted);
+      }
+
+      return journalResults;
     })
+    .then(rows => res.status(200).send(rows))
     .catch(next)
     .done();
 }

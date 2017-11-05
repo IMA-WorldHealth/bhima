@@ -38,8 +38,6 @@ function JournalSearchModalController(Instance, Notify,
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-  window.search = vm.searchQueries;
-
   /**
    * hasDefaultAccount is used to set a default account selection behavior
    * if the search modal need to set account selection in default query panel we can send it
@@ -52,13 +50,17 @@ function JournalSearchModalController(Instance, Notify,
   if (options.hasDefaultAccount) {
     vm.hasDefaultAccount = true;
   }
-  
+
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
 
-  // assing default account
+  if (angular.isDefined(filters.showFullTransactions)) {
+    vm.defaultQueries.showFullTransactions = filters.showFullTransactions;
+  }
+
+  // assign default account
   if (filters.account_id) {
     vm.defaultQueries.account_id = filters.account_id;
   }
@@ -122,6 +124,13 @@ function JournalSearchModalController(Instance, Notify,
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
       changes.post({ key : 'limit', value : value });
+    }
+  };
+
+  // default filter to show full transactions
+  vm.toggleFullTransaction = function toggleFullTransaction(value) {
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'showFullTransactions', value : value });
     }
   };
 

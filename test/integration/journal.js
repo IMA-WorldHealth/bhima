@@ -29,7 +29,7 @@ describe('(/journal) API endpoint', () => {
       .catch(helpers.handler)
   );
 
-  it('GET /journal/:record_id : it returns an error message and 404 code if the transaction does not exist ', () =>
+  it('GET /journal/:record_uuid : it returns an error message and 404 code if the transaction does not exist ', () =>
     agent.get(`/journal/${MISSING_RECORD_UUID}`)
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -72,6 +72,24 @@ function SearchTests() {
       .query({ account_id })
       .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`GET /journal?account_id=${account_id}&showFullTransaction=1 should find complete transactions`, () => {
+    const NUM_MATCHES = 7;
+    const NUM_TXNS = 3;
+    return agent.get('/journal')
+      .query({ account_id, showFullTransactions : 1 })
+      .then((res) => {
+        helpers.api.listed(res, NUM_MATCHES);
+
+        // make sure that even though we return more rows, the transactions are unique.
+        const uniqueTransactions = res.body
+          .map(row => row.record_uuid)
+          .filter((record, idx, arr) => arr.indexOf(record) === idx);
+
+        expect(uniqueTransactions).to.have.length(NUM_TXNS);
       })
       .catch(helpers.handler);
   });
