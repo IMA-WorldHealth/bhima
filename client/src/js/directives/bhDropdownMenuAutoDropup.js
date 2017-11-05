@@ -1,10 +1,11 @@
-/* 
-  @ bh-dropdown-menu-auto-dropup directive
-  this directive check if html element's position is on the bottom
-  if true it changes the element's position in order to display it conviniently
+/*
+  @bh-dropdown-menu-auto-dropup directive
+  This directive check if html element's position is on the bottom if true it
+  changes the element's position in order to display it conveniently.
 
-  it directive is usefull for carets for exemple
-  Pages won't falls off page thanks to this directive if the user click on a dropdown 
+
+  This directive is useful for carets for example
+  Pages won't falls off page thanks to this directive if the user click on a dropdown
 
   Usage example
   .............
@@ -14,32 +15,37 @@
 
 */
 angular.module('bhima.directives')
-.directive('bhDropdownMenuAutoDropup', ['$document',
-  function($document) {
+  .directive('bhDropdownMenuAutoDropup', ['$document', '$window', 'util', function ($document, $window, util) {
     return {
-      restrict: 'AC',
-      link: function(scope, iElement, iAttrs) {
-
+      restrict : 'AC',
+      link : function (scope, iElement) {
         var iElementWrapper = iElement.parent();
+        var documentHeight = angular.element($document).height();
+        var offset = 35;
 
-        iElementWrapper.on('click', function() {
+        // only recalculate the document height on window resize
+        angular.element($window)
+          .on('resize', util.debounce(handleWindowResize, 50));
 
+        function handleWindowResize() {
+          documentHeight = angular.element($document).height();
+        }
+
+        function handleClick() {
           var iElementWrapperOffsetTop = iElementWrapper.offset().top;
           var iElementHeight = iElement.height();
-          var documentHeight = angular.element($document).height();
-                  
-          if((documentHeight - iElementHeight) < iElementWrapperOffsetTop) {
-            iElement.css({'margin-top': '0px'});
-            iElement.animate({'margin-top': '-' + (iElementHeight + 35) + 'px'}, 50);
-          }    
-          else { // can dis play without changing the element's position
-                  //just animate
-            iElement.css({'margin-top' : '50px'});
-            iElement.animate({'margin-top' : '0px'}, 50);
-          }
-          
+
+          var shouldDropUp = (documentHeight - iElementHeight - offset) < iElementWrapperOffsetTop;
+          var position = shouldDropUp ?
+            '-'.concat(iElementHeight + 35, 'px') :
+            '0px';
+
+          iElement.css({ 'margin-top' : position });
+        }
+
+        iElementWrapper.on('click', function () {
+          scope.$apply(handleClick);
         });
-      }
-    }
-  }
-]);
+      },
+    };
+  }]);
