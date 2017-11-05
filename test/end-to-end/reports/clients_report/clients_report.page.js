@@ -19,7 +19,7 @@ class ClientsReportPage {
     components.dateInterval.range(start_date, end_date);
     if (clients) {
       components.multipleDebtorGroupSelect.set(clients);
-    }    
+    }
     this.page.preview();
   }
 
