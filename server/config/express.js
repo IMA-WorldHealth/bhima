@@ -16,9 +16,19 @@ const winston = require('winston');
 const _ = require('lodash');
 const helmet = require('helmet');
 
+const debug = require('debug')('app');
+
 const interceptors = require('./interceptors');
-const Unauthorized = require('../lib/errors/Unauthorized');
+const { Unauthorized } = require('../lib/errors');
 const uploads = require('../lib/uploader');
+
+const days = 1000 * 60 * 60 * 24;
+const publicRoutes = [
+  '/auth/login',
+  '/languages',
+  '/projects/',
+  '/auth/logout',
+];
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
@@ -26,7 +36,7 @@ exports.configure = function configure(app) {
   // const isProduction = (process.env.NODE_ENV === 'production');
   const isProduction = false;
 
-  winston.debug('Configuring middleware.');
+  debug('Configuring middleware.');
 
   // helmet guards
   app.use(helmet());
@@ -47,9 +57,9 @@ exports.configure = function configure(app) {
       client : new Redis(),
     }),
     secret            : process.env.SESS_SECRET,
-    resave            : Boolean(process.env.SESS_RESAVE),
+    resave            : false,
     saveUninitialized : false,
-    unset             : process.env.SESS_UNSET,
+    unset             : 'destroy',
     cookie            : { httpOnly : true },
     retries           : 20,
   };
@@ -74,9 +84,10 @@ exports.configure = function configure(app) {
 
   // public static directories include the entire client and the uploads
   // directory.
-  const days = 1000 * 60 * 60 * 24;
-  const params = {};
-  params.maxAge = isProduction ? 7 * days : 0;
+  const params = {
+    maxAge : isProduction ? 7 * days : 0,
+  };
+
   app.use(express.static('client/', params));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
@@ -85,11 +96,10 @@ exports.configure = function configure(app) {
 
   // Only allow routes to use /login, /projects, /logout, and /languages if a
   // user session does not exists
-  const publicRoutes = ['/auth/login', '/languages', '/projects/', '/auth/logout'];
 
   app.use((req, res, next) => {
     if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
-      winston.debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
+      debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
       next(new Unauthorized('You are not logged into the system.'));
     } else {
       next();
