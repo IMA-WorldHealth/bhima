@@ -29,7 +29,7 @@ const identifiers = require('../../../config/identifiers');
 
 const hrRecordToTableMap = {};
 _.forEach(identifiers, v => {
-  hrRecordToTableMap[v.key] = hrRecordToTableMap[v.table];
+  hrRecordToTableMap[v.key] = v.table;
 });
 
 // Fiscal Service
@@ -265,13 +265,14 @@ function editTransaction(req, res, next) {
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
     .then((transactionToEdit) => {
-      const { posted, trans_id } = transactionToEdit[0];
+      const { posted, trans_id, hrRecord } = transactionToEdit[0];
 
       // bind the current transaction under edit as "transactionToEdit"
       _transactionToEdit = transactionToEdit;
 
       // _recordTableToEdit is now either voucher, invoice, or cash
-      _recordTableToEdit = hrRecordToTableMap[transactionToEdit.hrRecord];
+      const [prefix] = hrRecord.split('.');
+      _recordTableToEdit = hrRecordToTableMap[prefix];
 
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
@@ -332,7 +333,7 @@ function editTransaction(req, res, next) {
       };
 
       transaction
-        .addQuery(UPDATE_RECORD_EDITED_FLAG, [_recordTableToEdit, db.bid(row.recordUuid)])
+        .addQuery(UPDATE_RECORD_EDITED_FLAG, [_recordTableToEdit, db.bid(row.record_uuid)])
         .addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
 
       return transaction.execute();

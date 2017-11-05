@@ -4,8 +4,14 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{ row.entity.reference }}"class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.reference}}</li>
+  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">
+      {{row.entity.reference}}
+      <span ng-show="row.entity.edited" class="text-primary">
+        <i class="fa fa-pencil"></i>
+        <span translate>FORM.INFO.EDITED</span>
+      </span>
+    </li>
     <li>
       <a href data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>

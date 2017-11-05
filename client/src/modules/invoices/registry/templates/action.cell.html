@@ -6,7 +6,13 @@
   </a>
 
   <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.reference}}</li>
+    <li class="dropdown-header">
+      {{row.entity.reference}}
+      <span ng-show="row.entity.edited" class="text-primary">
+        <i class="fa fa-pencil"></i>
+        <span translate>FORM.INFO.EDITED</span>
+      </span>
+    </li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.Receipts.invoice(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.VIEW_RECEIPT</span>
