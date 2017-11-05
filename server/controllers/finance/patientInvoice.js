@@ -8,13 +8,14 @@
  */
 
 const uuid = require('uuid/v4');
-const identifiers = require('../../config/identifiers');
-const db = require('../../lib/db');
-const barcode = require('../../lib/barcode');
-const FilterParser = require('../../lib/filter');
+
 const BadRequest = require('../../lib/errors/BadRequest');
-const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
+const FilterParser = require('../../lib/filter');
+const barcode = require('../../lib/barcode');
+const createInvoice = require('./invoice/patientInvoice.create');
+const db = require('../../lib/db');
+const identifiers = require('../../config/identifiers');
 
 const shared = require('./shared');
 
@@ -211,7 +212,8 @@ function find(options) {
       patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
       CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
-      service.name as serviceName, user.display_name, invoice.user_id, invoice.reversed
+      service.name as serviceName, user.display_name, invoice.user_id,
+      invoice.reversed, invoice.edited
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
@@ -220,14 +222,15 @@ function find(options) {
     JOIN project ON project.id = invoice.project_id
   `;
 
-  filters.equals('patientUuid', 'uuid', 'patient');
-  filters.equals('user_id');
-  filters.equals('debtor_uuid');
-  filters.equals('reversed');
   filters.equals('cost');
-  filters.equals('service_id');
-  filters.equals('project_id');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('debtor_uuid');
+  filters.equals('edited');
+  filters.equals('patientUuid', 'uuid', 'patient');
+  filters.equals('project_id');
+  filters.equals('reversed');
+  filters.equals('service_id');
+  filters.equals('user_id');
 
   filters.custom(
     'cash_uuid',
