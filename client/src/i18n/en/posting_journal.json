@@ -11,6 +11,8 @@
     "SAVE_TRANSACTION" : "Save Transaction",
     "SAVE_TRANSACTION_SUCCESS" : "Transaction record was updated successfully.",
     "TRANSACTION" : "Transaction",
+    "SHOW_FULL_TRANSACTION_RECORDS" : "Show Full Transactions",
+    "SHOW_FULL_TRANSACTION_RECORDS_HELP" : "Enabling this option will make this server return all rows in a transaction matching any of the filter values.  It may slow down performance of Journal slightly.",
     "VIEWING" : "Viewing",
     "OUTDATED_DATA_MESSAGE_1" : "The data displayed may have changed since it was loaded.",
     "OUTDATED_DATA_MESSAGE_2" : "the latest data.",

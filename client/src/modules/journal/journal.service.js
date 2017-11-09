@@ -97,6 +97,9 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
 
   // default filters will always be applied
   journalFilters.registerDefaultFilters(bhConstants.defaultFilters);
+  journalFilters.registerDefaultFilters([
+    { key : 'showFullTransactions', label : 'POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS' },
+  ]);
 
   // custom filters can be optionally applied
   journalFilters.registerCustomFilters([
@@ -134,6 +137,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
     // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
       journalFilters.assignFilter('limit', 100);
+    }
+
+    if (assignedKeys.indexOf('showFullTransactions') === -1) {
+      journalFilters.assignFilter('showFullTransactions', 0);
     }
   }
 
@@ -214,7 +221,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
-
 
   return service;
 }

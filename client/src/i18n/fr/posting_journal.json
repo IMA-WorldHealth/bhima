@@ -10,6 +10,8 @@
     "SAVE_TRANSACTION" : "Sauvegarder la transaction",
     "TITLE" : "Journal de Saisie",
     "TRANSACTION" : "Transaction",
+    "SHOW_FULL_TRANSACTION_RECORDS" : "Afficher les Transactions Complètes",
+    "SHOW_FULL_TRANSACTION_RECORDS_HELP" : "Si vous activez cette option, ce serveur retournera toutes les lignes d'une transaction correspondant à l'une des valeurs de filtre. Cela peut ralentir légèrement les performances du Journal.",
     "CLICK_HERE_TO_RELOAD" : "Cliquez ici pour recharger les données",
     "EDITING" : "Édition",
     "VIEWING" : "Voir",
