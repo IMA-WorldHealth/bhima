@@ -4,7 +4,7 @@
  * This controller is responsible for creating and updating Enterprises.
  * Each enterprise must necessarily have a name, an abbreviation, a geographical
  * location as well as a currency and it is not possible to remove an enterprise.
- **/
+ * */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -25,11 +25,11 @@ exports.list = function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -108,16 +108,16 @@ exports.update = function update(req, res, next) {
   delete data.id;
 
   db.exec(sql, [data, req.params.id])
-  .then((row) => {
-    if (!row.affectedRows) {
-      throw new NotFound(`Could not find an enterprise with id ${req.params.id}`);
-    }
+    .then((row) => {
+      if (!row.affectedRows) {
+        throw new NotFound(`Could not find an enterprise with id ${req.params.id}`);
+      }
 
-    return lookupEnterprise(req.params.id);
-  })
-  .then((enterprise) => {
-    res.status(200).json(enterprise);
-  })
-  .catch(next)
-  .done();
+      return lookupEnterprise(req.params.id);
+    })
+    .then((enterprise) => {
+      res.status(200).json(enterprise);
+    })
+    .catch(next)
+    .done();
 };

@@ -26,13 +26,13 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-  .then((rows) => {
-    rows = rows.map(row => row.cashbox_id);
-        
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      rows = rows.map(row => row.cashbox_id);
+
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 

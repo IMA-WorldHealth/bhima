@@ -97,11 +97,11 @@ function list(req, res, next) {
       user.username, user.deactivated FROM user;`;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -120,22 +120,22 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupUser(req.params.id)
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 }
 
 function exists(req, res, next) {
-  const sql='SELECT count(id) as nbr FROM user WHERE username=?';
+  const sql = 'SELECT count(id) as nbr FROM user WHERE username=?';
 
-  db.one (sql,req.params.username)
-  .then((data) => {
-    res.send(data.nbr !== 0);
-  })
-  .catch(next)
-  .done();
+  db.one(sql, req.params.username)
+    .then((data) => {
+      res.send(data.nbr !== 0);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -163,29 +163,29 @@ function create(req, res, next) {
   `;
 
   db.exec(sql, [data.username, data.password, data.email, data.display_name])
-  .then((row) => {
+    .then((row) => {
     // retain the insert id
-    userId = row.insertId;
+      userId = row.insertId;
 
-    sql = 'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
+      sql = 'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
 
-    const projects = data.projects.map(projectId => [userId, projectId]);
+      const projects = data.projects.map(projectId => [userId, projectId]);
 
-    return db.exec(sql, [projects]);
-  })
-  .then(() => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.USER,
-      user_id : req.session.user.id,
-      id : userId,
-    });
+      return db.exec(sql, [projects]);
+    })
+    .then(() => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.USER,
+        user_id : req.session.user.id,
+        id : userId,
+      });
 
-    // send the ID back to the client
-    res.status(201).json({ id : userId });
-  })
-  .catch(next)
-  .done();
+      // send the ID back to the client
+      res.status(201).json({ id : userId });
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -208,8 +208,10 @@ function update(req, res, next) {
 
   // if the password is sent, return an error
   if (data.password) {
-    next(new BadRequest(`You cannot change the password field with this API.`,
-        `ERRORS.PROTECTED_FIELD`));
+    next(new BadRequest(
+      `You cannot change the password field with this API.`,
+      `ERRORS.PROTECTED_FIELD`
+    ));
     return;
   }
 
@@ -240,25 +242,23 @@ function update(req, res, next) {
   // simply sent permissions changes).
   if (!_.isEmpty(data)) {
     transaction
-      .addQuery(
-        'UPDATE user SET ? WHERE id = ?;', [data, req.params.id]
-      );
+      .addQuery('UPDATE user SET ? WHERE id = ?;', [data, req.params.id]);
   }
 
   transaction.execute()
-  .then(() => lookupUser(req.params.id))
-  .then((result) => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.UPDATE,
-      entity : Topic.entities.USER,
-      user_id : req.session.user.id,
-      id : req.params.id,
-    });
+    .then(() => lookupUser(req.params.id))
+    .then((result) => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.USER,
+        user_id : req.session.user.id,
+        id : req.params.id,
+      });
 
-    res.status(200).json(result);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -276,12 +276,12 @@ function password(req, res, next) {
   const sql = `UPDATE user SET password = PASSWORD(?) WHERE id = ?;`;
 
   db.exec(sql, [req.body.password, req.params.id])
-  .then(() => lookupUser(req.params.id))
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then(() => lookupUser(req.params.id))
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -297,20 +297,20 @@ function remove(req, res, next) {
   const sql = `DELETE FROM user WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
-  .then((row) => {
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find a user with id ${req.params.id}`);
-    }
+    .then((row) => {
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find a user with id ${req.params.id}`);
+      }
 
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.DELETE,
-      entity : Topic.entities.USER,
-      user_id : req.session.user.id,
-      id : req.params.id,
-    });
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.DELETE,
+        entity : Topic.entities.USER,
+        user_id : req.session.user.id,
+        id : req.params.id,
+      });
 
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }

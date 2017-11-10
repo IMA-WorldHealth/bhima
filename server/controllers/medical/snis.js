@@ -4,11 +4,11 @@ function healthZones(req, res, next) {
   var sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
 
   db.exec(sql)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 // Expose

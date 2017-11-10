@@ -4,7 +4,7 @@
  *
  * @description
  * This controller exposes an API to the client for reading and writing supplier
- **/
+ * */
 
 
 const db = require('../../lib/db');
@@ -47,11 +47,11 @@ function list(req, res, next) {
   }
 
   db.exec(sql, params)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -64,11 +64,11 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupSupplier(req.params.uuid)
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -195,11 +195,11 @@ function search(req, res, next) {
   }
 
   db.exec(sql, [req.query.display_name])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 

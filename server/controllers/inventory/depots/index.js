@@ -143,11 +143,11 @@ function list(req, res, next) {
   const parameters = filters.parameters();
 
   db.exec(query, parameters)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -168,12 +168,12 @@ function detail(req, res, next) {
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 
   db.one(sql, [req.session.enterprise.id, uid])
-  .then((row) => {
+    .then((row) => {
     // return the json
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -197,8 +197,8 @@ function listDistributions(req, res, next) {
   // the sql executed depends on the type of consumption
   // defaults to all consumptions
   switch (options.type) {
-    // filter on distributions to patients
-    // TODO - this query is suboptimal.  Perhaps rewrite with multiple subqueries
+  // filter on distributions to patients
+  // TODO - this query is suboptimal.  Perhaps rewrite with multiple subqueries
   case 'patients':
   case 'patient':
     sql =
@@ -258,7 +258,7 @@ function listDistributions(req, res, next) {
     break;
 
     // TODO - this should find all consumption losses for this depot
-  case 'loss' :
+  case 'loss':
   case 'losses':
     sql =
       `SELECT c.uuid, c.document_id AS voucher,
@@ -291,11 +291,11 @@ function listDistributions(req, res, next) {
   }
 
   db.exec(sql, [req.params.depotId, options.start, options.end])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 function detailDistributions(req, res, next) {
@@ -312,20 +312,20 @@ function detailDistributions(req, res, next) {
     ORDER BY c.date DESC;`;
 
   db.exec(sql, [req.params.depotId, uid])
-  .then((rows) => {
-    if (!rows) {
-      res.status(404).json({
-        code : 'ERR_NO_CONSUMPTION',
-        reason : `Could not find a consumption by uuid:${uid}`,
-      });
+    .then((rows) => {
+      if (!rows) {
+        res.status(404).json({
+          code : 'ERR_NO_CONSUMPTION',
+          reason : `Could not find a consumption by uuid:${uid}`,
+        });
 
-      return;
-    }
+        return;
+      }
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -338,13 +338,13 @@ function createDistributions(req, res, next) {
   // We need a better way of passing the project ID into the requests,
   // preferably giving access to the entire session variable.
   distributions.createDistributions(req.params.depotId, req.body, req.session)
-  .then((data) => {
-    res.status(200).json(data);
-  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
 
   // FIXME -- this needs better error handling, I think.
-  .catch(next)
-  .done();
+    .catch(next)
+    .done();
 }
 
 /**
@@ -389,13 +389,13 @@ function listAvailableLots(req, res, next) {
       AS t GROUP BY tracking_number;`;
 
   return db.exec(sql, [depot, depot, depot, depot])
-  .then((rows) => {
+    .then((rows) => {
     // @TODO -- this should be in the WHERE/HAVING condition
-    var ans = rows.filter((item) => { return item.quantity > 0; });
-    res.status(200).json(ans);
-  })
-  .catch(next)
-  .done();
+      var ans = rows.filter((item) => { return item.quantity > 0; });
+      res.status(200).json(ans);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -474,11 +474,11 @@ function listExpiredLots(req, res, next) {
     WHERE s.quantity > 0;`;
 
   db.exec(sql, [depot, depot, depot])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -515,9 +515,9 @@ function listStockExpirations(req, res, next) {
   // more performant?
 
   db.exec(sql, [depot, depot, depot, req.query.start, req.query.end])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }

@@ -73,7 +73,7 @@ function create(req, res, next) {
    * @todo
    * design/ update account types to allow setting a translation_key
    * - the implications of this are system wide
-   **/
+   * */
   record.translation_key = '';
 
   db.exec(sql, [record])
@@ -101,7 +101,7 @@ function update(req, res, next) {
 
   lookupAccountType(id)
     .then(() => db.exec(sql, [data, id]))
-   .then(() => lookupAccountType(id))
+    .then(() => lookupAccountType(id))
     .then((accountType) => {
       res.status(200).json(accountType);
     })

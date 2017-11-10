@@ -82,21 +82,15 @@ function create(req, res, next) {
 
   // disallow invoice payments with empty items by returning a 400 to the client
   if (isInvoicePayment && !hasItems) {
-    next(
-      new BadRequest('You must submit cash items with the payments against previous invoices.')
-    );
+    next(new BadRequest('You must submit cash items with the payments against previous invoices.'));
 
     return;
   // disallow caution payments with items for more predictable application
   // behavior.
   } else if (!isInvoicePayment && hasItems) {
-    next(
-      new BadRequest(
-        `You must be confused. You submitted payment against items marked as a
+    next(new BadRequest(`You must be confused. You submitted payment against items marked as a
         caution payment.  Please submit either a caution with no items or a payment
-        marked with is_caution = 0.`
-      )
-    );
+        marked with is_caution = 0.`));
 
     return;
   }

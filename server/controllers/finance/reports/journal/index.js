@@ -58,13 +58,11 @@ function postingJournalExport(req, res, next) {
       return report.render({ rows, totals });
     })
     .then((result) => {
-
       if (result.headers.type === 'xlsx') {
         res.xls(result.headers.filename, util.dateFormatter(result.report.rows));
       } else {
         res.set(result.headers).send(result.report);
       }
-
     })
     .catch(next)
     .done();

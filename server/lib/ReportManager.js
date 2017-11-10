@@ -60,7 +60,6 @@ const SAVE_SQL = `
 // Class Declaration
 
 class ReportManager {
-
   /**
    * @constructor
    *
@@ -194,7 +193,7 @@ class ReportManager {
     const data = {
       uuid : db.bid(reportId),
       label : options.label,
-      link : link,
+      link,
       timestamp : new Date(),
       user_id : options.user.id,
       report_id : options.reportId,

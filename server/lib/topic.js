@@ -73,9 +73,7 @@ const channels = {
 // writes events into the event database table
 function databaseLogger(data) {
   if (!data.entity) {
-    throw new Error(
-      `[topic] The event ${data.event} expected an entity, but got ${data.entity} instead.`
-    );
+    throw new Error(`[topic] The event ${data.event} expected an entity, but got ${data.entity} instead.`);
   }
 
   const record = {

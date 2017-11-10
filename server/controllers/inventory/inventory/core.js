@@ -79,12 +79,12 @@ function updateItemsMetadata(record, identifier) {
   if (record.group_uuid) {
     record.group_uuid = db.bid(record.group_uuid);
   }
- 
+
 
   const sql = 'UPDATE inventory SET ? WHERE uuid = ?;';
   // if there is no property to update this query won't work
 
-  if (_.isEmpty(record)) { //there is no change, but user has submitted
+  if (_.isEmpty(record)) { // there is no change, but user has submitted
     return getItemsMetadataById(identifier);
   }
 
@@ -93,8 +93,7 @@ function updateItemsMetadata(record, identifier) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record, db.bid(identifier)])
-  .then(() => getItemsMetadataById(identifier));
-
+    .then(() => getItemsMetadataById(identifier));
 }
 
 /**

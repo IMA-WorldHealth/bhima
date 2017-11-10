@@ -140,9 +140,7 @@ function create(req, res, next) {
   let data = req.body;
 
   if (!data.items) {
-    return next(
-      new BadRequest('Cannot create a purchase order without purchase items.')
-    );
+    return next(new BadRequest('Cannot create a purchase order without purchase items.'));
   }
 
   // default to a new uuid if the client did not provide one
@@ -199,9 +197,9 @@ function create(req, res, next) {
  */
 function list(req, res, next) {
   find(req.query)
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -280,7 +278,7 @@ function find(options) {
   filters.dateFrom('custion_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
-  
+
   filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
   filters.equals('supplier_uuid', 'uuid', 's');
 
@@ -327,30 +325,30 @@ function purchaseStatus(req, res, next) {
   `;
 
   db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
-  .then((row) => {
-    let query = '';
-    status.cost = row.cost;
-    status.movement_cost = row.movement_cost;
+    .then((row) => {
+      let query = '';
+      status.cost = row.cost;
+      status.movement_cost = row.movement_cost;
 
-    if (row.movement_cost === row.cost) {
+      if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
-      status.status = 'full_entry';
-      query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
-    } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
+        status.status = 'full_entry';
+        query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
+      } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
       // the purchase is partially delivered
-      status.status = 'partial_entry';
-      query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
-    } else if (row.movement_cost === 0) {
+        status.status = 'partial_entry';
+        query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
+      } else if (row.movement_cost === 0) {
       // the purchase is not yet delivered
-      status.status = 'no_entry';
-      //If there are no movements, the status of the purchase order must remain confirmed
-      query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
-    }
-    return db.exec(query, [purchaseUuid]);
-  })
-  .then(() => res.status(200).send(status))
-  .catch(next)
-  .done();
+        status.status = 'no_entry';
+        // If there are no movements, the status of the purchase order must remain confirmed
+        query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
+      }
+      return db.exec(query, [purchaseUuid]);
+    })
+    .then(() => res.status(200).send(status))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -388,9 +386,9 @@ function purchaseBalance(req, res, next) {
   `;
 
   db.exec(sql, [FROM_PURCHASE_ID, purchaseUuid, purchaseUuid])
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 

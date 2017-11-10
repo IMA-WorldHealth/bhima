@@ -50,7 +50,7 @@ function getItemConsumption(uuid, options) {
       GROUP BY i.uuid, YEAR(c.date), MONTH(c.date)`;
     break;
 
-  case 'week' :
+  case 'week':
     sql =
       `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i

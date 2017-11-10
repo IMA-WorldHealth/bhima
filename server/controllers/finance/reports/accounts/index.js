@@ -44,12 +44,11 @@ function chart(req, res, next) {
       return report.render({ accounts });
     })
     .then(result => {
-      if(result.headers.type ==='xlsx'){
+      if (result.headers.type === 'xlsx') {
         res.xls(result.headers.filename, result.report.accounts);
-      }else{
+      } else {
         res.set(result.headers).send(result.report);
       }
-
     })
     .catch(next)
     .done();

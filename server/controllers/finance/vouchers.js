@@ -187,11 +187,7 @@ function create(req, res, next) {
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
   if (items.length < 2) {
-    next(
-      new BadRequest(
-        `Expected there to be at least two items, but only received ${items.length} items.`
-      )
-    );
+    next(new BadRequest(`Expected there to be at least two items, but only received ${items.length} items.`));
 
     return;
   }
