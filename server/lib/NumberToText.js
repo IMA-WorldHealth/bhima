@@ -161,9 +161,6 @@ function convert(input, lang, currencyName) {
       .reverse()
       .join(' ');
   };
-  /**
-  *
-  */
 
   const numberString = String(number);
   const numberPart = _.split(numberString, '.');
