@@ -1,12 +1,14 @@
 /* eslint class-methods-use-this:off */
 const q = require('q');
 const mysql = require('mysql');
-const winston = require('winston');
 const uuidParse = require('uuid-parse');
 const Transaction = require('./transaction');
+const _ = require('lodash');
 
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
+
+const debug = require('debug')('db');
 
 /**
  * @class DatabaseConnector
@@ -32,6 +34,8 @@ class DatabaseConnector {
     };
 
     this.pool = mysql.createPool(params);
+
+    debug('#constructor(): Initialized database connector.');
   }
 
   /**
@@ -68,6 +72,7 @@ class DatabaseConnector {
     const deferred = q.defer();
     this.pool.getConnection((error, connection) => {
       if (error) {
+        debug('#exec(): An error occurred getting a connection.');
         deferred.reject(error);
         return;
       }
@@ -80,8 +85,7 @@ class DatabaseConnector {
         return (err) ? deferred.reject(err) : deferred.resolve(rows);
       });
 
-      // log the formatted SQL if in debug mode
-      winston.debug(statement);
+      debug(`#exec(): ${statement}`);
     });
 
     return deferred.promise;
@@ -106,20 +110,20 @@ class DatabaseConnector {
    * @param {String|Undefined} entity - the entity targeted for pretty printing.
    * @returns {Promise} the result of the database query
    */
-  one(sql, params, id, entity) {
+  one(sql, params, id, entity = 'record') {
     return this.exec(sql, params)
-      .then((rows) => {
+      .then(rows => {
+        const errorMessage =
+          `Expected ${entity} to contain a single record with id ${id}, but ${rows.length} were found!`;
+
         if (rows.length < 1) {
-          throw new NotFound(
-            `Expected ${entity || 'record'} to contain a single record with id ${id}, but none were found!`
-          );
+          debug(`#one(): Found too few records!  Expected 1 but ${rows.length} found.`);
+          throw new NotFound(errorMessage);
         }
 
         if (rows.length > 1) {
-          throw new BadRequest(`
-            Expected ${entity || 'record'} to contain a single record with id ${id},
-            but found ${rows.length} records!
-          `);
+          debug(`#one(): Found too many records!  Expected 1 but ${rows.length} found.`);
+          throw new BadRequest(errorMessage);
         }
 
         return rows[0];
@@ -158,7 +162,7 @@ class DatabaseConnector {
       return hexUuid;
     }
 
-    return new Buffer(uuidParse.parse(hexUuid));
+    return Buffer.from(uuidParse.parse(hexUuid));
   }
 
   /**
@@ -191,15 +195,18 @@ class DatabaseConnector {
    * db.exec('INSERT into table SET ?;', [data]);
    */
   convert(data, keys) {
+    debug(`#convert(): converting ${keys.length} properties to binary.`);
     // loop through each key
     keys.forEach(key => {
+      const prop = data[key];
+
       // the key exists on the object and value is a string
-      if (data[key] && typeof data[key] === 'string') {
+      if (prop && _.isString(prop)) {
         data[key] = this.bid(data[key]);
       }
 
       // the key exists on the object and value is an array
-      if (data[key] && Array.isArray(data[key])) {
+      if (prop && _.isArray(prop)) {
         // Every item should be converted to binary
         data[key] = data[key].map(this.bid);
       }

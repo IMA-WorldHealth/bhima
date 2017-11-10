@@ -1,5 +1,5 @@
 const q = require('q');
-const winston = require('winston');
+const debug = require('debug')('db:transaction');
 
 /** @const the number of times a transaction is restarted in case of deadlock*/
 const MAX_TRANSACTION_DEADLOCK_RESTARTS = 5;
@@ -19,7 +19,7 @@ function queryConnection(connection, sql, params) {
     }
   });
 
-  winston.debug(`[Transaction] ${query.sql.trim()}`);
+  debug(`#queryConnection(): ${query.sql.trim()}`);
 
   return deferred.promise;
 }
@@ -36,7 +36,7 @@ function queryConnection(connection, sql, params) {
  * should not be using this directly.
  *
  * @requires q
- * @requires winston
+ * @requires debug
  *
  * @example
  * const db = require('db');
@@ -59,6 +59,7 @@ class Transaction {
     this.queries = [];
     this.db = db;
     this.restarts = 0;
+    debug('#constructor(): initializing transaction...');
   }
 
   /**
@@ -97,6 +98,7 @@ class Transaction {
    * @returns {Promise} - the results of the transaction execution
    */
   execute() {
+    debug(`#execute(): Executing ${this.queries.length} queries.`);
     const deferred = q.defer();
 
     const queries = this.queries;
@@ -105,13 +107,22 @@ class Transaction {
     // get a connection from the database to execute the transaction
     pool.getConnection((error, connection) => {
       if (error) {
+        debug('#execute(): Error acquiring DB connection.');
+        debug('#execute(): %o', error);
         deferred.reject(error);
         return;
       }
 
+      debug(`#execute(): DB connection acquired from pooled connections.`);
+
       // with the acquired connection, get a transaction object
       connection.beginTransaction((e) => {
-        if (e) { return deferred.reject(e); }
+        debug('#execute(): Beginning Transaction.');
+        if (e) {
+          debug('#execute(): Begin Transaction Error:');
+          debug('#execute(): %o', e);
+          return deferred.reject(e);
+        }
 
         // map promises through to database queries
         const promises = queries.map(
@@ -121,33 +132,33 @@ class Transaction {
         // make sure that all queries are executed successfully.
         return q.all(promises)
           .then((results) => {
+            debug('#execute(): All queries settled, commiting transacton.');
             // all queries completed - attempt to commit
             connection.commit((err) => {
               if (err) { throw err; }
+              debug('#execute(): Transaction commited. Closing connections.');
               connection.destroy();
               deferred.resolve(results);
             });
           })
           .catch((err) => {
+            debug('#execute(): An error occured in the transaction. Rolling back.');
+            debug('#execute(): %o', err);
+
             // individual query did not work - rollback transaction
             connection.rollback(() => {
               connection.destroy();
-              winston.error(
-                `[Transaction] Encountered error ${err.code}.`,
-                `Rolling transaction back and recoverying database connections.`
-              );
             });
+
 
             // increment the number of restarts
             this.restarts += 1;
+            const isDeadlock = (err.code === 'ER_LOCK_DEADLOCK');
 
             // restart transactions a set number of times if the error is due to table deadlocks
-            if (err.code === 'ER_LOCK_DEADLOCK' && this.restarts < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
-              winston.error(
-                `[Transaction] Transacton deadlock discovered.`,
-                `Attempting ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`,
-                `[${new Date().toLocaleString()}]`
-              );
+            if (isDeadlock && this.restarts < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
+              debug(`#execute(): Transaction deadlock!  Restart count: ${this.restarts} of ${MAX_TRANSACTION_DEADLOCK_RESTARTS}.`);
+              debug(`#execute(): Reattempt transaction after ${TRANSACTION_DEADLOCK_RESTART_DELAY}ms.`);
 
               // set up a promise to delay the transaction restart
               const delay = q.defer();
@@ -164,12 +175,10 @@ class Transaction {
             }
 
             // if we get here, all attempted restarts failed.  Report an error in case tables are permanently locked.
-            if (err.code === 'ER_LOCK_DEADLOCK') {
-              winston.error(
-                `[Transaction] Unrecoverable deadlock error.`,
-                `Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`,
-                `[${new Date().toLocaleString()}]`
-              );
+            if (isDeadlock) {
+              debug('#execute(): Unrecoverable deadlock error.');
+              debug(`#execute(): Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`);
+              debug('#execute(): Transaction will not be reattempted.');
             }
 
             return deferred.reject(err);

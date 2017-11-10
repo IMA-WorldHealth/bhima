@@ -12,7 +12,7 @@
  * @requires http
  * @requires dotenv
  * @requires express
- * @requires winston
+ * @requires debug
  *
  * @requires config/express
  * @requires config/routes
@@ -21,19 +21,20 @@
  * @copyright IMA World Health 2016
  */
 
-// json2xls handles an error in strict mode so we require it before
+// json2xls has a strict-mode octal error in underlying modules.
+// Workaround - required before 'use-strict'
 const json2xls = require('json2xls');
 
 require('use-strict');
 
 const http = require('http');
 const express = require('express');
-const winston = require('winston');
 const dotEnv = require('dotenv');
+const debug = require('debug')('app');
 
 const app = express();
 /*
-  * json2xls middelware , help to send xlsx file as http response
+  * json2xls middelware used to send xlsx file as http response
   *example : res.xls('data.xlsx', jsonArray);
 */
 app.use(json2xls.middleware);
@@ -57,39 +58,8 @@ function configureEnvironmentVariables() {
   const dotfile = `server/.env.${env}`.trim();
 
   // load the environmental variables into process using the dotenv module
-  winston.info(`[app] Loading configuration from ${dotfile}.`);
-  dotEnv.config({ path: dotfile });
-}
-
-/**
- * @function configureLogger
- *
- * @description
- * Harnesses winston to log both events uniformly across the server.  This
- * includes HTTP requests (using morgan), application events, and plugin events.
- *
- * By default, the only configured logging interface is the console.  This
- * should not be the case in production.  If the LOG_FILE environmental
- * variable exists, the server will use it write all logs.
- *
- */
-function configureLogger() {
-  // set logging levels to that found in the configuration file (default: warn)
-  winston.level = (process.env.LOG_LEVEL || 'warn');
-
-  const logFile = process.env.LOG_FILE;
-
-  // allow logging to a file if needed
-  if (logFile) {
-    winston.add(winston.transports.File, { filename: logFile });
-  }
-
-  // be sure to log unhandled exceptions
-  winston.handleExceptions(new winston.transports.Console({
-    humanReadableUnhandledException : true,
-    colorize                        : true,
-    prettyPrint                     : true,
-  }));
+  debug(`configureEnvironmentVariables(): Loading configuration from ${dotfile}.`);
+  dotEnv.config({ path : dotfile });
 }
 
 /**
@@ -106,13 +76,12 @@ function configureServer() {
   // create the server
   http.createServer(app)
     .listen(process.env.PORT, () => {
-      winston.info(`Server started in mode ${mode} on port ${port}.`);
+      debug(`configureServer(): Server started in mode ${mode} on port ${port}.`);
     });
 }
 
 // run configuration tools
 configureEnvironmentVariables();
-configureLogger();
 configureServer();
 
 // Configure application middleware stack, inject authentication session
@@ -125,9 +94,11 @@ require('./config/routes').configure(app);
 require('./config/express').errorHandling(app);
 
 // ensure the process terminates gracefully when an error occurs.
-process.on('uncaughtException', () => process.exit(1));
+process.on('uncaughtException', (e) => {
+  debug('process.onUncaughException: %o', e);
+  process.exit(1);
+});
 
 process.on('warning', (warning) => {
-  winston.warn(warning.message);
-  winston.warn(warning.stack);
+  debug('process.onWarning: %o', warning);
 });
