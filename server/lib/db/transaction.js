@@ -1,7 +1,7 @@
 const q = require('q');
 const debug = require('debug')('db:transaction');
 
-/** @const the number of times a transaction is restarted in case of deadlock*/
+/** @const the number of times a transaction is restarted in case of deadlock */
 const MAX_TRANSACTION_DEADLOCK_RESTARTS = 5;
 
 /** @const the number of milliseconds delayed before restarting the transaction */
@@ -49,7 +49,6 @@ function queryConnection(connection, sql, params) {
  *   .catch(error => console.error(error));
  */
 class Transaction {
-
   /**
    * @constructor
    *
@@ -125,9 +124,7 @@ class Transaction {
         }
 
         // map promises through to database queries
-        const promises = queries.map(
-          bundle => queryConnection(connection, bundle.query, bundle.params)
-        );
+        const promises = queries.map(bundle => queryConnection(connection, bundle.query, bundle.params));
 
         // make sure that all queries are executed successfully.
         return q.all(promises)

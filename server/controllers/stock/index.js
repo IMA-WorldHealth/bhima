@@ -43,12 +43,12 @@ function createStock(req, res, next) {
   const params = req.body;
   const transaction = db.transaction();
   const document = {
-    uuid: uuid(),
-    date: new Date(params.date),
-    user: req.session.user.id,
-    depot_uuid: params.depot_uuid,
-    flux_id: params.flux_id,
-    description: params.description,
+    uuid : uuid(),
+    date : new Date(params.date),
+    user : req.session.user.id,
+    depot_uuid : params.depot_uuid,
+    flux_id : params.flux_id,
+    description : params.description,
   };
 
   let createLotQuery;
@@ -66,15 +66,15 @@ function createStock(req, res, next) {
 
     // the lot object to insert
     createLotObject = {
-      uuid: db.bid(uuid()),
-      label: lot.label,
-      initial_quantity: lot.quantity,
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      expiration_date: date,
-      inventory_uuid: db.bid(lot.inventory_uuid),
-      origin_uuid: db.bid(lot.origin_uuid),
-      delay: 0,
+      uuid : db.bid(uuid()),
+      label : lot.label,
+      initial_quantity : lot.quantity,
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      expiration_date : date,
+      inventory_uuid : db.bid(lot.inventory_uuid),
+      origin_uuid : db.bid(lot.origin_uuid),
+      delay : 0,
     };
 
     // prepare movement insertion query
@@ -82,17 +82,17 @@ function createStock(req, res, next) {
 
     // the movement object to insert
     createMovementObject = {
-      uuid: db.bid(uuid()),
-      lot_uuid: createLotObject.uuid,
-      depot_uuid: db.bid(document.depot_uuid),
-      document_uuid: db.bid(document.uuid),
-      flux_id: params.flux_id,
-      date: document.date,
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      is_exit: 0,
-      user_id: document.user,
-      description: document.description,
+      uuid : db.bid(uuid()),
+      lot_uuid : createLotObject.uuid,
+      depot_uuid : db.bid(document.depot_uuid),
+      document_uuid : db.bid(document.uuid),
+      flux_id : params.flux_id,
+      date : document.date,
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      is_exit : 0,
+      user_id : document.user,
+      description : document.description,
     };
 
     // adding a lot insertion query into the transaction
@@ -130,44 +130,44 @@ function createIntegration(req, res, next) {
   const documentUuid = uuid();
 
   const integration = {
-    uuid: db.bid(identifier),
-    project_id: req.session.project.id,
-    description: params.movement.description || 'INTEGRATION',
-    date: new Date(params.movement.date),
+    uuid : db.bid(identifier),
+    project_id : req.session.project.id,
+    description : params.movement.description || 'INTEGRATION',
+    date : new Date(params.movement.date),
   };
   const sql = `INSERT INTO integration SET ?`;
 
   transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
-    let lotUuid = uuid();
+    const lotUuid = uuid();
 
     // adding a lot insertion query into the transaction
     transaction.addQuery(`INSERT INTO lot SET ?`, {
-      uuid: db.bid(lotUuid),
-      label: lot.label,
-      initial_quantity: lot.quantity,
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      expiration_date: new Date(lot.expiration_date),
-      inventory_uuid: db.bid(lot.inventory_uuid),
-      origin_uuid: db.bid(identifier),
-      delay: 0,
+      uuid : db.bid(lotUuid),
+      label : lot.label,
+      initial_quantity : lot.quantity,
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      expiration_date : new Date(lot.expiration_date),
+      inventory_uuid : db.bid(lot.inventory_uuid),
+      origin_uuid : db.bid(identifier),
+      delay : 0,
     });
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
-      uuid: db.bid(uuid()),
-      lot_uuid: db.bid(lotUuid),
-      depot_uuid: db.bid(params.movement.depot_uuid),
-      document_uuid: db.bid(documentUuid),
-      flux_id: params.movement.flux_id,
-      date: new Date(params.movement.date),
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      is_exit: 0,
-      user_id: params.movement.user_id,
-      description: params.movement.description,
+      uuid : db.bid(uuid()),
+      lot_uuid : db.bid(lotUuid),
+      depot_uuid : db.bid(params.movement.depot_uuid),
+      document_uuid : db.bid(documentUuid),
+      flux_id : params.movement.flux_id,
+      date : new Date(params.movement.date),
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      is_exit : 0,
+      user_id : params.movement.user_id,
+      description : params.movement.description,
     });
   });
 
@@ -181,7 +181,7 @@ function createIntegration(req, res, next) {
   // execute all operations as one transaction
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid: documentUuid });
+      res.status(201).json({ uuid : documentUuid });
     })
     .catch(next)
     .done();
@@ -195,9 +195,9 @@ function createMovement(req, res, next) {
   const params = req.body;
 
   const document = {
-    uuid: params.document_uuid || uuid(),
-    date: new Date(params.date),
-    user: req.session.user.id,
+    uuid : params.document_uuid || uuid(),
+    date : new Date(params.date),
+    user : req.session.user.id,
   };
 
   const metadata = {
@@ -209,7 +209,7 @@ function createMovement(req, res, next) {
 
   process(document, params, metadata)
     .then(() => {
-      res.status(201).json({ uuid: document.uuid });
+      res.status(201).json({ uuid : document.uuid });
     })
     .catch(next)
     .done();
@@ -230,25 +230,23 @@ function normalMovement(document, params, metadata) {
     (parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE) && parameters.is_exit
   );
 
-  const isStockExit = !!((isDistributable || parameters.flux_id === core.flux.TO_LOSS) && parameters.is_exit);
-
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
   parameters.lots.forEach((lot) => {
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
     createMovementObject = {
-      uuid: db.bid(uuid()),
-      lot_uuid: db.bid(lot.uuid),
-      depot_uuid: db.bid(parameters.depot_uuid),
-      document_uuid: db.bid(document.uuid),
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      date: document.date,
-      entity_uuid: parameters.entity_uuid,
-      is_exit: parameters.is_exit,
-      flux_id: parameters.flux_id,
-      description: parameters.description,
-      user_id: document.user,
+      uuid : db.bid(uuid()),
+      lot_uuid : db.bid(lot.uuid),
+      depot_uuid : db.bid(parameters.depot_uuid),
+      document_uuid : db.bid(document.uuid),
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      date : document.date,
+      entity_uuid : parameters.entity_uuid,
+      is_exit : parameters.is_exit,
+      flux_id : parameters.flux_id,
+      description : parameters.description,
+      user_id : document.user,
     };
 
     // transaction - add movement
@@ -294,18 +292,18 @@ function depotMovement(document, params) {
 
   parameters.lots.forEach((lot) => {
     record = {
-      depot_uuid: depotUuid,
-      entity_uuid: entityUuid,
-      is_exit: isExit,
-      flux_id: fluxId,
-      uuid: db.bid(uuid()),
-      lot_uuid: db.bid(lot.uuid),
-      document_uuid: db.bid(document.uuid),
-      quantity: lot.quantity,
-      unit_cost: lot.unit_cost,
-      date: document.date,
-      description: parameters.description,
-      user_id: document.user,
+      depot_uuid : depotUuid,
+      entity_uuid : entityUuid,
+      is_exit : isExit,
+      flux_id : fluxId,
+      uuid : db.bid(uuid()),
+      lot_uuid : db.bid(lot.uuid),
+      document_uuid : db.bid(document.uuid),
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      date : document.date,
+      description : parameters.description,
+      user_id : document.user,
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
@@ -423,7 +421,7 @@ function listStockFlux(req, res, next) {
  * GET /stock/consumptions/:periodId
  */
 function getStockConsumption(req, res, next) {
-  const params = req.params;
+  const { params } = req;
   core.getStockConsumption(params.periodId)
     .then((rows) => {
       res.status(200).send(rows);
@@ -435,8 +433,7 @@ function getStockConsumption(req, res, next) {
  * GET /stock/consumptions/average/:periodId?number_of_months=...
  */
 function getStockConsumptionAverage(req, res, next) {
-  const query = req.query;
-  const params = req.params;
+  const { query, params } = req;
   core.getStockConsumptionAverage(params.periodId, query.number_of_months)
     .then((rows) => {
       res.status(200).send(rows);
@@ -452,11 +449,11 @@ function getStockTransfers(req, res, next) {
 
   // Get received transfer for the given depot
   const queryReceived = `
-    SELECT 
+    SELECT
       COUNT(m.document_uuid) AS countedReceived,
       BUID(m.document_uuid) AS document_uuid,
       document_uuid AS binary_document_uuid
-    FROM 
+    FROM
       stock_movement m
     JOIN depot d ON d.uuid = m.depot_uuid
     WHERE d.uuid = ? AND m.is_exit = 0 AND m.flux_id = ${core.flux.FROM_OTHER_DEPOT}
@@ -465,12 +462,12 @@ function getStockTransfers(req, res, next) {
 
   // Get transfer for the given depot
   const query = `
-    SELECT 
+    SELECT
       BUID(m.document_uuid) AS document_uuid, m.date,
       d.text AS depot_name, dd.text AS other_depot_name,
       dm.text AS document_reference,
       rx.countedReceived
-    FROM 
+    FROM
       stock_movement m
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN depot dd ON dd.uuid = m.entity_uuid
