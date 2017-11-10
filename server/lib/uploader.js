@@ -18,7 +18,7 @@
  * @requires path
  * @requires mkdirp
  * @requires multer
- * @requires winston
+ * @requires debug
  * @requires uuid/v4
  *
  * @todo
@@ -29,19 +29,16 @@
 const path = require('path');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
-const winston = require('winston');
 const uuid = require('uuid/v4');
+const debug = require('debug')('app:uploader');
 
 // configure the uploads directory based on global process variables
-const defaultDir = 'uploads';                     // note: this must be a relative path
+const defaultDir = 'uploads'; // NOTE: this must be a relative path
 const dir = process.env.UPLOAD_DIR || defaultDir; // relative path
-const fsdir = path.join(process.cwd(), dir);      // global path
+const fsdir = path.join(process.cwd(), dir); // global path
 
 if (!process.env.UPLOAD_DIR) {
-  winston.warn(
-    `The environmental variable UPLOAD_DIR is not defined.  The application
-     will default to using ${fsdir} as the upload directory.`
-  );
+  debug(`the environmental variable UPLOAD_DIR is not defined.  The application will default to using ${fsdir} as the upload directory.`);
 }
 
 // attach the upload directory path for outside consumption
@@ -70,7 +67,8 @@ function Uploader(prefix, fields) {
     destination : (req, file, cb) => {
       // note: need absolute path here for mkdirp
       const folder = path.join(process.cwd(), directory);
-      winston.verbose(`Creating upload directory ${folder}.`);
+      debug(`upload dirctory ${folder} does not exist.`);
+      debug(`creating upload directory ${folder}.`);
       mkdirp(folder, err => cb(err, folder));
     },
     filename : (req, file, cb) => {
@@ -78,6 +76,7 @@ function Uploader(prefix, fields) {
 
       // ensure that a link is passed to the req.file object
       file.link = `${directory}${id}`;
+      debug(`storing file in ${file.link}.`);
       cb(null, id);
     },
   });
