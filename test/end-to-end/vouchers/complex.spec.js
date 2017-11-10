@@ -147,7 +147,7 @@ describe('Complex Vouchers', () => {
 
     const detail = {
       tool            : 'Convention - Paiement factures',
-      cashbox         : '$',
+      cashbox         : 'Test Primary Cashbox A',
       convention      : 'Second Test',
       invoices        : [0, 1],
       description     : 'Convention payment with journal voucher',

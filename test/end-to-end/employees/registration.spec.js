@@ -1,8 +1,8 @@
-/* global element, by, browser */
+/* global browser */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 const RegistrationPage = require('./registration.page.js');
 
 helpers.configure(chai);
@@ -32,7 +32,7 @@ describe('Employees', () => {
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     registrationPage.createEmployee();
-    registrationPage.requiredFIeldErrored();
+    registrationPage.requiredFieldErrored();
     registrationPage.noRequiredFieldOk();
   });
 
@@ -78,7 +78,6 @@ describe('Employees', () => {
   //   components.notification.hasSuccess();
   // });
 
-  // FIXME: skip throws an error
   // it.skip('unlocks an employee', () => {
   //   element(by.id(`employee-upd-${employeeId}`)).click();
   //   element(by.id('bhima-employee-locked')).click();
