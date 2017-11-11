@@ -228,10 +228,10 @@ function remove(req, res, next) {
  * List each user's privileges for each Cashbox
  */
 function privileges(req, res, next) {
-  let user_id = req.session.user.id;
-  let is_auxiliary = 1;
+  const user_id = req.session.user.id;
+  const is_auxiliary = 1;
 
-  let sql = `
+  const sql = `
     SELECT userCashBox.id, userCashBox.label, userCashBox.project_id, userCashBox.is_auxiliary, userCashBox.user_id
       FROM(
         (

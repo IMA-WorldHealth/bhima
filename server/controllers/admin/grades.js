@@ -3,7 +3,7 @@
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
- **/
+ * */
 const db = require('../../lib/db');
 const uuid = require('uuid/v4');
 const NotFound = require('../../lib/errors/NotFound');

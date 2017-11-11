@@ -75,7 +75,7 @@ function create(req, res, next) {
    * @todo
    * design/ update account categories to allow setting a translation_key
    * - the implications of this are system wide
-   **/
+   * */
   record.translation_key = '';
 
   db.exec(sql, [record])
@@ -103,7 +103,7 @@ function update(req, res, next) {
 
   lookupAccountCategory(id)
     .then(() => db.exec(sql, [data, id]))
-   .then(() => lookupAccountCategory(id))
+    .then(() => lookupAccountCategory(id))
     .then((accountCategory) => {
       res.status(200).json(accountCategory);
     })

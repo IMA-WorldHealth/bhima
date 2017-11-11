@@ -195,12 +195,10 @@ function admission(req, res, next) {
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.start_diagnosis_id) {
-    next(
-      new BadRequest(
-        'An admission diagnosis is required to begin a patient visit.',
-        'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
-      )
-    );
+    next(new BadRequest(
+      'An admission diagnosis is required to begin a patient visit.',
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+    ));
 
     return;
   }
@@ -242,12 +240,10 @@ function discharge(req, res, next) {
   delete data.uuid;
 
   if (!visitUuid) {
-    next(
-      new NotFound(
-        'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
-        'PATIENT.VISITS.ERR_MISSING_UUID'
-      )
-    );
+    next(new NotFound(
+      'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
+      'PATIENT.VISITS.ERR_MISSING_UUID'
+    ));
 
     return;
   }
@@ -255,12 +251,10 @@ function discharge(req, res, next) {
   // if there is not end_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.end_diagnosis_id) {
-    next(
-      new BadRequest(
-        'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
-        'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
-      )
-    );
+    next(new BadRequest(
+      'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+    ));
 
     return;
   }

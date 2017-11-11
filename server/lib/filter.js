@@ -37,7 +37,7 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
  * * dateTo - limit the querry to records up until a date
  *
  * @requires lodash
- * @requires db
+ * @requires moment
  */
 class FilterParser {
   // options that are used by all routes that shouldn't be considered unique filters

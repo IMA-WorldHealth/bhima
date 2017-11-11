@@ -43,8 +43,12 @@ function formatFilters(qs) {
     { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
     { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
 
-    { field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true },
-    { field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true },
+    {
+      field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true,
+    },
+    {
+      field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true,
+    },
   ];
 
   return columns.filter(column => {

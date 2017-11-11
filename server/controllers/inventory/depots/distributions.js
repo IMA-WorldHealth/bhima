@@ -62,21 +62,21 @@ function createDistributions(depotId, body, session) {
     row.id = uuid();
 
     return db.exec(sql, [row.id, depotId, row.date, docId, row.tracking_number, row.quantity, row.unit_price])
-    .then(() => {
-      return fmap[body.type](depotId, row);
-    });
+      .then(() => {
+        return fmap[body.type](depotId, row);
+      });
   });
 
   q.all(queries)
-  .then(() => {
+    .then(() => {
     // FIXME -- this is currently only implemented for the service distribution type
     // write to the journal
-    return writeToJournal(body.type, docId, session);
-  })
-  .then(() => {
+      return writeToJournal(body.type, docId, session);
+    })
+    .then(() => {
     // send that data back up to the parent controller
-    return docId;
-  });
+      return docId;
+    });
 }
 
 // FIXME

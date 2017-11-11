@@ -103,14 +103,14 @@ function listAccounts(req, res, next) {
   const fiscalYearId = req.query.fiscal_year_id;
 
   Fiscal.getPeriodByFiscal(fiscalYearId)
-  .then((rows) => {
-    return getlistAccounts(rows);
-  })
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      return getlistAccounts(rows);
+    })
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

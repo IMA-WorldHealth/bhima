@@ -1,22 +1,27 @@
 /* eslint global-require:off, import/no-dynamic-require:off */
+
 /**
- * @module util
+ * @overview util
  *
  * @description
- * This module contains useful utility functions
+ * This module contains useful utility functions used throughout the server.
  *
- * @required lodash
+ * @requires lodash
+ * @requires q
+ * @requires moment
+ * @requires debug
  */
 
 const _ = require('lodash');
 const q = require('q');
 const moment = require('moment');
+const debug = require('debug')('util');
 
-/** The query string conditions builder */
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
-exports.resolveObject = resolveObject; 
+exports.resolveObject = resolveObject;
+
 /**
  * @function take
  *
@@ -50,24 +55,21 @@ exports.resolveObject = resolveObject;
  * // take both the id and the season properties from the array
  * var filter = take('id', 'season');
  * var arrs = _.map(array, filter); // returns [[1, 'summer], [2, 'winter'], [3, 'fall']]
- *
- * @public
  */
 function take(...keys) {
   // get the arguments as an array
   // return the filter function
-  return object => (
-    keys.map(key => object[key])
-  );
+  return object => (keys.map(key => object[key]));
 }
 
 /**
-* @method requireModuleIfExists
-* @description load a module if it exists
-*/
+ * @method requireModuleIfExists
+ * @description load a module if it exists
+ */
 function requireModuleIfExists(moduleName) {
   try {
     require(moduleName);
+    debug(`Dynamically loaded ${moduleName}.`);
   } catch (err) {
     return false;
   }
@@ -106,8 +108,8 @@ function resolveObject(object) {
 function dateFormatter(rows, dateFormat) {
   const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
 
-  _.forEach(rows, function (element) {
-    _.forEach(element, function (value, key) {
+  _.forEach(rows, element => {
+    _.forEach(element, (value, key) => {
       if (_.isDate(element[key])) {
         element[key] = moment(element[key]).format(DATE_FORMAT);
       }

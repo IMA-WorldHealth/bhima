@@ -158,9 +158,7 @@ function update(req, res, next) {
   db.exec(sql, [data, uid])
     .then((rows) => {
       if (!rows.affectedRows) {
-        throw new NotFound(
-          `Could not find a debtor group with uuid ${req.params.uuid}`
-        );
+        throw new NotFound(`Could not find a debtor group with uuid ${req.params.uuid}`);
       }
 
       return lookupDebtorGroup(req.params.uuid);

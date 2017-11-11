@@ -132,7 +132,8 @@ function queryIncomeExpense(params, dateFrom, dateTo) {
       params.account_id,
       params.dateFrom,
       params.dateTo,
-    ]);
+    ]
+  );
 }
 
 /**
@@ -221,20 +222,20 @@ function processingWeekCashflow(params) {
   glb.periods[0].start_date = params.dateFrom;
 
   return AccountsExtra.getOpeningBalanceForDate(params.account_id, glb.periods[0].start_date)
-  .then((balance) => {
-    let openningBalance = { balance : 0, account_id : params.account_id };
+    .then((balance) => {
+      let openningBalance = { balance : 0, account_id : params.account_id };
 
-    if (balance) { openningBalance = balance; }
-    glb.openningBalance = openningBalance;
+      if (balance) { openningBalance = balance; }
+      glb.openningBalance = openningBalance;
 
-    // get all periods for the the current fiscal year
-    return queryIncomeExpense(params);
-  })
-  .then(result => groupByPeriod(glb.periods, result, params.weekly))
-  .then(groupingIncomeExpenseByPeriod)
-  .then((flows) => {
-    return { openningBalance : glb.openningBalance, flows };
-  });
+      // get all periods for the the current fiscal year
+      return queryIncomeExpense(params);
+    })
+    .then(result => groupByPeriod(glb.periods, result, params.weekly))
+    .then(groupingIncomeExpenseByPeriod)
+    .then((flows) => {
+      return { openningBalance : glb.openningBalance, flows };
+    });
 }
 
 /** @function getWeeks */

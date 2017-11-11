@@ -95,11 +95,7 @@ function create(req, res, next) {
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
   if (invalidParameters) {
-    next(
-      new BadRequest(
-        'Both financial and medical information must be provided to register a patient.'
-      )
-    );
+    next(new BadRequest('Both financial and medical information must be provided to register a patient.'));
     return;
   }
 
@@ -463,18 +459,18 @@ function patientEntityQuery(detailed) {
  */
 function read(req, res, next) {
   find(req.query)
-  .then((rows) => {
+    .then((rows) => {
     // publish a SEARCH event on the medical channel
-    topic.publish(topic.channels.MEDICAL, {
-      event   : topic.events.SEARCH,
-      entity  : topic.entities.PATIENT,
-      user_id : req.session.user.id,
-    });
+      topic.publish(topic.channels.MEDICAL, {
+        event   : topic.events.SEARCH,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+      });
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 

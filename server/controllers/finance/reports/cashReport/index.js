@@ -141,60 +141,60 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
   } else {
     promise =
     accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
-    .then((openingBalance) => {
-      _.merge(reportContext, { openingBalance : openingBalance.balance });
-      return db.exec(getRecordQuery('t.debit_equiv > 0', format), [
-        accountId,
-        dateFrom,
-        dateTo,
-        accountId,
-        dateFrom,
-        dateTo,
-      ]);
-    })
-    .then((entries) => {
-      reportContext.entries = entries;
-      // Getting expenses records
-      return db.exec(getRecordQuery('t.credit_equiv > 0', format), [
-        accountId,
-        dateFrom,
-        dateTo,
-        accountId,
-        dateFrom,
-        dateTo,
-      ]);
-    })
-    .then((expenses) => {
-      reportContext.expenses = expenses;
-      _.merge(reportContext, {
-        type_id : Number(type),
-        isEmpty : reportContext.entries.length === 0 && reportContext.expenses.length === 0,
+      .then((openingBalance) => {
+        _.merge(reportContext, { openingBalance : openingBalance.balance });
+        return db.exec(getRecordQuery('t.debit_equiv > 0', format), [
+          accountId,
+          dateFrom,
+          dateTo,
+          accountId,
+          dateFrom,
+          dateTo,
+        ]);
+      })
+      .then((entries) => {
+        reportContext.entries = entries;
+        // Getting expenses records
+        return db.exec(getRecordQuery('t.credit_equiv > 0', format), [
+          accountId,
+          dateFrom,
+          dateTo,
+          accountId,
+          dateFrom,
+          dateTo,
+        ]);
+      })
+      .then((expenses) => {
+        reportContext.expenses = expenses;
+        _.merge(reportContext, {
+          type_id : Number(type),
+          isEmpty : reportContext.entries.length === 0 && reportContext.expenses.length === 0,
+        });
+        // Getting sum entries
+        return db.one(aggregateRecordQuery('t.debit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+      })
+      .then((totalEntry) => {
+        reportContext.totalEntry = totalEntry.arithmeticBalance;
+        // Getting sum expenses
+        return db.one(aggregateRecordQuery('t.credit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+      })
+      .then((totalExpense) => {
+        reportContext.totalExpense = totalExpense.arithmeticBalance;
+        // Getting intermediate balance of cash account
+        return db.one(aggregateRecordQuery(), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
+      })
+      .then((intermediateTotal) => {
+        reportContext.intermediateTotal = intermediateTotal.algebricBalance;
+        // getting final balance of cash account
+        return db.one(aggregateRecordQuery(1, reportContext.openingBalance), [
+          accountId,
+          dateFrom,
+          dateTo,
+          accountId,
+          dateFrom,
+          dateTo,
+        ]);
       });
-      // Getting sum entries
-      return db.one(aggregateRecordQuery('t.debit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-    })
-    .then((totalEntry) => {
-      reportContext.totalEntry = totalEntry.arithmeticBalance;
-      // Getting sum expenses
-      return db.one(aggregateRecordQuery('t.credit > 0'), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-    })
-    .then((totalExpense) => {
-      reportContext.totalExpense = totalExpense.arithmeticBalance;
-      // Getting intermediate balance of cash account
-      return db.one(aggregateRecordQuery(), [accountId, dateFrom, dateTo, accountId, dateFrom, dateTo]);
-    })
-    .then((intermediateTotal) => {
-      reportContext.intermediateTotal = intermediateTotal.algebricBalance;
-      // getting final balance of cash account
-      return db.one(aggregateRecordQuery(1, reportContext.openingBalance), [
-        accountId,
-        dateFrom,
-        dateTo,
-        accountId,
-        dateFrom,
-        dateTo,
-      ]);
-    });
   }
 
   return promise

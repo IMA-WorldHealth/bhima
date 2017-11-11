@@ -247,9 +247,7 @@ function balance(debtorUuid) {
     .then(rows => {
       // if the debtor doesn't exist, throw an error
       if (!rows.length) {
-        throw new NotFound(
-          `Could not find a debtor with uuid ${debtorUid}`
-        );
+        throw new NotFound(`Could not find a debtor with uuid ${debtorUid}`);
       }
 
       // select all invoice and payments against invoices from the combined ledger

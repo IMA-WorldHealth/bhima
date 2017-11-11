@@ -131,8 +131,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
 
     // 1. sum period totals up to the current required period
     .then(fiscalYearId =>
-      getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId)
-    )
+      getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId))
 
     // 2. fetch the current dates period
     .then((previousPeriodClosing) => {
@@ -146,8 +145,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
     // 3. calculate the sum of all general ledger transaction against this account
     //    for the current period up to the current date
     .then(periodId =>
-      getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate)
-    )
+      getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate))
     .then(runningPeriod => {
       return {
         balance : (balance + runningPeriod.balance).toFixed(4),

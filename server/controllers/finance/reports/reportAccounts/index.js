@@ -63,7 +63,8 @@ function document(req, res, next) {
         accountDetails : result.accountDetails,
         transactions : result.transactions,
         sum : result.sum,
-        params });
+        params,
+      });
 
       return getNumberOfFiscalYears(params.dateFrom, params.dateTo);
     })

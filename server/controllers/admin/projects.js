@@ -7,7 +7,7 @@
  * NOTE:
  *  this endpoint does not filter for enterprise ID.  We should probably
  *   move to doing this in the future.
- **/
+ * */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -93,11 +93,11 @@ exports.create = function create(req, res, next) {
     `INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);`;
 
   db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id, data.locked])
-  .then((row) => {
-    res.status(201).send({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(201).send({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -112,20 +112,20 @@ exports.update = function update(req, res, next) {
     'UPDATE project SET ? WHERE id = ?;';
 
   db.exec(sql, [req.body, req.params.id])
-  .then(() => {
-    sql =
+    .then(() => {
+      sql =
       `SELECT project.id, project.enterprise_id, project.abbr,
         project.zs_id, project.name, project.locked
       FROM project
       WHERE project.id = ?;`;
 
-    return db.exec(sql, [req.params.id]);
-  })
-  .then((rows) => {
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      return db.exec(sql, [req.params.id]);
+    })
+    .then((rows) => {
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -138,14 +138,14 @@ exports.delete = function del(req, res, next) {
   const sql = `DELETE FROM project WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
-  .then((row) => {
+    .then((row) => {
     // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`No project found by id ${req.params.id}.`);
-    }
+      if (row.affectedRows === 0) {
+        throw new NotFound(`No project found by id ${req.params.id}.`);
+      }
 
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 };

@@ -57,9 +57,9 @@ function renderReport(req, res, next) {
       return report.render(data);
     })
     .then((result) => {
-      if(result.headers.type ==='xlsx'){
+      if (result.headers.type === 'xlsx') {
         res.xls(result.headers.filename, result.report.rows);
-      }else{
+      } else {
         res.set(result.headers).send(result.report);
       }
     })

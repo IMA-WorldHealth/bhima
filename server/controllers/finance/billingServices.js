@@ -97,12 +97,8 @@ exports.create = function create(req, res, next) {
 
   // ensure that values inserted are positive
   if (data.value <= 0) {
-    next(
-      new BadRequest(
-        `The value submitted to a billing service must be positive.
-         You provided the negative value ${data.value}.`
-      )
-    );
+    next(new BadRequest(`The value submitted to a billing service must be positive.
+         You provided the negative value ${data.value}.`));
 
     return;
   }

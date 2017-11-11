@@ -1,26 +1,25 @@
+// FIX ME : this functions are very tailed to income expense reportType
 
-// FIX ME : this functions are very tailed to income expense report_type
+function getTitle(reportType) {
+  const map = {
+    1 : 'TREE.INCOME_EXPENSE',
+    2 : 'FORM.LABELS.INCOME',
+    3 : 'FORM.LABELS.EXPENSE',
+  };
 
-function getTitle(report_type){
-    const map = {
-        1 : 'TREE.INCOME_EXPENSE',
-        2 : 'FORM.LABELS.INCOME',
-        3 : 'FORM.LABELS.EXPENSE',
-    };
-    
-    return map[report_type];
+  return map[reportType];
 }
 
-function isIncomeViewable (report_type){
-    return report_type === 1 || report_type === 2;
+function isIncomeViewable(reportType) {
+  return reportType === 1 || reportType === 2;
 }
 
-function isExpenseViewable (report_type){
-    return report_type === 1 || report_type === 3;
+function isExpenseViewable(reportType) {
+  return reportType === 1 || reportType === 3;
 }
 
-function isResultViewable (report_type){
-    return report_type === 1;
+function isResultViewable(reportType) {
+  return reportType === 1;
 }
 
 exports.getTitle = getTitle;

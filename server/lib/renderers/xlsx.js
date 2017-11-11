@@ -1,20 +1,20 @@
 /**
+ * @overview lib/renderers/xlsx
+ *
  * @description
- * This server library is responsible for rendering reports in JSON format.
- * It adheres to the standard BHIMA Report Renderer API, accepting data
- * and options and returning a single compiled object.
+ * This library is just a shim to ensure API uniformity with other renderers.
+ * The core functionality is identical to the JSON renderer.
  *
- * This renderer demonstrates the API however is mostly a wrapper to be used
- * uniformly with the other renderers (PDF/ HTML/ CSV).
+ * @module lib/renderers/xlsx
  *
- * @module  lib/renderers/json
+ * @requires q
  */
 
 const q = require('q');
 
 const headers = {
   'Content-Type' : 'application/xlsx',
-  'type' : 'xlsx',
+  type : 'xlsx',
 };
 
 exports.render = renderXLSX;
