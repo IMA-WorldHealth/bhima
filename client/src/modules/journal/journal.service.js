@@ -174,7 +174,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
     }).result;
   }
 
-   /**
+  /**
    * @method openCommentModal
    * @param {object} request
    */
@@ -217,9 +217,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
 
   // load the edit history of a particular transaction
   function getTransactionEditHistory(uuid) {
-    var url = '/transactions/:uuid/history'.replace(':uuid', uuid);
-    return service.$http.get(url)
-      .then(service.util.unwrapHttpResponse);
+    return Transactions.history(uuid);
   }
 
   return service;
