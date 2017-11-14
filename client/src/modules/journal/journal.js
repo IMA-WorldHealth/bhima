@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', '$translate', 'GridExportService',
-  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer',
+  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
 ];
 
 /**
@@ -31,7 +31,8 @@ JournalController.$inject = [
 function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
-  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance, $httpParamSerializer
+  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance,
+  $httpParamSerializer, Transactions
 ) {
   var sorting;
   var grouping;
@@ -66,6 +67,7 @@ function JournalController(
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
+  // FIXME(@jniles) - why does this not have fastWatch?
   vm.gridOptions = {
     enableColumnMenus          : false,
     showColumnFooter           : true,
@@ -82,7 +84,7 @@ function JournalController(
   vm.commentRows = function commentRows() {
     var selectedRows = vm.gridApi.selection.getSelectedGridRows();
 
-    Journal.openCommentModal({ rows : selectedRows })
+    Transactions.openCommentModal({ rows : selectedRows })
       .then(function (comment) {
         updateGridComment(selectedRows, comment);
         Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');

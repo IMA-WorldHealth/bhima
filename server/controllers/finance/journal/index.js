@@ -39,7 +39,6 @@ exports.getTransactionEditHistory = getTransactionEditHistory;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
-exports.commentPostingJournal = commentPostingJournal;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -594,35 +593,6 @@ function getTransactionEditHistory(req, res, next) {
 
   db.exec(sql, [db.bid(req.params.uuid)])
     .then(record => res.status(200).json(record))
-    .catch(next)
-    .done();
-}
-
-
-/**
- * PUT /journal/comments
- *
- * @function commentPostingJournal
- *
- * @description
- * This function will put a comment on both the posting journal and general ledger.
- *
- * @param {object} params - { uuids: [...], comment: '' }
- */
-function commentPostingJournal(req, res, next) {
-  const { uuids, comment } = req.body.params;
-  const uids = uuids.map(db.bid);
-
-  const journalUpdate = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
-  const ledgerUpdate = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
-
-  q.all([
-    db.exec(journalUpdate, [comment, [uids]]),
-    db.exec(ledgerUpdate, [comment, [uids]]),
-  ])
-    .then(() => {
-      res.sendStatus(200);
-    })
     .catch(next)
     .done();
 }

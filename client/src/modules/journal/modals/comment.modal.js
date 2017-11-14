@@ -1,13 +1,20 @@
 angular.module('bhima.controllers')
-  .controller('CommentJournalController', CommentJournalController);
+  .controller('CommentModalController', CommentModalController);
 
-// DI
-CommentJournalController.$inject = [
-  '$uibModalInstance', 'modalParameters', 'JournalService', 'NotifyService',
+CommentModalController.$inject = [
+  '$uibModalInstance', 'params', 'TransactionService', 'NotifyService',
 ];
 
-// Comment Account Statement Controller
-function CommentJournalController(Instance, ModalParameters, Journal, Notify) {
+/**
+ * @function CommentModalController
+ *
+ * @description
+ * This controller powers the comment modal, used for putting comments on
+ * individual rows of the Journal and General Ledger.  These comments do not
+ * have to be restricted to unposted data, but can be put on posted and
+ * unposted records.
+ */
+function CommentModalController(Instance, ModalParameters, Transactions, Notify) {
   var vm = this;
   var comments;
 
@@ -24,6 +31,7 @@ function CommentJournalController(Instance, ModalParameters, Journal, Notify) {
       return array.indexOf(comment) === index;
     });
 
+  // if the comments are homogenous, set the model to be the previous comment
   if (comments.length === 1) {
     vm.comment = comments[0];
   }
@@ -37,7 +45,7 @@ function CommentJournalController(Instance, ModalParameters, Journal, Notify) {
       comment : vm.comment,
     };
 
-    Journal.commentPostingJournal(params)
+    Transactions.comment(params)
       .then(function (res) {
         if (!res) { return; }
         Instance.close(vm.comment);
