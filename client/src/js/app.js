@@ -171,6 +171,8 @@ function compileConfig($compileProvider) {
     $compileProvider.commentDirectivesEnabled(false);
     $compileProvider.cssClassDirectivesEnabled(false);
   }
+
+  $compileProvider.strictComponentBindingsEnabled(true);
 }
 
 /**
