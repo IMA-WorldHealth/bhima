@@ -103,6 +103,7 @@
     "gulp-util": "^3.0.7",
     "karma": "^1.1.2",
     "karma-chai": "^0.1.0",
+    "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.2.0",

@@ -100,6 +100,8 @@
     "CLIENTS_REPORT" : {
       "TITLE" : "Rapport Clients",
       "CURRENT_MVT" : "Mouvement Courant",
+      "ADD_IGNORED_CLIENTS" : "Sauter Certains Clients",
+      "HIDE_IGNORED_CLIENTS" : "Sauter Certains Clients",
       "PREVIOUS_MVT" : "Du debut Au :",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },

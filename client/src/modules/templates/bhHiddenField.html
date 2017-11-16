@@ -1,0 +1,9 @@
+<p>
+  <a ng-click="$ctrl.toggleVisibility()" bh-hidden-field-toggle href>
+    <span ng-hide="$ctrl.visible"> + <span translate>{{ $ctrl.showText }}</span></span>
+    <span ng-show="$ctrl.visible"> - <span translate>{{ $ctrl.hideText }}</span></span>
+  </a>
+</p>
+<div ng-if="$ctrl.visible" bh-hidden-field-transclude>
+  <ng-transclude></ng-transclude>
+</div>

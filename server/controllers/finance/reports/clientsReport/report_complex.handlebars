@@ -51,6 +51,8 @@
               <td class='text-right'> {{currency this.currentBalance ../enterprise.currency_id}} </td>
               <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
             </tr>
+          {{else}}
+            {{>emptyTable columns=7}}
           {{/each}}
         </tbody>
         <tfoot>

@@ -1,6 +1,5 @@
 {
   "REPORT": {
-    "CLIENTS" : "Rapport Clients",
     "ACCOUNT": "Account Statement",
     "AGED_CREDITORS":{
      "TITLE":"Aged Creditors",
@@ -30,8 +29,11 @@
     },
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
+    "CLIENTS" : "Clients Report",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",
+      "ADD_IGNORED_CLIENTS" : "Skip Certain Clients",
+      "HIDE_IGNORED_CLIENTS" : "Skip Certain Clients",
       "CURRENT_MVT": "Current Movement",
       "PREVIOUS_MVT": "From Beginning To :",
       "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
