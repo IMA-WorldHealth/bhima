@@ -279,7 +279,7 @@ INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1),
   (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1);
 
-INSERT INTO `assignation_patient` VALUES
+INSERT INTO `patient_assignment` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65')),
   (HUID('e35b525e-923b-4fee-87f1-a069c7dc7234'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('274c51ae-efcc-4238-98c6-f402bfb39866'));
 

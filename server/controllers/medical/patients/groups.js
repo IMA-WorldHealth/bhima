@@ -43,7 +43,7 @@ function list(req, res, next) {
   // read patient groups
   const patientGroupsQuery = `
     SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid
-    FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
+    FROM patient_assignment LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
     WHERE patient_uuid = ?;
   `;
 
@@ -85,11 +85,11 @@ function update(req, res, next) {
 
   // Clear assigned groups
   const removeAssignmentsQuery =
-    'DELETE FROM assignation_patient WHERE patient_uuid = ?';
+    'DELETE FROM patient_assignment WHERE patient_uuid = ?';
 
   // Insert new relationships
   const createAssignmentsQuery =
-    'INSERT INTO assignation_patient (uuid, patient_uuid, patient_group_uuid) VALUES ?';
+    'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
 
   // map each requested patient group uuid to the current patient uuid to be
   // inserted into the database

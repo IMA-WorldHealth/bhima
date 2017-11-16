@@ -387,7 +387,7 @@ function find(options) {
   filters.dateTo('custom_period_end', 'registration_date');
 
   const patientGroupStatement =
-    '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
+    '(SELECT COUNT(uuid) FROM patient_assignment where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
   filters.equals('sex');
@@ -492,7 +492,7 @@ function billingServices(req, res, next) {
 
         // find all of the patients groups
         '(SELECT patient_group_uuid ' +
-        'FROM assignation_patient ' +
+        'FROM patient_assignment ' +
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
@@ -538,7 +538,7 @@ function subsidies(req, res, next) {
 
         // find all of the patients groups
         '(SELECT patient_group_uuid ' +
-        'FROM assignation_patient ' +
+        'FROM patient_assignment ' +
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 

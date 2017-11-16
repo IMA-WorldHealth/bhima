@@ -24,11 +24,11 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 --
--- Dumping data for table `assignation_patient`
+-- Dumping data for table `patient_assignment`
 --
 
-/*!40000 ALTER TABLE `assignation_patient` DISABLE KEYS */;
-/*!40000 ALTER TABLE `assignation_patient` ENABLE KEYS */;
+/*!40000 ALTER TABLE `patient_assignment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patient_assignment` ENABLE KEYS */;
 
 --
 -- Dumping data for table `billing_service`
