@@ -1,8 +1,9 @@
 angular.module('bhima.services')
   .service('GeneralLedgerService', GeneralLedgerService);
 
-// Dependencies injection
-GeneralLedgerService.$inject = ['PrototypeApiService', '$httpParamSerializer', 'LanguageService'];
+GeneralLedgerService.$inject = [
+  'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
+];
 
 /**
  * General Ledger Service
@@ -26,9 +27,15 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages) {
     return $httpParamSerializer(options);
   }
 
-  function slip(type, filters, account){
+  function slip(type, filters, account) {
     var filterOpts = filters;
-    var defaultOpts = { renderer : type, lang : Languages.key, account_id : account, source : 3};
+    var defaultOpts = {
+      renderer : type,
+      lang : Languages.key,
+      account_id : account,
+      source : 3,
+    };
+
     // combine options
     var options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options

@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 JournalService.$inject = [
   'PrototypeApiService', 'AppCache', 'FilterService', 'PeriodService',
-  '$uibModal', 'bhConstants',
+  '$uibModal', 'bhConstants', 'TransactionService',
 ];
 
 /**
@@ -13,17 +13,15 @@ JournalService.$inject = [
  * This service is responsible for powering the Posting/Posted Journal grid.  It
  * also includes methods to open associated modals.
  */
-function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
+function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Transactions) {
   var URL = '/journal/';
   var service = new Api(URL);
 
   service.grid = grid;
   service.saveChanges = saveChanges;
   service.openSearchModal = openSearchModal;
-  service.openCommentModal = openCommentModal;
   service.openTransactionEditModal = openTransactionEditModal;
   service.mapTransactionIdsToRecordUuids = mapTransactionIdsToRecordUuids;
-  service.commentPostingJournal = commentPostingJournal;
   service.getTransactionEditHistory = getTransactionEditHistory;
 
   /**
@@ -174,25 +172,6 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
     }).result;
   }
 
-   /**
-   * @method openCommentModal
-   * @param {object} request
-   */
-  function openCommentModal(request) {
-    var params = {
-      templateUrl  : 'modules/account_statement/modals/comment.modal.html',
-      controller   : 'CommentJournalController',
-      controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      resolve : {
-        modalParameters :  function dataProvider() { return request; },
-      },
-    };
-    var instance = Modal.open(params);
-    return instance.result;
-  }
-
 
   // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
   function openTransactionEditModal(transactionUuid, readOnly) {
@@ -209,17 +188,9 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants) {
     }).result;
   }
 
-  // updating the posting journal by adding comments in transactions
-  function commentPostingJournal(params) {
-    return service.$http.put(URL.concat('comments'), { params : params })
-      .then(service.util.unwrapHttpResponse);
-  }
-
   // load the edit history of a particular transaction
   function getTransactionEditHistory(uuid) {
-    var url = '/transactions/:uuid/history'.replace(':uuid', uuid);
-    return service.$http.get(url)
-      .then(service.util.unwrapHttpResponse);
+    return Transactions.history(uuid);
   }
 
   return service;

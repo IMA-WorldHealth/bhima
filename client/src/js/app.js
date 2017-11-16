@@ -180,6 +180,13 @@ function uiSelectConfig(config) {
   config.theme = 'bootstrap';
 }
 
+// configures the modals with default values
+function uiModalConfig($uibModalProvider) {
+  $uibModalProvider.options.size = 'md';
+  $uibModalProvider.options.backdrop = 'static';
+  $uibModalProvider.options.keyboard = false;
+}
+
 // configure services, providers, factories
 bhima.config(['$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
@@ -188,6 +195,7 @@ bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
+bhima.config(['$uibModalProvider', uiModalConfig]);
 bhima.config(['$compileProvider', compileConfig]);
 
 // run the application

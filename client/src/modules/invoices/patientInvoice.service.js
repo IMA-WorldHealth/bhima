@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache',
+  'PeriodService', '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  'TransactionService',
 ];
 
 /**
@@ -16,7 +17,7 @@ PatientInvoiceService.$inject = [
  */
 function PatientInvoiceService(
   Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
-  Languages, bhConstants
+  Languages, bhConstants, Transactions
 ) {
   var service = new Api('/invoices/');
 
@@ -28,7 +29,7 @@ function PatientInvoiceService(
   service.openCreditNoteModal = openCreditNoteModal;
   service.balance = balance;
   service.filters = invoiceFilters;
-  service.remove = remove;
+  service.remove = Transactions.remove;
 
   /**
    * @method create
@@ -188,19 +189,6 @@ function PatientInvoiceService(
     // return  serialized options
     return $httpParamSerializer(options);
   };
-
-  /**
-   * @method remove
-   *
-   * @description
-   * This function removes an invoice from the database via the transaction
-   * delete route.
-   */
-  function remove(uuid) {
-    var url = '/transactions/'.concat(uuid);
-    return service.$http.delete(url)
-      .then(service.util.unwrapHttpResponse);
-  }
 
   return service;
 }

@@ -183,12 +183,11 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
-  app.put('/journal/comments', journal.commentPostingJournal);
+  app.put('/transactions/comments', transactions.commentTransactions);
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
-  app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
   app.delete('/transactions/:uuid', transactions.deleteTransaction);

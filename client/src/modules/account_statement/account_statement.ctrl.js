@@ -1,21 +1,27 @@
 angular.module('bhima.controllers')
   .controller('AccountStatementController', AccountStatementController);
 
-// DI
 AccountStatementController.$inject = [
   'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
   'FilterService', 'ModalService', 'LanguageService',
-  'GridExportService',
+  'GridExportService', 'TransactionService',
 ];
 
 /**
  * @module AccountStatementController
+ *
+ * @description
+ * This controller powers the Account Statement module.  Account Statement is
+ * a module used to analyze the transactions that have hit a particular account.
+ *
  */
-function AccountStatementController(GeneralLedger, Notify, Journal,
-  Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
-  AccountStatement, Filters, Modal, Languages, GridExport) {
+function AccountStatementController(
+  GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
+  bhConstants, uiGridConstants, AccountStatement, Filters, Modal, Languages,
+  GridExport, Transactions
+) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
@@ -27,6 +33,7 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
   // grid definition ================================================================
   vm.gridApi = {};
 
+  // FIXME(@jniles) - why does this not have fastWatch?
   vm.gridOptions = {
     enableColumnMenus        : false,
     showColumnFooter         : true,
@@ -184,7 +191,7 @@ function AccountStatementController(GeneralLedger, Notify, Journal,
 
   // comment selected rows
   vm.commentRows = function commentRows() {
-    AccountStatement.openCommentModal({ rows : vm.selectedRows })
+    Transactions.openCommentModal({ rows : vm.selectedRows })
       .then(function (comment) {
         if (!comment) { return; }
         updateGridComment(vm.selectedRows, comment);

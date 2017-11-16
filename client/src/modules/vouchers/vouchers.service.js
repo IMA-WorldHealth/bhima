@@ -4,7 +4,7 @@ angular.module('bhima.services')
 VoucherService.$inject = [
   'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
   'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
-  'appcache', 'bhConstants',
+  'appcache', 'bhConstants', 'TransactionService',
 ];
 
 /**
@@ -17,7 +17,7 @@ VoucherService.$inject = [
  */
 function VoucherService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, bhConstants
+  $httpParamSerializer, AppCache, bhConstants, Transactions
 ) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
@@ -28,7 +28,7 @@ function VoucherService(
 
   service.create = create;
   service.reverse = reverse;
-  service.remove = remove;
+  service.remove = Transactions.remove;
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
 
@@ -187,19 +187,6 @@ function VoucherService(
         filters : function filtersProvider() { return filters; },
       },
     }).result;
-  }
-
-  /**
-   * @method remove
-   *
-   * @description
-   * This function removes a voucher from the database via the transaction
-   * delete route.
-   */
-  function remove(uuid) {
-    var url = '/transactions/'.concat(uuid);
-    return service.$http.delete(url)
-      .then(service.util.unwrapHttpResponse);
   }
 
   return service;
