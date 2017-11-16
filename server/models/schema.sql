@@ -56,8 +56,8 @@ CREATE TABLE `account_type` (
   FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `assignation_patient`;
-CREATE TABLE `assignation_patient` (
+DROP TABLE IF EXISTS `patient_assignment`;
+CREATE TABLE `patient_assignment` (
   `uuid`                BINARY(16) NOT NULL,
   `patient_group_uuid`  BINARY(16) NOT NULL,
   `patient_uuid`        BINARY(16) NOT NULL,
