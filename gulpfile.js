@@ -120,6 +120,9 @@ const paths = {
 
       // ngStorage
       'client/vendor/ngstorage/ngStorage.min.js',
+
+      // webcam-directive
+      'client/vendor/webcam-directive/dist/webcam.min.js',
     ],
     translate_en : ['client/src/i18n/en/*.json'],
 

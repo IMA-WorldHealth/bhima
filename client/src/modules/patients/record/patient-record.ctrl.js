@@ -1,9 +1,12 @@
 angular.module('bhima.controllers')
   .controller('PatientRecordController', PatientRecordController);
 
-PatientRecordController.$inject = ['$stateParams', 'PatientService', 'NotifyService', 'moment', 'Upload', '$timeout'];
+PatientRecordController.$inject = [
+  '$stateParams', 'PatientService', 'NotifyService',
+  'moment', 'Upload', '$timeout', 'SnapshotService'
+];
 
-function PatientRecordController($stateParams, Patients, Notify, moment, Upload, $timeout) {
+function PatientRecordController($stateParams, Patients, Notify, moment, Upload, $timeout, SnapshotService) {
   var vm = this;
   var patientID = $stateParams.patientID;
 
@@ -59,4 +62,25 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       vm.loading = false;
       Notify.handleError(error);
     });
+
+    // webcam functionnalities
+
+    vm.openWebcam =  function(){
+      
+      SnapshotService.openWebcamModal()
+      .then(function(strDataURI){
+        if(strDataURI) {
+          SnapshotService.dataUriToFile(
+            strDataURI,
+            'image.png',
+            'image/png'
+          )
+          .then(function(file){
+            vm.uploadFiles(file, false);
+          });
+        } 
+      })
+    }
+  
+    
 }

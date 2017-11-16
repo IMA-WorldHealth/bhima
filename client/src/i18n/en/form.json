@@ -491,6 +491,8 @@
             "TRANSACTION_TYPE": "Transaction type",
             "TRANSFER_ACCOUNT": "Transfer Account",
             "TRANSFER_TYPE": "Transfer Type",
+            "TAKE_SNAPSHOT" : "Take snapshot",
+            "TAKE_A_PICTURE" : "Take a Pucture",
             "TYPE": "Type",
             "UNCONFIGURED": "Unconfigured",
             "UNDEFINED": "Undefined",

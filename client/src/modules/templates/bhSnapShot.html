@@ -1,0 +1,34 @@
+<div>
+  <div class="modal-header">
+    <h4>Snapshot</h4>
+  </div>
+  <div class="modal-body">
+    <div class='row'>
+      <div class="col-lg-6">
+        <center>
+          <webcam class="well"
+            on-stream="onStream(stream)"
+            on-error="onError(err)"
+            on-streaming="onSuccess()"
+            channel="channel"
+            placeholder="'img/ajax-loader.gif'">
+            <div class="alert alert-error" ng-show="webcamError">
+              <span>Webcam could not be started. Did you give access to it?</span>
+            </div>
+          </webcam>
+        </center>
+      </div> 
+      <div class ='col-lg-6'>
+        <div class="span6">
+          <center><canvas id="snapshot" class="well"></canvas></center>
+        </div>
+      </div>
+    
+    </div>
+  <div>
+  <div class="modal-footer">
+    <button class="btn btn-small" ng-click="closeModal()" translate>FORM.LABELS.CANCEL</button>
+    <button class="btn btn-large btn-primary" ng-click="makeSnapshot()" translate> FORM.LABELS.TAKE_SNAPSHOT</button>
+    <button class="btn btn-small" ng-show="hasDataUrl" ng-click="getDataUrl()" translate>FORM.BUTTONS.SAVE</button>
+  </div>
+  </div>

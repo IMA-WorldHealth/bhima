@@ -8,7 +8,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
   'ui.grid.expandable', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
-  'ui.router.state.events',
+  'ui.router.state.events', 'webcam'
 ]);
 
 function bhimaConfig($urlMatcherFactoryProvider) {

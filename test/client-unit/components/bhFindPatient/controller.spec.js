@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 
-describe('bhFindPatient Controller Tests', ControllerTests);
+describe.only('bhFindPatient Controller Tests', ControllerTests);
 
 /**
  * @todo - finish the DOM tests to compliment this controller test suite.
@@ -33,6 +33,7 @@ function ControllerTests() {
   beforeEach(inject((_$rootScope_, _$httpBackend_, _$componentController_) => {
     // setup initial imports
     $scope = _$rootScope_.$new();
+
     $httpBackend = _$httpBackend_;
     $componentController = _$componentController_;
 
