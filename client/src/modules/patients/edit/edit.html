@@ -11,8 +11,8 @@
     <span
         ng-show="PatientEditCtrl.medical.name"
         style="margin-left : 5px"
-        class="label label-warning">
-      <span style="text-transform : uppercase" translate>FORM.LABELS.EDIT</span>
+        class="label label-warning text-uppercase">
+      <span translate>FORM.LABELS.EDIT</span>
     </span>
 
   </div>
@@ -125,31 +125,27 @@
                 <!-- Hospital File Number -->
                 <div
                   class="form-group has-feedback"
-                  ng-class="{'has-error' : patientDetails.hospital_no.$invalid && patientDetails.$submitted || patientDetails.$error.hospitalNumber}">
-
+                  ng-class="{'has-error' : patientDetails.hospitalNumber.$invalid && patientDetails.$submitted || patientDetails.hospitalNumber.$error.unique}">
                   <label for="new-hospital-number" class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR </label>
                   <div class="col-md-9">
-
-                    <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
                     <input
                       id="new-hospital-number"
-                      name="hospital_no"
+                      name="hospitalNumber"
                       class="form-control"
                       ng-model="PatientEditCtrl.medical.hospital_no"
-                      hospital-number
+                      bh-unique="/patients/hospital_number"
                       autocomplete="off"
                       registered-value="::PatientEditCtrl.medical.hospital_no"
                       ng-maxlength="PatientEditCtrl.length150"
+                      origin = {{PatientEditCtrl.origin}}
                       required>
-                    <div class="help-block" ng-messages="patientDetails.hospital_no.$error" ng-show="patientDetails.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                    </div>
-                    <span ng-if="patientDetails.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                    <span ng-if="patientDetails.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-                    <!-- <p ng-if="patientDetails.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
 
-                    <p id="hospitalNumber-alert" ng-if="patientDetails.$error.hospitalNumber" class="help-block" translate>
-                      FORM.LABELS.PATIENT_EXIST</p>
+                    <span ng-show="patientDetails.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+                    <span ng-show="patientDetails.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+
+                    <div class="help-block" ng-messages="patientDetails.hospitalNumber.$error" ng-show="patientDetails.$submitted || patientDetails.hospitalNumber.$error.unique">
+                      <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
+                    </div>
                   </div>
                 </div>
 

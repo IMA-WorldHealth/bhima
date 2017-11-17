@@ -191,6 +191,7 @@ function update(req, res, next) {
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])
+    .then(() => updatePatientDebCred(patientUuid))
     .then(() => lookupPatient(patientUuid))
     .then((updatedPatient) => {
       res.status(200).json(updatedPatient);
@@ -244,6 +245,56 @@ function lookupPatient(patientUuid) {
 
       return patient;
     });
+}
+
+
+/**
+ * @method updatePatientDebCred
+ *
+ * @description
+ * This function is used to update the text value of the creditor 
+ * and debitor tables in case the patient's name was changed
+ *
+ * @param {String} patientUuid - the patient's unique id hex string
+ */
+
+function updatePatientDebCred(patientUuid) {
+  // convert uuid to database usable binary uuid
+  const buid = db.bid(patientUuid);
+
+  const sql = `
+    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid, patient.display_name
+    FROM debtor
+    JOIN patient ON patient.debtor_uuid = debtor.uuid
+    LEFT JOIN employee ON employee.patient_uuid = patient.uuid
+    WHERE patient.uuid = ?
+  `;
+
+  return db.exec(sql, buid)
+    .then((row) => {      
+      const debtorUuid = db.bid(row[0].debtorUuid);
+      const creditorUuid =  db.bid(row[0].creditorUuid);
+
+      const debtorText = {
+        text : `Debiteur [${row[0].display_name}]`
+      };
+
+      const creditorText = {
+        text : `Crediteur [${row[0].display_name}]`,
+      };
+
+      const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
+      const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(updateDebtor, [debtorText, debtorUuid])
+        .addQuery(updateCreditor, [creditorText, creditorUuid]);
+
+      return transaction.execute();
+    });
+
 }
 
 /**
