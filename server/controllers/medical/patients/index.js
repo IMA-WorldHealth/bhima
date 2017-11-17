@@ -292,10 +292,7 @@ function updatePatientDebCred(patientUuid) {
         .addQuery(updateDebtor, [debtorText, debtorUuid])
         .addQuery(updateCreditor, [creditorText, creditorUuid]);
 
-      transaction.execute()
-      .then((res) => {
-        return res;
-      });
+      return transaction.execute();
     });
 
 }

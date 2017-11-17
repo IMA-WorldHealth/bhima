@@ -6,12 +6,12 @@
       <li ng-if="EmployeeCtrl.isUpdating" class="title">{{ EmployeeCtrl.employee.name }}</li>
     </ol>
 
-    <!-- ng-show to stop flickering on load -->
+    <!-- ng-if to stop flickering on load -->
     <span
         ng-if="EmployeeCtrl.isUpdating" 
         style="margin-left : 5px"
-        class="label label-warning">
-      <span style="text-transform : uppercase" translate>FORM.LABELS.EDIT</span>
+        class="label label-warning text-uppercase">
+      <span translate>FORM.LABELS.EDIT</span>
     </span>    
   </div>
 </div>
