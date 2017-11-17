@@ -36,7 +36,13 @@ const TEMPLATE = './server/controllers/payroll/reports/registrations.handlebars'
 function build(req, res, next) {
   const options = _.clone(req.query);
 
-  _.extend(options, { filename : 'EMPLOYEE.TITLE', csvKey : 'employees', orientation : 'landscape' });
+  _.extend(options, { 
+    filename : 'EMPLOYEE.TITLE', 
+    csvKey : 'employees', 
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
 
   let report;
 

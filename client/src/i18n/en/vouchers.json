@@ -41,7 +41,7 @@
       "DESTINATION_ACCOUNT":"Destination Account",
       "TRANSFER_ACCOUNT":"Transfer Account",
       "CASH_TRANSFER":"Cash Transfer",
-      "REPORT":"Voucher Report",
+      "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
       "TRANSFER_TYPE_INFO":"Transaction Type in case we have either incomes or expenses",
       "USE_FINANCIAL_ACCOUNT":"Use of cashes or banks accounts in this transaction",

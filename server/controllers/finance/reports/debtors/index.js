@@ -31,7 +31,13 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
  * The HTTP interface which actually creates the report.
  */
 function agedDebtorReport(req, res, next) {
-  const qs = _.extend(req.query, { csvKey : 'debtors' });
+
+  const qs = _.extend(req.query, { 
+    csvKey : 'debtors', 
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
+
   const metadata = _.clone(req.session);
 
   let report;

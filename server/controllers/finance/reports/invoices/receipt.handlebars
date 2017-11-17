@@ -59,7 +59,7 @@
   <h4>
     <u>{{translate 'FORM.LABELS.INVOICES_DETAILS'}}</u>
   </h4>
-  <table class="table table-condensed">
+  <table class="table table-condensed table-report">
     <thead>
       <tr>
         <th>{{translate 'TABLE.COLUMNS.CODE'}}</th>
@@ -94,7 +94,7 @@
         <h4>
           <u>{{translate 'FORM.LABELS.BILLING_SERVICES'}}</u> :
         </h4>
-        <table style="width: 100%;">
+        <table style="width: 100%;" class="table-report">
           {{#each billing}}
             <tr>
               <td class="text-right">
@@ -116,7 +116,7 @@
 
       <!-- subsidies  -->
       {{#if subsidy.length}}
-        <table style="width: 100%;">
+        <table style="width: 100%;" class="table-report">
           <tr>
             <td>
               <h4><u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :</h4>
@@ -129,7 +129,7 @@
       {{/if}}
 
       <!-- general total  -->
-      <table style="width: 100%;">
+      <table style="width: 100%;" class="table-report">
         <tr>
           <td>
             <h1>{{translate 'FORM.LABELS.TOTAL'}} : </h1>
