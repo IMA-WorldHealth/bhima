@@ -12,10 +12,10 @@ describe('Employees', () => {
   const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
-    display_name  : 'Sherlock Holmes Doyle',
+    display_name  : 'Dedrick Kitamuka',
     sex          : 'M',
-    dob           : '1960-06-30',
-    date_embauche : '1997-05-17',
+    dob           : '30/06/1960',
+    date_embauche : '17/05/1997',
     nb_spouse     : 1,
     nb_enfant     : 2,
     bank          : 'BIAC',

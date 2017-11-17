@@ -27,7 +27,8 @@ function UniqueDirective($q, UniqueValidator) {
     restrict : 'A',
     require : 'ngModel',
     scope : {
-      bhUnique : '@bhUnique'
+      bhUnique : '@bhUnique',
+      origin : '@origin'
     },
     link : function uniqueLink(scope, element, attrs, ctrl) {
       var validationUrl = attrs.bhUnique;
@@ -49,7 +50,15 @@ function UniqueDirective($q, UniqueValidator) {
 
         UniqueValidator.check(validationUrl, viewValue)
           .then(function (valueExists) {
+            // Check if hospital_no change
+            var originUpdated = viewValue !== attrs.origin;
 
+            // This section prevents you to validate the function UniqueValidator when 
+            // it is an update operation and the hospital_no number has not been changed.
+            if (valueExists) {
+              valueExists = !originUpdated ? false : true;
+            }
+            
             // as we have recieved a valid HTTP response there is nothing wrong
             // with the connection to the server
             ctrl.$setValidity(exceptionKey, true);

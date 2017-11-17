@@ -3,7 +3,16 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.PAYROLL</li>
       <li class="title" translate>EMPLOYEE.TITLE</li>
+      <li ng-if="EmployeeCtrl.isUpdating" class="title">{{ EmployeeCtrl.employee.name }}</li>
     </ol>
+
+    <!-- ng-show to stop flickering on load -->
+    <span
+        ng-if="EmployeeCtrl.isUpdating" 
+        style="margin-left : 5px"
+        class="label label-warning">
+      <span style="text-transform : uppercase" translate>FORM.LABELS.EDIT</span>
+    </span>    
   </div>
 </div>
 
@@ -198,6 +207,7 @@
                         bh-unique="/patients/hospital_number"
                         ng-maxlength="EmployeeCtrl.length20"
                         autocomplete="off"
+                        origin = {{EmployeeCtrl.origin}}
                         required>
                       <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
                       <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
