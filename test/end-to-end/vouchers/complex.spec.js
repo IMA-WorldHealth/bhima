@@ -25,7 +25,7 @@ describe('Complex Vouchers', () => {
       description : 'Complex voucher test e2e',
       rows        : [
         {
-          account : 'Test Debtor Accounts1', debit : 18, credit : 0, entity : { type : 'D', name : 'Patient/2/Patient' },
+          account : 'Test Debtor Accounts1', debit : 18, credit : 0, entity : { type : 'D', name : 'Test 2 Patient' },
         },
         {
           account : 'Test Capital One', debit : 0, credit : 8, reference : { type : 'voucher', index : 0 },
@@ -104,7 +104,7 @@ describe('Complex Vouchers', () => {
       description : 'Complex voucher test e2e',
       rows        : [
         {
-          account : 'Test Debtor Accounts1', debit : 17, credit : 0, entity : { type : 'D', name : 'Patient/2/Patient' },
+          account : 'Test Debtor Accounts1', debit : 17, credit : 0, entity : { type : 'D', name : 'Test 2 Patient' },
         },
         {
           account : 'Test Capital One', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
