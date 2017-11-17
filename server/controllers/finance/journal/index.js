@@ -25,6 +25,13 @@ const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
+const identifiers = require('../../../config/identifiers');
+
+const hrRecordToTableMap = {};
+_.forEach(identifiers, v => {
+  hrRecordToTableMap[v.key] = v.table;
+});
+
 // Fiscal Service
 const FiscalService = require('../../finance/fiscal');
 
@@ -239,6 +246,7 @@ function editTransaction(req, res, next) {
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?;';
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?;';
   const UPDATE_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
+  const UPDATE_RECORD_EDITED_FLAG = 'UPDATE ?? SET edited = 1 WHERE uuid = ?;'
 
   const transaction = db.transaction();
   const recordUuid = req.params.record_uuid;
@@ -249,6 +257,7 @@ function editTransaction(req, res, next) {
 
   let _transactionToEdit;
   let _fiscalYear;
+  let _recordTableToEdit;
 
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
 
@@ -256,10 +265,14 @@ function editTransaction(req, res, next) {
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
     .then((transactionToEdit) => {
-      const { posted, trans_id } = transactionToEdit[0];
+      const { posted, trans_id, hrRecord } = transactionToEdit[0];
 
       // bind the current transaction under edit as "transactionToEdit"
       _transactionToEdit = transactionToEdit;
+
+      // _recordTableToEdit is now either voucher, invoice, or cash
+      const [prefix] = hrRecord.split('.');
+      _recordTableToEdit = hrRecordToTableMap[prefix];
 
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
@@ -319,7 +332,9 @@ function editTransaction(req, res, next) {
         user_id : req.session.user.id,
       };
 
-      transaction.addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
+      transaction
+        .addQuery(UPDATE_RECORD_EDITED_FLAG, [_recordTableToEdit, db.bid(row.record_uuid)])
+        .addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
 
       return transaction.execute();
     })
