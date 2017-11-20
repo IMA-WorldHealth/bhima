@@ -29,6 +29,7 @@
     "FISCAL_YEAR":"Fiscal Year",
     "FONCTION":"Job titles management",
     "GENERAL_LEDGER":"General Ledger",
+    "GRADES" : "Grade Management", 
     "GRADE_EMPLOYERS":"Grade Employees",
     "HOSPITAL":"Hospital",
     "INCOME_EXPENSE":"Income and Expenses",
