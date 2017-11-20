@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 
-describe.only('bhFindPatient Controller Tests', ControllerTests);
+describe('bhFindPatient Controller Tests', ControllerTests);
 
 /**
  * @todo - finish the DOM tests to compliment this controller test suite.

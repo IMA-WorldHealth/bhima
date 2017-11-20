@@ -10,28 +10,28 @@ function SnapshotService($uibModal) {
   service.dataUriToFile = dataUriToFile;
   service.openWebcamModal = openWebcamModal;
 
-  function openWebcamModal(){ 
+  function openWebcamModal() { 
     return $uibModal.open({
       templateUrl: 'modules/templates/bhSnapShot.html',
       controller: snapshotController,
       backdrop     : 'static',
       animation    : false,
-      size :'lg'
+      size : 'lg',
     }).result;
   }
 
-      //convert the data_url to a file object
-  function dataUriToFile(dataUri, fileName, mimeType){
+  // convert the data_url to a file object
+  function dataUriToFile(dataUri, fileName, mimeType) {
     return (fetch(dataUri)
       .then(function(res){return res.arrayBuffer();})
-        .then(function(buf){return new File([buf], fileName, {type:mimeType});})
-      );
+      .then(function(buf){return new File([buf], fileName, {type:mimeType});})
+    );
   }
-   
 
   return service;
 }
 
+// the controler for this service
 
 angular.module('bhima.controllers')
 .controller('snapshotController', snapshotController);
@@ -47,9 +47,10 @@ function snapshotController($scope, $uibModalInstance) {
   $scope.mono = false;
   $scope.invert = false;
 
-  $scope.hasDataUrl = false; //help to display the saving botton
+  $scope.hasDataUrl = false;
+  // help to display the saving botton
 
-  $scope.patOpts = {x: 0, y: 0, w: 25, h: 25};
+  $scope.patOpts = { x: 0, y: 0, w: 25, h: 25};
 
   // Setup a channel to receive a video property
   // with a reference to the video element
@@ -58,27 +59,22 @@ function snapshotController($scope, $uibModalInstance) {
 
   $scope.webcamError = false;
   $scope.onError = function (err) {
-      $scope.$apply(
-          function() {
-            $scope.webcamError = err;
-          }
-      );
+    $scope.$apply(
+      function () {
+        $scope.webcamError = err;
+      }
+    );
   };
 
   $scope.onSuccess = function () {  
-    // The video element contains the captured camera data
-      _video = $scope.channel.video;
-      $scope.$apply(function() {
-        $scope.patOpts.w = _video.width;
-        $scope.patOpts.h = _video.height;
-        $scope.showDemos = true;
-      });
+  // The video element contains the captured camera data
+    _video = $scope.channel.video;
+    $scope.$apply(function() {
+      $scope.patOpts.w = _video.width;
+      $scope.patOpts.h = _video.height;
+      $scope.showDemos = true;
+    });
   };
-
-  $scope.onStream = function (stream) {
-
-  };
-
 
   /**
    * Make a snapshot of the camera data and show it in another canvas.
@@ -146,20 +142,21 @@ function snapshotController($scope, $uibModalInstance) {
    * Apply a simple edge detection filter.
    */
   function applyEffects(timestamp) {
-      var progress = timestamp - start;
+    var progress = timestamp - start;
 
     if (_video && $scope.edgeDetection) {
       var videoData = getVideoData(0, 0, _video.width, _video.height);
 
       var resCanvas = document.querySelector('#result');
-      if (!resCanvas) return;
 
+      if (!resCanvas) return;
+    
       resCanvas.width = _video.width;
       resCanvas.height = _video.height;
       var ctxRes = resCanvas.getContext('2d');
       ctxRes.putImageData(videoData, 0, 0);
-        // apply edge detection to video image
-      Pixastic.process(resCanvas, "edges", {mono:$scope.mono, invert:$scope.invert});
+      // apply edge detection to video image
+      Pixastic.process(resCanvas, "edges", {mono:$scope.mono, invert : $scope.invert});
     }
 
     if (progress < 20000) {
@@ -167,11 +164,11 @@ function snapshotController($scope, $uibModalInstance) {
     }
   }
 
-  $scope.getDataUrl = function(){
+  $scope.getDataUrl = function () {
     $uibModalInstance.close($scope.snapshotData);
   }
 
-  $scope.closeModal = function(){
+  $scope.closeModal = function () {
     $uibModalInstance.dismiss('cancel');
   };
   requestAnimationFrame(applyEffects);
