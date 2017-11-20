@@ -72,7 +72,7 @@ INSERT INTO unit VALUES
   (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
-  (183, 'Grade Management','TREE.GRADES','',57,'/modules/grades/','/grades');
+  (183, 'Grade Management','TREE.GRADES','', 1,'/modules/grades/','/grades');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
