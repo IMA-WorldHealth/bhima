@@ -224,7 +224,7 @@ describe('Complex Vouchers', () => {
   it('Generic Income via the tool', () => {
     const detail = {
       tool        : 'Recette Generique',
-      cashbox     : 'Test Primary Cashbox A',
+      cashbox     : 'Caisse Principale',
       account     : '41001',
       description : 'E2E RECETTE GENERIQUE',
       amount      : 3000,
@@ -261,7 +261,7 @@ describe('Complex Vouchers', () => {
   it('Generic Expense via the tool', () => {
     const detail = {
       tool        : 'Depense Generique',
-      cashbox     : 'Test Primary Cashbox A',
+      cashbox     : 'Caisse Principale',
       account     : '41001',
       description : 'E2E DEPENSE GENERIQUE',
       amount      : 1000,
@@ -298,7 +298,7 @@ describe('Complex Vouchers', () => {
   it('Cash Transfer via the tool', () => {
     const detail = {
       tool    : 'Transfert d\'argent',
-      cashbox : 'Test Primary Cashbox A',
+      cashbox : 'Caisse Principale',
       account : '41001',
       amount  : 200,
     };

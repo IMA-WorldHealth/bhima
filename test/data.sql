@@ -221,7 +221,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (251, 6, 1, 754, 'PRODUITS DES CESSIONS D IMMOBILISATIONS', 61, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
   (252, 4, 1, 75411010, 'Produits des Cessions d Immobilisations *', 251, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
   (253, 6, 1, 758, 'PRODUITS DIVERS', 61, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
-  (254, 6, 1, 7581, 'Jetons de presence et autres remunerations d administrateurs', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
+  (254, 6, 1, 7581, 'Jetons de presence et autres remunerations d\'administrateurs', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
   (255, 4, 1, 75811010, 'Jeton de presence', 254, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
   (256, 4, 1, 75811011, 'Autres remunerations d administrateurs', 254, 0, NULL, 1, '2016-10-23 16:05:34', NULL, 0),
   (257, 6, 1, 7582, 'Indemnites d\'assurances recues', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
@@ -240,8 +240,8 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (283, 3, 1, 13110001, 'Résusltat de l\'exercise', 111, 0, NULL, NULL, '2017-06-09 12:29:04', NULL, 0),
   (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
   (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL, 0),
-  (300, 5, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 0, 0, NULL, NULL, '2017-11-06 15:07:21', NULL, 0),
-  (301, 5, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 0, 0, NULL, NULL, '2017-11-06 15:07:21', NULL, 0);
+  (300, 5, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL, 0),
+  (301, 5, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL, 0);
 
 
 -- attach gain/loss accounts to the enterprise
@@ -620,7 +620,6 @@ INSERT INTO `debtor_group_subsidy` VALUES
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
 SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
-SET @fourth_voucher = HUID('8fefadec-c036-48ce-bc4e-e307d1301960');
 
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
   (1, 2, @first_invoice, 75.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, NOW(), 'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
@@ -632,6 +631,11 @@ SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');
 SET @paracetemol = HUID('6b4825f1-4e6e-4799-8a81-860531281437');
 SET @multivitamine = HUID('f6556e72-9d05-4799-8cbd-0a03b1810185');
 SET @prednisone = HUID('c3fd5a02-6a75-49fc-b2f3-76ee4c3fbfb7');
+
+INSERT INTO invoice_item VALUES
+  (@first_invoice, HUID(UUID()), @quinine, 3,25.0000,25.0000,0.0000,75.0000),
+  (@second_invoice, HUID(UUID()), @paracetemol,1,25.0000,25.0000,0.0000,25.0000),
+  (@third_invoice, HUID(UUID()), @multivitamine,1,5.13,5.13,0.0000,5.130000);
 
 CALL PostInvoice(@first_invoice);
 CALL PostInvoice(@second_invoice);
@@ -660,14 +664,15 @@ INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, descripti
   (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1, 1),
   (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, NULL),
   (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, NULL);
+
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
   (HUID(UUID()), 187, 100, 0, @first_voucher, @first_invoice, HUID(UUID())),
-  (HUID(UUID()), 182, 0, 100, @first_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 188, 200, 0, @second_voucher, HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 200, 0, 200, @second_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 182, 0, 100, @first_voucher, NULL, NULL),
+  (HUID(UUID()), 188, 200, 0, @second_voucher, NULL, NULL),
+  (HUID(UUID()), 200, 0, 200, @second_voucher, NULL, NULL),
   (HUID(UUID()), 125, 300, 0, @third_voucher, @cash_payment, HUID(UUID())),
-  (HUID(UUID()), 117, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
+  (HUID(UUID()), 117, 0, 300, @third_voucher, NULL, NULL);
 
 -- post voucher data to the general ledger
 CALL PostVoucher(@first_voucher);

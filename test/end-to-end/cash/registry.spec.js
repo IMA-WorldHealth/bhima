@@ -63,7 +63,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds two payments in the primary cashbox', () => {
-    modal.setReference('Test Primary Cashbox A');
+    modal.setReference('Caisse Principale');
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
   });

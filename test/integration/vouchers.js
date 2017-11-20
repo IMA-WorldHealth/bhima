@@ -23,17 +23,17 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
-    description : 'Voucher Transaction',
+    description : 'Voucher Transaction to BCDC',
     user_id     : 1,
     items       : [{
       uuid          : uuid(),
-      account_id    : 3631,
+      account_id    : 184,
       debit         : 10,
       credit        : 0,
       document_uuid : uuid(),
       voucher_uuid  : vUuid,
     }, {
-      account_id   : 3628,
+      account_id   : 217,
       debit        : 0,
       credit       : 10,
       voucher_uuid : vUuid,
@@ -42,10 +42,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   // NOTE: this voucher does not have any uuids
   const items = [
-    { account_id : 3631, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid() },
-    { account_id : 3637, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid() },
-    { account_id : 3631, debit : 0, credit : 12 },
-    { account_id : 3628, debit : 12, credit : 0 },
+    { account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 197, debit : 0, credit : 12 },
+    { account_id : 190, debit : 12, credit : 0 },
   ];
 
   const secondVoucher = {
@@ -68,7 +68,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     description : 'Voucher Transaction',
     items       : [{
       uuid       : uuid(),
-      account_id : 3631,
+      account_id : 177,
       debit      : 10,
       credit     : 0,
     }],
@@ -85,12 +85,12 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     user_id     : 1,
     items       : [{
       uuid       : uuid(),
-      account_id : 3627,
+      account_id : 179,
       debit      : 10,
       credit     : 0,
     }, {
       uuid       : uuid(),
-      account_id : 3637,
+      account_id : 191,
       debit      : 0,
       credit     : 10,
     }],

@@ -1,12 +1,11 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 /* jshint expr : true */
-
 
 
 const helpers = require('./helpers');
 
 describe('(/stock/) The Stock HTTP API', () => {
-    // stock flux
+  // stock flux
   const flux = {
     FROM_PURCHASE    : 1,
     FROM_OTHER_DEPOT : 2,
@@ -30,7 +29,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       quantity         : 100,
       unit_cost        : 1.2,
       expiration_date  : new Date('2018-05-01'),
-      inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      inventory_uuid   : helpers.data.QUININE,
       origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
@@ -41,7 +40,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       quantity         : 200,
       unit_cost        : 0.8,
       expiration_date  : new Date('2018-05-01'),
-      inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      inventory_uuid   : helpers.data.QUININE,
       origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
@@ -52,7 +51,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       quantity         : 50,
       unit_cost        : 2,
       expiration_date  : new Date('2017-05-01'),
-      inventory_uuid   : 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      inventory_uuid   : helpers.data.QUININE,
       origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
@@ -63,7 +62,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       quantity         : 100,
       unit_cost        : 1.2,
       expiration_date  : new Date('2019-05-01'),
-      inventory_uuid   : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      inventory_uuid   : helpers.data.MULTIVITAMINE,
       origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
@@ -74,7 +73,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       quantity         : 20,
       unit_cost        : 0.5,
       expiration_date  : new Date('2020-05-01'),
-      inventory_uuid   : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      inventory_uuid   : helpers.data.MULTIVITAMINE,
       origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
       entry_date       : new Date('2017-01-01'),
     },
@@ -97,14 +96,12 @@ describe('(/stock/) The Stock HTTP API', () => {
     user_id     : 1,
     lots        : [
       {
-        inventory_uuid : 'cf05da13-b477-11e5-b297-023919d3d5b0',
+        inventory_uuid : helpers.data.QUININE,
         uuid      : 'ae735e99-8faf-417b-aa63-9b404fca99ac', // QUININE-A
         quantity  : 20,
         unit_cost : 1.5,
-      },
-
-      {
-        inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      }, {
+        inventory_uuid : helpers.data.MULTIVITAMINE,
         uuid      : '064ab1d9-5246-4402-ae8a-958fcdb07b35', // VITAMINE-A
         quantity  : 10,
         unit_cost : 2,
@@ -119,14 +116,12 @@ describe('(/stock/) The Stock HTTP API', () => {
     user_id    : 1,
     lots       : [
       {
-        inventory_uuid : 'cf05da13-b477-11e5-b297-023919d3d5b0',
+        inventory_uuid : helpers.data.QUININE,
         uuid      : '6f80748b-1d94-4247-804e-d4be99e827d2', // QUININE-B
         quantity  : 50,
         unit_cost : 1.5,
-      },
-
-      {
-        inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      }, {
+        inventory_uuid : helpers.data.MULTIVITAMINE,
         uuid      : '064ab1d9-5246-4402-ae8a-958fcdb07b35', // VITAMINE-A
         quantity  : 10,
         unit_cost : 2,
@@ -142,7 +137,8 @@ describe('(/stock/) The Stock HTTP API', () => {
   const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
   // create new stock lots
-  it('POST /stock/lots create a new stock lots entry', () => agent.post('/stock/lots')
+  it('POST /stock/lots create a new stock lots entry', () =>
+    agent.post('/stock/lots')
       .send(movementFirstLots)
       .then((res) => {
         helpers.api.created(res);
@@ -150,7 +146,8 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // create stock movement to patient
-  it('POST /stock/lots/movements distribute lots to patients from a depot', () => agent.post('/stock/lots/movements')
+  it('POST /stock/lots/movements distribute lots to patients from a depot', () =>
+    agent.post('/stock/lots/movements')
       .send(movementOutPatient)
       .then((res) => {
         helpers.api.created(res);
@@ -158,7 +155,8 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // create stock movement to depot
-  it('POST /stock/lots/movements distribute stock lots to a depot', () => agent.post('/stock/lots/movements')
+  it('POST /stock/lots/movements distributes stock lots to a depot', () =>
+    agent.post('/stock/lots/movements')
       .send(movementDepot)
       .then((res) => {
         helpers.api.created(res);
@@ -166,18 +164,17 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // list all movement relatives to 'Depot Principal'
-  it(`
-    GET /stock/lots/movements?depot_uuid=... 
+  it(`GET /stock/lots/movements?depot_uuid=...
     returns movements for Depot Principal (13: 10 IN + 3 OUT)`,
     () => agent.get(`/stock/lots/movements?depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
         helpers.api.listed(res, depotPrincipalMvt);
       })
-      .catch(helpers.handler));
+      .catch(helpers.handler)
+  );
 
   // list all stock exit relatives to 'Depot Principal'
-  it(`
-    GET /stock/lots/movements?is_exit=1&depot_uuid=... 
+  it(`GET /stock/lots/movements?is_exit=1&depot_uuid=...
     returns exits for Depot Principal (3 OUT)`,
     () => agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
@@ -187,7 +184,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // list all stock entry relatives to 'Depot Principal'
   it(`
-    GET /stock/lots/movements?is_exit=0&depot_uuid=... 
+    GET /stock/lots/movements?is_exit=0&depot_uuid=...
     returns entries for Depot Principal (10 IN)`,
     () => agent.get(`/stock/lots/movements?is_exit=0&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
@@ -197,7 +194,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // get initial quantity of QUININE-A in 'Depot Principal'
   it(`
-    GET /stock/lots?lot_uuid=...&depot_uuid=... 
+    GET /stock/lots?lot_uuid=...&depot_uuid=...
     returns initial quantity of QUININE-A in Depot Principal (100pcs)`,
     () => agent.get(`/stock/lots?lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
@@ -209,7 +206,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // list exit of QUININE-A from 'Depot Principal'
   it(`
-    GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... 
+    GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=...
     returns exit of QUININE-A from Depot Principal (20pcs)`,
     () => agent.get(`/stock/lots/movements?is_exit=1&lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
@@ -224,7 +221,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // returns quantity of QUININE-A in 'Depot Principal'
   it(`
-    GET /stock/lots/depots?lot_uuid=...&depot_uuid=... 
+    GET /stock/lots/depots?lot_uuid=...&depot_uuid=...
     returns remaining quantity of QUININE-A in Depot Principal (80pcs)`,
     () => agent.get(`/stock/lots/depots?lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
