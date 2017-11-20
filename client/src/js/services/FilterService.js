@@ -163,6 +163,24 @@ function FilterService() {
     return filtered;
   };
 
+  /**
+   * @method getDisplayValueMap
+   *
+   * @description
+   * Turns stored filters into a map of filter key -> display value.  This
+   * allows the search modals to get the display values in case any alterations
+   * need to be made.
+   *
+   * @returns {Object} - { key : displayValue }
+   */
+  FilterList.prototype.getDisplayValueMap = function getDisplayValueMap() {
+    var viewFilters = this.formatView().customFilters;
+    return viewFilters.reduce(function (o, filter) {
+      o[filter._key] = filter.displayValue;
+      return o;
+    }, {});
+  };
+
   // expose Filter data element
   FilterList.prototype.Filter = Filter;
   return FilterList;

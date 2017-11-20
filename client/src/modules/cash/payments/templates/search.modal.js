@@ -27,16 +27,9 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  var lastViewFilters = Cash.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});  
-
   // displayValues will be an id:displayValue pair
   var displayValues = {};
+  var lastDisplayValues = Cash.filters.getDisplayValueMap();
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -66,7 +59,7 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
       vm.currencies = currencies;
     })
-    .catch(Notify.handleError);   
+    .catch(Notify.handleError);
 
 
   // custom filter user_id - assign the value to the searchQueries object

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util', 
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util',
   'TransactionTypeService', '$translate', 'VoucherService',
 ];
 
@@ -14,7 +14,7 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util, 
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util,
   TransactionTypes, $translate, Vouchers) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
@@ -28,17 +28,11 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
   vm.defaultQueries = {};
 
-  var lastViewFilters = Vouchers.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});  
+  var lastDisplayValues = Vouchers.filters.getDisplayValueMap();
 
   // displayValues will be an id:displayValue pair
   var displayValues = {};
-  
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 

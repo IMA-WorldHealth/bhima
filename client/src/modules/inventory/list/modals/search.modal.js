@@ -25,7 +25,8 @@ function InventorySearchModalController(ModalInstance, Notify, filters, Inventor
 
   // displayValues will be an id:displayValue pair
   var displayValues = {};
- 
+  var lastDisplayValues = Inventory.filters.getDisplayValueMap();
+
   vm.filters = filters;
 
   // bind methods
@@ -36,14 +37,6 @@ function InventorySearchModalController(ModalInstance, Notify, filters, Inventor
   vm.today = new Date();
   vm.defaultQueries = {};
   vm.searchQueries = {};
-
-  var lastViewFilters = Inventory.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
 
   // assign default limit filter
   if (filters.limit) {

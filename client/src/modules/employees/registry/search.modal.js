@@ -25,13 +25,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
   vm.defaultQueries = {};
   vm.formatHiringDates = formatHiringDates;
 
-  var lastViewFilters = Employees.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
+  var lastDisplayValues = Employees.filters.getDisplayValueMap();
 
   // these properties will be used to filter employee data form the client
   var searchQueryOptions = [
