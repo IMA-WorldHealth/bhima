@@ -15,7 +15,6 @@
       "TITLE" : "Gestion des grades"
     },
     "NO_GRADE" : "Aucun grade",
-    "NOT_ALLOWED_ACTIONS" : "Ce grade est protégé, vous ne pouvez effectuer des modifications sur ce grade",
     "TITLE" : "Gestion des grades",
     "UPDATED" : "Grade mise à jour avec succès",
     "MODAL" : {
