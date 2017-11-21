@@ -4,7 +4,7 @@
   </div>
   <div class="modal-body">
     <div class='row'>
-      <div class="col-lg-6">
+      <div class="col-lg-5">
         <center>
           <webcam class="well"
             on-stream="onStream(stream)"
@@ -18,7 +18,17 @@
           </webcam>
         </center>
       </div> 
-      <div class ='col-lg-6'>
+      <div class="col-lg-2">
+        <center>
+          <div class="span6 well" style='padding:23px'>
+            <label translate>FORM.LABELS.POSITION</label>  X <input type="number" ng-model="patOpts.x" class="form-control ng-pristine ng-valid ng-valid-number"/>
+            <label translate>FORM.LABELS.POSITION</label> Y <input type="number"  ng-model="patOpts.y" class="form-control ng-pristine ng-valid ng-valid-number"/> 
+            <label translate>FORM.LABELS.WIDTH </label><input type="number"  ng-model="patOpts.w" class="form-control ng-pristine ng-valid ng-valid-number"/>
+            <label translate>FORM.LABELS.HEIGHT </label><input type="number" ng-model="patOpts.h" class="form-control ng-pristine ng-valid ng-valid-number"/>
+          </div>
+        </center>
+      </div>
+      <div class ='col-lg-4'>
         <div class="span6">
           <center><canvas id="snapshot" class="well"></canvas></center>
         </div>

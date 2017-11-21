@@ -23,34 +23,35 @@ function SnapshotService($uibModal) {
   // convert the data_url to a file object
   function dataUriToFile(dataUri, fileName, mimeType) {
     return (fetch(dataUri)
-      .then(function(res){return res.arrayBuffer();})
-      .then(function(buf){return new File([buf], fileName, {type:mimeType});})
+    .then(function(res){return res.arrayBuffer();})
+    .then(function(buf){return new File([buf], fileName, {type:mimeType});})
     );
   }
+
 
   return service;
 }
 
+
 // the controler for this service
 
-angular.module('bhima.controllers')
-.controller('snapshotController', snapshotController);
+angular.module('bhima.controllers').controller('snapshotController', snapshotController);
 
-snapshotController.$inject = ['$scope', '$uibModalInstance'];
+snapshotController.$inject = ['$scope', '$uibModalInstance', 'AppCache'];
 
-function snapshotController($scope, $uibModalInstance) {
+function snapshotController($scope, $uibModalInstance, AppCache) {
   'use strict';
   var _video = null, patData = null;
 
   $scope.showDemos = false;
-  $scope.edgeDetection = false;
   $scope.mono = false;
   $scope.invert = false;
-
   $scope.hasDataUrl = false;
+  //
+  let snapshotCache = AppCache('snapshot', true);
   // help to display the saving botton
 
-  $scope.patOpts = { x: 0, y: 0, w: 25, h: 25};
+  $scope.patOpts = snapshotCache.coordonates || { x: 0, y: 0, w: 25, h: 25 };
 
   // Setup a channel to receive a video property
   // with a reference to the video element
@@ -89,54 +90,56 @@ function snapshotController($scope, $uibModalInstance) {
         var ctxPat = patCanvas.getContext('2d');
         var idata = getVideoData($scope.patOpts.x, $scope.patOpts.y, $scope.patOpts.w, $scope.patOpts.h);
         ctxPat.putImageData(idata, 0, 0);
-        sendSnapshotToServer(patCanvas.toDataURL());
+        storeImageBase64(patCanvas.toDataURL());
         patData = idata;
-      }
-  };
 
-  /**
-   * Redirect the browser to the URL given.
-   * Used to download the image by passing a dataURL string
-   */
-  $scope.downloadSnapshot = function downloadSnapshot(dataURL) {
-    window.location.href = dataURL;
-  };
+        // cache storing
+        snapshotCache.coordonates = $scope.patOpts;
+    };
+    }
+    /**
+     * Redirect the browser to the URL given.
+     * Used to download the image by passing a dataURL string
+     */
+    $scope.downloadSnapshot = function downloadSnapshot(dataURL) {
+      window.location.href = dataURL;
+    };
 
-  var getVideoData = function getVideoData(x, y, w, h) {
-    var hiddenCanvas = document.createElement('canvas');
-    hiddenCanvas.width = _video.width;
-    hiddenCanvas.height = _video.height;
-    var ctx = hiddenCanvas.getContext('2d');
-    ctx.drawImage(_video, 0, 0, _video.width, _video.height);
-    return ctx.getImageData(x, y, w, h);
-  };
+    var getVideoData = function getVideoData(x, y, w, h) {
+      var hiddenCanvas = document.createElement('canvas');
+      hiddenCanvas.width = _video.width;
+      hiddenCanvas.height = _video.height;
+      var ctx = hiddenCanvas.getContext('2d');
+      ctx.drawImage(_video, 0, 0, _video.width, _video.height);
+      return ctx.getImageData(x, y, w, h);
+    };
 
-  /**
-   * This function could be used to send the image data
-   * to a backend server that expects base64 encoded images.
-   *
-   * In this example, we simply store it in the scope for display.
-   */
-  var sendSnapshotToServer = function sendSnapshotToServer(imgBase64) {
-    $scope.snapshotData = imgBase64;
-    $scope.hasDataUrl = true;
-  };
+    /**
+     * This function could be used to send the image data
+     * to a backend server that expects base64 encoded images.
+     *
+     * In this example, we simply store it in the scope for display.
+     */
+    var storeImageBase64 = function storeImageBase64(imgBase64) {
+      $scope.snapshotData = imgBase64;
+      $scope.hasDataUrl = true;
+    };
 
-  // var getPixelData = function getPixelData(data, width, col, row, offset) {
-  //     return data[((row*(width*4)) + (col*4)) + offset];
-  // };
+    // var getPixelData = function getPixelData(data, width, col, row, offset) {
+    //     return data[((row*(width*4)) + (col*4)) + offset];
+    // };
 
-  // var setPixelData = function setPixelData(data, width, col, row, offset, value) {
-  //     data[((row*(width*4)) + (col*4)) + offset] = value;
-  // };
+    // var setPixelData = function setPixelData(data, width, col, row, offset, value) {
+    //     data[((row*(width*4)) + (col*4)) + offset] = value;
+    // };
 
-  (function() {
-      var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                                  window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-      window.requestAnimationFrame = requestAnimationFrame;
-  })();
+    (function() {
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                                    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+    })();
 
-  var start = Date.now();
+    var start = Date.now();
 
   /**
    * Apply a simple edge detection filter.
@@ -144,7 +147,7 @@ function snapshotController($scope, $uibModalInstance) {
   function applyEffects(timestamp) {
     var progress = timestamp - start;
 
-    if (_video && $scope.edgeDetection) {
+    if (_video) {
       var videoData = getVideoData(0, 0, _video.width, _video.height);
 
       var resCanvas = document.querySelector('#result');
@@ -173,3 +176,4 @@ function snapshotController($scope, $uibModalInstance) {
   };
   requestAnimationFrame(applyEffects);
 }
+

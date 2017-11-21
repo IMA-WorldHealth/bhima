@@ -75,7 +75,7 @@
                     <span class="glyphicon glyphicon-picture"></span>
                   </div>
                   <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
-                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" style="width: 100%;" onError="this.src='assets/empty.png';" >
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}"   style="width: 100% !important; height:100%; max-height:200px" onError="this.src='assets/empty.png';" >
                   </div>
                 </div>
 
