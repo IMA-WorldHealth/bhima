@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 ModalCreditNoteController.$inject = [
   '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService', 'NotifyService',
-  '$translate',
+  '$translate', 'CurrencyService',
 ];
 
-function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $translate) {
+function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $translate, CurrencyService) {
   var vm = this;
 
   vm.creditNote = {};
@@ -15,10 +15,21 @@ function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify, $
 
   vm.creditNote.uuid = data.invoice.uuid;
   vm.patientInvoice = data.invoice;
+  vm.billingAmount = 0;
+  vm.subsidyAmount = 0;
 
   Invoices.read(data.invoice.uuid)
     .then(function (response) {
       vm.patientInvoiceItems = response.items;
+      vm.currencySymbol = CurrencyService.symbol(response.currency_id);
+
+      response.billing.filter(bill => {
+        vm.billingAmount += bill.value;
+      });
+
+      response.subsidy.filter(sub => {
+        vm.subsidyAmount += sub.value;
+      });
     })
     .catch(Notify.handleError);
 

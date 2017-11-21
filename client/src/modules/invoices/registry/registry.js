@@ -202,6 +202,7 @@ function InvoiceRegistryController(
 
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
+    
     Cash.checkCashPayment(invoice.uuid)
       .then(function (res) {
         var numberPayment = res.length;
