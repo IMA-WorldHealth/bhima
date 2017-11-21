@@ -12,7 +12,7 @@ describe('Creditor Groups Management', () => {
   const path = '#!/creditors/groups';
   before(() => helpers.navigate(path));
 
-  const INITIAL_GROUP = 2;
+  const INITIAL_GROUP = 3;
 
   const currentDate = new Date();
   const uniqueIdentifier = currentDate.getTime().toString();
@@ -21,7 +21,7 @@ describe('Creditor Groups Management', () => {
     name         : `E2E Creditor Group ${uniqueIdentifier}`,
     delete_name  : `Fournisseur [Creditor Group Test]`,
     updated_name : `E2E Creditor Group Updated ${uniqueIdentifier}`,
-    account      : '41001',
+    account      : '40111000', // 40111000 - SNEL SUPPLIER
   };
 
   it(`has an initial list of ${INITIAL_GROUP} creditor groups`, () => {

@@ -1,12 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
-
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const { expect } = chai;
 helpers.configure(chai);
 
 describe('Fiscal Year', () => {
@@ -140,7 +138,7 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="closing-fiscal-year"]')).click();
 
     // inner constiables
-    const resultAccount = 'Test Capital One';
+    const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise
     const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account

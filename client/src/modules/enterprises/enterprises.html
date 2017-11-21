@@ -62,7 +62,8 @@
                 account-id="EnterpriseCtrl.enterprise.gain_account_id"
                 label="FORM.LABELS.GAIN_ACCOUNT"
                 name="gain_account_id"
-                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)">
+                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
+                exclude-title-accounts="true">
               </bh-account-select>
 
               <bh-account-select
@@ -70,6 +71,7 @@
                 account-id="EnterpriseCtrl.enterprise.loss_account_id"
                 label="FORM.LABELS.LOSS_ACCOUNT"
                 name="loss_account_id"
+                exclude-title-accounts="true"
                 on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
               </bh-account-select>
             </div>

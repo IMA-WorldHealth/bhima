@@ -12,8 +12,8 @@ INSERT INTO `project` VALUES
 
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `cc_id`, `pc_id`, `created`, `reference_id`, `is_title`) VALUES
-  (1, 6, 1, 1, 'CLASSE 1 : COMPTES DE RESSOURCES DURABLES', 0, 0, NULL, NULL, '2016-10-22 14:37:09', NULL, 0),
-  (2, 6, 1, 2, 'CLASSE 2 : COMPTES D\'ACTIFS IMMOBILISES', 0, 0, NULL, NULL, '2016-10-22 14:39:01', NULL, 0),
+  (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, NULL, NULL, '2016-10-22 14:37:09', NULL, 0),
+  (2, 6, 1, 2, 'CLASSE 2: COMPTES D\'ACTIFS IMMOBILISES', 0, 0, NULL, NULL, '2016-10-22 14:39:01', NULL, 0),
   (3, 6, 1, 3, 'CLASSE 3: COMPTES DE STOCKS', 0, 0, NULL, NULL, '2016-10-22 14:39:36', NULL, 0),
   (4, 6, 1, 4, 'CLASSE 4: COMPTES DE TIERS', 0, 0, NULL, NULL, '2016-10-22 14:40:00', NULL, 0),
   (5, 6, 1, 5, 'CLASSE 5: COMPTES DE TRESORERIE', 0, 0, NULL, NULL, '2016-10-22 14:40:26', NULL, 0),
@@ -268,6 +268,18 @@ SET @superUser = 1;
 -- the super user has permission to everything user
 INSERT INTO permission (unit_id, user_id)
 SELECT unit.id, @superUser FROM unit ON DUPLICATE KEY UPDATE unit_id = unit_id, user_id = user_id;
+
+-- Update permission for Regular user
+INSERT INTO permission (unit_id, user_id) VALUES
+-- Account Management
+(6,2),
+
+-- [Folder] Finance
+(5,2),
+
+-- Fiscal Year
+(13,2);
+
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

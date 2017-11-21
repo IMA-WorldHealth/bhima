@@ -15,7 +15,7 @@ describe('Simple Vouchers', function () {
   const voucher = {
     date : new Date(),
     type : 'Transfer',
-    toAccount : 'Test Debtor Group Account',
+    toAccount : 'NGO',
     fromAccount : 'First Test Item Account',
     description : 'Awesome description',
     amount : 100.12,

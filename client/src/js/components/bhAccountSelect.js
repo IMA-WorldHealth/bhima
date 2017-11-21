@@ -5,8 +5,8 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       accountId        : '<',
-      disable          : '<',
-      onSelectCallback : '&?',
+      onSelectCallback : '&',
+      disable          : '<?',
       required         : '<?',
       label            : '@?',
       name             : '@?',
@@ -21,7 +21,6 @@ AccountSelectController.$inject = [
 
 /**
  * Account selection component
- *
  */
 function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $scope) {
   var $ctrl = this;

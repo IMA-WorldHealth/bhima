@@ -17,7 +17,7 @@ function PurchaseOrderSearch() {
     name1: 'Patient',
     author: 'Super User',
     status: ['Confirmé'],
-    supplier : 'Test Supplier',
+    supplier : 'SNEL',
   };
 
   const grid = element(by.id('purchase-registry'));

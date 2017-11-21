@@ -1,10 +1,9 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 const RegistrationPage = require('./registration.page.js');
-const SearchModalPage = require('./searchModal.page.js');
 
 helpers.configure(chai);
 
@@ -15,8 +14,7 @@ describe('Update Employees', () => {
 
   before(() => { helpers.navigate(path); });
 
-  it(`should Update data for employee`, () => {
-
+  it(`should update data for employee`, () => {
     element.all(by.css('[data-method="action"]')).get(1).click();
     element.all(by.css('[data-method="edit"]')).get(1).click();
 

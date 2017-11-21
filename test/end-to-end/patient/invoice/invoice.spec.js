@@ -1,9 +1,9 @@
-/* global element, by, browser */
+/* global by, browser */
 
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 helpers.configure(chai);
 
 const FU = require('../../shared/FormUtils');
@@ -19,8 +19,6 @@ const components = require('../../shared/components');
  *   - Test for discount
  */
 describe('Patient Invoice', () => {
-  'use strict';
-
   const path = '#!/invoices/patient';
 
   // navigate to the patient invoice page
@@ -33,7 +31,7 @@ describe('Patient Invoice', () => {
     page.prepare();
 
     // add the following inventory item
-    page.addInventoryItem(0, 'INV0');
+    page.addInventoryItem(0, '100099');
 
     // make sure the submit button is not disabled
     expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
@@ -58,9 +56,9 @@ describe('Patient Invoice', () => {
     expect(page.getRows().count()).to.eventually.equal(3);
 
     // add two inventory items to each row (0-indexing)
-    page.addInventoryItem(0, 'INV0');
-    page.addInventoryItem(1, 'INV2');
-    page.addInventoryItem(2, 'INV1');
+    page.addInventoryItem(0, '100099');
+    page.addInventoryItem(1, '110016');
+    page.addInventoryItem(2, '170448');
 
     // change the required quantities
     page.adjustItemQuantity(0, 17);
@@ -122,8 +120,8 @@ describe('Patient Invoice', () => {
     page.addRows(1);
 
     // add two inventory items to each row (0-indexing)
-    page.addInventoryItem(0, 'INV0');
-    page.addInventoryItem(1, 'INV2');
+    page.addInventoryItem(0, '100099'); // Propantheline bromide15mg
+    page.addInventoryItem(1, '110016'); // Tylenol sirop (cold multivit)
 
     // change the required quantities
     page.adjustItemQuantity(0, 1);

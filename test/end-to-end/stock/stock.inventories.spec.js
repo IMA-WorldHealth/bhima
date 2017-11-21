@@ -38,7 +38,7 @@ function StockInventoriesRegistryTests() {
   });
 
   it('find inventory by name', () => {
-    modal.setInventory('First Test Inventory Item');
+    modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
     GU.expectRowCount(gridId, 2);
     filters.resetFilters();

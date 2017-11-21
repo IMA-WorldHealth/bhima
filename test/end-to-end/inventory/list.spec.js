@@ -20,7 +20,7 @@ describe('Inventory List', () => {
     code  : uniqueIdentifier,
     text  : '[E2E] Inventory Article',
     price : 7.57,
-    group : 'Test inventory group',
+    group : 'Injectable',
     type  : 'Article',
     unit  : 'Act',
     unit_weight : 1,
@@ -29,9 +29,9 @@ describe('Inventory List', () => {
 
   const metadataUpdate = {
     code : uniqueIdentifier.concat('_updated'),
-    text : '[E2E] Inventory Article updated',
+    text : '[E2E] Inventory Article Updated',
     price : 7.77,
-    group : 'Test inventory group',
+    group : 'Injectable',
     type  : 'Service',
     unit  : 'Pill',
     unit_weight : 7,
@@ -40,8 +40,8 @@ describe('Inventory List', () => {
 
   const metadataSearch = {
     label : 'First',
-    group : 'Test inventory group',
-    type  : 'Article',    
+    group : 'Injectable',
+    type  : 'Article',
   };
 
   it('successfully creates a new inventory item (metadata)', () => {

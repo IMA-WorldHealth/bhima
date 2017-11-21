@@ -1,5 +1,3 @@
-/* global element, by, browser */
-
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
@@ -16,7 +14,7 @@ describe('Account Statement Core', () => {
   before(() => helpers.navigate(path));
 
   const sample = {
-    account : 67003,
+    account : 411,
     comment : 'custom',
   };
 

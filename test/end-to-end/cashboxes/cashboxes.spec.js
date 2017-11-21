@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 
 const chai = require('chai');
 const helpers = require('../shared/helpers');
@@ -41,7 +41,7 @@ describe('Cashboxes', () => {
 
   it('successfully edits a cashbox', () => {
     // navigate to the update form for the second item
-    update(3);
+    update(1);
 
     FU.input('UpdateCtrl.box.label', 'New Cashbox Name');
     FU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
@@ -64,8 +64,8 @@ describe('Cashboxes', () => {
     FU.exists(by.css('[uib-modal-window]'), true);
     FU.exists(by.name('CashboxModalForm'), true);
 
-    components.accountSelect.set('Test Gain Account', 'account-id');
-    components.accountSelect.set('Test Loss Account', 'transfer-account-id');
+    components.accountSelect.set('Gain de change', 'account-id');
+    components.accountSelect.set('Différences de change', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -87,7 +87,8 @@ describe('Cashboxes', () => {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    components.accountSelect.set('First Test Item Account', 'account-id');
+    components.accountSelect.set('60511010', 'account-id');
+    components.accountSelect.set('', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();
@@ -95,7 +96,7 @@ describe('Cashboxes', () => {
     // confirm that the modal did not disappear
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    components.accountSelect.set('Test Debtor Group Account', 'transfer-account-id');
+    components.accountSelect.set('NGO', 'transfer-account-id');
 
     // submit the modal
     FU.modal.submit();

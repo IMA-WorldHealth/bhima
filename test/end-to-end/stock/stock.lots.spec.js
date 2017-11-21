@@ -56,7 +56,7 @@ function StockLotsRegistryTests() {
   });
 
   it('find lots by inventory', () => {
-    modal.setInventory('First Test Inventory Item');
+    modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
     GU.expectRowCount(gridId, 8 + (2 * depotGroupingRow));
   });

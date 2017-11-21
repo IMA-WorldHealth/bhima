@@ -25,7 +25,7 @@ describe('Employees', () => {
     hospital_no   : 'TP003',
   };
 
-  before(() => { return helpers.navigate(path); });
+  before(() => helpers.navigate(path));
 
   it('blocks invalid form submission with relevant error classes', () => {
     // verify we are in the current path
@@ -44,7 +44,7 @@ describe('Employees', () => {
     registrationPage.setGrade('A1');
     registrationPage.setHospitalNumber(employee.hospital_no);
     registrationPage.setCreditorGroup('Personnel');
-    registrationPage.setDebtorGroup('Second Test Debtor Group');
+    registrationPage.setDebtorGroup('NGO IMA World Health');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
     registrationPage.setHiringDate(employee.date_embauche);

@@ -65,8 +65,8 @@ function InvoiceRegistrySearch() {
   });
 
   const DEBTOR_GROUP_INVOICES = 5;
-  it(`filters by debtor group "First Test Debtor Group" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
-    components.debtorGroupSelect.set('First Test Debtor Group');
+  it(`filters by debtor group "Church Employees" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
+    components.debtorGroupSelect.set('Church Employees');
     modal.submit();
 
     page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);

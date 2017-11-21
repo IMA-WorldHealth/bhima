@@ -57,7 +57,7 @@ function StockEntryTests() {
 
     page.addRows(1);
 
-    page.setItem(0, 'INV0');
+    page.setItem(0, 'Quinine');
 
     page.setLots(0, lots, false, 1500, 0.09);
 

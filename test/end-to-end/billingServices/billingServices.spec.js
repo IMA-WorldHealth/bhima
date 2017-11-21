@@ -1,9 +1,7 @@
-/* global browser, element, by, protractor */
+/* global by */
 const chai = require('chai');
-const expect = chai.expect;
-
-// import testing utiliites
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const GU = require('../shared/GridUtils');
@@ -11,20 +9,19 @@ const GA = require('../shared/GridAction');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Billing Services', function () {
+describe('Billing Services', () => {
   const path = '#!/billing_services';
   const gridId = 'BillingServicesGrid';
 
   before(() => helpers.navigate(path));
 
-  it('can create a billing service', function () {
-
+  it('can create a billing service', () => {
     // click on the create button
     FU.buttons.create();
 
     // anticipate that the form should come up
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
-    components.accountSelect.set('57003');
+    components.accountSelect.set('75881010'); // 75881010 - Autres revenus
 
     FU.input('BillingServicesFormCtrl.model.label', 'Value Added Tax');
     FU.input('BillingServicesFormCtrl.model.description', 'A tax added for people who want value!');
@@ -36,8 +33,7 @@ describe('Billing Services', function () {
     GU.expectRowCount(gridId, 3);
   });
 
-  it('can update a billing service', function () {
-
+  it('can update a billing service', () => {
     // get the cell with the update button and click it
     GA.clickOnMethod(0, 6, 'edit', 'BillingServicesGrid');
 
@@ -52,8 +48,7 @@ describe('Billing Services', function () {
     components.notification.hasSuccess();
   });
 
-  it('can delete a billing service', function () {
-
+  it('can delete a billing service', () => {
     // get the cell with the delete button and click it
     GA.clickOnMethod(0, 6, 'delete', 'BillingServicesGrid');
 

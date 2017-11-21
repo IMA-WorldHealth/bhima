@@ -13,7 +13,7 @@ const UserPage = require('../user/user.page.js');
 
 describe('Cash Payments', () => {
   const path = '/cash';
-  const userPage = new UserPage();  
+  const userPage = new UserPage();
 
   const cashboxB = {
     id   : 2,
@@ -43,7 +43,7 @@ describe('Cash Payments', () => {
       FU.exists(by.css('[data-cashbox-modal]'), true);
 
       // select a cashbox
-      element(by.id('cashbox-3')).click();
+      element(by.id('cashbox-2')).click();
       element(by.css('[data-cashbox-modal-submit]')).click();
 
       // expect the 'cashbox selection' modal to disappear

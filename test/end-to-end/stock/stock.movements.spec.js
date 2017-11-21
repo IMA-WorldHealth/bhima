@@ -52,7 +52,7 @@ function StockMovementsRegistryTests() {
   });
 
   it('find movements by inventory', () => {
-    modal.setInventory('First Test Inventory Item');
+    modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
     GU.expectRowCount(gridId, 13 + (2 * depotGroupingRow));
   });
