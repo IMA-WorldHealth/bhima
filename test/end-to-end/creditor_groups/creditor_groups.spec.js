@@ -21,7 +21,7 @@ describe('Creditor Groups Management', () => {
     name         : `E2E Creditor Group ${uniqueIdentifier}`,
     delete_name  : `Fournisseur [Creditor Group Test]`,
     updated_name : `E2E Creditor Group Updated ${uniqueIdentifier}`,
-    account      : '40111000', // 40111000 - SNEL SUPPLIER
+    account      : '4011100', // 40111000 - SNEL SUPPLIER
   };
 
   it(`has an initial list of ${INITIAL_GROUP} creditor groups`, () => {

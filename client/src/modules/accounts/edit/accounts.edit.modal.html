@@ -109,7 +109,7 @@
     <!-- @todo business logic rules will have to be displayed along with these messages when implemented with features (Edit, Delete, Lock etc.) -->
     <p ng-if="AccountForm.$submitted && AccountForm.$pristine && !AccountEditCtrl.isCreateState" class="text-warning"><i class="fa fa-warning"></i> <span translate>ACCOUNTS.RECORD_SAME</span></p>
     <p ng-if="AccountForm.$submitted && AccountForm.$invalid" class="text-danger"><i class="fa fa-exclamation-circle"></i> <span translate>FORM.ERRORS.RECORD_ERROR</span></p>
-    <p ng-if="AccountEditCtrl.fetchError" class="text-danger"><i class="fa fa-exclamation-circle"></i> <span translate>{{AccountEditCtrl.fetchError.data.code}}</span></p>
+    <p ng-if="AccountEditCtrl.fetchError" class="text-danger" data-submit-error><i class="fa fa-exclamation-circle"></i> <span translate>{{AccountEditCtrl.fetchError.data.code}}</span></p>
   </div>
 
   <div class="checkbox" style="display : inline-block" ng-if="AccountEditCtrl.isCreateState">

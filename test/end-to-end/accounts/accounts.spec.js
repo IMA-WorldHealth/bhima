@@ -11,25 +11,24 @@ describe('Account Management', () => {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
-  const INITIAL_ACCOUNTS = 28;
-  const NUM_ADDED_ACCOUNTS = 4;
+  const INITIAL_ACCOUNTS = 31;
 
   // this is an account at the top of the grid - until this test is improved it relies
   // on the account being visible to verify each test
   const assetAccountGroup = {
     id : 9,
-    numberOfChildren : 21,
+    child_id : 74, // this is an id of a child account in the group with id 9
   };
 
   const account = {
-    id : 171,
-    number : 41111000,
+    id : 90,
+    number : 10911010,
     type : 'Titre',
-    label : 'End to End Test Debtor Account',
-    parent : { number : 4011 },
+    label : 'Actionnaire, Capital souscrit, non appelé *',
+    parent : { number : 1091 },
   };
 
-  const deletingAccount = '3645';
+  const DELETE_ACCOUNT_ID = 87;
 
   const page = new AccountsPage();
 
@@ -38,22 +37,22 @@ describe('Account Management', () => {
   });
 
   it('expands and collapses title accounts on title click', () => {
+    page.expectRowVisible(assetAccountGroup.child_id);
     page.toggleTitleRow(assetAccountGroup.id);
-    page.expectGridRows(INITIAL_ACCOUNTS - assetAccountGroup.numberOfChildren);
+    page.expectRowHidden(assetAccountGroup.child_id);
     page.toggleTitleRow(assetAccountGroup.id);
-    page.expectGridRows(INITIAL_ACCOUNTS);
   });
 
   it('create state populates parent field through in-line create', () => {
     page.openAddChild(account.id);
 
     // this relies on the account select to display the account with account number
-    expect(page.EditModal.parent()).to.eventually.include(account.number);
+    expect(page.EditModal.parent()).to.eventually.include(account.parent.number);
   });
 
   it('creates a single account', () => {
-    FU.input('AccountEditCtrl.account.number', '41111013');
-    FU.input('AccountEditCtrl.account.label', 'IMA World Health');
+    FU.input('AccountEditCtrl.account.number', '41111019');
+    FU.input('AccountEditCtrl.account.label', 'IMA World Health Account');
 
     // FIXME(@jniles) - relies on french translation
     FU.select('AccountEditCtrl.account.type_id', 'Titre').click();
@@ -64,7 +63,7 @@ describe('Account Management', () => {
 
   it('edit state populates account data on clicking edit', () => {
     page.openEdit(account.id);
-    expect(element(by.id('number-static')).getText()).to.eventually.equal(String(account.number));
+    expect(element(by.id('number-static')).getText()).to.eventually.equal(String(account.parent.number));
 
     // @todo removed to allow types to be updated - this should be reintroduced
     // expect(element(by.id('type-static')).getText()).to.eventually.equal(account.type);
@@ -72,8 +71,8 @@ describe('Account Management', () => {
   });
 
   it('updates an account title and parent', () => {
-    FU.input('AccountEditCtrl.account.label', 'Updated inventory accounts');
-    FU.uiSelect('AccountEditCtrl.account.parent', 'Test Income');
+    FU.input('AccountEditCtrl.account.label', 'Updated Inventory Accounts');
+    FU.uiSelect('AccountEditCtrl.account.parent', 'Medicaments');
     FU.modal.submit();
 
     components.notification.hasSuccess();
@@ -97,6 +96,9 @@ describe('Account Management', () => {
 
     FU.buttons.create();
 
+    // expect the modal to open
+    FU.exists(by.css('[uib-modal-window]'), true);
+
     // set modal to create any number of accounts
     page.toggleBatchCreate();
     select.$('[data-key="ACCOUNT.TYPES.TITLE"]').click();
@@ -116,11 +118,6 @@ describe('Account Management', () => {
     components.notification.hasSuccess();
   });
 
-  it('displays all created accounts with model refresh', () => {
-    browser.refresh();
-    page.expectGridRows(INITIAL_ACCOUNTS + NUM_ADDED_ACCOUNTS);
-  });
-
   // generic function to create an account in the modal
   function createAccount(accnt) {
     FU.input('AccountEditCtrl.account.number', accnt.number);
@@ -128,9 +125,12 @@ describe('Account Management', () => {
     FU.modal.submit();
   }
 
-  // Delete a specific Account
+  // delete a specific account
   it('can delete a specific account', () => {
-    page.openEdit(deletingAccount);
+    // FIXME(@jniles) - account page does not refresh the grid on updates
+    browser.refresh();
+
+    page.openEdit(DELETE_ACCOUNT_ID);
 
     FU.buttons.delete();
     components.modalAction.confirm();
@@ -142,6 +142,6 @@ describe('Account Management', () => {
     page.openEdit(assetAccountGroup.id);
     FU.buttons.delete();
     components.modalAction.confirm();
-    expect(element.all(by.css('[alert alert-danger]')));
+    FU.exists(by.css('[data-submit-error]'), true);
   });
 });
