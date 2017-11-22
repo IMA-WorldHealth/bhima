@@ -14,7 +14,7 @@ describe('Account Statement Core', () => {
   before(() => helpers.navigate(path));
 
   const sample = {
-    account : 411,
+    account : 4111100,
     comment : 'custom',
   };
 

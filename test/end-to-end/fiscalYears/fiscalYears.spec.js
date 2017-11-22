@@ -85,9 +85,9 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 136;
+    const account3 = 137;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -111,9 +111,9 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 136;
+    const account3 = 137;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);

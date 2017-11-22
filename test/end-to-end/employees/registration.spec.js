@@ -43,7 +43,7 @@ describe('Employees', () => {
     registrationPage.setCode(employee.code);
     registrationPage.setGrade('A1');
     registrationPage.setHospitalNumber(employee.hospital_no);
-    registrationPage.setCreditorGroup('Personnel');
+    registrationPage.setCreditorGroup('Employees');
     registrationPage.setDebtorGroup('NGO IMA World Health');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);

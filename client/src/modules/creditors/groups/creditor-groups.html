@@ -5,9 +5,9 @@
       <li class="static" translate> TREE.ADMIN </li>
 
       <!-- creditor group list -->
-      <li 
-        class="title" 
-        ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.list'" 
+      <li
+        class="title"
+        ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.list'"
         translate>TREE.CREDITOR_GROUP
       </li>
 
@@ -18,7 +18,7 @@
 
       <!-- edit creditor group -->
       <li ng-if="CreditorGroupCtrl.state.current.name === 'creditorGroups.update'" class="title">
-        {{ CreditorGroupCtrl.state.params.label }} 
+        {{ CreditorGroupCtrl.state.params.label }}
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 

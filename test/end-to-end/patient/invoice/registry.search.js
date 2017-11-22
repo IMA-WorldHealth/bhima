@@ -66,7 +66,7 @@ function InvoiceRegistrySearch() {
 
   const DEBTOR_GROUP_INVOICES = 5;
   it(`filters by debtor group "Church Employees" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
-    components.debtorGroupSelect.set('Church Employees');
+    components.debtorGroupSelect.set('Church');
     modal.submit();
 
     page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);

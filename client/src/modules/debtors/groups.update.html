@@ -1,11 +1,9 @@
 <div class="container-fluid" ng-form="debtorGroup" novalidate>
   <div class="row" ng-if="GroupUpdateCtrl.$loading">
-    <div class="col-xs-12">
-      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
-    </div>
+    <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
   </div>
-  <div ng-if="GroupUpdateCtrl.$loaded">
 
+  <div ng-if="GroupUpdateCtrl.$loaded">
     <div class="row">
       <div class="col-md-5">
         <!-- Debtor group details form elements -->
@@ -28,20 +26,19 @@
 
             <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
               <ui-select-match placeholder="Pick one...">
-                <i class="fa fa-circle" style="color: {{$select.selected.value}}; font-sze:14px"></i>
-                &nbsp;<span translate>{{$select.selected.name}}</span>
+                <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+                <span translate>{{$select.selected.name}}</span>
               </ui-select-match>
               <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
-                <div>
-                  <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i>&nbsp; <span translate>{{val.name}} </span> </span>
-                </div>
+                <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
               </ui-select>
           </div>
 
           <bh-account-select
             name="account_id"
             account-id="GroupUpdateCtrl.group.account_id"
-            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)">
+            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)"
+            exclude-title-accounts="true">
           </bh-account-select>
 
           <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->

@@ -78,7 +78,7 @@ describe('Cashboxes', () => {
   it.skip('rejects a missing account on the currency modal', () => {
     helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
-    update(0);
+    update(3);
 
     // get a locator for the currencies
     const USD = element(by.css('[data-currency-id="2"]'));

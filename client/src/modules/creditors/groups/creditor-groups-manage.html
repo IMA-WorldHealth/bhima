@@ -25,7 +25,8 @@
             <bh-account-select
               name="account_id"
               account-id="CreditorGroupCtrl.bundle.account_id"
-              on-select-callback="CreditorGroupCtrl.onSelectAccount(account)">
+              on-select-callback="CreditorGroupCtrl.onSelectAccount(account)"
+              exclude-title-accounts="true">
             </bh-account-select>
 
             <!-- is locked ?  -->
@@ -55,8 +56,7 @@
             </button>
           </div>
         </div>
-
-      </form>      
+      </form>
     </div>
   </div>
 </div>
