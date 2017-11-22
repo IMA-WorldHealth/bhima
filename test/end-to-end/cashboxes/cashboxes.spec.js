@@ -17,11 +17,8 @@ describe('Cashboxes', () => {
     project : 'Test Project A',
   };
 
-  // clicks the 'update' button on the cashbox at $index n in the table
-  function update(n) {
-    return element(by.repeater('box in CashCtrl.cashboxes track by box.id').row(n))
-      .$$('a')
-      .click();
+  function update(label) {
+    $(`[data-cashbox="${label}"]`).$$('a').click();
   }
 
   it('creates a new cashbox', () => {
@@ -41,7 +38,7 @@ describe('Cashboxes', () => {
 
   it('successfully edits a cashbox', () => {
     // navigate to the update form for the second item
-    update(1);
+    update('Caisse Principale');
 
     FU.input('UpdateCtrl.box.label', 'New Cashbox Name');
     FU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
@@ -54,7 +51,7 @@ describe('Cashboxes', () => {
 
   it('allows the user to change currency accounts', () => {
     // navigate to the update form for the second item
-    update(2);
+    update('New Cashbox Name');
 
     // get the "FC" (congolese francs) currency
     const FC = element(by.css('[data-currency-id="1"]'));
@@ -78,7 +75,7 @@ describe('Cashboxes', () => {
   it.skip('rejects a missing account on the currency modal', () => {
     helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
-    update(3);
+    update('New Cashbox Name');
 
     // get a locator for the currencies
     const USD = element(by.css('[data-currency-id="2"]'));
@@ -107,7 +104,7 @@ describe('Cashboxes', () => {
   it('allows you to delete a cashbox', () => {
     helpers.navigate('#!/cashboxes');
     // navigate to the update form for the second item
-    update(0);
+    update(cashbox.label);
 
     // click the "delete" button
     FU.buttons.delete();

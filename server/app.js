@@ -31,10 +31,8 @@ const dotEnv = require('dotenv');
 
 configureEnvironmentVariables();
 
-
 const http = require('http');
 const express = require('express');
-
 const debug = require('debug')('app');
 
 const app = express();

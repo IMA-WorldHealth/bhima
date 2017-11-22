@@ -1,11 +1,6 @@
-/* global element, by */
-
-const chai = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
-
-helpers.configure(chai);
 
 describe('Inventory Configuration', () => {
   const url = '#/inventory/configuration';
@@ -14,7 +9,7 @@ describe('Inventory Configuration', () => {
   before(() => helpers.navigate(url));
 
   const group = {
-    name : 'Medicaments en Sirop',
+    name : 'Medicaments en Sirop for Fun',
     code : '1700',
     sales_account : 'Caisse Principale USD',
     stock_account : 'Medicaments en Sirop',
@@ -43,26 +38,28 @@ describe('Inventory Configuration', () => {
       $('[data-create-group]').click();
       FU.input('$ctrl.session.name', group.name);
       FU.input('$ctrl.session.code', group.code);
-      FU.uiSelect('$ctrl.session.salesAccount', group.sales_account);
-      FU.uiSelect('$ctrl.session.stockAccount', group.stock_account);
-      FU.uiSelect('$ctrl.session.cogsAccount', group.cogs_account);
+
+      components.accountSelect.set(group.sales_account, 'sales_account');
+      components.accountSelect.set(group.stock_account, 'stock_account');
+      components.accountSelect.set(group.cogs_account, 'cogs_account');
+
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
     it('successfully updates an existing inventory group', () => {
-      $('[data-edit-group="'.concat(group.code, '"]')).click();
+      $(`[data-edit-group="${group.code}"]`).click();
       FU.input('$ctrl.session.name', updateGroup.name);
       FU.input('$ctrl.session.code', updateGroup.code);
-      FU.uiSelect('$ctrl.session.salesAccount', updateGroup.sales_account);
-      element(by.model('$ctrl.session.stockAccount')).$('[ng-click="$select.clear($event)"]').click();
-      element(by.model('$ctrl.session.cogsAccount')).$('[ng-click="$select.clear($event)"]').click();
+
+      components.accountSelect.set(updateGroup.sales_account, 'sales_account');
+
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
     it('successfully deletes an existing inventory group', () => {
-      $('[data-delete-group="'.concat(updateGroup.code, '"]')).click();
+      $(`[data-delete-group="${updateGroup.code}"]`).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
