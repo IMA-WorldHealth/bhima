@@ -2,18 +2,32 @@ angular.module('bhima.controllers')
   .controller('GradeModalController', GradeModalController);
 
 GradeModalController.$inject = [
-  '$state', 'GradeService', 'ModalService', 'NotifyService',
+  '$state', 'GradeService', 'ModalService', 'NotifyService', 'appcache',
 ];
 
-function GradeModalController($state, Grades, ModalService, Notify) {
+function GradeModalController($state, Grades, ModalService, Notify, AppCache) {
   var vm = this;
 
-  vm.grade = $state.params.grade;
-  vm.isCreating = !!($state.params.creating);
+  var cache = AppCache('GradeModal');
+
+  if ($state.params.creating || $state.params.uuid) {
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+  vm.isCreating = vm.stateParams.creating;  
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
+
+  if (!vm.isCreating) {
+    Grades.read(vm.stateParams.uuid)
+      .then(function (grade) {
+        vm.grade = grade;
+      })
+      .catch(Notify.handleError);
+  }
 
   // submit the data to the server from all two forms (update, create)
   function submit(gradeForm) {

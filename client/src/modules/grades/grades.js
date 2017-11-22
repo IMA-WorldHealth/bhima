@@ -91,8 +91,8 @@ function GradeManagementController(Grades, ModalService,
   }
 
   // update an existing grade
-  function editGrade(gradeObject) {
-    $state.go('grades.edit', { grade : gradeObject });
+  function editGrade(grade) {
+    $state.go('grades.edit', { uuid : grade.uuid });
   }
 
   // create a new grade

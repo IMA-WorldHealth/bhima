@@ -2,14 +2,6 @@ const helpers = require('../shared/helpers');
 const GradePage = require('./grades.page');
 const chai = require('chai');
 
-/** loading User pages **/
-const UserPage = require('../user/user.page.js');
-const UserCreateUpdatePage = require('../user/userCU.page.js');
-
-/** configuring helpers**/
-helpers.configure(chai);
-const expect = chai.expect;
-
 describe('Grades Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/grades'));

@@ -7,20 +7,16 @@
     "DELETED" : "Grade supprimer avec succès",
     "DELETE" : "Supprimer",
     "GRADES_LIST" : "Liste des grades",
-    "DESCRIPTION" : "Ce module vous permet de Lister, Creer, Modifier et Supprimer un grade",
     "EDIT_GRADE" : "Editer les informations d'un grade",
     "ENTITY" : "Grade",
     "LABEL" : "Grade",
-    "MAIN" : {
-      "TITLE" : "Gestion des grades"
-    },
     "NO_GRADE" : "Aucun grade",
     "TITLE" : "Gestion des grades",
     "UPDATED" : "Grade mise à jour avec succès",
     "MODAL" : {
-      "SELECTION" : "Selectionner Grade",
+      "SELECTION" : "Sélectionner un Grade",
       "NO_GRADES" : "Est-ce qu'il n'y a pas des grades?",
-      "SELECT_A_GRADE" : "Selectionner un Grade"
+      "SELECT_A_GRADE" : "Sélectionner un Grade"
     }
   }
 }

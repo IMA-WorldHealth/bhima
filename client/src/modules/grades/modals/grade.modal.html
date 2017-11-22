@@ -3,11 +3,11 @@
   <ol class="headercrumb">
     <li ng-if="GradeModalCtrl.isCreating" class="title">
       <span translate>GRADE.ADD_GRADE</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
     </li>
     <li ng-if="!GradeModalCtrl.isCreating" class="title">
       <span translate>GRADE.EDIT_GRADE</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
     </li>
   </ol>
 </div>
@@ -41,11 +41,11 @@
 
   <div class="modal-footer">
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="GradeModalCtrl.closeModal()">
-      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
     <bh-loading-button loading-state="GradeForm.$loading">
-      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

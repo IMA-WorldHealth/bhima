@@ -7,13 +7,9 @@
     "DELETED" : "Grade deleted with success",
     "DELETE" : "Delete",
     "GRADES_LIST" : "Grades list",
-    "DESCRIPTION" : "This module allows you to List, Create, Edit and Delete a Grade",
     "EDIT_GRADE" : "Edit the information in a Grade",
     "ENTITY" : "Grade",
     "LABEL" : "Grade",
-    "MAIN" : {
-      "TITLE" : "Grade Management"
-    },
     "NO_GRADE" : "No Grade",
     "TITLE" : "Grade Management",
     "UPDATED" : "Grade updated with success",

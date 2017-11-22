@@ -18,7 +18,7 @@ angular.module('bhima.routes')
     })
 
     .state('grades.edit', {
-      url : '/edit',
+      url : '/:uuid/edit',
       params : {
         grade : { value : null },
         creating : { value : false },
