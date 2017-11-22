@@ -2,9 +2,9 @@
 angular.module('bhima.services')
 .service('SnapshotService', SnapshotService);
 
-SnapshotService.$inject = ['$uibModal'];
+SnapshotService.$inject = ['$uibModal', '$http'];
 
-function SnapshotService($uibModal) {
+function SnapshotService($uibModal, $http) {
 
   var service = this;
   service.dataUriToFile = dataUriToFile;
@@ -22,8 +22,11 @@ function SnapshotService($uibModal) {
 
   // convert the data_url to a file object
   function dataUriToFile(dataUri, fileName, mimeType) {
-    return (fetch(dataUri)
-    .then(function(res){return res.arrayBuffer();})
+    return (
+      $http.get(dataUri, {responseType:'arraybuffer'})
+    .then(function(res){
+      return res.data;
+    })
     .then(function(buf){return new File([buf], fileName, {type:mimeType});})
     );
   }
