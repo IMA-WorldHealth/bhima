@@ -21,6 +21,7 @@ module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
 exports.resolveObject = resolveObject;
+exports.sumAmounts = sumAmounts;
 
 /**
  * @function take
@@ -117,4 +118,20 @@ function dateFormatter(rows, dateFormat) {
   });
 
   return rows;
+}
+
+// this function separate amounts by curreny_id
+
+function sumAmounts(rows) {
+  let tb = {};
+  for (let i = 0; i < rows.length; i++) {
+    let row = rows[i];
+    if (tb[row.currency_id]) {
+      tb[row.currency_id].amount += row.amount;
+      tb[row.currency_id].iteration += 1;
+    } else {
+      tb[row.currency_id] = { amount : row.amount, symbol : row.symbol, iteration : 1 };
+    }
+  }
+  return tb;
 }

@@ -17,6 +17,8 @@ const pdf = require('../../../../lib/renderers/pdf');
 const barcode = require('../../../../lib/barcode');
 const identifiers = require('../../../../config/identifiers');
 
+const util = require('../../../../lib/util');
+
 const entityIdentifier = identifiers.VOUCHER.key;
 
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/vouchers/receipt.handlebars';
@@ -107,9 +109,13 @@ function report(req, res, next) {
 
   const data = { filters };
 
-  return Vouchers.find(options)
+    return Vouchers.find(options)
     .then(rows => {
       _.extend(data, { rows });
+      return Vouchers.totalAmountByCurrency(options);
+    })
+    .then((sumAmount) => {
+      _.extend(data, { totals : sumAmount });
       return reportInstance.render(data);
     })
     .then((result) => {
@@ -118,3 +124,4 @@ function report(req, res, next) {
     .catch(next)
     .done();
 }
+
