@@ -209,7 +209,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Account statement
 (170, 1),
 (171, 1),
-(180, 1);
+(180, 1),
+
+-- Payroll Grade Management
+(183, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

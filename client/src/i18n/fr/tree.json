@@ -29,6 +29,7 @@
     "FISCAL_YEAR":"Année Fiscale",
     "FONCTION":"Gestion Fonctions",
     "GENERAL_LEDGER":"Grand Livre",
+    "GRADES" : "Gestion des Grades",
     "GRADE_EMPLOYERS":"Gestion Grades",
     "HOSPITAL":"Hôpital",
     "INCOME_EXPENSE":"Recettes et dépenses",
