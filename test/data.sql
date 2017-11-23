@@ -313,7 +313,7 @@ INSERT INTO `fonction` VALUES
   (1,'Infirmier'),
   (2,'Medecin Directeur');
 
--- fonctions
+-- cotisations
 INSERT INTO `cotisation` VALUES
   (1, 'INSS (QPO)', 'ins1', 1, 1, '3631', '3641', 3.5),
   (2, 'INSS (QPP)', 'ins2', 0, 1, '3631', '3641', 5);
