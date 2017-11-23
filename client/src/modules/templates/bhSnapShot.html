@@ -7,12 +7,11 @@
       <div class="col-lg-5">
         <center>
           <webcam class="well"
-            on-stream="onStream(stream)"
-            on-error="onError(err)"
-            on-streaming="onSuccess()"
-            channel="channel"
-            placeholder="'img/ajax-loader.gif'">
-            <div class="alert alert-error" ng-show="webcamError">
+            on-stream="snapshotCtrl.onStream(stream)"
+            on-error="snapshotCtrl.onError(err)"
+            on-streaming="snapshotCtrl.onSuccess()"
+            channel="snapshotCtrl.channel">
+            <div class="alert alert-error" ng-show="snapshotCtrl.webcamError">
               <span>Webcam could not be started. Did you give access to it?</span>
             </div>
           </webcam>
@@ -21,10 +20,10 @@
       <div class="col-lg-2">
         <center>
           <div class="span6 well" style='padding:23px'>
-            <label translate>FORM.LABELS.POSITION</label>  X <input type="number" ng-model="patOpts.x" class="form-control ng-pristine ng-valid ng-valid-number"/>
-            <label translate>FORM.LABELS.POSITION</label> Y <input type="number"  ng-model="patOpts.y" class="form-control ng-pristine ng-valid ng-valid-number"/> 
-            <label translate>FORM.LABELS.WIDTH </label><input type="number"  ng-model="patOpts.w" class="form-control ng-pristine ng-valid ng-valid-number"/>
-            <label translate>FORM.LABELS.HEIGHT </label><input type="number" ng-model="patOpts.h" class="form-control ng-pristine ng-valid ng-valid-number"/>
+            <label translate>FORM.LABELS.POSITION</label>  X <input type="number" ng-model="snapshotCtrl.patOpts.x" class="form-control ng-pristine ng-valid ng-valid-number"/>
+            <label translate>FORM.LABELS.POSITION</label> Y <input type="number"  ng-model="snapshotCtrl.patOpts.y" class="form-control ng-pristine ng-valid ng-valid-number"/> 
+            <label translate>FORM.LABELS.WIDTH </label><input type="number"  ng-model="snapshotCtrl.patOpts.w" class="form-control ng-pristine ng-valid ng-valid-number"/>
+            <label translate>FORM.LABELS.HEIGHT </label><input type="number" ng-model="snapshotCtrl.patOpts.h" class="form-control ng-pristine ng-valid ng-valid-number"/>
           </div>
         </center>
       </div>
@@ -37,8 +36,8 @@
     </div>
   <div>
   <div class="modal-footer">
-    <button class="btn btn-small" ng-click="closeModal()" translate>FORM.LABELS.CANCEL</button>
-    <button class="btn btn-large btn-primary" ng-click="makeSnapshot()" translate> FORM.LABELS.TAKE_SNAPSHOT</button>
-    <button class="btn btn-small" ng-show="hasDataUrl" ng-click="getDataUrl()" translate>FORM.BUTTONS.SAVE</button>
+    <button class="btn btn-small" ng-click="snapshotCtrl.closeModal()" translate>FORM.LABELS.CANCEL</button>
+    <button class="btn btn-large btn-primary" ng-click="snapshotCtrl.makeSnapshot()" translate> FORM.LABELS.TAKE_SNAPSHOT</button>
+    <button class="btn btn-small" ng-show="snapshotCtrl.hasDataUrl" ng-click="snapshotCtrl.getDataUrl()" translate>FORM.BUTTONS.SAVE</button>
   </div>
   </div>
