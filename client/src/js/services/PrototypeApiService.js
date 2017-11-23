@@ -112,7 +112,6 @@ function PrototypeApiService($http, util) {
 
     // append the id to the target
     var target = this.url.concat(id || '');
-
     // send the GET request
     return $http.get(target, { params : parameters })
       .then(util.unwrapHttpResponse);
