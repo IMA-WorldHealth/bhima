@@ -123,11 +123,6 @@ INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monen
 INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pill', 'Pillule'),(4,'Box', 'Box'),(5,'Lot', 'Lot'),(6,'amp', 'ampoule'),(7,'bags', 'bags'),(8,'btl', 'bouteille'),(9,'cap', 'capsule'),(10,'flc', 'flacon'),(11,'jar', 'jar'),(12,'ltr', 'littre'),(13,'pce', 'piece'),(14,'sch', 'sachet'),(15,'tab', 'tablette'),(16,'tub', 'tube'),(17,'vial', 'vial');
 
--- fonctions
-INSERT INTO `fonction` VALUES
-  (1,'Infirmier'),
-  (2,'Medecin Directeur');
-
 -- transaction type
 INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
   (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 'REC. GEN', 1),

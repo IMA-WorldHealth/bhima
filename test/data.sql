@@ -308,6 +308,16 @@ INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),'G1','grade 1',500.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'),'A1','1.1',50.0000);
 
+-- fonctions
+INSERT INTO `fonction` VALUES
+  (1,'Infirmier'),
+  (2,'Medecin Directeur');
+
+-- fonctions
+INSERT INTO `cotisation` VALUES
+  (1, 'INSS (QPO)', 'ins1', 1, 1, '3631', '3641', 3.5),
+  (2, 'INSS (QPP)', 'ins2', 0, 1, '3631', '3641', 5);
+
 INSERT INTO `section_bilan` VALUES (1,'Section Bilan 1',1,1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1,'Section Resultat 1',1,1);
 
