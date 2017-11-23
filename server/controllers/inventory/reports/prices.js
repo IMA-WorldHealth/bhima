@@ -26,7 +26,11 @@ function prices(req, res, next) {
   db.convert(params, ['uuid', 'group_uuid']);
 
   const filters = new FilterParser(params);
-  const qs = _.extend(req.query, { csvKey : 'groups' });
+  const qs = _.extend(req.query, {
+    csvKey : 'groups',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
   const metadata = _.clone(req.session);
 
   let report;

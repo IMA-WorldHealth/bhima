@@ -36,7 +36,13 @@ const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars'
 function build(req, res, next) {
   const options = _.clone(req.query);
 
-  _.extend(options, { filename : 'PATIENT_REG.PAGE_TITLE', csvKey : 'patients', orientation : 'landscape' });
+  _.extend(options, { 
+    filename : 'PATIENT_REG.PAGE_TITLE',
+    csvKey : 'patients', 
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
 
   let report;
 

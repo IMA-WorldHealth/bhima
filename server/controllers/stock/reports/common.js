@@ -136,7 +136,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
 const pdfOptions = {
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
-  footerFontSize : '8',
+  footerFontSize : '7',
 };
 
 /**
