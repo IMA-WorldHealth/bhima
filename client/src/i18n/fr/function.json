@@ -1,0 +1,18 @@
+{
+  "FUNCTION" : {
+    "ADD_FUNCTION" : "Ajouter une profession",
+    "ALL_FUNCTIONS" : "Toutes les professions",
+    "CREATED" : "Profession créée avec succès",
+    "DELETED" : "Profession supprimer avec succès",
+    "DELETE" : "Supprimer",
+    "FUNCTIONS_LIST" : "Liste des professions",
+    "EDIT_FUNCTION" : "Editer les informations d'une profession",
+    "TITLE" : "Gestion des professions",
+    "UPDATED" : "Profession mise à jour avec succès",
+    "MODAL" : {
+      "SELECTION" : "Sélectionner une Profession",
+      "NO_FUNCTIONS" : "Est-ce qu'il n'y a pas des professions?",
+      "SELECT_A_FUNCTION" : "Sélectionner une Profession"
+    }
+  }
+}

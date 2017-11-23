@@ -1,0 +1,18 @@
+{
+  "FUNCTION" : {
+    "ADD_FUNCTION" : "Add a Job Title",
+    "ALL_FUNCTIONS" : "All Job titles",
+    "CREATED" : "Job title created with success",
+    "DELETED" : "Job title deleted with success",
+    "DELETE" : "Delete",
+    "FUNCTIONS_LIST" : "Job titles list",
+    "EDIT_FUNCTION" : "Edit the information in a Job title",
+    "TITLE" : "Job title Management",
+    "UPDATED" : "Job title updated with success",
+    "MODAL" : {
+      "SELECTION" : "Job title Selection",
+      "NO_FUNCTIONS" : "Do not see any Job titles?",
+      "SELECT_A_FUNCTION" : "Select a Job title"
+    }
+  }
+}
