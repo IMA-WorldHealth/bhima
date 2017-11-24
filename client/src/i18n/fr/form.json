@@ -521,6 +521,7 @@
             "VOUCHERS": "Bordereaux",
             "VOLUME": "Volume",
             "WEIGHT": "Poids",
+            "WEBCAM_NOT_STARTED" : "La webcam n'a pas pu être démarrée. Avez-vous donné accès à cela?",
             "WEEK": "Semaine",
             "WEEKLY_REPORT": "Rapport par semaine",
             "WIDTH" : "Largeur",

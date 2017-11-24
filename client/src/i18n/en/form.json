@@ -520,6 +520,7 @@
             "VOUCHER": "Voucher",
             "VOUCHERS": "Vouchers",
             "VOLUME": "Volume",
+            "WEBCAM_NOT_STARTED" : "Webcam could not be started. Did you give access to it?",
             "WEEK": "Week",
             "WEEKLY_REPORT": "Weekly Report",
             "WEIGHT": "Weight",

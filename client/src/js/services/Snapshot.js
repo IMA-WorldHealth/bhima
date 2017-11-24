@@ -75,12 +75,14 @@ function snapshotController($uibModalInstance, AppCache) {
     _video = vm.channel.video;
     vm.patOpts = snapshotCache.coordonates || { x : 0, y : 0, w : _video.width, h :  _video.height };
     vm.showDemos = true;
+   
   };
 
   /**
    * Make a snapshot of the camera data and show it in another canvas.
    */
   vm.makeSnapshot = function makeSnapshot() {
+    destroy();
     if (_video) {
       var patCanvas = document.querySelector('#snapshot');
       if (!patCanvas) return;
@@ -95,6 +97,7 @@ function snapshotController($uibModalInstance, AppCache) {
 
       // cache storing
       snapshotCache.coordonates = vm.patOpts;
+      cropper();
     };
   }
   /**
@@ -168,6 +171,7 @@ function snapshotController($uibModalInstance, AppCache) {
   }
 
   vm.getDataUrl = function () {
+    getImageCroper();
     $uibModalInstance.close(vm.snapshotData);
   }
 
@@ -175,5 +179,31 @@ function snapshotController($uibModalInstance, AppCache) {
     $uibModalInstance.dismiss('cancel');
   };
   requestAnimationFrame(applyEffects);
+
+
+
+  function cropper() {
+
+    var canvas  = $('#snapshot'),
+    context = canvas.get(0).getContext('2d');
+    console.log(canvas.html());
+    var cropper = canvas.cropper({
+      aspectRatio: (16 / 9)
+    });
+  }
+
+  function getImageCroper(){
+    var canvas  = $('#snapshot'),
+    context = canvas.get(0).getContext('2d');
+    var croppedImageDataURL = canvas.cropper('getCroppedCanvas').toDataURL("image/png"); 
+    vm.snapshotData = croppedImageDataURL;
+   
+  }
+
+  function destroy(){
+    var canvas  = $('#snapshot'),
+    context = canvas.get(0).getContext('2d');
+    canvas.cropper("destroy");
+  }
 }
 
