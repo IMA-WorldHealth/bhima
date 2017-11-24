@@ -60,7 +60,6 @@ const paths = {
     css         : ['client/src/css/*.css'],
     vendorStyle : [
       'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
-
       // this is very cheeky
       'client/vendor/moment/moment.js',
       'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
@@ -71,7 +70,7 @@ const paths = {
     vendorJs : [
       // jquery
       'client/vendor/jquery/dist/jquery.min.js',
-
+      'client/vendor/cropper/dist/cropper.js',
       // Angular
       'client/vendor/angular/angular.min.js',
       'client/vendor/angular-messages/angular-messages.min.js',

@@ -43,9 +43,9 @@ function SnapshotService($uibModal, $http) {
 
 angular.module('bhima.controllers').controller('snapshotController', snapshotController);
 
-snapshotController.$inject = ['$uibModalInstance', 'AppCache'];
+snapshotController.$inject = ['$uibModalInstance'];
 
-function snapshotController($uibModalInstance, AppCache) {
+function snapshotController($uibModalInstance) {
   var vm = this;
   var _video = null;
   var patData = null;
@@ -54,11 +54,7 @@ function snapshotController($uibModalInstance, AppCache) {
   vm.mono = false;
   vm.invert = false;
   vm.hasDataUrl = false;
-  //
-  let snapshotCache = AppCache('snapshot', true);
-  // help to display the saving botton
-
-  vm.patOpts = snapshotCache.coordonates || { x : 0, y : 0, w : 25, h : 25 };
+  
 
   // Setup a channel to receive a video property
   // with a reference to the video element
@@ -73,7 +69,7 @@ function snapshotController($uibModalInstance, AppCache) {
   vm.onSuccess = function () {
     // The video element contains the captured camera data
     _video = vm.channel.video;
-    vm.patOpts = snapshotCache.coordonates || { x : 0, y : 0, w : _video.width, h :  _video.height };
+    vm.patOpts = { x : 0, y : 0, w : _video.width, h :  _video.height };
     vm.showDemos = true;
    
   };
@@ -95,8 +91,6 @@ function snapshotController($uibModalInstance, AppCache) {
       storeImageBase64(patCanvas.toDataURL());
       patData = idata;
 
-      // cache storing
-      snapshotCache.coordonates = vm.patOpts;
       cropper();
     };
   }
