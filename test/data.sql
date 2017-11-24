@@ -254,17 +254,8 @@ INSERT INTO user (id, username, password, display_name, email, deactivated) VALU
   (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 0),
   (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org', 1);
 
-
--- regular user
-INSERT INTO permission (unit_id, user_id) VALUES
--- Account Management
-(6,2),
--- [Folder] Finance
-(5,2),
--- Fiscal Year
-(13,2);
-
 SET @superUser = 1;
+
 -- the super user has permission to everything user
 INSERT INTO permission (unit_id, user_id)
 SELECT unit.id, @superUser FROM unit ON DUPLICATE KEY UPDATE unit_id = unit_id, user_id = user_id;

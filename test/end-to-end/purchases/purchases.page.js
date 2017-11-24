@@ -1,6 +1,4 @@
-/* global element, by, browser */
-
-'use strict';
+/* global element, by */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/gridTestUtils.spec.js');
@@ -12,10 +10,11 @@ function PurchaseOrderPage() {
   const btns = {
     submit : $('[data-method="submit"]'),
     add : element(by.id('btn-add-rows')),
-    clear : $('[data-method="clear"]')
+    clear : $('[data-method="clear"]'),
   };
 
-  const gridId = page.gridId = 'purchase-order-grid';
+  const gridId = 'purchase-order-grid';
+  page.gridId = gridId;
   const grid = GU.getGrid(gridId);
 
   // try to click the submit button
@@ -29,14 +28,14 @@ function PurchaseOrderPage() {
   };
 
   // try to click the submit button 'Optimal Purchase Order'
-  page.optimalPurchase = function optimalPurchase(n) {
+  page.optimalPurchase = function optimalPurchase() {
     element(by.id(`optimal_purchase`)).click();
   };
 
   // returns n rows
   page.getRows = function getRows() {
-    var rows = grid.element(by.css('.ui-grid-render-container-body'))
-        .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    const rows = grid.element(by.css('.ui-grid-render-container-body'))
+      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
     return rows;
   };
 
@@ -49,8 +48,9 @@ function PurchaseOrderPage() {
     // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
     FU.input('row.entity.inventory_uuid', code, itemCell);
 
-    // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${code}`)).click();
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    option.click();
   };
 
   /**

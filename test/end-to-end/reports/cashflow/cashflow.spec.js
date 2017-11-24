@@ -12,10 +12,10 @@ describe('Cashflow Report', () => {
   const dataset = {
     date_range    : 'year',
     weekly1        : false,
-    cashbox       : 'Test Aux Cashbox A $',
+    cashbox       : 'Caisse Aux',
     dateFrom      : '01/01/2017',
     dateTo        : '01/04/2017',
-    cashboxFc     : 'Test Aux Cashbox A Fc',
+    cashboxFc     : 'Caisse',
     report_name   : 'Cashflow Report',
     renderer      : 'PDF',
     weekly2       : true,

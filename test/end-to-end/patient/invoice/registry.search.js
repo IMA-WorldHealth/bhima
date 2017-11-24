@@ -64,9 +64,9 @@ function InvoiceRegistrySearch() {
     page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  const DEBTOR_GROUP_INVOICES = 5;
-  it(`filters by debtor group "Church Employees" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
-    components.debtorGroupSelect.set('Church');
+  const DEBTOR_GROUP_INVOICES = 0;
+  it(`filters by debtor group "NGO IMA World Health" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
+    components.debtorGroupSelect.set('NGO IMA World Health');
     modal.submit();
 
     page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);

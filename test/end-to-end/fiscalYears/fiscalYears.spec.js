@@ -86,8 +86,8 @@ describe('Fiscal Year', () => {
 
     // actions in the grid
     const account1 = 85;
-    const account2 = 136;
-    const account3 = 137;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -112,8 +112,8 @@ describe('Fiscal Year', () => {
 
     // actions in the grid
     const account1 = 85;
-    const account2 = 136;
-    const account3 = 137;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);

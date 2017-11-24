@@ -37,7 +37,7 @@ describe('User Management Page', () => {
   const userCount = 4;
 
   const cashbox = {
-    text : 'Test Aux Cashbox B',
+    text : 'Caisse Aux',
   };
 
   before(() => helpers.navigate(path));

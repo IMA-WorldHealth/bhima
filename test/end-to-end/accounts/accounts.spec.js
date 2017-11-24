@@ -11,7 +11,7 @@ describe('Account Management', () => {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
-  const INITIAL_ACCOUNTS = 31;
+  const INITIAL_ACCOUNTS = 20;
 
   // this is an account at the top of the grid - until this test is improved it relies
   // on the account being visible to verify each test
@@ -33,7 +33,7 @@ describe('Account Management', () => {
   const page = new AccountsPage();
 
   it('lists initial accounts', () => {
-    page.expectGridRows(INITIAL_ACCOUNTS);
+    page.expectGridRowsAtLeast(INITIAL_ACCOUNTS);
   });
 
   it('expands and collapses title accounts on title click', () => {

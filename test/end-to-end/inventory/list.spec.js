@@ -39,7 +39,7 @@ describe('Inventory List', () => {
   };
 
   const metadataSearch = {
-    label : 'First',
+    label : 'Quinine',
     group : 'Injectable',
     type  : 'Article',
   };
@@ -59,10 +59,11 @@ describe('Inventory List', () => {
     components.notification.hasSuccess();
   });
 
+  const CODE_TO_UPDATE = '100001';
   it('successfully updates an existing inventory item (metadata)', () => {
-    const row = $(`[data-row-item="${metadata.code}"]`);
+    const row = $(`[data-row-item="${CODE_TO_UPDATE}"]`);
     row.$('[data-method="action"]').click();
-    element(by.css(`[data-edit-metadata="${metadata.code}"]`)).click();
+    element(by.css(`[data-edit-metadata="${CODE_TO_UPDATE}"]`)).click();
 
     FU.input('$ctrl.item.label', metadataUpdate.text);
     FU.input('$ctrl.item.code', metadataUpdate.code);
@@ -85,7 +86,7 @@ describe('Inventory List', () => {
     FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
     FU.modal.submit();
 
-    GU.expectRowCount('inventoryListGrid', 1);
+    GU.expectRowCount('inventoryListGrid', 2);
   });
 
 
@@ -97,7 +98,7 @@ describe('Inventory List', () => {
     components.inventoryTypeSelect.set(metadataSearch.type);
     FU.modal.submit();
 
-    GU.expectRowCount('inventoryListGrid', 3);
+    GU.expectRowCount('inventoryListGrid', 1);
   });
 
 

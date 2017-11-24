@@ -14,8 +14,8 @@ function AccountsPage() {
 
   const getRow = (id) => $(`[data-row="${id}"]`);
 
-  page.expectGridRows = function expectGridRows(numRows) {
-    GU.expectRowCount(gridId, numRows);
+  page.expectGridRowsAtLeast = function expectGridRowsAtLeast(numRows) {
+    GU.expectRowCountAbove(gridId, numRows);
   };
 
   page.expectRowVisible = function isVisible(id) {

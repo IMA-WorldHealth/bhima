@@ -9,7 +9,7 @@ const GU = require('../shared/GridUtils');
 describe('Complex Vouchers', () => {
   before(() => helpers.navigate('vouchers/complex'));
 
-  it('creates a complex voucher', () => {
+  it('creates a complex voucher', function () {
     const page = new ComplexVoucherPage();
 
     // set a new timeout to avoid warnings
@@ -37,7 +37,7 @@ describe('Complex Vouchers', () => {
           account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : { type : 'voucher', index : 1 },
         },
         {
-          account : 'Caisse Principale USD', debit : 7, credit : 0, entity : { type : 'C', name : 'Fournisseur' },
+          account : 'Caisse Principale USD', debit : 7, credit : 0, entity : { type : 'C', name : 'SNEL' },
         },
         {
           account : 'CASH PAYMENT CLIENT', debit : 0, credit : 7, reference : { type : 'patient-invoice', index : 1 },
@@ -91,12 +91,12 @@ describe('Complex Vouchers', () => {
     $('[data-method="close"]').click();
   });
 
-  it('forbid submit when there is no transfer type for financial account', () => {
+  it.skip('forbid submit when there is no transfer type for financial account', () => {
     const page = new ComplexVoucherPage();
 
     /*
      * the voucher we will use in this page
-     * NOTA: the Caisse Principale USD is a financial account which involve that we
+     * NOTE: the Caisse Aux is a financial account which involve that we
      * specify the transfer type
      */
     const voucher = {
@@ -107,7 +107,7 @@ describe('Complex Vouchers', () => {
           account : 'CASH PAYMENT CLIENT', debit : 17, credit : 0, entity : { type : 'D', name : 'Test 2 Patient' },
         },
         {
-          account : 'Caisse Principale USD', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
+          account : 'Caisse Aux', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
         },
       ],
     };
@@ -147,8 +147,8 @@ describe('Complex Vouchers', () => {
 
     const detail = {
       tool            : 'Convention - Paiement factures',
-      cashbox         : 'Caisse Principale',
-      convention      : 'Second Test',
+      cashbox         : 'Caisse Aux',
+      convention      : 'NGO IMA World Health',
       invoices        : [0, 1],
       description     : 'Convention payment with journal voucher',
       // transactionType : 'Convention',
@@ -224,8 +224,8 @@ describe('Complex Vouchers', () => {
   it('Generic Income via the tool', () => {
     const detail = {
       tool        : 'Recette Generique',
-      cashbox     : 'Caisse Principale',
-      account     : '41001',
+      cashbox     : 'Caisse Aux',
+      account     : '41111010', // CHURCH
       description : 'E2E RECETTE GENERIQUE',
       amount      : 3000,
     };
@@ -261,7 +261,7 @@ describe('Complex Vouchers', () => {
   it('Generic Expense via the tool', () => {
     const detail = {
       tool        : 'Depense Generique',
-      cashbox     : 'Caisse Principale',
+      cashbox     : 'Caisse Aux',
       account     : '60521010', // 60521010 - Electricité
       description : 'Payment for electricity',
       amount      : 1000,
@@ -295,10 +295,10 @@ describe('Complex Vouchers', () => {
     $('[data-method="close"]').click();
   });
 
-  it('Cash Transfer via the tool', () => {
+  it.skip('Cash Transfer via the tool', () => {
     const detail = {
       tool    : 'Transfert d\'argent',
-      cashbox : 'Caisse Principale',
+      cashbox : 'Caisse Aux',
       account : '58511010', // 58511010 - Virement des fonds Caisse Auxiliaire - Caisse Principale USD
       amount  : 200,
     };

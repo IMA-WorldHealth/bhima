@@ -41,7 +41,8 @@ describe('Check Inter-Registry Links', () => {
     GU.expectRowCount('payment-registry', 0);
   });
 
-  it('Checks the link between Inventory Registry -> Invoice Registry', () => {
+  // skip this until we can filter on used inventory items.
+  it.skip('Checks the link between Inventory Registry -> Invoice Registry', () => {
     helpers.navigate('#!/inventory/list');
     filters.resetFilters();
     element.all(by.css('[data-method="action"]')).get(3).click();
