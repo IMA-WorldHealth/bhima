@@ -25,11 +25,16 @@
 // Workaround - required before 'use-strict'
 const json2xls = require('json2xls');
 
+
 require('use-strict');
+const dotEnv = require('dotenv');
+
+configureEnvironmentVariables();
+
 
 const http = require('http');
 const express = require('express');
-const dotEnv = require('dotenv');
+
 const debug = require('debug')('app');
 
 const app = express();
@@ -58,7 +63,6 @@ function configureEnvironmentVariables() {
   const dotfile = `server/.env.${env}`.trim();
 
   // load the environmental variables into process using the dotenv module
-  debug(`configureEnvironmentVariables(): Loading configuration from ${dotfile}.`);
   dotEnv.config({ path : dotfile });
 }
 
@@ -81,7 +85,6 @@ function configureServer() {
 }
 
 // run configuration tools
-configureEnvironmentVariables();
 configureServer();
 
 // Configure application middleware stack, inject authentication session

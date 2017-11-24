@@ -36,28 +36,30 @@ function localeConfig(tmhDynamicLocaleProvider) {
 
 // redirect to login if not signed in.
 function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
+  var installStateRegexp = /#!\/install$/;
   var loginStateRegexp = /#!\/login$/;
   var rootStateRegexp = /#!\/$|\/$|#!$/;
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
-  $rootScope.$on('$locationChangeStart', function (event, next)  {
+  $rootScope.$on('$locationChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
 
     var isLoginState = loginStateRegexp.test(next);
     var isRootState = rootStateRegexp.test(next);
+    var isInstallState = installStateRegexp.test(next);
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
-    // Settings Page."
-    if (isLoggedIn && isLoginState) {
+    // Settings Page.
+    if (isLoggedIn && isLoginState && !isInstallState) {
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
 
     // if the user is not logged in and trying to access any other state, deny
     // the attempt with a message that their session expired and redirect them
     // to the login page.
-    } else if (!isLoggedIn && !isLoginState) {
+    } else if (!isLoggedIn && !isLoginState && !isInstallState) {
       event.preventDefault();
       $state.go('login');
     }
@@ -98,7 +100,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     var path = $location.path();
 
     var paths = SessionService.paths;
-    var publicRoutes = ['/', '/settings', '/login', '/landing/stats'];
+    var publicRoutes = ['/', '/settings', '/login', '/landing/stats', '/install'];
 
     var isPublicPath = publicRoutes.indexOf(path) > -1;
 

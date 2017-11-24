@@ -9,7 +9,7 @@ set -uo pipefail
 echo "[ build ] Building BHIMA Database"
 
 set -a
-source .env.production
+source .env.development
 set +a
 
 # set build timeout
@@ -35,6 +35,5 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql &> /dev/null
 echo "[ build ] default data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data-init.sql &> /dev/null
 
 echo "[ /build ]"

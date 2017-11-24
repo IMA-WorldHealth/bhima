@@ -28,6 +28,8 @@ const publicRoutes = [
   '/languages',
   '/projects/',
   '/auth/logout',
+  '/install',
+  '/currencies',
 ];
 
 // accept generic express instances (initialised in app.js)
