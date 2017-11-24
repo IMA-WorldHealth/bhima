@@ -173,7 +173,6 @@ function find(options) {
   return db.exec(query, parameters);
 }
 
-
 function totalAmountByCurrency(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
