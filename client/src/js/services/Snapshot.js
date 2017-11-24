@@ -182,7 +182,7 @@ function snapshotController($uibModalInstance) {
     context = canvas.get(0).getContext('2d');
     console.log(canvas.html());
     var cropper = canvas.cropper({
-      aspectRatio: (16 / 9)
+      aspectRatio: (10 / 9)
     });
   }
 
