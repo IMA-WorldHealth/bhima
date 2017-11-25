@@ -37,7 +37,20 @@
               <td>{{voucher.display_name}}</td>
             </tr>
           {{/each}}
+           
+          
         </tbody>
+      </table>
+ 
+      <table 
+        style='width:400px; float:right; margin-top:10px'
+        class="table table-condensed table-bordered table-report">
+        {{#each totals as |total|}}
+            <tr>
+              <td> {{total.numVouchers}} {{translate 'FORM.LABELS.VOUCHERS'}} ({{total.currencySymbol}})</td>
+              <td class="text-right">{{total.totalAmount}} {{total.currencySymbol}}</td>
+            </tr>
+          {{/each}}
       </table>
     </div>
   </div>
