@@ -70,23 +70,23 @@ function FunctionManagementController(Functions, ModalService,
   }
 
   // switch to delete warning mode
-  function deleteFunction(title) {
+  function deleteFunction(profession) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
     .then(function (bool) {
       if (!bool) { return; }
 
-      Functions.delete(title.id)
+      Functions.delete(profession.id)
       .then(function () {
-        Notify.success('FUNCTION.DELETED');
+        Notify.success('PROFESSION.DELETED');
         loadFunctions();
       })
       .catch(Notify.handleError);
     });
   }
 
-  // update an existing Function
-  function editFunction(title) {
-    $state.go('functions.edit', { id : title.id });
+  // update an existing Profession
+  function editFunction(profession) {
+    $state.go('functions.edit', { id : profession.id });
   }
 
   // create a new Function

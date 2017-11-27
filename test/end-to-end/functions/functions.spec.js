@@ -6,7 +6,7 @@ const chai = require('chai');
 /** configuring helpers**/
 helpers.configure(chai);
 
-describe('Functions Management', () => {
+describe('Job Titles Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/functions'));
 

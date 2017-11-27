@@ -369,15 +369,15 @@
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
                       <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.FUNCTION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                      <span translate>FORM.LABELS.PROFESSION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
                     </uib-alert>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.FUNCTION</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
                     <div class="col-md-9">
                       <ui-select
                         name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
                           <span>{{$select.selected.fonction_txt}}</span>
                         </ui-select-match>
                         <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">

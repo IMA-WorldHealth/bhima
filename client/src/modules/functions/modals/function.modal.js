@@ -41,7 +41,7 @@ function FunctionModalController($state, Functions, ModalService, Notify, AppCac
 
     return promise
       .then(function () {
-        var translateKey = (vm.isCreating) ? 'FUNCTION.CREATED' : 'FUNCTION.UPDATED';
+        var translateKey = (vm.isCreating) ? 'PROFESSION.CREATED' : 'PROFESSION.UPDATED';
         Notify.success(translateKey);
         $state.go('functions', null, { reload : true });
       })

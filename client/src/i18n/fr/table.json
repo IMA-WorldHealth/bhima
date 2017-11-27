@@ -73,7 +73,7 @@
                 "LABEL": "Filtre"
             },
             "FIRST_NAME": "Prénom",
-            "FUNCTION": "Profession",
+            "PROFESSION": "Profession",
             "GENDER": "Genre",
             "GRADE": "Grade",
             "HOSPITAL_FILE_NR": "Numéro Fiche",
