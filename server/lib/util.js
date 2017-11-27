@@ -10,17 +10,25 @@
  * @requires q
  * @requires moment
  * @requires debug
+ * @requires child_process
+ * @requires util
  */
 
 const _ = require('lodash');
 const q = require('q');
 const moment = require('moment');
 const debug = require('debug')('util');
+const { exec } = require('child_process');
+const fs = require('fs');
 
 module.exports.take = take;
 module.exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
 exports.resolveObject = resolveObject;
+exports.execp = execp;
+exports.unlinkp = unlinkp;
+exports.statp = statp;
+exports.format = require('util').format;
 
 /**
  * @function take
@@ -117,4 +125,57 @@ function dateFormatter(rows, dateFormat) {
   });
 
   return rows;
+}
+
+/**
+ * @method execp
+ *
+ * @description
+ * This method promisifies the child process exec() function.  It is used in
+ * lib/backup.js, but will likely be handy in other places as well.
+ */
+function execp(cmd) {
+  debug(`#execp(): ${cmd}`);
+  const deferred = q.defer();
+  const child = exec(cmd);
+  child.addListener('error', deferred.reject);
+  child.addListener('exit', deferred.resolve);
+  return deferred.promise;
+}
+
+/**
+ * @method statp
+ *
+ * @description
+ * This method promisifies the stats method.
+ */
+function statp(file) {
+  debug(`#statp(): ${file}`);
+  const deferred = q.defer();
+
+  fs.stat(file, (err, stats) => {
+    if (err) { return deferred.reject(err); }
+    return deferred.resolve(stats);
+  });
+
+  return deferred.promise;
+}
+
+
+/**
+ * @method statp
+ *
+ * @description
+ * This method promisifies the unlink method.
+ */
+function unlinkp(file) {
+  debug(`#unlinkp(): ${file}`);
+  const deferred = q.defer();
+
+  fs.unlink(file, (err) => {
+    if (err) { return deferred.reject(err); }
+    return deferred.resolve();
+  });
+
+  return deferred.promise;
 }
