@@ -189,6 +189,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
 
     // this will return all elements if requireDirty is set to false
     var submit = util.filterFormElements(accountForm, requireDirty);
+    submit.classe = submit.number.substr(0,1);
 
     // filter parent
     if (submit.parent) {

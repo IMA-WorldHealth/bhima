@@ -215,7 +215,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (183, 1),
 
 -- Job title Management
-(184, 1);
+(184, 1),
+
+-- Cotisation Management
+(185, 1);
+
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -315,8 +319,8 @@ INSERT INTO `fonction` VALUES
 
 -- cotisations
 INSERT INTO `cotisation` VALUES
-  (1, 'INSS (QPO)', 'ins1', 1, 1, '3631', '3641', 3.5),
-  (2, 'INSS (QPP)', 'ins2', 0, 1, '3631', '3641', 5);
+  (1, 'INSS (QPO)', 'ins1', 1, 1, '3631', '3642', 3.5),
+  (2, 'INSS (QPP)', 'ins2', 0, 1, '3631', '3642', 5);
 
 INSERT INTO `section_bilan` VALUES (1,'Section Bilan 1',1,1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1,'Section Resultat 1',1,1);

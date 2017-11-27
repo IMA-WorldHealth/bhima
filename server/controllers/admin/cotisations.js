@@ -9,9 +9,11 @@ var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Cotisation
 function lookupCotisation(id) {
-  var sql =
-    `SELECT id, label, abbr, is_employee, is_percent, four_account_id, six_account_id, value FROM cotisation
-     WHERE cotisation.id = ?`;
+  var sql =`
+    SELECT c.id, c.label, c.abbr, c.is_employee, c.is_percent, 
+    c.four_account_id, c.six_account_id, c.value 
+    FROM cotisation AS c  
+    WHERE c.id = ?`;
 
   return db.one(sql, [id]);
 }
@@ -19,7 +21,14 @@ function lookupCotisation(id) {
 
 // Lists the functions of hospital employees
 function list(req, res, next) {
-  const sql = `SELECT id, label, abbr, is_employee, is_percent, four_account_id, six_account_id, value FROM cotisation;`;
+  const sql = `
+    SELECT c.id, c.label, c.abbr, c.is_employee, c.is_percent, 
+    c.four_account_id, a4.number AS four_number, a4.label AS four_label, 
+    c.six_account_id, a6.number AS six_number, a6.label AS six_label, c.value 
+    FROM cotisation AS c
+    JOIN account AS a4 ON a4.id = c.four_account_id
+    JOIN account AS a6 ON a6.id = c.six_account_id   
+  ;`;
 
   db.exec(sql)
     .then((rows) => {

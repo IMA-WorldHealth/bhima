@@ -1,0 +1,18 @@
+{
+  "COTISATION" : {
+    "ADD_COTISATION" : "Ajouter une cotisation",
+    "ALL_COTISATIONS" : "Toutes les cotisations",
+    "CREATED" : "Cotisation créée avec succès",
+    "DELETED" : "Cotisation supprimer avec succès",
+    "DELETE" : "Supprimer",
+    "COTISATIONS_LIST" : "Liste des cotisations",
+    "EDIT_COTISATION" : "Editer les informations d'une cotisation",
+    "TITLE" : "Gestion des cotisations",
+    "UPDATED" : "Cotisation mise à jour avec succès",
+    "MODAL" : {
+      "SELECTION" : "Sélectionner une Cotisation",
+      "NO_COTISATIONS" : "Est-ce qu'il n'y a pas des cotisations?",
+      "SELECT_A_COTISATION" : "Sélectionner une Cotisation"
+    }
+  }
+}

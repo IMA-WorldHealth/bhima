@@ -26,6 +26,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const types = require('./types');
 const categories = require('./categories');
+const FilterParser = require('../../../lib/filter');
 
 
 /**
@@ -117,6 +118,8 @@ function remove(req, res, next) {
  * GET /accounts
  */
 function list(req, res, next) {
+  const filters = new FilterParser(req.query, { tableAlias : 'a' });
+
   let sql =
     'SELECT a.id, a.number, a.label, a.locked, a.type_id, a.parent FROM account AS a';
 
@@ -134,19 +137,17 @@ function list(req, res, next) {
     `;
   }
 
-  // convert locked to a number if it exists
-  if (req.query.locked) {
-    locked = Number(req.query.locked);
-  }
+  filters.equals('classe');
 
-  // if locked is a number, filter on it
-  if (!isNaN(locked)) {
-    sql += ` WHERE a.locked = ${locked}`;
-  }
+  filters.equals('locked');
 
-  sql += ` ORDER BY a.number;`;
+  filters.setOrder('ORDER BY a.number');
 
-  db.exec(sql)
+  // applies filters and limits to defined sql, get parameters in correct order
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then((rows) => {
       res.status(200).json(rows);
     })
