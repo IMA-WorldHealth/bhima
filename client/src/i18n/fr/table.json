@@ -72,11 +72,11 @@
             "FILTERING": {
                 "LABEL": "Filtre"
             },
-            "FIRST_NAME": "Prenom",
-            "FUNCTION": "Fonction",
+            "FIRST_NAME": "Prénom",
+            "PROFESSION": "Profession",
             "GENDER": "Genre",
             "GRADE": "Grade",
-            "HOSPITAL_FILE_NR": "Numero Fiche",
+            "HOSPITAL_FILE_NR": "Numéro Fiche",
             "ID": "ID",
             "INVENTORY": "Inventaire",
             "INVOICES": "factures",

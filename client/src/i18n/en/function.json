@@ -1,0 +1,18 @@
+{
+  "PROFESSION" : {
+    "ADD_PROFESSION" : "Add a Job Title",
+    "ALL_PROFESSIONS" : "All Job titles",
+    "CREATED" : "Job title created with success",
+    "DELETED" : "Job title deleted with success",
+    "DELETE" : "Delete",
+    "PROFESSIONS_LIST" : "Job titles list",
+    "EDIT_PROFESSION" : "Edit the information in a Job title",
+    "TITLE" : "Job title Management",
+    "UPDATED" : "Job title updated with success",
+    "MODAL" : {
+      "SELECTION" : "Job title Selection",
+      "NO_PROFESSIONS" : "Do not see any Job titles?",
+      "SELECT_A_PROFESSION" : "Select a Job title"
+    }
+  }
+}

@@ -112,7 +112,7 @@ function EmployeeRegistryController(
       visible          : false
     },
     { field            : 'fonction_txt',
-      displayName      : 'FORM.LABELS.FUNCTION',
+      displayName      : 'FORM.LABELS.PROFESSION',
       headerCellFilter : 'translate',
       visible          : false
     },

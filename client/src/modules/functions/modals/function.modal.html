@@ -1,0 +1,34 @@
+<form name="FunctionForm" bh-submit="FunctionModalCtrl.submit(FunctionForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="FunctionModalCtrl.isCreating" class="title">
+      <span translate>PROFESSION.ADD_PROFESSION</span>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!FunctionModalCtrl.isCreating" class="title">
+      <span translate>PROFESSION.EDIT_PROFESSION</span>
+      <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : FunctionForm.$submitted && FunctionForm.fonction_txt.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="fonction_txt" ng-model="FunctionModalCtrl.function.fonction_txt" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="FunctionForm.fonction_txt.$error" ng-show="FunctionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="FunctionModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="FunctionForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
