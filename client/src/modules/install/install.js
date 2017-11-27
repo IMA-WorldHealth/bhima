@@ -31,7 +31,10 @@ function InstallApplicationController(InstallService, $state, Notify) {
   function checkPassword() {
     if (!vm.setup.user.password) { return false; }
 
-    if (vm.setup.user.password !== vm.setup.user.repassword) { return false; }
+    if (vm.setup.user.password !== vm.setup.user.repassword) {
+      vm.badPasswords = true;
+      return false;
+    }
 
     return true;
   }
@@ -39,7 +42,7 @@ function InstallApplicationController(InstallService, $state, Notify) {
   function submit(form) {
     if (form.$invalid) { return 0; }
 
-    if (checkPassword() === false) { return 0; }
+    if (checkPassword() === false) { return Notify.warn('USERS.PASSWORD_MISMATCH'); }
 
     return InstallService.proceedInstall(vm.setup)
       .then(notifyInstallSucess)

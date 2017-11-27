@@ -83,7 +83,7 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.password.$invalid }">
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.password.$invalid, 'has-warning': InstallCtrl.badPasswords }">
         <label class="control-label" translate>USERS.SET_PASSWORD</label>
         <input name="password" type="password" class="form-control" ng-model="InstallCtrl.setup.user.password" required>
 
@@ -91,7 +91,7 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.repassword.$invalid }">
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.repassword.$invalid, 'has-warning': InstallCtrl.badPasswords }">
         <label class="control-label" translate>USERS.SET_PASSWORD_AGAIN</label>
         <input name="repassword" type="password" class="form-control" ng-model="InstallCtrl.setup.user.repassword" required>
 
@@ -104,7 +104,7 @@
 
   <div class="text-right">
     <bh-loading-button loading-state="InstallForm.$loading">
-      <span translate>FORM.BUTTONS.INSTALL</span>
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>
