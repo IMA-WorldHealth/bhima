@@ -95,39 +95,6 @@ class CotisationPage {
         components.notification.hasSuccess();
       });
   }
-
-  /**
-   * cancel deletion process
-   */
-  cancelDeleteCotisation(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.dismiss();
-  }
-
-  /**
-   * forbid deletion of used function
-   */
-  errorOnDeleteCotisation(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.confirm();
-    components.notification.hasError();
-  }
-
-  /**
-  * select the User Cotisations
-  */
-  selectUserCotisation(cotisations) {
-    components.multipleCotisationSelect.set(cotisations);    
-  }
-
-  /**
-  * Submit button User Cotisation
-  */
-  submitUserCotisation() {
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  }
-
 }
 
 module.exports = CotisationPage;

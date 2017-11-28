@@ -1,18 +1,18 @@
 {
   "COTISATION" : {
-    "ADD_COTISATION" : "Add a Cotisation",
-    "ALL_COTISATIONS" : "All Cotisations",
-    "CREATED" : "Cotisation created with success",
-    "DELETED" : "Cotisation deleted with success",
+    "ADD_COTISATION" : "Add a Membership Fee",
+    "ALL_COTISATIONS" : "All Membership Fees",
+    "CREATED" : "Membership Fee created with success",
+    "DELETED" : "Membership Fee deleted with success",
     "DELETE" : "Delete",
-    "COTISATIONS_LIST" : "Cotisations list",
-    "EDIT_COTISATION" : "Edit the information in a Cotisation",
-    "TITLE" : "Cotisation Management",
-    "UPDATED" : "Cotisation updated with success",
+    "COTISATIONS_LIST" : "Membership Fees list",
+    "EDIT_COTISATION" : "Edit the information in a Membership Fee",
+    "TITLE" : "Membership Fee Management",
+    "UPDATED" : "Membership Fee updated with success",
     "MODAL" : {
-      "SELECTION" : "Cotisation Selection",
-      "NO_COTISATIONS" : "Do not see any Cotisations?",
-      "SELECT_A_COTISATION" : "Select a Cotisation"
+      "SELECTION" : "Membership Fee Selection",
+      "NO_COTISATIONS" : "Do not see any Membership Fees?",
+      "SELECT_A_COTISATION" : "Select a Membership Fee"
     }
   }
 }

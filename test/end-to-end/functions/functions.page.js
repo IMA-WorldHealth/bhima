@@ -82,38 +82,6 @@ class FunctionPage {
       });
   }
 
-  /**
-   * cancel deletion process
-   */
-  cancelDeleteFunction(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.dismiss();
-  }
-
-  /**
-   * forbid deletion of used function
-   */
-  errorOnDeleteFunction(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.confirm();
-    components.notification.hasError();
-  }
-
-  /**
-  * select the User Functions
-  */
-  selectUserFunction(functions) {
-    components.multipleFunctionSelect.set(functions);    
-  }
-
-  /**
-  * Submit button User Function
-  */
-  submitUserFunction() {
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  }
-
 }
 
 module.exports = FunctionPage;

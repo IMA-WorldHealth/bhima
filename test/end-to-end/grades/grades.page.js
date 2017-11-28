@@ -87,39 +87,6 @@ class GradePage {
         components.notification.hasSuccess();
       });
   }
-
-  /**
-   * cancel deletion process
-   */
-  cancelDeleteGrade(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.dismiss();
-  }
-
-  /**
-   * forbid deletion of used grade
-   */
-  errorOnDeleteGrade(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.confirm();
-    components.notification.hasError();
-  }
-
-  /**
-  * select the User Grades
-  */
-  selectUserGrade(grades) {
-    components.multipleGradeSelect.set(grades);    
-  }
-
-  /**
-  * Submit button User Grade
-  */
-  submitUserGrade() {
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  }
-
 }
 
 module.exports = GradePage;
