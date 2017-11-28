@@ -215,7 +215,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (183, 1),
 
 -- Job title Management
-(184, 1);
+(184, 1),
+
+-- Tax Management
+(187, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -307,6 +310,11 @@ INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2,
 INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),'G1','grade 1',500.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'),'A1','1.1',50.0000);
+
+
+-- taxes
+INSERT INTO `tax` VALUES
+  (1, 'Impot Professionnel sur le Revenu', 'IPR', 1, 0,'3631', '3642', 0, 1);
 
 INSERT INTO `section_bilan` VALUES (1,'Section Bilan 1',1,1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1,'Section Resultat 1',1,1);

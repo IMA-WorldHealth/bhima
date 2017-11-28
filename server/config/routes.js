@@ -30,6 +30,7 @@ const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
 const grades = require('../controllers/admin/grades');
+const taxes = require('../controllers/admin/taxes');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
@@ -538,6 +539,13 @@ exports.configure = function configure(app) {
   app.post('/functions', functions.create);
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
+
+  // taxes api
+  app.get('/taxes', taxes.list);
+  app.get('/taxes/:id', taxes.detail);
+  app.post('/taxes', taxes.create);
+  app.put('/taxes/:id', taxes.update);
+  app.delete('/taxes/:id', taxes.delete);
 
   // grades api
   app.get('/grades', grades.list);
