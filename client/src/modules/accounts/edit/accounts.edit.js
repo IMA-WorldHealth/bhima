@@ -196,7 +196,8 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
     }
 
     if (vm.isCreateState) {
-
+      submit.classe = submit.number.substr(0,1);
+      
       return Accounts.create(submit)
         .then(function (result) {
           vm.fetchError = null;

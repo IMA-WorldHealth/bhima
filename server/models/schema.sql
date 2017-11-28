@@ -17,7 +17,7 @@ CREATE TABLE `account` (
   `cc_id` SMALLINT(6) DEFAULT NULL,
   `pc_id` SMALLINT(6) DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `classe` INT(11) DEFAULT NULL,
+  `classe` SMALLINT(5) UNSIGNED NOT NULL,
   `is_asset` TINYINT(1) DEFAULT NULL,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   `is_brut_link` TINYINT(1) DEFAULT NULL,
@@ -384,7 +384,7 @@ DROP TABLE IF EXISTS `cotisation`;
 CREATE TABLE `cotisation` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(4) DEFAULT NULL,
+  `abbr` varchar(6) DEFAULT NULL,
   `is_employee` tinyint(1) DEFAULT 0,
   `is_percent` tinyint(1) DEFAULT 0,
   `four_account_id` int(10) unsigned DEFAULT NULL,

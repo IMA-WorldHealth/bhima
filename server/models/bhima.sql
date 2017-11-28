@@ -73,7 +73,8 @@ INSERT INTO unit VALUES
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 1,'/modules/grades/','/grades'),
-  (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions');
+  (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
+  (185, 'Cotisation Management','TREE.COTISATION','', 1,'/modules/cotisations/','/cotisations');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -122,11 +123,6 @@ INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monen
 
 INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pill', 'Pillule'),(4,'Box', 'Box'),(5,'Lot', 'Lot'),(6,'amp', 'ampoule'),(7,'bags', 'bags'),(8,'btl', 'bouteille'),(9,'cap', 'capsule'),(10,'flc', 'flacon'),(11,'jar', 'jar'),(12,'ltr', 'littre'),(13,'pce', 'piece'),(14,'sch', 'sachet'),(15,'tab', 'tablette'),(16,'tub', 'tube'),(17,'vial', 'vial');
-
--- fonctions
-INSERT INTO `fonction` VALUES
-  (1,'Infirmier'),
-  (2,'Medecin Directeur');
 
 -- transaction type
 INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES

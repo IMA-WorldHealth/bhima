@@ -1,0 +1,18 @@
+{
+  "COTISATION" : {
+    "ADD_COTISATION" : "Add a Membership Fee",
+    "ALL_COTISATIONS" : "All Membership Fees",
+    "CREATED" : "Membership Fee created with success",
+    "DELETED" : "Membership Fee deleted with success",
+    "DELETE" : "Delete",
+    "COTISATIONS_LIST" : "Membership Fees list",
+    "EDIT_COTISATION" : "Edit the information in a Membership Fee",
+    "TITLE" : "Membership Fee Management",
+    "UPDATED" : "Membership Fee updated with success",
+    "MODAL" : {
+      "SELECTION" : "Membership Fee Selection",
+      "NO_COTISATIONS" : "Do not see any Membership Fees?",
+      "SELECT_A_COTISATION" : "Select a Membership Fee"
+    }
+  }
+}
