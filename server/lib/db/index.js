@@ -224,6 +224,7 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
+
 }
 
 module.exports = new DatabaseConnector();
