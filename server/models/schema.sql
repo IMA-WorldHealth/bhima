@@ -1500,7 +1500,7 @@ DROP TABLE IF EXISTS `rubric`;
 CREATE TABLE `rubric` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` text,
-  `abbr` varchar(4) DEFAULT NULL,
+  `abbr` varchar(8) DEFAULT NULL,
   `is_discount` tinyint(1) DEFAULT 0,
   `is_percent` tinyint(1) DEFAULT 0,
   `value` float DEFAULT 0,

@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents text-left">
+  <div ng-if="row.entity.is_discount">
+    <i class="fa fa-minus-circle"></i> <span translate>FORM.LABELS.CHARGE</span>
+  </div>
+  <div ng-if="!row.entity.is_discount">
+    <i class="fa fa-plus-circle"></i> <span translate>FORM.LABELS.PROFIT</span>
+  </div>  
+</div>

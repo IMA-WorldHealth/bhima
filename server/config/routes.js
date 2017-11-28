@@ -29,6 +29,7 @@ const enterprises = require('../controllers/admin/enterprises');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
+const rubrics = require('../controllers/admin/rubrics');
 const grades = require('../controllers/admin/grades');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
@@ -538,6 +539,13 @@ exports.configure = function configure(app) {
   app.post('/functions', functions.create);
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
+
+  // rubrics api
+  app.get('/rubrics', rubrics.list);
+  app.get('/rubrics/:id', rubrics.detail);
+  app.post('/rubrics', rubrics.create);
+  app.put('/rubrics/:id', rubrics.update);
+  app.delete('/rubrics/:id', rubrics.delete);
 
   // grades api
   app.get('/grades', grades.list);

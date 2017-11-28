@@ -1,0 +1,18 @@
+{
+  "RUBRIC" : {
+    "ADD_RUBRIC" : "Add a Rubric",
+    "ALL_RUBRICS" : "All Rubrics",
+    "CREATED" : "Rubric created with success",
+    "DELETED" : "Rubric deleted with success",
+    "DELETE" : "Delete",
+    "RUBRICS_LIST" : "Rubrics list",
+    "EDIT_RUBRIC" : "Edit the information in a Rubric",
+    "TITLE" : "Rubric Management",
+    "UPDATED" : "Rubric updated with success",
+    "MODAL" : {
+      "SELECTION" : "Rubric Selection",
+      "NO_RUBRICS" : "Do not see any Rubrics?",
+      "SELECT_A_RUBRIC" : "Select a Rubric"
+    }
+  }
+}
