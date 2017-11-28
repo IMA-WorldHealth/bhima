@@ -21,8 +21,8 @@ const debug = require('debug')('util');
 const { exec } = require('child_process');
 const fs = require('fs');
 
-module.exports.take = take;
-module.exports.loadModuleIfExists = requireModuleIfExists;
+exports.take = take;
+exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
 exports.resolveObject = resolveObject;
 exports.execp = execp;

@@ -1,0 +1,36 @@
+<form name="EmailForm" bh-submit="EmailCtrl.submit(EmailForm)" novalidate>
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">
+      <span translate>TREE.REPORTS</span>
+    </li>
+    <li class="title">{{ EmailCtrl.reportName }}</li>
+  </ol>
+</div>
+
+<div class="modal-body" style="max-height:600px;">
+  <div class="form-group" ng-class="{ 'has-error' : EmailForm.$submitted && EmailForm.email.$invalid }">
+    <label class="control-label" translate>FORM.LABELS.EMAIL</label>
+    <input name="email" type="email" ng-model="EmailCtrl.params.email" class="form-control" required>
+
+    <div class="help-block" ng-messages="EmailForm.email.$error" ng-show="EmailForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <p class="text-primary">
+    <i class="fa fa-info-circle"></i>
+    <span translate>REPORT.UTIL.EMAIL_HELP_TXT</span>
+  </p>
+</div>
+
+<div class="modal-footer">
+  <button type="button" data-method="cancel" class="btn btn-default" ng-click="EmailCtrl.dismiss()">
+    <span translate>FORM.BUTTONS.CANCEL</span>
+  </button>
+
+  <bh-loading-button loading-state="EmailForm.$loading">
+    <span translate>FORM.BUTTONS.SUBMIT</span>
+  </bh-loading-button>
+</div>
+</form>

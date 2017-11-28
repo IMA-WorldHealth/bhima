@@ -8,10 +8,18 @@ ReportsArchiveController.$inject = [
 function ReportsArchiveController($state, SavedReports, Notify, reportData) {
   var vm = this;
 
+  var typeTemplate =
+    '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
+  var dateTemplate =
+    '<div class="ui-grid-cell-contents">{{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)</div>';
+  var printTemplate =
+    '<div class="ui-grid-cell-contents"><bh-pdf-link pdf-url="/reports/archive/{{row.entity.uuid}}"></bh-pdf-link></div>';
+
   var reportId = reportData.id;
   vm.key = $state.params.key;
 
   vm.deleteReport = deleteReport;
+  vm.emailReport = emailReport;
 
   vm.gridOptions = {
     fastWatch : true,
@@ -20,10 +28,6 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
     enableSorting : false,
     appScopeProvider : vm,
   };
-
-  var typeTemplate = '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
-  var dateTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)</div>';
-  var printTemplate = '<div class="ui-grid-cell-contents"><bh-pdf-link pdf-url="/reports/archive/{{row.entity.uuid}}"></bh-pdf-link></div>';
 
   vm.gridOptions.columnDefs = [
     { field : 'typeicon', displayName : '', cellTemplate : typeTemplate, width : 25 },
@@ -42,6 +46,16 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
       .then(function () {
         Notify.success('FORM.INFO.DELETE_SUCCESS');
         loadSavedReports();
+      })
+      .catch(Notify.handleError);
+  }
+
+  function emailReport(uid, name) {
+    SavedReports.emailReportModal({ uuid : uid, reportName : name })
+      .then(function (result) {
+        if (result.sent) {
+          Notify.success('FORM.INFO.EMAIL_SUCCESS');
+        }
       })
       .catch(Notify.handleError);
   }
