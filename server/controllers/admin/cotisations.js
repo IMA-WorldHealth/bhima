@@ -18,8 +18,7 @@ function lookupCotisation(id) {
   return db.one(sql, [id]);
 }
 
-
-// Lists the functions of hospital employees
+// Lists the Payroll Cotisations
 function list(req, res, next) {
   const sql = `
     SELECT c.id, c.label, c.abbr, c.is_employee, c.is_percent, 
@@ -84,7 +83,7 @@ function update(req, res, next) {
     .done();
 }
 
-// DELETE /function/:id
+// DELETE /Cotisation/:id
 function del(req, res, next) {
   const sql = `DELETE FROM cotisation WHERE id = ?;`;
 
@@ -92,7 +91,7 @@ function del(req, res, next) {
     .then((row) => {
     // if nothing happened, let the client know via a 404 error
       if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a function with id ${req.params.id}`);
+        throw new NotFound(`Could not find a Cotisation with id ${req.params.id}`);
       }
 
       res.status(204).json();
@@ -101,17 +100,17 @@ function del(req, res, next) {
     .done();
 }
 
-// get list of function
+// get list of Cotisation
 exports.list = list;
 
-// get details of a function
+// get details of a Cotisation
 exports.detail = detail;
 
-// create a new function
+// create a new Cotisation
 exports.create = create;
 
-// update function informations
+// update Cotisation informations
 exports.update = update;
 
-// Delete a function
+// Delete a Cotisation
 exports.delete = del;
