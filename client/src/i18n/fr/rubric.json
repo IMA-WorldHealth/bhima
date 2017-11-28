@@ -1,0 +1,18 @@
+{
+  "RUBRIC" : {
+    "ADD_RUBRIC" : "Ajouter une rubrique",
+    "ALL_RUBRICS" : "Toutes les rubriques",
+    "CREATED" : "Rubrique créée avec succès",
+    "DELETED" : "Rubrique supprimée avec succès",
+    "DELETE" : "Supprimer",
+    "RUBRICS_LIST" : "Liste des rubriques",
+    "EDIT_RUBRIC" : "Editer les informations d'une rubrique",
+    "TITLE" : "Gestion des rubriques",
+    "UPDATED" : "Rubrique mise à jour avec succès",
+    "MODAL" : {
+      "SELECTION" : "Sélectionner une Rubrique",
+      "NO_RUBRICS" : "Est-ce qu'il n'y a pas des rubriques?",
+      "SELECT_A_RUBRIC" : "Sélectionner une Rubrique"
+    }
+  }
+}
