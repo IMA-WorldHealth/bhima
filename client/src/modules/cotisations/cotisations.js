@@ -9,8 +9,8 @@ CotisationManagementController.$inject = [
 /**
  * Cotisation Management Controller
  *
- * This controller is about the Job Title management module in the admin zone
- * It's responsible for creating, editing and updating a Job Title
+ * This controller is about the Cotisation management module in the admin zone
+ * It's responsible for creating, editing and updating a Cotisation
  */
 function CotisationManagementController(Cotisations, ModalService,
   Notify, uiGridConstants, $state, Session) {
