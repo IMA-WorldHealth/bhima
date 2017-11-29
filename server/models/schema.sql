@@ -1692,7 +1692,7 @@ DROP TABLE IF EXISTS `tax`;
 CREATE TABLE `tax` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(4) DEFAULT NULL,
+  `abbr` varchar(8) DEFAULT NULL,
   `is_employee` tinyint(1) DEFAULT 0,
   `is_percent` tinyint(1) DEFAULT 0,
   `four_account_id` int(10) unsigned DEFAULT NULL,

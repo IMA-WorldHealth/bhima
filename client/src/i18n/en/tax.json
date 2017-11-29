@@ -1,0 +1,18 @@
+{
+  "TAX" : {
+    "ADD_TAX" : "Add a Tax",
+    "ALL_TAXES" : "All Taxes",
+    "CREATED" : "Tax created with success",
+    "DELETED" : "Tax deleted with success",
+    "DELETE" : "Delete",
+    "TAXES_LIST" : "Taxes list",
+    "EDIT_TAX" : "Edit the information in a Tax",
+    "TITLE" : "Tax Management",
+    "UPDATED" : "Tax updated with success",
+    "MODAL" : {
+      "SELECTION" : "Tax Selection",
+      "NO_TAXES" : "Do not see any Taxes?",
+      "SELECT_A_TAX" : "Select a Tax"
+    }
+  }
+}
