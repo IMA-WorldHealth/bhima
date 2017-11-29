@@ -12,7 +12,7 @@
     "test:ends": "./sh/test-ends.sh",
     "test:lint": "./sh/lint.sh",
     "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
-    "test:server-unit": "echo 'Not yet implemented.'",
+    "test:server-unit": "./node_modules/.bin/mocha --recursive --exit test/server-unit",
     "build": "./node_modules/.bin/gulp build",
     "build:db": "./sh/build-database.sh",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",

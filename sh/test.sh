@@ -32,6 +32,11 @@ startfold "Running Client Unit Tests..." "test-client-unit";
 ./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
 endfold "test-client-unit" ;
 
+#run server-unit test
+startfold "Running server Unit Tests ......" "server-unit"
+./node_modules/.bin/mocha --recursive --exit test/server-unit
+endfold "server-unit" ;
+
 # run end to end tests
 startfold "Running Client Unit Tests..." "test-end-to-end";
 ./sh/test-ends.sh
