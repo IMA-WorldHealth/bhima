@@ -21,15 +21,15 @@ const BadRequest = require('../lib/errors/BadRequest');
  */
 function basicInstallExist() {
   // check users, enterprise, projects
-  const userExist = 'SELECT COUNT(*) AS total_users FROM user;';
-  const enterpriseExist = 'SELECT COUNT(*) AS total_enterprises FROM enterprise;';
-  const projectExist = 'SELECT COUNT(*) AS total_projects FROM project;';
+  const userExist = 'SELECT COUNT(*) >= 1 AS has_users FROM user;';
+  const enterpriseExist = 'SELECT COUNT(*) >= 1 AS has_enterprises FROM enterprise;';
+  const projectExist = 'SELECT COUNT(*) >= 1 AS has_projects FROM project;';
 
   const dbPromise = [db.one(userExist), db.one(enterpriseExist), db.one(projectExist)];
 
   return Q.all(dbPromise)
     .spread((users, enterprises, projects) => {
-      return (users.total_users || enterprises.total_enterprises || projects.total_projects);
+      return (users.has_users || enterprises.has_enterprises || projects.has_projects);
     });
 }
 
@@ -40,7 +40,7 @@ function basicInstallExist() {
  */
 exports.checkBasicInstallExist = (req, res, next) => {
   basicInstallExist()
-    .then(ans => res.status(200).json(ans))
+    .then(isInstalled => res.status(200).json(isInstalled))
     .catch(next)
     .done();
 };
@@ -54,8 +54,8 @@ exports.proceedInstall = (req, res, next) => {
   const { enterprise, project, user } = req.body;
 
   basicInstallExist()
-    .then(ans => {
-      if (ans) { throw new BadRequest('The application is already installed'); }
+    .then(isInstalled => {
+      if (isInstalled) { throw new BadRequest('The application is already installed'); }
 
       return defaultEnterpriseLocation();
     })

@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('InstallService', InstallService);
+  .service('InstallService', InstallService);
 
 InstallService.$inject = ['$http', 'util'];
 

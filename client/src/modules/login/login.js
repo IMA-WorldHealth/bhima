@@ -33,7 +33,8 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
 
   // check basic installation information exist
   Install.checkBasicInstallExist()
-    .then(handleCheckInstallExist);
+    .then(handleCheckInstallExist)
+    .catch(Notify.handleError);
 
   function handleCheckInstallExist(installationExist) {
     vm.installationExist = installationExist;
