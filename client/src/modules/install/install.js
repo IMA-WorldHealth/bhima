@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('InstallApplicationController', InstallApplicationController);
 
 // dependencies injection
-InstallApplicationController.$inject = ['InstallService', '$state', 'NotifyService'];
+InstallApplicationController.$inject = ['InstallService', '$state', 'NotifyService', 'UserService'];
 
 // controller definition
-function InstallApplicationController(InstallService, $state, Notify) {
+function InstallApplicationController(InstallService, $state, Notify, Users) {
   var vm = this;
 
   vm.setup = { enterprise : {}, project : {}, user : {} };
@@ -18,21 +18,13 @@ function InstallApplicationController(InstallService, $state, Notify) {
     $state.go('login');
   }
 
-  function checkPassword() {
-    if (!vm.setup.user.password) { return false; }
-
-    if (vm.setup.user.password !== vm.setup.user.repassword) {
-      vm.badPasswords = true;
-      return false;
-    }
-
-    return true;
-  }
-
   function submit(form) {
     if (form.$invalid) { return 0; }
 
-    if (checkPassword() === false) { return Notify.warn('USERS.PASSWORD_MISMATCH'); }
+    if (Users.validatePassword(vm.setup.user.password, vm.setup.user.repassword) === false) {
+      vm.badPasswords = true;
+      return Notify.warn('USERS.PASSWORD_MISMATCH');
+    }
 
     return InstallService.proceedInstall(vm.setup)
       .then(notifyInstallSucess)
