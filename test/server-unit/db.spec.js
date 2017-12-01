@@ -1,21 +1,15 @@
-const path = require('path');
-
-const env = path.resolve(__dirname, '../../.env.development');
-
-require('dotenv').config({ path : env });
-
-const db = require('../../server/lib/db');
-
+/* eslint global-require:off */
 const { expect } = require('chai');
 
-const _ = require('lodash');
+function DatabaseUnitTests() {
+  let db;
+  before(() => {
+    db = require('../../server/lib/db');
+  });
 
-// console.log(process.env);
 
-const dbTest = function () {
-
-  it('Should check the connection to mysql', function (done) {
-    var fx = db.pool.getConnection(function (err, result) {
+  it('should check the connection to mysql', (done) => {
+    db.pool.getConnection(err => {
       if (err) {
         done(err);
         return;
@@ -23,22 +17,18 @@ const dbTest = function () {
       expect(true).to.equal(true);
       done();
     });
-
   });
 
-  it('#Should try to retrieve data from a specific table (unit)', function (done) {
-     db.exec('SELECT * FROM unit LIMIT 2', {})
-      .then((rows) => {
+  it('#should try to retrieve data from a specific table (unit)', (done) => {
+    db.exec('SELECT * FROM unit LIMIT 2')
+      .then(rows => {
         expect(rows).to.have.lengthOf(2);
         done();
-        return;
       })
       .catch((error) => {
-       done(error);
-       return;
+        done(error);
       });
   });
+}
 
-};
-
-describe('db/index.js', dbTest);
+describe('lib/db/index.js', DatabaseUnitTests);
