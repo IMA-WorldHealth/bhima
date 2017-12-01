@@ -656,6 +656,10 @@ chai-http@^1.0.0:
     qs "2.0.x"
     superagent "0.19.x"
 
+chai-spies-next@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/chai-spies-next/-/chai-spies-next-0.9.3.tgz#672a84f68824af152ea1cbdda5a96f1a066302b9"
+
 chai-spies@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-0.7.1.tgz#343d99f51244212e8b17e64b93996ff7b2c2a9b1"

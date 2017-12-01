@@ -31,6 +31,9 @@ if (!hasEventsEnabled) {
   debug('publish and subscribe are enabled.  Disable by setting ENABLE_EVENTS to true.');
 }
 
+const hasEventsLogEnabled = hasEventsEnabled &&
+  (process.env.ENABLE_EVENTS_LOG === 'true');
+
 // event constants
 const events = {
   CREATE : 'create',
@@ -72,6 +75,10 @@ const channels = {
 
 // writes events into the event database table
 function databaseLogger(data) {
+  if (!hasEventsLogEnabled) {
+    return;
+  }
+
   if (!data.entity) {
     throw new Error(`[topic] The event ${data.event} expected an entity, but got ${data.entity} instead.`);
   }
@@ -227,7 +234,9 @@ class Topic {
     });
 
     // open a subscription to the channel
-    const subscription = (chnl, data) => callback(deserialize(data));
+    const subscription = (chnl, data) =>
+      chnl === channel && callback(deserialize(data));
+
     this.subscriber.on('message', subscription);
   }
 
