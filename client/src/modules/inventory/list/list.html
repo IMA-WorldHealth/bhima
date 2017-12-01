@@ -35,8 +35,7 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/inventory/items/?params={{ InventoryCtrl.filters.formatHTTP(true) }}&lang={{ InventoryCtrl.lang }}"
-                download="{{ 'INVENTORY.PRICE_LIST_REPORT' | translate }}">
+              <a ng-href="/reports/inventory/items/?{{ InventoryCtrl.download('pdf') }}" download="{{ 'INVENTORY.PRICE_LIST_REPORT' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>

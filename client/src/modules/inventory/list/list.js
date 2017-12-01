@@ -17,6 +17,8 @@ function InventoryListController(
   GridExport, Languages, Session
 ) {
   var vm = this;
+  vm.download = Inventory.download;
+
   var cacheKey = 'InventoryGrid';
   var cache = new AppCache(cacheKey);
 

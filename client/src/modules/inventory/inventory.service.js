@@ -3,10 +3,10 @@ angular.module('bhima.services')
 
 InventoryService.$inject = [
   'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal',
-  'FilterService', 'appcache',
+  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer'
 ];
 
-function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCache) {
+function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCache, Languages, $httpParamSerializer) {
   var service = new Api('/inventory/metadata/');
 
   var inventoryFilters = new Filters();
@@ -28,30 +28,30 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
    */
   function openSearchModal(filters) {
     return $uibModal.open({
-      templateUrl : 'modules/inventory/list/modals/search.modal.html',
-      size : 'md',
-      keyboard : false,
-      animation : false,
-      backdrop : 'static',
-      controller : 'InventorySearchModalController as ModalCtrl',
-      resolve : {
-        filters : function filtersProvider() { return filters; },
+      templateUrl: 'modules/inventory/list/modals/search.modal.html',
+      size: 'md',
+      keyboard: false,
+      animation: false,
+      backdrop: 'static',
+      controller: 'InventorySearchModalController as ModalCtrl',
+      resolve: {
+        filters: function filtersProvider() { return filters; },
       },
     }).result;
   }
 
   inventoryFilters.registerDefaultFilters([
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' },
+    { key: 'limit', label: 'FORM.LABELS.LIMIT' },
   ]);
 
   inventoryFilters.registerCustomFilters([
-    { key : 'group_uuid', label : 'FORM.LABELS.GROUP' },
-    { key : 'code', label : 'FORM.LABELS.CODE' },
-    { key : 'consumable', label : 'FORM.LABELS.CONSUMABLE' },
-    { key : 'locked', label : 'FORM.LABELS.LOCKED' },
-    { key : 'text', label : 'FORM.LABELS.LABEL' },
-    { key : 'type_id', label : 'FORM.LABELS.TYPE' },
-    { key : 'price', label : 'FORM.LABELS.PRICE' },
+    { key: 'group_uuid', label: 'FORM.LABELS.GROUP' },
+    { key: 'code', label: 'FORM.LABELS.CODE' },
+    { key: 'consumable', label: 'FORM.LABELS.CONSUMABLE' },
+    { key: 'locked', label: 'FORM.LABELS.LOCKED' },
+    { key: 'text', label: 'FORM.LABELS.LABEL' },
+    { key: 'type_id', label: 'FORM.LABELS.TYPE' },
+    { key: 'price', label: 'FORM.LABELS.PRICE' },
   ]);
 
   if (filterCache.filters) {
@@ -82,6 +82,17 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
 
   service.loadCachedFilters = function loadCachedFilters() {
     inventoryFilters.loadCache(filterCache.filters || {});
+  };
+
+  service.download = function download(type) {
+    var filterOpts = inventoryFilters.formatHTTP();
+    var defaultOpts = { renderer: type, lang: Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   };
 
   return service;
