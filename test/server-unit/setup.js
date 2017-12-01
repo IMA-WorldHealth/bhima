@@ -13,7 +13,7 @@ before(() => {
   // configure chai with spies and promises
   const chai = require('chai');
   chai.use(require('chai-as-promised'));
-  chai.use(require('chai-spies'));
+  chai.use(require('chai-spies-next'));
 
   // load environmental variables
   const path = require('path');
