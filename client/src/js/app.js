@@ -74,8 +74,8 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
         .then(handleInstallExist);
     }
 
-    function handleInstallExist(isExist) {
-      if (isExist) { $state.go('login'); }
+    function handleInstallExist(res) {
+      if (res.isInstalled) { $state.go('login'); }
     }
 
     // else, the user is free to continue as they wish

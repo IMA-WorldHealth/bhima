@@ -29,7 +29,7 @@ function basicInstallExist() {
 
   return Q.all(dbPromise)
     .spread((users, enterprises, projects) => {
-      return (users.has_users || enterprises.has_enterprises || projects.has_projects);
+      return !!(users.has_users || enterprises.has_enterprises || projects.has_projects);
     });
 }
 
@@ -40,7 +40,7 @@ function basicInstallExist() {
  */
 exports.checkBasicInstallExist = (req, res, next) => {
   basicInstallExist()
-    .then(isInstalled => res.status(200).json(isInstalled))
+    .then(isInstalled => res.status(200).json({ isInstalled }))
     .catch(next)
     .done();
 };

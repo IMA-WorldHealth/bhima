@@ -36,8 +36,8 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
     .then(handleCheckInstallExist)
     .catch(Notify.handleError);
 
-  function handleCheckInstallExist(installationExist) {
-    vm.installationExist = installationExist;
+  function handleCheckInstallExist(res) {
+    vm.installationExist = res.isInstalled;
   }
 
   Languages.read()
