@@ -13,16 +13,6 @@ function InstallApplicationController(InstallService, $state, Notify) {
   // expose methods to the view
   vm.submit = submit;
 
-  // InstallService.checkBasicInstallExist()
-  //   .then(processCheckResult)
-  //   .catch(Notify.handleError);
-
-  // function processCheckResult(isInstalled) {
-  //   vm.isInstalled = isInstalled;
-
-  //   if (isInstalled) { $state.go('login'); }
-  // }
-
   function notifyInstallSucess() {
     Notify.success('INSTALL.SUCCESS_INSTALL');
     $state.go('login');
