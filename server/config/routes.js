@@ -21,6 +21,7 @@ const tree = require('../controllers/tree');
 const units = require('../controllers/units');
 const system = require('../controllers/system');
 const report = require('../controllers/report');
+const install = require('../controllers/install');
 
 // admin routes
 const users = require('../controllers/admin/users');
@@ -607,6 +608,10 @@ exports.configure = function configure(app) {
 
   // stock transfers
   app.get('/stock/transfers', stock.getStockTransfers);
+
+  // install
+  app.get('/install', install.checkBasicInstallExist);
+  app.post('/install', install.proceedInstall);
 
   app.get('/diagnoses', diagnoses.list);
 };

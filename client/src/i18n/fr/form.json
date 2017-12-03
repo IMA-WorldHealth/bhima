@@ -30,6 +30,7 @@
             "GROUPS_PATIENT_UPDATE": "Mettre à jour les affectations de groupe de ce patient",
             "GROUPS_DEBTOR_UPDATE": "Mettre à jour le groupe de débiteurs de ce patient",
             "IMPORT": "Importer",
+            "INSTALL": "Installer",
             "LOGOUT": "Déconnexion",
             "LINK_SUBMISSION": "Lien vers l'envoie d'un formulaire",
             "NEXT": "Suivant",

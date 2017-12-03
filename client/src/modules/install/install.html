@@ -1,0 +1,110 @@
+<form 
+  name="InstallForm" 
+  class="col-xs-12 col-md-6 col-md-offset-3"
+  bh-submit="InstallCtrl.submit(InstallForm)"
+  ng-disabled="InstallForm.$loading"
+  ng-if="!InstallCtrl.isInstalled"
+  novalidate>
+
+  <h1 class="text-center" translate>INSTALL.TITLE</h1>
+
+  <p class="text-center" translate>INSTALL.DESCRIPTION</p>
+
+  <!-- enterprise -->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <i class="fa fa-building"></i>
+      <span translate>FORM.LABELS.ENTERPRISE</span>
+    </div>
+    <div class="panel-body">
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.enterpriseName.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.ENTERPRISE</label>
+        <input name="enterpriseName" type="text" class="form-control" ng-model="InstallCtrl.setup.enterprise.name" required>
+
+        <div class="help-block" ng-messages="InstallForm.enterpriseName.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.enterpriseAbbr.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.ABBREVIATION</label>
+        <input name="enterpriseAbbr" type="text" class="form-control" max="3" ng-model="InstallCtrl.setup.enterprise.abbr" required>
+
+        <div class="help-block" ng-messages="InstallForm.enterpriseAbbr.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <bh-currency-select 
+        currency-id="InstallCtrl.setup.enterprise.currency_id"
+        validation-trigger="InstallForm.$submitted">
+      </bh-currency-select>
+    </div>
+  </div>
+
+  <!-- project -->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <i class="fa fa-cubes"></i>
+      <span translate>FORM.LABELS.PROJECT</span>
+    </div>
+    <div class="panel-body">
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.projectName.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.PROJECT</label>
+        <input name="projectName" type="text" class="form-control" ng-model="InstallCtrl.setup.project.name" required>
+
+        <div class="help-block" ng-messages="InstallForm.projectName.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.projectAbbr.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.ABBREVIATION</label>
+        <input name="projectAbbr" type="text" class="form-control" max="3" ng-model="InstallCtrl.setup.project.abbr" required>
+
+        <div class="help-block" ng-messages="InstallForm.projectAbbr.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- super user -->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <i class="fa fa-user"></i>
+      <span translate>USERS.SUPER</span>
+    </div>
+    <div class="panel-body">
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.userDisplayname.$invalid }">
+        <label class="control-label" translate>USERS.SUPER</label>
+        <input name="userDisplayname" type="text" class="form-control" ng-model="InstallCtrl.setup.user.username" required>
+
+        <div class="help-block" ng-messages="InstallForm.userDisplayName.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.password.$invalid, 'has-warning': InstallCtrl.badPasswords }">
+        <label class="control-label" translate>USERS.SET_PASSWORD</label>
+        <input name="password" type="password" class="form-control" ng-model="InstallCtrl.setup.user.password" required>
+
+        <div class="help-block" ng-messages="InstallForm.password.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.repassword.$invalid, 'has-warning': InstallCtrl.badPasswords }">
+        <label class="control-label" translate>USERS.SET_PASSWORD_AGAIN</label>
+        <input name="repassword" type="password" class="form-control" ng-model="InstallCtrl.setup.user.repassword" required>
+
+        <div class="help-block" ng-messages="InstallForm.repassword.$error" ng-show="InstallForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-right">
+    <bh-loading-button loading-state="InstallForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

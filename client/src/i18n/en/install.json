@@ -1,0 +1,10 @@
+{
+  "INSTALL" : {
+    "TITLE" : "Basic System Installation",
+    "DESCRIPTION" : "Please define the basic bhima system configuration, this configuration is required for the use of bhima",
+    "ALREADY_INSTALLED" : "The Application is already installed",
+    "SUCCESS_INSTALL" : "Successful Application Configuration",
+    "NO_INSTALLATION" : "No installation found, please install the application",
+    "HERE" : "Here"
+  }
+}
