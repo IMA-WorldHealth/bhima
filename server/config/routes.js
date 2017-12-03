@@ -361,6 +361,7 @@ exports.configure = function configure(app) {
 
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
+  app.post('/reports/archive/:uuid/email', report.emailArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
   app.get('/dashboard/debtors', dashboardDebtors.getReport);

@@ -131,7 +131,8 @@
       "BACK":"Revenir en arriere",
       "OPTIONS":"Options",
       "PREVIEW":"Aperçu",
-      "VIEW_ARCHIVE":"Archives"
+      "VIEW_ARCHIVE":"Archives",
+      "EMAIL_HELP_TXT" : "L'e-mail ci-dessus recevra le rapport en pièce jointe. Le serveur doit avoir une connexion Internet pour que l'e-mail soit livré avec succès."
     }
   }
 }

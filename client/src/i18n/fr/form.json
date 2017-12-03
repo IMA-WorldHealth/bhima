@@ -120,6 +120,7 @@
             "DELETE_SUCCESS": "Suppression avec succès",
             "DISABLED_CURRENCY": "Cette monnaie est inutilisable car il n'y a pas de compte fixée pour elle. Utilisez le module Box Cash Management pour définir un compte pour cette monnaie et caisse.",
             "ENTITY_NOT_FOUND": "Entité (Debiteur/Crediteur) Non Trouvé",
+            "EMAIL_SUCCESS" : "Email envoyé avec succès.",
             "EXPORT_SUCCESS": "Exportation avec succes",
             "EDITED" : "Édité",
             "FINANCIAL_DETAIL": "Détails financieres",

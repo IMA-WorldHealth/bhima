@@ -128,7 +128,8 @@
       "BACK": "Back to the previous page",
       "OPTIONS": "Options",
       "PREVIEW": "Preview",
-      "VIEW_ARCHIVE": "Archives"
+      "VIEW_ARCHIVE": "Archives",
+      "EMAIL_HELP_TXT" : "The email above will receive the report as an attachment.  The server must have an internet connection for the email to be successfully delivered."
     }
   }
 }
