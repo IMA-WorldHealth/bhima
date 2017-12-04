@@ -32,7 +32,7 @@ describe('Suppliers', () => {
     element(by.model('SupplierCtrl.supplier.international')).click();
 
     // select an Creditor
-    FU.select('SupplierCtrl.supplier.creditor_group_uuid', 'Fournisseur');
+    FU.select('SupplierCtrl.supplier.creditor_group_uuid', 'Regideso');
 
     FU.input('SupplierCtrl.supplier.phone', supplier.phone);
     FU.input('SupplierCtrl.supplier.email', supplier.email);

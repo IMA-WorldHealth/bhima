@@ -28,7 +28,7 @@ function StockMovementsRegistryTests() {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
-    GU.expectRowCount(gridId, 25);
+    GU.expectRowCountAbove(gridId, 20);
   });
 
   it('find entry movements ', () => {
@@ -52,7 +52,7 @@ function StockMovementsRegistryTests() {
   });
 
   it('find movements by inventory', () => {
-    modal.setInventory('First Test Inventory Item');
+    modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
     GU.expectRowCount(gridId, 13 + (2 * depotGroupingRow));
   });

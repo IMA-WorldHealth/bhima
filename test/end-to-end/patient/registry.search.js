@@ -1,7 +1,6 @@
-'use strict';
+/* global element, by */
 
-const chai = require('chai');
-const expect = chai.expect;
+const { expect } = require('chai');
 
 const Filters = require('../shared/components/bhFilters');
 const SearchModal = require('../shared/search.page');
@@ -14,19 +13,19 @@ function PatientRegistrySearch() {
 
   const parameters = {
     patientGroup : 'Test Patient Group 2',
-    name: 'Mock',
-    name1: 'Patient',
-    dateRegistrationFrom: '01/01/2015',
-    dateRegistrationTo: '01/04/2015',
-    dateBirthFrom: '01/05/2016',
-    dateBirthTo: '16/05/2016',
-    dateBirthFrom2: '30/01/1960',
-    dateBirthTo2: '16/05/2016',
+    name : 'Mock',
+    name1 : 'Patient',
+    dateRegistrationFrom : '01/01/2015',
+    dateRegistrationTo : '01/04/2015',
+    dateBirthFrom : '01/05/2016',
+    dateBirthTo : '16/05/2016',
+    dateBirthFrom2 : '30/01/1960',
+    dateBirthTo2 : '16/05/2016',
   };
 
   const grid = element(by.id('patient-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
-    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));  
+    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
   beforeEach(() => {
     SearchModal.open();
@@ -63,17 +62,17 @@ function PatientRegistrySearch() {
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find two patients with Debtor Group "Second Test Debtor Group"`, () => {
+  it(`should find two patients with Debtor Group "NGO IMA World Health"`, () => {
     const NUM_MATCHING = 2;
 
-    components.debtorGroupSelect.set('Second Test Debtor Group');
+    components.debtorGroupSelect.set('NGO IMA World Health');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates additive filters
-  it(`should find two "male" patients with name "${parameters.name1}"`, function () {
+  it(`should find two "male" patients with name "${parameters.name1}"`, () => {
     const NUM_MATCHING = 2;
     FU.input('$ctrl.searchQueries.display_name', parameters.name1);
     element(by.id('male')).click();
@@ -83,7 +82,7 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates that additive + time-delimited filtering works
-  it(`should find one patient with name "${parameters.name1}" registered in the last week`, function () {
+  it(`should find one patient with name "${parameters.name1}" registered in the last week`, () => {
     const NUM_MATCHING = 0;
     FU.input('$ctrl.searchQueries.display_name', parameters.name1);
     modal.switchToDefaultFilterTab();
@@ -93,7 +92,7 @@ function PatientRegistrySearch() {
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find two patient with patient group "${parameters.patientGroup}" registered in allTime`, function () {
+  it(`should find two patient with patient group "${parameters.patientGroup}" registered in allTime`, () => {
     const NUM_MATCHING = 2;
     components.patientGroupSelect.set(parameters.patientGroup);
     modal.switchToDefaultFilterTab();
@@ -104,8 +103,8 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates that sex + time-delimited filtering works
-  it('should find no female patients registered in the last year.', function () {
-    const NUM_MATCHING = 0; 
+  it('should find no female patients registered in the last year.', () => {
+    const NUM_MATCHING = 0;
     element(by.id('female')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('lastYear');
@@ -115,11 +114,11 @@ function PatientRegistrySearch() {
   });
 
   // changes every single date input manually.
-  it('should not find any patients with complex limited dates.', function () {
+  it('should not find any patients with complex limited dates.', () => {
     const NUM_MATCHING = 4;
     components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
     modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');    
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
@@ -132,7 +131,7 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
-    FU.modal.submit(); 
+    FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
   });

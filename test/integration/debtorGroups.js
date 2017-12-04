@@ -1,22 +1,20 @@
-/* global expect, chai, agent */
-'use strict';
+/* global expect, agent */
 
 const helpers = require('./helpers');
 const uuid = require('uuid/v4');
 
-describe('(/debtor_groups) The debtor groups API', function () {
+describe('(/debtor_groups) The debtor groups API', () => {
   const numDebtorGroups = 7;
 
   const debtorGroup = {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'New Debtor Group (Test)',
-    account_id : 3638,
+    account_id : 174,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
-    note : 'Nouveau debtor group de test',
-    locked : 0,
+    note : 'Nouveau debtor group de test', locked : 0,
     max_credit : null,
     is_convention : 0,
     price_list_uuid : null,
@@ -28,7 +26,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
   const updateGroup = {
     enterprise_id : 1,
     name : 'Updated Debtor Group (Test)',
-    account_id : 3638,
+    account_id : 174,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0818061031',
     email : 'update@info.com',
@@ -40,14 +38,14 @@ describe('(/debtor_groups) The debtor groups API', function () {
     apply_discounts : 1,
     apply_billing_services : 1,
     apply_subsidies : 1,
-	color: '#00ffff',
+    color : '#00ffff',
   };
 
   const lockedGroup = {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'Locked Debtor Group (Test)',
-    account_id : 3638,
+    account_id : 175,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
@@ -65,7 +63,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'Convention Debtor Group (Test)',
-    account_id : 3638,
+    account_id : 176,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
@@ -83,7 +81,7 @@ describe('(/debtor_groups) The debtor groups API', function () {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'Locked Convention Debtor Group (Test)',
-    account_id : 3638,
+    account_id : 174,
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
@@ -108,74 +106,72 @@ describe('(/debtor_groups) The debtor groups API', function () {
 
   let allDebtorGroups;
 
-  it('POST /debtor_groups/ create a new debtor group (unlocked)', function () {
+  it('POST /debtor_groups/ creates a new debtor group (unlocked)', () => {
     return agent.post('/debtor_groups/')
-    .send(debtorGroup)
-    .then((res) => {
-      helpers.api.created(res);
-      expect(res.body.uuid).to.be.equal(debtorGroup.uuid);
-    })
-    .catch(helpers.handler);
+      .send(debtorGroup)
+      .then(res => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(debtorGroup.uuid);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /debtor_groups/ create a new debtor group (locked)', function () {
+  it('POST /debtor_groups/ creates a new debtor group (locked)', () => {
     return agent.post('/debtor_groups/')
-    .send(lockedGroup)
-    .then((res) => {
-      helpers.api.created(res);
-      expect(res.body.uuid).to.be.equal(lockedGroup.uuid);
-    })
-    .catch(helpers.handler);
+      .send(lockedGroup)
+      .then(res => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(lockedGroup.uuid);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /debtor_groups/ create a new debtor group (convention)', function () {
+  it('POST /debtor_groups/ creates a new debtor group (convention)', () => {
     return agent.post('/debtor_groups/')
-    .send(conventionGroup)
-    .then((res) => {
-      helpers.api.created(res);
-      expect(res.body.uuid).to.be.equal(conventionGroup.uuid);
-    })
-    .catch(helpers.handler);
+      .send(conventionGroup)
+      .then(res => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(conventionGroup.uuid);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /debtor_groups/ create a new debtor group (locked convention)', function () {
+  it('POST /debtor_groups/ creates a new debtor group (locked convention)', () => {
     return agent.post('/debtor_groups/')
-    .send(lockedConventionGroup)
-    .then((res) => {
-      helpers.api.created(res);
-      expect(res.body.uuid).to.be.equal(lockedConventionGroup.uuid);
-    })
-    .catch(helpers.handler);
+      .send(lockedConventionGroup)
+      .then(res => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(lockedConventionGroup.uuid);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /debtor_groups don\'t create when with missing data', function () {
+  it('POST /debtor_groups does not create a record when data is missing', () => {
     return agent.post('/debtor_groups')
-    .send(invalidGroup)
-    .then((res) => {
-      helpers.api.errored(res, 400);
-    })
-    .catch(helpers.handler);
+      .send(invalidGroup)
+      .then(res => {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups returns a list of debtor groups', function () {
+  it('GET /debtor_groups returns a list of debtor groups', () => {
     return agent.get('/debtor_groups')
-      .then((res) => {
+      .then(res => {
         helpers.api.listed(res, numDebtorGroups);
         allDebtorGroups = res.body;
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups?detailed=1 returns a more complex (detailed) list', function () {
+  it('GET /debtor_groups?detailed=1 returns a more complex (detailed) list', () => {
     return agent.get('/debtor_groups')
       .query({ detailed : 1 })
-      .then((res) => {
-
+      .then(res => {
         // expects status + type JSON
         helpers.api.listed(res, numDebtorGroups);
 
-        let sampleDebtorGroup = res.body[1];
-        let expectedDebtors = 3;
+        const sampleDebtorGroup = res.body[1];
 
         // verify complex query attributes returned
         expect(sampleDebtorGroup).to.contain.all.keys('total_debtors');
@@ -187,147 +183,140 @@ describe('(/debtor_groups) The debtor groups API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/:uuid returns all details for a valid debtor group', function () {
-    return agent.get('/debtor_groups/' + debtorGroup.uuid)
-      .then((res) => {
-        let expectedKeySubset = ['uuid', 'account_id', 'name', 'location_id', 'is_convention'];
+  it('GET /debtor_groups/:uuid returns all details for a valid debtor group', () => {
+    return agent.get(`/debtor_groups/${debtorGroup.uuid}`)
+      .then(res => {
+        const expectedKeySubset = ['uuid', 'account_id', 'name', 'location_id', 'is_convention'];
         expect(res).to.have.status(200);
         expect(res.body).to.contain.all.keys(expectedKeySubset);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/:id returns NOT FOUND (404) for invalid id', function () {
+  it('GET /debtor_groups/:uuid returns NOT FOUND (404) for an invalid uuid', () => {
     return agent.get('/debtor_groups/invalid')
-      .then((res) => {
+      .then(res => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups?locked={1|0} returns only locked or not locked debtor groups', function () {
-    let totalLockedGroup = getTotal(allDebtorGroups, 'locked', 1);
-    let totalUnlockedGroup = getTotal(allDebtorGroups, 'locked', 0);
+  it('GET /debtor_groups?locked={1|0} returns only locked or not locked debtor groups', () => {
+    const totalLockedGroup = getTotal(allDebtorGroups, 'locked', 1);
+    const totalUnlockedGroup = getTotal(allDebtorGroups, 'locked', 0);
 
-    return agent.get('/debtor_groups').query({ locked: 1 })
-      .then((res) => {
+    return agent.get('/debtor_groups')
+      .query({ locked : 1 })
+      .then(res => {
         helpers.api.listed(res, totalLockedGroup);
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
-        return agent.get('/debtor_groups/?locked=0').query({ locked: 1 });
+        return agent.get('/debtor_groups/?locked=0')
+          .query({ locked : 1 });
       })
-      .then((res) => {
+      .then(res => {
         helpers.api.listed(res, totalUnlockedGroup);
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups?is_convention={1|0} returns only conventions or not conventions debtor groups', function () {
-    let totalConvention = getTotal(allDebtorGroups, 'is_convention', 1);
-    let totalNotConvention = getTotal(allDebtorGroups, 'is_convention', 0);
+  it('GET /debtor_groups?is_convention={1|0} returns only conventions or not conventions debtor groups', () => {
+    const totalConvention = getTotal(allDebtorGroups, 'is_convention', 1);
+    const totalNotConvention = getTotal(allDebtorGroups, 'is_convention', 0);
 
     return agent.get('/debtor_groups').query({ is_convention : 1 })
-      .then((res) => {
+      .then(res => {
         helpers.api.listed(res, totalConvention);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(1);
         return agent.get('/debtor_groups').query({ is_convention : 0 });
       })
-      .then((res) => {
+      .then(res => {
         helpers.api.listed(res, totalNotConvention);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/?locked={1|0}&is_convention={1|0} returns either locked or convention debtor groups', function () {
-    return agent.get('/debtor_groups/?locked=1&is_convention=1')
-      .then((res) => {
+  it('GET /debtor_groups/?locked={1|0}&is_convention={1|0} returns either locked or convention debtor groups', () => {
+    return agent.get('/debtor_groups/')
+      .query({ locked : 1, is_convention : 1 })
+      .then(res => {
         helpers.api.listed(res, 1);
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(1);
-        return agent.get('/debtor_groups/?locked=1&is_convention=0');
+        return agent.get('/debtor_groups/')
+          .query({ locked : 1, is_convention : 0 });
       })
-      .then((res) => {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(0);
-        return agent.get('/debtor_groups/?locked=0&is_convention=1');
+        return agent.get('/debtor_groups/')
+          .query({ locked : 0, is_convention : 1 });
       })
-      .then((res) => {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(0);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(1);
-        return agent.get('/debtor_groups/?locked=0&is_convention=0');
+        return agent.get('/debtor_groups/')
+          .query({ locked : 0, is_convention : 0 });
       })
-      .then((res) => {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(0);
-        expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /debtor_groups/:uuid update a debtor group', function () {
-    return agent.put('/debtor_groups/' + debtorGroup.uuid)
-    .send(updateGroup)
-    .then((res) => {
-      updateGroup.uuid = debtorGroup.uuid;
+  it('PUT /debtor_groups/:uuid update a debtor group', () => {
+    return agent.put(`/debtor_groups/${debtorGroup.uuid}`)
+      .send(updateGroup)
+      .then(res => {
+        updateGroup.uuid = debtorGroup.uuid;
 
-      // data provided by the server; always blank for new debtor groups
-      updateGroup.billingServices = [];
-      updateGroup.subsidies = [];
+        // data provided by the server; always blank for new debtor groups
+        updateGroup.billingServices = [];
+        updateGroup.subsidies = [];
 
-      expect(res).to.have.status(200);
-      expect(res.body).to.be.an('object');
-      expect(res.body).to.have.deep.equal(updateGroup);
-    })
-    .catch(helpers.handler);
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.deep.equal(updateGroup);
+      })
+      .catch(helpers.handler);
   });
 
-  it('DELETE /debtor_groups/:uuid should delete an existing debtor group', function () {
-    return agent.delete('/debtor_groups/' + lockedConventionGroup.uuid)
-      .then((res) => {
+  it('DELETE /debtor_groups/:uuid should delete an existing debtor group', () => {
+    return agent.delete(`/debtor_groups/${lockedConventionGroup.uuid}`)
+      .then(res => {
         helpers.api.deleted(res);
-        return agent.get('/debtor_groups/' + lockedConventionGroup.uuid);
+        return agent.get(`/debtor_groups/${lockedConventionGroup.uuid}`);
       })
-      .then((res) => {
+      .then(res => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
-
 
   /**
    * @todo: Need to be implemented at the server side in
    * /server/controllers/debtors/groups/index.js  #function invoices
    */
-  describe('/debtor_groups/:uuid/invoices', function () {
-    it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', function () {
-      return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices')
-        .then((res) => {
+  describe('/debtor_groups/:uuid/invoices', () => {
+    it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', () => {
+      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`)
+        .then(res => {
           expect(res).to.have.status(200);
         })
         .catch(helpers.handler);
     });
 
-    it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
-      return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices?balanced=1')
-        .then((res) => {
+    it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', () => {
+      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices?balanced=1`)
+        .then(res => {
           helpers.api.listed(res, 0);
         })
         .catch(helpers.handler);

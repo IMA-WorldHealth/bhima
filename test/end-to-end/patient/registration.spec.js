@@ -35,7 +35,7 @@ describe('Patient Registration', () => {
     components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
-    components.debtorGroupSelect.set('Second Test Debtor Group');
+    components.debtorGroupSelect.set('NGO IMA World Health');
 
 
     // submit the patient registration form

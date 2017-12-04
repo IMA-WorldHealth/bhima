@@ -45,11 +45,15 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     var request = { action : 'edit', identifier : uuid };
 
     Modal.openInventoryGroupActions(request)
-    .then(function (res) {
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
-    })
-    .then(startup)
-    .catch(Notify.handleError);
+      .then(function (res) {
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      })
+      .then(startup)
+      .catch(function (err) {
+        if (err) {
+          Notify.handleError(err);
+        }
+      });
   }
 
   /** delete inventory group */

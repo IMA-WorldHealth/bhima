@@ -1,5 +1,3 @@
-/* global browser, element, by */
-
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
 
@@ -13,7 +11,7 @@ describe.skip('Accounts report ::', () => {
   const key = 'account_report';
 
   const dataset = {
-    account : '41002',
+    account : 'Guest House',
     report_name : 'Report Saved by E2E',
     renderer : 'PDF',
   };

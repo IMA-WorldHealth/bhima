@@ -17,7 +17,7 @@ function PatientInvoicePayments() {
 
   const defaults = {
     currency_id : 1, // FCs
-    cashbox_id : 1, // Test Primary Cashbox A
+    cashbox_id : 1, // Caisse Principale
     project_id : 1, // Test Project
     debtor_uuid : DEBTOR_UUID,
     user_id : 1, // Test User

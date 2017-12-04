@@ -1,25 +1,18 @@
-
-
-/* global element, by, browser */
-
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 const GU = require('../shared/GridUtils');
-const FU = require('../shared/FormUtils');
 
-const components = require('../shared/components');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 
 helpers.configure(chai);
-const expect = chai.expect;
 
 module.exports = VoucherRegistrySearch;
 
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
-  const NUM_VOUCHERS = 19;
+  const NUM_VOUCHERS = 18;
   const NUM_USER_RECORDS = 19;
   const NUM_DESCRIPTION_RECORDS = 2;
   const NUM_TRANSACTION_TYPE_RECORD = 1;

@@ -15,8 +15,8 @@ describe('Simple Vouchers', function () {
   const voucher = {
     date : new Date(),
     type : 'Transfer',
-    toAccount : 'Test Debtor Group Account',
-    fromAccount : 'First Test Item Account',
+    toAccount : 'NGO',
+    fromAccount : '57110011', // 57110011 - Caisse Auxiliaire CDF
     description : 'Awesome description',
     amount : 100.12,
   };
