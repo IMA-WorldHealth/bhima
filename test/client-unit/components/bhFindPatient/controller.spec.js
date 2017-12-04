@@ -33,6 +33,7 @@ function ControllerTests() {
   beforeEach(inject((_$rootScope_, _$httpBackend_, _$componentController_) => {
     // setup initial imports
     $scope = _$rootScope_.$new();
+
     $httpBackend = _$httpBackend_;
     $componentController = _$componentController_;
 

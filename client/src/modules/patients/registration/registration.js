@@ -17,7 +17,8 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController(Patients, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
+function PatientRegistrationController(Patients, Session, util, Notify, 
+  Receipts, ScrollTo, bhConstants) {
   var vm = this;
 
   vm.submit = submit;
