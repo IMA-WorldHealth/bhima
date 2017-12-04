@@ -29,15 +29,7 @@
       </div>
     </div>
     
-    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.percentage.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
-      <input name="percentage" type="number" max="100" min="0" ng-model="HolidayModalCtrl.holiday.percentage" autocomplete="off" class="form-control" required>
-      <div class="help-block" ng-messages="HolidayForm.percentage.$error" ng-show="HolidayForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
-    <div class="modal-body" style="max-height : 400px; overflow: auto;">
+    <div class="modal-body">
       <bh-date-interval
         label="FORM.LABELS.PERIODES"
         date-id="holiday-date"
@@ -45,6 +37,14 @@
         date-from="HolidayModalCtrl.holiday.dateFrom"
         date-to="HolidayModalCtrl.holiday.dateTo">
       </bh-date-interval>
+    </div>
+
+    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.percentage.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
+      <input name="percentage" type="number" max="100" min="0" ng-model="HolidayModalCtrl.holiday.percentage" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="HolidayForm.percentage.$error" ng-show="HolidayForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
     </div>  
   </div>
 

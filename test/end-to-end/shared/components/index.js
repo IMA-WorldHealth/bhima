@@ -44,4 +44,5 @@ module.exports = {
   multipleDepotSelect         : require('./bhMultipleDepotSelect'),
   fluxSelect                  : require('./bhFluxSelect'),
   multipleCashBoxSelect       : require('./bhMultipleCashBoxSelect'),
+  employeeSelect              : require('./bhEmployeeSelect'),
 };

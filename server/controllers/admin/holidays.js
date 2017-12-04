@@ -6,6 +6,7 @@
 
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
+var Unauthorized = require('../../lib/errors/Unauthorized');
 
 // GET /Holiday
 function lookupHoliday(id) {
@@ -16,6 +17,25 @@ function lookupHoliday(id) {
 
   return db.one(sql, [id]);
 }
+
+// Check Holidays
+/** 
+*
+* This function prevents to define for an employee, two periods of holidays that fits nested
+*/
+function checkHoliday(param) {
+  var sql = `
+    SELECT id, employee_id, label, dateTo, percentage, dateFrom 
+    FROM holiday WHERE employee_id = ?
+    AND ((dateFrom >= DATE(?)) OR (dateTo >= DATE(?)) OR (dateFrom >= DATE(?))
+    OR (dateTo >= DATE(?)))
+    AND ((dateFrom <= DATE(?)) OR (dateTo <= DATE(?)) OR (dateFrom <= DATE(?))
+    OR (dateTo <= DATE(?)))
+  `;
+
+  return db.exec(sql, [param.employee_id, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo]);
+}
+
 
 // Lists the Payroll Holidays
 function list(req, res, next) {
@@ -55,7 +75,14 @@ function create(req, res, next) {
   const sql = `INSERT INTO holiday SET ?`;
   const data = req.body;
 
-  db.exec(sql, [data])
+  checkHoliday(data)
+    .then((record) => {
+      if (record.length) {
+        throw new Unauthorized('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+      }
+      
+      return db.exec(sql, [data]);
+    })
     .then((row) => {
       res.status(201).json({ id : row.insertId });
     })
@@ -68,7 +95,14 @@ function create(req, res, next) {
 function update(req, res, next) {
   const sql = `UPDATE holiday SET ? WHERE id = ?;`;
 
-  db.exec(sql, [req.body, req.params.id])
+  checkHoliday(req.body)
+    .then((record) => {
+      if (record.length > 1) {
+        throw new Unauthorized('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+      }
+      
+      return db.exec(sql, [req.body, req.params.id]);
+    })  
     .then(() => {
       return lookupHoliday(req.params.id);
     })
