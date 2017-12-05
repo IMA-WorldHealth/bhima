@@ -207,7 +207,7 @@ function AccountEditController(
     if (vm.isCreateState) {
       handleAccountCreateState();
     } else {
-      handleAccountElseState();
+      handleAccountUpdateState();
     }
 
     function handleAccountCreateState() {
@@ -231,13 +231,13 @@ function AccountEditController(
       }
     }
 
-    function handleAccountElseState() {
+    function handleAccountUpdateState() {
       return Accounts.update(vm.account.id, submit)
-        .then(handleAccountElseResult)
+        .then(handleAccountUpdateResult)
         .catch(handleModalError);
     }
 
-    function handleAccountElseResult(result) {
+    function handleAccountUpdateResult(result) {
       vm.fetchError = null;
       $rootScope.$broadcast('ACCOUNT_UPDATED', result);
       Notify.success('ACCOUNT.UPDATED');
