@@ -24,7 +24,7 @@ function PatientRegistrationController(Patients, Session, util, Notify,
   vm.submit = submit;
   vm.toggleFullDate = toggleFullDate;
   vm.calculateYOB = calculateYOB;
-  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_DAY';
+  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_YEAR';
   vm.dateComponentLabel = 'FORM.LABELS.DOB';
 
 
