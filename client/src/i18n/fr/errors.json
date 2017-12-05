@@ -9,6 +9,7 @@
     "NOT_FOUND" : "Cet enregistrement n'a pas pu être trouvé",
     "NO_PERMISSIONS" : "La connexion a réussi, mais vous n'avez aucune autorisation. Veuillez contacter un administrateur système.",
     "NO_PROJECT" : "Aucune autorisation pour ce projet, Veuillez contacter un administrateur système",
+    "NO_FISCAL_YEAR" : "Aucune année fiscale pour cette date!",
     "UNAUTHORIZED" : "Vous avez soumis un mauvais nom ou mot de passe.  Entrez un nom ou un mot de passe valid pour continuer.",
     "UNKNOWN" : "Une erreur est survenue.",
     "OVERPAID_INVOICE" : "Vous avez payé trop aux factures.",
