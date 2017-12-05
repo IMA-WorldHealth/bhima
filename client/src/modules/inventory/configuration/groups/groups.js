@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
-.controller('InventoryGroupsController', InventoryGroupsController);
+  .controller('InventoryGroupsController', InventoryGroupsController);
 
 // dependencies injection
 InventoryGroupsController.$inject = [
   '$translate', 'InventoryGroupService', 'AccountService',
-  'NotifyService', 'ModalService', 'Store'
+  'NotifyService', 'ModalService', 'Store',
 ];
 
 /**
@@ -12,7 +12,8 @@ InventoryGroupsController.$inject = [
  * This controller is responsible for handling inventory group module
  */
 function InventoryGroupsController($translate, InventoryGroup, Account, Notify, Modal, Store) {
-  var vm = this, AccountStore;
+  var vm = this;
+  var AccountStore;
 
   /** global variables */
   vm.created = false;
@@ -26,18 +27,24 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   // startup
   startup();
 
+  function handler(err) {
+    if (err) {
+      Notify.handleError(err);
+    }
+  }
+
   /** add inventory group */
   function addInventoryGroup() {
     var request = { action : 'add' };
 
     Modal.openInventoryGroupActions(request)
-    .then(function (res) {
-      if (res.uuid) {
-        Notify.success('FORM.INFO.CREATE_SUCCESS');
-      }
-    })
-    .then(startup)
-    .catch(Notify.handleError);
+      .then(function (res) {
+        if (res.uuid) {
+          Notify.success('FORM.INFO.CREATE_SUCCESS');
+        }
+      })
+      .then(startup)
+      .catch(handler);
   }
 
   /** edit inventory group */
@@ -49,37 +56,31 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       })
       .then(startup)
-      .catch(function (err) {
-        if (err) {
-          Notify.handleError(err);
-        }
-      });
+      .catch(handler);
   }
 
   /** delete inventory group */
   function deleteInventoryGroup(id) {
     Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-       // if the user clicked cancel, reset the view and return
-       if (!bool) {
+      .then(function (bool) {
+        // if the user clicked cancel, reset the view and return
+        if (!bool) {
           vm.view = 'default';
           return;
-       }
-      // if we get there, the user wants to delete
-      InventoryGroup.remove(id)
-        .then(function () {
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-          startup();
-          return;
-        })
-        .catch(Notify.handleError);
-    });
+        }
+        // if we get there, the user wants to delete
+        InventoryGroup.remove(id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            startup();
+            return;
+          })
+          .catch(Notify.handleError);
+      });
   }
 
 
-  /** init the module */
   function startup() {
-
     // initializes inventory group list with associate accounts
     Account.read()
       .then(handleAccountList)
@@ -101,11 +102,11 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
           AccountStore.get(group.stock_account).number : '';
 
         // sales account
-        group.saleAccountNumber  = AccountStore.get(group.sales_account) ?
+        group.saleAccountNumber = AccountStore.get(group.sales_account) ?
           AccountStore.get(group.sales_account).number : '';
 
         // charge account
-        group.cogsAccountNumber  = AccountStore.get(group.cogs_account) ?
+        group.cogsAccountNumber = AccountStore.get(group.cogs_account) ?
           AccountStore.get(group.cogs_account).number : '';
       });
 
@@ -114,10 +115,8 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
       return list;
     }
 
-    function readInventoryGroup(){
+    function readInventoryGroup() {
       return InventoryGroup.read(null, { include_members : 1 });
     }
-
   }
-
 }

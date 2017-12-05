@@ -41,6 +41,7 @@
       name="sales_account"
       id="sales_account"
       account-id="$ctrl.session.sales_account"
+      validation-trigger="ActionForm.$submitted"
       exclude-title-accounts="true"
       on-select-callback="$ctrl.onSelectSalesAccount(account)">
       (<span translate>FORM.LABELS.SALE</span>)
@@ -52,6 +53,7 @@
       id="stock_account"
       account-id="$ctrl.session.stock_account"
       exclude-title-accounts="true"
+      required="false"
       on-select-callback="$ctrl.onSelectStockAccount(account)">
       (<span translate>FORM.LABELS.STOCK</span>)
       <bh-clear on-clear="$ctrl.session.stock_account = null;"></bh-clear>
@@ -62,6 +64,7 @@
       id="cogs_account"
       account-id="$ctrl.session.cogs_account"
       exclude-title-accounts="true"
+      required="false"
       on-select-callback="$ctrl.onSelectCOGSAccount(account)">
       (<span translate>FORM.LABELS.CHARGE</span>)
       <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
