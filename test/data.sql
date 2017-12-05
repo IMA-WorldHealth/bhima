@@ -1,3 +1,6 @@
+SET names 'utf8';
+SET character_set_database = 'utf8';
+
 -- bhima test database
 
 -- Enterprise

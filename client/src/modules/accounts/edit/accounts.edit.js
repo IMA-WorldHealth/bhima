@@ -9,8 +9,10 @@ AccountEditController.$inject = [
   'NotifyService', 'util', 'bhConstants', 'ModalService', 'appcache',
 ];
 
-function AccountEditController($rootScope, $state, AccountStore, Accounts,
-  Notify, util, Constants, ModalService, AppCache) {
+function AccountEditController(
+  $rootScope, $state, AccountStore, Accounts,
+  Notify, util, Constants, ModalService, AppCache
+) {
   var accountStore;
   var typeStore;
   var cache = AppCache('AccountEdit');
@@ -21,8 +23,11 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
   vm.stateCurrent = {};
 
   if ($state.params.id || $state.current.name) {
-    vm.stateParams = cache.stateParams = $state.params;
-    vm.stateCurrent = cache.stateCurrent = $state.current;
+    cache.stateParams = $state.params;
+    cache.stateCurrent = $state.current;
+
+    vm.stateParams = cache.stateParams;
+    vm.stateCurrent = cache.stateCurrent;
   } else {
     vm.stateParams = cache.stateParams;
     vm.stateCurrent = cache.stateCurrent;
@@ -84,17 +89,20 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
    */
   function settupPage() {
     return AccountStore.accounts()
-      .then(function (accounts) {
-        accountStore = angular.copy(accounts);
-        accountStore.post(vm.rootAccount);
-        vm.accounts = accountStore.data;
+      .then(handleAccountStore)
+      .then(handleAccountType);
+  }
 
-        return AccountStore.types();
-      })
-      .then(function (types) {
-        typeStore = types;
-        vm.types = typeStore.data;
-      });
+  function handleAccountStore(accounts) {
+    accountStore = angular.copy(accounts);
+    accountStore.post(vm.rootAccount);
+    vm.accounts = accountStore.data;
+    return AccountStore.types();
+  }
+
+  function handleAccountType(types) {
+    typeStore = types;
+    vm.types = typeStore.data;
   }
 
   /**
@@ -134,7 +142,8 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
   function defineNewAccount() {
     // defining a new account
     // if a previous account existed - use these settings for the next account (batch creation)
-    var cacheType, cacheParent;
+    var cacheType;
+    var cacheParent;
 
     if (vm.account) {
       cacheType = vm.account.type_id;
@@ -196,58 +205,71 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
     }
 
     if (vm.isCreateState) {
-
-      return Accounts.create(submit)
-        .then(function (result) {
-          vm.fetchError = null;
-
-          // update the id so this account can be directly edited
-          submit.id = result.id;
-          $rootScope.$broadcast('ACCOUNT_CREATED', submit);
-          Notify.success('ACCOUNT.CREATED');
-
-          if (vm.batchCreate) {
-            resetModal(accountForm);
-          } else {
-            close();
-          }
-        })
-        .catch(handleModalError);
-
+      handleAccountCreateState();
     } else {
-      return Accounts.update(vm.account.id, submit)
-        .then(function (result) {
-          vm.fetchError = null;
-          $rootScope.$broadcast('ACCOUNT_UPDATED', result);
-          Notify.success('ACCOUNT.UPDATED');
-          close();
-        })
+      handleAccountElseState();
+    }
+
+    function handleAccountCreateState() {
+      return Accounts.create(submit)
+        .then(handleAccountCreateResult)
         .catch(handleModalError);
+    }
+
+    function handleAccountCreateResult(result) {
+      vm.fetchError = null;
+
+      // update the id so this account can be directly edited
+      submit.id = result.id;
+      $rootScope.$broadcast('ACCOUNT_CREATED', submit);
+      Notify.success('ACCOUNT.CREATED');
+
+      if (vm.batchCreate) {
+        resetModal(accountForm);
+      } else {
+        close();
+      }
+    }
+
+    function handleAccountElseState() {
+      return Accounts.update(vm.account.id, submit)
+        .then(handleAccountElseResult)
+        .catch(handleModalError);
+    }
+
+    function handleAccountElseResult(result) {
+      vm.fetchError = null;
+      $rootScope.$broadcast('ACCOUNT_UPDATED', result);
+      Notify.success('ACCOUNT.UPDATED');
+      close();
     }
   }
 
   /** Delete an used account */
-  function deleteAccount(account){
+  function deleteAccount(account) {
+    function confirmAccountDeletionResult(bool) {
+      // if the user clicked cancel, reset the view and return
+      if (!bool) {
+        return null;
+      }
+
+      if (!account.id) {
+        return null;
+      }
+
+      return Accounts.delete(account.id)
+        .then(handleAccountDeletionResult)
+        .catch(handleModalError);
+    }
+
+    function handleAccountDeletionResult() {
+      $rootScope.$broadcast('ACCOUNT_DELETED', account);
+      Notify.success('ACCOUNT.DELETED');
+      close();
+    }
 
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool){
-        // if the user clicked cancel, reset the view and return
-        if (!bool) {
-          return;
-        }
-
-        if (!account.id) {
-          return;
-        }
-
-        return Accounts.delete(account.id)
-          .then(function (result){
-            $rootScope.$broadcast('ACCOUNT_DELETED', account);
-            Notify.success('ACCOUNT.DELETED');
-            close();
-          })
-          .catch(handleModalError);
-        });
+      .then(confirmAccountDeletionResult);
   }
 
   function resetModal(accountForm) {
@@ -258,9 +280,8 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts,
   }
 
   function getTypeTitle(typeId) {
-    if (typeStore) {
-      return typeStore.get(typeId).translation_key;
-    }
+    if (!typeStore) { return null; }
+    return typeStore.get(typeId).translation_key;
   }
 
   function setRootAccount(accountForm) {
