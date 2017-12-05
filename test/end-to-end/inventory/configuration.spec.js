@@ -16,6 +16,12 @@ describe('Inventory Configuration', () => {
     cogs_account  : 'Médicaments en Sirop',
   };
 
+  const groupWithOnlySalesAccount = {
+    name : 'Group With Only Sales Account',
+    code : '1900',
+    sales_account : '77111010', // 77111010 - Interets de Prets *
+  };
+
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2500',
@@ -34,7 +40,7 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('successfully creates a new inventory group', () => {
+    it('creates a new inventory group', () => {
       $('[data-create-group]').click();
       FU.input('$ctrl.session.name', group.name);
       FU.input('$ctrl.session.code', group.code);
@@ -47,7 +53,7 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
-    it('successfully updates an existing inventory group', () => {
+    it('updates an existing inventory group', () => {
       $(`[data-edit-group="${group.code}"]`).click();
       FU.input('$ctrl.session.name', updateGroup.name);
       FU.input('$ctrl.session.code', updateGroup.code);
@@ -58,8 +64,19 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
-    it('successfully deletes an existing inventory group', () => {
+    it('deletes an existing inventory group', () => {
       $(`[data-delete-group="${updateGroup.code}"]`).click();
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
+    it('creates an inventory group with only a sales account', () => {
+      $('[data-create-group]').click();
+      FU.input('$ctrl.session.name', groupWithOnlySalesAccount.name);
+      FU.input('$ctrl.session.code', groupWithOnlySalesAccount.code);
+
+      components.accountSelect.set(groupWithOnlySalesAccount.sales_account, 'sales_account');
+
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
@@ -70,21 +87,21 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('successfully creates a new inventory type', () => {
+    it('creates a new inventory type', () => {
       $('[data-create-type]').click();
       FU.input('$ctrl.session.text', type.text);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
-    it('successfully updates an existing inventory type', () => {
+    it('updates an existing inventory type', () => {
       $(`[data-edit-type="${type.text}"]`).click();
       FU.input('$ctrl.session.text', updateType.text);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
-    it('successfully deletes an existing inventory type', () => {
+    it('deletes an existing inventory type', () => {
       $(`[data-delete-type="${updateType.text}"]`).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
@@ -96,7 +113,7 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('successfully creates a new inventory unit', () => {
+    it('creates a new inventory unit', () => {
       $('[data-create-unit]').click();
       FU.input('$ctrl.session.text', unit.text);
       FU.input('$ctrl.session.abbr', unit.abbr);
@@ -104,7 +121,7 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
-    it('successfully updates an existing inventory unit', () => {
+    it('updates an existing inventory unit', () => {
       $(`[data-edit-unit="${unit.abbr}"]`).click();
       FU.input('$ctrl.session.text', updateUnit.text);
       FU.input('$ctrl.session.abbr', updateUnit.abbr);
@@ -112,7 +129,7 @@ describe('Inventory Configuration', () => {
       components.notification.hasSuccess();
     });
 
-    it('successfully deletes an existing inventory unit', () => {
+    it('deletes an existing inventory unit', () => {
       $(`[data-delete-unit="${updateUnit.abbr}"]`).click();
       FU.buttons.submit();
       components.notification.hasSuccess();
