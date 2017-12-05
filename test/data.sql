@@ -573,8 +573,8 @@ INSERT INTO `grade` VALUES
 
 -- Offday
 INSERT INTO `offday` VALUES
-  (1, 'Martyre', '2017-04-01', 100),
-  (2, 'Independance', '2017-06-30', 100);
+  (1, 'Martyre', '2017-01-04', 100),
+  (2, 'Independance', '2017-06-30', 50.0000);
 
 INSERT INTO `section_bilan` VALUES (1, 'Section Bilan 1', 1, 1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);

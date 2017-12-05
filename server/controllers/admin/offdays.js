@@ -6,7 +6,6 @@
 
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
-var Unauthorized = require('../../lib/errors/Unauthorized');
 
 // GET /Offday
 function lookupOffday(id) {
