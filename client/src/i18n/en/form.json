@@ -383,6 +383,7 @@
             "NO_DEBTOR_GROUPS": "No debtor groups",
             "NOTES": "Note(s)",
             "NO_DISTRIBUTABLE": "Not distributable",
+            "NO_FISCALYEAR_REGISTERED" : "There are no fiscal years registered so far! Click 'Create a Fiscal Year' to add your first fiscal year",
             "OF": "Of",
             "OPENING_BALANCE": "Opening Balance",
             "FINAL_BALANCE": "Final Balance",

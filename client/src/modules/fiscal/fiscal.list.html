@@ -50,6 +50,21 @@
         </div>
       </div>
 
+      <div class="col-lg-12">
+        <br/>
+        <p class="text-center">
+          <span class="text-center" ng-show="FiscalCtrl.loadingState">
+            <span class="fa fa-circle-o-notch fa-spin"></span>
+            <span translate>TABLE.COLUMNS.LOADING</span>
+          </span>
+          <p
+            ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError" 
+            class="text-center text-danger" translate>
+            FORM.LABELS.NO_FISCALYEAR_REGISTERED
+          </p>
+        </p>
+      </div>
+  
       <div>
         <uib-pagination
           total-items="FiscalCtrl.fiscalYears.length"
@@ -65,3 +80,4 @@
     </div>
   </div>
 </div>
+ 

@@ -384,6 +384,7 @@
             "NOTES": "Note(s)",
             "NO_DEBTOR_GROUPS": "Aucun groupes débiteurs",
             "NO_DISTRIBUTABLE": "Non distribuable",
+            "NO_FISCALYEAR_REGISTERED" : "Il n'y a aucune année fiscale enregistré jusque là! Cliquez sur 'Créer L'année Fiscale' pour ajouter votre première année fiscale",
             "OF": "De",
             "ON_DELIVERY": "Lors de la delivarance",
             "ON_PURCHASE": "Lors de l'achat",
