@@ -31,7 +31,6 @@
               <tr>
                 <th translate> TABLE.COLUMNS.NAME </th>
                 <th translate> TABLE.COLUMNS.PRICE_LIST </th>
-                <th translate> TABLE.COLUMNS.NOTE </th>
                 <th translate> TABLE.COLUMNS.ACTION </th>
               </tr>
             </thead>
@@ -39,7 +38,6 @@
               <tr ng-repeat="group in PatientGroupCtrl.groups track by group.uuid" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
                 <td>{{ group.name}}</td>
                 <td>{{ group.priceListLable }}</td>
-                <td>{{ group.note }}</td>
                 <td>
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -50,7 +48,7 @@
                 </td>
               </tr>
               <tr ng-if="PatientGroupCtrl.loading" class="text-center">
-                <td colspan="4"><loading-indicator></loading-indicator></td>
+                <td colspan="3"><loading-indicator></loading-indicator></td>
               </tr>
             </tbody>
           </table>
@@ -108,7 +106,7 @@
                   <label class="control-label" translate>
                     FORM.LABELS.NOTES
                   </label>
-                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
+                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note" required></textarea>
                   <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                   </div>

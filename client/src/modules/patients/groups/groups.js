@@ -1,8 +1,9 @@
 angular.module('bhima.controllers')
-.controller('PatientGroupController', PatientGroupController);
+  .controller('PatientGroupController', PatientGroupController);
 
 PatientGroupController.$inject = [
-  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', 'ModalService', 'util'
+  'PatientGroupService', 'PriceListService', 'SessionService', 'ModalService',
+  'util', 'NotifyService',
 ];
 
 /**
@@ -17,7 +18,7 @@ PatientGroupController.$inject = [
  *
  *  @constructor
  */
-function PatientGroupController (PatientGroups, PriceLists, Session, $translate, ModalService, util) {
+function PatientGroupController(PatientGroups, PriceLists, Session, ModalService, util, Notify) {
   var vm = this;
 
   vm.length100 = util.length100;
@@ -28,26 +29,24 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
 
   // This method is responsible of initializing data
   function startup() {
-
     // make the loading state into true, while loading data
     toggleLoadingIndicator();
 
     // fetching all price list
     PriceLists.read()
-    .then(function (priceLists) {
+      .then(function (priceLists) {
 
-      // attaching the price list to the view
-      vm.priceLists = priceLists;
+        // attaching the price list to the view
+        vm.priceLists = priceLists;
 
-      // load all patient groups
-      return loadPatientGroups();
-    })
-    .then(function (patientGroups) {
-      vm.groups = patientGroups;
-
-      // turn off loading indicator
-      toggleLoadingIndicator();
-    });
+        // load all patient groups
+        return loadPatientGroups();
+      })
+      .then(function (patientGroups) {
+        vm.groups = patientGroups;
+      })
+      .catch(Notify.handleError)
+      .finally(toggleLoadingIndicator);
   }
 
   function toggleLoadingIndicator() {
@@ -56,7 +55,6 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
 
   // this method is responsible to propose a GUI to user for creation
   function create() {
-
     // init the patient group
     vm.patientGroup = {};
 
@@ -66,7 +64,6 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
 
   // this function is responsible of submitting the patient group to the server for creation
   function submit(form) {
-
     // if the form is not valid do nothing
     if (form.$invalid) { return; }
 
@@ -88,24 +85,20 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
         vm.groups = groups;
         vm.view = 'default';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
-  // this function is handling error from $http server
-  function handler(error) {
-    throw error;
-  }
 
   // this method is changing the view for the update
   function update(uuid) {
-
     // switch view to update
     vm.view = 'update';
 
     PatientGroups.read(uuid)
-    .then(function (data) {
-      vm.patientGroup = data;
-    });
+      .then(function (data) {
+        vm.patientGroup = data;
+      })
+      .catch(Notify.handleError);
   }
 
   // this function clears the selected form
@@ -115,22 +108,21 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
 
   // this function is responsible of removing a patient group
   function remove() {
-    
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
-      // if the user cancels, return immediately.
-      if (!bool) { return; }
+      .then(function (bool) {
+        // if the user cancels, return immediately.
+        if (!bool) { return; }
 
-      PatientGroups.delete(vm.patientGroup.uuid)
-      .then(function (message) {
-        vm.view = 'default';
-        return loadPatientGroups();
-      })
-      .then(function (groups) {
-        vm.groups = groups;
-      })
-      .catch(handler);
-    });  
+        PatientGroups.delete(vm.patientGroup.uuid)
+          .then(function () {
+            vm.view = 'default';
+            return loadPatientGroups();
+          })
+          .then(function (groups) {
+            vm.groups = groups;
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // this method is load the list of patient group
