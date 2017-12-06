@@ -4,7 +4,7 @@
         "ADD_METADATA": "Add Inventory Item",
         "ADD_TYPE": "Add Inventory Type",
         "ADD_UNIT": "Add Inventory unit form",
-        "CODE" : "Iventory Code",
+        "CODE": "Iventory Code",
         "CONFIGURATION": "Configurations",
         "CONTAINS": "Contains",
         "CREATE_ANOTHER": "Create another inventory item",
@@ -21,6 +21,7 @@
         "LIST_TYPE": "Inventory Types",
         "LIST_UNIT": "Inventory Unit form",
         "DEFAULT_QUANTITY_DEFINITION": "The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time.",
+        "NO_INVENTORY_REGISTERED": "There is no inventory enregistered yet",
         "REGISTRY": "Inventories Registry"
     }
 }

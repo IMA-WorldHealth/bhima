@@ -31,25 +31,35 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
 
   var gridOptions = {
-    appScopeProvider  : vm,
-    enableSorting     : false,
+    appScopeProvider : vm,
+    enableSorting : false,
     enableColumnMenus : false,
-    rowTemplate       : 'modules/templates/grid/error.row.html',
+    rowTemplate : 'modules/templates/grid/error.row.html',
     columnDefs : [
-      { field: 'status', width : 25, displayName : '', cellTemplate: 'modules/invoices/templates/grid/status.tmpl.html' },
-      { field: 'code', displayName : 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'modules/invoices/templates/grid/code.tmpl.html' },
-      { field: 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
-      { field: 'quantity', displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'modules/invoices/templates/grid/quantity.tmpl.html' },
-      { field: 'transaction_price', displayName : 'FORM.LABELS.UNIT_PRICE', headerCellFilter: 'translate', cellTemplate: 'modules/invoices/templates/grid/unit.tmpl.html' },
-      { field: 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'modules/invoices/templates/grid/amount.tmpl.html' },
-      { field: 'actions', width : 25, cellTemplate: 'modules/invoices/templates/grid/actions.tmpl.html' },
+      {
+ field : 'status', width : 25, displayName : '', cellTemplate : 'modules/invoices/templates/grid/status.tmpl.html' 
+},
+      {
+ field : 'code', displayName : 'TABLE.COLUMNS.CODE', headerCellFilter : 'translate', cellTemplate : 'modules/invoices/templates/grid/code.tmpl.html' 
+},
+      { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
+      {
+ field : 'quantity', displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter : 'translate', cellTemplate : 'modules/invoices/templates/grid/quantity.tmpl.html' 
+},
+      {
+ field : 'transaction_price', displayName : 'FORM.LABELS.UNIT_PRICE', headerCellFilter : 'translate', cellTemplate : 'modules/invoices/templates/grid/unit.tmpl.html' 
+},
+      {
+ field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter : 'translate', cellTemplate : 'modules/invoices/templates/grid/amount.tmpl.html' 
+},
+      { field : 'actions', width : 25, cellTemplate : 'modules/invoices/templates/grid/actions.tmpl.html' },
     ],
     onRegisterApi : exposeGridScroll,
-    data          : vm.Invoice.store.data,
+    data : vm.Invoice.store.data,
   };
 
 
-  // called when the grid is initialized
+    // called when the grid is initialized
   function exposeGridScroll(gridApi) {
     vm.gridApi = gridApi;
   }
