@@ -11,7 +11,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
 
   // Holiday we will add during this test suite.
 
-  const cotisation = {
+  const holiday = {
     label           : 'Conge Maternite',
     employee_id     : 1,
     dateFrom        : '2017-11-01',
@@ -31,9 +31,9 @@ describe('(/holidays) The /holidays  API endpoint', function () {
 
   it('POST /HOLIDAYS should create a new Holiday', function () {
     return agent.post('/holidays')
-    .send(cotisation)
+    .send(holiday)
     .then(function (res) {
-      cotisation.id = res.body.id;
+      holiday.id = res.body.id;
       helpers.api.created(res);
     })
     .catch(helpers.handler);
@@ -48,7 +48,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('PUT /HOLIDAYS  should update an existing Holiday ', function () {
-    return agent.put('/holidays/' + cotisation.id)
+    return agent.put('/holidays/' + holiday.id)
       .send({ label : 'Holiday Updated' })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -58,7 +58,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('GET /HOLIDAYS/:ID returns a single Holiday ', function () {
-    return agent.get('/holidays/' + cotisation.id)
+    return agent.get('/holidays/' + holiday.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -75,7 +75,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('DELETE /HOLIDAYS/:ID should delete a Holiday ', function () {
-    return agent.delete('/holidays/' + cotisation.id)
+    return agent.delete('/holidays/' + holiday.id)
       .then(function (res) {
         helpers.api.deleted(res);
       })
