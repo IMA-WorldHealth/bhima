@@ -11,8 +11,8 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 /* loading grid actions */
-const GA = require('../shared/GridAction');
 const GU = require('../shared/GridUtils');
+const GA = require('../shared/GridAction');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -38,11 +38,13 @@ class OffdayPage {
    */
   createOffday(offday) {
     FU.buttons.create();
-    
     FU.input('OffdayModalCtrl.offday.label', offday.label);
-    FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
-    components.dateEditor.set(offday.date);
+    
+    // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
+    //components.dateEditor.set(new Date(offday.date));
 
+    FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
+    
     FU.buttons.submit();
     components.notification.hasSuccess();
   }
@@ -66,6 +68,11 @@ class OffdayPage {
         const { rowIndex } = indices;
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
         FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
+
+        // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
+        //components.dateEditor.set(new Date(updateOffday.date));
+
+        FU.input('OffdayModalCtrl.offday.percent_pay', updateOffday.percent_pay);
 
         FU.buttons.submit();
         components.notification.hasSuccess();

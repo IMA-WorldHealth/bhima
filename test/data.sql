@@ -2,6 +2,7 @@ SET names 'utf8';
 SET character_set_database = 'utf8';
 
 -- bhima test database
+SET NAMES 'utf8';
 
 -- Enterprise
 INSERT INTO `enterprise` VALUES

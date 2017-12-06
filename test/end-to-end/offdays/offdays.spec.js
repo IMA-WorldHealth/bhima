@@ -12,16 +12,16 @@ describe('Offdays Management', () => {
 
   const Page = new OffdayPage();
 
-  const offday = {
-    percent_pay   : 100,
+  const offday = {    
     label         : 'Fete de Parent',
-    date          : '01/08/2017'
+    date          : '2017-08-01',
+    percent_pay   : 100
   };
 
   const updateOffday = {
-    label         : 'Vingt Quatre Novembre',
-    percent_pay   : 100,
-    date          : '24/11/2017'
+    label         : 'Vingt',
+    date          : '2017-11-24',
+    percent_pay   : 100    
   };
 
   it('successfully creates a new Offday', () => {
