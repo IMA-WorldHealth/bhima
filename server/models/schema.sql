@@ -225,57 +225,6 @@ CREATE TABLE `config_paiement_period` (
   FOREIGN KEY (`paiement_period_id`) REFERENCES `paiement_period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `config_rubric`;
-
-CREATE TABLE `config_rubric` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_rubric_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `config_rubric_item`;
-
-CREATE TABLE `config_rubric_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_rubric_id` int(10) unsigned NOT NULL,
-  `rubric_id` int(10) unsigned NOT NULL,
-  `payable` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_rubric_item_1` (`config_rubric_id`, `rubric_id`, `payable`),
-  KEY `config_rubric_id` (`config_rubric_id`),
-  KEY `rubric_id` (`rubric_id`),
-  FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
-  FOREIGN KEY (`rubric_id`) REFERENCES `rubric` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `config_tax`;
-
-CREATE TABLE `config_tax` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_tax_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `config_tax_item`;
-
-CREATE TABLE `config_tax_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_tax_id` int(10) unsigned NOT NULL,
-  `tax_id` int(10) unsigned NOT NULL,
-  `payable` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_tax_item_1` (`config_tax_id`, `tax_id`, `payable`),
-  KEY `config_tax_id` (`config_tax_id`),
-  KEY `tax_id` (`tax_id`),
-  FOREIGN KEY (`config_tax_id`) REFERENCES `config_tax` (`id`),
-  FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `consumption`;
 
 CREATE TABLE `consumption` (
@@ -377,44 +326,6 @@ CREATE TABLE `cost_center_assignation_item` (
   FOREIGN KEY (`cost_center_assignation_id`) REFERENCES `cost_center_assignation` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`pri_cc_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `cotisation`;
-
-CREATE TABLE `cotisation` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(4) DEFAULT NULL,
-  `is_employee` tinyint(1) DEFAULT 0,
-  `is_percent` tinyint(1) DEFAULT 0,
-  `four_account_id` int(10) unsigned DEFAULT NULL,
-  `six_account_id` int(10) unsigned DEFAULT NULL,
-  `value` float DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cotisation_1` (`label`),
-  KEY `four_account_id` (`four_account_id`),
-  KEY `six_account_id` (`six_account_id`),
-  FOREIGN KEY (`four_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`six_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `cotisation_paiement`;
-
-CREATE TABLE `cotisation_paiement` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `paiement_uuid` BINARY(16) NOT NULL,
-  `cotisation_id` int(10) unsigned NOT NULL,
-  `value` float DEFAULT 0,
-  `posted` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cotisation_paiement_1` (`paiement_uuid`, `cotisation_id`),
-  KEY `paiement_uuid` (`paiement_uuid`),
-  KEY `cotisation_id` (`cotisation_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
-  FOREIGN KEY (`cotisation_id`) REFERENCES `cotisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `country`;
 
@@ -1013,31 +924,6 @@ CREATE TABLE `paiement` (
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `paiement_period`;
-
-CREATE TABLE `paiement_period` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_tax_id` int(10) unsigned NOT NULL,
-  `config_rubric_id` int(10) unsigned NOT NULL,
-  `config_cotisation_id` int(10) unsigned NOT NULL,
-  `config_accounting_id` int(10) unsigned NOT NULL,
-  `label` VARCHAR(100) NOT NULL,
-  `dateFrom` date NOT NULL,
-  `dateTo` date NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `paiement_period_1` (`label`),
-  UNIQUE KEY `paiement_period_2` (`dateFrom`, `dateTo`),
-  KEY `config_tax_id` (`config_tax_id`),
-  KEY `config_rubric_id` (`config_rubric_id`),
-  KEY `config_cotisation_id` (`config_cotisation_id`),
-  KEY `config_accounting_id` (`config_accounting_id`),
-  FOREIGN KEY (`config_tax_id`) REFERENCES `config_tax` (`id`),
-  FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
-  FOREIGN KEY (`config_cotisation_id`) REFERENCES `config_cotisation` (`id`),
-  FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `partial_paiement`;
 
 CREATE TABLE `partial_paiement` (
@@ -1496,35 +1382,6 @@ CREATE TABLE `saved_report` (
   FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
 ) ENGINE= InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `rubric`;
-
-CREATE TABLE `rubric` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` text,
-  `abbr` varchar(4) DEFAULT NULL,
-  `is_discount` tinyint(1) DEFAULT 0,
-  `is_percent` tinyint(1) DEFAULT 0,
-  `value` float DEFAULT 0,
-  `is_advance` tinyint(1) DEFAULT 0,
-  `is_social_care` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `rubric_paiement`;
-
-CREATE TABLE `rubric_paiement` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `paiement_uuid` BINARY(16) NOT NULL,
-  `rubric_id` int(10) unsigned NOT NULL,
-  `value` float DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `paiement_uuid` (`paiement_uuid`),
-  KEY `rubric_id` (`rubric_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
-  FOREIGN KEY (`rubric_id`) REFERENCES `rubric` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `invoice`;
 
 CREATE TABLE `invoice` (
@@ -1689,43 +1546,6 @@ CREATE TABLE `supplier` (
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `tax`;
-CREATE TABLE `tax` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(4) DEFAULT NULL,
-  `is_employee` tinyint(1) DEFAULT 0,
-  `is_percent` tinyint(1) DEFAULT 0,
-  `four_account_id` int(10) unsigned DEFAULT NULL,
-  `six_account_id` int(10) unsigned DEFAULT NULL,
-  `value` float DEFAULT 0,
-  `is_ipr` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `tax_1` (`label`),
-  KEY `four_account_id` (`four_account_id`),
-  KEY `six_account_id` (`six_account_id`),
-  FOREIGN KEY (`four_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`six_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `tax_paiement`;
-
-CREATE TABLE `tax_paiement` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `paiement_uuid` BINARY(16) NOT NULL,
-  `tax_id` int(10) unsigned NOT NULL,
-  `value` float DEFAULT 0,
-  `posted` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `tax_paiement_1` (`paiement_uuid`, `tax_id`),
-  KEY `paiement_uuid` (`paiement_uuid`),
-  KEY `tax_id` (`tax_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
-  FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `taxe_ipr`;
 
 CREATE TABLE `taxe_ipr` (
@@ -1744,7 +1564,6 @@ CREATE TABLE `taxe_ipr` (
   `currency_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `transaction_type`;
 CREATE TABLE `transaction_type` (
