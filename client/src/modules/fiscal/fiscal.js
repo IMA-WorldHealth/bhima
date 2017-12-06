@@ -11,11 +11,11 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
 
   // pagination configuration
   /** @todo this should all be moved to a component */
-  vm.pageSize     = 5;
-  vm.currentPage  = 1;
-  vm.fiscalYears  = [];
-  vm.maxSize      = 5;
-  vm.del          = del;
+  vm.pageSize = 5;
+  vm.currentPage = 1;
+  vm.fiscalYears = [];
+  vm.maxSize = 5;
+  vm.del = del;
 
   vm.sort = sort;
   vm.state = $state;
@@ -25,16 +25,25 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   vm.sortByDateCreated = 'ASC';
   vm.sortByNumberOfMonth = 'ASC';
 
+  vm.loadingState = true;
+  vm.loadingError = false;
+
+
   // refresh Fiscal Year
   function refreshFiscalYear() {
-    return Fiscal.read(null,{ detailed: 1 })
+    return Fiscal.read(null, { detailed : 1 })
       .then(function (fiscalYears) {
         vm.fiscalYears = fiscalYears;
+      }).catch(function (err) {
+        vm.loadingError = true;
+        Notify.handleError(err);
+      }).finally(function () {
+        vm.loadingState = false;
       });
   }
 
   // Get the fiscal Year By Date
-  Fiscal.fiscalYearDate({ date: today })
+  Fiscal.fiscalYearDate({ date : today })
     .then(function (current) {
       vm.current = current;
       vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
@@ -45,19 +54,18 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   // switch to delete warning mode
   function del(fiscal) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-       // if the user clicked cancel, reset the view and return
-      if (!bool) { return; }
-
-      Fiscal.delete(fiscal.id)
-        .then(function () {
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-          return refreshFiscalYear();
-        })
-        .catch(function (error) {
-          Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
-        });
-    });
+      .then(function (bool) {
+        // if the user clicked cancel, reset the view and return
+        if (!bool) { return; }
+        Fiscal.delete(fiscal.id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            return refreshFiscalYear();
+          })
+          .catch(function (err) {
+            Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
+          });
+      });
   }
 
   function back() {
@@ -96,7 +104,12 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
       .then(function (fiscalYears) {
         vm.fiscalYears = fiscalYears;
       })
-      .catch(Notify.handleError);
+      .catch(function (err) {
+        vm.loadingError = true;
+        Notify.handleError(err);
+      }).finally(function () {
+        vm.loadingState = false;
+      });
   }
 
   refreshFiscalYear();
