@@ -13,7 +13,7 @@ module.exports = VoucherRegistrySearch;
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
   const NUM_VOUCHERS = 18;
-  const NUM_USER_RECORDS = 19;
+  const NUM_USER_RECORDS = 18;
   const NUM_DESCRIPTION_RECORDS = 2;
   const NUM_TRANSACTION_TYPE_RECORD = 1;
   const transactionTypes = ['Autres Depenses'];
@@ -53,7 +53,7 @@ function VoucherRegistrySearch() {
   it(`filters by <select> should return ${NUM_USER_RECORDS} results`, () => {
     modal.setUser('Super User');
     modal.submit();
-    expectNumberOfGridRows(NUM_VOUCHERS);
+    expectNumberOfGridRows(NUM_USER_RECORDS);
   });
 
   it(`filters by <select> transaction type should return ${NUM_TRANSACTION_TYPE_RECORD} results`, () => {
