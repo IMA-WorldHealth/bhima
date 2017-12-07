@@ -160,7 +160,7 @@ CREATE TABLE `cash_box_account_currency` (
   `currency_id`         TINYINT UNSIGNED NOT NULL,
   `cash_box_id`         MEDIUMINT UNSIGNED NOT NULL,
   `account_id`          INT UNSIGNED NOT NULL,
-  `transfer_account_id` INT UNSIGNED NOT NULL,
+  `transfer_account_id` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cash_box_account_currency_1` (`currency_id`, `cash_box_id`, `account_id`),
   UNIQUE KEY `cash_box_account_currency_2` (`currency_id`, `cash_box_id`, `transfer_account_id`),
