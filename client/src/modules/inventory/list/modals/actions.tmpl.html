@@ -59,7 +59,7 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.PRICE</label>
+      <label class="control-label"><span translate>FORM.LABELS.PRICE </span> ({{$ctrl.currencySymbol}})</label>
       <input class="form-control"
         type="number"
         ng-min="0"
