@@ -14,7 +14,9 @@
         <span ng-bind-html="group.name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
-
+    <div class="help-block" ng-show="$ctrl.debtorGroups.length===0">
+      <span class="text-danger" translate>DEBTOR_GROUP.NO_DEBTOR_GROUP_REGISTERED</span>
+    </div>
     <div class="help-block" ng-messages="DebtorForm.$error" ng-show="$ctrl.validationTrigger">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>

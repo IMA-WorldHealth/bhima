@@ -15,6 +15,7 @@
 "LOADING":"Récupération des groupes débiteurs",
 "NEW":"Ajouter un Groupe Débiteur",
 "NEW_DEBTOR_GROUP":"Nouveau Groupe de Débiteur",
+"NO_DEBTOR_GROUP_REGISTERED" : "Aucun group débuteur n'est enregistré jusque là",
 "POLICIES":{"TITLE":"Les stratégies de groupe",
 "SUBSIDIES":{"TITLE":"Subventions",
 "INFO":"Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
