@@ -5,6 +5,7 @@
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "MISSING_INVENTORY_ACCOUNTS" : "Some selected inventories doesn't have stock accounts associated",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
+    "NO_FISCAL_YEAR" : "You are missing a fiscal year for that date!",
     "NOT_ALLOWED" : "You are not allowed to perform this action",
     "NOT_FOUND" : "This record could not be found",
     "NO_PERMISSIONS" : "The login succeeded, but you have no permissions. Please see a system administrator.",
