@@ -1,10 +1,10 @@
 /**
- * The /billing_service API module
+ * The /invoicing_fee API module
  *
- * @module controllers/finance/billingServices
+ * @module controllers/finance/invoicingFees
  *
- * @description This module is responsible for CRUD operations on the billing_service
- * table.  A billing_service increases a patient's invoice by a set percentage
+ * @description This module is responsible for CRUD operations on the invoicing_fee
+ * table.  A invoicing_fee increases a patient's invoice by a set percentage
  * of the total invoice amount.
  *
  * @requires lib/db
@@ -17,17 +17,17 @@ const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
- * Looks up a billing service by id.
+ * Looks up an invoicing fee by id.
  *
- * @param {Number} id - the billing service id
- * @returns {Promise} billingService - a promise resolvinng to the billing
+ * @param {Number} id - the invoicing fee id
+ * @returns {Promise} invoicingFee - a promise resolvinng to the billing
  * service entity.
  */
-function lookupBillingService(id) {
+function lookupInvoicingFee(id) {
   const sql =
     `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
       bs.created_at, bs.updated_at, a.number
-    FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
+    FROM invoicing_fee AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
 
   return db.one(sql, [id]);
@@ -35,15 +35,15 @@ function lookupBillingService(id) {
 
 
 /**
- * GET /billing_services/:id
+ * GET /invoicing_fees/:id
  *
- * @description retrieve the details of a single billing service.
+ * @description retrieve the details of a single invoicing fee.
  */
 exports.detail = function detail(req, res, next) {
-  // looks up the billing service by ID
-  lookupBillingService(req.params.id)
-    .then((billingService) => {
-      res.status(200).json(billingService);
+  // looks up the invoicing fee by ID
+  lookupInvoicingFee(req.params.id)
+    .then((invoicingFee) => {
+      res.status(200).json(invoicingFee);
     })
     .catch(next)
     .done();
@@ -51,15 +51,15 @@ exports.detail = function detail(req, res, next) {
 
 
 /**
- * GET /billing_services
+ * GET /invoicing_fees
  *
- * @description lists all billing services in the database, in configurable
+ * @description lists all invoicing fees in the database, in configurable
  * levels of detail
  */
 exports.list = function list(req, res, next) {
   let sql =
     `SELECT bs.id, bs.label, bs.created_at
-    FROM billing_service AS bs
+    FROM invoicing_fee AS bs
     ORDER BY bs.label;`;
 
   // provide as more information as necessary, if the client asks for it.
@@ -68,7 +68,7 @@ exports.list = function list(req, res, next) {
       `SELECT 
         bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id,
         bs.description, bs.value, a.number
-      FROM billing_service AS bs 
+      FROM invoicing_fee AS bs 
       JOIN account AS a
         ON bs.account_id = a.id
       ORDER BY bs.id;`;
@@ -84,27 +84,27 @@ exports.list = function list(req, res, next) {
 
 
 /**
- * POST /billing_services
+ * POST /invoicing_fees
  *
- * @desc creates a new billing service
+ * @desc creates a new invoicing fee
  */
 exports.create = function create(req, res, next) {
   // cache posted data for easy lookup
-  const data = req.body.billingService;
+  const data = req.body.invoicingFee;
 
   // delete the id if it exists -- the db will create one via auto-increment
   delete data.id;
 
   // ensure that values inserted are positive
   if (data.value <= 0) {
-    next(new BadRequest(`The value submitted to a billing service must be positive.
+    next(new BadRequest(`The value submitted to a invoicing fee must be positive.
          You provided the negative value ${data.value}.`));
 
     return;
   }
 
   const sql =
-    `INSERT INTO billing_service (account_id, label, description, value)
+    `INSERT INTO invoicing_fee (account_id, label, description, value)
     VALUES (?, ?, ?, ?);`;
 
   db.exec(sql, [data.account_id, data.label, data.description, data.value])
@@ -117,26 +117,26 @@ exports.create = function create(req, res, next) {
 
 
 /**
- * PUT /billing_services/:id
+ * PUT /invoicing_fees/:id
  *
- * @desc updates an existing billing service with new information
+ * @desc updates an existing invoicing fee with new information
  */
 exports.update = function update(req, res, next) {
   const id = req.params.id;
-  const data = req.body.billingService;
+  const data = req.body.invoicingFee;
 
-  // remove the :id if it exists inside the billingService object
+  // remove the :id if it exists inside the invoicingFee object
   delete data.id;
 
   const sql =
-    'UPDATE billing_service SET ? WHERE id = ?;';
+    'UPDATE invoicing_fee SET ? WHERE id = ?;';
 
-  // ensure that the billing service matching :id exists
-  lookupBillingService(id)
+  // ensure that the invoicing fee matching :id exists
+  lookupInvoicingFee(id)
     .then(() => db.exec(sql, [data, req.params.id]))
-    .then(() => lookupBillingService(id))
-    .then((billingService) => {
-      res.status(200).json(billingService);
+    .then(() => lookupInvoicingFee(id))
+    .then((invoicingFee) => {
+      res.status(200).json(invoicingFee);
     })
     .catch(next)
     .done();
@@ -144,16 +144,16 @@ exports.update = function update(req, res, next) {
 
 
 /**
- * DELETE /billing_services/:id
+ * DELETE /invoicing_fees/:id
  *
- * @desc deletes a billing service in the database
+ * @desc deletes a invoicing fee in the database
  */
 exports.delete = function del(req, res, next) {
   const sql =
-    'DELETE FROM billing_service WHERE id = ?;';
+    'DELETE FROM invoicing_fee WHERE id = ?;';
 
-  // first make sure that the billing service exists
-  lookupBillingService(req.params.id)
+  // first make sure that the invoicing fee exists
+  lookupInvoicingFee(req.params.id)
     .then(() => {
       return db.exec(sql, [req.params.id]);
     })

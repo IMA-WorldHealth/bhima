@@ -1,18 +1,18 @@
 angular.module('bhima.controllers')
-.controller('BillingServicesUpdateController', BillingServicesUpdateController);
+.controller('InvoicingFeesUpdateController', InvoicingFeesUpdateController);
 
-BillingServicesUpdateController.$inject = [
+InvoicingFeesUpdateController.$inject = [
   '$state', 'BillingServicesService', '$uibModalInstance', 'util', 'appcache'
 ];
 
 /**
  * Updates a billing service passed in via a URL parameter.  For example,
- * billing_services/1 will update the billing service with id 1.
+ * invoicingFees/1 will update the billing service with id 1.
  *
- * Importantly, both this controller and the BillingServicesUpdateController
+ * Importantly, both this controller and the InvoicingFeesUpdateController
  * use the same template, billing-services/form.html.
  */
-function BillingServicesUpdateController($state, BillingServices, ModalInstance, util, AppCache) {
+function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, util, AppCache) {
   var vm = this;
   var cache = AppCache('BillingServices');
 
@@ -23,7 +23,7 @@ function BillingServicesUpdateController($state, BillingServices, ModalInstance,
   }  
 
   // the form title is defined in the JS to allow us to reuse templates
-  vm.title = 'BILLING_SERVICES.FORM.UPDATE';
+  vm.title = 'INVOICING_FEES.FORM.UPDATE';
 
   // the label will contain a copy of the billing service's label we are updating
   vm.label = '';

@@ -44,7 +44,7 @@ function DebtorGroupsUpdateController(
       $state.params.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
-      vm.group.apply_billing_services = Boolean(vm.group.apply_billing_services);
+      vm.group.apply_invoicing_fees = Boolean(vm.group.apply_invoicing_fees);
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })

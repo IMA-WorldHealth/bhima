@@ -64,7 +64,7 @@ const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
 const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceList');
-const billingServices = require('../controllers/finance/billingServices');
+const invoicingFees = require('../controllers/finance/invoicingFees');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
@@ -388,7 +388,7 @@ exports.configure = function configure(app) {
 
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
-  app.get('/patients/:uuid/services', patients.billingServices);
+  app.get('/patients/:uuid/services', patients.invoicingFees);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
   app.get('/patients/:uuid/documents', patients.documents.list);
@@ -499,11 +499,11 @@ exports.configure = function configure(app) {
   app.put('/employees/:id', employees.update);
 
   // billing services
-  app.get('/billing_services', billingServices.list);
-  app.get('/billing_services/:id', billingServices.detail);
-  app.post('/billing_services', billingServices.create);
-  app.put('/billing_services/:id', billingServices.update);
-  app.delete('/billing_services/:id', billingServices.delete);
+  app.get('/invoicing_fees', invoicingFees.list);
+  app.get('/invoicing_fees/:id', invoicingFees.detail);
+  app.post('/invoicing_fees', invoicingFees.create);
+  app.put('/invoicing_fees/:id', invoicingFees.update);
+  app.delete('/invoicing_fees/:id', invoicingFees.delete);
 
   // discounts
   app.get('/discounts', discounts.list);

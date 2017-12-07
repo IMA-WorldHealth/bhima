@@ -8,14 +8,14 @@ BillingServicesService.$inject = [
 /**
  * Billing Services Service
  *
- * This function wraps the /billing_services API endpoint and exposes CRUD
+ * This function wraps the /invoicing_fees API endpoint and exposes CRUD
  * methods to controllers.
  *
  * @constructor
  */
 function BillingServicesService($http, util) {
   var service = this;
-  var url = '/billing_services/';
+  var url = '/invoicing_fees/';
 
   /* service methods */
   service.read = read;

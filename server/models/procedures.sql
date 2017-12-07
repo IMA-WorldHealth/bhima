@@ -7,7 +7,7 @@ DELIMITER $$
 
 /*
   Invoicing procedures include: StageInvoice, StageInvoiceItem,
-  StageBillingService, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
+  StageInvoiceFee, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
   PostingJournalErrorHandler, CopyInvoiceToPostingJournal and PostToGeneralLedger
 */
 SOURCE server/models/procedures/invoicing.sql

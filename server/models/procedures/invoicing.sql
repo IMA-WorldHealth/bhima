@@ -25,8 +25,7 @@ CREATE PROCEDURE StageInvoice(
 )
 BEGIN
   -- verify if invoice stage already exists within this connection, if the
-  -- stage already exists simply write to it, otherwise create and select into
-  -- it
+  -- stage already exists simply write to it, otherwise create and select into it
   DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
   SELECT NULL FROM `stage_invoice` LIMIT 0;
@@ -81,13 +80,13 @@ BEGIN
 END $$
 
 
-CREATE PROCEDURE StageBillingService(
+CREATE PROCEDURE StageInvoicingFee(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
 BEGIN
-  CALL VerifyBillingServiceStageTable();
-  INSERT INTO stage_billing_service (SELECT id, invoice_uuid);
+  CALL VerifyInvoicingFeeStageTable();
+  INSERT INTO stage_invoicing_fee (SELECT id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -110,9 +109,9 @@ BEGIN
   );
 END $$
 
-CREATE PROCEDURE VerifyBillingServiceStageTable()
+CREATE PROCEDURE VerifyInvoicingFeeStageTable()
 BEGIN
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_invoicing_fee (
     id INTEGER,
     invoice_uuid BINARY(16)
   );
@@ -124,11 +123,11 @@ END $$
   DESCRIPTION
   This procedure takes all staged records and begins to compose the invoice from
   them.  Keep in mind:
-    1) Billing Services place percentage increase on the invoice in proportion
+    1) Invoicing Fees place percentage increase on the invoice in proportion
       to the base invoice cost.
     2) Subsidies place a percentage reduction on the invoice in proportion to
       the invoice cost.
-    3) Billing Services are applied first, then Subsidies are applied to the
+    3) Invoicing Fees are applied first, then Subsidies are applied to the
       adjusted invoice amount.
 
   The final value of this algorithm is recorded in the invoices table as the
@@ -141,17 +140,17 @@ CREATE PROCEDURE WriteInvoice(
 BEGIN
   -- running calculation variables
   DECLARE items_cost decimal(19, 4);
-  DECLARE billing_services_cost decimal(19, 4);
+  DECLARE invoicing_fees_cost decimal(19, 4);
   DECLARE total_cost_to_debtor decimal(19, 4);
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
 
   -- ensure that all optional entities have staging tables available, it is
   -- possible that the invoice has not invoked methods to stage subsidies and
-  -- billing services if they are not relevant - this makes sure the tables
+  -- invoicing fees if they are not relevant - this makes sure the tables
   -- exist for queries within this method.
   CALL VerifySubsidyStageTable();
-  CALL VerifyBillingServiceStageTable();
+  CALL VerifyInvoicingFeeStageTable();
 
   -- invoice details
   INSERT INTO invoice (
@@ -167,27 +166,27 @@ BEGIN
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
 
   -- Total cost of all invoice items.  This is important to determine how much
-  -- the billing services
+  -- the invoicing fees
   SET items_cost = (
     SELECT SUM(credit) as cost FROM invoice_item where invoice_uuid = uuid
   );
 
-  -- calculate billing services based on total item cost
-  INSERT INTO invoice_billing_service (invoice_uuid, value, billing_service_id)
-  SELECT uuid, (billing_service.value / 100) * items_cost, billing_service.id
-  FROM billing_service WHERE id in (
-    SELECT id FROM stage_billing_service where invoice_uuid = uuid
+  -- calculate invoicing fee based on total item cost
+  INSERT INTO invoice_invoicing_fee (invoice_uuid, value, invoicing_fee_id)
+  SELECT uuid, (invoicing_fee.value / 100) * items_cost, invoicing_fee.id
+  FROM invoicing_fee WHERE id in (
+    SELECT id FROM stage_invoicing_fee where invoice_uuid = uuid
   );
 
-  -- total cost of all invoice items and billing services
-  SET billing_services_cost = (
+  -- total cost of all invoice items and invoicing fees
+  SET invoicing_fees_cost = (
     SELECT IFNULL(SUM(value), 0) AS value
-    FROM invoice_billing_service
+    FROM invoice_invoicing_fee
     WHERE invoice_uuid = uuid
   );
 
   -- cost so far to the debtor
-  SET total_cost_to_debtor = items_cost + billing_services_cost;
+  SET total_cost_to_debtor = items_cost + invoicing_fees_cost;
 
   -- calculate subsidy cost based on total cost to debtor
   INSERT INTO invoice_subsidy (invoice_uuid, value, subsidy_id)
@@ -209,7 +208,7 @@ BEGIN
   UPDATE invoice SET cost = total_subsidised_cost WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  SELECT items_cost, billing_services_cost, total_cost_to_debtor,
+  SELECT items_cost, invoicing_fees_cost, total_cost_to_debtor,
     total_subsidy_cost, total_subsidised_cost;
 END $$
 
@@ -567,7 +566,7 @@ BEGIN
     isu.subsidy_id = su.id
   WHERE i.uuid = iuuid;
 
-  -- copy the invoice_billing_service records into the posting_journal (credits)
+  -- copy the invoice_invoicing_fee records into the posting_journal (credits)
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
@@ -576,9 +575,9 @@ BEGIN
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,
     i.user_id
-  FROM invoice AS i JOIN invoice_billing_service AS ib JOIN billing_service AS b ON
+  FROM invoice AS i JOIN invoice_invoicing_fee AS ib JOIN invoicing_fee AS b ON
     i.uuid = ib.invoice_uuid AND
-    ib.billing_service_id = b.id
+    ib.invoicing_fee_id = b.id
   WHERE i.uuid = iuuid;
 END
 $$

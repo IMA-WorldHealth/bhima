@@ -15,7 +15,7 @@ function BillingServicesCreateController(BillingServices, ModalInstance, util) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
-  vm.title = 'BILLING_SERVICES.FORM.CREATE';
+  vm.title = 'INVOICING_FEES.FORM.CREATE';
 
   // this is the CreateForm's model
   vm.model = {};

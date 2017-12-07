@@ -10,7 +10,7 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 describe('Billing Services', () => {
-  const path = '#!/billing_services';
+  const path = '#!/invoicing_fees';
   const gridId = 'BillingServicesGrid';
 
   before(() => helpers.navigate(path));

@@ -594,19 +594,19 @@ INSERT INTO `service` VALUES
   (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
   (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
 
--- billing service configuration
+-- invoicing fee configuration
 
 -- both these are "autres revenues"
 SET @AutresRevenuesAccount = 260;
 
-INSERT INTO `billing_service` VALUES
-  (1, @AutresRevenuesAccount, 'Test Billing Service', 'Example billing service', 20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  (2, @AutresRevenuesAccount, 'Second Test Billing Service', 'Example billing service 2', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `invoicing_fee` VALUES
+  (1, @AutresRevenuesAccount, 'Test Invoicing Fee', 'Example Invoicing Fee', 20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (2, @AutresRevenuesAccount, 'Second Test Invoicing Fee', 'Example Invoicing Fee 2', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO `patient_group_billing_service` VALUES
+INSERT INTO `patient_group_invoicing_fee` VALUES
   (1, HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'), 1, CURRENT_TIMESTAMP);
 
-INSERT INTO `debtor_group_billing_service` VALUES
+INSERT INTO `debtor_group_invoicing_fee` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 2, CURRENT_TIMESTAMP);
 
 -- subsidy configuration

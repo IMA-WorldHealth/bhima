@@ -26,7 +26,7 @@ module.exports = createInvoice;
  *
  * Up to three additional tables may be affected:
  *  1. `invoice_items`
- *  2. `invoice_billing_service`
+ *  2. `invoice_invoicing_fee`
  *  3. `invoice_subsidy`
  *
  * The invoicing procedure of a patient's total invoice goes like this:
@@ -34,12 +34,12 @@ module.exports = createInvoice;
  *  client.  The Patient Invoice module is allowed to edit the item costs as it
  *  sees fit, so we use the POSTed costs.
  *  2. Next, each billing service is added to the invoice by writing records to
- *  the `invoice_billing_service` table.  The cost of each billing service is
+ *  the `invoice_invoicing_fee` table.  The cost of each billing service is
  *  determined by multiplying the billing service's value (as a percentage) to
  *  the total invoice cost.
  *  3. Finally, the subsidy for the bill is determined.  NOTE - as of #343, we
  *  are only allowing a single subsidy per invoice.  The array of subsidies is
- *  treated identically to the billing_services, except that it subtracts from
+ *  treated identically to the invoicing_fees, except that it subtracts from
  *  the total bill amount.
  *
  * @todo - change the API to pass in only an array of billingService and subsidy

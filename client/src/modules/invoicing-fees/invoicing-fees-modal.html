@@ -3,7 +3,7 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.BILLING_SERVICES</li>
+      <li class="static" translate>TREE.INVOICING_FEES</li>
       <li class="title" translate>{{ BillingServicesFormCtrl.title }}</li>
     </div>
   </div>
@@ -94,7 +94,7 @@
         <p ng-show="BillingServicesFormCtrl.error">
           <span class="glyphicon glyphicon-alert"></span>
           <span ng-show="BillingServicesFormCtrl.error.status === 404" translate>
-            BILLING_SERVICES.NOT_FOUND
+            INVOICING_FEES.NOT_FOUND
           </span>
           <span ng-hide="BillingServicesFormCtrl.error.status === 404" translate>
             {{ BillingServicesFormCtrl.error.code }}

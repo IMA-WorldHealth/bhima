@@ -195,15 +195,15 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <h5><b translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE</b></h5>
-                <p ng-if="GroupUpdateCtrl.group.apply_billing_services===false" class="text-info">
+                <h5><b translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE</b></h5>
+                <p ng-if="GroupUpdateCtrl.group.apply_invoicing_fees===false" class="text-info">
                   <span class="fa fa-info-circle" aria-hidden="true"></span>
-                  <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.INFO</span>
+                  <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.INFO</span>
                 </p>
                 <div class="checkbox">
                   <label>
-                    <input ng-model="GroupUpdateCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
-                    <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.LABEL</span>
+                    <input ng-model="GroupUpdateCtrl.group.apply_invoicing_fees" name="apply_invoicing_fees" ng-true-value="false" ng-false-value="true" type="checkbox">
+                    <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.LABEL</span>
                   </label>
                 </div>
               </div>
@@ -219,11 +219,11 @@
 
           <div class="panel-body">
             <div class="form-group">
-              <label translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE</label>
+              <label translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE</label>
 
               <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.billingServices.length === 0">
                 <i class="fa fa-info-circle"></i>
-                <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY</span>
+                <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.EMPTY</span>
               </p>
               <ul>
                 <li
@@ -234,7 +234,7 @@
               </ul>
 
               <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.billingServiceSubscriptions()" translate>
-                DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE
+                DEBTOR_GROUP.POLICIES.INVOICING_FEES.UPDATE
               </button>
             </div>
             <div class="form-group">

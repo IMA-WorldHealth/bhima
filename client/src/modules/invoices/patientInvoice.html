@@ -156,14 +156,14 @@
               <!-- expand billing services -->
               <div ng-show="PatientInvoiceCtrl.expandBillingServices">
                 <hr>
-                <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+                <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.invoicing_fee_id">
                   {{ service.label }}({{ service.value }}%)
                 </h4>
                 <hr>
               </div>
 
               <h4>
-                <span translate>FORM.LABELS.BILLING_SERVICES</span>
+                <span translate>FORM.LABELS.INVOICING_FEES</span>
                 <span
                   class="text-info fa fa-info-circle"
                   ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
@@ -240,11 +240,11 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th colspan="2" translate>PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN</th>
+        <th colspan="2" translate>PATIENT_INVOICE.INVOICING_FEE_BREAKDOWN</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.invoicing_fee_id">
         <td>{{ service.label }}</td>
         <td class="text-right">{{ service.value }}%</td>
       </tr>

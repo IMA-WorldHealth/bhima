@@ -104,7 +104,7 @@ function DebtorGroupService($http, Modal, util, SessionService, $translate) {
    *                                    debtor group will now be subscribed to
    */
   function updateBillingServices(debtorGroupUuid, subscriptions) {
-    var path = '/groups/debtor_group_billing_service/'.concat(debtorGroupUuid);
+    var path = '/groups/debtor_group_invoicing_fee/'.concat(debtorGroupUuid);
     var options = { subscriptions : subscriptions };
     return $http.post(path, options)
       .then(util.unwrapHttpResponse);

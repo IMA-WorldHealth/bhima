@@ -11,7 +11,7 @@ angular.module('bhima.routes')
      */
     $stateProvider
       .state('billingServices', {
-        url         : '/billing_services',
+        url         : '/invoicing_fees',
         abstract    : true,
         templateUrl : 'modules/billing-services/billing-services.html',
         controller  : 'BillingServicesController as BillingServicesCtrl',

@@ -10,7 +10,7 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
   vm.confirmSubscription = confirmSubscription;
 
   vm.group = DebtorGroup;
-  vm.entityKey = 'DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE';
+  vm.entityKey = 'DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE';
   vm.subscriptions = {};
   vm.billingServices = [];
 
@@ -54,7 +54,7 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
       })
       .map(function (billingService) {
         // transform id to billing service specifically; routes could be updated to use id
-        billingService.billing_service_id = billingService.id;
+        billingService.invoicing_fee_id = billingService.id;
         return billingService;
       });
   }
@@ -68,7 +68,7 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
    */
   function initialiseSubscriptions() {
     vm.group.billingServices.forEach(function (billingService) {
-      vm.subscriptions[billingService.billing_service_id] = true;
+      vm.subscriptions[billingService.invoicing_fee_id] = true;
     });
   }
 }

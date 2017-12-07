@@ -64,7 +64,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     // assigning policy logic
     vm.group.apply_discounts = policies.subsidies;
     vm.group.apply_subsidies = policies.discounts;
-    vm.group.apply_billing_services = !policies.billingServices;
+    vm.group.apply_invoicing_fees = !policies.billingServices;
 
     vm.group.max_credit = 0;
     vm.submit = submit;

@@ -54,7 +54,7 @@ function PatientInvoiceService(
     cp.items = invoiceItems.map(filterInventorySource);
 
     cp.billingServices = billingServices.map(function (billingService) {
-      return billingService.billing_service_id;
+      return billingService.invoicing_fee_id;
     });
 
     cp.subsidies = subsidies.map(function (subsidy) {
