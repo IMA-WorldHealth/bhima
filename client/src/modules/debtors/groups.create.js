@@ -28,6 +28,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   vm.$loading = true;
   vm.$loaded = false;
   vm.onSelectAccountCallback = onSelectAccount;
+  vm.cancel = cancel;
 
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.read()
@@ -72,6 +73,10 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   // attached the account as needed
   function onSelectAccount(account) {
     vm.group.account_id = account.id;
+  }
+
+  function cancel() {
+    $state.go('debtorGroups.list');
   }
 
   function submit(groupForm) {
