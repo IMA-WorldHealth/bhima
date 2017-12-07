@@ -1,4 +1,5 @@
 {"DEBTOR_GROUP":{"BACK":"Back to Debtor Groups",
+"CLICK_TO_ADD" : "Click here to add a debtor group",
 "CREATE":"Create Debtor Group",
 "CREATE_ANOTHER":"Create another Debtor Group",
 "CREATED":"Debtor group recorded successfully",
@@ -14,6 +15,7 @@
 "INFO":"Group Information",
 "NEW":"Add a Debtor Group",
 "NEW_DEBTOR_GROUP":"New Debtor Group",
+"NO_GROUPS" : "No debtor groups found",
 "POLICIES":{"TITLE":"Group Policies",
 "SUBSIDIES":{"TITLE":"Subsidies",
 "INFO":"With this configuration unchecked no member of this debtor group will qualify for any subsidies",

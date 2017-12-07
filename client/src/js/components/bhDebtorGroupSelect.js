@@ -40,15 +40,18 @@ function DebtorGroupSelectController(DebtorGroup) {
 
     // load all Debtor Group
     DebtorGroup.read(null, filters)
-      .then(function (debtorGroups) {
-        $ctrl.debtorGroups = debtorGroups;
-      });
+      .then(handleDebtorGroups);
 
     $ctrl.valid = true;
   };
 
+  function handleDebtorGroups(debtorGroups) {
+    $ctrl.noDebtorGroups = !debtorGroups.length;
+    $ctrl.debtorGroups = debtorGroups;
+  }
+
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = function onSelect($item) {
     $ctrl.onSelectCallback({ debtorGroup : $item });
   };
 }

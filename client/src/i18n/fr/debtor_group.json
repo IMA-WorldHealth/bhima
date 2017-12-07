@@ -1,4 +1,5 @@
 {"DEBTOR_GROUP":{"BACK":"Retour vers les groupes débiteurs",
+"CLICK_TO_ADD" : "Cliquer ici pour ajouter un groupe débiteur",
 "CREATE":"Créer un Groupe débiteur",
 "CREATE_ANOTHER":"Créer un autre Groupe débiteur",
 "CREATED":"Groupes débiteurs enregistrés avec succès",
@@ -15,6 +16,7 @@
 "LOADING":"Récupération des groupes débiteurs",
 "NEW":"Ajouter un Groupe Débiteur",
 "NEW_DEBTOR_GROUP":"Nouveau Groupe de Débiteur",
+"NO_GROUPS" : "Aucun groupe debiteur trouvés",
 "POLICIES":{"TITLE":"Les stratégies de groupe",
 "SUBSIDIES":{"TITLE":"Subventions",
 "INFO":"Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",

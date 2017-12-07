@@ -1,5 +1,6 @@
 <div ng-form="DebtorForm" bh-debtor-group-select ng-model-options="{ updateOn: 'default' }">
-  <div
+  <div 
+    ng-if="!$ctrl.noDebtorGroups"
     class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && DebtorForm.debtor_group_uuid.$invalid }">
     <label class="control-label" translate>
@@ -18,5 +19,10 @@
     <div class="help-block" ng-messages="DebtorForm.$error" ng-show="$ctrl.validationTrigger">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
+  </div>
+  <div ng-if="$ctrl.noDebtorGroups" class="alert alert-danger">
+    <i class="fa fa-warning"></i>
+    <strong translate>DEBTOR_GROUP.NO_GROUPS</strong> 
+    <a ui-sref="debtorGroups.create" translate>DEBTOR_GROUP.CLICK_TO_ADD</a>
   </div>
 </div>
