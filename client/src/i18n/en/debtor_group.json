@@ -14,6 +14,7 @@
 "INFO":"Group Information",
 "NEW":"Add a Debtor Group",
 "NEW_DEBTOR_GROUP":"New Debtor Group",
+"NO_DEBTOR_GROUP_REGISTERED" : "There is no debtor group registered yet",
 "POLICIES":{"TITLE":"Group Policies",
 "SUBSIDIES":{"TITLE":"Subsidies",
 "INFO":"With this configuration unchecked no member of this debtor group will qualify for any subsidies",
