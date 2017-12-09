@@ -5,8 +5,8 @@ AccountStatementController.$inject = [
   'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
-  'FilterService', 'ModalService', 'LanguageService',
-  'GridExportService', 'TransactionService',
+  'FilterService', 'ModalService', 'LanguageService', 'GridExportService',
+  'TransactionService',
 ];
 
 /**
@@ -15,7 +15,6 @@ AccountStatementController.$inject = [
  * @description
  * This controller powers the Account Statement module.  Account Statement is
  * a module used to analyze the transactions that have hit a particular account.
- *
  */
 function AccountStatementController(
   GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
@@ -87,6 +86,7 @@ function AccountStatementController(
       cellClass        : 'text-right',
       enableFiltering  : true,
       aggregationType  : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       footerCellClass  : 'text-right',
     },
@@ -99,6 +99,7 @@ function AccountStatementController(
       cellClass        : 'text-right',
       enableFiltering  : true,
       aggregationType  : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       footerCellClass  : 'text-right',
     },
@@ -187,7 +188,7 @@ function AccountStatementController(
   function rowSelectionChanged() {
     vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
   }
-  // end grid defintion =============================================================
+  // end grid definition =============================================================
 
   // comment selected rows
   vm.commentRows = function commentRows() {
@@ -286,12 +287,38 @@ function AccountStatementController(
 
     vm.hasErrors = false;
 
+    vm.gridOptions.gridFooterTemplate = null;
+    vm.gridOptions.showGridFooter = false;
+    vm.balances = {};
+
     GeneralLedger.read(null, options)
       .then(function (data) {
         vm.gridOptions.data = data;
+
+        // compute the difference between the debits and credits
+        // TODO(@jniles) - is there a way to get this from ui grid's aggregation?
+        vm.balances = data.reduce(computeTransactionBalances, {
+          debits : 0,
+          credits : 0,
+          balance : 0,
+        });
+
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = '/modules/account_statement/grid.footer.html';
+
+        // @TODO investigate why footer totals aren't updated automatically on data change
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(handleError)
       .finally(toggleLoadingIndicator);
+  }
+
+  // computes the balances used in the grid footer
+  function computeTransactionBalances(aggregates, row) {
+    aggregates.debits += row.debit_equiv;
+    aggregates.credits += row.credit_equiv;
+    aggregates.balance += (row.debit_equiv - row.credit_equiv);
+    return aggregates;
   }
 
   // catch loading errors
