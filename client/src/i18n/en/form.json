@@ -198,6 +198,8 @@
             "AVG_MONTHLY_CONSUMPTION": "Monthly Average Consumption",
             "MONTHLY_CONSUMPTION": "Monthly Consumption",
             "BALANCE": "Balance",
+            "BALANCE_INTERMEDIATE" : "Intermediate Balance",
+            "BALANCE_FINAL" : "Final Balance",
             "BALANCE_SECTION": "Balance Sheet Section",
             "BANK": "Bank",
             "BANK_ACCOUNT": "Bank Account",

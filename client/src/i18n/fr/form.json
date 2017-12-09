@@ -200,6 +200,8 @@
             "AVG_MONTHLY_CONSUMPTION": "Consommation Mensuelle Moyenne",
             "MONTHLY_CONSUMPTION": "Consommation Mensuelle",
             "BALANCE": "Balance",
+            "BALANCE_INTERMEDIATE" : "Solde Intermediate",
+            "BALANCE_FINAL" : "Solde Finale",
             "BALANCE_SECTION": "Section du Bilan",
             "BANK": "Banque",
             "BANK_ACCOUNT": "Compte Bancaire",

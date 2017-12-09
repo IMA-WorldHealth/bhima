@@ -41,15 +41,15 @@
               <td>{{this.accountNumber}}</td>
               <td>{{this.name}}</td>
               {{#if ../detailPrevious}}
-                <td class='text-right'> {{currency this.initDebit ../enterprise.currency_id}} </td>
-                <td class='text-right'> {{currency this.initCredit ../enterprise.currency_id}} </td>
+                <td class='text-right'> {{currency this.initDebit ../metadata.enterprise.currency_id}} </td>
+                <td class='text-right'> {{currency this.initCredit ../metadata.enterprise.currency_id}} </td>
                 {{else}}
-                <td class='text-right'> {{currency this.initBalance ../enterprise.currency_id}} </td>
+                <td class='text-right'> {{currency this.initBalance ../metadata.enterprise.currency_id}} </td>
               {{/if}}
-              <td class='text-right'> {{currency this.debit ../enterprise.currency_id}} </td>
-              <td class='text-right'> {{currency this.credit ../enterprise.currency_id}} </td>
-              <td class='text-right'> {{currency this.currentBalance ../enterprise.currency_id}} </td>
-              <td class='text-right'> {{currency this.finalBalance ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.debit ../metadata.enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.credit ../metadata.enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.currentBalance ../metadata.enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.finalBalance ../metadata.enterprise.currency_id}} </td>
             </tr>
           {{else}}
             {{>emptyTable columns=7}}
@@ -59,15 +59,15 @@
           <tr style="background-color:#ddd;">
             <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
             {{#if detailPrevious}}
-              <th class="text-right">{{currency totalInitDebit enterprise.currency_id}}</th>
-              <th class="text-right">{{currency totalInitCredit enterprise.currency_id}}</th>
+              <th class="text-right">{{currency totalInitDebit metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency totalInitCredit metadata.enterprise.currency_id}}</th>
             {{else}}
-              <th class="text-right">{{currency totalInitBalance enterprise.currency_id}}</th>
+              <th class="text-right">{{currency totalInitBalance metadata.enterprise.currency_id}}</th>
             {{/if}}
-            <th class="text-right">{{currency totalCurrentDebit enterprise.currency_id}}</th>
-            <th class="text-right">{{currency totalCurrentCredit enterprise.currency_id}}</th>
-            <th class="text-right">{{currency totalCurrentBalance enterprise.currency_id}}</th>
-            <th class="text-right">{{currency totalFinalBalance enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentDebit metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentCredit metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalCurrentBalance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totalFinalBalance metadata.enterprise.currency_id}}</th>
           </tr>
         </tfoot>
       </table>
