@@ -28,17 +28,17 @@
             <tr>
               <td>{{this.accountNumber}}</td>
               <td>{{this.name}}</td>
-              <td class='text-right'> {{currency this.balance ../enterprise.currency_id}} </td>
+              <td class='text-right'> {{currency this.balance ../metadata.enterprise.currency_id}} </td>
             </tr>
           {{/each}}
         </tbody>
         <tfoot>
           <tr style="background-color:#ddd;">
-            <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>           
-            <th class="text-right">{{currency totalBalance enterprise.currency_id}}</th>
+            <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
+            <th class="text-right">{{currency totalBalance ../metadata.enterprise.currency_id}}</th>
           </tr>
         </tfoot>
       </table>
-    </div>    
+    </div>
   </div>
 </div>
