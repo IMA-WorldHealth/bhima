@@ -2723,7 +2723,7 @@ gulp-match@^1.0.3:
   dependencies:
     minimatch "^3.0.3"
 
-gulp-merge-json@^1.1.0:
+gulp-merge-json@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-1.2.0.tgz#8b68f297505278a8143a6fa5bb9830192e4e3ea1"
   dependencies:
@@ -2740,7 +2740,7 @@ gulp-rev-replace@^0.4.3:
     gulp-util "^3.0.7"
     through2 "^2.0.0"
 
-gulp-rev@^8.0.0:
+gulp-rev@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/gulp-rev/-/gulp-rev-8.1.0.tgz#9123f9a3f935008c66a8c768e71f8b87fb0e0cd7"
   dependencies:
