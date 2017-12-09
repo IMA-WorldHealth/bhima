@@ -2,26 +2,26 @@ angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) {
 
     /**
-     * Billing Services Routes
+     * Invoicing Fee Routes
      *
-     * The billing services route endpoints.
+     * The invoicing fees route endpoints.
      *
      * @todo - discuss if the "delete" route should be included as a separate
      * view/state.  It doesn't really need to be deep-linked.
      */
     $stateProvider
-      .state('billingServices', {
+      .state('invoicingFees', {
         url         : '/invoicing_fees',
         abstract    : true,
-        templateUrl : 'modules/billing-services/billing-services.html',
-        controller  : 'BillingServicesController as BillingServicesCtrl',
+        templateUrl : 'modules/invoicing-fees/invoicing-fees.html',
+        controller  : 'InvoicingFeesController as InvoicingFeesCtrl',
       })
-      .state('billingServices.create', {
+      .state('invoicingFees.create', {
         url     : '/create',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('create')],
+        onEnter : ['$state', '$uibModal', 'NotifyService', onInvoicingFeeEnterFactory('create')],
         onExit  : ['$uibModalStack', closeModal],
       })
-      .state('billingServices.list', {
+      .state('invoicingFees.list', {
         url    : '/{id:int}',
         params : {
           id      : { squash : true, value : null },
@@ -29,18 +29,18 @@ angular.module('bhima.routes')
           updated : false,  // default for transitioning from child states
         },
       })
-      .state('billingServices.update', {
+      .state('invoicingFees.update', {
         url     : '/{id:int}/update',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onBillingEnterFactory('update')],
+        onEnter : ['$state', '$uibModal', 'NotifyService', onInvoicingFeeEnterFactory('update')],
         onExit  : ['$uibModalStack', closeModal]
       })
-      .state('billingServices.delete', {
+      .state('invoicingFees.delete', {
         url     : '/{id:int}/delete',
         onEnter : ['$state', '$uibModal', 'NotifyService', function ($state, Modal, Notify) {
           Modal.open({
             keyboard    : true,
             size        : 'md',
-            controller  : 'BillingServicesDeleteController as ConfirmModalCtrl',
+            controller  : 'InvoicingFeesDeleteController as ConfirmModalCtrl',
             templateUrl : '/modules/templates/modals/confirm.modal.html',
           }).result
             .then(function () {
@@ -67,12 +67,12 @@ angular.module('bhima.routes')
  * @description
  * This configures the update versus create states.
  */
-function onBillingEnterFactory(stateType) {
+function onInvoicingFeeEnterFactory(stateType) {
   var isCreateState = (stateType === 'create');
 
   var ctrl = isCreateState ?
-    'BillingServicesCreateController as BillingServicesFormCtrl' :
-    'BillingServicesUpdateController as BillingServicesFormCtrl';
+    'InvoicingFeesCreateController as InvoicingFeesFormCtrl' :
+    'InvoicingFeesUpdateController as InvoicingFeesFormCtrl';
 
   var message = isCreateState ?
     'FORM.INFO.CREATE_SUCCESS' :
@@ -81,7 +81,7 @@ function onBillingEnterFactory(stateType) {
 
   return function onEnter($state, Modal, Notify) {
       Modal.open({
-        templateUrl : 'modules/billing-services/billing-services-modal.html',
+        templateUrl : 'modules/invoicing-fees/invoicing-fees-modal.html',
         controller  : ctrl,
         backdrop    : 'static',
         keyboard    : false,

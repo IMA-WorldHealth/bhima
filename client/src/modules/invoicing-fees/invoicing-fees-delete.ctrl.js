@@ -1,20 +1,20 @@
 angular.module('bhima.controllers')
-.controller('BillingServicesDeleteController', BillingServicesDeleteController);
+.controller('InvoicingFeesDeleteController', InvoicingFeesDeleteController);
 
-BillingServicesDeleteController.$inject = [
-  '$state', '$uibModalInstance', 'BillingServicesService'
+InvoicingFeesDeleteController.$inject = [
+  '$state', '$uibModalInstance', 'InvoicingFeesService'
 ];
 
 /**
- * Billing Services Delete Controller
+ * invoicing fees Delete Controller
  *
  * This is a super simple controller to ensure that errors are properly handled
- * and translated on the billing services modal.  It leverages the shared
+ * and translated on the invoicing fees modal.  It leverages the shared
  * ConfirmModal template.
  *
  * This controller is instantiated in a modal.
  */
-function BillingServicesDeleteController($state, Instance, BillingServices) {
+function InvoicingFeesDeleteController($state, Instance, InvoicingFees) {
   var vm = this;
 
   // bind methods to the view
@@ -27,8 +27,8 @@ function BillingServicesDeleteController($state, Instance, BillingServices) {
     // clear the error, if it exists
     delete vm.error;
 
-    // attempt to delete the billing service
-    return BillingServices.delete($state.params.id)
+    // attempt to delete the invoicing fee
+    return InvoicingFees.delete($state.params.id)
       .then(function () {
         // if successful, close the modal instance
         Instance.close();

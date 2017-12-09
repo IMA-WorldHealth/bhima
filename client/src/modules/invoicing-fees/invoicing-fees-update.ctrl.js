@@ -2,19 +2,19 @@ angular.module('bhima.controllers')
 .controller('InvoicingFeesUpdateController', InvoicingFeesUpdateController);
 
 InvoicingFeesUpdateController.$inject = [
-  '$state', 'BillingServicesService', '$uibModalInstance', 'util', 'appcache'
+  '$state', 'InvoicingFeesService', '$uibModalInstance', 'util', 'appcache'
 ];
 
 /**
- * Updates a billing service passed in via a URL parameter.  For example,
- * invoicingFees/1 will update the billing service with id 1.
+ * Updates a invoicing fee passed in via a URL parameter.  For example,
+ * invoicingFees/1 will update the invoicing fee with id 1.
  *
  * Importantly, both this controller and the InvoicingFeesUpdateController
- * use the same template, billing-services/form.html.
+ * use the same template, invoicing-fees/form.html.
  */
-function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, util, AppCache) {
+function InvoicingFeesUpdateController($state, InvoicingFees, ModalInstance, util, AppCache) {
   var vm = this;
-  var cache = AppCache('BillingServices');
+  var cache = AppCache('InvoicingFees');
 
   if($state.params.id){
     vm.stateParams = cache.stateParams = $state.params;
@@ -25,10 +25,10 @@ function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, u
   // the form title is defined in the JS to allow us to reuse templates
   vm.title = 'INVOICING_FEES.FORM.UPDATE';
 
-  // the label will contain a copy of the billing service's label we are updating
+  // the label will contain a copy of the invoicing fee's label we are updating
   vm.label = '';
 
-  // this is the BillingServicesForm's model
+  // this is the InvoicingFeesForm's model
   vm.model = {};
 
   // the submit method to POST data to the server
@@ -48,8 +48,8 @@ function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, u
   // fired on application startup
   function startup() {
 
-    // load the billing service by id
-    BillingServices.read(vm.stateParams.id)
+    // load the invoicing fee by id
+    InvoicingFees.read(vm.stateParams.id)
       .then(function (service) {
 
         // set the label to the label of the fetched service
@@ -67,8 +67,8 @@ function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, u
    * submits the form to the server.  If the form does not pass angular form
    * validation, the function will immediately exit.
    *
-   * @param {Object} form - the BillingServicesForm object
-   * @returns {Promise} promise - the $http promise from the BillingServiceService's
+   * @param {Object} form - the InvoicingFeesForm object
+   * @returns {Promise} promise - the $http promise from the InvoicingFeeService's
    *   update() method
    */
   function submit(form) {
@@ -82,7 +82,7 @@ function InvoicingFeesUpdateController($state, BillingServices, ModalInstance, u
     }
 
      // submit data to the server
-    return BillingServices.update(vm.stateParams.id, vm.model)
+    return InvoicingFees.update(vm.stateParams.id, vm.model)
       .then(function (data) {
         ModalInstance.close(data.id);
       })

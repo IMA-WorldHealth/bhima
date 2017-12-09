@@ -1,19 +1,19 @@
 angular.module('bhima.services')
-.service('BillingServicesService', BillingServicesService);
+.service('InvoicingFeesService', InvoicingFeesService);
 
-BillingServicesService.$inject = [
+InvoicingFeesService.$inject = [
   '$http', 'util'
 ];
 
 /**
- * Billing Services Service
+ * Invoicing Fees Service
  *
  * This function wraps the /invoicing_fees API endpoint and exposes CRUD
  * methods to controllers.
  *
  * @constructor
  */
-function BillingServicesService($http, util) {
+function InvoicingFeesService($http, util) {
   var service = this;
   var url = '/invoicing_fees/';
 
@@ -26,13 +26,13 @@ function BillingServicesService($http, util) {
   /* ------------------------------------------------------------------------ */
 
   /**
-   * The create() method creates a new billing service in the database via a
+   * The create() method creates a new invoicing fee in the database via a
    * POST requests to the HTTP API endpoint.
    *
-   * @param {Object} data - billing service properties to be submitted to the
+   * @param {Object} data - invoicing fee properties to be submitted to the
    *   service.
-   * @return {Promise} promise - resolves with the id of the created billing
-   *   service entity or is rejected with an HTTP error.
+   * @return {Promise} promise - resolves with the id of the created invoicing fee
+   *   entity or is rejected with an HTTP error.
    */
   function create(data) {
 
@@ -45,7 +45,7 @@ function BillingServicesService($http, util) {
       delete data.account;
     }
 
-    return $http.post(url, { billingService : data })
+    return $http.post(url, { invoicingFee : data })
       .then(util.unwrapHttpResponse);
   }
 
@@ -54,7 +54,7 @@ function BillingServicesService($http, util) {
    * the $http promise is resolved with a single JSON object, otherwise an array
    * of objects should be expected.
    *
-   * @param {Number} id - the id of the billing service (optional).
+   * @param {Number} id - the id of the invoicing fee (optional).
    * @param {Object} options - options to be passed as query strings (optional).
    * @return {Promise} promise - resolves to either a JSON (if id provided) or
    *   an array of JSONs.
@@ -66,14 +66,14 @@ function BillingServicesService($http, util) {
   }
 
   /**
-   * The update() method updates a billing service in the database via a PUT
+   * The update() method updates a invoicing fee in the database via a PUT
    * request to the HTTP API endpoint.
    *
-   * @param {Number} id - the id of the billing service to be modified.
-   * @param {Object} data - billing service properties to be updated with new
+   * @param {Number} id - the id of the invoicing fee to be modified.
+   * @param {Object} data - invoicing fee properties to be updated with new
    *   values.
-   * @return {Promise} promise - resolves with the id of the created billing
-   *   service entity or is rejected with an HTTP error.
+   * @return {Promise} promise - resolves with the id of the created invoicing fee
+   *  entity or is rejected with an HTTP error.
    */
   function update(id, data) {
     var target = url.concat(id);
@@ -92,14 +92,14 @@ function BillingServicesService($http, util) {
     delete data.created_at;
     delete data.number; // account number
 
-    return $http.put(target, { billingService : data } )
+    return $http.put(target, { invoicingFee : data } )
       .then(util.unwrapHttpResponse);
   }
 
   /**
    * The delete() method deletes data from the database using the API endpoint.
    *
-   * @param {Number} id - the id of the billing service.
+   * @param {Number} id - the id of the invoicing fee.
    * @return {Promise} promise - a promise resolving to an empty object.
    */
   function del(id) {

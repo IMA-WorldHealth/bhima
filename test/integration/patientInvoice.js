@@ -19,8 +19,8 @@ describe('(/invoices) Patient Invoices', () => {
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  // run the 'BillingScenarios' test suite
-  describe('(POST /invoices)', BillingScenarios);
+  // run the 'InvoicingFeeScenario' test suite
+  describe('(POST /invoices)', InvoicingFeeScenario);
 
   it('GET /invoices returns a list of patient invoices', () => {
     return agent.get('/invoices')
@@ -135,7 +135,7 @@ describe('(/invoices) Patient Invoices', () => {
  * This test suite goes through a litany of testing scenarios to ensure the
  * API is bullet-proof.
  */
-function BillingScenarios() {
+function InvoicingFeeScenario() {
   /*
    * A simple invoice that should be posted without issue.  This demonstrates
    * that the POST /invoices route works as intended for the simple invoicing of
@@ -256,7 +256,7 @@ function BillingScenarios() {
    * Implicit Checks:
    *  1) `user_id` is not required (default : current user)
    */
-  const simpleBillingServiceInvoice = {
+  const simpleInvoicingFeeInvoice = {
     date : new Date('2016-01-28').toISOString(),
     cost  : 100,
     description : 'An invoice of two items costing $100 + a billing service',
@@ -279,12 +279,12 @@ function BillingScenarios() {
       credit : 25,
     }],
 
-    billingServices  : [1],
+    invoicingFees  : [1],
   };
 
-  it('creates and posts a patient invoice (simple + 1 billing service)', () => {
+  it('creates and posts a patient invoice (simple + 1 invoicing fee)', () => {
     return agent.post('/invoices')
-      .send({ invoice : simpleBillingServiceInvoice })
+      .send({ invoice : simpleInvoicingFeeInvoice })
       .then(res => {
         helpers.api.created(res);
 
@@ -299,7 +299,7 @@ function BillingScenarios() {
         const invoice = res.body;
 
         // this is the invoice cost ($100) + 20% ($20) of billing service
-        expect(invoice.cost).to.equal(120);
+        expect(invoice.cost).to.equal(100);
         expect(invoice.items).to.have.length(2);
       })
       .catch(helpers.handler);

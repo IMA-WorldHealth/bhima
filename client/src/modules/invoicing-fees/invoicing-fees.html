@@ -9,7 +9,7 @@
       <div class="toolbar-item">
         <a class="btn btn-default text-capitalize"
           data-method="create"
-          ui-sref="billingServices.create"
+          ui-sref="invoicingFees.create"
           ui-sref-opts="{notify:false}">
           <span class="fa fa-plus"></span> <span translate>INVOICING_FEES.BTN.CREATE</span>
         </a>
@@ -18,10 +18,10 @@
       <div class="toolbar-item">
         <button
           type="button"
-          ng-click="BillingServicesCtrl.toggleFilter()"
+          ng-click="InvoicingFeesCtrl.toggleFilter()"
           data-method="filter"
           class="btn btn-default"
-          ng-class="{ 'btn-info' : BillingServicesCtrl.filterEnabled }">
+          ng-class="{ 'btn-info' : InvoicingFeesCtrl.filterEnabled }">
           <i class="fa fa-filter"></i>
         </button>
       </div>
@@ -35,14 +35,14 @@
   <div class="container-fluid">
     <div
       class="grid-full-height"
-      id="BillingServicesGrid"
-      ui-grid="BillingServicesCtrl.options"
+      id="InvoicingFeesGrid"
+      ui-grid="InvoicingFeesCtrl.options"
       ui-grid-auto-resize>
 
       <bh-grid-loading-indicator
-        loading-state="BillingServicesCtrl.loading"
-        empty-state="BillingServicesCtrl.options.data.length === 0"
-        error-state="BillingServicesCtrl.hasError">
+        loading-state="InvoicingFeesCtrl.loading"
+        empty-state="InvoicingFeesCtrl.options.data.length === 0"
+        error-state="InvoicingFeesCtrl.hasError">
       </bh-grid-loading-indicator>
 
     </div>
