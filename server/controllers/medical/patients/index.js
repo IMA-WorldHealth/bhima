@@ -252,7 +252,7 @@ function lookupPatient(patientUuid) {
  * @method updatePatientDebCred
  *
  * @description
- * This function is used to update the text value of the creditor 
+ * This function is used to update the text value of the creditor
  * and debitor tables in case the patient's name was changed
  *
  * @param {String} patientUuid - the patient's unique id hex string
@@ -271,7 +271,7 @@ function updatePatientDebCred(patientUuid) {
   `;
 
   return db.exec(sql, buid)
-    .then((row) => {      
+    .then((row) => {
       const debtorUuid = db.bid(row[0].debtorUuid);
       const creditorUuid =  db.bid(row[0].creditorUuid);
 
@@ -434,7 +434,7 @@ function find(options) {
 
   // default registration date
   filters.period('period', 'registration_date');
-  filters.dateFrom('custion_period_start', 'registration_date');
+  filters.dateFrom('custom_period_start', 'registration_date');
   filters.dateTo('custom_period_end', 'registration_date');
 
   const patientGroupStatement =
