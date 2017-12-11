@@ -19,7 +19,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     is_convention : 0,
     price_list_uuid : null,
     apply_discounts : 0,
-    apply_billing_services : 0,
+    apply_invoicing_fees : 0,
     apply_subsidies : 0,
   };
 
@@ -36,7 +36,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     is_convention : 1,
     price_list_uuid : helpers.data.PRICE_LIST,
     apply_discounts : 1,
-    apply_billing_services : 1,
+    apply_invoicing_fees : 1,
     apply_subsidies : 1,
     color : '#00ffff',
   };
@@ -55,7 +55,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     is_convention : 0,
     price_list_uuid : null,
     apply_discounts : 0,
-    apply_billing_services : 0,
+    apply_invoicing_fees : 0,
     apply_subsidies : 0,
   };
 
@@ -73,7 +73,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     is_convention : 1,
     price_list_uuid : null,
     apply_discounts : 0,
-    apply_billing_services : 0,
+    apply_invoicing_fees : 0,
     apply_subsidies : 0,
   };
 
@@ -91,7 +91,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     is_convention : 1,
     price_list_uuid : null,
     apply_discounts : 0,
-    apply_billing_services : 0,
+    apply_invoicing_fees : 0,
     apply_subsidies : 0,
   };
 
@@ -279,7 +279,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
         updateGroup.uuid = debtorGroup.uuid;
 
         // data provided by the server; always blank for new debtor groups
-        updateGroup.billingServices = [];
+        updateGroup.invoicingFees = [];
         updateGroup.subsidies = [];
 
         expect(res).to.have.status(200);

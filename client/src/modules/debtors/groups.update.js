@@ -18,7 +18,7 @@ function DebtorGroupsUpdateController(
 
   vm.submit = submit;
   vm.state = $state;
-  vm.billingServiceSubscriptions = billingServiceSubscriptions;
+  vm.invoicingFeeSubscriptions = invoicingFeeSubscriptions;
   vm.subsidySubscriptions = subsidySubscriptions;
 
   vm.$loading = true;
@@ -44,7 +44,7 @@ function DebtorGroupsUpdateController(
       $state.params.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
-      vm.group.apply_billing_services = Boolean(vm.group.apply_billing_services);
+      vm.group.apply_invoicing_fees = Boolean(vm.group.apply_invoicing_fees);
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })
@@ -84,12 +84,13 @@ function DebtorGroupsUpdateController(
     $state.go('debtorGroups.list');
   }
 
-  function billingServiceSubscriptions() {
-    var modal = DebtorGroups.manageBillingServices(vm.group);
+  function invoicingFeeSubscriptions() {
+    console.log('debtor group', vm.group);
+    var modal = DebtorGroups.manageInvoicingFees(vm.group);
     modal.result
       .then(function (results) {
         // update UI
-        vm.group.billingServices = results;
+        vm.group.invoicingFees = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       });
   }

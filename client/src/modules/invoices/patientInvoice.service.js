@@ -39,22 +39,22 @@ function PatientInvoiceService(
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, billingServices, subsidies, description) {
+  function create(invoice, invoiceItems, invoicingFees, subsidies, description) {
     var cp = angular.copy(invoice);
 
     // add project id from session
     cp.project_id = Session.project.id;
 
-    // a patient invoice is not required to qualify for billing services or subsidies
+    // a patient invoice is not required to qualify for invoicing fees or subsidies
     // default to empty arrays
-    billingServices = billingServices || [];
+    invoicingFees = invoicingFees || [];
     subsidies = subsidies || [];
 
     // concatenate into a single object to send back to the client
     cp.items = invoiceItems.map(filterInventorySource);
 
-    cp.billingServices = billingServices.map(function (billingService) {
-      return billingService.billing_service_id;
+    cp.invoicingFees = invoicingFees.map(function (invoicingFee) {
+      return invoicingFee.invoicing_fee_id;
     });
 
     cp.subsidies = subsidies.map(function (subsidy) {

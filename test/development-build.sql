@@ -31,11 +31,11 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
 /*!40000 ALTER TABLE `patient_assignment` ENABLE KEYS */;
 
 --
--- Dumping data for table `billing_service`
+-- Dumping data for table `invoicing_fee`
 --
 
-/*!40000 ALTER TABLE `billing_service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `billing_service` ENABLE KEYS */;
+/*!40000 ALTER TABLE `invoicing_fee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoicing_fee` ENABLE KEYS */;
 
 --
 -- Dumping data for table `budget`
@@ -237,7 +237,7 @@ INSERT INTO `debtor` (`uuid`, `group_uuid`, `text`) VALUES (0x0261EEF2E38843B7A4
 --
 
 /*!40000 ALTER TABLE `debtor_group` DISABLE KEYS */;
-INSERT INTO `debtor_group` (`enterprise_id`, `uuid`, `name`, `account_id`, `location_id`, `phone`, `email`, `note`, `locked`, `max_credit`, `is_convention`, `price_list_uuid`, `apply_discounts`, `apply_billing_services`, `apply_subsidies`, `color`, `created_at`, `updated_at`) VALUES (1,0x00FDBC712A054A5DA38E1D7CF30918B9,'Eglises',174,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:44:39',NULL),(1,0x0B3406FB2EF74761B21692618F9426DA,'Guest House',177,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:47:23',NULL),(1,0x21727EB0608A4FBD811E93D49FADBD22,'Patient Payant Cash',176,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:42:10',NULL),(1,0x650CC2DC60AC4E39B873CBF65E6C61AA,'REGIDESO',172,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:48:07',NULL),(1,0x7604C0CA1CA74FF8BC94A88F32DFA6BF,'Organisme Non Gouvernemental',175,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:45:39',NULL),(1,0xC17A2F70D7A142A983394CA39DA7398F,'SNEL',171,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:48:21',NULL);
+INSERT INTO `debtor_group` (`enterprise_id`, `uuid`, `name`, `account_id`, `location_id`, `phone`, `email`, `note`, `locked`, `max_credit`, `is_convention`, `price_list_uuid`, `apply_discounts`, `apply_invoicing_fees`, `apply_subsidies`, `color`, `created_at`, `updated_at`) VALUES (1,0x00FDBC712A054A5DA38E1D7CF30918B9,'Eglises',174,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:44:39',NULL),(1,0x0B3406FB2EF74761B21692618F9426DA,'Guest House',177,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:47:23',NULL),(1,0x21727EB0608A4FBD811E93D49FADBD22,'Patient Payant Cash',176,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:42:10',NULL),(1,0x650CC2DC60AC4E39B873CBF65E6C61AA,'REGIDESO',172,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:48:07',NULL),(1,0x7604C0CA1CA74FF8BC94A88F32DFA6BF,'Organisme Non Gouvernemental',175,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:45:39',NULL),(1,0xC17A2F70D7A142A983394CA39DA7398F,'SNEL',171,0x1F162A109F6747889EFFC1FEA42FCC9B,'','',NULL,0,0,0,NULL,1,1,1,NULL,'2016-10-24 20:48:21',NULL);
 /*!40000 ALTER TABLE `debtor_group` ENABLE KEYS */;
 
 --
@@ -249,11 +249,11 @@ INSERT INTO `creditor_group` (`enterprise_id`, `uuid`, `name`, `account_id`, `lo
 /*!40000 ALTER TABLE `creditor_group` ENABLE KEYS */;
 
 --
--- Dumping data for table `debtor_group_billing_service`
+-- Dumping data for table `debtor_group_invoicing_fee`
 --
 
-/*!40000 ALTER TABLE `debtor_group_billing_service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `debtor_group_billing_service` ENABLE KEYS */;
+/*!40000 ALTER TABLE `debtor_group_invoicing_fee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `debtor_group_invoicing_fee` ENABLE KEYS */;
 
 --
 -- Dumping data for table `debtor_group_history`
@@ -403,11 +403,11 @@ INSERT INTO `invoice` (`project_id`, `reference`, `uuid`, `cost`, `debtor_uuid`,
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 
 --
--- Dumping data for table `invoice_billing_service`
+-- Dumping data for table `invoice_invoicing_fee`
 --
 
-/*!40000 ALTER TABLE `invoice_billing_service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_billing_service` ENABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_invoicing_fee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_invoicing_fee` ENABLE KEYS */;
 
 --
 -- Dumping data for table `invoice_item`
@@ -496,11 +496,11 @@ INSERT INTO `patient` (`uuid`, `project_id`, `reference`, `debtor_uuid`, `displa
 /*!40000 ALTER TABLE `patient_group` ENABLE KEYS */;
 
 --
--- Dumping data for table `patient_group_billing_service`
+-- Dumping data for table `patient_group_invoicing_fee`
 --
 
-/*!40000 ALTER TABLE `patient_group_billing_service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `patient_group_billing_service` ENABLE KEYS */;
+/*!40000 ALTER TABLE `patient_group_invoicing_fee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patient_group_invoicing_fee` ENABLE KEYS */;
 
 --
 -- Dumping data for table `patient_group_subsidy`

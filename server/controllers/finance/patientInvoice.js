@@ -121,13 +121,13 @@ function lookupInvoice(invoiceUuid) {
 
   const invoiceBillingQuery =
     `SELECT
-      invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value,
+      invoice_invoicing_fee.value, invoicing_fee.label, invoicing_fee.value AS billing_value,
       SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
-    FROM invoice_billing_service
-    JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
-    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_billing_service.invoice_uuid
-    WHERE invoice_billing_service.invoice_uuid = ?
-    GROUP BY billing_service.id`;
+    FROM invoice_invoicing_fee
+    JOIN invoicing_fee ON invoicing_fee.id = invoice_invoicing_fee.invoicing_fee_id
+    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_invoicing_fee.invoice_uuid
+    WHERE invoice_invoicing_fee.invoice_uuid = ?
+    GROUP BY invoicing_fee.id`;
 
   const invoiceSubsidyQuery = `
     SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value

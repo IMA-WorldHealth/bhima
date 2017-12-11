@@ -4,9 +4,9 @@ const db = require('../lib/db');
 const BadRequest = require('../lib/errors/BadRequest');
 
 let subscriptions = {
-  debtor_group_billing_service : {
+  debtor_group_invoicing_fee : {
     entity  : 'debtor_group_uuid',
-    map     : 'billing_service_id',
+    map     : 'invoicing_fee_id',
   },
   debtor_group_subsidy : {
     entity : 'debtor_group_uuid',

@@ -119,9 +119,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
-    // 3. Charged billing services - each of these have the global charge calculated by the client
+    // 3. Charged invoicing fees - each of these have the global charge calculated by the client
     // 4. Charged subsidies - each of these have the global charge calculated by the client
-    return PatientInvoices.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies, description)
+    return PatientInvoices.create(vm.Invoice.details, items, vm.Invoice.invoicingFees, vm.Invoice.subsidies, description)
       .then(function (result) {
         detailsForm.$setPristine();
         detailsForm.$setUntouched();

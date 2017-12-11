@@ -1,21 +1,21 @@
 angular.module('bhima.controllers')
-.controller('BillingServicesCreateController', BillingServicesCreateController);
+.controller('InvoicingFeesCreateController', InvoicingFeesCreateController);
 
-BillingServicesCreateController.$inject = [
-  'BillingServicesService', '$uibModalInstance', 'util',
+InvoicingFeesCreateController.$inject = [
+  'InvoicingFeesService', '$uibModalInstance', 'util',
 ];
 
 /**
- * Billing Services Create Controller
+ * Invoicing Fees Create Controller
  *
- * This controller allows the user to create a new billing service using a form.
+ * This controller allows the user to create a new invoicing fees using a form.
  * Note that this uses the same HTML form as the update controller
  */
-function BillingServicesCreateController(BillingServices, ModalInstance, util) {
+function InvoicingFeesCreateController(InvoicingFees, ModalInstance, util) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
-  vm.title = 'BILLING_SERVICES.FORM.CREATE';
+  vm.title = 'INVOICING_FEES.FORM.CREATE';
 
   // this is the CreateForm's model
   vm.model = {};
@@ -38,7 +38,7 @@ function BillingServicesCreateController(BillingServices, ModalInstance, util) {
    * validation, the function will immediately exit.
    *
    * @param {Object} form - the CreateForm object
-   * @returns {Promise} promise - the $http promise from the BillingServiceService's
+   * @returns {Promise} promise - the $http promise from the InvoicingFeeservice's
    *   create() method
    */
   function submit(form) {
@@ -52,7 +52,7 @@ function BillingServicesCreateController(BillingServices, ModalInstance, util) {
     }
 
     // submit data to the server
-    return BillingServices.create(vm.model)
+    return InvoicingFees.create(vm.model)
       .then(function (data) {
         ModalInstance.close(data.id);
       })
