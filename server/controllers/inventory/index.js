@@ -168,12 +168,8 @@ function getInventoryItemsById(req, res, next) {
 function deleteInventory(req, res, next) {
 
   core.remove(req.params.uuid)
-    .then(() => {
-      res.sendStatus(204);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
+    .then(res.sendStatus(204))
+    .catch(error => core.errorHandler(error, req, res, next))
     .done();
 }
 

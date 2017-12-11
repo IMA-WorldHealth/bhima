@@ -14,7 +14,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session
+  GridExport, Languages, Session,
 ) {
   var vm = this;
   vm.download = Inventory.download;
@@ -38,77 +38,77 @@ function InventoryListController(
 
   // grid default options
   columnDefs = [{
-    field: 'code',
-    displayName: 'FORM.LABELS.CODE',
-    headerCellFilter: 'translate',
-    aggregationType: uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel: true,
+    field : 'code',
+    displayName : 'FORM.LABELS.CODE',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
-    field: 'consumable',
-    displayName: 'FORM.LABELS.CONSUMABLE',
-    headerCellFilter: 'translate',
-    cellTemplate: '/modules/inventory/list/templates/consumable.cell.tmpl.html',
+    field : 'consumable',
+    displayName : 'FORM.LABELS.CONSUMABLE',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/consumable.cell.tmpl.html',
   }, {
-    field: 'groupName',
-    displayName: 'FORM.LABELS.GROUP',
-    headerCellFilter: 'translate',
+    field : 'groupName',
+    displayName : 'FORM.LABELS.GROUP',
+    headerCellFilter : 'translate',
   }, {
-    field: 'label',
-    displayName: 'FORM.LABELS.LABEL',
-    headerCellFilter: 'translate',
+    field : 'label',
+    displayName : 'FORM.LABELS.LABEL',
+    headerCellFilter : 'translate',
   }, {
-    field: 'price',
-    displayName: 'FORM.LABELS.UNIT_PRICE',
-    headerCellFilter: 'translate',
-    cellClass: 'text-right',
-    cellFilter: 'currency:'.concat(Session.enterprise.currency_id),
-    type: 'number',
+    field : 'price',
+    displayName : 'FORM.LABELS.UNIT_PRICE',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    type : 'number',
   }, {
-    field: 'default_quantity',
-    displayName: 'FORM.LABELS.DEFAULT_QUANTITY',
-    headerCellFilter: 'translate',
-    cellClass: 'text-right',
-    type: 'number',
+    field : 'default_quantity',
+    displayName : 'FORM.LABELS.DEFAULT_QUANTITY',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
   }, {
-    field: 'type',
-    displayName: 'FORM.LABELS.TYPE',
-    headerCellFilter: 'translate',
+    field : 'type',
+    displayName : 'FORM.LABELS.TYPE',
+    headerCellFilter : 'translate',
   }, {
-    field: 'unit',
-    displayName: 'FORM.LABELS.UNIT',
-    headerCellFilter: 'translate',
+    field : 'unit',
+    displayName : 'FORM.LABELS.UNIT',
+    headerCellFilter : 'translate',
   }, {
-    field: 'unit_weight',
-    displayName: 'FORM.LABELS.WEIGHT',
-    headerCellFilter: 'translate',
-    cellClass: 'text-right',
-    type: 'number',
-    visible: false,
+    field : 'unit_weight',
+    displayName : 'FORM.LABELS.WEIGHT',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+    visible : false,
   }, {
-    field: 'unit_volume',
-    displayName: 'FORM.LABELS.VOLUME',
-    headerCellFilter: 'translate',
-    cellClass: 'text-right',
-    type: 'number',
-    visible: false,
+    field : 'unit_volume',
+    displayName : 'FORM.LABELS.VOLUME',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+    visible : false,
   }, {
-    field: 'action',
-    displayName: '',
-    cellTemplate: '/modules/inventory/list/templates/action.cell.html',
-    enableFiltering: false,
-    enableSorting: false,
-    enableColumnMenu: false,
+    field : 'action',
+    displayName : '',
+    cellTemplate : '/modules/inventory/list/templates/action.cell.html',
+    enableFiltering : false,
+    enableSorting : false,
+    enableColumnMenu : false,
   }];
 
   vm.gridOptions = {
-    appScopeProvider: vm,
-    enableFiltering: vm.filterEnabled,
-    enableColumnMenus: false,
-    showColumnFooter: true,
-    fastWatch: true,
-    flatEntityAccess: true,
-    columnDefs: columnDefs,
-    onRegisterApi: onRegisterApi,
+    appScopeProvider : vm,
+    enableFiltering : vm.filterEnabled,
+    enableColumnMenus : false,
+    showColumnFooter : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    columnDefs,
+    onRegisterApi,
   };
 
   // configurations
@@ -207,15 +207,21 @@ function InventoryListController(
   }
   // delete an invetory from the database
   function remove(uuid) {
-    Inventory.remove(uuid).then(function (res) {
-        startup();
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-      })
-      .catch(Notify.handleError);
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (yes) {
+        if (!yes) {
+          return;
+        }
+        Inventory.remove(uuid)
+        .then(function (res) {
+          startup();
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+        })
+        .catch(Notify.handleError);
+      });
   }
   // export csv
   function exportCsv() {
     exportation.run();
   }
-
 }
