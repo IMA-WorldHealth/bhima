@@ -16,11 +16,11 @@ function DebtorGroupService($http, Modal, util, SessionService, $translate) {
   service.read = read;
   service.create = create;
   service.update = update;
-  service.updateBillingServices = updateBillingServices;
+  service.updateInvoicingFees = updateInvoicingFees;
   service.updateSubsidies = updateSubsidies;
   service.invoices = invoices;
 
-  service.manageBillingServices = manageBillingServices;
+  service.manageInvoicingFees = manageInvoicingFees;
   service.manageSubsidies = manageSubsidies;
   service.remove = remove;
 
@@ -93,17 +93,17 @@ function DebtorGroupService($http, Modal, util, SessionService, $translate) {
 
 
   /**
-   * @function updateBillingServices
+   * @function updateInvoicingFees
    *
    * @description
-   * Replaces a debtor groups billing services subscriptions with a provided
-   * set of billing service IDs
+   * Replaces a debtor groups invoicing fees subscriptions with a provided
+   * set of invoicing fee IDs
    *
    * @param {string}  debtorGroupUuid   UUID of debtor group that will be updated
-   * @param {Array}   subscriptions     Array of billing service ids that this
+   * @param {Array}   subscriptions     Array of invoicing fee ids that this
    *                                    debtor group will now be subscribed to
    */
-  function updateBillingServices(debtorGroupUuid, subscriptions) {
+  function updateInvoicingFees(debtorGroupUuid, subscriptions) {
     var path = '/groups/debtor_group_invoicing_fee/'.concat(debtorGroupUuid);
     var options = { subscriptions : subscriptions };
     return $http.post(path, options)
@@ -117,10 +117,10 @@ function DebtorGroupService($http, Modal, util, SessionService, $translate) {
       .then(util.unwrapHttpResponse);
   }
 
-  function manageBillingServices(debtorGroup, subscriptions) {
+  function manageInvoicingFees(debtorGroup, subscriptions) {
     return Modal.open({
       templateUrl : '/modules/debtors/subscriptions.modal.html',
-      controller : 'BillingServiceSubscriptions as SubCtrl',
+      controller : 'InvoicingFeeSubscriptions as SubCtrl',
       size : 'md',
       resolve : {
         Subscriptions : function Subscriptions() { return subscriptions; },

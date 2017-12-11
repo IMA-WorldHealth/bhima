@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('BillingServiceSubscriptions', BillingServiceSubscriptions);
+.controller('InvoicingFeeSubscriptions', InvoicingFeeSubscriptions);
 
-BillingServiceSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'BillingServicesService', 'DebtorGroupService', 'NotifyService'];
+InvoicingFeeSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'InvoicingFeesService', 'DebtorGroupService', 'NotifyService'];
 
-function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices, DebtorGroups, Notify) {
+function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, DebtorGroups, Notify) {
   var vm = this;
 
   vm.close = ModalInstance.dismiss;
@@ -12,14 +12,14 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
   vm.group = DebtorGroup;
   vm.entityKey = 'DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE';
   vm.subscriptions = {};
-  vm.billingServices = [];
+  vm.invoicingFees = [];
 
   initialiseSubscriptions();
 
-  BillingServices.read()
+  InvoicingFees.read()
     .then(function (result) {
-      vm.billingServices = result;
-      vm.entities = vm.billingServices;
+      vm.invoicingFees = result;
+      vm.entities = vm.invoicingFees;
     });
 
   function confirmSubscription(subscriptionForm) {
@@ -29,7 +29,7 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
       return;
     }
 
-    DebtorGroups.updateBillingServices(vm.group.uuid, vm.subscriptions)
+    DebtorGroups.updateInvoicingFees(vm.group.uuid, vm.subscriptions)
       .then(function (results) {
         ModalInstance.close(formatSelection());
       })
@@ -40,22 +40,22 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
    * @function formatSelection
    *
    * @description
-   * This function formats the newly selected/ subscribed billing services to
+   * This function formats the newly selected/ subscribed invoicing fees to
    * update the parent states view.
    */
   function formatSelection() {
-    return vm.billingServices
-      .filter(function (billingService) {
-        var selectedOption = vm.subscriptions[billingService.id];
+    return vm.invoicingFees
+      .filter(function (invoicingFee) {
+        var selectedOption = vm.subscriptions[invoicingFee.id];
 
         if (selectedOption) {
-          return billingService;
+          return invoicingFee;
         }
       })
-      .map(function (billingService) {
-        // transform id to billing service specifically; routes could be updated to use id
-        billingService.invoicing_fee_id = billingService.id;
-        return billingService;
+      .map(function (invoicingFee) {
+        // transform id to invoicing fee specifically; routes could be updated to use id
+        invoicingFee.invoicing_fee_id = invoicingFee.id;
+        return invoicingFee;
       });
   }
 
@@ -63,12 +63,12 @@ function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices
    * @function initialiseSubscriptions
    *
    * @description
-   * Iterate through debtor group billing services and pre-populate
+   * Iterate through debtor group invoicing fees and pre-populate
    * the binary flags for current subscriptions
    */
   function initialiseSubscriptions() {
-    vm.group.billingServices.forEach(function (billingService) {
-      vm.subscriptions[billingService.invoicing_fee_id] = true;
+    vm.group.invoicingFees.forEach(function (invoicingFee) {
+      vm.subscriptions[invoicingFee.invoicing_fee_id] = true;
     });
   }
 }

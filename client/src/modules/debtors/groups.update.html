@@ -221,19 +221,19 @@
             <div class="form-group">
               <label translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE</label>
 
-              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.billingServices.length === 0">
+              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.invoicingFees.length === 0">
                 <i class="fa fa-info-circle"></i>
                 <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.EMPTY</span>
               </p>
               <ul>
                 <li
-                  ng-repeat="billingService in GroupUpdateCtrl.group.billingServices | orderBy:'label'"
+                  ng-repeat="invoicingFee in GroupUpdateCtrl.group.invoicingFees | orderBy:'label'"
                   class="form-control-static">
-                  {{ billingService.label }}
+                  {{ invoicingFee.label }}
                 </li>
               </ul>
 
-              <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.billingServiceSubscriptions()" translate>
+              <button id="invoicingFeeSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.invoicingFeeSubscriptions()" translate>
                 DEBTOR_GROUP.POLICIES.INVOICING_FEES.UPDATE
               </button>
             </div>
