@@ -44,7 +44,7 @@ exports.updateItemsMetadata = updateItemsMetadata;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
-
+exports.remove = remove;
 /**
 * Create inventory metadata in the database
 *
@@ -152,6 +152,13 @@ function getItemsMetadata(params) {
   return db.exec(query, parameters);
 }
 
+
+// This function helps to delete an invetory
+
+function remove(uuid) {
+  const sql = `DELETE FROM inventory WHERE uuid = HUID(?)`;
+  return db.exec(sql, uuid);
+}
 
 /**
 * This function finds inventory metadata for a particular inventory item.  The
