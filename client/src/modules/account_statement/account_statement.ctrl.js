@@ -6,7 +6,7 @@ AccountStatementController.$inject = [
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
   'ModalService', 'LanguageService', 'GridExportService',
-  'TransactionService', 'GridStateService', '$state',
+  'TransactionService', 'GridStateService', '$state', 'AccountService',
 ];
 
 /**
@@ -19,7 +19,7 @@ AccountStatementController.$inject = [
 function AccountStatementController(
   GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
   bhConstants, uiGridConstants, AccountStatement, Modal, Languages,
-  GridExport, Transactions, GridState, $state
+  GridExport, Transactions, GridState, $state, Accounts
 ) {
   // global variables
   var vm = this;
@@ -292,19 +292,39 @@ function AccountStatementController(
 
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
-    vm.balances = {};
+    vm.balances = {
+      opening : 0,
+      debits : 0,
+      credits : 0,
+      difference : 0,
+    };
+
+    // load the opening balance for the range
+    Accounts.getOpeningBalanceForPeriod(options.account_id, options)
+      .then(function (balances) {
+        vm.balances.opening = balances.balance;
+        vm.balances.ending = vm.balances.opening + vm.balances.difference;
+      })
+      .catch(Notify.handleError);
 
     GeneralLedger.read(null, options)
       .then(function (data) {
+        var balances;
+
         vm.gridOptions.data = data;
 
         // compute the difference between the debits and credits
         // TODO(@jniles) - is there a way to get this from ui grid's aggregation?
-        vm.balances = data.reduce(computeTransactionBalances, {
+        balances = data.reduce(computeTransactionBalances, {
           debits : 0,
           credits : 0,
-          balance : 0,
+          difference : 0,
         });
+
+        vm.balances.debits = balances.debits;
+        vm.balances.credits = balances.credits;
+        vm.balances.difference = balances.difference;
+        vm.balances.ending = vm.balances.opening + balances.difference;
 
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/account_statement/grid.footer.html';
@@ -312,7 +332,7 @@ function AccountStatementController(
         // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
-      .catch(handleError)
+      .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
   }
 
@@ -320,7 +340,7 @@ function AccountStatementController(
   function computeTransactionBalances(aggregates, row) {
     aggregates.debits += row.debit_equiv;
     aggregates.credits += row.credit_equiv;
-    aggregates.balance += (row.debit_equiv - row.credit_equiv);
+    aggregates.difference += (row.debit_equiv - row.credit_equiv);
     return aggregates;
   }
 

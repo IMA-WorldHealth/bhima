@@ -154,6 +154,7 @@ exports.configure = function configure(app) {
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
   app.get('/accounts/:id/balance', accounts.getBalance);
+  app.get('/accounts/:id/openingBalance', accounts.getOpeningBalanceForPeriod);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
   app.delete('/accounts/:id', accounts.remove);
