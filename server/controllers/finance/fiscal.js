@@ -31,6 +31,7 @@ exports.update = update;
 exports.remove = remove;
 exports.getPeriodByFiscal = getPeriodByFiscal;
 exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
+exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
 
 /**
  * @method lookupFiscalYear
@@ -667,3 +668,24 @@ function lookupFiscalYearByDate(transDate) {
 
   return db.one(sql, [transDate, transDate], transDate, 'fiscal year');
 }
+
+/**
+ * @function getFirstDateOfFirstFiscalYear
+ *
+ * @description
+ * returns the start date of the very first fiscal year for the provided
+ * enterprise.
+ *
+ * @TODO - move this to the fiscal controller with other AccountExtra functions.
+ */
+function getFirstDateOfFirstFiscalYear(enterpriseId) {
+  const sql = `
+    SELECT start_date FROM fiscal_year
+    WHERE enterprise_id = ?
+    ORDER BY DATE(start_date)
+    LIMIT 1;
+  `;
+
+  return db.one(sql, enterpriseId);
+}
+

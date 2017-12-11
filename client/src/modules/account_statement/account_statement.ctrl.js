@@ -82,6 +82,7 @@ function AccountStatementController(
 
     { field            : 'account_label',
       displayName      : 'FORM.LABELS.ACCOUNT_TITLE',
+      visible : false,
       headerCellFilter : 'translate' },
 
     {
@@ -114,7 +115,6 @@ function AccountStatementController(
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
-      visible            : false,
       footerCellTemplate : '<i></i>' },
 
     { field            : 'project_name',

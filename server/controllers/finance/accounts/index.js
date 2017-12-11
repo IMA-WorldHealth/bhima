@@ -32,6 +32,7 @@ const types = require('./types');
 const categories = require('./categories');
 const Periods = require('../../../lib/period');
 const AccountExtras = require('./extra.js');
+const Fiscal = require('../fiscal.js');
 const debug = require('debug')('accounts');
 
 /**
@@ -235,27 +236,6 @@ function getBalance(req, res, next) {
 }
 
 /**
- * @function getFirstDateOfFirstFiscalYear
- *
- * @description
- * returns the start date of the very first fiscal year for the provided
- * enterprise.
- *
- * @TODO - move this to the fiscal controller with other AccountExtra functions.
- */
-function getFirstDateOfFirstFiscalYear(enterpriseId) {
-  const sql = `
-    SELECT start_date FROM fiscal_year
-    WHERE enterprise_id = ?
-    ORDER BY DATE(start_date)
-    LIMIT 1;
-  `;
-
-  return db.one(sql, enterpriseId);
-}
-
-
-/**
  * @function getOpeningBalanceForPeriod
  *
  * @description
@@ -281,7 +261,7 @@ function getOpeningBalanceForPeriod(req, res, next) {
   case period.periods.allTime:
     debug('#getOpeningBalanceForPeriod() all time period detected.  Using first fiscal year start date.');
     promise = promise
-      .then(() => getFirstDateOfFirstFiscalYear(req.session.enterprise.id))
+      .then(() => Fiscal.getFirstDateOfFirstFiscalYear(req.session.enterprise.id))
       .then(fiscal => fiscal.start_date);
     break;
 
