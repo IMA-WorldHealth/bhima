@@ -1,8 +1,8 @@
 {
     "PATIENT_INVOICE": {
         "BASE_PRICE_ALTERED": "The base price for this line item has been augmented by a price list.",
-        "INVOICING_FEES": "Billing Services Applied",
-        "INVOICING_FEE_BREAKDOWN": "Billing Services Breakdown",
+        "INVOICING_FEES": "Invoicing Fee Services Applied",
+        "INVOICING_FEE_BREAKDOWN": "Invoicing Fee Services Breakdown",
         "COMBINED_SUBSIDIES": "Combined Subsidies",
         "DISTRIBUTION_TYPE": "Distribution Type",
         "DISTRIBUTION_TYPE_EXPLANATION": "This option determines whether the invoice items can be distributed at the pharmacy or if they have already been consumed.",

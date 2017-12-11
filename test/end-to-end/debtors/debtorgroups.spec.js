@@ -8,7 +8,7 @@ const { expect } = chai;
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 
-describe.only('Debtor Groups Management', () => {
+describe('Debtor Groups Management', () => {
   const INITIAL_GROUPS = 3;
   const DELETEABLE_DEBTOR_GROUP = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
 

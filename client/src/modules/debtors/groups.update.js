@@ -85,6 +85,7 @@ function DebtorGroupsUpdateController(
   }
 
   function invoicingFeeSubscriptions() {
+    console.log('debtor group', vm.group);
     var modal = DebtorGroups.manageInvoicingFees(vm.group);
     modal.result
       .then(function (results) {

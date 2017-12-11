@@ -33,11 +33,11 @@
         "LABEL": "This group qualifies for discounts"
       },
       "INVOICING_FEES": {
-        "TITLE": "Billing Services",
-        "INFO": "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services",
-        "LABEL": "This group is exempt from paying billing services",
-        "UPDATE": "Update Billing Services",
-        "EMPTY": "This debtor group is not subscribed to any billing services"
+        "TITLE": "Invoicing Fee",
+        "INFO": "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied invoicing fees",
+        "LABEL": "This group is exempt from paying invoicing feess",
+        "UPDATE": "Update Invoicing Fees",
+        "EMPTY": "This debtor group is not subscribed to any invoicing feess"
       }
     },
     "TITLE": "Debtor Group Management",

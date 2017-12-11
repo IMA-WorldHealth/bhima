@@ -61,10 +61,10 @@ function lookupDebtorGroup(uid) {
   return db.one(sql, [db.bid(uid)], uid, 'debtor group')
     .then((group) => {
       debtorGroup = group;
-      return lookupBillingServices(uid);
+      return lookupInvoicingFees(uid);
     })
-    .then((billingServices) => {
-      debtorGroup.billingServices = billingServices;
+    .then((invoicingFees) => {
+      debtorGroup.invoicingFees = invoicingFees;
       return lookupSubsidies(uid);
     })
     .then((subsidies) => {
@@ -73,7 +73,7 @@ function lookupDebtorGroup(uid) {
     });
 }
 
-function lookupBillingServices(uid) {
+function lookupInvoicingFees(uid) {
   const sql = `
     SELECT invoicing_fee_id, label, debtor_group_invoicing_fee.created_at
     FROM debtor_group_invoicing_fee

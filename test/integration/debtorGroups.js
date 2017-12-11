@@ -279,7 +279,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
         updateGroup.uuid = debtorGroup.uuid;
 
         // data provided by the server; always blank for new debtor groups
-        updateGroup.billingServices = [];
+        updateGroup.invoicingFees = [];
         updateGroup.subsidies = [];
 
         expect(res).to.have.status(200);

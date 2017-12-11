@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('DebtorService', DebtorService);
+  .service('DebtorService', DebtorService);
 
-DebtorService.$inject = [ '$q', '$http', 'util', 'Store' ];
+DebtorService.$inject = ['$q', '$http', 'util', 'Store'];
 
 /**
  * Debtor Service
@@ -77,7 +77,7 @@ function DebtorService($q, $http, util, Store) {
   function invoices(uuid, params) {
     var path = '/debtors/:uuid/invoices';
 
-    return $http.get(path.replace(':uuid', uuid), { params : params })
+    return $http.get(path.replace(':uuid', uuid), { params: params })
       .then(util.unwrapHttpResponse);
   }
 
