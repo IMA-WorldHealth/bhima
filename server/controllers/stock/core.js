@@ -103,6 +103,8 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
 
+  filters.equals('user_id', 'user_id', 'm');
+
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
   filters.setGroup(finalClause || '');
 

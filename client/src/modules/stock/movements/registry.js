@@ -11,9 +11,10 @@ StockMovementsController.$inject = [
  * Stock movements Controller
  * This module is a registry page for stock movements
  */
-function StockMovementsController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState) {
+function StockMovementsController(
+  Stock, Notify, uiGridConstants, $translate, Modal,
+  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState
+) {
   var vm = this;
   var filterKey = 'movement';
   var stockMovementFilters = Stock.filter.movement;
@@ -21,6 +22,9 @@ function StockMovementsController(Stock, Notify,
   var cacheKey = 'movements-grid';
   var state;
   var gridColumns;
+
+  // grid columns
+  var columns = getGridColumns();
 
   // bind flux id with receipt
   var mapFlux = {
@@ -48,82 +52,83 @@ function StockMovementsController(Stock, Notify,
   // global variables
   vm.enterprise = Session.enterprise;
 
-  // grid columns
-  var columns = [{
-    field : 'depot_text',
-    displayName : 'STOCK.DEPOT',
-    headerCellFilter : 'translate',
-    aggregationType : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
-  }, {
-    field : 'io',
-    displayName : 'STOCK.IO',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/movements/templates/io.cell.html',
-  }, {
-    field : 'documentReference',
-    displayName : 'TABLE.COLUMNS.REFERENCE',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'text',
-    displayName : 'STOCK.INVENTORY',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'label',
-    displayName : 'STOCK.LOT',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'quantity',
-    type: 'number',
-    displayName : 'STOCK.QUANTITY',
-    headerCellFilter : 'translate',
-    aggregationType : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
-    cellClass : 'text-right',
-    footerCellClass : 'text-right',
-  }, {
-    field : 'unit_type',
-    width : 75,
-    displayName : 'TABLE.COLUMNS.UNIT',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
-  }, {
-    field : 'unit_cost',
-    type : 'number',
-    displayName : 'STOCK.UNIT_COST',
-    headerCellFilter : 'translate',
-    cellFilter : 'currency:grid.appScope.enterprise.currency_id',
-    cellClass : 'text-right',
-  }, {
-    field : 'cost',
-    type : 'number',
-    displayName : 'STOCK.COST',
-    headerCellFilter : 'translate',
-    aggregationType : totalCost,
-    aggregationHideLabel : true,
-    cellFilter : 'currency:grid.appScope.enterprise.currency_id',
-    cellClass : 'text-right',
-    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
-    footerCellClass : 'text-right',
-  }, {
-    field : 'date',
-    type: 'date',
-    displayName : 'FORM.LABELS.DATE',
-    headerCellFilter : 'translate',
-    cellFilter : 'date',
-    cellClass : 'text-right',
-  }, {
-    field : 'flux_id',
-    displayName : 'STOCK.FLUX',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
-  }, {
-    field : 'action',
-    displayName : '',
-    enableFiltering : false,
-    enableSorting : false,
-    cellTemplate : 'modules/stock/movements/templates/action.cell.html',
-  }];
+  function getGridColumns() {
+    return [{
+      field : 'depot_text',
+      displayName : 'STOCK.DEPOT',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true,
+    }, {
+      field : 'io',
+      displayName : 'STOCK.IO',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/io.cell.html',
+    }, {
+      field : 'documentReference',
+      displayName : 'TABLE.COLUMNS.REFERENCE',
+      headerCellFilter : 'translate',
+    }, {
+      field : 'text',
+      displayName : 'STOCK.INVENTORY',
+      headerCellFilter : 'translate',
+    }, {
+      field : 'label',
+      displayName : 'STOCK.LOT',
+      headerCellFilter : 'translate',
+    }, {
+      field : 'quantity',
+      type : 'number',
+      displayName : 'STOCK.QUANTITY',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
+      cellClass : 'text-right',
+      footerCellClass : 'text-right',
+    }, {
+      field : 'unit_type',
+      width : 75,
+      displayName : 'TABLE.COLUMNS.UNIT',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
+    }, {
+      field : 'unit_cost',
+      type : 'number',
+      displayName : 'STOCK.UNIT_COST',
+      headerCellFilter : 'translate',
+      cellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      cellClass : 'text-right',
+    }, {
+      field : 'cost',
+      type : 'number',
+      displayName : 'STOCK.COST',
+      headerCellFilter : 'translate',
+      aggregationType : totalCost,
+      aggregationHideLabel : true,
+      cellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      cellClass : 'text-right',
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      footerCellClass : 'text-right',
+    }, {
+      field : 'date',
+      type : 'date',
+      displayName : 'FORM.LABELS.DATE',
+      headerCellFilter : 'translate',
+      cellFilter : 'date',
+      cellClass : 'text-right',
+    }, {
+      field : 'flux_id',
+      displayName : 'STOCK.FLUX',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
+    }, {
+      field : 'action',
+      displayName : '',
+      enableFiltering : false,
+      enableSorting : false,
+      cellTemplate : 'modules/stock/movements/templates/action.cell.html',
+    }];
+  }
 
   // options for the UI grid
   vm.gridOptions = {
@@ -132,7 +137,7 @@ function StockMovementsController(Stock, Notify,
     columnDefs : columns,
     enableSorting : true,
     showColumnFooter : true,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi : onRegisterApiFn,
     fastWatch : true,
     flatEntityAccess : true,
   };
@@ -154,7 +159,7 @@ function StockMovementsController(Stock, Notify,
   state = new GridState(vm.gridOptions, cacheKey);
 
   // grid api
-  function onRegisterApi(gridApi) {
+  function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
   }
 
@@ -184,10 +189,12 @@ function StockMovementsController(Stock, Notify,
 
   // aggregation total cost
   function totalCost(items) {
-    var total = items.reduce(function (previous, current) {
-      return (current.entity.quantity * current.entity.unit_cost) + previous;
-    }, 0);
+    var total = items.reduce(processTotalCost, 0);
     return total;
+  }
+
+  function processTotalCost(previous, current) {
+    return (current.entity.quantity * current.entity.unit_cost) + previous;
   }
 
   // on remove one filter
@@ -221,26 +228,31 @@ function StockMovementsController(Stock, Notify,
     vm.loading = true;
 
     Stock.movements.read(null, filters)
-      .then(function (rows) {
-        // preprocess data
-        rows.forEach(function (row) {
-
-          // compute the fluxName from its ID
-          row.fluxName = getFluxName(row.flux_id);
-
-          // compute the row cost
-          row.cost = row.quantity * row.unit_cost;
-        });
-
-        vm.gridOptions.data = rows;
-
-        // force expand grid
-        vm.grouping.unfoldAllGroups();
-      })
+      .then(handleMovementRows)
       .catch(Notify.handleError)
-      .finally(function () {
-        vm.loading = false;
-      });
+      .finally(toggleLoading);
+  }
+
+  function handleMovementRows(rows) {
+    // preprocess data
+    rows.forEach(handleMovementRow);
+
+    vm.gridOptions.data = rows;
+
+    // force expand grid
+    vm.grouping.unfoldAllGroups();
+  }
+
+  function handleMovementRow(row) {
+    // compute the fluxName from its ID
+    row.fluxName = getFluxName(row.flux_id);
+
+    // compute the row cost
+    row.cost = row.quantity * row.unit_cost;
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   // search modal
@@ -248,15 +260,17 @@ function StockMovementsController(Stock, Notify,
     var filtersSnapshot = stockMovementFilters.formatHTTP();
 
     Modal.openSearchMovements(filtersSnapshot)
-      .then(function (changes) {
-        // if there is no change , customer filters should not change
-        if (!changes) { return; }
+      .then(handleSearchModal);
+  }
 
-        stockMovementFilters.replaceFilters(changes);
-        Stock.cacheFilters(filterKey);
-        vm.latestViewFilters = stockMovementFilters.formatView();
-        load(stockMovementFilters.formatHTTP(true));
-      });
+  function handleSearchModal(changes) {
+    // if there is no change , customer filters should not change
+    if (!changes) { return; }
+
+    stockMovementFilters.replaceFilters(changes);
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockMovementFilters.formatView();
+    load(stockMovementFilters.formatHTTP(true));
   }
 
   // get flux name

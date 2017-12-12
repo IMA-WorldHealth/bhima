@@ -8,10 +8,13 @@ SearchMovementsModalController.$inject = [
 
 function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
   var vm = this;
+  var lastViewFilters;
+  var lastDisplayValues;
+  var displayValues = {};
   var changes = new Store({ identifier : 'key' });
 
   var searchQueryOptions = [
-    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo',
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
   ];
 
   vm.filters = data;
@@ -19,35 +22,38 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};  
-
   // load flux
   Flux.read()
-    .then(function (rows) {
-      vm.fluxes = rows.map(function (row) {
-        row.label = $translate.instant(row.label);
-        return row;
-      });
-    })
+    .then(handleFluxes)
     .catch(Notify.handleError);
+
+  function handleFluxes(rows) {
+    vm.fluxes = rows.map(handleFlux);
+  }
+
+  function handleFlux(row) {
+    row.label = $translate.instant(row.label);
+    return row;
+  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     var periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(function handlePeriodFilter(filterChange) {
       changes.post(filterChange);
     });
   };
 
-  var lastViewFilters = Stock.filter.movement.formatView().customFilters;
+  lastViewFilters = Stock.filter.movement.formatView().customFilters;
 
   // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+  lastDisplayValues = lastViewFilters.reduce(handleLastViewFilter, {});
+
+  function handleLastViewFilter(object, filter) {
     object[filter._key] = filter.displayValue;
     return object;
-  }, {});
+  }
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -62,19 +68,25 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   };
 
   // custom filter flux_id - assign the value to the searchQueries object
-  vm.onFluxChange = function onFluxChange(flux) {
-    vm.searchQueries.flux_id = flux;
+  vm.onFluxChange = function onFluxChange(_flux) {
     var typeText = '/';
+    vm.searchQueries.flux_id = _flux;
 
-    flux.forEach(function (fluxIds) {
-      vm.fluxes.forEach(function (flux) {
+    _flux.forEach(function handleFluxesChanges(fluxIds) {
+      vm.fluxes.forEach(function handleFluxChange(flux) {
         if (fluxIds === flux.id) {
-          typeText += flux.label + ' / ';
+          typeText += String(flux.label).concat(' / ');
         }
       });
     });
 
     displayValues.flux_id = typeText;
+  };
+
+  // custom filter user
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
   };
 
 
@@ -86,10 +98,10 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   }
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = function onSelectLimit(_value) {
     // input is type value, this will only be defined for a valid number
-    if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+    if (angular.isDefined(_value)) {
+      changes.post({ key : 'limit', value : _value });
     }
   };
 
@@ -102,17 +114,20 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit() {
+    var loggedChanges;
+
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
-      if (angular.isDefined(value)) {
+    angular.forEach(vm.searchQueries, function handleDefinedValue(_value, key) {
+      var _displayValue;
+
+      if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        _displayValue = displayValues[key] || lastDisplayValues[key] || _value;
+        changes.post({ key, value : _value, displayValue : _displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
-
+    loggedChanges = changes.getAll();
     return Instance.close(loggedChanges);
   };
 }
