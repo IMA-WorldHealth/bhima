@@ -43,8 +43,8 @@
       "CASH_TRANSFER":"Cash Transfer",
       "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
-      "TRANSFER_TYPE_INFO":"Transaction Type in case we have either incomes or expenses",
-      "USE_FINANCIAL_ACCOUNT":"Use of cashes or banks accounts in this transaction",
+      "TRANSACTION_TYPE_INFO":"Transaction type must be set if there is income or expenses.",
+      "USE_FINANCIAL_ACCOUNT": "This transactions uses a cash or bank account.  Be sure to set a transaction type.",
       "RECEIPT":{
         "SUCCESS":"Voucher Payment recorded successfully."
       },
