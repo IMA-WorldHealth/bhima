@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'VoucherService', 'util', 'NotifyService', 'ReceiptModal', 'bhConstants',
-  '$rootScope', 'VoucherForm', '$translate',
+  '$rootScope', 'VoucherForm',
 ];
 
 /**
@@ -22,7 +22,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - use VoucherForm
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhConstants, RS, VoucherForm, $translate) {
+function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhConstants, RS, VoucherForm) {
   var vm = this;
 
   vm.bhConstants = bhConstants;
@@ -44,13 +44,8 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
   // format voucher types and bind to the view
   Vouchers.transactionType()
     .then(function (list) {
-      // make sure that the items are translated
-      list.data.forEach(function (item) {
-        item.hrText = $translate.instant(item.text);
-      });
-
       // bind to the view
-      vm.types = list.data;
+      vm.types = list;
     })
     .catch(Notify.handleError);
 
