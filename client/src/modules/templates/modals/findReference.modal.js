@@ -3,16 +3,20 @@ angular.module('bhima.controllers')
 
 FindReferenceModalController.$inject = [
   '$uibModalInstance', 'VoucherService', 'CashService', 'GridFilteringService',
-  'entity', 'PatientInvoiceService', 'uiGridConstants', 'NotifyService'
+  'entity', 'PatientInvoiceService', 'uiGridConstants', 'NotifyService',
+  'bhConstants',
 ];
 
 /**
  * Find Reference Modal Controller
  *
  * This controller provides bindings for the find references modal.
- * @todo Implement the Cash Payment Data list for the references
+ * TODO Implement the Cash Payment Data list for the references
  */
-function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity, Invoices, uiGridConstants, Notify) {
+function FindReferenceModalController(
+  Instance, Voucher, Cash, GridFilter, entity, Invoices, uiGridConstants,
+  Notify, bhConstants
+) {
   var vm = this;
 
   vm.result = {};
@@ -20,34 +24,39 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
   vm.loading = false;
 
   vm.documentType = {
-    'patient_invoice' : {
+    patient_invoice : {
       label : 'VOUCHERS.COMPLEX.PATIENT_INVOICE',
-      action : referencePatientInvoice
+      action : referencePatientInvoice,
     },
-    'cash_payment' : {
+    cash_payment : {
       label : 'VOUCHERS.COMPLEX.CASH_PAYMENT',
-      action : referenceCashPayment
+      action : referenceCashPayment,
     },
-    'voucher' : {
+    voucher : {
       label : 'VOUCHERS.COMPLEX.VOUCHER',
-      action : referenceVoucher
-    }
+      action : referenceVoucher,
+    },
   };
 
   vm.selectDocType = selectDocType;
-  vm.submit  = submit;
-  vm.cancel  = cancel;
+  vm.submit = submit;
+  vm.cancel = cancel;
   vm.refresh = refresh;
 
   /* ======================= Grid configurations ============================ */
   vm.filterEnabled = false;
+
+  // TODO - make this a default options extensible by many different
   vm.gridOptions = {};
 
-  var filtering  = new Filtering(vm.gridOptions);
+  var filtering = new GridFilter(vm.gridOptions);
 
-  vm.gridOptions.multiSelect     = false;
+  vm.gridOptions.multiSelect = false;
   vm.gridOptions.enableFiltering = vm.filterEnabled;
-  vm.gridOptions.onRegisterApi   = onRegisterApi;
+  vm.gridOptions.onRegisterApi = onRegisterApi;
+  vm.gridOptions.fastWatch = true;
+  vm.gridOptions.flatEntityAccess = true;
+  vm.gridOptions.enableColumnMenus = false;
   vm.toggleFilter = toggleFilter;
 
   function onRegisterApi(gridApi) {
@@ -87,16 +96,16 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
           { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
           {
             field : 'date',
-            cellFilter:'date',
+            cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
             filter : { condition : filtering.filterByDate },
             displayName : 'TABLE.COLUMNS.BILLING_DATE',
             headerCellFilter : 'translate',
-            sort : { priority : 0, direction : 'desc'}
+            sort : { priority : 0, direction : 'desc' },
           },
-          { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+          { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
           { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
-          { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
-          { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
+          { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate' },
+          { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
         ];
 
         vm.gridOptions.data = list;
@@ -119,11 +128,12 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
           { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
           {
             field : 'date',
-            cellFilter:'date',
+            cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
+            type : 'date',
             filter : { condition : filtering.filterByDate },
             displayName : 'TABLE.COLUMNS.BILLING_DATE',
             headerCellFilter : 'translate',
-            sort : { priority : 0, direction : 'desc'}
+            sort : { priority : 0, direction : 'desc' }
           },
           { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
           { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
@@ -145,16 +155,16 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
             '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
           '</div>';
 
-        vm.gridOptions.columnDefs  = [
-          { field : 'reference', displayName : 'Reference'},
+        vm.gridOptions.columnDefs = [
+          { field : 'reference', displayName : 'Reference' },
           {
             field : 'date',
             displayName : 'Date',
-            cellFilter : 'date:"mediumDate"',
+            cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
             filter : { condition : filtering.filterByDate },
-            sort : { priority : 0, direction : 'desc'}
+            sort : { priority : 0, direction : 'desc' }
           },
-          { field : 'description', displayName : 'Description'},
+          { field : 'description', displayName : 'Description' },
           { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
         ];
 
@@ -165,7 +175,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
             reference     : item.reference,
             date          : item.date,
             description   : item.description,
-            amount        : item.amount
+            amount        : item.amount,
           };
         });
         vm.gridOptions.data = data;
@@ -182,6 +192,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
 
   function refresh() {
     vm.documentTypeSelected = false;
+    vm.gridOptions.data = [];
   }
 
   function submit() {
@@ -193,7 +204,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
   }
 
   function startup() {
-    vm.selectedEntity = Entity || {};
+    vm.selectedEntity = entity || {};
   }
 
   function toggleLoadingIndicator() {

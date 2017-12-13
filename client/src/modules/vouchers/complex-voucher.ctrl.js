@@ -4,24 +4,25 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', 'CurrencyService', 'SessionService',
   'FindEntityService', 'FindReferenceService', 'NotifyService',
-  'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'GridAggregatorService',
-  'uiGridConstants', 'VoucherForm', '$timeout',
+  'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'uiGridConstants',
+  'VoucherForm', '$timeout',
 ];
 
 /**
- * Complex Journal Vouchers
+ * @overview ComplexJournalVoucherController
  *
+ * @description
  * This module implements complex journal vouchers. It allows users to quickly create transactions by
  * specifying two or more lines of transactions and all relative document references
  *
  * @constructor
  *
- * @todo - Implement caching mechanism for incomplete forms (via AppCache)
- * @todo/@fixme - this error notification system needs serious refactor.
+ * TODO - Implement caching mechanism for incomplete forms (via AppCache)
+ * TODO/FIXME - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
-  Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
-  GridAggregators, uiGridConstants, VoucherForm, $timeout
+  Vouchers, $translate, Currencies, Session, FindEntity, FindReference, Notify,
+  Toolkit, Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
 ) {
   var vm = this;
 
@@ -111,7 +112,7 @@ function ComplexJournalVoucherController(
    * @param {object} result
    */
   function updateView(result) {
-    $timeout(function () {
+    $timeout(function update() {
       // transaction type
       vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
 
@@ -132,7 +133,7 @@ function ComplexJournalVoucherController(
    */
   function removeNullRows() {
     var gridData = JSON.parse(JSON.stringify(vm.gridOptions.data));
-    gridData.forEach(function (item) {
+    gridData.forEach(function removeItems(item) {
       if (!item.account_id) {
         vm.Voucher.store.remove(item.uuid);
       }
@@ -168,8 +169,8 @@ function ComplexJournalVoucherController(
   /** Reference modal */
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
-      .then(function (document) {
-        row.configure({ document: document });
+      .then(function (doc) {
+        row.configure({ document: doc });
       });
   }
 
