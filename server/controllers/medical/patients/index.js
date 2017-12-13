@@ -74,7 +74,7 @@ exports.find = find;
 exports.hospitalNumberExists = hospitalNumberExists;
 
 /** @todo discuss if these should be handled by the entity APIs or by patients. */
-exports.billingServices = billingServices;
+exports.invoicingFees = invoicingFees;
 exports.subsidies = subsidies;
 
 /** expose patient detail query internally */
@@ -252,7 +252,7 @@ function lookupPatient(patientUuid) {
  * @method updatePatientDebCred
  *
  * @description
- * This function is used to update the text value of the creditor 
+ * This function is used to update the text value of the creditor
  * and debitor tables in case the patient's name was changed
  *
  * @param {String} patientUuid - the patient's unique id hex string
@@ -271,7 +271,7 @@ function updatePatientDebCred(patientUuid) {
   `;
 
   return db.exec(sql, buid)
-    .then((row) => {      
+    .then((row) => {
       const debtorUuid = db.bid(row[0].debtorUuid);
       const creditorUuid =  db.bid(row[0].creditorUuid);
 
@@ -434,7 +434,7 @@ function find(options) {
 
   // default registration date
   filters.period('period', 'registration_date');
-  filters.dateFrom('custion_period_start', 'registration_date');
+  filters.dateFrom('custom_period_start', 'registration_date');
   filters.dateTo('custom_period_end', 'registration_date');
 
   const patientGroupStatement =
@@ -525,21 +525,21 @@ function read(req, res, next) {
 }
 
 
-function billingServices(req, res, next) {
+function invoicingFees(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs.
   const patientsServiceQuery =
 
-    // get the final information needed to apply billing services to an invoice
+    // get the final information needed to apply invoicing fees to an invoice
     'SELECT DISTINCT ' +
-      'billing_service_id, label, description, value, billing_service.created_at ' +
+      'invoicing_fee_id, label, description, value, invoicing_fee.created_at ' +
     'FROM ' +
 
-      // get all of the billing services from patient group subscriptions
+      // get all of the invoicing fees from patient group subscriptions
       '(SELECT * ' +
-      'FROM patient_group_billing_service ' +
-      'WHERE patient_group_billing_service.patient_group_uuid in ' +
+      'FROM patient_group_invoicing_fee ' +
+      'WHERE patient_group_invoicing_fee.patient_group_uuid in ' +
 
         // find all of the patients groups
         '(SELECT patient_group_uuid ' +
@@ -547,9 +547,9 @@ function billingServices(req, res, next) {
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
-      // get all of the billing services from debtor group subscriptions
+      // get all of the invoicing fees from debtor group subscriptions
       'SELECT * ' +
-      'FROM debtor_group_billing_service ' +
+      'FROM debtor_group_invoicing_fee ' +
       'WHERE debtor_group_uuid = ' +
 
         // find the debtor group uuid
@@ -561,8 +561,8 @@ function billingServices(req, res, next) {
       ') AS patient_services ' +
 
     // apply billing service information to rows retrieved from service subscriptions
-    'LEFT JOIN billing_service ' +
-    'ON billing_service_id = billing_service.id';
+    'LEFT JOIN invoicing_fee ' +
+    'ON invoicing_fee_id = invoicing_fee.id';
 
   db.exec(patientsServiceQuery, [uid, uid])
     .then((result) => {

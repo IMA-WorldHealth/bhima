@@ -73,12 +73,12 @@ describe('Debtor Groups Management', () => {
     components.notification.hasSuccess();
   });
 
-  it('updates debtor group billing service subscriptions', () => {
+  it('updates debtor group invoicing fee subscriptions', () => {
     const updateGroup = element.all(by.css('[data-group-entry]')).first();
 
     updateGroup.$('[data-method="update"]').click();
 
-    element(by.css('#billingServiceSubscription')).click();
+    element(by.css('#invoicingFeeSubscription')).click();
     element.all(by.css('[data-group-option]')).get(1).click();
     FU.modal.submit();
     components.notification.hasSuccess();

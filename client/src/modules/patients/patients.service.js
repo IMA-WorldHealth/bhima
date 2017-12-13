@@ -37,7 +37,7 @@ function PatientService(
   service.groups = groups;
   service.updateGroups = updateGroups;
 
-  service.billingServices = billingServices;
+  service.invoicingFees = invoicingFees;
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
@@ -151,13 +151,13 @@ function PatientService(
   }
 
   /**
-   * Fetches all billing services subslected by a patient entity
+   * Fetches all invoicing fees subslected by a patient entity
    *
-   * @param   {String} patientUuid    UUID of patient to select billing services for
-   * @return  {Object}                Promise object returning an array of billing
-   *                                  services
+   * @param   {String} patientUuid    UUID of patient to select invoicing fees for
+   * @return  {Object}                Promise object returning an array of invoicing
+   *                                  fees
    */
-  function billingServices(patientUuid) {
+  function invoicingFees(patientUuid) {
     var path = patientAttributePath('services', patientUuid);
     return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);

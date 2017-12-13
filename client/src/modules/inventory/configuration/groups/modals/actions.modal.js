@@ -7,10 +7,12 @@ InventoryGroupsActionsModalController.$inject = [
 
 function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data) {
   var vm = this;
-  var session = vm.session = {};
 
   // map for actions
   var map = { add : addGroup, edit : editGroup };
+
+  // session
+  vm.session = {};
 
   // expose to the view
   vm.submit = submit;
@@ -25,15 +27,16 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) {
-      return;
-    }
-
     var record = cleanForSubmit(vm.session);
+
+    if (form.$invalid) { return; }
+
     map[vm.action](record, vm.identifier)
-      .then(function (res) {
-        Instance.close(res);
-      });
+      .then(handleInstanceClose);
+  }
+
+  function handleInstanceClose(res) {
+    Instance.close(res);
   }
 
   /* add inventory group */
@@ -49,15 +52,15 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
   }
 
   function onSelectCOGSAccount(account) {
-    session.cogs_account = account.id;
+    vm.session.cogs_account = account.id;
   }
 
   function onSelectStockAccount(account) {
-    session.stock_account = account.id;
+    vm.session.stock_account = account.id;
   }
 
   function onSelectSalesAccount(account) {
-    session.sales_account = account.id;
+    vm.session.sales_account = account.id;
   }
 
   /* cancel action */
@@ -81,13 +84,14 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
     vm.action = Data.action;
     vm.identifier = Data.identifier;
 
-    if (vm.identifier) {
-      InventoryGroups.read(vm.identifier)
-        .then(function (groups) {
-          console.log(groups);
-          vm.session = groups[0];
-        })
-        .catch(Notify.handleError);
-    }
+    if (!vm.identifier) { return; }
+
+    InventoryGroups.read(vm.identifier)
+      .then(handleInventoryGroup)
+      .catch(Notify.handleError);
+  }
+
+  function handleInventoryGroup(group) {
+    vm.session = group;
   }
 }

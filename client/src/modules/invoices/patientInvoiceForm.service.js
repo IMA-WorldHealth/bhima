@@ -15,7 +15,7 @@ PatientInvoiceFormService.$inject = [
  * class to be instantiated correctly.
  *
  * @todo (required) only the maximum of the bill should be subsidised
- * @todo (required) billing services and subsidies should be ignored for
+ * @todo (required) invoicing fees and subsidies should be ignored for
  *   specific debtors.
  */
 function PatientInvoiceFormService(
@@ -26,16 +26,16 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
   var DEFAULT_SERVICE_IDX = 0;
   var DESCRIPTION_KEY = 'PATIENT_INVOICE.DESCRIPTION';
 
-  // Reduce method - assigns the current billing services charge to the billing
-  // service and adds to the running total
-  function calculateBillingServices(billingServices, total) {
-    return billingServices.reduce(function (current, billingService) {
-      billingService.charge = (total / 100) * billingService.value;
-      return current + billingService.charge;
+  // Reduce method - assigns the current invoicing fees charge to the invoicing
+  // fee and adds to the running total
+  function calculateInvoicingFees(invoicingFees, total) {
+    return invoicingFees.reduce(function (current, invoicingFee) {
+      invoicingFee.charge = (total / 100) * invoicingFee.value;
+      return current + invoicingFee.charge;
     }, 0);
   }
 
-  // This is a separate(very similar) method to calculating billing services
+  // This is a separate(very similar) method to calculating invoicing fees
   // as subsidies will require additional logic to limit subsidising more then 100%
   function calculateSubsidies(subsidies, total) {
     // All values are percentages
@@ -138,12 +138,12 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
     this.recipient = null;
 
     // this object holds the abstract properties of the invoice
-    this.billingServices = [];
+    this.invoicingFees = [];
     this.subsidies = [];
 
     // this object holds the totals for the invoice.
     this.totals = {
-      billingServices : 0,
+      invoicingFees : 0,
       subsidies : 0,
       rows : 0,
       grandTotal : 0,
@@ -199,7 +199,7 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
      * @method setPatient
      *
      * @description
-     * This method downloads the patient's billing services, price lists, and
+     * This method downloads the patient's invoicing fees, price lists, and
      * subsidies to be applied to the bill.  It sets also sets the `recipient`
      * and `debtor_uuid` properties on the invoice.
      *
@@ -209,17 +209,17 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
     var invoice = this;
     var promises = [];
 
-    var billingServicePromise;
+    var invoicingFeePromise;
     var subsidyPromise;
     var priceListPromise;
 
-    // load the billing services and bind to the invoice
-    billingServicePromise = Patients.billingServices(patient.uuid)
-      .then(function (billingServices) {
-        invoice.billingServices = billingServices;
+    // load the invoicing fees and bind to the invoice
+    invoicingFeePromise = Patients.invoicingFees(patient.uuid)
+      .then(function (invoicingFees) {
+        invoice.invoicingFees = invoicingFees;
       });
 
-    promises.push(billingServicePromise);
+    promises.push(invoicingFeePromise);
 
     // load the subsidies and bind to the invoice
     subsidyPromise = Patients.subsidies(patient.uuid)
@@ -315,7 +315,7 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
      * @description
      * Calculates the totals for the invoice by:
      *  1) Summing all the values in the grid (invoice items)
-     *  2) Calculating the additions due to billing services
+     *  2) Calculating the additions due to invoicing fees
      *  3) Calculating the reductions due to subsidies
      *  4) Reporting the "grand total" owed after all are applied
      *
@@ -327,16 +327,16 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
     var totals = this.totals;
     var grandTotal = 0;
 
-    // PatientInvoiceForm cost as modelled in the database does not factor in billing services
+    // PatientInvoiceForm cost as modelled in the database does not factor in invoicing fees
     // or subsidies
     var baseCost = calculateBaseInvoiceCost(this.store.data);
     totals.rows = baseCost;
     invoice.details.cost = baseCost;
     grandTotal += baseCost;
 
-    // calculate the billing services total and increase the bill by that much
-    totals.billingServices = calculateBillingServices(invoice.billingServices, grandTotal);
-    grandTotal += totals.billingServices;
+    // calculate the invoicing fees total and increase the bill by that much
+    totals.invoicingFees = calculateInvoicingFees(invoice.invoicingFees, grandTotal);
+    grandTotal += totals.invoicingFees;
 
     // calculate the subsidies total and decrease the bill by that much
     totals.subsidies = calculateSubsidies(invoice.subsidies, grandTotal);

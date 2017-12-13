@@ -1,0 +1,116 @@
+<!-- invoicing fee form -->
+<form name="InvoicingFeesForm" bh-submit="InvoicingFeesFormCtrl.submit(InvoicingFeesForm)" novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.INVOICING_FEES</li>
+      <li class="title" translate>{{ InvoicingFeesFormCtrl.title }}</li>
+    </div>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- account input -->
+    <bh-account-select
+      account-id="InvoicingFeesFormCtrl.model.account_id"
+      on-select-callback="InvoicingFeesFormCtrl.onSelectAccount(account)"
+      exclude-title-accounts="true"
+      required="true">
+    </bh-account-select>
+
+    <!-- label input -->
+    <div class="form-group" ng-class="{ 'has-error' : InvoicingFeesForm.$submitted && InvoicingFeesForm.label.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.LABEL
+      </label>
+      <input
+        class="form-control"
+        name="label"
+        autocomplete="off"
+        ng-model="InvoicingFeesFormCtrl.model.label"
+        ng-maxlength="InvoicingFeesFormCtrl.length200"
+        required>
+      <div class="help-block" ng-messages="InvoicingFeesForm.label.$error" ng-show="InvoicingFeesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- description textarea -->
+    <div class="form-group" ng-class="{ 'has-error' : InvoicingFeesForm.$submitted && InvoicingFeesForm.description.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.DESCRIPTION
+      </label>
+      <!--
+        @todo - propose to the team that all text-areas should have "resize:vertical" styles
+      -->
+      <textarea
+        style="resize:vertical;"
+        class="form-control"
+        name="description"
+        ng-model="InvoicingFeesFormCtrl.model.description"
+        placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+        ng-maxlength="InvoicingFeesFormCtrl.maxLength"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="InvoicingFeesForm.description.$error" ng-show="InvoicingFeesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- value input -->
+    <div class="form-group" ng-class="{ 'has-error' : InvoicingFeesForm.$submitted && InvoicingFeesForm.value.$invalid }">
+      <label class="control-label">
+        <span translate>FORM.LABELS.VALUE</span> (%)
+      </label>
+      <input
+        type="number"
+        class="form-control"
+        name="value"
+        autocomplete="off"
+        ng-model="InvoicingFeesFormCtrl.model.value"
+        ng-min="0"
+        required>
+      <div class="help-block" ng-messages="InvoicingFeesForm.value.$error" ng-show="InvoicingFeesForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- a validation section for the form -->
+    <div
+      class="form-group"
+      ng-class="{
+        'has-error' : (InvoicingFeesForm.$submitted && InvoicingFeesForm.$invalid) || InvoicingFeesFormCtrl.error,
+        'has-success' : InvoicingFeesFormCtrl.created || InvoicingFeesFormCtrl.updated
+      }">
+
+      <div class="help-block">
+
+        <!-- there are (client-side) errors on the form -->
+        <p ng-show="InvoicingFeesForm.$submitted && InvoicingFeesForm.$invalid">
+          <span class="glyphicon glyphicon-alert"></span> <span translate>FORM.ERRORS.HAS_ERRORS</span>
+        </p>
+
+        <!-- show http errors sent from the server -->
+        <p ng-show="InvoicingFeesFormCtrl.error">
+          <span class="glyphicon glyphicon-alert"></span>
+          <span ng-show="InvoicingFeesFormCtrl.error.status === 404" translate>
+            INVOICING_FEES.NOT_FOUND
+          </span>
+          <span ng-hide="InvoicingFeesFormCtrl.error.status === 404" translate>
+            {{ InvoicingFeesFormCtrl.error.code }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="back" ng-click="InvoicingFeesFormCtrl.dismiss()" translate>
+      FORM.BUTTONS.BACK
+    </button>
+
+    <bh-loading-button loading-state="InvoicingFeesForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

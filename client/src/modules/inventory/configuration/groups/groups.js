@@ -38,13 +38,14 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     var request = { action : 'add' };
 
     Modal.openInventoryGroupActions(request)
-      .then(function (res) {
-        if (res.uuid) {
-          Notify.success('FORM.INFO.CREATE_SUCCESS');
-        }
-      })
+      .then(handleCreateSuccess)
       .then(startup)
       .catch(handler);
+  }
+
+  function handleCreateSuccess(res) {
+    if (!res.uuid) { return; }
+    Notify.success('FORM.INFO.CREATE_SUCCESS');
   }
 
   /** edit inventory group */
@@ -52,31 +53,38 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     var request = { action : 'edit', identifier : uuid };
 
     Modal.openInventoryGroupActions(request)
-      .then(function (res) {
-        Notify.success('FORM.INFO.UPDATE_SUCCESS');
-      })
+      .then(handleUpdateSuccess)
       .then(startup)
       .catch(handler);
   }
 
+  function handleUpdateSuccess(res) {
+    if (!res.uuid) { return; }
+    Notify.success('FORM.INFO.CREATE_SUCCESS');
+  }
+
   /** delete inventory group */
   function deleteInventoryGroup(id) {
+    function handleDeleteSuccess() {
+      Notify.success('FORM.INFO.DELETE_SUCCESS');
+      startup();
+      return null;
+    }
+
+    function handleConfirmDelete(bool) {
+      // if the user clicked cancel, reset the view and return
+      if (!bool) {
+        vm.view = 'default';
+        return null;
+      }
+      // if we get there, the user wants to delete
+      return InventoryGroup.remove(id)
+        .then(handleDeleteSuccess);
+    }
+
     Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool) {
-        // if the user clicked cancel, reset the view and return
-        if (!bool) {
-          vm.view = 'default';
-          return;
-        }
-        // if we get there, the user wants to delete
-        InventoryGroup.remove(id)
-          .then(function () {
-            Notify.success('FORM.INFO.DELETE_SUCCESS');
-            startup();
-            return;
-          })
-          .catch(Notify.handleError);
-      });
+      .then(handleConfirmDelete)
+      .catch(Notify.handleError);
   }
 
 
@@ -96,7 +104,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
     // handle the list of group
     function handleGroupList(list) {
-      list.forEach(function (group) {
+      function setAccountNumber(group) {
         // stock account
         group.stockAccountNumber = AccountStore.get(group.stock_account) ?
           AccountStore.get(group.stock_account).number : '';
@@ -108,7 +116,9 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
         // charge account
         group.cogsAccountNumber = AccountStore.get(group.cogs_account) ?
           AccountStore.get(group.cogs_account).number : '';
-      });
+      }
+
+      list.forEach(setAccountNumber);
 
       vm.groupList = list;
 

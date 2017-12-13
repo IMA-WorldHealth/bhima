@@ -59,7 +59,7 @@ describe('(/inventory) The Inventory HTTP API', () => {
     return agent.put(`/inventory/groups/${inventoryGroup.uuid}`)
       .send(updateGroup)
       .then(res => {
-        const group = res.body[0];
+        const group = res.body;
         updateGroup.uuid = inventoryGroup.uuid;
         expect(group).to.contain.all.keys(Object.keys(updateGroup));
 
@@ -84,14 +84,12 @@ describe('(/inventory) The Inventory HTTP API', () => {
   it('GET /inventory/group returns details of an inventory group', () => {
     return agent.get(`/inventory/groups/${inventoryGroup.uuid}`)
       .then(res => {
-        const group = res.body[0];
+        const group = res.body;
         expect(group).to.contain.all.keys(Object.keys(inventoryGroup));
         // compare value to the last update of our request
         Object.keys(group).forEach(key => {
           expect(group[key]).to.be.equals(updateGroup[key]);
         });
-
-        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });

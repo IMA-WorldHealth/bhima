@@ -65,7 +65,7 @@ function getGroups(uid) {
   `;
 
   const id = (uid) ? db.bid(uid) : undefined;
-  return db.exec(sql, [id]);
+  return id ? db.one(sql, [id]) : db.exec(sql);
 }
 
 

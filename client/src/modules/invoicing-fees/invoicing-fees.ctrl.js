@@ -1,21 +1,21 @@
 angular.module('bhima.controllers')
-  .controller('BillingServicesController', BillingServicesController);
+  .controller('InvoicingFeesController', InvoicingFeesController);
 
-BillingServicesController.$inject = [
-  '$state', 'BillingServicesService', 'NotifyService', 'bhConstants', '$timeout', 'uiGridConstants',
+InvoicingFeesController.$inject = [
+  '$state', 'InvoicingFeesService', 'NotifyService', 'bhConstants', '$timeout', 'uiGridConstants',
 ];
 
 /**
- * The Billing Services Controller
+ * The invoicing fees Controller
  *
- * This is the default controller for the billing services URL endpoint.  It
- * downloads and displays all billing services in the application via a ui-grid.
+ * This is the default controller for the invoicing fees URL endpoint.  It
+ * downloads and displays all invoicing fees in the application via a ui-grid.
  */
-function BillingServicesController($state, BillingServices, Notify, bhConstants, $timeout, uiGridConstants) {
+function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants, $timeout, uiGridConstants) {
   var vm = this;
 
   var actionTemplate =
-    'modules/billing-services/templates/action.cell.html';
+    'modules/invoicing-fees/templates/action.cell.html';
 
   var columns;
 
@@ -103,19 +103,19 @@ function BillingServicesController($state, BillingServices, Notify, bhConstants,
   function startup() {
     toggleLoadingIndicator();
 
-    // retrieve a detailed list of the billing services in the application
-    BillingServices.read(null, { detailed : 1 })
-      .then(function (billingServices) {
+    // retrieve a detailed list of the invoicing fees in the application
+    InvoicingServices.read(null, { detailed : 1 })
+      .then(function (invoicingServices) {
 
         // make a pretty human readable account label
         // TODO(@jniles) - make this use the account_label.  Requires changing
         // the server
-        billingServices.forEach(function (service) {
+        invoicingServices.forEach(function (service) {
           service.account = service.number;
         });
 
         // populate the grid
-        vm.options.data = billingServices;
+        vm.options.data = invoicingServices;
 
         // scroll to the indicated id in the grid an id was passed in
         if ($state.params.id) {
