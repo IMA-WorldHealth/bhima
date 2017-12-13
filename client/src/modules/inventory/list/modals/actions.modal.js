@@ -2,11 +2,14 @@ angular.module('bhima.controllers')
   .controller('InventoryListActionsModalController', InventoryListActionsModalController);
 
 InventoryListActionsModalController.$inject = [
-  'AccountService', 'InventoryService', 'NotifyService',
-  '$uibModalInstance', '$state', 'util', 'appcache', 'SessionService',
+  'AccountService', 'InventoryService', 'NotifyService', '$uibModalInstance',
+  '$state', 'util', 'appcache', 'SessionService', '$rootScope',
 ];
 
-function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util, AppCache, SessionService) {
+function InventoryListActionsModalController(
+  Account, Inventory, Notify, Instance,
+  $state, util, AppCache, SessionService, $rootScope
+) {
   var vm = this;
   var cache = AppCache('InventoryList');
 
@@ -15,9 +18,12 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
   vm.stateParams = {};
   vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
-  vm.stateParams = cache.stateParams = $state.params;
+  cache.stateParams = $state.params;
+  vm.stateParams = cache.stateParams;
+
   if ($state.params.uuid || $state.params.creating) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -39,37 +45,42 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
 
   /** submit data */
   function submit(form) {
-    if (form.$invalid) { return; }
+    var record;
+    var promise;
+    var message;
 
-    var record = util.filterFormElements(form, true);
+    if (form.$invalid) { return null; }
+
+    record = util.filterFormElements(form, true);
 
     // if no changes were made, simply dismiss the modal
-    if (util.isEmptyObject(record)) {
-      return cancel();
-    }
+    if (util.isEmptyObject(record)) { return cancel(); }
 
-    var promise = vm.isCreateState ?
+    promise = vm.isCreateState ?
       Inventory.create(record) :
       Inventory.update(vm.identifier, record);
 
     return promise
-      .then(function (res) {
-        var message = vm.isCreateState ?
-          'FORM.INFO.CREATE_SUCCESS' :
-          'FORM.INFO.UPDATE_SUCCESS';
-
-        Notify.success(message);
-
-        // if we are supposed to create another item, just refresh the state
-        if (vm.createAnotherItem) {
-          vm.item = {};
-          return;
-        }
-
-        // pass back the uuid
-        Instance.close(res.uuid);
-      })
+      .then(handleAction)
       .catch(Notify.handleError);
+
+    function handleAction(res) {
+      message = vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+
+      $rootScope.$broadcast('INVENTORY_UPDATED');
+      
+      Notify.success(message);
+
+      // if we are supposed to create another item, just refresh the state
+      if (vm.createAnotherItem) {
+        vm.item = {};
+        form.$submitted = false;
+        return;
+      }
+
+      // pass back the uuid
+      Instance.close(res.uuid);
+    }
   }
 
   /** cancel action */
@@ -81,21 +92,21 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
   function startup() {
     // Inventory Group
     Inventory.Groups.read()
-      .then(function (groups) {
+      .then(function handleGroup(groups) {
         vm.groups = groups;
       })
       .catch(Notify.handleError);
 
     // Inventory Type
     Inventory.Types.read()
-      .then(function (types) {
+      .then(function handleType(types) {
         vm.types = types;
       })
       .catch(Notify.handleError);
 
     // Inventory Unit
     Inventory.Units.read()
-      .then(function (units) {
+      .then(function handleUnit(units) {
         vm.units = units;
       })
       .catch(Notify.handleError);
@@ -103,7 +114,7 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
     // if we are in the update state, load the inventory item information
     if (vm.isUpdateState) {
       Inventory.read(vm.identifier)
-        .then(function (item) {
+        .then(function handleInventoryItem(item) {
           vm.item = item;
         })
         .catch(Notify.handleError);

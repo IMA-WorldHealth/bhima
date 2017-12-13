@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 InventoryListController.$inject = [
   'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService',
   '$state', 'FilterService', 'appcache', 'GridColumnService', 'GridStateService',
-  'GridExportService', 'LanguageService', 'SessionService',
+  'GridExportService', 'LanguageService', 'SessionService', '$rootScope',
 ];
 
 /**
@@ -14,11 +14,9 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session
+  GridExport, Languages, Session, $rootScope
 ) {
   var vm = this;
-  vm.download = Inventory.download;
-
   var cacheKey = 'InventoryGrid';
   var cache = new AppCache(cacheKey);
 
@@ -28,6 +26,7 @@ function InventoryListController(
   var state;
 
   // global variables
+  vm.download = Inventory.download;
   vm.lang = Languages.key;
   vm.filterEnabled = false;
   vm.gridOptions = {};
@@ -35,6 +34,13 @@ function InventoryListController(
 
   vm.loading = true;
   vm.remove = remove;
+
+  // listner
+  $rootScope.$on('INVENTORY_UPDATED', onInventoryUpdated);
+
+  function onInventoryUpdated() {
+    load(Inventory.filters.formatHTTP(true));
+  }
 
   // grid default options
   columnDefs = [{
@@ -147,16 +153,22 @@ function InventoryListController(
     vm.hasError = false;
 
     Inventory.read(null, params)
-      .then(function (rows) {
-        vm.gridOptions.data = rows;
-      })
-      .catch(function (exception) {
-        vm.hasError = true;
-        Notify.handleError(exception);
-      })
-      .finally(function () {
-        vm.loading = false; // this will execute after the data is downloaded.
-      });
+      .then(handleInventoryResult)
+      .catch(handleException)
+      .finally(toggleLoading);
+  }
+
+  function handleInventoryResult(rows) {
+    vm.gridOptions.data = rows;
+  }
+
+  function handleException(exception) {
+    vm.hasError = true;
+    Notify.handleError(exception);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   // research and filter data in Inventory List
@@ -164,13 +176,14 @@ function InventoryListController(
     var filtersSnapshot = Inventory.filters.formatHTTP();
 
     Inventory.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
-        Inventory.filters.replaceFilters(changes);
-        Inventory.cacheFilters();
-        vm.latestViewFilters = Inventory.filters.formatView();
+      .then(handleSearchResult);
+  }
 
-        return load(Inventory.filters.formatHTTP(true));
-      });
+  function handleSearchResult(changes) {
+    Inventory.filters.replaceFilters(changes);
+    Inventory.cacheFilters();
+    vm.latestViewFilters = Inventory.filters.formatView();
+    return load(Inventory.filters.formatHTTP(true));
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -184,7 +197,7 @@ function InventoryListController(
 
   function startup() {
     // if parameters are passed through the $state object, use them.
-    if ($state.params.filters.length) {
+    if ($state.params.filters && $state.params.filters.length) {
       Inventory.filters.replaceFiltersFromState($state.params.filters);
     }
 
