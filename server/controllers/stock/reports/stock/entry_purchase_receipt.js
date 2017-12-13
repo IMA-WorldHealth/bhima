@@ -28,11 +28,11 @@ function stockEntryPurchaseReceipt(req, res, next) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference,
       p.note, p.cost, p.date AS purchase_date, p.payment_method,
-      s.display_name AS supplier_display_name, proj.name AS project_display_name
+      s.display_name AS supplier_display_name, proj.name AS project_display_name,
+      dm.text as document_reference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -41,6 +41,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
     JOIN purchase p ON p.uuid = l.origin_uuid
     JOIN supplier s ON s.uuid = p.supplier_uuid
     JOIN project proj ON proj.id = p.project_id
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
