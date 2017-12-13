@@ -12,6 +12,7 @@ angular.module('bhima.components')
       required          : '<?',
       validationTrigger : '<',
       filter            : '<?',
+      warnNoGroup       : '<?',
     },
   });
 
