@@ -4,7 +4,7 @@ angular.module('bhima.services')
 VoucherService.$inject = [
   'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
   'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
-  'appcache', 'bhConstants', 'TransactionService',
+  'appcache', 'bhConstants', 'TransactionService', '$translate'
 ];
 
 /**
@@ -17,7 +17,7 @@ VoucherService.$inject = [
  */
 function VoucherService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, bhConstants, Transactions
+  $httpParamSerializer, AppCache, bhConstants, Transactions, $translate
 ) {
   var service = new Api('/vouchers/');
   var voucherFilters = new Filters();
@@ -41,14 +41,14 @@ function VoucherService(
   voucherFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   voucherFilters.registerCustomFilters([
-    { key : 'user_id', label : 'FORM.LABELS.USER' },
-    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'reversed', label : 'FORM.INFO.ANNULLED' },
-    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-    { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
-    { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
-    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
-    { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key: 'user_id', label: 'FORM.LABELS.USER' },
+    { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
+    { key: 'reversed', label: 'FORM.INFO.ANNULLED' },
+    { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
+    { key: 'entity_uuid', label: 'FORM.LABELS.ENTITY' },
+    { key: 'cash_uuid', label: 'FORM.INFO.PAYMENT' },
+    { key: 'invoice_uuid', label: 'FORM.LABELS.INVOICE' },
+    { key: 'type_ids', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 
   if (filterCache.filters) {
@@ -134,7 +134,7 @@ function VoucherService(
       return sum + row.debit;
     }, 0);
 
-    return Api.create.call(service, { voucher : v });
+    return Api.create.call(service, { voucher: v });
   }
 
   /**
@@ -155,13 +155,20 @@ function VoucherService(
    * @return {object} Store transaction type store object { data: array, ...}
    */
   function transactionType() {
-    return TransactionTypeStore.load();
+    return TransactionTypeStore.load()
+      .then(function (transactionTypes) {
+        return transactionTypes.data.map(function (item) {
+          item.hrText = $translate.instant(item.text);
+          return item;
+        });
+      })
+      ;
   }
 
   // downloads a type of report based on the
   function download(type) {
     var filterOpts = voucherFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    var defaultOpts = { renderer: type, lang: Languages.key };
 
     // combine options
     var options = angular.merge(defaultOpts, filterOpts);
@@ -177,14 +184,14 @@ function VoucherService(
    */
   function openSearchModal(filters) {
     return Modal.open({
-      templateUrl : 'modules/vouchers/modals/search.modal.html',
-      size        : 'md',
-      animation   : false,
-      keyboard    : false,
-      backdrop    : 'static',
-      controller  : 'VoucherRegistrySearchModalController as $ctrl',
-      resolve     : {
-        filters : function filtersProvider() { return filters; },
+      templateUrl: 'modules/vouchers/modals/search.modal.html',
+      size: 'md',
+      animation: false,
+      keyboard: false,
+      backdrop: 'static',
+      controller: 'VoucherRegistrySearchModalController as $ctrl',
+      resolve: {
+        filters: function filtersProvider() { return filters; },
       },
     }).result;
   }

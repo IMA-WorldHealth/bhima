@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('ComplexJournalVoucherController', ComplexJournalVoucherController);
 
 ComplexJournalVoucherController.$inject = [
-  'VoucherService', '$translate', 'CurrencyService', 'SessionService',
+  'VoucherService', 'CurrencyService', 'SessionService',
   'FindEntityService', 'FindReferenceService', 'NotifyService',
   'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'GridAggregatorService',
   'uiGridConstants', 'VoucherForm', '$timeout',
@@ -20,7 +20,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo/@fixme - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
-  Vouchers, $translate, Currencies, Session, FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
+  Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit, Receipts, bhConstants,
   GridAggregators, uiGridConstants, VoucherForm, $timeout
 ) {
   var vm = this;
@@ -188,10 +188,7 @@ function ComplexJournalVoucherController(
 
   Vouchers.transactionType()
     .then(function (list) {
-      vm.types = list.data.map(function (item) {
-        item.hrText = $translate.instant(item.text);
-        return item;
-      });
+      vm.types = list;
     })
     .catch(Notify.handleError);
 
