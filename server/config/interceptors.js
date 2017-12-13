@@ -8,14 +8,13 @@
  * The only unexpected errors are database errors, uniformly treated as
  * BadRequests (HTTP stats code 400).
  *
- * @requires winston
+ * @requires debug
  * @requires BadRequest
  */
 
-const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
-
-const LOG_ALL_MYSQL_ERRORS = Number(process.env.LOG_ALL_MYSQL_ERRORS);
+const debugDB = require('debug')('db:errors');
+const debug = require('debug')('errors');
 
 // map MySQL error codes to HTTP status codes
 const map = {
@@ -56,8 +55,9 @@ const SQL_STATES = {
  */
 exports.handler = function handler(err, req, res, next) {
   let error = err;
+
   // log the error to the error log (NOTE: in production, this should be 'error')
-  winston.log('debug', error);
+  debug('#interceptor() %j', error);
 
   // check if it is a database error and format the proper description if so.
   if (error.sqlState) {
@@ -73,9 +73,9 @@ exports.handler = function handler(err, req, res, next) {
       description = map[error.code];
     }
 
-    if (LOG_ALL_MYSQL_ERRORS) {
-      winston.log('error', error);
-    }
+    debugDB(`#interceptor(): [ERROR-QUERY] ${error.sql}`);
+    debugDB(`#interceptor(): [ERROR-RESPONSE] ${error.sqlState}`);
+    debugDB(`#interceptor(): [ERROR-MESSAGE] ${error.sqlMesssage}`);
 
     error = new BadRequest(description, key);
   }

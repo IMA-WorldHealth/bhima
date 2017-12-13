@@ -120,14 +120,14 @@ RENAME TABLE `invoice_billing_service` TO `invoice_invoicing_fee`;
 
 ALTER TABLE `debtor_group` CHANGE COLUMN `apply_billing_services` `apply_invoicing_fees` BOOLEAN NOT NULL DEFAULT TRUE;
 
-ALTER TABLE `debtor_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+-- ALTER TABLE `debtor_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
 ALTER TABLE `debtor_group_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
-ALTER TABLE `debtor_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ALTER TABLE `debtor_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE `patient_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+-- ALTER TABLE `patient_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
 ALTER TABLE `patient_group_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
-ALTER TABLE `patient_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ALTER TABLE `patient_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE `invoice_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+-- ALTER TABLE `invoice_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
 ALTER TABLE `invoice_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
-ALTER TABLE `invoice_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ALTER TABLE `invoice_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

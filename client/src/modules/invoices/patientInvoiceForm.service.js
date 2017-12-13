@@ -56,9 +56,9 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
             if (row._valid) {
                 row.credit = (row.quantity * row.transaction_price);
                 return aggregate + row.credit;
-            } 
+            }
                 return aggregate;
-            
+
         }, 0);
   }
 
@@ -109,7 +109,7 @@ Patients, PriceLists, Inventory, AppCache, Store, Pool,
         }
         // make sure both the label and code is searchable
         data.forEach(function (item) {
-          item.hrlabel = `${item.code  } ${  item.label}`;
+          item.hrlabel = ''.concat(item.code, ' ', item.label);
         });
 
         this.inventory.initialize('uuid', data);
