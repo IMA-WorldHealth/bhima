@@ -55,6 +55,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         field: 'expiration_date',
         type: 'date',
         width: 150,
+        visible : (vm.stockLine.expires !== 0),
         displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
         headerCellFilter: 'translate',
         cellTemplate: 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html'
@@ -64,7 +65,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         field: 'actions',
         width: 25,
         cellTemplate: 'modules/stock/entry/modals/templates/lot.actions.tmpl.html'
-      }
+      },
     ],
     data: vm.stockLine.lots,
     onRegisterApi: onRegisterApi
@@ -121,9 +122,15 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function checkLine(line, date) {
+       
     if (date) { line.expiration_date = date; }
-
+    
     var isPosterior = new Date(line.expiration_date) >= new Date();
+    // IF this item doen't expire, we can consider isposterior = true,
+    // no check for the date
+    if (vm.stockLine.expires === 0) {
+      isPosterior = true;
+    }
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
 

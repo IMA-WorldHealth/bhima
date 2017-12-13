@@ -889,6 +889,8 @@ CREATE TABLE `inventory_group` (
   `cogs_account` mediumint(8) unsigned DEFAULT NULL,
   `stock_account` mediumint(8) unsigned DEFAULT NULL,
   `donation_account` mediumint(8) unsigned DEFAULT NULL,
+  `expires` TINYINT(2) DEFAULT 1,
+  `unique_item`  TINYINT(2) DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `inventory_group_1` (`name`),
   UNIQUE KEY `inventory_group_2` (`code`),

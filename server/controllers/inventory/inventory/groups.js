@@ -59,7 +59,7 @@ function update(record, identifier) {
  */
 function getGroups(uid) {
   const sql = `
-    SELECT BUID(uuid) AS uuid, code, name, sales_account, cogs_account, stock_account
+    SELECT BUID(uuid) AS uuid, code, name, sales_account, cogs_account, stock_account, expires, unique_item
     FROM inventory_group
     ${uid ? 'WHERE uuid = ?' : ''};
   `;
@@ -74,7 +74,7 @@ function getGroups(uid) {
  */
 function getGroupsMembers() {
   const sql = `
-    SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account,
+    SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account, ig.expires, ig.unique_item,
       ig.stock_account, COUNT(i.uuid) AS inventory_counted
     FROM inventory_group AS ig
     LEFT JOIN inventory AS i ON i.group_uuid = ig.uuid
