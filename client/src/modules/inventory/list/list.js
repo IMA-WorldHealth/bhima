@@ -14,7 +14,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session
+  GridExport, Languages, Session,
 ) {
   var vm = this;
   vm.download = Inventory.download;
@@ -34,6 +34,7 @@ function InventoryListController(
   vm.gridApi = {};
 
   vm.loading = true;
+  vm.remove = remove;
 
   // grid default options
   columnDefs = [{
@@ -101,13 +102,13 @@ function InventoryListController(
 
   vm.gridOptions = {
     appScopeProvider : vm,
-    enableFiltering  : vm.filterEnabled,
+    enableFiltering : vm.filterEnabled,
     enableColumnMenus : false,
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
-    columnDefs : columnDefs,
-    onRegisterApi : onRegisterApi,
+    columnDefs,
+    onRegisterApi,
   };
 
   // configurations
@@ -204,7 +205,21 @@ function InventoryListController(
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
   }
-
+  // delete an invetory from the database
+  function remove(uuid) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (yes) {
+        if (!yes) {
+          return;
+        }
+        Inventory.remove(uuid)
+        .then(function (res) {
+          startup();
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
+        })
+        .catch(Notify.handleError);
+      });
+  }
   // export csv
   function exportCsv() {
     exportation.run();

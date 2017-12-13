@@ -86,7 +86,8 @@ exports.getInventoryStatusById = getInventoryStatusById;
 
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
-
+//
+exports.deleteInventory = deleteInventory;
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
@@ -156,6 +157,19 @@ function getInventoryItemsById(req, res, next) {
     .catch((error) => {
       core.errorHandler(error, req, res, next);
     })
+    .done();
+}
+
+
+/**
+ * DELETE /inventory/:uuid
+ * delete an inventory group
+ */
+function deleteInventory(req, res, next) {
+
+  core.remove(req.params.uuid)
+    .then(res.sendStatus(204))
+    .catch(error => core.errorHandler(error, req, res, next))
     .done();
 }
 

@@ -14,6 +14,14 @@
           <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
+    <li>
+      <a href
+          data-method="delete"
+          data-delete-metadata="{{ row.entity.code }}"
+          ng-hide="row.groupHeader" ng-click="grid.appScope.remove(row.entity.uuid)">
+          <i class="fa fa-delete"></i> <span class="text-danger" translate>FORM.BUTTONS.DELETE</span>
+      </a>
+    </li>
 
     <li class="divider"></li>
     <li>
