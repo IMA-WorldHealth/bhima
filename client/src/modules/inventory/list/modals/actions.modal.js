@@ -68,13 +68,13 @@ function InventoryListActionsModalController(
       message = vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
 
       $rootScope.$broadcast('INVENTORY_UPDATED');
-      
+
       Notify.success(message);
 
       // if we are supposed to create another item, just refresh the state
       if (vm.createAnotherItem) {
         vm.item = {};
-        form.$submitted = false;
+        form.$setPristine();
         return;
       }
 
