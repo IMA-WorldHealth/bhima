@@ -112,8 +112,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
 -- Supported Languages
 INSERT INTO `language` VALUES
   (1,'Francais','fr', 'fr-be'),
-  (2,'English','en', 'en-us'),
-  (3,'Lingala','lg', 'fr-cd');
+  (2,'English','en', 'en-us');
 
 -- Currencies
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES

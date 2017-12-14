@@ -64,6 +64,10 @@ exports.handler = function handler(err, req, res, next) {
     let key;
     let description;
 
+    debugDB(`#interceptor(): [SQL-QUERY] ${error.sql}`);
+    debugDB(`#interceptor(): [SQL-RESPONSE] ${error.code}`);
+    debugDB(`#interceptor(): [SQL-MESSAGE] ${error.sqlMessage}`);
+
     // todo(jniles) - unify this error handing
     if (error.code === 'ER_SIGNAL_EXCEPTION') {
       key = SQL_STATES[error.sqlState] || error.sqlState;
@@ -72,11 +76,6 @@ exports.handler = function handler(err, req, res, next) {
       key = `ERRORS.${error.code || error.sqlState}`;
       description = map[error.code];
     }
-
-    debugDB(`#interceptor(): [ERROR-QUERY] ${error.sql}`);
-    debugDB(`#interceptor(): [ERROR-RESPONSE] ${error.sqlState}`);
-    debugDB(`#interceptor(): [ERROR-MESSAGE] ${error.sqlMesssage}`);
-
     error = new BadRequest(description, key);
   }
 

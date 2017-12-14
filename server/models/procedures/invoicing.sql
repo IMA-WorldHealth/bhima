@@ -409,8 +409,9 @@ BEGIN
   DECLARE cdescription TEXT;
 
  -- cursor for debtor's cautions
+ -- TODO(@jniles) - remove MAX() call.  This violates ONLY_FULL_GROUP_BY.
   DECLARE curse CURSOR FOR
-    SELECT c.id, c.date, c.description, SUM(c.credit - c.debit) AS balance FROM (
+    SELECT c.id, c.date, MAX(c.description), SUM(c.credit - c.debit) AS balance FROM (
 
         -- get the record_uuids in the posting journal
         SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, record_uuid AS id
@@ -442,7 +443,7 @@ BEGIN
           ON cash.uuid = general_ledger.reference_uuid
         WHERE entity_uuid = ientityId AND cash.is_caution = 0
     ) AS c
-    GROUP BY c.id
+    GROUP BY c.id, c.date
     HAVING balance > 0
     ORDER BY c.date;
 
@@ -581,40 +582,3 @@ BEGIN
   WHERE i.uuid = iuuid;
 END
 $$
-
-/*
-PostToGeneralLedger()
-
-This procedure uses the same staging code as the Trial Balance to stage and then post transactions
-from the posting_journal table to the General Ledger table.
-
-*/
-CREATE PROCEDURE PostToGeneralLedger()
-BEGIN
-  -- write into the posting journal
-  INSERT INTO general_ledger (
-    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date,
-    record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, origin_id, user_id,
-    cc_id, pc_id
-  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, posting_journal.record_uuid,
-    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-  FROM posting_journal JOIN stage_trial_balance_transaction AS staged
-    ON posting_journal.record_uuid = staged.record_uuid;
-
-  -- write into period_total
-  INSERT INTO period_total (
-    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
-  )
-  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
-    fiscal_year_id, project.enterprise_id, period_id
-  FROM posting_journal JOIN stage_trial_balance_transaction JOIN project
-    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
-    AND project_id = project.id
-  GROUP BY period_id, account_id
-  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
-
-  -- remove from posting journal
-  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
-END $$

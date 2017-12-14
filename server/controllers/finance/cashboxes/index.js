@@ -237,7 +237,7 @@ function privileges(req, res, next) {
         (
           SELECT cash_box.id, cash_box.label, cash_box.project_id, cash_box.is_auxiliary, cashbox_permission.user_id
           FROM cash_box
-          JOIN cashbox_permission ON bhima_test.cashbox_permission.cashbox_id = cash_box.id
+          JOIN cashbox_permission ON cashbox_permission.cashbox_id = cash_box.id
           WHERE cashbox_permission.user_id = ? AND cash_box.is_auxiliary = ?
         )
       UNION
