@@ -2,10 +2,9 @@ angular.module('bhima.controllers')
   .controller('ComplexJournalVoucherController', ComplexJournalVoucherController);
 
 ComplexJournalVoucherController.$inject = [
-  'VoucherService', 'CurrencyService', 'SessionService',
-  'FindEntityService', 'FindReferenceService', 'NotifyService',
-  'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'uiGridConstants',
-  'VoucherForm', '$timeout',
+  'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
+  'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
+  'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
 ];
 
 /**
@@ -21,8 +20,8 @@ ComplexJournalVoucherController.$inject = [
  * TODO/FIXME - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
-  Vouchers, $translate, Currencies, Session, FindEntity, FindReference, Notify,
-  Toolkit, Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
+  Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
+  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
 ) {
   var vm = this;
 

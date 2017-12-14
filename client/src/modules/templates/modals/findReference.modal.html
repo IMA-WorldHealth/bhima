@@ -12,9 +12,9 @@
     <div class="toolbar">
       <div class="toolbar-item">
         <button type="button"
-          ng-click="$ctrl.toggleFilter()"
+          ng-click="$ctrl.toggleInlineFilter()"
           class="btn btn-default"
-          ng-class="{ 'btn-info' : $ctrl.filterEnabled }">
+          ng-class="{ 'btn-info' : $ctrl.gridOptions.enableFiltering }">
           <span class="fa fa-filter"></span>
         </button>
 
@@ -28,7 +28,7 @@
   </div>
 </div>
 
-<div class="modal-body clearfix">
+<div class="modal-body">
 
   <!-- select document type  -->
   <div ng-hide="$ctrl.documentTypeSelected">
@@ -67,24 +67,37 @@
     </div>
   </div>
 
-  <!-- select references  -->
-  <div class="row" ng-show="$ctrl.documentTypeSelected">
-    <div class="col-xs-12">
-      <div
-        id="referenceGrid"
-        class="journalGrid"
-        ui-grid="$ctrl.gridOptions"
-        ui-grid-auto-resize
-        ui-grid-resize-columns
-        ui-grid-selection>
+  <!-- select references -->
+
+
+  <section ng-if="$ctrl.documentTypeSelected">
+    <div class="row">
+      <div class="col-xs-12">
+        <div
+          id="referenceGrid"
+          class="journalGrid"
+          ui-grid="$ctrl.gridOptions"
+          ui-grid-auto-resize
+          ui-grid-resize-columns
+          ui-grid-selection>
+        </div>
+        <bh-grid-loading-indicator
+          loading-state="$ctrl.loading"
+          empty-state="$ctrl.gridOptions.data.length === 0"
+          error-state="$ctrl.hasError">
+        </bh-grid-loading-indicator>
       </div>
-      <bh-grid-loading-indicator
-        loading-state="$ctrl.loading"
-        empty-state="$ctrl.gridOptions.data.length === 0"
-        error-state="$ctrl.hasError">
-      </bh-grid-loading-indicator>
     </div>
-  </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <p style="margin:0.25em 0;" ng-show="$ctrl.gridOptions.data.length === $ctrl.DEFAULT_DOWNLOAD_LIMIT">
+          <span>({{ $ctrl.gridOptions.data.length }})</span> <span translate>FORM.LABELS.RECORDS</span>
+          <a href ng-click="$ctrl.showAllRecords()" translate>FORM.BUTTONS.SHOW_ALL_RECORDS</a>
+        </p>
+      </div>
+    </div>
+  </section>
 </div>
 
 <div class="modal-footer text-right" data-reference-modal>
