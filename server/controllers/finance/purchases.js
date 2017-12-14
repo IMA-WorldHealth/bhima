@@ -9,12 +9,14 @@
  * @requires db
  * @requires NotFound
  * @requires BadRequest
+ * @requires moment
  */
 
 const uuid = require('uuid/v4');
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
+const moment = require('moment');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
@@ -317,7 +319,7 @@ function purchaseStatus(req, res, next) {
   const FROM_PURCHASE_ID = 1;
   const purchaseUuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost
+    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost, CEIL(DATEDIFF(m.date, p.date)) AS delay
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
@@ -329,6 +331,7 @@ function purchaseStatus(req, res, next) {
       let query = '';
       status.cost = row.cost;
       status.movement_cost = row.movement_cost;
+      status.delay = Math.round( (row.delay / 30) * 10 ) / 10;
 
       if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
@@ -346,7 +349,39 @@ function purchaseStatus(req, res, next) {
       }
       return db.exec(query, [purchaseUuid]);
     })
-    .then(() => res.status(200).send(status))
+    .then(() => {
+      /**
+        * Get all the inventories of a purchase order finally to obtain the average waiting time between the order and the delivery
+      */
+      const getInventory = `
+        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.delay
+        FROM purchase_item
+        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+        WHERE purchase_item.purchase_uuid = ?
+      `;
+
+      return db.exec(getInventory, [purchaseUuid]);
+    })
+    .then((rows) => {
+      const transaction = db.transaction();
+
+      rows.forEach((row) => {
+        /**
+          * Normally the delay agreement time between the order and the delivery is calculated 
+          * by finding the average duration of agreement of orders of last six months for a product 
+          * this calculation is very expensive in terms of memory, which is the reason why we keep 
+          * this information in the inventory table for article shovel
+        */
+
+        let delay = row.delay ? ((status.delay + row.delay) / 2) : status.delay;        
+        transaction.addQuery('UPDATE inventory SET delay = ? WHERE uuid = ?', [delay, db.bid(row.inventory_uuid)]);        
+      });
+
+      return transaction.execute();
+    })  
+    .then(() => {
+      res.status(200).send(status);
+    })
     .catch(next)
     .done();
 }
