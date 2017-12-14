@@ -8,13 +8,13 @@ StockDefineLotsModalController.$inject = [
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
   var vm = this;
-
+  var current = new Date();
   vm.enterprise = Session.enterprise;
   vm.stockLine = Data.stockLine;
   vm.entryType = Data.entry_type;
   vm.gridApi = {};
   vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
-
+  
   vm.gridOptions = {
     appScopeProvider: vm,
     enableSorting: false,
@@ -126,10 +126,13 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     if (date) { line.expiration_date = date; }
     
     var isPosterior = new Date(line.expiration_date) >= new Date();
-    // IF this item doen't expire, we can consider isposterior = true,
-    // no check for the date
+    // IF this item doen't expires, we can consider isposterior = true,
+    // no check for the expiration date,
+    // the expiration date can have defaut value, this year + 1000 year.
+      
     if (vm.stockLine.expires === 0) {
       isPosterior = true;
+      line.expiration_date = new Date((current.getFullYear() + 1000), current.getMonth());
     }
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
