@@ -182,6 +182,46 @@ function create(req, res, next) {
 
   return transaction.execute()
     .then(() => {
+
+      /**
+        * Finally, for the inventories ordered, to know the average value of purchase intervall and the date of the last order
+      */
+      const getInventory = `
+        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.purchase_interval, inventory.last_purchase
+        FROM purchase_item
+        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+        WHERE purchase_item.purchase_uuid = ?
+      `;
+
+      return db.exec(getInventory, [data.uuid]);
+    })
+    .then((rows) => {
+      const datePurchase = new Date(data.date);
+
+      const transaction = db.transaction();
+      rows.forEach((row) => {        
+        /**
+          * Normally purchase interval is calculated by deducting the gap in months of 
+          * all purchase orders for a product, this form is also very expensive in terms of resources, 
+          * so let's store the date of the last orders and store the results in months in the column Purchase interval, 
+          * and in the following we would calculate each time the average value between the value purchase interval 
+          * and the difference in months between last_purchase and the date of the current purchase Order
+        */
+        let purchaseInterval = row.purchase_interval;
+        if (row.last_purchase) {
+          let diff = moment(datePurchase).diff(moment(row.last_purchase));
+          let duration = moment.duration(diff, 'milliseconds');
+          let durationMonth = Math.round(( (duration.asDays()) / 30) * 10 ) / 10;
+
+          purchaseInterval = row.purchase_interval ? ((durationMonth + row.purchase_interval) / 2) : durationMonth;
+        }
+
+        transaction.addQuery('UPDATE inventory SET purchase_interval = ?, last_purchase = ?  WHERE uuid = ?', [purchaseInterval, datePurchase, db.bid(row.inventory_uuid)]);
+      });
+
+      return transaction.execute();
+    })  
+    .then((result) => {
       res.status(201).json({ uuid : puid });
     })
     .catch(next)
@@ -373,8 +413,8 @@ function purchaseStatus(req, res, next) {
           * this information in the inventory table for article shovel
         */
 
-        let delay = row.delay ? ((status.delay + row.delay) / 2) : status.delay;        
-        transaction.addQuery('UPDATE inventory SET delay = ? WHERE uuid = ?', [delay, db.bid(row.inventory_uuid)]);        
+        let delay = row.delay ? ((status.delay + row.delay) / 2) : status.delay;
+        transaction.addQuery('UPDATE inventory SET delay = ? WHERE uuid = ?', [delay, db.bid(row.inventory_uuid)]);
       });
 
       return transaction.execute();

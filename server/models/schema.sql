@@ -69,8 +69,8 @@ CREATE TABLE `patient_assignment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS invoicing_fee;
-CREATE TABLE invoicing_fee (
+DROP TABLE IF EXISTS billing_service;
+CREATE TABLE billing_service (
   `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
@@ -79,8 +79,8 @@ CREATE TABLE invoicing_fee (
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `invoicing_fee_1` (`label`),
-  UNIQUE KEY `invoicing_fee_2` (`account_id`, `label`),
+  UNIQUE KEY `billing_service_1` (`label`),
+  UNIQUE KEY `billing_service_2` (`account_id`, `label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -505,7 +505,7 @@ CREATE TABLE `debtor_group` (
   `is_convention` TINYINT(1) NOT NULL DEFAULT 0,
   `price_list_uuid` BINARY(16) DEFAULT NULL,
   `apply_discounts` BOOLEAN NOT NULL DEFAULT TRUE,
-  `apply_invoicing_fees` BOOLEAN NOT NULL DEFAULT TRUE,
+  `apply_billing_services` BOOLEAN NOT NULL DEFAULT TRUE,
   `apply_subsidies` BOOLEAN NOT NULL DEFAULT TRUE,
   `color` VARCHAR(8) NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -523,17 +523,17 @@ CREATE TABLE `debtor_group` (
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS debtor_group_invoicing_fee;
+DROP TABLE IF EXISTS debtor_group_billing_service;
 
-CREATE TABLE debtor_group_invoicing_fee (
+CREATE TABLE debtor_group_billing_service (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debtor_group_uuid`      BINARY(16) NOT NULL,
-  `invoicing_fee_id`      SMALLINT UNSIGNED NOT NULL,
+  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `debtor_group_uuid` (`debtor_group_uuid`),
-  KEY `invoicing_fee_id` (`invoicing_fee_id`),
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `billing_service_id` (`billing_service_id`),
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1177,17 +1177,17 @@ CREATE TABLE `patient_group` (
    FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS patient_group_invoicing_fee;
+DROP TABLE IF EXISTS patient_group_billing_service;
 
-CREATE TABLE patient_group_invoicing_fee (
+CREATE TABLE patient_group_billing_service (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `patient_group_uuid`      BINARY(16) NOT NULL,
-  `invoicing_fee_id`      SMALLINT UNSIGNED NOT NULL,
+  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
-  KEY `invoicing_fee_id` (`invoicing_fee_id`),
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `billing_service_id` (`billing_service_id`),
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1551,17 +1551,17 @@ CREATE TABLE `invoice` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS invoice_invoicing_fee;
-CREATE TABLE invoice_invoicing_fee (
+DROP TABLE IF EXISTS invoice_billing_service;
+CREATE TABLE invoice_billing_service (
   `invoice_uuid`               BINARY(16) NOT NULL,
   `value`                      DECIMAL(10,4) NOT NULL,
-  `invoicing_fee_id`         SMALLINT UNSIGNED NOT NULL,
+  `billing_service_id`         SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`invoice_uuid`, `value`),
-  UNIQUE KEY `invoice_invoicing_fee_1` (`invoice_uuid`, `invoicing_fee_id`),
+  UNIQUE KEY `invoice_billing_service_1` (`invoice_uuid`, `billing_service_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
-  KEY `invoicing_fee_id` (`invoicing_fee_id`),
+  KEY `billing_service_id` (`billing_service_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`)
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `invoice_item`;
