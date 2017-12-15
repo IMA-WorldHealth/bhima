@@ -70,18 +70,18 @@
       <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
     </bh-account-select>
 
-    <div class='form-horizontal'>
-      <div class="checkbox" style="margin-top: 0px">
+    <div class='form-group'>
+      <div class="checkbox">
         <label>
-         <input type='checkbox' ng-model = '$ctrl.session.expires' ng-true-value="1" ng-false-value="0"/>
+         <input type='checkbox' name="expires" ng-model = '$ctrl.session.expires' ng-true-value="1" ng-false-value="0"/>
          <span translate>INVENTORY.EXPIRES</span>
         </label> 
       </div>
     </div>
-    <div class='form-horizontal'>
-      <div class="checkbox" style="margin-top: 0px">
+    <div class='form-group'>
+      <div class="checkbox">
         <label>
-         <input type='checkbox' ng-model = '$ctrl.session.unique_item' ng-true-value="1" ng-false-value="0"/>
+         <input type='checkbox' name='unique_item' ng-model = '$ctrl.session.unique_item' ng-true-value="1" ng-false-value="0"/>
          <span translate>INVENTORY.UNIQUE_ITEM</span>
         </label> 
       </div>

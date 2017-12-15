@@ -14,6 +14,8 @@ describe('Inventory Configuration', () => {
     sales_account : 'Caisse Principale USD',
     stock_account : 'Medicaments en Sirop',
     cogs_account  : 'Médicaments en Sirop',
+    expires : 1,
+    unique_item : 0,
   };
 
   const groupWithOnlySalesAccount = {

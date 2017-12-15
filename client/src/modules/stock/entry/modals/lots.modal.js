@@ -126,9 +126,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     if (date) { line.expiration_date = date; }
     
     var isPosterior = new Date(line.expiration_date) >= new Date();
-    // IF this item doen't expires, we can consider isposterior = true,
+    // IF this item doesn't expires, we can consider isposterior = true,
     // no check for the expiration date,
-    // the expiration date can have defaut value, this year + 1000 year.
+    // the expiration date can have defaut value, this year + 1000 years.
       
     if (vm.stockLine.expires === 0) {
       isPosterior = true;

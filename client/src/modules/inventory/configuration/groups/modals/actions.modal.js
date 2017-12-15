@@ -90,7 +90,6 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
     if (vm.identifier) {
       InventoryGroups.read(vm.identifier)
         .then(function (groups) {
-          console.log(groups);
           vm.session = groups[0];
         })
         .catch(Notify.handleError);
