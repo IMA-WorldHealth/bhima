@@ -109,10 +109,10 @@ BEGIN
 
   -- wipe the period total table
   DELETE FROM  period_total
-  WHERE period_id IN(
+  WHERE period_id IN (
     SELECT id
-    FROM  period
-    WHERE number<>0
+    FROM period
+    WHERE number <> 0
   );
 
   INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
@@ -120,7 +120,7 @@ BEGIN
     FROM general_ledger
       JOIN period ON general_ledger.period_id = period.id
       JOIN project ON general_ledger.project_id = project.id
-    GROUP BY account_id, period_id;
+    GROUP BY account_id, period_id, enterprise_id;
 
 END $$
 

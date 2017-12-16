@@ -1,13 +1,140 @@
--- core tables that drive system configuration - these configurations could
--- be overriden by individual enterprises however these are the defaults
+RENAME TABLE `assignation_patient` TO `patient_assignment`;
 
--- set variables
-SET names 'utf8';
-SET character_set_database = 'utf8';
-SET collation_database = 'utf8_unicode_ci';
+ALTER TABLE `cash` ADD COLUMN `edited` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `invoice` ADD COLUMN `edited` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `voucher` ADD COLUMN `edited` TINYINT NOT NULL DEFAULT 0;
 
--- units
-INSERT INTO unit VALUES
+ALTER TABLE `cash_box_account_currency` CHANGE `transfer_account_id` `transfer_account_id` INT UNSIGNED DEFAULT NULL;
+
+ALTER TABLE `config_paiement_period` CHANGE `id` `id` int(10) unsigned NOT NULL;
+
+ALTER TABLE `depot` ADD COLUMN `allow_entry_purchase` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_entry_donation` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_entry_integration` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_entry_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_exit_debtor` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_exit_service` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_exit_loss` tinyint(1) unsigned NOT NULL DEFAULT 0;
+ALTER TABLE `depot` ADD COLUMN `allow_exit_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0;
+
+ALTER TABLE `employee` DROP COLUMN `display_name`;
+ALTER TABLE `employee` DROP COLUMN `sex`;
+ALTER TABLE `employee` DROP COLUMN `dob`;
+
+-- this can't be a ALTER TABLE because of a MySQL bug.
+ALTER TABLE `employee` DROP FOREIGN KEY `employee_ibfk_4`;
+ALTER TABLE `employee` DROP COLUMN `grade_id`;
+ALTER TABLE `employee` ADD COLUMN `grade_uuid` BINARY(16) NOT NULL;
+ALTER TABLE `employee` ADD FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`);
+
+ALTER TABLE `employee` DROP COLUMN `adresse`;
+ALTER TABLE `employee` DROP COLUMN `phone`;
+ALTER TABLE `employee` DROP COLUMN `email`;
+ALTER TABLE `employee` ADD COLUMN `is_medical`    TINYINT(1) DEFAULT 0;
+
+ALTER TABLE `inventory` ADD COLUMN `locked` TINYINT(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE `inventory_unit` ADD COLUMN `abbr` VARCHAR(10) NOT NULL;
+
+ALTER TABLE `price_list_item` CHANGE COLUMN `value` `value` DOUBLE NOT NULL;
+
+ALTER TABLE `purchase` DROP COLUMN `is_confirmed`;
+ALTER TABLE `purchase` DROP COLUMN `is_received`;
+ALTER TABLE `purchase` DROP COLUMN `is_partially_received`;
+ALTER TABLE `purchase` DROP COLUMN `is_cancelled`;
+ALTER TABLE `purchase` ADD COLUMN `status_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1;
+
+CREATE TABLE IF NOT EXISTS `purchase_status` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `purchase_status` (`id`, `text`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `purchase` ADD FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`);
+
+ALTER TABLE `stock_movement` CHANGE `date` `date` DATETIME NOT NULL;
+
+-- stock consumption total
+CREATE TABLE `stock_consumption` (
+  `inventory_uuid`  BINARY(16) NOT NULL,
+  `depot_uuid`      BINARY(16) NOT NULL,
+  `period_id`       MEDIUMINT(8) NOT NULL,
+  `quantity`        INT(11) DEFAULT 0,
+  PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY `period_id` (`period_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*
+  The transaction_history table stores the editing history of transactions that
+  have gone through the posting process.  The record_uuid should be the same
+  record_uuid as that found in the posting_journal/general_ledger.
+*/
+CREATE TABLE `transaction_history` (
+  `uuid`  BINARY(16) NOT NULL,
+  `record_uuid`      BINARY(16) NOT NULL,
+  `timestamp`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `record_uuid` (`record_uuid`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `depot_permission`;
+
+CREATE TABLE `depot_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `depot_uuid`  BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
+  KEY `user_id` (`user_id`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cashbox_permission`;
+
+CREATE TABLE `cashbox_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
+  KEY `user_id` (`user_id`),
+  KEY `cashbox_id` (`cashbox_id`),
+  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+RENAME TABLE `billing_service` TO `invoicing_fee`;
+RENAME TABLE `debtor_group_billing_service` TO `debtor_group_invoicing_fee`;
+RENAME TABLE `patient_group_billing_service` TO `patient_group_invoicing_fee`;
+RENAME TABLE `invoice_billing_service` TO `invoice_invoicing_fee`;
+
+ALTER TABLE `debtor_group` CHANGE COLUMN `apply_billing_services` `apply_invoicing_fees` BOOLEAN NOT NULL DEFAULT TRUE;
+
+-- ALTER TABLE `debtor_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+ALTER TABLE `debtor_group_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
+ALTER TABLE `debtor_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ALTER TABLE `patient_group_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+ALTER TABLE `patient_group_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
+ALTER TABLE `patient_group_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ALTER TABLE `invoice_invoicing_fee` DROP FOREIGN KEY `billing_service_id`;
+ALTER TABLE `invoice_invoicing_fee` CHANGE COLUMN `billing_service_id` `invoicing_fee_id`  SMALLINT UNSIGNED NOT NULL;
+ALTER TABLE `invoice_invoicing_fee` ADD FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+-- insert missing modules
+INSERT IGNORE INTO unit VALUES
   (0,   'Root','TREE.ROOT','The unseen root node',NULL,'/modules/index.html','/root'),
   (1,   'Admin','TREE.ADMIN','The Administration Super-Category',0,'/modules/admin/index.html','/admin'),
   (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/modules/enterprise/', '/enterprises'),
@@ -46,7 +173,6 @@ INSERT INTO unit VALUES
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/modules/transaction-type', '/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/modules/finance/reports', '/finance/reports'),
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/modules/reports/cashflow', '/reports/cashflow'),
-  -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
   (149, 'Cash report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),
@@ -75,24 +201,8 @@ INSERT INTO unit VALUES
   (183, 'Grade Management','TREE.GRADES','', 1,'/modules/grades/','/grades'),
   (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions');
 
--- Reserved system account type
-INSERT INTO `account_category` VALUES
-  (1, 'income', 'ACCOUNT.TYPES.INCOME'),
-  (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
-  (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
-  (4, 'title', 'ACCOUNT.TYPES.TITLE');
 
--- Reserved system account category
-INSERT INTO `account_type` VALUES
-  (1, 'asset', 'ACCOUNT.TYPES.ASSET', 3),
-  (2, 'liability', 'ACCOUNT.TYPES.LIABILITY', 3),
-  (3, 'equity', 'ACCOUNT.TYPES.EQUITY', 3),
-  (4, 'revenue', 'ACCOUNT.TYPES.REVENUE', 1),
-  (5, 'expense', 'ACCOUNT.TYPES.EXPENSE', 2),
-  (6, 'title', 'ACCOUNT.TYPES.TITLE', 4);
-
--- core BHIMA reports
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+INSERT IGNORE INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (1, 'cashflow', 'TREE.CASHFLOW'),
   (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
   (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
@@ -108,68 +218,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT');
 
+-- various unit updates
 
--- Supported Languages
-INSERT INTO `language` VALUES
-  (1,'Francais','fr', 'fr-be'),
-  (2,'English','en', 'en-us');
-
--- Currencies
-INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
-  (1,'Congolese Francs','fc','Fc',NULL,50.00),
-  (2,'United States Dollars','usd','$',NULL,0.01);
-
-INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
-INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pill', 'Pillule'),(4,'Box', 'Box'),(5,'Lot', 'Lot'),(6,'amp', 'ampoule'),(7,'bags', 'bags'),(8,'btl', 'bouteille'),(9,'cap', 'capsule'),(10,'flc', 'flacon'),(11,'jar', 'jar'),(12,'ltr', 'littre'),(13,'pce', 'piece'),(14,'sch', 'sachet'),(15,'tab', 'tablette'),(16,'tub', 'tube'),(17,'vial', 'vial');
-
--- fonctions
-INSERT INTO `fonction` VALUES
-  (1,'Infirmier'),
-  (2,'Medecin Directeur');
-
--- transaction type
-INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
-  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 'REC. GEN', 1),
-  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 'CASH', 1),
-  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 'CONV', 1),
-  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 'PEC', 1),
-  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'income', 'TRANSF', 1),
-  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 'DEP. GEN', 1),
-  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 'SALAIRE', 1),
-  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense', 'PAYBACK', 1),
-  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense', 'ACHAT', 1),
-  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 'CREDIT NOTE', 1),
-  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1),
-  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'stock integration', 'STOCK. INT', 1),
-  (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'stock distribution', 'STOCK_EXIT', 1),
-  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'stock reception', 'STOCK_ENTRY', 1);
-
--- Stock Movement Flux
-INSERT INTO `flux` VALUES
-  (1,  'STOCK_FLUX.FROM_PURCHASE'),
-  (2,  'STOCK_FLUX.FROM_OTHER_DEPOT'),
-  (3,  'STOCK_FLUX.FROM_ADJUSTMENT'),
-  (4,  'STOCK_FLUX.FROM_PATIENT'),
-  (5,  'STOCK_FLUX.FROM_SERVICE'),
-  (6,  'STOCK_FLUX.FROM_DONATION'),
-  (7,  'STOCK_FLUX.FROM_LOSS'),
-  (8,  'STOCK_FLUX.TO_OTHER_DEPOT'),
-  (9,  'STOCK_FLUX.TO_PATIENT'),
-  (10, 'STOCK_FLUX.TO_SERVICE'),
-  (11, 'STOCK_FLUX.TO_LOSS'),
-  (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
-  (13, 'STOCK_FLUX.FROM_INTEGRATION');
-
--- transaction type
-INSERT INTO `purchase_status` (`id`, `text`) VALUES
-  (1,  'PURCHASES.STATUS.WAITING_CONFIRMATION'),
-  (2,  'PURCHASES.STATUS.CONFIRMED'),
-  (3,  'PURCHASES.STATUS.RECEIVED'),
-  (4,  'PURCHASES.STATUS.PARTIALLY_RECEIVED'),
-  (5,  'PURCHASES.STATUS.CANCELLED');
-
--- locations (default enterprise location only)
-INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo');
-INSERT INTO `province` VALUES (HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'),'Kinshasa', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'));
-INSERT INTO `sector` VALUES (HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'),'Lukunga', HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'));
-INSERT INTO `village` VALUES (HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'Gombe', HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'));
+DELETE FROM unit WHERE id IN (135, 158);
+INSERT INTO unit values (135, 'Invoicing Fee', 'TREE.INVOICING_FEES', 'Configures invoicing Fee for bhima', 1, '/modules/invoicing_fees', '/invoicing_fees')

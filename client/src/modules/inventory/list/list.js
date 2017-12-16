@@ -14,7 +14,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session,
+  GridExport, Languages, Session
 ) {
   var vm = this;
   vm.download = Inventory.download;
@@ -107,8 +107,8 @@ function InventoryListController(
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
-    columnDefs,
-    onRegisterApi,
+    columnDefs : columnDefs,
+    onRegisterApi : onRegisterApi,
   };
 
   // configurations
