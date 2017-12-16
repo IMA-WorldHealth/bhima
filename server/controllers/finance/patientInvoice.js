@@ -209,17 +209,17 @@ function find(options) {
 
   const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
-      patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
-      CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
-      service.name as serviceName, user.display_name, invoice.user_id,
-      invoice.reversed, invoice.edited
+      patient.display_name as patientName, invoice.cost,
+      BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
+      em.text AS patientReference, service.name as serviceName,
+      user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+    JOIN entity_map AS em ON em.uuid = patient.uuid
+    JOIN document_map AS dm ON dm.uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
-    JOIN project ON project.id = invoice.project_id
   `;
 
   filters.equals('cost');
@@ -231,6 +231,9 @@ function find(options) {
   filters.equals('reversed');
   filters.equals('service_id');
   filters.equals('user_id');
+
+  filters.equals('reference', 'text', 'dm');
+  filters.equals('patientReference', 'text', 'em');
 
   filters.custom(
     'cash_uuid',
@@ -245,12 +248,6 @@ function find(options) {
   filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
-  filters.custom('reference', referenceStatement);
-
-  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
-  filters.custom('patientReference', patientReferenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
